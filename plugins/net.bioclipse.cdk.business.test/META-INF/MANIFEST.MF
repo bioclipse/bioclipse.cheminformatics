@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CDK Business Test Plug-in
+Bundle-SymbolicName: net.bioclipse.cdk.business.test
+Bundle-Version: 1.3.1
+Bundle-Activator: net.bioclipse.cdk.business.test.Activator
+Bundle-Vendor: The Bioclipse Team
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.junit4,
+ net.bioclipse.cdk,
+ net.bioclipse.cdk.business,
+ net.bioclipse.core,
+ net.bioclipse.logging
+Eclipse-LazyStart: true
