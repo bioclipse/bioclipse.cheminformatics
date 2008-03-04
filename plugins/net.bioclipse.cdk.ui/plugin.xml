@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+	<!-- declare a content type to eliminate duplicated file extensions -->
+   <extension
+         point="org.eclipse.core.runtime.contentTypes">
+      <content-type
+            id="net.bioclipse.cdk.ui.moleculeType"
+            name="molecule"
+             base-type="org.eclipse.core.runtime.text"
+			file-extensions="cml,xml,mol,mdl,xyz,pdb,sdf,sd,in,out,cif,log,hin,inchi,smi,rxn,mol2,res"
+            >
+      </content-type>
+   </extension>
+
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="net.bioclipse.cdk.ui.editors.JCPMultiPageEditor"
+            contributorClass="net.bioclipse.cdk.ui.editors.JCPMultiPageEditorContributor"
+            icon="icons/molecule2D.gif"
+            id="net.bioclipse.plugins.bc_jchempaint.editors.JCPMultiPageEditor"
+            name="JChemPaint"
+            >
+            <contentTypeBinding
+                  contentTypeId="net.bioclipse.cdk.ui.moleculeType">
+            </contentTypeBinding>
+      </editor>
+      <editor
+            class="net.bioclipse.cdk.ui.editors.JCPEditor"
+            contributorClass="net.bioclipse.cdk.ui.editors.JCPEditor"
+            default="false"
+            icon="icons/molecule2D.gif"
+            id="net.bioclipse.cdk.ui.editors.JCPEditor"
+            name="JCPEditor"/>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.navigator.navigatorContent">
+      <navigatorContent
+            contentProvider="net.bioclipse.cdk.ui.views.MoleculeContentProvider"
+            id="net.bioclipse.cdk.ui.views.MoleculeContent"
+            labelProvider="net.bioclipse.cdk.ui.views.MoleculeLabelProvider"
+            name="Molecule Content">
+         <triggerPoints>
+         <and>
+            <instanceof value="org.eclipse.core.resources.IResource"/>
+            <or>
+            <test
+            	forcePluginActivation="true"
+            	property="org.eclipse.core.resources.extension"
+            	value="pdb"/>
+            <test
+            	forcePluginActivation="true"
+            	property="org.eclipse.core.resources.extension"
+            	value="sdf"/>
+            </or>
+         </and>
+         </triggerPoints>
+      </navigatorContent>
+   </extension>
+
+<!-- Add MoleculeContent to expand molecules with CDK -->
+<extension
+      point="org.eclipse.ui.navigator.viewer">
+      <viewerContentBinding
+            viewerId="net.bioclipse.navigator">
+            <includes>
+            <contentExtension
+                  pattern="net.bioclipse.cdk.ui.views.MoleculeContent">
+            </contentExtension>
+            </includes>
+      </viewerContentBinding>
+</extension>
+
+<!-- Contribute an Object Contribution to delete individual properties in the view -->
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="net.bioclipse.cdk.ui.actions.moleculeResource"
+            objectClass="net.bioclipse.cdk.ui.models.Molecule">
+         <action
+               class="net.bioclipse.cdk.ui.actions.CreateSmilesAction"
+               enablesFor="1"
+               icon="icons/molecule2D.gif"
+               id="net.bioclipse.cdk.ui.actions.CreateSmilesAction"
+               label="Create Smiles"
+               menubarPath="additions"
+               tooltip="Create SMILES code for the selected molecule"/>
+      </objectContribution> 
+   </extension>
+
+
+</plugin>
