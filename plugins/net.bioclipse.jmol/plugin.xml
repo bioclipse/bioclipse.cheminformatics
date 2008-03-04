@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="Jmol Editor"
+            extensions="pdb"
+            icon="icons/sample.gif"
+            contributorClass="net.bioclipse.jmol.editors.JmolEditorContributor"
+            class="net.bioclipse.jmol.editors.JmolEditor"
+            id="net.bioclipse.jmol.editors.JmolEditor">
+      </editor>
+   </extension>
+
+<extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+      <propertyContributor contributorId="net.bioclipse.jmol.views.outline.JmolContentOutlinePage">
+			<propertyCategory category="Chain"/>
+      </propertyContributor>
+   </extension>
+
+   <extension point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+      <propertyTabs contributorId="net.bioclipse.jmol.views.outline.JmolContentOutlinePage">
+         <propertyTab
+            category="Chain"
+               id="jmol.ChainTab"
+            label="Chain"/>
+      </propertyTabs>
+   </extension>
+
+ <extension point="org.eclipse.ui.views.properties.tabbed.propertySections">
+      <propertySections contributorId="net.bioclipse.jmol.views.outline.JmolContentOutlinePage">
+         <propertySection
+               class="net.bioclipse.jmol.views.properties.NameSection"
+               id="jmol.NameSection"
+               tab="jmol.ChainTab">
+            <input type="net.bioclipse.jmol.views.outline.JmolChain"/>
+         </propertySection>
+         <propertySection
+               afterSection="jmol.NameSection"
+               class="net.bioclipse.jmol.views.properties.SequenceSection"
+               id="jmol.SequenceSection"
+               tab="jmol.ChainTab">
+            <input type="net.bioclipse.jmol.views.outline.JmolChain"/>
+         </propertySection>
+         <!--propertySection
+               afterSection="mview.LabelSection"
+               class="mview.views.SizeSection"
+               id="mview.SizeSection"
+               tab="mview.ButtonTab">
+            <input type="net.bioclipse.jmol.views.outline.JmolObject"/>
+         </propertySection-->
+      </propertySections>
+   </extension>
+   
+</plugin>
