@@ -237,11 +237,6 @@ public class CDKManager implements ICDKManager{
 		return moleculesList;
 	}
 
-	@Override
-	public String toString() {
-		return "cdk";
-	}
-
 	public String calculateSmiles(CDKMolecule molecule) {
 		// TODO Auto-generated method stub
 		return null;
@@ -272,4 +267,8 @@ public class CDKManager implements ICDKManager{
 		
 	}
 
+	@Override
+	public String getNamespace() {
+		return "cdk";
+	}
 }

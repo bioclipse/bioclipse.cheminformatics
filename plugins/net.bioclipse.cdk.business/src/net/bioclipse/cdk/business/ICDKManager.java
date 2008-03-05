@@ -18,8 +18,9 @@ import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculeList;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.business.IBioclipseManager;
 
-public interface ICDKManager {
+public interface ICDKManager extends IBioclipseManager {
 
 	/**
 	 * Create a CDKMolecule from SMILES
