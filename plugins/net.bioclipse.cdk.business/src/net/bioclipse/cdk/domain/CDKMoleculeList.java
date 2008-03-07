@@ -11,7 +11,7 @@
  ******************************************************************************/
 package net.bioclipse.cdk.domain;
 
-import net.bioclipse.core.domain.BioObjectList;
+import net.bioclipse.core.domain.BioList;
 import net.bioclipse.core.domain.IMolecule;
 
 /**
@@ -19,7 +19,7 @@ import net.bioclipse.core.domain.IMolecule;
  * @author ola
  *
  */
-public class CDKMoleculeList extends BioObjectList<CDKMolecule> {
+public class CDKMoleculeList extends BioList<CDKMolecule> {
 
 	private String name;
 
