@@ -267,7 +267,6 @@ public class CDKManager implements ICDKManager{
 		
 	}
 
-	@Override
 	public String getNamespace() {
 		return "cdk";
 	}
