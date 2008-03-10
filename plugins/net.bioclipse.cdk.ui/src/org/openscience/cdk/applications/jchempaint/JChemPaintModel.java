@@ -42,11 +42,11 @@ import org.apache.log4j.Logger;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.controller.Controller2DModel;
 import org.openscience.cdk.event.ICDKChangeListener;
+import org.openscience.cdk.formula.IMolecularFormula;
+import org.openscience.cdk.formula.MolecularFormulaManipulator;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.renderer.Renderer2DModel;
-import org.openscience.cdk.tools.MFAnalyser;
-import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 /**
  *  The model on which JChemPaint opterates. It holds all the models of the
@@ -234,7 +234,8 @@ public class JChemPaintModel implements java.io.Serializable, ICDKChangeListener
 		else if (position == 1) {
 			// depict bruto formula
 			IAtomContainer wholeModel = model.getMoleculeSet().getAtomContainer(0);
-			String formula = new MFAnalyser(wholeModel).getHTMLMolecularFormulaWithCharge();
+			IMolecularFormula mf = MolecularFormulaManipulator.getMolecularFormula(wholeModel);
+			String formula = MolecularFormulaManipulator.getHTML(mf,true,false);
 			int impliciths=0;
 			for(int i=0;i<wholeModel.getAtomCount();i++){
 				impliciths+=wholeModel.getAtom(i).getHydrogenCount();
@@ -245,7 +246,8 @@ public class JChemPaintModel implements java.io.Serializable, ICDKChangeListener
 			// depict brutto formula of the selected molecule or part of molecule
 			if (rendererModel.getSelectedPart() != null) {
 				IAtomContainer selectedPart = rendererModel.getSelectedPart();
-				String formula = new MFAnalyser(selectedPart).getHTMLMolecularFormulaWithCharge();
+				IMolecularFormula mf = MolecularFormulaManipulator.getMolecularFormula(selectedPart);
+				String formula = MolecularFormulaManipulator.getHTML(mf,true,false);
 				status = "<html>" + formula + "</html>";
 			}
 		}
