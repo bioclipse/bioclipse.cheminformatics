@@ -33,8 +33,6 @@ import javax.swing.undo.UndoableEdit;
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
-import net.bioclipse.cdk.ui.Activator;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.core.commands.operations.IUndoableOperation;
@@ -116,8 +114,10 @@ public class JCPMultiPageEditor extends MultiPageEditorPart implements ISelectio
 
 	public static final String EDITOR_ID="net.bioclipse.plugins.bc_jchempaint.editors.JCPMultiPageEditor";
 
-	private static final Logger logger = Activator.getLogManager()
-	.getLogger(JCPMultiPageEditor.class.toString());
+	private static final Logger logger = Logger.getLogger(JCPMultiPageEditor.class);
+	//TODO remove
+	/*	private static final Logger logger = Activator.getLogManager()
+	.getLogger(JCPMultiPageEditor.class.toString());*/
 //	private IEditorInput editorInput;
 	private JCPScrollBar jcpScrollBar;
 	private JCPEditor jcpEditor;

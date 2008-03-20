@@ -32,8 +32,11 @@ import org.openscience.cdk.io.formats.MDLFormat;
 
 public class AtomContainerTransfer extends ByteArrayTransfer {
 	
-	private static final Logger logger = Activator.getLogManager()
-	.getLogger(AtomContainerTransfer.class.toString());
+    private static final Logger logger = Logger.getLogger(AtomContainerTransfer.class);
+	
+    // TODO remove:
+    /*private static final Logger logger = Activator.getLogManager()
+	.getLogger(AtomContainerTransfer.class.toString());*/
 	private static AtomContainerTransfer instance = new AtomContainerTransfer();
 	private static final String TYPE_NAME = "AtomContainer-transfer-format";
 	private static final int TYPEID = registerType(TYPE_NAME);

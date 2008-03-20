@@ -22,8 +22,6 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import net.bioclipse.cdk.ui.Activator;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -75,8 +73,11 @@ public class JCPEditor extends EditorPart implements ICDKChangeListener, IChemOb
 	private JCPScrollBar jcpScrollBar;
 	private boolean isDirty = false;
 	public ControlListener cl;
-	private static final Logger logger = Activator.getLogManager()
-	.getLogger(JCPEditor.class.toString());
+	
+	private static final Logger logger = Logger.getLogger(JCPEditor.class);
+    //TODO remove
+	/*private static final Logger logger = Activator.getLogManager()
+	.getLogger(JCPEditor.class.toString());*/
 
 	public JCPEditor() {
 		super();

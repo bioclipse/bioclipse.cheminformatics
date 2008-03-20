@@ -13,8 +13,6 @@ package net.bioclipse.jmol.views;
 
 import java.util.List;
 
-import net.bioclipse.jmol.Activator;
-
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -37,8 +35,10 @@ import org.jmol.api.JmolStatusListener;
 public class StatusListener implements JmolStatusListener{
 
 	//Use logging
-	private static final Logger logger = Activator.getLogManager().getLogger(
-			StatusListener.class.toString());
+    private static final Logger logger = Logger.getLogger(StatusListener.class);
+    //TODO remove
+    /*private static final Logger logger = Activator.getLogManager().getLogger(
+			StatusListener.class.toString());*/
 
 	private ISelectionProvider part;
 	

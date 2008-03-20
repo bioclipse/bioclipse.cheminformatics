@@ -36,8 +36,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 
-import net.bioclipse.cdk.ui.Activator;
-
 import org.apache.log4j.Logger;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.controller.Controller2DModel;
@@ -59,9 +57,8 @@ import org.openscience.cdk.renderer.Renderer2DModel;
  */
 public class JChemPaintModel implements java.io.Serializable, ICDKChangeListener {
 
-	
-	private static final Logger logger = Activator.getLogManager()
-	.getLogger(JChemPaintModel.class.toString());
+    private static final Logger logger = Logger.getLogger(JChemPaintModel.class);
+    
 	/**  Description of the Field */
 	protected transient EventListenerList changeListeners = new EventListenerList();
 	private String title;

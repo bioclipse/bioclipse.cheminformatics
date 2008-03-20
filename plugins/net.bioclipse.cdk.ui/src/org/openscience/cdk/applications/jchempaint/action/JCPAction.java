@@ -51,9 +51,12 @@ import org.openscience.cdk.controller.CDKPopupMenu;
  */
 public class JCPAction extends Action {
 
-	
-	protected static final Logger logger = Activator.getLogManager()
-	.getLogger(JCPAction.class.toString());
+    // beware that for now subclasses of JCPAction inherit this logger
+    // which retains the name of their superclass (this class)
+    // TODO logging - give every subclass their own logger
+    
+    protected static Logger logger = Logger.getLogger(JCPAction.class);
+    
 	/**
 	 *  Description of the Field
 	 */

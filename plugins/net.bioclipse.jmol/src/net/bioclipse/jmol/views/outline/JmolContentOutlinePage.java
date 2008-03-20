@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import net.bioclipse.jmol.Activator;
 import net.bioclipse.jmol.editors.JmolEditor;
 import net.bioclipse.jmol.views.JmolSelection;
 
@@ -62,8 +61,10 @@ public class JmolContentOutlinePage extends ContentOutlinePage implements ISelec
 
 	private final String CONTRIBUTOR_ID="net.bioclipse.jmol.views.outline.JmolContentOutlinePage";
 
-	private static final Logger logger = Activator.getLogManager()
-	.getLogger(JmolContentOutlinePage.class.toString());
+	private static final Logger logger = Logger.getLogger(JmolContentOutlinePage.class);
+	//TODO remove
+	/*private static final Logger logger = Activator.getLogManager()
+	.getLogger(JmolContentOutlinePage.class.toString());*/
 
 
 	class JmolOutlineContentProvider implements IStructuredContentProvider, 

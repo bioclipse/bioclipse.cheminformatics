@@ -17,8 +17,6 @@ import java.util.List;
 
 import javax.swing.JScrollPane;
 
-import net.bioclipse.jmol.Activator;
-
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -46,8 +44,10 @@ import org.eclipse.ui.part.ViewPart;
 public class JmolView extends ViewPart implements ISelectionListener, ISelectionProvider{
 
 	//Use logging
-	private static final Logger logger = Activator.getLogManager().getLogger(
-			JmolView.class.toString());
+    private static final Logger logger = Logger.getLogger(JmolView.class);
+    //TODO remove
+    /*private static final Logger logger = Activator.getLogManager().getLogger(
+			JmolView.class.toString());*/
 
 	public static final String ID = "net.bioclipse.jmol.views.JmolView";
 

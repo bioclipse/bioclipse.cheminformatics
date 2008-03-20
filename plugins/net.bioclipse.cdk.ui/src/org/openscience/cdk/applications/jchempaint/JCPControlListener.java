@@ -5,7 +5,6 @@ import java.awt.Dimension;
 
 import javax.vecmath.Point2d;
 
-import net.bioclipse.cdk.ui.Activator;
 import net.bioclipse.cdk.ui.editors.IJCPEditorPart;
 
 import org.apache.log4j.Logger;
@@ -29,8 +28,7 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
  */
 public class JCPControlListener implements ControlListener {
 
-	private static final Logger logger = Activator.getLogManager()
-	.getLogger(JChemPaintModel.class.toString());
+    private static final Logger logger = Logger.getLogger(JCPControlListener.class);
 	private IJCPEditorPart jcpEditor;
 	
 	/**

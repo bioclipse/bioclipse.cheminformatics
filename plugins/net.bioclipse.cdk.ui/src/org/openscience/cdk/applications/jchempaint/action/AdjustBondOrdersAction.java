@@ -45,7 +45,6 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.tools.SaturationChecker;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
-
 /**
  * Triggers the adjustment of BondOrders
  *
@@ -54,9 +53,8 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
  */
 public class AdjustBondOrdersAction extends JCPAction
 {
-
 	
-	public void run() {
+    public void run() {
 		run(null);
 	}
 	

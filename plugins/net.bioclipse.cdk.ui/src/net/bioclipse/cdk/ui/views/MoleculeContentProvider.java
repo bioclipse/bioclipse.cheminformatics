@@ -20,7 +20,6 @@ import java.util.Map;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculeList;
-import net.bioclipse.cdk.ui.Activator;
 import net.bioclipse.core.business.BioclipseException;
 
 import org.apache.log4j.Logger;
@@ -45,8 +44,10 @@ import org.openscience.cdk.interfaces.IMolecule;
 public class MoleculeContentProvider implements ITreeContentProvider, 
 IResourceChangeListener, IResourceDeltaVisitor {
 
-	private static final Logger logger = Activator.getLogManager()
-	.getLogger(MoleculeContentProvider.class.toString());
+    private static final Logger logger = Logger.getLogger(MoleculeContentProvider.class);
+    //TODO remove
+    /*private static final Logger logger = Activator.getLogManager()
+	.getLogger(MoleculeContentProvider.class.toString());*/
 
 
 	private static final Object[] NO_CHILDREN = new Object[0];
