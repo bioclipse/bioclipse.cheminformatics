@@ -11,13 +11,9 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui;
 
-import java.net.URL;
-
 import net.bioclipse.ui.BioclipseActivator;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -30,9 +26,7 @@ public class Activator extends BioclipseActivator {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "net.bioclipse.cdk.ui";
 
-	//The file for logger properties
-	private static final String LOG_PROPERTIES_FILE = "logger.properties";
-
+	
 	/**
 	 * Returns an image descriptor for the image file at the given
 	 * plug-in relative path
@@ -43,13 +37,4 @@ public class Activator extends BioclipseActivator {
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
-
-	/**
-	 * Need to provide this plugin's logger.properties to abstract class
-	 */
-	@Override
-	public URL getLoggerURL() {
-		return getBundle().getEntry("/" + LOG_PROPERTIES_FILE);
-	}
-
 }
