@@ -8,7 +8,6 @@ Bundle-Vendor: The Bioclipse Team
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  net.bioclipse.core,
- net.bioclipse.logging,
  org.eclipse.core.runtime.compatibility.auth,
  org.springframework.osgi.bundle.extender,
  org.springframework.osgi.bundle.core,

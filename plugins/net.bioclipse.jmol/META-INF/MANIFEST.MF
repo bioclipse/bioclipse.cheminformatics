@@ -15,8 +15,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.views,
  net.bioclipse.core,
  org.eclipse.ui.views.properties.tabbed,
- net.bioclipse.scripting,
- net.bioclipse.logging
+ net.bioclipse.scripting
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
  jars/Jmol.jar
