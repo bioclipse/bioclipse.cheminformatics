@@ -15,7 +15,7 @@
    </extension>
 
 
-   <extension
+   <!--extension
          point="org.eclipse.ui.editors">
       <editor
             class="net.bioclipse.cdk.ui.editors.JCPMultiPageEditor"
@@ -35,7 +35,7 @@
             icon="icons/molecule2D.gif"
             id="net.bioclipse.cdk.ui.editors.JCPEditor"
             name="JCPEditor"/>
-   </extension>
+   </extension-->
 
    <extension
          point="org.eclipse.ui.navigator.navigatorContent">
@@ -82,7 +82,7 @@
       <objectContribution
             adaptable="false"
             id="net.bioclipse.cdk.ui.actions.moleculeResource"
-            objectClass="net.bioclipse.cdk.ui.models.Molecule">
+            objectClass="net.bioclipse.core.domain.IMolecule">
          <action
                class="net.bioclipse.cdk.ui.actions.CreateSmilesAction"
                enablesFor="1"
