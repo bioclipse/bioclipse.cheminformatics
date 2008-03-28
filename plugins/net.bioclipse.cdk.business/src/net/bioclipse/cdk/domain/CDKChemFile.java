@@ -89,4 +89,9 @@ public class CDKChemFile extends BioObject implements IMolecule{
 		return cachedSMILES;
 	}
 
+	public Object getAdapter(Class adapter) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

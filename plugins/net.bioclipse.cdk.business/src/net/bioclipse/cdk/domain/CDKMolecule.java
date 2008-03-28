@@ -92,4 +92,8 @@ public class CDKMolecule extends BioObject implements IMolecule{
 		this.cachedSMILES = cachedSMILES;
 	}
 
+	public Object getAdapter(Class adapter) {
+		return null;
+	}
+
 }
