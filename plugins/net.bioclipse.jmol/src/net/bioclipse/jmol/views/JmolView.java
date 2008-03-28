@@ -45,9 +45,6 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
 	//Use logging
     private static final Logger logger = Logger.getLogger(JmolView.class);
-    //TODO remove
-    /*private static final Logger logger = Activator.getLogManager().getLogger(
-			JmolView.class.toString());*/
 
 	public static final String ID = "net.bioclipse.jmol.views.JmolView";
 

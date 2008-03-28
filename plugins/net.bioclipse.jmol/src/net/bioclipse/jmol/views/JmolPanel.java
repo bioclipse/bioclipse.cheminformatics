@@ -36,10 +36,7 @@ public class JmolPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger logger = Logger.getLogger(JmolPanel.class);
-	//TODO remove
-	/*private static final org.apache.log4j.Logger logger = Activator
-	.getLogManager().getLogger(JmolPanel.class.toString());*/
-
+	
 	final Dimension currentSize = new Dimension();
 	private JmolViewer jmolViewer;
 	private Viewer viewer;

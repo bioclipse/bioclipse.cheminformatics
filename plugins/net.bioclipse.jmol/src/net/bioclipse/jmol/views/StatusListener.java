@@ -34,11 +34,7 @@ import org.jmol.api.JmolStatusListener;
  */
 public class StatusListener implements JmolStatusListener{
 
-	//Use logging
     private static final Logger logger = Logger.getLogger(StatusListener.class);
-    //TODO remove
-    /*private static final Logger logger = Activator.getLogManager().getLogger(
-			StatusListener.class.toString());*/
 
 	private ISelectionProvider part;
 	

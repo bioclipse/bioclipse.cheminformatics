@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Vector;
 
-import net.bioclipse.cdk.ui.Activator;
-
 import org.apache.log4j.Logger;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
@@ -34,9 +32,6 @@ public class AtomContainerTransfer extends ByteArrayTransfer {
 	
     private static final Logger logger = Logger.getLogger(AtomContainerTransfer.class);
 	
-    // TODO remove:
-    /*private static final Logger logger = Activator.getLogManager()
-	.getLogger(AtomContainerTransfer.class.toString());*/
 	private static AtomContainerTransfer instance = new AtomContainerTransfer();
 	private static final String TYPE_NAME = "AtomContainer-transfer-format";
 	private static final int TYPEID = registerType(TYPE_NAME);

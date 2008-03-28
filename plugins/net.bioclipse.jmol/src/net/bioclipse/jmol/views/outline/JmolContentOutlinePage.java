@@ -62,11 +62,8 @@ public class JmolContentOutlinePage extends ContentOutlinePage implements ISelec
 	private final String CONTRIBUTOR_ID="net.bioclipse.jmol.views.outline.JmolContentOutlinePage";
 
 	private static final Logger logger = Logger.getLogger(JmolContentOutlinePage.class);
-	//TODO remove
-	/*private static final Logger logger = Activator.getLogManager()
-	.getLogger(JmolContentOutlinePage.class.toString());*/
-
-
+	
+	
 	class JmolOutlineContentProvider implements IStructuredContentProvider, 
 	ITreeContentProvider {
 

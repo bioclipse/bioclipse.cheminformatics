@@ -75,9 +75,6 @@ import org.jmol.viewer.Viewer;
 public class JmolEditor extends MultiPageEditorPart implements IResourceChangeListener, IAdaptable, ISelectionListener, ISelectionProvider{
 
     private static final Logger logger = Logger.getLogger(JmolEditor.class);
-    //TODO remove
-    /*private static final Logger logger = Activator.getLogManager()
-	.getLogger(JmolEditor.class.toString());*/
 
 	/** The text editor used in page 1. */
 	private TextEditor editor;

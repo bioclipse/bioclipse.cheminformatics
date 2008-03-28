@@ -45,10 +45,6 @@ public class MoleculeContentProvider implements ITreeContentProvider,
 IResourceChangeListener, IResourceDeltaVisitor {
 
     private static final Logger logger = Logger.getLogger(MoleculeContentProvider.class);
-    //TODO remove
-    /*private static final Logger logger = Activator.getLogManager()
-	.getLogger(MoleculeContentProvider.class.toString());*/
-
 
 	private static final Object[] NO_CHILDREN = new Object[0];
 
