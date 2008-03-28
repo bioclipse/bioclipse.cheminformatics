@@ -14,6 +14,8 @@ package net.bioclipse.jmol.views;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import net.bioclipse.core.util.LogUtils;
+
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -32,7 +34,7 @@ import org.jmol.api.JmolStatusListener;
  * @author ola
  *
  */
-public class StatusListener implements JmolStatusListener{
+public class StatusListener implements JmolStatusListener {
 
     private static final Logger logger = Logger.getLogger(StatusListener.class);
 
@@ -77,7 +79,7 @@ public class StatusListener implements JmolStatusListener{
 
 				} catch (Exception e){
 					logger.debug("Could not create JmolSelecion, probably something unselectable selected in Jmol");
-					e.printStackTrace();
+					LogUtils.debugTrace(logger, e);
 					return;
 				}
 

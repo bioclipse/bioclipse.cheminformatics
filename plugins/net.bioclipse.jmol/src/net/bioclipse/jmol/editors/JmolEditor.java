@@ -30,6 +30,8 @@ import net.bioclipse.jmol.views.outline.JmolModel;
 import net.bioclipse.jmol.views.outline.JmolObject;
 
 import org.apache.log4j.Logger;
+import net.bioclipse.core.util.LogUtils;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -325,10 +327,10 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
 
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    LogUtils.debugTrace(logger, e);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    LogUtils.debugTrace(logger, e);
 		}
 
 		return null;

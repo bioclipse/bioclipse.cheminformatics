@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import net.bioclipse.core.util.LogUtils;
+
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
@@ -43,6 +46,8 @@ import net.bioclipse.core.domain.IMolecule;
 
 public class CDKManager implements ICDKManager{
 
+    private static final Logger logger = Logger.getLogger(CDKManager.class);
+    
 	ReaderFactory readerFactory;
 
 	/**
@@ -95,7 +100,7 @@ public class CDKManager implements ICDKManager{
 			chemFile=(IChemFile)reader.read(chemFile);
 		} catch (CDKException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LogUtils.debugTrace(logger, e);
 		}
 
 		//Store the chemFormat used for the reader
@@ -197,7 +202,7 @@ public class CDKManager implements ICDKManager{
 			chemFile=(IChemFile)reader.read(chemFile);
 		} catch (CDKException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    LogUtils.debugTrace(logger, e);
 		}
 
 		//Store the chemFormat used for the reader

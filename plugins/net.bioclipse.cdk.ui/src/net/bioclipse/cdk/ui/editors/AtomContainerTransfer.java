@@ -18,6 +18,8 @@ import java.io.StringReader;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
+import net.bioclipse.core.util.LogUtils;
+
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.openscience.cdk.exception.CDKException;
@@ -54,7 +56,7 @@ public class AtomContainerTransfer extends ByteArrayTransfer {
 			/* read BioResource */
 			return readAtomContainer(in);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtils.debugTrace(logger, e);
 			return null;
 		}
 	}
@@ -115,7 +117,7 @@ public class AtomContainerTransfer extends ByteArrayTransfer {
 			bytes = byteOut.toByteArray();
 		} catch (IOException e) {
 			//when in doubt send nothing
-			e.printStackTrace();
+		    LogUtils.debugTrace(logger, e);
 		}
 		return bytes;
 	}
@@ -147,7 +149,7 @@ public class AtomContainerTransfer extends ByteArrayTransfer {
 			dataOut.write(stream.toByteArray());
 		} catch (Exception e) {
 			success = false;
-			e.printStackTrace();
+			LogUtils.debugTrace(logger, e);
 		}		
 	}
 }

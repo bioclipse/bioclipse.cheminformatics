@@ -15,11 +15,16 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
+import org.apache.log4j.Logger;
+import net.bioclipse.core.util.LogUtils;
+
 /**
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractUIPlugin {
 
+    private static final Logger logger = Logger.getLogger(Activator.class);
+    
 	// The plug-in ID
 	public static final String PLUGIN_ID = "net.bioclipse.cdk.business";
 
@@ -72,7 +77,7 @@ public class Activator extends AbstractUIPlugin {
 		try {
 			manager = (ICDKManager) finderTracker.waitForService(1000*10);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			LogUtils.debugTrace(logger, e);
 		}
 		if(manager == null) {
 			throw new IllegalStateException("Could not get the CDK manager");
