@@ -55,7 +55,7 @@ public class CDKManagerTest {
 		InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
 
 		CDKMolecule mol=cdk.loadMolecule(cmlFile);
-		String smiles=mol.getSMILES();
+		String smiles=mol.getSmiles();
 		
 		assertEquals("CC1CCCC(C#N)N1C(CO[Si](C)(C)C)C2=CC=CC=C2", smiles);
 		
