@@ -46,7 +46,7 @@ public class CDKChemFile extends BioObject implements IMolecule{
 		this.chemFile = chemFile;
 	}
 
-	public String getSMILES() throws BioclipseException {
+	public String getSmiles() throws BioclipseException {
 		
 		//TODO: wrap in job?
 		
@@ -92,6 +92,11 @@ public class CDKChemFile extends BioObject implements IMolecule{
 	public Object getAdapter(Class adapter) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public boolean has3dCoords() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

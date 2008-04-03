@@ -24,7 +24,7 @@ import net.bioclipse.core.domain.IMolecule;
  * @author ola
  *
  */
-public class CDKMolecule extends BioObject implements IMolecule{
+public class CDKMolecule extends BioObject implements ICDKMolecule{
 
 	private String name;
 	private IAtomContainer atomContainer;
@@ -39,7 +39,7 @@ public class CDKMolecule extends BioObject implements IMolecule{
 		return atomContainer;
 	}
 
-	public String getSMILES() throws BioclipseException {
+	public String getSmiles() throws BioclipseException {
 
 		//TODO: wrap in job?
 
@@ -94,6 +94,21 @@ public class CDKMolecule extends BioObject implements IMolecule{
 
 	public Object getAdapter(Class adapter) {
 		return null;
+	}
+
+	public String getCML() throws BioclipseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getFingerprint() throws BioclipseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean has3dCoords() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
