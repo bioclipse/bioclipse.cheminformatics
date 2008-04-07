@@ -12,7 +12,15 @@
 
 package net.bioclipse.cdk.domain;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.BitSet;
+
+import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.fingerprint.Fingerprinter;
+import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.smiles.SmilesGenerator;
 
 import net.bioclipse.core.business.BioclipseException;
@@ -29,6 +37,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
 	private String name;
 	private IAtomContainer atomContainer;
 	private String cachedSMILES;
+	private BitSet cachedFingerprint;
 
 	public CDKMolecule(IAtomContainer atomContainer) {
 		super();
@@ -97,18 +106,58 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
 	}
 
 	public String getCML() throws BioclipseException {
-		// TODO Auto-generated method stub
-		return null;
+
+		if (atomContainer==null) throw new BioclipseException("No molecule to " +
+		"get CML from!");
+
+		ByteArrayOutputStream bo=new ByteArrayOutputStream();
+
+		CMLWriter writer=new CMLWriter(bo);
+		try {
+			writer.write(atomContainer);
+			writer.close();
+		} catch (CDKException e) {
+			throw new BioclipseException("Could not convert molecule to CML: " 
+					+ e.getMessage());		
+		} catch (IOException e) {
+			throw new BioclipseException("Could not write molecule to CML: " 
+					+ e.getMessage());		
+		}
+
+		if (bo==null) throw new BioclipseException("Convert to CML resulted in " +
+		"empty String.");
+
+		return bo.toString();
 	}
 
-	public String getFingerprint() throws BioclipseException {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * Calculate CDK fingerprint and cache the result.
+	 * @param force if true, do not use cache but force calculation
+	 * @return
+	 * @throws BioclipseException
+	 */
+	public BitSet getFingerprint(boolean force) throws BioclipseException {
+
+		if (force==false){
+			if (cachedFingerprint != null) {
+				return cachedFingerprint;
+			}
+		}
+		Fingerprinter fp=new Fingerprinter();
+		try {
+			BitSet fingerprint=fp.getFingerprint(atomContainer);
+			cachedFingerprint=fingerprint;
+			return fingerprint;
+		} catch (Exception e) {
+			throw new BioclipseException("Could not create fingerprint: " 
+					+ e.getMessage());		
+		}
+
 	}
 
-	public boolean has3dCoords() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean has3dCoords() throws BioclipseException {
+		if (atomContainer==null) throw new BioclipseException("Atomcontainer is null!");
+		return 	GeometryTools.has3DCoordinates(atomContainer);		
 	}
 
 }
