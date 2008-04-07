@@ -19,6 +19,7 @@ import net.bioclipse.cdk.domain.CDKMoleculeList;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IBioclipseManager;
+import net.bioclipse.core.domain.IMolecule;
 
 public interface ICDKManager extends IBioclipseManager {
 
@@ -74,11 +75,12 @@ public interface ICDKManager extends IBioclipseManager {
 
 	
 	/**
-	 * Calculate SMILES string for a CDKMolecule
+	 * Calculate SMILES string for an IMolecule
 	 * @param molecule
 	 * @return
+	 * @throws BioclipseException 
 	 */
 	@Recorded
-	public String calculateSmiles (CDKMolecule molecule);
+	public String calculateSmiles (IMolecule molecule) throws BioclipseException;
 
 }

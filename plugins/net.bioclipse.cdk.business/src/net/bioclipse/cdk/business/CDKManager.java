@@ -27,15 +27,9 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
-import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.io.IChemObjectReader;
 import org.openscience.cdk.io.ReaderFactory;
-import org.openscience.cdk.io.formats.CMLFormat;
-import org.openscience.cdk.io.formats.IChemFormatMatcher;
 import org.openscience.cdk.io.formats.IResourceFormat;
-import org.openscience.cdk.io.formats.Mol2Format;
-import org.openscience.cdk.io.formats.PDBFormat;
-import org.openscience.cdk.io.formats.SDFFormat;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 
@@ -49,6 +43,10 @@ public class CDKManager implements ICDKManager{
     private static final Logger logger = Logger.getLogger(CDKManager.class);
     
 	ReaderFactory readerFactory;
+
+	public String getNamespace() {
+		return "cdk";
+	}
 
 	/**
 	 * Load a molecule from a file. If many molecules, just return first. To return 
@@ -107,7 +105,7 @@ public class CDKManager implements ICDKManager{
 		IResourceFormat chemFormat=reader.getFormat();
 		System.out.println("Rad CDK chemfile with format: " + chemFormat.getFormatName());
 
-		List atomContainersList = ChemFileManipulator.getAllAtomContainers(chemFile);
+		List<IAtomContainer> atomContainersList = ChemFileManipulator.getAllAtomContainers(chemFile);
 		int nuMols=atomContainersList.size();
 		System.out.println("This file contained: " + nuMols + " molecules");
 
@@ -209,7 +207,7 @@ public class CDKManager implements ICDKManager{
 		IResourceFormat chemFormat=reader.getFormat();
 		System.out.println("Rad CDK chemfile with format: " + chemFormat.getFormatName());
 
-		List atomContainersList = ChemFileManipulator.getAllAtomContainers(chemFile);
+		List<IAtomContainer> atomContainersList = ChemFileManipulator.getAllAtomContainers(chemFile);
 		int nuMols=atomContainersList.size();
 		System.out.println("This file contained: " + nuMols + " molecules");
 
@@ -242,14 +240,8 @@ public class CDKManager implements ICDKManager{
 		return moleculesList;
 	}
 
-	public String calculateSmiles(CDKMolecule molecule) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String calculateSmiles(IMolecule molecule) {
-		// TODO Auto-generated method stub
-		return null;
+	public String calculateSmiles(IMolecule molecule) throws BioclipseException {
+		return molecule.getSmiles();
 	}
 
 	public void saveMolecule(CDKMolecule seq) throws IllegalStateException {
@@ -272,7 +264,4 @@ public class CDKManager implements ICDKManager{
 		
 	}
 
-	public String getNamespace() {
-		return "cdk";
-	}
 }
