@@ -3,6 +3,15 @@
 <plugin>
 
    <extension
+         point="net.bioclipse.scripting.contribution">
+      <scriptContribution
+            id="net.bioclipse.jmol.business.JmolManager"
+            service="net.bioclipse.jmol.business.JmolManagerFactory">
+      </scriptContribution>
+   </extension>
+
+
+   <extension
          point="org.eclipse.ui.editors">
       <editor
             name="Jmol Editor"
