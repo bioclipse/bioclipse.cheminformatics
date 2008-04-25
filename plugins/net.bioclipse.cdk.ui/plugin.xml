@@ -2,6 +2,19 @@
 <?eclipse version="3.0"?>
 <plugin>
 
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="SDF Editor"
+            extensions="sdf"
+	        icon="icons/molecule2D.gif"
+            contributorClass="net.bioclipse.cdk.ui.editors.sdf.SDFEditorContributor"
+            class="net.bioclipse.cdk.ui.editors.sdf.SDFEditor"
+            id="net.bioclipse.cdk.ui.editors.sdf.SDFEditor">
+      </editor>
+   </extension>
+
+
 	<!-- declare a content type to eliminate duplicated file extensions -->
    <extension
          point="org.eclipse.core.runtime.contentTypes">
