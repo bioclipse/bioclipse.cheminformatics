@@ -14,6 +14,16 @@
       </content-type>
    </extension>
 
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="2D-Structure (Single Molecule)"
+	        icon="icons/molecule2D.gif"
+            category="net.bioclipse.cdk.category"
+            class="net.bioclipse.cdk.ui.views.Java2DRendererView"
+            id="net.bioclipse.plugins.views.Java2DRendererView">
+      </view>
+   </extension>
 
    <!--extension
          point="org.eclipse.ui.editors">
