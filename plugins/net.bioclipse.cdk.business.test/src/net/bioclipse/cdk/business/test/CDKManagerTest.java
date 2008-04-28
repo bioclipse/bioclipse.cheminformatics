@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Ola Spjuth
+ *     Jonathan Alvarsson
  *     
  ******************************************************************************/
 
@@ -16,12 +17,16 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.CDKManagerHelper;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.IMolecule;
 
 import org.junit.Test;
 import org.openscience.cdk.io.IChemObjectReader;
@@ -34,41 +39,53 @@ public class CDKManagerTest {
 	//Do not use SPRING OSGI for this manager	
 	//since we are only testing the implementations of the manager methods
 	public CDKManagerTest() {
-		cdk=new CDKManager();
+		cdk = new CDKManager();
 	}
 
 	@Test
-	public void testLoadMolecule() throws IOException, BioclipseException{
+	public void testLoadMolecule() throws IOException, BioclipseException {
 		
 //		InputStream atpFile = getClass().getResourceAsStream("/testFiles/polycarpol.mol");
 //		InputStream pdbFile = getClass().getResourceAsStream("/testFiles/1D66.pdb");
 		InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
 
-		CDKMolecule mol=cdk.loadMolecule(cmlFile);
+		CDKMolecule mol = cdk.loadMolecule(cmlFile);
 		
 		System.out.println("mol: " + mol.toString());
-		
 	}
 
 	@Test
-	public void testCreateSMILES() throws BioclipseException, IOException{
+	public void testCreateSMILES() throws BioclipseException, IOException {
 		InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
 
-		CDKMolecule mol=cdk.loadMolecule(cmlFile);
-		String smiles=mol.getSmiles();
+		CDKMolecule mol = cdk.loadMolecule(cmlFile);
+		String smiles = mol.getSmiles();
 		
 		assertEquals("CC1CCCC(C#N)N1C(CO[Si](C)(C)C)C2=CC=CC=C2", smiles);
-		
 	}
 
 	@Test
-	public void testCreateMoleculeFromSMILES() throws BioclipseException{
+	public void testCreateMoleculeFromSMILES() throws BioclipseException {
 
 		CDKMolecule mol=cdk.createMoleculeFromSMILES("C1CCCCC1CCO");
 		
 		assertEquals(mol.getAtomContainer().getAtomCount(), 9);
 		assertEquals(mol.getAtomContainer().getBondCount(), 9);
-		
 	}
 
+	@Test
+	public void testCreatingMoleculeIterator() {
+		InputStream sdfFile = getClass()
+		                      .getResourceAsStream("/testFiles/test.sdf");
+		
+		List<IMolecule> molecules = new ArrayList<IMolecule>();
+		
+		for ( Iterator<IMolecule> iterator = cdk.creatMoleculeIterator(sdfFile);
+		      iterator.hasNext(); ) {
+			
+			molecules.add( iterator.next() );
+		}
+		
+		assertEquals( 2, molecules.size() );
+	}
 }

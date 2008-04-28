@@ -13,6 +13,7 @@ package net.bioclipse.cdk.business;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculeList;
@@ -83,4 +84,12 @@ public interface ICDKManager extends IBioclipseManager {
 	@Recorded
 	public String calculateSmiles (IMolecule molecule) throws BioclipseException;
 
+	/**
+	 * Returns an iterator to the molecules in an Inputstream
+	 * 
+	 * @param instream
+	 * @return
+	 */
+	@Recorded
+	public Iterator<IMolecule> creatMoleculeIterator(InputStream instream); 
 }

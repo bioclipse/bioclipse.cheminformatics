@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -262,6 +263,11 @@ public class CDKManager implements ICDKManager{
 			throw new BioclipseException("SMILES string is invalid");
 		}
 		
+	}
+
+	public Iterator<IMolecule> creatMoleculeIterator(InputStream instream) {
+		//TODO FIXME: 
+		return null;
 	}
 
 }
