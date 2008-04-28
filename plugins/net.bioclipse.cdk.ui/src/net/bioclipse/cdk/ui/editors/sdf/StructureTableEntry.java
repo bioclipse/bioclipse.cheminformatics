@@ -31,7 +31,7 @@ import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.openscience.cdk.AtomContainer;
+import org.eclipse.swt.widgets.Table;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.Renderer2D;
@@ -49,7 +49,7 @@ public class StructureTableEntry {
 	private IAtomContainer molecule;
 	private HashMap coordinates = new HashMap();
 
-	private final static int compactSize = 200;
+	private final static int compactSize = 150;
 
 	//Properties in table
 	String[] columns;
@@ -105,14 +105,21 @@ public class StructureTableEntry {
 	 */
 	private Image computeStructureImage(Event event) {
 
+		int xsize = event.width;
+		int ysize = event.height;
+
+		//Get width from widget column
+		if (event.widget instanceof Table) {
+			Table table = (Table) event.widget;
+			xsize=table.getColumn(0).getWidth();
+		}
+		
 		renderer = new Renderer2D(new Renderer2DModel());
-		Dimension screenSize = new Dimension(200, event.height);
+		Dimension screenSize = new Dimension(xsize, ysize);
 		renderer.getRenderer2DModel().setBackgroundDimension(screenSize);
 		renderer.getRenderer2DModel().setDrawNumbers(false);
 		setCompactedNess(screenSize);
 
-		int xsize = 200;
-		int ysize = event.height;
 
 		BufferedImage bufImage = new BufferedImage(
 				xsize, ysize, BufferedImage.TYPE_INT_RGB );

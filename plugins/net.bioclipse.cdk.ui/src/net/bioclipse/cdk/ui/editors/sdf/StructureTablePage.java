@@ -66,19 +66,18 @@ public class StructureTablePage extends FormPage {
 		table.setLayout(tableLayout);
 		
 		//Add columns
-		TableViewerColumn col=new TableViewerColumn(viewer,SWT.NONE);
+		TableViewerColumn col=new TableViewerColumn(viewer,SWT.BORDER);
 		col.getColumn().setText("Structure");
-		tableLayout.addColumnData(new ColumnPixelData(200));
+		tableLayout.addColumnData(new ColumnPixelData(100));
 		
-		TableViewerColumn col2=new TableViewerColumn(viewer,SWT.NONE);
-		col2.getColumn().setText("SMILES");
+		TableViewerColumn col2=new TableViewerColumn(viewer,SWT.BORDER);
+		col2.getColumn().setText("Name");
+		col2.getColumn().setAlignment(SWT.LEFT);
 		tableLayout.addColumnData(new ColumnPixelData(300));
 
-		TableViewerColumn col3=new TableViewerColumn(viewer,SWT.NONE);
-		col3.getColumn().setText("Name");
-		tableLayout.addColumnData(new ColumnPixelData(200));
-
-//		col3.setEditingSupport(new StructureEditingSupport(viewer));
+//		TableViewerColumn col3=new TableViewerColumn(viewer,SWT.NONE);
+//		col3.getColumn().setText("Name");
+//		tableLayout.addColumnData(new ColumnPixelData(200));
 
 		viewer.setContentProvider(new MoleculeListContentProvider());
 		viewer.setLabelProvider(new MoleculeListLabelProviderNew());

@@ -37,6 +37,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.openscience.cdk.CDKConstants;
 
 public class SDFEditor extends FormEditor implements IResourceChangeListener, IAdaptable{
 
@@ -144,7 +145,12 @@ public class SDFEditor extends FormEditor implements IResourceChangeListener, IA
 			
 			ArrayList<StructureTableEntry> newlist=new ArrayList<StructureTableEntry>();
 			for (CDKMolecule mol : molList){
-				String[] props=new String[]{"wee","how","last"};
+				Object obj=mol.getAtomContainer().getProperty(CDKConstants.TITLE);
+				String name="N/A";
+				if (obj!=null){
+					name=(String) obj;
+				}
+				String[] props=new String[]{"Structure",name};
 				StructureTableEntry entry=new StructureTableEntry(mol.getAtomContainer(), props);
 				newlist.add(entry);
 			}

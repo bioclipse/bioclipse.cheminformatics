@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Table;
 import org.openscience.cdk.CDKConstants;
 
 public class MoleculeListLabelProviderNew extends OwnerDrawLabelProvider{
@@ -33,11 +34,24 @@ public class MoleculeListLabelProviderNew extends OwnerDrawLabelProvider{
 	@Override
 	protected void measure(Event event, Object element) {
 
-		//Hardcoded to 200x200
-		event.setBounds(new Rectangle(event.x, event.y, 200,
-				200));
+		int xsize = event.width;
+		int ysize = event.height;
+
+		//Get width from widget column
+		if (event.widget instanceof Table) {
+			Table table = (Table) event.widget;
+			xsize=table.getColumn(0).getWidth();
+		}
+		
+		//Minimum sizes
+		if (ysize<100) ysize=100;
+		if (xsize<100) xsize=100;
+
+		event.setBounds(new Rectangle(event.x, event.y, xsize,
+				ysize));
 		
 	}
+
 
 	@Override
 	protected void paint(Event event, Object element) {
