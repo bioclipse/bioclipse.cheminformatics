@@ -19,25 +19,27 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import net.bioclipse.cdk.domain.CDKMolecule;
+import net.bioclipse.cdk.domain.CDKMoleculeList;
+import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 
+import org.apache.log4j.Logger;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
+import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.io.IChemObjectReader;
 import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.formats.IResourceFormat;
+import org.openscience.cdk.io.iterator.IteratingMDLReader;
+import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
-
-import net.bioclipse.cdk.domain.CDKMolecule;
-import net.bioclipse.cdk.domain.CDKMoleculeList;
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IMolecule;
 
 public class CDKManager implements ICDKManager{
 
@@ -266,8 +268,31 @@ public class CDKManager implements ICDKManager{
 	}
 
 	public Iterator<IMolecule> creatMoleculeIterator(InputStream instream) {
-		//TODO FIXME: 
-		return null;
+		return new IteratingBioclipseMDLReader(instream, NoNotificationChemObjectBuilder.getInstance());
 	}
 
+	class IteratingBioclipseMDLReader implements Iterator<net.bioclipse.core.domain.IMolecule> {
+
+		IteratingMDLReader reader;
+		
+		public IteratingBioclipseMDLReader(InputStream input, IChemObjectBuilder builder) {
+			reader = new IteratingMDLReader(input, builder);
+		}
+
+		public boolean hasNext() {
+			return reader.hasNext();
+		}
+
+		public net.bioclipse.core.domain.IMolecule next() {
+			org.openscience.cdk.interfaces.IMolecule cdkMol = (org.openscience.cdk.interfaces.IMolecule)reader.next();
+			CDKMolecule bioclipseMol = new CDKMolecule(cdkMol);
+			return bioclipseMol;
+		}
+
+		public void remove() {
+			reader.remove();
+		}
+		
+	}
+	
 }
