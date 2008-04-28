@@ -37,9 +37,11 @@ public class StructureTablePage extends FormPage {
 
     private Table table;
 	private TableViewer viewer;
+	private String[] colHeaders;
 	
-	public StructureTablePage(FormEditor editor) {
+	public StructureTablePage(FormEditor editor, String[] colHeaders) {
 		super(editor, "bc.structuretable", "Structure table");
+		this.colHeaders=colHeaders;
 	}
 
 	/**
@@ -65,19 +67,17 @@ public class StructureTablePage extends FormPage {
 		TableLayout tableLayout = new TableLayout();
 		table.setLayout(tableLayout);
 		
-		//Add columns
+		//Add Structure column
 		TableViewerColumn col=new TableViewerColumn(viewer,SWT.BORDER);
 		col.getColumn().setText("Structure");
 		tableLayout.addColumnData(new ColumnPixelData(100));
 		
-		TableViewerColumn col2=new TableViewerColumn(viewer,SWT.BORDER);
-		col2.getColumn().setText("Name");
-		col2.getColumn().setAlignment(SWT.LEFT);
-		tableLayout.addColumnData(new ColumnPixelData(300));
-
-//		TableViewerColumn col3=new TableViewerColumn(viewer,SWT.NONE);
-//		col3.getColumn().setText("Name");
-//		tableLayout.addColumnData(new ColumnPixelData(200));
+		for (String colkey : colHeaders){
+			TableViewerColumn col2=new TableViewerColumn(viewer,SWT.BORDER);
+			col2.getColumn().setText(colkey);
+			col2.getColumn().setAlignment(SWT.LEFT);
+			tableLayout.addColumnData(new ColumnPixelData(100));
+		}
 
 		viewer.setContentProvider(new MoleculeListContentProvider());
 		viewer.setLabelProvider(new MoleculeListLabelProviderNew());

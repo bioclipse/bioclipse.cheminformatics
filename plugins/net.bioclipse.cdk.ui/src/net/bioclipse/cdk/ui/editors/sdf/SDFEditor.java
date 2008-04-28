@@ -14,6 +14,7 @@ package net.bioclipse.cdk.ui.editors.sdf;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -48,6 +49,7 @@ public class SDFEditor extends FormEditor implements IResourceChangeListener, IA
 	
 	//Model for the editor: Based on CDK
 	StructureTableEntry[] entries;
+	ArrayList<String> propHeaders;
 	
 	
 	public StructureTableEntry[] getEntries() {
@@ -66,14 +68,17 @@ public class SDFEditor extends FormEditor implements IResourceChangeListener, IA
 		super.init(site, input);
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 
+		propHeaders=new ArrayList<String>();
+		
+		//Parse input with CDK
+		parseInput();
+
 		//Tables page
-		tablePage=new StructureTablePage(this);
+		tablePage=new StructureTablePage(this, propHeaders.toArray(new String[0]));
 
 		//Texteditor, should be XMLEditor: TODO
 		textEditor = new TextEditor();
 
-		//Parse input with CDK
-		parseInput();
 	}
 	
 
@@ -145,13 +150,28 @@ public class SDFEditor extends FormEditor implements IResourceChangeListener, IA
 			
 			ArrayList<StructureTableEntry> newlist=new ArrayList<StructureTableEntry>();
 			for (CDKMolecule mol : molList){
-				Object obj=mol.getAtomContainer().getProperty(CDKConstants.TITLE);
-				String name="N/A";
-				if (obj!=null){
-					name=(String) obj;
+				
+				Map<Object, Object> props=mol.getAtomContainer().getProperties();
+
+				for (Object obj : props.keySet()){
+//					System.out.println("Key: '" + obj.toString() + "'; val: '" + props.get(obj) + "'" );
+					if (obj instanceof String) {
+						String key = (String) obj;
+						if (!(propHeaders.contains(key))){
+							propHeaders.add(key);
+							logger.debug("Header added: " + key);
+						}
+					}
 				}
-				String[] props=new String[]{"Structure",name};
-				StructureTableEntry entry=new StructureTableEntry(mol.getAtomContainer(), props);
+
+				//Read vals for this molecule
+				ArrayList<Object> vals=new ArrayList<Object>();
+				for (String key : propHeaders){
+					Object obj=mol.getAtomContainer().getProperty(key);
+					vals.add(obj);
+				}
+
+				StructureTableEntry entry=new StructureTableEntry(mol.getAtomContainer(), vals.toArray());
 				newlist.add(entry);
 			}
 			setEntries(newlist.toArray(new StructureTableEntry[0]));

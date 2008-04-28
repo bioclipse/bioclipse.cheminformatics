@@ -51,15 +51,15 @@ public class StructureTableEntry {
 
 	private final static int compactSize = 150;
 
-	//Properties in table
-	String[] columns;
+	//Values in table
+	Object[] columns;
 
 	//The cached image
 	Image image;
 
-	public StructureTableEntry(IAtomContainer molecule, String[] columns) {
+	public StructureTableEntry(IAtomContainer molecule, Object[] objects) {
 		this.molecule=molecule;
-		this.columns=columns;
+		this.columns=objects;
 	}
 
 
@@ -94,8 +94,15 @@ public class StructureTableEntry {
 	 * @param event
 	 */
 	private void drawProperty(Event event) {
-		String text=columns[event.index];
-		event.gc.drawText(text, event.x, event.y);
+		if (event.index>columns.length){
+			event.gc.drawText("???", event.x, event.y);
+			return;
+		}
+		
+		String str=String.valueOf(columns[event.index-1]);
+		if (str==null)
+			str="N/A";
+		event.gc.drawText(str, event.x, event.y);
 	}
 
 
