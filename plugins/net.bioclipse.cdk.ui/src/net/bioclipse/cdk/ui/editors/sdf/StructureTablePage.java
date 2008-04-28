@@ -11,6 +11,9 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.editors.sdf;
 
+import net.bioclipse.cdk.domain.CDKMoleculeList;
+
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
@@ -27,7 +30,9 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class StructureTablePage extends FormPage {
 
-	private Table table;
+    private static final Logger logger = Logger.getLogger(StructureTablePage.class);
+
+    private Table table;
 	private TableViewer viewer;
 	
 	public StructureTablePage(FormEditor editor) {
@@ -65,7 +70,25 @@ public class StructureTablePage extends FormPage {
 
 		viewer.setContentProvider(new MoleculeListContentProvider());
 		viewer.setLabelProvider(new MoleculeListLabelProvider());
-		viewer.setInput(((SDFEditor)getEditor()).getMolList());
+		viewer.getTable().setHeaderVisible(true);
+		viewer.getTable().setLinesVisible(true);
+		
+		CDKMoleculeList mlist=((SDFEditor)getEditor()).getMolList();
+		if (mlist!=null)
+			viewer.setInput(mlist);
+		else{
+			logger.debug("Editor moleculeList is empty.");
+		}
+		
+	}
+
+	public void modelUpdated() {
+//		CDKMoleculeList mlist=((SDFEditor)getEditor()).getMolList();
+//		if (mlist!=null)
+//			viewer.setInput(mlist);
+//		else{
+//			logger.debug("Editor moleculeList is empty.");
+//		}
 		
 	}
 }

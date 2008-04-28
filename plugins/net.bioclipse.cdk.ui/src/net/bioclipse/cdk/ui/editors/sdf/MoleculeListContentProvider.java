@@ -11,6 +11,8 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.editors.sdf;
 
+import net.bioclipse.cdk.domain.CDKMoleculeList;
+
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -18,8 +20,13 @@ import org.eclipse.jface.viewers.Viewer;
 public class MoleculeListContentProvider implements IStructuredContentProvider {
 
 	public Object[] getElements(Object inputElement) {
-		// TODO Auto-generated method stub
-		return new String[]{"ola","kurt"};
+		
+		if (inputElement instanceof CDKMoleculeList) {
+			CDKMoleculeList moleculeList = (CDKMoleculeList) inputElement;
+			return moleculeList.toArray();
+		}
+		
+		return new Object[0];
 	}
 
 	public void dispose() {

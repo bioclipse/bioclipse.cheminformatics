@@ -27,8 +27,10 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
@@ -51,42 +53,37 @@ public class SDFEditor extends FormEditor implements IResourceChangeListener, IA
 	public void setMolList(CDKMoleculeList molList) {
 		this.molList = molList;
 	}
-
-	public SDFEditor() {
+	
+	@Override
+	public void init(IEditorSite site, IEditorInput input)
+			throws PartInitException {
+		super.init(site, input);
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-		initialize();
-	}
 
-	/**
-	 * Do customizations based on project
-	 */
-	private void initialize() {
-		//Get project
-		if (!(getEditorInput() instanceof IFileEditorInput)) {
-			return;
-		}
-		IFileEditorInput edin = (IFileEditorInput) getEditorInput();
-		
+		//Tables page
+		tablePage=new StructureTablePage(this);
+
+		//Texteditor, should be XMLEditor: TODO
+		textEditor = new TextEditor();
+
 		//Parse input with CDK
-		int a=0;
-		
+		parseInput();
 	}
+	
 
 	@Override
 	protected void addPages() {
-		tablePage=new StructureTablePage(this);
 		try {
-			//Tables page
 			addPage(tablePage);
 
-			//Texteditor, should be XMLEditor: TODO
-			textEditor = new TextEditor();
 			int index = addPage(textEditor, getEditorInput());
 			setPageText(index, textEditor.getTitle());
 
 		} catch (PartInitException e) {
 			LogUtils.debugTrace(logger, e);
 		}
+		
+
 	}
 
 
@@ -134,12 +131,8 @@ public class SDFEditor extends FormEditor implements IResourceChangeListener, IA
 			return;
 		}
 
-		file.getFullPath().toFile();
-
-
-		InputStream instream;
 		try {
-			instream = file.getContents();
+			InputStream instream = file.getContents();
 			
 			molList=Activator.getDefault().getCDKManager().loadMolecules(instream);
 			logger.debug("In editor: " + molList.size() + " molecules.");
@@ -154,12 +147,10 @@ public class SDFEditor extends FormEditor implements IResourceChangeListener, IA
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			
-			
+		
+		tablePage.modelUpdated();
 			
 		return ;
-		
 	}
-	
 	
 }
