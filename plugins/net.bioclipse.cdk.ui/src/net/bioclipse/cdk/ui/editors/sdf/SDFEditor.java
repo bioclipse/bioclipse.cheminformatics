@@ -36,7 +36,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.editor.FormEditor;
 
-public class SDFEditor extends FormEditor implements IResourceChangeListener, IAdaptable{
+public class SDFEditor extends FormEditor implements IResourceChangeListener, 
+                                                     IAdaptable {
 
     private static final Logger logger = Logger.getLogger(SDFEditor.class);
     
@@ -134,7 +135,8 @@ public class SDFEditor extends FormEditor implements IResourceChangeListener, IA
 		try {
 			InputStream instream = file.getContents();
 			
-			molList=Activator.getDefault().getCDKManager().loadMolecules(instream);
+			molList=Activator.getDefault()
+			                 .getCDKManager().loadMolecules(instream);
 			logger.debug("In editor: " + molList.size() + " molecules.");
 			
 		} catch (CoreException e) {
