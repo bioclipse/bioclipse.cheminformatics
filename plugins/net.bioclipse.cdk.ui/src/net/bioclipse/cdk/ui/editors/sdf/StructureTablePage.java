@@ -14,6 +14,9 @@ package net.bioclipse.cdk.ui.editors.sdf;
 import net.bioclipse.cdk.domain.CDKMoleculeList;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.viewers.ColumnPixelData;
+import org.eclipse.jface.viewers.OwnerDrawLabelProvider;
+import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
@@ -53,42 +56,44 @@ public class StructureTablePage extends FormPage {
 		FillLayout layout=new FillLayout();
 		body.setLayout(layout);
 		
-		viewer = new TableViewer(body, SWT.NONE);
+		viewer = new TableViewer(body, SWT.BORDER |  SWT.FULL_SELECTION | SWT.VIRTUAL);
 		table = viewer.getTable();
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
 		toolkit.adapt(table, true, true);
 
+		TableLayout tableLayout = new TableLayout();
+		table.setLayout(tableLayout);
+		
 		//Add columns
 		TableViewerColumn col=new TableViewerColumn(viewer,SWT.NONE);
-		col.getColumn().setWidth(300);
 		col.getColumn().setText("Structure");
+		tableLayout.addColumnData(new ColumnPixelData(200));
+		
 		TableViewerColumn col2=new TableViewerColumn(viewer,SWT.NONE);
-		col2.getColumn().setWidth(200);
-		col2.getColumn().setText("Name");
+		col2.getColumn().setText("SMILES");
+		tableLayout.addColumnData(new ColumnPixelData(300));
+
 		TableViewerColumn col3=new TableViewerColumn(viewer,SWT.NONE);
-		col3.getColumn().setWidth(200);
-		col3.getColumn().setText("Property X");
+		col3.getColumn().setText("Name");
+		tableLayout.addColumnData(new ColumnPixelData(200));
+
+//		col3.setEditingSupport(new StructureEditingSupport(viewer));
 
 		viewer.setContentProvider(new MoleculeListContentProvider());
-		viewer.setLabelProvider(new MoleculeListLabelProvider());
-		viewer.getTable().setHeaderVisible(true);
-		viewer.getTable().setLinesVisible(true);
+		viewer.setLabelProvider(new MoleculeListLabelProviderNew());
+		viewer.setUseHashlookup(true);
+		OwnerDrawLabelProvider.setUpOwnerDraw(viewer);
 		
-		CDKMoleculeList mlist=((SDFEditor)getEditor()).getMolList();
-		if (mlist!=null)
+		StructureTableEntry[] mlist=((SDFEditor)getEditor()).getEntries();
+		if (mlist!=null){
+			logger.debug("Setting table input with: " + mlist.length + " molecules.");
 			viewer.setInput(mlist);
+		}
 		else{
 			logger.debug("Editor moleculeList is empty.");
 		}
 		
 	}
 
-	public void modelUpdated() {
-//		CDKMoleculeList mlist=((SDFEditor)getEditor()).getMolList();
-//		if (mlist!=null)
-//			viewer.setInput(mlist);
-//		else{
-//			logger.debug("Editor moleculeList is empty.");
-//		}
-		
-	}
 }

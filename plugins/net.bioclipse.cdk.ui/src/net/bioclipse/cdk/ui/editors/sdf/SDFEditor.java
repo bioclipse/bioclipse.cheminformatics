@@ -13,10 +13,12 @@ package net.bioclipse.cdk.ui.editors.sdf;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
 import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculeList;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
@@ -36,8 +38,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.editor.FormEditor;
 
-public class SDFEditor extends FormEditor implements IResourceChangeListener, 
-                                                     IAdaptable {
+public class SDFEditor extends FormEditor implements IResourceChangeListener, IAdaptable{
 
     private static final Logger logger = Logger.getLogger(SDFEditor.class);
     
@@ -45,16 +46,19 @@ public class SDFEditor extends FormEditor implements IResourceChangeListener,
 	private StructureTablePage tablePage;
 	
 	//Model for the editor: Based on CDK
-	CDKMoleculeList molList;
+	StructureTableEntry[] entries;
 	
-	public CDKMoleculeList getMolList() {
-		return molList;
+	
+	public StructureTableEntry[] getEntries() {
+		return entries;
 	}
 
-	public void setMolList(CDKMoleculeList molList) {
-		this.molList = molList;
+
+	public void setEntries(StructureTableEntry[] entries) {
+		this.entries = entries;
 	}
-	
+
+
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
@@ -135,9 +139,17 @@ public class SDFEditor extends FormEditor implements IResourceChangeListener,
 		try {
 			InputStream instream = file.getContents();
 			
-			molList=Activator.getDefault()
-			                 .getCDKManager().loadMolecules(instream);
+			CDKMoleculeList molList=Activator.getDefault().getCDKManager().loadMolecules(instream);
 			logger.debug("In editor: " + molList.size() + " molecules.");
+			
+			ArrayList<StructureTableEntry> newlist=new ArrayList<StructureTableEntry>();
+			for (CDKMolecule mol : molList){
+				String[] props=new String[]{"wee","how","last"};
+				StructureTableEntry entry=new StructureTableEntry(mol.getAtomContainer(), props);
+				newlist.add(entry);
+			}
+			setEntries(newlist.toArray(new StructureTableEntry[0]));
+			
 			
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
@@ -149,8 +161,6 @@ public class SDFEditor extends FormEditor implements IResourceChangeListener,
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		tablePage.modelUpdated();
 			
 		return ;
 	}

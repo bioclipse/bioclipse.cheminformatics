@@ -21,9 +21,9 @@ public class MoleculeListContentProvider implements IStructuredContentProvider {
 
 	public Object[] getElements(Object inputElement) {
 		
-		if (inputElement instanceof CDKMoleculeList) {
-			CDKMoleculeList moleculeList = (CDKMoleculeList) inputElement;
-			return moleculeList.toArray();
+		if (inputElement instanceof StructureTableEntry[]) {
+			StructureTableEntry[] moleculeList = (StructureTableEntry[]) inputElement;
+			return moleculeList;
 		}
 		
 		return new Object[0];
