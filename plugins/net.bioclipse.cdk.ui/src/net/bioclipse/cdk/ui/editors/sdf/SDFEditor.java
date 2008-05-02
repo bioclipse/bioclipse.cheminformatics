@@ -48,7 +48,7 @@ public class SDFEditor extends FormEditor implements IResourceChangeListener, IA
 
 	private static final Logger logger = Logger.getLogger(SDFEditor.class);
 
-	private TextEditor textEditor;
+//	private TextEditor textEditor;
 	private StructureTablePage tablePage;
 
 	//Model for the editor: Based on CDK
@@ -80,8 +80,8 @@ public class SDFEditor extends FormEditor implements IResourceChangeListener, IA
 		//Tables page
 		tablePage=new StructureTablePage(this, propHeaders.toArray(new String[0]));
 
-		//Texteditor, should be XMLEditor: TODO
-		textEditor = new TextEditor();
+		//Texteditor
+//		textEditor = new TextEditor();
 
 	}
 
@@ -91,8 +91,8 @@ public class SDFEditor extends FormEditor implements IResourceChangeListener, IA
 		try {
 			addPage(tablePage);
 
-			int index = addPage(textEditor, getEditorInput());
-			setPageText(index, textEditor.getTitle());
+//			int index = addPage(textEditor, getEditorInput());
+//			setPageText(index, textEditor.getTitle());
 
 		} catch (PartInitException e) {
 			LogUtils.debugTrace(logger, e);

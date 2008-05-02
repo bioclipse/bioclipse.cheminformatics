@@ -23,7 +23,11 @@ import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.vecmath.Point2d;
+import javax.vecmath.Point3d;
+
 import net.bioclipse.cdk.ui.widgets.JChemPaintWidget;
+import net.bioclipse.core.business.ChemicalStructureProvider;
 
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -32,7 +36,9 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Table;
+import org.openscience.cdk.Atom;
 import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.Renderer2D;
 import org.openscience.cdk.renderer.Renderer2DModel;
@@ -43,7 +49,7 @@ import org.openscience.cdk.renderer.Renderer2DModel;
  * @author ola
  *
  */
-public class StructureTableEntry {
+public class StructureTableEntry implements ChemicalStructureProvider {
 
 	private Renderer2D renderer;
 	private IAtomContainer molecule;
@@ -135,14 +141,41 @@ public class StructureTableEntry {
 		graphics.setColor( Color.WHITE );
 		graphics.fillRect( 0, 0, xsize, ysize );
 
-		GeometryTools.translateAllPositive(molecule);
-		GeometryTools.scaleMolecule(molecule, screenSize, 0.8);          
-		GeometryTools.center(molecule, screenSize);
+		IAtomContainer drawMolecule=molecule;
+		
+		//If no 2D coords
+		if (GeometryTools.has2DCoordinates(molecule)==false){
+			//Test if 3D coords
+			if (GeometryTools.has3DCoordinates(molecule)==true){
+				//Collapse on XY plane
+				try {
+					drawMolecule=(IAtomContainer) molecule.clone();
+					
+					//For each molecule, 
+					for (int i=0; i< drawMolecule.getAtomCount(); i++){
+						IAtom atom=drawMolecule.getAtom(i);
+						Point3d p3=atom.getPoint3d();
+						Point2d p2=new Point2d();
+						p2.x=p3.x;
+						p2.y=p3.y;
+						atom.setPoint3d(null);
+						atom.setPoint2d(p2);
+					}
+				} catch (CloneNotSupportedException e) {
+					return null;
+				}
+				
+			}
+		}
+
+		GeometryTools.translateAllPositive(drawMolecule);
+		GeometryTools.scaleMolecule(drawMolecule, screenSize, 0.8);          
+		GeometryTools.center(drawMolecule, screenSize);
 
 		renderer.getRenderer2DModel().setRenderingCoordinates(coordinates);
 		renderer.getRenderer2DModel().setBackgroundDimension(screenSize);
 		renderer.paintMolecule(
-				molecule, 
+				drawMolecule, 
 				(Graphics2D)graphics,
 				false, true
 		);
@@ -255,6 +288,15 @@ public class StructureTableEntry {
 			}
 		}
 		return data;
+	}
+
+
+	/**
+	 * Return the AtomContainer for access via ChemicalStructureProvider
+ 	 * for e.g. Jmol view to display it.
+	 */
+	public Object getMoleculeImpl() {
+		return molecule;
 	}
 
 
