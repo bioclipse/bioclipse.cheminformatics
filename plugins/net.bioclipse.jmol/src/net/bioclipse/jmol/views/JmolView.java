@@ -39,9 +39,15 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.openscience.cdk.BioPolymer;
+import org.openscience.cdk.ChemFile;
+import org.openscience.cdk.ChemModel;
+import org.openscience.cdk.ChemSequence;
 import org.openscience.cdk.Molecule;
+import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IChemFile;
+import org.openscience.cdk.interfaces.IMoleculeSet;
 
 /**
  * A view for Jmol embedded in an SWT_AWT frame (requires java5.0+)
@@ -51,7 +57,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 public class JmolView extends ViewPart implements ISelectionListener, ISelectionProvider, ISelectionChangedListener{
 
 	//Use logging
-    private static final Logger logger = Logger.getLogger(JmolView.class);
+	private static final Logger logger = Logger.getLogger(JmolView.class);
 
 	public static final String ID = "net.bioclipse.jmol.views.JmolView";
 
@@ -136,8 +142,8 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 					String jmolcmd=text.getText();
 					if (jmolcmd!=null && jmolcmd.length()>0)
 //						executeJmolCommand(jmolcmd);
-					if (!history.contains(text.getText()))
-						history.add(0, text.getText());
+						if (!history.contains(text.getText()))
+							history.add(0, text.getText());
 					text.setText("");
 				}
 				/*laszlo: 
@@ -168,7 +174,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 	@Override
 	public void setFocus() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
@@ -177,11 +183,11 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 		reactOnSelection(selection);
 	}
 
-	
+
 	/* Below are for setting selections in Bioclipse from Jmol, e.g when 
 	 clicked on an Atom*/
 
-	
+
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		if(!selectionListeners.contains(listener))
 		{
@@ -212,7 +218,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 					listener.selectionChanged(e);
 				}
 			});
-			
+
 		}
 	}
 
@@ -220,7 +226,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 		reactOnSelection(event.getSelection());
 	}
 
-	
+
 	/**
 	 * 
 	 * @param selection
@@ -228,70 +234,67 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 	private void reactOnSelection(ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			IStructuredSelection structsel = (IStructuredSelection) selection;
+
+			if (structsel.toList().size()<=0){
+				//TODO: clear Jmol here?
+				return;
+			}
+			
+			ChemFile cf=new ChemFile();
+			ChemSequence seq=new ChemSequence();
+			cf.addChemSequence(seq);
+			ChemModel model=new ChemModel();
+			seq.addChemModel(model);
+
 			for (Object obj : structsel.toList()){
-				
+
 				//TODO: Handle multile selections!
-				
+
 				if (obj instanceof ChemicalStructureProvider) {
 					ChemicalStructureProvider struct = (ChemicalStructureProvider) obj;
 					Object obj2=struct.getMoleculeImpl();
+
+
+					IMoleculeSet set=new MoleculeSet();
+					model.setMoleculeSet(set);
+
+
 					if (obj2 instanceof IAtomContainer) {
 						IAtomContainer newAC = (IAtomContainer) obj2;
-						
-						//Set new mol in Jmol
-						setMolecule(newAC);
-						
+
+						//Only add if have 3D coords
+						if (GeometryTools.has3DCoordinates(newAC)){
+							set.addAtomContainer(newAC);
+						}
+
 					}
 				}
-				else{
-				}
 			}
+
+			//Set new mol in Jmol
+			if (cf!=null)
+				setMolecule(cf);
+
+
 		}
-		
-		
+
+
 	}
 
-	private void setMolecule(IAtomContainer ac) {
+	private void setMolecule(IChemFile cf) {
 
-			//Check if 3D coordinates exist
-			if (GeometryTools.has3DCoordinates(ac)){
-				logger.debug("Opening protein via CDK's ChemFile and CdkJmolAdapter...");
+		logger.debug("Opening Jmol via CDK's ChemFile and CdkJmolAdapter...");
 
-				//Maybe fork off a new thread?? TODO!
-				jmolPanel.openClientFile("", "", ac);
+		//Maybe fork off a new thread?? TODO!
+		jmolPanel.openClientFile("", "", cf);
 
-				//TODO: fix for Biopolymers
-				if (ac instanceof BioPolymer) {
-					logger.debug("Biopol identified.");
-//					executeSilentJmolCommand("cartoon on; wireframe on; color cartoon group");
-//				}else executeSilentJmolCommand("cpk 20%");
+		text.setEnabled(true);
+		text.getParent().redraw();
 
-				text.setEnabled(true);
-				text.getParent().redraw();
-
-				String strError = jmolPanel.getOpenFileError();
-				if (strError != null){
-					logger.error(strError);
-					text.setEnabled(false);
-				}
-				logger.debug("Done viewing...");
-			}
-			//We have no 3D-coordinates
-			else{
-//				viewer.openClientFile(null,null,new Molecule());
-
-				//TODO: unload last molecule
-
-				//Now: just hide it
-//				executeSilentJmolCommand("set echo middle center; font echo 12 serif ; color echo red; echo \"No 3D coordinates\"");
-				text.setEnabled(false);
-			}
-		}
-		//We have no IChemFile
-		else{
-			jmolPanel.openClientFile(null,null,new Molecule());
+		String strError = jmolPanel.getOpenFileError();
+		if (strError != null){
+			logger.error(strError);
 			text.setEnabled(false);
-
 		}
 	}
 

@@ -26,12 +26,7 @@ public class StructureEntitySelection implements IStructuredSelection {
 	Set<StructureTableEntry> selectionSet;
 	
 	public StructureEntitySelection(Set<StructureTableEntry> set) {
-
 		selectionSet=set;
-	}
-
-	public StructureEntitySelection() {
-		selectionSet=new HashSet<StructureTableEntry>();
 	}
 
 	public Object getFirstElement() {

@@ -60,7 +60,7 @@ public class StructureTablePage extends FormPage implements ISelectionProvider{
 		this.colHeaders=colHeaders;
 		selectionListeners=new ArrayList<ISelectionChangedListener>();
 		
-		selectedRows=new StructureEntitySelection();
+//		selectedRows=new StructureEntitySelection();
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class StructureTablePage extends FormPage implements ISelectionProvider{
 		FillLayout layout=new FillLayout();
 		body.setLayout(layout);
 		
-		viewer = new TableViewer(body, SWT.BORDER |  SWT.FULL_SELECTION | SWT.VIRTUAL);
+		viewer = new TableViewer(body, SWT.BORDER  | SWT.MULTI |  SWT.FULL_SELECTION | SWT.VIRTUAL);
 		table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -169,19 +169,20 @@ public class StructureTablePage extends FormPage implements ISelectionProvider{
 
 		TableItem[] itm=(TableItem[])viewer.getTable().getSelection();
 		if (itm==null || itm.length<=0) return null;
-		
-		TableItem item = itm[0];
-		if (item.getData() instanceof StructureTableEntry) {
-			StructureTableEntry entry = (StructureTableEntry) item.getData();
-			System.out.println("** selected in structtab: " + entry.getMoleculeImpl().hashCode());
-			if (selectedRows.toList().contains(entry)){
-				System.out.println("Contained!");
+
+		//Hold new selection
+		Set<StructureTableEntry> newSet=new HashSet<StructureTableEntry>();
+
+		//Recurse
+		for(TableItem item : itm){
+			if (item.getData() instanceof StructureTableEntry) {
+				StructureTableEntry entry = (StructureTableEntry) item.getData();
+				System.out.println("** Added selected in structtab: " + entry.getMoleculeImpl().hashCode());
+				newSet.add(entry);
 			}
-			selectedRows.toList().clear();
-			selectedRows.toList().add(entry);
-			
 		}
 
+		selectedRows=new StructureEntitySelection(newSet);
 		return selectedRows;
 	}
 

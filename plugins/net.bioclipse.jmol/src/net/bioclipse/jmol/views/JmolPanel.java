@@ -33,6 +33,7 @@ import org.openscience.cdk.ChemSequence;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
@@ -90,23 +91,24 @@ public class JmolPanel extends JPanel {
 	}
 	
 	public void openClientFile(String string, String string2, Object obj) {
-		if (obj instanceof IAtomContainer) {
-			IAtomContainer ac=(IAtomContainer)obj;
+//		if (obj instanceof IAtomContainer) {
+//			IAtomContainer ac=(IAtomContainer)obj;
+//
+//			ChemFile cf=new ChemFile();
+//			ChemSequence seq=new ChemSequence();
+//			cf.addChemSequence(seq);
+//			ChemModel model=new ChemModel();
+//			seq.addChemModel(model);
+//			
+//			IMoleculeSet set=new MoleculeSet();
+//			set.addAtomContainer(ac);
+//			model.setMoleculeSet(set);
 
-			ChemFile cf=new ChemFile();
-			ChemSequence seq=new ChemSequence();
-			cf.addChemSequence(seq);
-			ChemModel model=new ChemModel();
-			seq.addChemModel(model);
-			
-			IMoleculeSet set=new MoleculeSet();
-			set.addAtomContainer(ac);
-			model.setMoleculeSet(set);
-			
+		if (obj instanceof IChemFile) {
 			
 			cdkViewer = createViewer(new CdkJmolAdapter());
 			viewer = (Viewer)cdkViewer;
-			viewer.openClientFile(string, string2, cf);
+			viewer.openClientFile(string, string2, (IChemFile)obj);
 
 		} else if (obj instanceof AtomSetCollection) {
 			viewer = (Viewer)jmolViewer;
