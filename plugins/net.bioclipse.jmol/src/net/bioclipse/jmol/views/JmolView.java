@@ -17,10 +17,13 @@ import java.util.List;
 
 import javax.swing.JScrollPane;
 
+import net.bioclipse.core.business.ChemicalStructureProvider;
+
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
@@ -35,13 +38,17 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.openscience.cdk.BioPolymer;
+import org.openscience.cdk.Molecule;
+import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.interfaces.IAtomContainer;
 
 /**
  * A view for Jmol embedded in an SWT_AWT frame (requires java5.0+)
  * 
  * @author ola
  */
-public class JmolView extends ViewPart implements ISelectionListener, ISelectionProvider{
+public class JmolView extends ViewPart implements ISelectionListener, ISelectionProvider, ISelectionChangedListener{
 
 	//Use logging
     private static final Logger logger = Logger.getLogger(JmolView.class);
@@ -166,10 +173,10 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		// TODO Auto-generated method stub
-		
+
+		reactOnSelection(selection);
 	}
 
-	
 	
 	/* Below are for setting selections in Bioclipse from Jmol, e.g when 
 	 clicked on an Atom*/
@@ -206,6 +213,85 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 				}
 			});
 			
+		}
+	}
+
+	public void selectionChanged(SelectionChangedEvent event) {
+		reactOnSelection(event.getSelection());
+	}
+
+	
+	/**
+	 * 
+	 * @param selection
+	 */
+	private void reactOnSelection(ISelection selection) {
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection structsel = (IStructuredSelection) selection;
+			for (Object obj : structsel.toList()){
+				
+				//TODO: Handle multile selections!
+				
+				if (obj instanceof ChemicalStructureProvider) {
+					ChemicalStructureProvider struct = (ChemicalStructureProvider) obj;
+					Object obj2=struct.getMoleculeImpl();
+					if (obj2 instanceof IAtomContainer) {
+						IAtomContainer newAC = (IAtomContainer) obj2;
+						
+						//Set new mol in Jmol
+						setMolecule(newAC);
+						
+					}
+				}
+				else{
+				}
+			}
+		}
+		
+		
+	}
+
+	private void setMolecule(IAtomContainer ac) {
+
+			//Check if 3D coordinates exist
+			if (GeometryTools.has3DCoordinates(ac)){
+				logger.debug("Opening protein via CDK's ChemFile and CdkJmolAdapter...");
+
+				//Maybe fork off a new thread?? TODO!
+				jmolPanel.openClientFile("", "", ac);
+
+				//TODO: fix for Biopolymers
+				if (ac instanceof BioPolymer) {
+					logger.debug("Biopol identified.");
+//					executeSilentJmolCommand("cartoon on; wireframe on; color cartoon group");
+//				}else executeSilentJmolCommand("cpk 20%");
+
+				text.setEnabled(true);
+				text.getParent().redraw();
+
+				String strError = jmolPanel.getOpenFileError();
+				if (strError != null){
+					logger.error(strError);
+					text.setEnabled(false);
+				}
+				logger.debug("Done viewing...");
+			}
+			//We have no 3D-coordinates
+			else{
+//				viewer.openClientFile(null,null,new Molecule());
+
+				//TODO: unload last molecule
+
+				//Now: just hide it
+//				executeSilentJmolCommand("set echo middle center; font echo 12 serif ; color echo red; echo \"No 3D coordinates\"");
+				text.setEnabled(false);
+			}
+		}
+		//We have no IChemFile
+		else{
+			jmolPanel.openClientFile(null,null,new Molecule());
+			text.setEnabled(false);
+
 		}
 	}
 

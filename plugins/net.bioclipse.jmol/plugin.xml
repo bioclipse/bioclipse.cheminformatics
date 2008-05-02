@@ -16,7 +16,7 @@
       <editor
             name="Jmol Editor"
             extensions="pdb"
-            icon="icons/sample.gif"
+          icon="icons/molecule3D.gif"
             contributorClass="net.bioclipse.jmol.editors.JmolEditorContributor"
             class="net.bioclipse.jmol.editors.JmolEditor"
             id="net.bioclipse.jmol.editors.JmolEditor">
@@ -62,5 +62,15 @@
          </propertySection-->
       </propertySections>
    </extension>
+ <extension
+       point="org.eclipse.ui.views">
+    <view
+          allowMultiple="false"
+          class="net.bioclipse.jmol.views.JmolView"
+          icon="icons/molecule3D.gif"
+          id="net.bioclipse.jmol.view1"
+          name="Jmol">
+    </view>
+ </extension>
    
 </plugin>

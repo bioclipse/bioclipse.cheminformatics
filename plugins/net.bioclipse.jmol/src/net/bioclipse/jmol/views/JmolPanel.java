@@ -18,11 +18,25 @@ import java.awt.Rectangle;
 
 import javax.swing.JPanel;
 
+import net.bioclipse.jmol.adapter.cdk.CdkJmolAdapter;
+
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.jmol.adapter.smarter.AtomSetCollection;
 import org.jmol.adapter.smarter.SmarterJmolAdapter;
 import org.jmol.api.JmolAdapter;
 import org.jmol.api.JmolViewer;
 import org.jmol.viewer.Viewer;
+import org.openscience.cdk.AtomContainer;
+import org.openscience.cdk.ChemFile;
+import org.openscience.cdk.ChemModel;
+import org.openscience.cdk.ChemSequence;
+import org.openscience.cdk.Molecule;
+import org.openscience.cdk.MoleculeSet;
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IChemObject;
+import org.openscience.cdk.interfaces.IMoleculeSet;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
+import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 import org.apache.log4j.Logger;
 
 /**
@@ -39,6 +53,7 @@ public class JmolPanel extends JPanel {
 	
 	final Dimension currentSize = new Dimension();
 	private JmolViewer jmolViewer;
+	JmolViewer cdkViewer;
 	private Viewer viewer;
 
 	private ISelectionProvider part;
@@ -73,4 +88,38 @@ public class JmolPanel extends JPanel {
 		g.getClipBounds(rectClip);
 		viewer.renderScreenImage(g, currentSize, rectClip);
 	}
+	
+	public void openClientFile(String string, String string2, Object obj) {
+		if (obj instanceof IAtomContainer) {
+			IAtomContainer ac=(IAtomContainer)obj;
+
+			ChemFile cf=new ChemFile();
+			ChemSequence seq=new ChemSequence();
+			cf.addChemSequence(seq);
+			ChemModel model=new ChemModel();
+			seq.addChemModel(model);
+			
+			IMoleculeSet set=new MoleculeSet();
+			set.addAtomContainer(ac);
+			model.setMoleculeSet(set);
+			
+			
+			cdkViewer = createViewer(new CdkJmolAdapter());
+			viewer = (Viewer)cdkViewer;
+			viewer.openClientFile(string, string2, cf);
+
+		} else if (obj instanceof AtomSetCollection) {
+			viewer = (Viewer)jmolViewer;
+			viewer.openClientFile(string, string2, obj);
+		} else {
+			logger.debug("Object neither CDK or Jmol. " +
+					"JmolPanel Can't open client file.");
+			return;
+		}
+	}
+
+	public String getOpenFileError() {
+		return viewer.getOpenFileError();
+	}
+
 }
