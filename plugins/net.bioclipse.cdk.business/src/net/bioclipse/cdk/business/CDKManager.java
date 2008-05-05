@@ -82,7 +82,7 @@ public class CDKManager implements ICDKManager{
 			CDKManagerHelper.registerFormats(readerFactory);
 		}
 
-		System.out.println("no formats supported: " + readerFactory.getFormats().size());
+//		System.out.println("no formats supported: " + readerFactory.getFormats().size());
 //		System.out.println("format guess: " + readerFactory.guessFormat(instream).getFormatName());
 
 		//Create the reader

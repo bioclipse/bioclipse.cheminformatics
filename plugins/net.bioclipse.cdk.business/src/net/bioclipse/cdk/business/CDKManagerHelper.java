@@ -23,6 +23,9 @@ import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.cml.MDMoleculeConvention;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormatMatcher;
+import org.openscience.cdk.io.formats.MDLFormat;
+import org.openscience.cdk.io.formats.MDLV2000Format;
+import org.openscience.cdk.io.formats.MDLV3000Format;
 import org.openscience.cdk.io.formats.Mol2Format;
 import org.openscience.cdk.io.formats.PDBFormat;
 import org.openscience.cdk.io.formats.SDFFormat;
@@ -36,14 +39,23 @@ public class CDKManagerHelper {
 	 * @param fac
 	 */
 	public static void registerFormats(ReaderFactory fac) {
-	
-		fac.registerFormat((IChemFormatMatcher) PDBFormat.getInstance());
-		fac.registerFormat((IChemFormatMatcher) SDFFormat.getInstance());
-		fac.registerFormat((IChemFormatMatcher) Mol2Format.getInstance());
-//		fac.registerFormat((IChemFormatMatcher) XYZFormat.getInstance());
-//		fac.registerFormat((IChemFormatMatcher) HINFormat.getInstance());
-		fac.registerFormat((IChemFormatMatcher) CMLFormat.getInstance());
+		if (fac.getFormats().contains(PDBFormat.getInstance())==false){
+			fac.registerFormat((IChemFormatMatcher) PDBFormat.getInstance());
+		}
+		if (fac.getFormats().contains(SDFFormat.getInstance())==false){
+			fac.registerFormat((IChemFormatMatcher) SDFFormat.getInstance());
+		}
+		if (fac.getFormats().contains(CMLFormat.getInstance())==false){
+			fac.registerFormat((IChemFormatMatcher) CMLFormat.getInstance());
+		}
+		if (fac.getFormats().contains(MDLV2000Format.getInstance())==false){
+			fac.registerFormat((IChemFormatMatcher) MDLV2000Format.getInstance());
+		}
+		if (fac.getFormats().contains(MDLV3000Format.getInstance())==false){
+			fac.registerFormat((IChemFormatMatcher) MDLV3000Format.getInstance());
+		}
 		
+
 	}
 	
 	public static void customizeReading(IChemObjectReader reader, IChemFile chemFile) {
