@@ -21,6 +21,7 @@ import java.util.List;
 
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculeList;
+import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
@@ -267,11 +268,11 @@ public class CDKManager implements ICDKManager{
 		
 	}
 
-	public Iterator<IMolecule> creatMoleculeIterator(InputStream instream) {
+	public Iterator<ICDKMolecule> creatMoleculeIterator(InputStream instream) {
 		return new IteratingBioclipseMDLReader(instream, NoNotificationChemObjectBuilder.getInstance());
 	}
 
-	class IteratingBioclipseMDLReader implements Iterator<net.bioclipse.core.domain.IMolecule> {
+	class IteratingBioclipseMDLReader implements Iterator<ICDKMolecule> {
 
 		IteratingMDLReader reader;
 		
@@ -283,16 +284,14 @@ public class CDKManager implements ICDKManager{
 			return reader.hasNext();
 		}
 
-		public net.bioclipse.core.domain.IMolecule next() {
+		public ICDKMolecule next() {
 			org.openscience.cdk.interfaces.IMolecule cdkMol = (org.openscience.cdk.interfaces.IMolecule)reader.next();
-			CDKMolecule bioclipseMol = new CDKMolecule(cdkMol);
+			ICDKMolecule bioclipseMol = new CDKMolecule(cdkMol);
 			return bioclipseMol;
 		}
 
 		public void remove() {
 			reader.remove();
 		}
-		
 	}
-	
 }

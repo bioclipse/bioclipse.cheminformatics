@@ -80,7 +80,8 @@ public class CDKManagerTest {
 		
 		List<IMolecule> molecules = new ArrayList<IMolecule>();
 		
-		for ( Iterator<IMolecule> iterator = cdk.creatMoleculeIterator(sdfFile);
+		for ( Iterator<net.bioclipse.cdk.domain.ICDKMolecule> iterator 
+					= cdk.creatMoleculeIterator(sdfFile);
 		      iterator.hasNext(); ) {
 			
 			molecules.add( iterator.next() );

@@ -17,6 +17,7 @@ import java.util.Iterator;
 
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculeList;
+import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IBioclipseManager;
@@ -91,5 +92,5 @@ public interface ICDKManager extends IBioclipseManager {
 	 * @return
 	 */
 	@Recorded
-	public Iterator<IMolecule> creatMoleculeIterator(InputStream instream); 
+	public Iterator<ICDKMolecule> creatMoleculeIterator(InputStream instream); 
 }
