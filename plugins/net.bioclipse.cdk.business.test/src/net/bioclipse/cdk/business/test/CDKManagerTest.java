@@ -54,6 +54,17 @@ public class CDKManagerTest {
 		System.out.println("mol: " + mol.toString());
 	}
 
+	//FIXME: Fails. See bug #1958097
+	@Test
+	public void testLoadATP() throws IOException, BioclipseException {
+		
+		InputStream atpFile = getClass().getResourceAsStream("/testFiles/atp.mol");
+
+		CDKMolecule mol = cdk.loadMolecule(atpFile);
+		
+		System.out.println("mol: " + mol.toString());
+	}
+
 	@Test
 	public void testCreateSMILES() throws BioclipseException, IOException {
 		InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
