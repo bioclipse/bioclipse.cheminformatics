@@ -267,7 +267,7 @@ public class CdkJmolAdapter extends JmolAdapter {
 				//FIXME: catch ArrayIndexOutOfBoundsException for next line
 				try{
 					atomCount = ((IAtomContainer)containers.get(icontainer)).getAtomCount();
-				} catch (ArrayIndexOutOfBoundsException e){
+				} catch (IndexOutOfBoundsException e){
 					return false;
 				}
 				iatom = 0;
