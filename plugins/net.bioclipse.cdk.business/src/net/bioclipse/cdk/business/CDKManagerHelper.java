@@ -58,7 +58,7 @@ public class CDKManagerHelper {
 
 	}
 	
-	public static void customizeReading(IChemObjectReader reader, IChemFile chemFile) {
+	public static void customizeReading(ISimpleChemObjectReader reader, IChemFile chemFile) {
 		System.out.println("customingIO, reader found: " + reader.getClass().getName());
 		System.out.println("Found # IO settings: " + reader.getIOSettings().length);
 		if (reader instanceof PDBReader) {

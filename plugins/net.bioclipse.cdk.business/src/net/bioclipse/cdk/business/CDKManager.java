@@ -86,7 +86,7 @@ public class CDKManager implements ICDKManager{
 //		System.out.println("format guess: " + readerFactory.guessFormat(instream).getFormatName());
 
 		//Create the reader
-		IChemObjectReader reader= readerFactory.createReader(instream);
+		ISimpleChemObjectReader reader= readerFactory.createReader(instream);
 
 		if (reader==null){
 			throw new BioclipseException("Could not create reader in CDK. ");
@@ -188,7 +188,7 @@ public class CDKManager implements ICDKManager{
 //		System.out.println("format guess: " + readerFactory.guessFormat(instream).getFormatName());
 
 		//Create the reader
-		IChemObjectReader reader= readerFactory.createReader(instream);
+		ISimpleChemObjectReader reader= readerFactory.createReader(instream);
 
 		if (reader==null){
 			throw new BioclipseException("Could not create reader in CDK. ");
