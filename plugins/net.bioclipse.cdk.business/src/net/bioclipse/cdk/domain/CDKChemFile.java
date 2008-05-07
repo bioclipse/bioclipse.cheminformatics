@@ -91,7 +91,7 @@ public class CDKChemFile extends BioObject implements IMolecule{
 
 	public Object getAdapter(Class adapter) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.getAdapter(adapter);
 	}
 
 	public boolean has3dCoords() {

@@ -101,10 +101,6 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
 		this.cachedSMILES = cachedSMILES;
 	}
 
-	public Object getAdapter(Class adapter) {
-		return null;
-	}
-
 	public String getCML() throws BioclipseException {
 
 		if (atomContainer==null) throw new BioclipseException("No molecule to " +
