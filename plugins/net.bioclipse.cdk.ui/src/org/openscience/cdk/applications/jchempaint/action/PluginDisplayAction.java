@@ -12,20 +12,20 @@ import javax.swing.JPanel;
 
 public class PluginDisplayAction extends JCPAction {
     
-	private static final long serialVersionUID = -2699051675412699258L;
-	
-//	private ICDKPlugin plugin;
+    private static final long serialVersionUID = -2699051675412699258L;
+    
+//    private ICDKPlugin plugin;
 //    
 //    public void setPlugin(ICDKPlugin plugin) {
 //        this.plugin = plugin;
 //    }
     
-	public void run() {
-		run(null);
-	}
-	
-	public void run(ActionEvent e) {
-//    	  JPanel pluginPanel = plugin.getPluginPanel();
+    public void run() {
+        run(null);
+    }
+    
+    public void run(ActionEvent e) {
+//          JPanel pluginPanel = plugin.getPluginPanel();
 //        plugin.start();
 //        if (pluginPanel != null) {
 //            JDialog pluginWindow = new JDialog();

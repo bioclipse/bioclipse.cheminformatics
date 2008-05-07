@@ -66,7 +66,7 @@ public class ConvertToRadicalAction extends JCPAction {
                 
                 if(number > 0.0)
                 {
-                	ElectronContainer electronContainer = new SingleElectron(atom);
+                    ElectronContainer electronContainer = new SingleElectron(atom);
                     relevantContainer.addElectronContainer(electronContainer);
                     UndoableEdit  edit = new ConvertToRadicalEdit(relevantContainer, electronContainer);
                     UndoableAction.pushToUndoRedoStack(edit,jcpmodel,((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getUndoContext(), ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getDrawingPanel());
@@ -75,9 +75,9 @@ public class ConvertToRadicalAction extends JCPAction {
                     
                 }
                 else {
-                	DrawingPanel drawingPanel = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getDrawingPanel();
-                	JOptionPane.showMessageDialog(drawingPanel,"A radical cannot be added to this atom." +
-        		" Re-try with less hydrogens.");
+                    DrawingPanel drawingPanel = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getDrawingPanel();
+                    JOptionPane.showMessageDialog(drawingPanel,"A radical cannot be added to this atom." +
+                " Re-try with less hydrogens.");
                 }
 
             
@@ -91,32 +91,32 @@ public class ConvertToRadicalAction extends JCPAction {
     }
     private double controlLonePair(IAtomContainer container, Atom atom)
     {
-    	double nLonePair = 0.0;
-    	AtomTypeFactory atomATF = null;
-		try
-		{
-			atomATF = AtomTypeFactory.getInstance(
+        double nLonePair = 0.0;
+        AtomTypeFactory atomATF = null;
+        try
+        {
+            atomATF = AtomTypeFactory.getInstance(
                 "org/openscience/cdk/config/data/valency2_atomtypes.xml",
                 atom.getBuilder()
             );
-	    	
-			if(atomATF != null)
-			{
+            
+            if(atomATF != null)
+            {
 
-				IAtomType atomType = atomATF.getAtomType(atom.getSymbol());
-		    	double bondOrderSum = container.getBondOrderSum(atom);
-				int charge = atom.getFormalCharge();
-				int hcount = atom.getHydrogenCount();
-				int valency = atomType.getValency();
-				nLonePair = (valency - (hcount + bondOrderSum) - charge) / 2;
-			}
-		} catch (Exception ex1)
-		{
-			logger.error(ex1.getMessage());
-			logger.debug(ex1);
-		}
-		return nLonePair;
-		
-		
+                IAtomType atomType = atomATF.getAtomType(atom.getSymbol());
+                double bondOrderSum = container.getBondOrderSum(atom);
+                int charge = atom.getFormalCharge();
+                int hcount = atom.getHydrogenCount();
+                int valency = atomType.getValency();
+                nLonePair = (valency - (hcount + bondOrderSum) - charge) / 2;
+            }
+        } catch (Exception ex1)
+        {
+            logger.error(ex1.getMessage());
+            logger.debug(ex1);
+        }
+        return nLonePair;
+        
+        
     }
 }

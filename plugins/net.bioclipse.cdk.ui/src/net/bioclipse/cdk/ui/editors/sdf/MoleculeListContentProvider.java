@@ -19,25 +19,25 @@ import org.eclipse.jface.viewers.Viewer;
 
 public class MoleculeListContentProvider implements IStructuredContentProvider {
 
-	public Object[] getElements(Object inputElement) {
-		
-		if (inputElement instanceof StructureTableEntry[]) {
-			StructureTableEntry[] moleculeList = (StructureTableEntry[]) inputElement;
-			return moleculeList;
-		}
-		
-		return new Object[0];
-	}
+    public Object[] getElements(Object inputElement) {
+        
+        if (inputElement instanceof StructureTableEntry[]) {
+            StructureTableEntry[] moleculeList = (StructureTableEntry[]) inputElement;
+            return moleculeList;
+        }
+        
+        return new Object[0];
+    }
 
-	public void dispose() {
-		// TODO Auto-generated method stub
-		
-	}
+    public void dispose() {
+        // TODO Auto-generated method stub
+        
+    }
 
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		// TODO Auto-generated method stub
-		
-	}
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        // TODO Auto-generated method stub
+        
+    }
 
 
 }

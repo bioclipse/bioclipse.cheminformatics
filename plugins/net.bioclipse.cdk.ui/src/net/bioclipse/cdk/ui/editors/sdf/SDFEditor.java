@@ -4,10 +4,10 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Ola Spjuth
- *     
+ *
  ******************************************************************************/
 package net.bioclipse.cdk.ui.editors.sdf;
 
@@ -46,173 +46,173 @@ import org.openscience.cdk.CDKConstants;
 
 public class SDFEditor extends FormEditor implements IResourceChangeListener, IAdaptable{
 
-	private static final Logger logger = Logger.getLogger(SDFEditor.class);
+    private static final Logger logger = Logger.getLogger(SDFEditor.class);
 
-//	private TextEditor textEditor;
-	private StructureTablePage tablePage;
+//    private TextEditor textEditor;
+    private StructureTablePage tablePage;
 
-	//Model for the editor: Based on CDK
-	StructureTableEntry[] entries;
-	ArrayList<String> propHeaders;
-
-
-	public StructureTableEntry[] getEntries() {
-		return entries;
-	}
+    //Model for the editor: Based on CDK
+    StructureTableEntry[] entries;
+    ArrayList<String> propHeaders;
 
 
-	public void setEntries(StructureTableEntry[] entries) {
-		this.entries = entries;
-	}
+    public StructureTableEntry[] getEntries() {
+        return entries;
+    }
 
 
-	@Override
-	public void init(IEditorSite site, IEditorInput input)
-	throws PartInitException {
-		super.init(site, input);
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-
-		propHeaders=new ArrayList<String>();
-
-		//Parse input with CDK
-		parseInput();
-
-		//Tables page
-		tablePage=new StructureTablePage(this, propHeaders.toArray(new String[0]));
-
-		//Texteditor
-//		textEditor = new TextEditor();
-
-	}
+    public void setEntries(StructureTableEntry[] entries) {
+        this.entries = entries;
+    }
 
 
-	@Override
-	protected void addPages() {
-		try {
-			addPage(tablePage);
+    @Override
+    public void init(IEditorSite site, IEditorInput input)
+    throws PartInitException {
+        super.init(site, input);
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 
-//			int index = addPage(textEditor, getEditorInput());
-//			setPageText(index, textEditor.getTitle());
+        propHeaders=new ArrayList<String>();
 
-		} catch (PartInitException e) {
-			LogUtils.debugTrace(logger, e);
-		}
+        //Parse input with CDK
+        parseInput();
 
+        //Tables page
+        tablePage=new StructureTablePage(this, propHeaders.toArray(new String[0]));
 
-	}
+        //Texteditor
+//        textEditor = new TextEditor();
 
-
-
-	@Override
-	public void doSave(IProgressMonitor monitor) {
-		//TODO
-	}
-
-	@Override
-	public void doSaveAs() {
-		//TODO
-	}
-
-	@Override
-	public boolean isSaveAsAllowed() {
-		//TODO
-		return false;
-	}
-
-	@Override
-	public void dispose() {
-		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-		super.dispose();
-	}
-
-	public void resourceChanged(IResourceChangeEvent event) {
-		//TODO
-	}
-
-	private void parseInput(){
-
-		try {
-
-			new ProgressMonitorDialog(getSite().getShell()).run(false, true, new IRunnableWithProgress(){
-
-				public void run(IProgressMonitor monitor)
-				throws InvocationTargetException, InterruptedException {
+    }
 
 
-					IEditorInput input=getEditorInput();
-					if (!(input instanceof IFileEditorInput)) {
-						logger.debug("Not FIleEditorInput.");
-						//TODO: Close editor?
-						return;
-					}
-					IFileEditorInput finput = (IFileEditorInput) input;
+    @Override
+    protected void addPages() {
+        try {
+            addPage(tablePage);
 
-					IFile file=finput.getFile();
-					if (!(file.exists())){
-						logger.debug("File does not exist.");
-						//TODO: Close editor?
-						return;
-					}
+//            int index = addPage(textEditor, getEditorInput());
+//            setPageText(index, textEditor.getTitle());
 
-					InputStream instream;
-					try {
-						instream = file.getContents();
-						CDKMoleculeList molList=Activator.getDefault().getCDKManager().loadMolecules(instream);
-					logger.debug("In editor: " + molList.size() + " molecules.");
+        } catch (PartInitException e) {
+            LogUtils.debugTrace(logger, e);
+        }
 
-					monitor.beginTask("Reading SDFile...", molList.size()+1);
 
-					ArrayList<StructureTableEntry> newlist=new ArrayList<StructureTableEntry>();
+    }
 
-					for (CDKMolecule mol : molList){
 
-						Map<Object, Object> props=mol.getAtomContainer().getProperties();
 
-						for (Object obj : props.keySet()){
-//							System.out.println("Key: '" + obj.toString() + "'; val: '" + props.get(obj) + "'" );
-							if (obj instanceof String) {
-								String key = (String) obj;
-								if (!(propHeaders.contains(key))){
-									propHeaders.add(key);
-									logger.debug("Header added: " + key);
-								}
-							}
-						}
+    @Override
+    public void doSave(IProgressMonitor monitor) {
+        //TODO
+    }
 
-						//Read vals for this molecule
-						ArrayList<Object> vals=new ArrayList<Object>();
-						for (String key : propHeaders){
-							Object obj=mol.getAtomContainer().getProperty(key);
-							vals.add(obj);
-						}
+    @Override
+    public void doSaveAs() {
+        //TODO
+    }
 
-						StructureTableEntry entry=new StructureTableEntry(mol.getAtomContainer(), vals.toArray());
-						newlist.add(entry);
-						monitor.worked(1);
-					}
-					setEntries(newlist.toArray(new StructureTableEntry[0]));
+    @Override
+    public boolean isSaveAsAllowed() {
+        //TODO
+        return false;
+    }
 
-					monitor.done();
+    @Override
+    public void dispose() {
+        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        super.dispose();
+    }
 
-					} catch (CoreException e) {
-						throw new InvocationTargetException(e);
-					} catch (IOException e) {
-						throw new InvocationTargetException(e);
-					} catch (BioclipseException e) {
-						throw new InvocationTargetException(e);
-					}
+    public void resourceChanged(IResourceChangeEvent event) {
+        //TODO
+    }
 
-				
+    private void parseInput(){
 
-			}});
+        try {
 
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            new ProgressMonitorDialog(getSite().getShell()).run(false, true, new IRunnableWithProgress(){
 
-	}	
+                public void run(IProgressMonitor monitor)
+                throws InvocationTargetException, InterruptedException {
+
+
+                    IEditorInput input=getEditorInput();
+                    if (!(input instanceof IFileEditorInput)) {
+                        logger.debug("Not FIleEditorInput.");
+                        //TODO: Close editor?
+                        return;
+                    }
+                    IFileEditorInput finput = (IFileEditorInput) input;
+
+                    IFile file=finput.getFile();
+                    if (!(file.exists())){
+                        logger.debug("File does not exist.");
+                        //TODO: Close editor?
+                        return;
+                    }
+
+                    InputStream instream;
+                    try {
+                        instream = file.getContents();
+                        CDKMoleculeList molList=Activator.getDefault().getCDKManager().loadMolecules(instream);
+                    logger.debug("In editor: " + molList.size() + " molecules.");
+
+                    monitor.beginTask("Reading SDFile...", molList.size()+1);
+
+                    ArrayList<StructureTableEntry> newlist=new ArrayList<StructureTableEntry>();
+
+                    for (CDKMolecule mol : molList){
+
+                        Map<Object, Object> props=mol.getAtomContainer().getProperties();
+
+                        for (Object obj : props.keySet()){
+//                            System.out.println("Key: '" + obj.toString() + "'; val: '" + props.get(obj) + "'" );
+                            if (obj instanceof String) {
+                                String key = (String) obj;
+                                if (!(propHeaders.contains(key))){
+                                    propHeaders.add(key);
+                                    logger.debug("Header added: " + key);
+                                }
+                            }
+                        }
+
+                        //Read vals for this molecule
+                        ArrayList<Object> vals=new ArrayList<Object>();
+                        for (String key : propHeaders){
+                            Object obj=mol.getAtomContainer().getProperty(key);
+                            vals.add(obj);
+                        }
+
+                        StructureTableEntry entry=new StructureTableEntry(mol.getAtomContainer(), vals.toArray());
+                        newlist.add(entry);
+                        monitor.worked(1);
+                    }
+                    setEntries(newlist.toArray(new StructureTableEntry[0]));
+
+                    monitor.done();
+
+                    } catch (CoreException e) {
+                        throw new InvocationTargetException(e);
+                    } catch (IOException e) {
+                        throw new InvocationTargetException(e);
+                    } catch (BioclipseException e) {
+                        throw new InvocationTargetException(e);
+                    }
+
+
+
+            }});
+
+        } catch (InvocationTargetException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
 }

@@ -40,28 +40,28 @@ import java.util.Vector;
 public class StringHelper
 {
 
-	/**
-	 *  Partitions a given String into separate words and writes them into an
-	 *  array.
-	 *
-	 *@param  input  String The String to be cutted into pieces
-	 *@return        String[] The array containing the separate words
-	 */
-	public static String[] tokenize(String input)
-	{
-		Vector vector = new Vector();
-		StringTokenizer tokenizer = new StringTokenizer(input);
-		String seperateWords[];
-		while (tokenizer.hasMoreTokens())
-		{
-			vector.addElement(tokenizer.nextToken());
-		}
-		seperateWords = new String[vector.size()];
-		for (int i = 0; i < seperateWords.length; i++)
-		{
-			seperateWords[i] = (String) vector.elementAt(i);
-		}
-		return seperateWords;
-	}
+    /**
+     *  Partitions a given String into separate words and writes them into an
+     *  array.
+     *
+     *@param  input  String The String to be cutted into pieces
+     *@return        String[] The array containing the separate words
+     */
+    public static String[] tokenize(String input)
+    {
+        Vector vector = new Vector();
+        StringTokenizer tokenizer = new StringTokenizer(input);
+        String seperateWords[];
+        while (tokenizer.hasMoreTokens())
+        {
+            vector.addElement(tokenizer.nextToken());
+        }
+        seperateWords = new String[vector.size()];
+        for (int i = 0; i < seperateWords.length; i++)
+        {
+            seperateWords[i] = (String) vector.elementAt(i);
+        }
+        return seperateWords;
+    }
 }
 

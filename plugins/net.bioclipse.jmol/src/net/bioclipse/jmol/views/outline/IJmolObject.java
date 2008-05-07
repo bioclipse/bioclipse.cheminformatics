@@ -22,22 +22,22 @@ import org.eclipse.core.runtime.IAdaptable;
 public interface IJmolObject extends IAdaptable{
 
 
-	public String getName();
+    public String getName();
 
-	public void setName(String name);
+    public void setName(String name);
 
-	public Object getObject();
+    public Object getObject();
 
-	public void setObject(Object object);
+    public void setObject(Object object);
 
-	public List<IJmolObject> getChildren();
+    public List<IJmolObject> getChildren();
 
-	public void setChildren(List<IJmolObject> children);
+    public void setChildren(List<IJmolObject> children);
 
-	public IJmolObject getParent();
+    public IJmolObject getParent();
 
-	public void setParent(IJmolObject parent);
+    public void setParent(IJmolObject parent);
 
-	public String getSelectString();
+    public String getSelectString();
 
 }

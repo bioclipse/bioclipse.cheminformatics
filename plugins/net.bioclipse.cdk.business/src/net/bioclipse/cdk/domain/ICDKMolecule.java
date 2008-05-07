@@ -25,25 +25,25 @@ import org.openscience.cdk.interfaces.IAtomContainer;
  */
 public interface ICDKMolecule extends IMolecule{
 
-	/**
-	 * 
-	 * @return the atomcontainer serialized to CML
-	 * @throws BioclipseException
-	 */
-	public String getCML() throws BioclipseException;
-	
-	/**
-	 * Calculate CDK fingerprint and cache the result.
-	 * @param force if true, do not use cache but force calculation
-	 * @return
-	 * @throws BioclipseException
-	 */
-	public BitSet getFingerprint(boolean force) throws BioclipseException;
+    /**
+     * 
+     * @return the atomcontainer serialized to CML
+     * @throws BioclipseException
+     */
+    public String getCML() throws BioclipseException;
+    
+    /**
+     * Calculate CDK fingerprint and cache the result.
+     * @param force if true, do not use cache but force calculation
+     * @return
+     * @throws BioclipseException
+     */
+    public BitSet getFingerprint(boolean force) throws BioclipseException;
 
-	/**
-	 * AtomContainer is the CDK model for a molecule
-	 * @return
-	 */
-	public IAtomContainer getAtomContainer();
+    /**
+     * AtomContainer is the CDK model for a molecule
+     * @return
+     */
+    public IAtomContainer getAtomContainer();
 
 }

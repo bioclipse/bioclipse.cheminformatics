@@ -25,35 +25,35 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * @author ola
  */
 public class NameSection
-	extends AbstractSection {
+    extends AbstractSection {
 
-	Text nameText;
+    Text nameText;
 
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage tabbedPropertySheetPage) {
-		super.createControls(parent, tabbedPropertySheetPage);
-		Composite composite = getWidgetFactory()
-			.createFlatFormComposite(parent);
-		FormData data;
+    public void createControls(Composite parent,
+            TabbedPropertySheetPage tabbedPropertySheetPage) {
+        super.createControls(parent, tabbedPropertySheetPage);
+        Composite composite = getWidgetFactory()
+            .createFlatFormComposite(parent);
+        FormData data;
 
-		nameText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
-		nameText.setEditable(false);
-		data = new FormData();
-		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
-		data.right = new FormAttachment(100, 0);
-		data.top = new FormAttachment(0, 0);
-		nameText.setLayoutData(data);
+        nameText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
+        nameText.setEditable(false);
+        data = new FormData();
+        data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
+        data.right = new FormAttachment(100, 0);
+        data.top = new FormAttachment(0, 0);
+        nameText.setLayoutData(data);
 
-		CLabel nameLabel = getWidgetFactory().createCLabel(composite, "Name:"); //$NON-NLS-1$
-		data = new FormData();
-		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(nameText,
-			-ITabbedPropertyConstants.HSPACE);
-		data.top = new FormAttachment(nameText, 0, SWT.CENTER);
-		nameLabel.setLayoutData(data);
-	}
+        CLabel nameLabel = getWidgetFactory().createCLabel(composite, "Name:"); //$NON-NLS-1$
+        data = new FormData();
+        data.left = new FormAttachment(0, 0);
+        data.right = new FormAttachment(nameText,
+            -ITabbedPropertyConstants.HSPACE);
+        data.top = new FormAttachment(nameText, 0, SWT.CENTER);
+        nameLabel.setLayoutData(data);
+    }
 
-	public void refresh() {
-		nameText.setText((getJmolObject()).getName());
-	}
+    public void refresh() {
+        nameText.setText((getJmolObject()).getName());
+    }
 }

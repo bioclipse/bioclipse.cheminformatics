@@ -4,11 +4,11 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Ola Spjuth
  *     Jonathan Alvarsson
- *     
+ *
  ******************************************************************************/
 
 package net.bioclipse.cdk.business.test;
@@ -34,81 +34,81 @@ import org.openscience.cdk.io.ReaderFactory;
 
 public class CDKManagerTest {
 
-	ICDKManager cdk;
-	
-	//Do not use SPRING OSGI for this manager	
-	//since we are only testing the implementations of the manager methods
-	public CDKManagerTest() {
-		cdk = new CDKManager();
-	}
+    ICDKManager cdk;
 
-	@Test
-	public void testLoadMolecule() throws IOException, BioclipseException {
-		
-//		InputStream atpFile = getClass().getResourceAsStream("/testFiles/polycarpol.mol");
-//		InputStream pdbFile = getClass().getResourceAsStream("/testFiles/1D66.pdb");
-		InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
+    //Do not use SPRING OSGI for this manager
+    //since we are only testing the implementations of the manager methods
+    public CDKManagerTest() {
+        cdk = new CDKManager();
+    }
 
-		CDKMolecule mol = cdk.loadMolecule(cmlFile);
-		
-		System.out.println("mol: " + mol.toString());
-	}
+    @Test
+    public void testLoadMolecule() throws IOException, BioclipseException {
 
-	//FIXME: Fails. See bug #1958097
-	@Test
-	public void testLoadATP() throws IOException, BioclipseException {
-		
-		InputStream atpFile = getClass().getResourceAsStream("/testFiles/atp.mol");
+//        InputStream atpFile = getClass().getResourceAsStream("/testFiles/polycarpol.mol");
+//        InputStream pdbFile = getClass().getResourceAsStream("/testFiles/1D66.pdb");
+        InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
 
-		CDKMolecule mol = cdk.loadMolecule(atpFile);
-		
-		System.out.println("mol: " + mol.toString());
-	}
+        CDKMolecule mol = cdk.loadMolecule(cmlFile);
 
-	//FIXME: Fails. See bug #1958097
-	@Test
-	public void testLoadPolycarpol() throws IOException, BioclipseException {
-		
-		InputStream atpFile = getClass().getResourceAsStream("/testFiles/polycarpol.mol");
+        System.out.println("mol: " + mol.toString());
+    }
 
-		CDKMolecule mol = cdk.loadMolecule(atpFile);
-		
-		System.out.println("mol: " + mol.toString());
-	}
+    //FIXME: Fails. See bug #1958097
+    @Test
+    public void testLoadATP() throws IOException, BioclipseException {
 
-	@Test
-	public void testCreateSMILES() throws BioclipseException, IOException {
-		InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
+        InputStream atpFile = getClass().getResourceAsStream("/testFiles/atp.mol");
 
-		CDKMolecule mol = cdk.loadMolecule(cmlFile);
-		String smiles = mol.getSmiles();
-		
-		assertEquals("CC1CCCC(C#N)N1C(CO[Si](C)(C)C)C2=CC=CC=C2", smiles);
-	}
+        CDKMolecule mol = cdk.loadMolecule(atpFile);
 
-	@Test
-	public void testCreateMoleculeFromSMILES() throws BioclipseException {
+        System.out.println("mol: " + mol.toString());
+    }
 
-		CDKMolecule mol=cdk.createMoleculeFromSMILES("C1CCCCC1CCO");
-		
-		assertEquals(mol.getAtomContainer().getAtomCount(), 9);
-		assertEquals(mol.getAtomContainer().getBondCount(), 9);
-	}
+    //FIXME: Fails. See bug #1958097
+    @Test
+    public void testLoadPolycarpol() throws IOException, BioclipseException {
 
-	@Test
-	public void testCreatingMoleculeIterator() {
-		InputStream sdfFile = getClass()
-		                      .getResourceAsStream("/testFiles/test.sdf");
-		
-		List<IMolecule> molecules = new ArrayList<IMolecule>();
-		
-		for ( Iterator<net.bioclipse.cdk.domain.ICDKMolecule> iterator 
-					= cdk.creatMoleculeIterator(sdfFile);
-		      iterator.hasNext(); ) {
-			
-			molecules.add( iterator.next() );
-		}
-		
-		assertEquals( 2, molecules.size() );
-	}
+        InputStream atpFile = getClass().getResourceAsStream("/testFiles/polycarpol.mol");
+
+        CDKMolecule mol = cdk.loadMolecule(atpFile);
+
+        System.out.println("mol: " + mol.toString());
+    }
+
+    @Test
+    public void testCreateSMILES() throws BioclipseException, IOException {
+        InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
+
+        CDKMolecule mol = cdk.loadMolecule(cmlFile);
+        String smiles = mol.getSmiles();
+
+        assertEquals("CC1CCCC(C#N)N1C(CO[Si](C)(C)C)C2=CC=CC=C2", smiles);
+    }
+
+    @Test
+    public void testCreateMoleculeFromSMILES() throws BioclipseException {
+
+        CDKMolecule mol=cdk.createMoleculeFromSMILES("C1CCCCC1CCO");
+
+        assertEquals(mol.getAtomContainer().getAtomCount(), 9);
+        assertEquals(mol.getAtomContainer().getBondCount(), 9);
+    }
+
+    @Test
+    public void testCreatingMoleculeIterator() {
+        InputStream sdfFile = getClass()
+                              .getResourceAsStream("/testFiles/test.sdf");
+
+        List<IMolecule> molecules = new ArrayList<IMolecule>();
+
+        for ( Iterator<net.bioclipse.cdk.domain.ICDKMolecule> iterator
+                    = cdk.creatMoleculeIterator(sdfFile);
+              iterator.hasNext(); ) {
+
+            molecules.add( iterator.next() );
+        }
+
+        assertEquals( 2, molecules.size() );
+    }
 }

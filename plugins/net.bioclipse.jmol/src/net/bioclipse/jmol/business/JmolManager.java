@@ -18,47 +18,47 @@ import org.eclipse.ui.PlatformUI;
 
 public class JmolManager implements IJmolManager{
 
-	public String getNamespace() {
-		return "jmol";
-	}
+    public String getNamespace() {
+        return "jmol";
+    }
 
-	public void run(String script){
+    public void run(String script){
 
-		if (script==null || script.length()<=0)
-			throw new IllegalArgumentException("Script parameter cannot be empty");
+        if (script==null || script.length()<=0)
+            throw new IllegalArgumentException("Script parameter cannot be empty");
 
-		//Run script in editor
-		JmolEditor editor=findActiveJmolEditor();
-		if (editor!=null){
-			editor.runScript(script);
-		}
+        //Run script in editor
+        JmolEditor editor=findActiveJmolEditor();
+        if (editor!=null){
+            editor.runScript(script);
+        }
 
-		//Run script in view (if open)
-		//TODO: Implement later if/when JmolView exists
+        //Run script in view (if open)
+        //TODO: Implement later if/when JmolView exists
 
-	}
+    }
 
 
-	public void load(String path){
-		
-		System.out.println("jmol load called with input: " + path);
-		System.out.println("Not implemented");
-		
-	}
+    public void load(String path){
+        
+        System.out.println("jmol load called with input: " + path);
+        System.out.println("Not implemented");
+        
+    }
 
-	/**
-	 * @return Active editor or null if not instance of JmolEditor
-	 */
-	private JmolEditor findActiveJmolEditor() {
+    /**
+     * @return Active editor or null if not instance of JmolEditor
+     */
+    private JmolEditor findActiveJmolEditor() {
 
-		IEditorPart activeEditor=PlatformUI.getWorkbench()
-			.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        IEditorPart activeEditor=PlatformUI.getWorkbench()
+            .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 
-		if (activeEditor instanceof JmolEditor) {
-			return (JmolEditor) activeEditor;
-		}
+        if (activeEditor instanceof JmolEditor) {
+            return (JmolEditor) activeEditor;
+        }
 
-		return null;
-	}
-	
+        return null;
+    }
+    
 }

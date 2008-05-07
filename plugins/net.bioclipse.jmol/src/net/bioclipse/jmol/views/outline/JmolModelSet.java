@@ -23,53 +23,53 @@ import org.jmol.modelset.ModelSet;
  */
 public class JmolModelSet extends JmolObject{
 
-	private ModelSet modelSet;
+    private ModelSet modelSet;
 
-	/**
-	 * Construct a JmolModelSet from a ModelSet.
-	 * @param modelSet
-	 */
-	public JmolModelSet(ModelSet modelSet) {
-		this.modelSet=modelSet;
-	}
-	
-	public Object getObject() {
-		return modelSet;
-	}
+    /**
+     * Construct a JmolModelSet from a ModelSet.
+     * @param modelSet
+     */
+    public JmolModelSet(ModelSet modelSet) {
+        this.modelSet=modelSet;
+    }
+    
+    public Object getObject() {
+        return modelSet;
+    }
 
-	public void setObject(Object object) {
-		if (object instanceof Model) {
-			modelSet=(ModelSet)object;
-		}
-	}
+    public void setObject(Object object) {
+        if (object instanceof Model) {
+            modelSet=(ModelSet)object;
+        }
+    }
 
-	/**
-	 * For e.g. properties view
-	 */
-	public Object getAdapter(Class adapter) {
-		// TODO Auto-generated method stub
-		return super.getAdapter(adapter);
-	}
+    /**
+     * For e.g. properties view
+     */
+    public Object getAdapter(Class adapter) {
+        // TODO Auto-generated method stub
+        return super.getAdapter(adapter);
+    }
 
-	/**
-	 * Create the children as all Chains of this Model
-	 */
-	public void createChildren() {
-		
-		ArrayList<IJmolObject> newChildren=new ArrayList<IJmolObject>();
-		for (int i=0; i< modelSet.getModelCount(); i++){
-			Model model=modelSet.getModels()[i];
-			JmolModel c=new JmolModel(model);
-			newChildren.add(c);
-		}
-		setChildren(newChildren);
-	}
+    /**
+     * Create the children as all Chains of this Model
+     */
+    public void createChildren() {
+        
+        ArrayList<IJmolObject> newChildren=new ArrayList<IJmolObject>();
+        for (int i=0; i< modelSet.getModelCount(); i++){
+            Model model=modelSet.getModels()[i];
+            JmolModel c=new JmolModel(model);
+            newChildren.add(c);
+        }
+        setChildren(newChildren);
+    }
 
-	/**
-	 * ModelSet is not shown and therefore returns null as selectString
-	 */
-	public String getSelectString() {
-		return null;
-	}
+    /**
+     * ModelSet is not shown and therefore returns null as selectString
+     */
+    public String getSelectString() {
+        return null;
+    }
 
 }

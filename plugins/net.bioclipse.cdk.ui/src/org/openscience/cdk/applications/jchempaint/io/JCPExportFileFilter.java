@@ -52,8 +52,8 @@ public class JCPExportFileFilter extends javax.swing.filechooser.FileFilter impl
     protected List types;
 
     public JCPExportFileFilter(String type) {
-		super();
-		types = new ArrayList();
+        super();
+        types = new ArrayList();
         types.add(type);
     }
 
@@ -96,11 +96,11 @@ public class JCPExportFileFilter extends javax.swing.filechooser.FileFilter impl
         }
 
         String extension = getExtension(f);
-		if (extension != null) {
+        if (extension != null) {
             if (types.contains(extension)) {
-            	accepted = true;
+                accepted = true;
             }
-    	}
+        }
         return accepted;
     }
 
@@ -108,7 +108,7 @@ public class JCPExportFileFilter extends javax.swing.filechooser.FileFilter impl
      * Get the extension of a file.
      */
     public static String getExtension(File f) 
-	{
+    {
         String ext = null;
         String s = f.getName();
         int i = s.lastIndexOf('.');
@@ -119,11 +119,11 @@ public class JCPExportFileFilter extends javax.swing.filechooser.FileFilter impl
         return ext;
     }
 
-	public String getType() {
-		return (String)types.get(0);
-	}
+    public String getType() {
+        return (String)types.get(0);
+    }
 
-	public void setType(String type) {
-		types.add(type);
-	}
+    public void setType(String type) {
+        types.add(type);
+    }
 }

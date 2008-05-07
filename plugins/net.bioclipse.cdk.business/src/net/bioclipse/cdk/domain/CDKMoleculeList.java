@@ -21,17 +21,17 @@ import net.bioclipse.core.domain.IMolecule;
  */
 public class CDKMoleculeList extends BioList<CDKMolecule> {
 
-	private String name;
+    private String name;
 
-	public CDKMoleculeList() {
-	}
+    public CDKMoleculeList() {
+    }
 
-	public String getName() {
-		return null;
-	}
+    public String getName() {
+        return null;
+    }
 
-	public IMolecule[] getMolecules() {
-		return null;
-	}
+    public IMolecule[] getMolecules() {
+        return null;
+    }
 
 }

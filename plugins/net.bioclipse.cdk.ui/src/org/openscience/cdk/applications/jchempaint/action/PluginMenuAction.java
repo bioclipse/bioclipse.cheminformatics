@@ -7,10 +7,10 @@ import javax.swing.JPanel;
 
 public class PluginMenuAction extends JCPAction {
     
-	private static final long serialVersionUID = -2699051675412699258L;
-	
-	private JFrame frame;
-	private JPanel panel;
+    private static final long serialVersionUID = -2699051675412699258L;
+    
+    private JFrame frame;
+    private JPanel panel;
     
     public void setFrame(JFrame frame) {
         this.frame=frame;
@@ -21,14 +21,14 @@ public class PluginMenuAction extends JCPAction {
     }
 
     
-	public void run() {
-		run(null);
-	}
-	
-	public void run(ActionEvent e) {
-		if(panel!=null)
-			panel.show();
-		if(frame!=null)
-			frame.show();
+    public void run() {
+        run(null);
+    }
+    
+    public void run(ActionEvent e) {
+        if(panel!=null)
+            panel.show();
+        if(frame!=null)
+            frame.show();
     }
 }

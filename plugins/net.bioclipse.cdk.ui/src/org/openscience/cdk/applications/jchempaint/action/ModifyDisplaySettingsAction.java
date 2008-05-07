@@ -46,24 +46,24 @@ import org.openscience.cdk.renderer.Renderer2DModel;
 public class ModifyDisplaySettingsAction extends JCPAction
 {
 
-	public void run() {
-		run(null);
-	}
-	
-	/**
-	 *  Description of the Method
-	 *
-	 *@param  e  Description of the Parameter
-	 */
-	public void run(ActionEvent e)
-	{
-		logger.debug("Modify display settings in mode");
-		JChemPaintModel jcpm = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
-		Renderer2DModel renderModel = jcpm.getRendererModel();
-		ModifyRenderOptionsDialog dialog =
-				new ModifyRenderOptionsDialog(this.getContributor().getActiveEditorPart().getEditorSite().getShell(), 0, renderModel);
-		dialog.open();
-	}
+    public void run() {
+        run(null);
+    }
+    
+    /**
+     *  Description of the Method
+     *
+     *@param  e  Description of the Parameter
+     */
+    public void run(ActionEvent e)
+    {
+        logger.debug("Modify display settings in mode");
+        JChemPaintModel jcpm = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
+        Renderer2DModel renderModel = jcpm.getRendererModel();
+        ModifyRenderOptionsDialog dialog =
+                new ModifyRenderOptionsDialog(this.getContributor().getActiveEditorPart().getEditorSite().getShell(), 0, renderModel);
+        dialog.open();
+    }
 
 }
 

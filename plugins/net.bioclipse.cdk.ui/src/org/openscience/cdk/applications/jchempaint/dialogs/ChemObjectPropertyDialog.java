@@ -51,9 +51,9 @@ public class ChemObjectPropertyDialog extends JFrame {
     private ChemObjectEditor editor;
     private JChemPaintModel jcpmodel;
     
-	/**
-	 * Displays the Info Dialog for JChemPaint. 
-	 */
+    /**
+     * Displays the Info Dialog for JChemPaint. 
+     */
     public ChemObjectPropertyDialog(JChemPaintModel jcpmodel, ChemObjectEditor editor) {
         super("ChemObject Props Dialog");
         this.jcpmodel = jcpmodel;

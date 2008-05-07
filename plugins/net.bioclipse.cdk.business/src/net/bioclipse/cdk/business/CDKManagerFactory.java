@@ -24,19 +24,19 @@ import org.eclipse.core.runtime.IExecutableExtensionFactory;
 public class CDKManagerFactory implements IExecutableExtension, 
                                               IExecutableExtensionFactory {
 
-	private Object cdkManager;
-	
-	public void setInitializationData(IConfigurationElement config,
-			String propertyName, Object data) throws CoreException {
-		
-		cdkManager = Activator.getDefault().getCDKManager();
-		if(cdkManager==null) {
-			cdkManager = new Object();
-		}
-	}
+    private Object cdkManager;
+    
+    public void setInitializationData(IConfigurationElement config,
+            String propertyName, Object data) throws CoreException {
+        
+        cdkManager = Activator.getDefault().getCDKManager();
+        if(cdkManager==null) {
+            cdkManager = new Object();
+        }
+    }
 
-	public Object create() throws CoreException {
-		return cdkManager;
-//		return new Object();
-	}
+    public Object create() throws CoreException {
+        return cdkManager;
+//        return new Object();
+    }
 }

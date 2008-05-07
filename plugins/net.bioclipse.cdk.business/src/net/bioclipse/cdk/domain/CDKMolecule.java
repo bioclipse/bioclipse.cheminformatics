@@ -4,10 +4,10 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Ola Spjuth
- *     
+ *
  ******************************************************************************/
 
 package net.bioclipse.cdk.domain;
@@ -34,126 +34,126 @@ import net.bioclipse.core.domain.IMolecule;
  */
 public class CDKMolecule extends BioObject implements ICDKMolecule{
 
-	private String name;
-	private IAtomContainer atomContainer;
-	private String cachedSMILES;
-	private BitSet cachedFingerprint;
+    private String name;
+    private IAtomContainer atomContainer;
+    private String cachedSMILES;
+    private BitSet cachedFingerprint;
 
-	public CDKMolecule(IAtomContainer atomContainer) {
-		super();
-		this.atomContainer=atomContainer;
-	}
+    public CDKMolecule(IAtomContainer atomContainer) {
+        super();
+        this.atomContainer=atomContainer;
+    }
 
-	public Object getParsedResource() {
-		return atomContainer;
-	}
+    public Object getParsedResource() {
+        return atomContainer;
+    }
 
-	public String getSmiles() throws BioclipseException {
+    public String getSmiles() throws BioclipseException {
 
-		//TODO: wrap in job?
+        //TODO: wrap in job?
 
-		if (cachedSMILES != null) {
-			return cachedSMILES;
-		}
+        if (cachedSMILES != null) {
+            return cachedSMILES;
+        }
 
-		if (getAtomContainer() == null)
-			throw new BioclipseException("Unable to calculate SMILES: Molecule is empty");
+        if (getAtomContainer() == null)
+            throw new BioclipseException("Unable to calculate SMILES: Molecule is empty");
 
-		if (!(getAtomContainer() instanceof org.openscience.cdk.interfaces.IMolecule))
-			throw new BioclipseException("Unable to calculate SMILES: Not a molecule.");
+        if (!(getAtomContainer() instanceof org.openscience.cdk.interfaces.IMolecule))
+            throw new BioclipseException("Unable to calculate SMILES: Not a molecule.");
 
-		if (getAtomContainer().getAtomCount() > 100)
-			throw new BioclipseException("Unable to calculate SMILES: Molecule has more than 100 atoms.");
+        if (getAtomContainer().getAtomCount() > 100)
+            throw new BioclipseException("Unable to calculate SMILES: Molecule has more than 100 atoms.");
 
-		if (getAtomContainer().getBondCount() == 0)
-			throw new BioclipseException("Unable to calculate SMILES: Molecule has no bonds.");
+        if (getAtomContainer().getBondCount() == 0)
+            throw new BioclipseException("Unable to calculate SMILES: Molecule has no bonds.");
 
-		org.openscience.cdk.interfaces.IMolecule molecule=(org.openscience.cdk.interfaces.IMolecule)getAtomContainer();
+        org.openscience.cdk.interfaces.IMolecule molecule=(org.openscience.cdk.interfaces.IMolecule)getAtomContainer();
 
-		// Create the SMILES
-		SmilesGenerator generator = new SmilesGenerator();
-		cachedSMILES = generator.createSMILES(molecule);
+        // Create the SMILES
+        SmilesGenerator generator = new SmilesGenerator();
+        cachedSMILES = generator.createSMILES(molecule);
 
-		return cachedSMILES;
-	}
+        return cachedSMILES;
+    }
 
-	public IAtomContainer getAtomContainer() {
-		return atomContainer;
-	}
+    public IAtomContainer getAtomContainer() {
+        return atomContainer;
+    }
 
-	public void setAtomContainer(IAtomContainer atomContainer) {
-		this.atomContainer = atomContainer;
-	}
+    public void setAtomContainer(IAtomContainer atomContainer) {
+        this.atomContainer = atomContainer;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getCachedSMILES() {
-		return cachedSMILES;
-	}
+    public String getCachedSMILES() {
+        return cachedSMILES;
+    }
 
-	public void setCachedSMILES(String cachedSMILES) {
-		this.cachedSMILES = cachedSMILES;
-	}
+    public void setCachedSMILES(String cachedSMILES) {
+        this.cachedSMILES = cachedSMILES;
+    }
 
-	public String getCML() throws BioclipseException {
+    public String getCML() throws BioclipseException {
 
-		if (atomContainer==null) throw new BioclipseException("No molecule to " +
-		"get CML from!");
+        if (atomContainer==null) throw new BioclipseException("No molecule to " +
+        "get CML from!");
 
-		ByteArrayOutputStream bo=new ByteArrayOutputStream();
+        ByteArrayOutputStream bo=new ByteArrayOutputStream();
 
-		CMLWriter writer=new CMLWriter(bo);
-		try {
-			writer.write(atomContainer);
-			writer.close();
-		} catch (CDKException e) {
-			throw new BioclipseException("Could not convert molecule to CML: " 
-					+ e.getMessage());		
-		} catch (IOException e) {
-			throw new BioclipseException("Could not write molecule to CML: " 
-					+ e.getMessage());		
-		}
+        CMLWriter writer=new CMLWriter(bo);
+        try {
+            writer.write(atomContainer);
+            writer.close();
+        } catch (CDKException e) {
+            throw new BioclipseException("Could not convert molecule to CML: "
+                    + e.getMessage());
+        } catch (IOException e) {
+            throw new BioclipseException("Could not write molecule to CML: "
+                    + e.getMessage());
+        }
 
-		if (bo==null) throw new BioclipseException("Convert to CML resulted in " +
-		"empty String.");
+        if (bo==null) throw new BioclipseException("Convert to CML resulted in " +
+        "empty String.");
 
-		return bo.toString();
-	}
+        return bo.toString();
+    }
 
-	/**
-	 * Calculate CDK fingerprint and cache the result.
-	 * @param force if true, do not use cache but force calculation
-	 * @return
-	 * @throws BioclipseException
-	 */
-	public BitSet getFingerprint(boolean force) throws BioclipseException {
+    /**
+     * Calculate CDK fingerprint and cache the result.
+     * @param force if true, do not use cache but force calculation
+     * @return
+     * @throws BioclipseException
+     */
+    public BitSet getFingerprint(boolean force) throws BioclipseException {
 
-		if (force==false){
-			if (cachedFingerprint != null) {
-				return cachedFingerprint;
-			}
-		}
-		Fingerprinter fp=new Fingerprinter();
-		try {
-			BitSet fingerprint=fp.getFingerprint(atomContainer);
-			cachedFingerprint=fingerprint;
-			return fingerprint;
-		} catch (Exception e) {
-			throw new BioclipseException("Could not create fingerprint: " 
-					+ e.getMessage());		
-		}
+        if (force==false){
+            if (cachedFingerprint != null) {
+                return cachedFingerprint;
+            }
+        }
+        Fingerprinter fp=new Fingerprinter();
+        try {
+            BitSet fingerprint=fp.getFingerprint(atomContainer);
+            cachedFingerprint=fingerprint;
+            return fingerprint;
+        } catch (Exception e) {
+            throw new BioclipseException("Could not create fingerprint: "
+                    + e.getMessage());
+        }
 
-	}
+    }
 
-	public boolean has3dCoords() throws BioclipseException {
-		if (atomContainer==null) throw new BioclipseException("Atomcontainer is null!");
-		return 	GeometryTools.has3DCoordinates(atomContainer);		
-	}
+    public boolean has3dCoords() throws BioclipseException {
+        if (atomContainer==null) throw new BioclipseException("Atomcontainer is null!");
+        return GeometryTools.has3DCoordinates(atomContainer);
+    }
 
 }

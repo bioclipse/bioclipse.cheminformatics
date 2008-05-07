@@ -25,45 +25,45 @@ import org.eclipse.ui.PlatformUI;
  */
 public class JmolCompMouseListener implements java.awt.event.MouseListener {
 
-	private IWorkbenchPart part;
-	private Composite comp;
+    private IWorkbenchPart part;
+    private Composite comp;
 
-	public JmolCompMouseListener(Composite composite) {
-		this.comp = composite;
-	}
-	public JmolCompMouseListener(Composite composite, IWorkbenchPart part) {
-		this.comp = composite;
-		this.part = part;
-	}
+    public JmolCompMouseListener(Composite composite) {
+        this.comp = composite;
+    }
+    public JmolCompMouseListener(Composite composite, IWorkbenchPart part) {
+        this.comp = composite;
+        this.part = part;
+    }
 
-	public void mouseClicked(MouseEvent e) {
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().activate((IWorkbenchPart) part);
-//				JmolCompMouseListener.this.comp.setFocus();
-			}
-		});
-		
-	}
+    public void mouseClicked(MouseEvent e) {
+        Display.getDefault().syncExec(new Runnable() {
+            public void run() {
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().activate((IWorkbenchPart) part);
+//                JmolCompMouseListener.this.comp.setFocus();
+            }
+        });
+        
+    }
 
-	public void mouseEntered(MouseEvent e) {
-		
-	}
+    public void mouseEntered(MouseEvent e) {
+        
+    }
 
-	public void mouseExited(MouseEvent e) {
-		
-	}
+    public void mouseExited(MouseEvent e) {
+        
+    }
 
-	public void mousePressed(MouseEvent e) {
-//		Display.getDefault().syncExec(new Runnable() {
-//			public void run() {
-//				JmolCompMouseListener.this.comp.setFocus();
-//			}
-//		});
-	}
+    public void mousePressed(MouseEvent e) {
+//        Display.getDefault().syncExec(new Runnable() {
+//            public void run() {
+//                JmolCompMouseListener.this.comp.setFocus();
+//            }
+//        });
+    }
 
-	public void mouseReleased(MouseEvent e) {
-		
-	}
+    public void mouseReleased(MouseEvent e) {
+        
+    }
 
 }

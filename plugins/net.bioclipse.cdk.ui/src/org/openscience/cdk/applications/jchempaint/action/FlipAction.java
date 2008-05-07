@@ -53,9 +53,9 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
  */
 public class FlipAction extends JCPAction {
 
-	public void run() {
-		run(null);
-	}
+    public void run() {
+        run(null);
+    }
     public void run(ActionEvent e) {
         logger.info("  type  " + type);
 //        logger.debug("  source ", e.getSource());
@@ -65,19 +65,19 @@ public class FlipAction extends JCPAction {
         boolean horiz = "horizontal".equals(type);
         IAtomContainer object = null;
         if (renderModel.getSelectedPart() != null) {
-        	object = renderModel.getSelectedPart();
+            object = renderModel.getSelectedPart();
         }
         //if nothing selected flip the whole structure
         else {
-        	object = jcpModel.getChemModel().getMoleculeSet().getAtomContainer(0);
+            object = jcpModel.getChemModel().getMoleculeSet().getAtomContainer(0);
         }
         if (object != null && (horiz || "vertical".equals(type))) {
             IAtomContainer toflip = object;
             Point2d center = GeometryTools.get2DCenter(toflip,renderModel.getRenderingCoordinates());
             Iterator atomsI = toflip.atoms();
             while(atomsI.hasNext()){
-            	IAtom at = (IAtom)atomsI.next();
-            	Point2d atom = renderModel.getRenderingCoordinate(at);
+                IAtom at = (IAtom)atomsI.next();
+                Point2d atom = renderModel.getRenderingCoordinate(at);
 //                Point2d atom = atoms[i].getPoint2d();
                 Point2d oldCoord = new Point2d(atom.x, atom.y);
                 if (horiz) {

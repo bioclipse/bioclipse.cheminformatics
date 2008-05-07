@@ -31,35 +31,35 @@ import org.openscience.cdk.CDKConstants;
 public class MoleculeListLabelProviderNew extends OwnerDrawLabelProvider{
 
 
-	@Override
-	protected void measure(Event event, Object element) {
+    @Override
+    protected void measure(Event event, Object element) {
 
-		int xsize = event.width;
-		int ysize = event.height;
+        int xsize = event.width;
+        int ysize = event.height;
 
-		//Get width from widget column
-		if (event.widget instanceof Table) {
-			Table table = (Table) event.widget;
-			xsize=table.getColumn(0).getWidth();
-		}
-		
-		//Minimum sizes
-		if (ysize<100) ysize=100;
-		if (xsize<100) xsize=100;
+        //Get width from widget column
+        if (event.widget instanceof Table) {
+            Table table = (Table) event.widget;
+            xsize=table.getColumn(0).getWidth();
+        }
+        
+        //Minimum sizes
+        if (ysize<100) ysize=100;
+        if (xsize<100) xsize=100;
 
-		event.setBounds(new Rectangle(event.x, event.y, xsize,
-				ysize));
-		
-	}
+        event.setBounds(new Rectangle(event.x, event.y, xsize,
+                ysize));
+        
+    }
 
 
-	@Override
-	protected void paint(Event event, Object element) {
-		if (element instanceof StructureTableEntry) {
-			StructureTableEntry entry = (StructureTableEntry) element;
-			entry.draw(event);
-		}
-		
-	}
-	
+    @Override
+    protected void paint(Event event, Object element) {
+        if (element instanceof StructureTableEntry) {
+            StructureTableEntry entry = (StructureTableEntry) element;
+            entry.draw(event);
+        }
+        
+    }
+    
 }

@@ -23,38 +23,38 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 
 public class StructureEntitySelection implements IStructuredSelection {
 
-	Set<StructureTableEntry> selectionSet;
-	
-	public StructureEntitySelection(Set<StructureTableEntry> set) {
-		selectionSet=set;
-	}
+    Set<StructureTableEntry> selectionSet;
+    
+    public StructureEntitySelection(Set<StructureTableEntry> set) {
+        selectionSet=set;
+    }
 
-	public Object getFirstElement() {
-		return selectionSet.toArray()[0];
-	}
+    public Object getFirstElement() {
+        return selectionSet.toArray()[0];
+    }
 
-	public Iterator iterator() {
-		return selectionSet.iterator();
-	}
+    public Iterator iterator() {
+        return selectionSet.iterator();
+    }
 
-	public int size() {
-		return selectionSet.size();
-	}
+    public int size() {
+        return selectionSet.size();
+    }
 
-	public Object[] toArray() {
-		return selectionSet.toArray();
-	}
+    public Object[] toArray() {
+        return selectionSet.toArray();
+    }
 
-	public List toList() {
-		List lst=new ArrayList<StructureTableEntry>();
-		lst.addAll(selectionSet);
-		return lst;
-	}
+    public List toList() {
+        List lst=new ArrayList<StructureTableEntry>();
+        lst.addAll(selectionSet);
+        return lst;
+    }
 
-	public boolean isEmpty() {
-		if (selectionSet==null) return true;
-		if (selectionSet.size()<=0) return true;
-		return false;
-	}
+    public boolean isEmpty() {
+        if (selectionSet==null) return true;
+        if (selectionSet.size()<=0) return true;
+        return false;
+    }
 
 }

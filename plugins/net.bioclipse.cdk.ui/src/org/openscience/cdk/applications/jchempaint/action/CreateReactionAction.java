@@ -56,184 +56,184 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 public class CreateReactionAction extends JCPAction
 {
 
-	/**
-	 *  Description of the Method
-	 *
-	 *@param  event  Description of the Parameter
-	 */
-	public void run(ActionEvent event)
-	{
-		IChemObject object = getSource(event);
+    /**
+     *  Description of the Method
+     *
+     *@param  event  Description of the Parameter
+     */
+    public void run(ActionEvent event)
+    {
+        IChemObject object = getSource(event);
 
-		logger.debug("CreateReaction action");
-		JChemPaintModel jcpmodel = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
-		
-		IChemModel model = jcpmodel.getChemModel();
-		IReactionSet reactionSet = model.getReactionSet();
-		if (reactionSet == null)
-		{
-			reactionSet = model.getBuilder().newReactionSet();
-		}
-		IAtomContainer container = null;
-		if (object instanceof IAtom)
-		{
-			container = ChemModelManipulator.getRelevantAtomContainer(model, (Atom) object);
-		} else
-		{
-			logger.error("Cannot add to reaction object of type: " + object.getClass().getName());
-		}
-		if (container == null)
-		{
-			logger.error("Cannot find container to add object to!");
-		} else
-		{
-			IAtomContainer newContainer = null;
-			try {
-				newContainer = (AtomContainer) container.clone();
-			} catch (CloneNotSupportedException e) {
-				logger.error("Could not clone AtomContainer!", e);
-				logger.debug(e);
-			}
-			// delete atoms in current model
-			Iterator atomsI = container.atoms();
-			while(atomsI.hasNext()){
-				ChemModelManipulator.removeAtomAndConnectedElectronContainers(model, (IAtom)atomsI.next());
-			}
-			logger.debug("Deleted atom from old container...");
+        logger.debug("CreateReaction action");
+        JChemPaintModel jcpmodel = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
+        
+        IChemModel model = jcpmodel.getChemModel();
+        IReactionSet reactionSet = model.getReactionSet();
+        if (reactionSet == null)
+        {
+            reactionSet = model.getBuilder().newReactionSet();
+        }
+        IAtomContainer container = null;
+        if (object instanceof IAtom)
+        {
+            container = ChemModelManipulator.getRelevantAtomContainer(model, (Atom) object);
+        } else
+        {
+            logger.error("Cannot add to reaction object of type: " + object.getClass().getName());
+        }
+        if (container == null)
+        {
+            logger.error("Cannot find container to add object to!");
+        } else
+        {
+            IAtomContainer newContainer = null;
+            try {
+                newContainer = (AtomContainer) container.clone();
+            } catch (CloneNotSupportedException e) {
+                logger.error("Could not clone AtomContainer!", e);
+                logger.debug(e);
+            }
+            // delete atoms in current model
+            Iterator atomsI = container.atoms();
+            while(atomsI.hasNext()){
+                ChemModelManipulator.removeAtomAndConnectedElectronContainers(model, (IAtom)atomsI.next());
+            }
+            logger.debug("Deleted atom from old container...");
 
-			// add reaction
-			IReaction reaction = model.getBuilder().newReaction();
-			reaction.setID("reaction-" + System.currentTimeMillis());
-			logger.debug("type: " + type);
-			if ("addReactantToNew".equals(type))
-			{
-				reaction.addReactant(model.getBuilder().newMolecule(newContainer));
-				reactionSet.addReaction(reaction);
-			} else if ("addReactantToExisting".equals(type))
-			{
-				if (reactionSet.getReactionCount() == 0)
-				{
-					logger.warn("Cannot add to reaction if no one exists");
-					// FIXME: give feedback to user
-					return;
-				} else
-				{
-//					XXX needs fixing
-					Object[] ids = getReactionIDs(reactionSet);
-					
-					String s = (String) JOptionPane.showInputDialog(
-							//jcpPanel.getFrame(),
-                            null,
-							"Reaction Chooser",
-							"Choose reaction to add reaction to",
-							JOptionPane.PLAIN_MESSAGE,
-							null,
-							ids,
-							ids[0]
-							);
-					//String s2 = "";
-
-					if ((s != null) && (s.length() > 0))
-					{
-						String selectedReactionID = s;
-						reaction = getReaction(reactionSet, selectedReactionID);
-						reaction.addReactant(model.getBuilder().newMolecule(newContainer));
-					} else
-					{
-						logger.error("No reaction selected");
-					}
-				}
-			} else if ("addProductToNew".equals(type))
-			{
-				reaction.addProduct(model.getBuilder().newMolecule(newContainer));
-				reactionSet.addReaction(reaction);
-			} else if ("addProductToExisting".equals(type))
-			{
-				if (reactionSet.getReactionCount() == 0)
-				{
-					logger.warn("Cannot add to reaction if no one exists");
-					// FIXME: give feedback to user
-					return;
-				} else
-				{
-					//XXX needs fixing
-					
-					Object[] ids = getReactionIDs(reactionSet);
-					String s = (String) JOptionPane.showInputDialog(
+            // add reaction
+            IReaction reaction = model.getBuilder().newReaction();
+            reaction.setID("reaction-" + System.currentTimeMillis());
+            logger.debug("type: " + type);
+            if ("addReactantToNew".equals(type))
+            {
+                reaction.addReactant(model.getBuilder().newMolecule(newContainer));
+                reactionSet.addReaction(reaction);
+            } else if ("addReactantToExisting".equals(type))
+            {
+                if (reactionSet.getReactionCount() == 0)
+                {
+                    logger.warn("Cannot add to reaction if no one exists");
+                    // FIXME: give feedback to user
+                    return;
+                } else
+                {
+//                    XXX needs fixing
+                    Object[] ids = getReactionIDs(reactionSet);
+                    
+                    String s = (String) JOptionPane.showInputDialog(
                             //jcpPanel.getFrame(),
-							null,
+                            null,
                             "Reaction Chooser",
-							"Choose reaction to add reaction to",
-							JOptionPane.PLAIN_MESSAGE,
-							null,
-							ids,
-							ids[0]
-							);
-					//String s2 = "";
+                            "Choose reaction to add reaction to",
+                            JOptionPane.PLAIN_MESSAGE,
+                            null,
+                            ids,
+                            ids[0]
+                            );
+                    //String s2 = "";
 
-					if ((s != null) && (s.length() > 0))
-					{
-						String selectedReactionID = s;
-						reaction = getReaction(reactionSet, selectedReactionID);
-						reaction.addProduct(model.getBuilder().newMolecule(newContainer));
-					} else
-					{
-						logger.error("No reaction selected");
-					}
-				}
-			} else
-			{
-				logger.warn("Don't know about this action type: " + type);
-				return;
-			}
-		}
-		model.setReactionSet(reactionSet);
-	}
+                    if ((s != null) && (s.length() > 0))
+                    {
+                        String selectedReactionID = s;
+                        reaction = getReaction(reactionSet, selectedReactionID);
+                        reaction.addReactant(model.getBuilder().newMolecule(newContainer));
+                    } else
+                    {
+                        logger.error("No reaction selected");
+                    }
+                }
+            } else if ("addProductToNew".equals(type))
+            {
+                reaction.addProduct(model.getBuilder().newMolecule(newContainer));
+                reactionSet.addReaction(reaction);
+            } else if ("addProductToExisting".equals(type))
+            {
+                if (reactionSet.getReactionCount() == 0)
+                {
+                    logger.warn("Cannot add to reaction if no one exists");
+                    // FIXME: give feedback to user
+                    return;
+                } else
+                {
+                    //XXX needs fixing
+                    
+                    Object[] ids = getReactionIDs(reactionSet);
+                    String s = (String) JOptionPane.showInputDialog(
+                            //jcpPanel.getFrame(),
+                            null,
+                            "Reaction Chooser",
+                            "Choose reaction to add reaction to",
+                            JOptionPane.PLAIN_MESSAGE,
+                            null,
+                            ids,
+                            ids[0]
+                            );
+                    //String s2 = "";
+
+                    if ((s != null) && (s.length() > 0))
+                    {
+                        String selectedReactionID = s;
+                        reaction = getReaction(reactionSet, selectedReactionID);
+                        reaction.addProduct(model.getBuilder().newMolecule(newContainer));
+                    } else
+                    {
+                        logger.error("No reaction selected");
+                    }
+                }
+            } else
+            {
+                logger.warn("Don't know about this action type: " + type);
+                return;
+            }
+        }
+        model.setReactionSet(reactionSet);
+    }
 
 
-	/**
-	 *  Gets the reactionIDs attribute of the CreateReactionAction object
-	 *
-	 *@param  reactionSet  Description of the Parameter
-	 *@return              The reactionIDs value
-	 */
-	private Object[] getReactionIDs(IReactionSet reactionSet)
-	{
-		if (reactionSet != null)
-		{
-			Iterator reactionsI = reactionSet.reactions();
-			String[] ids = new String[reactionSet.getReactionCount()];
-			int count = 0;
-			while(reactionsI.hasNext()){
-				ids[count] = ((IReaction)reactionsI.next()).getID();
-				count++;
-			}
-			return ids;
-		} else
-		{
-			return new String[0];
-		}
-	}
+    /**
+     *  Gets the reactionIDs attribute of the CreateReactionAction object
+     *
+     *@param  reactionSet  Description of the Parameter
+     *@return              The reactionIDs value
+     */
+    private Object[] getReactionIDs(IReactionSet reactionSet)
+    {
+        if (reactionSet != null)
+        {
+            Iterator reactionsI = reactionSet.reactions();
+            String[] ids = new String[reactionSet.getReactionCount()];
+            int count = 0;
+            while(reactionsI.hasNext()){
+                ids[count] = ((IReaction)reactionsI.next()).getID();
+                count++;
+            }
+            return ids;
+        } else
+        {
+            return new String[0];
+        }
+    }
 
 
-	/**
-	 *  Gets the reaction attribute of the CreateReactionAction object
-	 *
-	 *@param  reactionSet  Description of the Parameter
-	 *@param  id           Description of the Parameter
-	 *@return              The reaction value
-	 */
-	private IReaction getReaction(IReactionSet reactionSet, String id)
-	{
-		Iterator reactionsI = reactionSet.reactions();
-		while(reactionsI.hasNext()){
-			IReaction reaction = (IReaction)reactionsI.next();
-			if (reaction.getID().equals(id))
-			{
-				return reaction;
-			}
-		}
-		return null;
-	}
+    /**
+     *  Gets the reaction attribute of the CreateReactionAction object
+     *
+     *@param  reactionSet  Description of the Parameter
+     *@param  id           Description of the Parameter
+     *@return              The reaction value
+     */
+    private IReaction getReaction(IReactionSet reactionSet, String id)
+    {
+        Iterator reactionsI = reactionSet.reactions();
+        while(reactionsI.hasNext()){
+            IReaction reaction = (IReaction)reactionsI.next();
+            if (reaction.getID().equals(id))
+            {
+                return reaction;
+            }
+        }
+        return null;
+    }
 }
 

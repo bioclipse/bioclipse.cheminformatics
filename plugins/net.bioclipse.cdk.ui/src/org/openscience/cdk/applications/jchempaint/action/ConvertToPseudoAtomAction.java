@@ -48,9 +48,9 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
  */
 public class ConvertToPseudoAtomAction extends JCPAction {
 
-	private static final long serialVersionUID = -598284013998335002L;
+    private static final long serialVersionUID = -598284013998335002L;
 
-	public void run(ActionEvent event) {
+    public void run(ActionEvent event) {
         logger.debug("Converting to: " + type);
         IChemObject object = getSource(event);
         JChemPaintModel jcpmodel = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();

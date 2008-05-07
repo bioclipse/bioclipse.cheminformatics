@@ -53,39 +53,39 @@ import org.openscience.cdk.interfaces.IChemObject;
  */
 public class EditChemObjectPropsAction extends JCPAction {
 
-	/**
-	 *  Description of the Method
-	 *
-	 * @param  event  Description of the Parameter
-	 */
-	public void run(ActionEvent event) {
-		JChemPaintModel jcpmodel = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
-		if (jcpmodel != null) {
-			IChemObject object = getSource(event);
-			logger.debug("Showing object properties for: " + object);
-			ChemObjectEditor editor = null;
-			if (object instanceof PseudoAtom) {
-				editor = new PseudoAtomEditor();
-			}
-			else if (object instanceof Atom) {
-				editor = new AtomEditor();
-			}
-			else if (object instanceof Reaction) {
-				editor = new ReactionEditor();
-			}
-			else if (object instanceof IBond) {
-				editor = new BondEditor();
-			}
-			
-			if (editor != null) {
-				editor.setChemObject((org.openscience.cdk.ChemObject)object);
-				ChemObjectPropertyDialog frame =
-						new ChemObjectPropertyDialog(jcpmodel, editor);
-				frame.pack();
-				frame.show();
-			}
-		}
-	}
+    /**
+     *  Description of the Method
+     *
+     * @param  event  Description of the Parameter
+     */
+    public void run(ActionEvent event) {
+        JChemPaintModel jcpmodel = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
+        if (jcpmodel != null) {
+            IChemObject object = getSource(event);
+            logger.debug("Showing object properties for: " + object);
+            ChemObjectEditor editor = null;
+            if (object instanceof PseudoAtom) {
+                editor = new PseudoAtomEditor();
+            }
+            else if (object instanceof Atom) {
+                editor = new AtomEditor();
+            }
+            else if (object instanceof Reaction) {
+                editor = new ReactionEditor();
+            }
+            else if (object instanceof IBond) {
+                editor = new BondEditor();
+            }
+            
+            if (editor != null) {
+                editor.setChemObject((org.openscience.cdk.ChemObject)object);
+                ChemObjectPropertyDialog frame =
+                        new ChemObjectPropertyDialog(jcpmodel, editor);
+                frame.pack();
+                frame.show();
+            }
+        }
+    }
 
 }
 

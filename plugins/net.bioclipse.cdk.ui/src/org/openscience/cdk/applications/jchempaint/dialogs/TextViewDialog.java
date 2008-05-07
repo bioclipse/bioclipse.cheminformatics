@@ -45,11 +45,11 @@ import org.eclipse.swt.widgets.Text;
 public class TextViewDialog extends Dialog {
 
     private Dimension dimension;
-	private Shell shell;
-	private int width;
-	private int height;
-	private Text textArea;
-	private String areaText;
+    private Shell shell;
+    private int width;
+    private int height;
+    private Text textArea;
+    private String areaText;
     
         
     /**
@@ -64,30 +64,30 @@ public class TextViewDialog extends Dialog {
     }
     
     public Object open(){
-		Shell parent = getParent();
-		shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-		shell.setText(getText());
-		final Display display = parent.getDisplay();
-		
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		shell.setLayout(layout);
-		textArea = new Text(shell, SWT.NONE|SWT.WRAP);
-		//TODO setSize isnt changing anything at the moment...
-//		textArea.setSize(width, height);
-		if (areaText != null) {
-			textArea.setText(areaText);
-		}
-		shell.pack();
-		shell.open();
-		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch()) display.sleep();
-		}
-		return display;
-	}
+        Shell parent = getParent();
+        shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+        shell.setText(getText());
+        final Display display = parent.getDisplay();
+        
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        shell.setLayout(layout);
+        textArea = new Text(shell, SWT.NONE|SWT.WRAP);
+        //TODO setSize isnt changing anything at the moment...
+//        textArea.setSize(width, height);
+        if (areaText != null) {
+            textArea.setText(areaText);
+        }
+        shell.pack();
+        shell.open();
+        while (!shell.isDisposed()) {
+            if (!display.readAndDispatch()) display.sleep();
+        }
+        return display;
+    }
     
     public void setMessage(String text) {
-    	this.areaText = text;
+        this.areaText = text;
     }
     
 }

@@ -17,24 +17,24 @@ import net.bioclipse.core.business.IBioclipseManager;
 
 public interface IJmolManager extends IBioclipseManager{
 
-	/**
-	 * Execute a script in Jmol. If editor active, run script there. 
-	 * In the future, if JmolView active, there too.
-	 * @param script The script command to run
-	 */
-	@PublishedMethod(methodSummary="Execute a script in Jmol."
-		,params="String to execute as Jmol script")
-	@Recorded
-	void run(String script);
+    /**
+     * Execute a script in Jmol. If editor active, run script there. 
+     * In the future, if JmolView active, there too.
+     * @param script The script command to run
+     */
+    @PublishedMethod(methodSummary="Execute a script in Jmol."
+        ,params="String to execute as Jmol script")
+    @Recorded
+    void run(String script);
 
-	
-	/**
-	 * Load jmoo with a file
-	 * @param path Path to file, relative workspace
-	 */
-	@PublishedMethod(methodSummary="Load jmoo with a file"
-		, params="Path to file, relative workspace")
-	@Recorded
-	void load(String path);
+    
+    /**
+     * Load jmoo with a file
+     * @param path Path to file, relative workspace
+     */
+    @PublishedMethod(methodSummary="Load jmoo with a file"
+        , params="Path to file, relative workspace")
+    @Recorded
+    void load(String path);
 
 }

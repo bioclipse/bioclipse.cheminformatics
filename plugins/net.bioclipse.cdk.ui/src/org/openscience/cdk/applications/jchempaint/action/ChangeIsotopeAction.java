@@ -51,71 +51,71 @@ import org.openscience.cdk.interfaces.IIsotope;
 public class ChangeIsotopeAction extends JCPAction
 {
 
-	/**
-	 *  Description of the Method
-	 *
-	 *@param  event  Description of the Parameter
-	 */
-	public void run(ActionEvent event)
-	{
-		logger.debug("About to change atom type of relevant atom!");
-		JChemPaintModel jcpm = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
-		if (jcpm != null)
-		{
-			IChemObject object = getSource(event);
-			logger.debug("Source of call: " + object);
-			if (object instanceof Atom)
-			{
-				Atom atom = (Atom) object;
-				int isotopeNumber = 0;
+    /**
+     *  Description of the Method
+     *
+     *@param  event  Description of the Parameter
+     */
+    public void run(ActionEvent event)
+    {
+        logger.debug("About to change atom type of relevant atom!");
+        JChemPaintModel jcpm = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
+        if (jcpm != null)
+        {
+            IChemObject object = getSource(event);
+            logger.debug("Source of call: " + object);
+            if (object instanceof Atom)
+            {
+                Atom atom = (Atom) object;
+                int isotopeNumber = 0;
                  int formerIsotopeNumber = 0;
-				try
-				{
-					IIsotope isotope = IsotopeFactory.getInstance(atom.getBuilder()).
-							getMajorIsotope(atom.getSymbol());
-					isotopeNumber = isotope.getMassNumber();
+                try
+                {
+                    IIsotope isotope = IsotopeFactory.getInstance(atom.getBuilder()).
+                            getMajorIsotope(atom.getSymbol());
+                    isotopeNumber = isotope.getMassNumber();
                     formerIsotopeNumber = isotopeNumber;
-				} catch (Exception exception)
-				{
-					logger.error("Error while configuring atom");
-					logger.debug(exception);
-				}
-				// adapt for menu chosen
-				if (type.equals("major"))
-				{
-					// that's the default
-				} else if (type.equals("majorPlusOne"))
-				{
-					isotopeNumber++;
-				} else if (type.equals("majorPlusTwo"))
-				{
-					isotopeNumber++;
-					isotopeNumber++;
-				} else if (type.equals("majorPlusThree"))
-				{
-					isotopeNumber++;
-					isotopeNumber++;
-					isotopeNumber++;
-				} else if (type.equals("majorMinusOne"))
-				{
-					isotopeNumber--;
-				} else if (type.equals("majorMinusTwo"))
-				{
-					isotopeNumber--;
-					isotopeNumber--;
-				} else if (type.equals("majorMinusThree"))
-				{
-					isotopeNumber--;
-					isotopeNumber--;
-					isotopeNumber--;
-				}
-				atom.setMassNumber(isotopeNumber);
+                } catch (Exception exception)
+                {
+                    logger.error("Error while configuring atom");
+                    logger.debug(exception);
+                }
+                // adapt for menu chosen
+                if (type.equals("major"))
+                {
+                    // that's the default
+                } else if (type.equals("majorPlusOne"))
+                {
+                    isotopeNumber++;
+                } else if (type.equals("majorPlusTwo"))
+                {
+                    isotopeNumber++;
+                    isotopeNumber++;
+                } else if (type.equals("majorPlusThree"))
+                {
+                    isotopeNumber++;
+                    isotopeNumber++;
+                    isotopeNumber++;
+                } else if (type.equals("majorMinusOne"))
+                {
+                    isotopeNumber--;
+                } else if (type.equals("majorMinusTwo"))
+                {
+                    isotopeNumber--;
+                    isotopeNumber--;
+                } else if (type.equals("majorMinusThree"))
+                {
+                    isotopeNumber--;
+                    isotopeNumber--;
+                    isotopeNumber--;
+                }
+                atom.setMassNumber(isotopeNumber);
                 UndoableEdit  edit = new ChangeIsotopeEdit(atom, formerIsotopeNumber, isotopeNumber);
-		        UndoableAction.pushToUndoRedoStack(edit,jcpm,((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getUndoContext(), ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getDrawingPanel());
-				jcpm.fireChange();
-			}
-		}
-	}
+                UndoableAction.pushToUndoRedoStack(edit,jcpm,((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getUndoContext(), ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getDrawingPanel());
+                jcpm.fireChange();
+            }
+        }
+    }
 
 }
 

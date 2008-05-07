@@ -53,36 +53,36 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
  */
 public class AdjustBondOrdersAction extends JCPAction
 {
-	
+    
     public void run() {
-		run(null);
-	}
-	
-	/**
-	 *  Description of the Method
-	 *
-	 *@param  e  Description of the Parameter
-	 */
-	public void run(ActionEvent e)
-	{
+        run(null);
+    }
+    
+    /**
+     *  Description of the Method
+     *
+     *@param  e  Description of the Parameter
+     */
+    public void run(ActionEvent e)
+    {
         HashMap changedBonds = null;
         JChemPaintModel jcpModel = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
         ChemModel model = (ChemModel) jcpModel.getChemModel();
-		logger.debug("Adjusting bondorders: " + type);
-		if (type.equals("clear"))
-		{
-			try
-			{
-				SaturationChecker satChecker = new SaturationChecker();
+        logger.debug("Adjusting bondorders: " + type);
+        if (type.equals("clear"))
+        {
+            try
+            {
+                SaturationChecker satChecker = new SaturationChecker();
                 changedBonds = new HashMap();
-				Iterator containersI = ChemModelManipulator.getAllAtomContainers(model).iterator();
-				while(containersI.hasNext()){
-					IAtomContainer container = (IAtomContainer) containersI.next();
+                Iterator containersI = ChemModelManipulator.getAllAtomContainers(model).iterator();
+                while(containersI.hasNext()){
+                    IAtomContainer container = (IAtomContainer) containersI.next();
                     IAtomContainer containerCopy = (IAtomContainer) container.clone();
-					satChecker.unsaturate(container);
+                    satChecker.unsaturate(container);
                      for (int j=0; j<containerCopy.getBondCount(); j++) {
-                    	 IBond bondCopy = containerCopy.getBond(j);
-                    	 IBond bond = container.getBond(j);
+                         IBond bondCopy = containerCopy.getBond(j);
+                         IBond bond = container.getBond(j);
                             if (bond.getOrder() != bondCopy.getOrder()) {
                                 IBond.Order[] bondOrders = new IBond.Order[2];
                                 bondOrders[0] = bond.getOrder();
@@ -90,51 +90,51 @@ public class AdjustBondOrdersAction extends JCPAction
                                 changedBonds.put(bond, bondOrders);
                             }
                         }
-				}
-				jcpModel.fireChange();
-			} catch (Exception exc)
-			{
-				String error = "Could not adjust bondorders.";
-				logger.error(error);
-				logger.debug(exc);
-				//TODO
-//				JOptionPane.showMessageDialog(jcpPanel, error);
-			}
-		} else
-		{
-			try
-			{
-				SaturationChecker satChecker = new SaturationChecker();
+                }
+                jcpModel.fireChange();
+            } catch (Exception exc)
+            {
+                String error = "Could not adjust bondorders.";
+                logger.error(error);
+                logger.debug(exc);
+                //TODO
+//                JOptionPane.showMessageDialog(jcpPanel, error);
+            }
+        } else
+        {
+            try
+            {
+                SaturationChecker satChecker = new SaturationChecker();
                 changedBonds = new HashMap();
                 Iterator containersI = ChemModelManipulator.getAllAtomContainers(model).iterator();
                 while(containersI.hasNext()){
-                	IAtomContainer container = (IAtomContainer) containersI.next();
+                    IAtomContainer container = (IAtomContainer) containersI.next();
                    AtomContainer containerCopy = (AtomContainer) container.clone();
-					satChecker.saturate(container);
+                    satChecker.saturate(container);
                     for (int j=0; j<containerCopy.getBondCount(); j++) {
-                    	IBond bondCopy = containerCopy.getBond(j);
-                    	IBond bond = container.getBond(j);
+                        IBond bondCopy = containerCopy.getBond(j);
+                        IBond bond = container.getBond(j);
                         if (bond.getOrder() != bondCopy.getOrder()) {
-                        	IBond.Order[] bondOrders = new IBond.Order[2];
+                            IBond.Order[] bondOrders = new IBond.Order[2];
                             bondOrders[0] = bond.getOrder();
                             bondOrders[1] = bondCopy.getOrder();
                             changedBonds.put(bond, bondOrders);
                         }
                     }
-				}
-				jcpModel.fireChange();
-			} catch (Exception exc)
-			{
-				String error = "Could not adjust bondorders.";
-				logger.error(error);
-				logger.debug(exc);
-				//TODO
-//				JOptionPane.showMessageDialog(jcpPanel, error);
-			}
-		}
+                }
+                jcpModel.fireChange();
+            } catch (Exception exc)
+            {
+                String error = "Could not adjust bondorders.";
+                logger.error(error);
+                logger.debug(exc);
+                //TODO
+//                JOptionPane.showMessageDialog(jcpPanel, error);
+            }
+        }
         UndoableEdit  edit = new AdjustBondOrdersEdit(changedBonds);
         JChemPaintModel jcpmodel = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
         UndoableAction.pushToUndoRedoStack(edit,jcpmodel,((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getUndoContext(), ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getDrawingPanel());
-	}
+    }
 }
 

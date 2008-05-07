@@ -23,57 +23,57 @@ import org.jmol.modelset.Chain;
  */
 public class ChainPropertySource implements IPropertySource {
 
-	private static final String PROPERTY_NAME = "jmol.chain.name"; 	
-	private static final String PROPERTY_SEQUENCE = "jmol.chain.sequence";	
+    private static final String PROPERTY_NAME = "jmol.chain.name";     
+    private static final String PROPERTY_SEQUENCE = "jmol.chain.sequence";    
 
-	private JmolChain jmolChain;						//The model
+    private JmolChain jmolChain;                        //The model
 
-	private IPropertyDescriptor[] propertyDescriptors;	//Cached descriptors
+    private IPropertyDescriptor[] propertyDescriptors;    //Cached descriptors
 
-	public ChainPropertySource(JmolChain jmolChain) {
-		this.jmolChain=jmolChain;
-	}
+    public ChainPropertySource(JmolChain jmolChain) {
+        this.jmolChain=jmolChain;
+    }
 
-	public IPropertyDescriptor[] getPropertyDescriptors() {
-		if (propertyDescriptors == null) {
-			// Create a descriptor and set a category
-			PropertyDescriptor nameDescriptor = new PropertyDescriptor(PROPERTY_NAME, "name");
-			nameDescriptor.setCategory("Jmol");
+    public IPropertyDescriptor[] getPropertyDescriptors() {
+        if (propertyDescriptors == null) {
+            // Create a descriptor and set a category
+            PropertyDescriptor nameDescriptor = new PropertyDescriptor(PROPERTY_NAME, "name");
+            nameDescriptor.setCategory("Jmol");
 
-			PropertyDescriptor sequenceDescriptor = new PropertyDescriptor(PROPERTY_SEQUENCE, "Sequence");
-			sequenceDescriptor.setCategory("Jmol");
-
-
-			propertyDescriptors = new IPropertyDescriptor[] {
-					nameDescriptor,   // Read-only (instance of PropertyDescriptor)
-					sequenceDescriptor   // Read-only (instance of PropertyDescriptor)
-			};
-		}
-		return propertyDescriptors;
-	}
+            PropertyDescriptor sequenceDescriptor = new PropertyDescriptor(PROPERTY_SEQUENCE, "Sequence");
+            sequenceDescriptor.setCategory("Jmol");
 
 
-	public Object getEditableValue() {
-		return null;
-	}
+            propertyDescriptors = new IPropertyDescriptor[] {
+                    nameDescriptor,   // Read-only (instance of PropertyDescriptor)
+                    sequenceDescriptor   // Read-only (instance of PropertyDescriptor)
+            };
+        }
+        return propertyDescriptors;
+    }
 
-	public Object getPropertyValue(Object id) {
-		if (id.equals(PROPERTY_NAME))
-			return jmolChain.getName();
-		else if (id.equals(PROPERTY_SEQUENCE)) {
-			return jmolChain.getSequence();
-		}
-		return null;
-	}
 
-	public boolean isPropertySet(Object id) {
-		return false;
-	}
+    public Object getEditableValue() {
+        return null;
+    }
 
-	public void resetPropertyValue(Object id) {
-	}
+    public Object getPropertyValue(Object id) {
+        if (id.equals(PROPERTY_NAME))
+            return jmolChain.getName();
+        else if (id.equals(PROPERTY_SEQUENCE)) {
+            return jmolChain.getSequence();
+        }
+        return null;
+    }
 
-	public void setPropertyValue(Object id, Object value) {
-	}
+    public boolean isPropertySet(Object id) {
+        return false;
+    }
+
+    public void resetPropertyValue(Object id) {
+    }
+
+    public void setPropertyValue(Object id, Object value) {
+    }
 
 }

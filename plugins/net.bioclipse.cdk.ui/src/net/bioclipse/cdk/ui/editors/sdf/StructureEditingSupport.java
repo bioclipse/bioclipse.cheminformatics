@@ -19,32 +19,32 @@ import org.eclipse.jface.viewers.EditingSupport;
 
 public class StructureEditingSupport extends EditingSupport {
 
-	public StructureEditingSupport(ColumnViewer viewer) {
-		super(viewer);
-	}
+    public StructureEditingSupport(ColumnViewer viewer) {
+        super(viewer);
+    }
 
-	@Override
-	protected boolean canEdit(Object element) {
-		return false;
-	}
+    @Override
+    protected boolean canEdit(Object element) {
+        return false;
+    }
 
-	@Override
-	protected CellEditor getCellEditor(Object element) {
-		if (element instanceof ICDKMolecule) {
-			ICDKMolecule mol = (ICDKMolecule) element;
-			
-			
-		}
-		return null;
-	}
+    @Override
+    protected CellEditor getCellEditor(Object element) {
+        if (element instanceof ICDKMolecule) {
+            ICDKMolecule mol = (ICDKMolecule) element;
+            
+            
+        }
+        return null;
+    }
 
-	@Override
-	protected Object getValue(Object element) {
-		return null;
-	}
+    @Override
+    protected Object getValue(Object element) {
+        return null;
+    }
 
-	@Override
-	protected void setValue(Object element, Object value) {
-	}
+    @Override
+    protected void setValue(Object element, Object value) {
+    }
 
 }

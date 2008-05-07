@@ -49,25 +49,25 @@ import org.openscience.cdk.applications.jchempaint.dialogs.JChemPaintModelPropsD
 public class ModelPropsAction extends JCPAction
 {
 
-	public void run() {
-		run(null);
-	}
-	
-	/**
-	 *  Description of the Method
-	 *
-	 *@param  e  Description of the Parameter
-	 */
-	public void run(ActionEvent e)
-	{
-		final JChemPaintModel jcpModel = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
-		Display display = this.getContributor().getPage().getActivePart().getSite().getShell().getDisplay();
-		display.asyncExec(new Runnable() {
-			public void run() {
-				JChemPaintModelPropsDialog dialog = new JChemPaintModelPropsDialog(ModelPropsAction.this.getContributor().getActiveEditorPart().getEditorSite().getShell(), 0, jcpModel);
-				dialog.open();
-			}			
-		});
-	}
+    public void run() {
+        run(null);
+    }
+
+    /**
+     *  Description of the Method
+     *
+     *@param  e  Description of the Parameter
+     */
+    public void run(ActionEvent e)
+    {
+        final JChemPaintModel jcpModel = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
+        Display display = this.getContributor().getPage().getActivePart().getSite().getShell().getDisplay();
+        display.asyncExec(new Runnable() {
+            public void run() {
+                JChemPaintModelPropsDialog dialog = new JChemPaintModelPropsDialog(ModelPropsAction.this.getContributor().getActiveEditorPart().getEditorSite().getShell(), 0, jcpModel);
+                dialog.open();
+            }
+        });
+    }
 }
 

@@ -40,10 +40,10 @@ import org.openscience.cdk.applications.jchempaint.dialogs.ModifyGeneralSettings
  */
 public class ModifyGeneralSettingsAction extends JCPAction {
 
-	public void run() {
-		run(null);
-	}
-	
+    public void run() {
+        run(null);
+    }
+    
     public void run(ActionEvent e) {
         logger.debug("Modify general JCP settings");
         ModifyGeneralSettingsDialog dialog =

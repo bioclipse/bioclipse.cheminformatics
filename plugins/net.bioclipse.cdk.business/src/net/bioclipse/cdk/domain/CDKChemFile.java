@@ -26,77 +26,77 @@ import net.bioclipse.core.domain.IMolecule;
 
 public class CDKChemFile extends BioObject implements IMolecule{
 
-	private IChemFile chemFile;
-	private String cachedSMILES;
-	
-	public CDKChemFile(IChemFile chemFile) {
-		super();
-		this.chemFile=chemFile;
-	}
+    private IChemFile chemFile;
+    private String cachedSMILES;
+    
+    public CDKChemFile(IChemFile chemFile) {
+        super();
+        this.chemFile=chemFile;
+    }
 
-	public Object getParsedResource() {
-		return chemFile;
-	}
+    public Object getParsedResource() {
+        return chemFile;
+    }
 
-	public IChemFile getChemFile() {
-		return chemFile;
-	}
+    public IChemFile getChemFile() {
+        return chemFile;
+    }
 
-	public void setChemFile(IChemFile chemFile) {
-		this.chemFile = chemFile;
-	}
+    public void setChemFile(IChemFile chemFile) {
+        this.chemFile = chemFile;
+    }
 
-	public String getSmiles() throws BioclipseException {
-		
-		//TODO: wrap in job?
-		
-		if (cachedSMILES != null) {
-			return cachedSMILES;
-		}
-		
-		if (getChemFile() == null) throw new BioclipseException("Molecule is empty");
-		
-		if (ChemFileManipulator.getAtomCount(getChemFile()) > 100)
-			throw new BioclipseException("Not calculating SMILES: molecule has more than 100 atoms.");
-		
-		if (ChemFileManipulator.getBondCount(getChemFile()) == 0)
-			throw new BioclipseException("Not calculating SMILES: molecule has no bonds.");
-		
+    public String getSmiles() throws BioclipseException {
+        
+        //TODO: wrap in job?
+        
+        if (cachedSMILES != null) {
+            return cachedSMILES;
+        }
+        
+        if (getChemFile() == null) throw new BioclipseException("Molecule is empty");
+        
+        if (ChemFileManipulator.getAtomCount(getChemFile()) > 100)
+            throw new BioclipseException("Not calculating SMILES: molecule has more than 100 atoms.");
+        
+        if (ChemFileManipulator.getBondCount(getChemFile()) == 0)
+            throw new BioclipseException("Not calculating SMILES: molecule has no bonds.");
+        
         // ok, need to create a SMILES...
-//		logger.debug("Calculating SMILES...");
+//        logger.debug("Calculating SMILES...");
         SmilesGenerator generator = new SmilesGenerator();
         try {
-        	List containersList = ChemFileManipulator.getAllAtomContainers(getChemFile());
-        	if (containersList.size() > 1) {
-        		org.openscience.cdk.interfaces.IMolecule fullSet = getChemFile().getBuilder().newMolecule();
-        		Iterator iterator = containersList.iterator();
-        		while(iterator.hasNext())
-        			fullSet.add((IAtomContainer)iterator.next());
-        		cachedSMILES = generator.createSMILES(fullSet);
-        	} else if (containersList.size() == 1) {
-        		cachedSMILES = generator.createSMILES(
-        			getChemFile().getBuilder().newMolecule(
-        				(IAtomContainer)containersList.get(0)
-        			)
-        		);
-        	} // skip
-//        	logger.debug("SMILES cached: " + cachedSMILES);
+            List containersList = ChemFileManipulator.getAllAtomContainers(getChemFile());
+            if (containersList.size() > 1) {
+                org.openscience.cdk.interfaces.IMolecule fullSet = getChemFile().getBuilder().newMolecule();
+                Iterator iterator = containersList.iterator();
+                while(iterator.hasNext())
+                    fullSet.add((IAtomContainer)iterator.next());
+                cachedSMILES = generator.createSMILES(fullSet);
+            } else if (containersList.size() == 1) {
+                cachedSMILES = generator.createSMILES(
+                    getChemFile().getBuilder().newMolecule(
+                        (IAtomContainer)containersList.get(0)
+                    )
+                );
+            } // skip
+//            logger.debug("SMILES cached: " + cachedSMILES);
         } catch(Exception exception) {
-        	 throw new BioclipseException("General error generating SMILES");
-        	 //        	logger.error(message);
+             throw new BioclipseException("General error generating SMILES");
+             //            logger.error(message);
         }
 
-		return cachedSMILES;
-	}
+        return cachedSMILES;
+    }
 
-	public Object getAdapter(Class adapter) {
-		// TODO Auto-generated method stub
-		return super.getAdapter(adapter);
-	}
+    public Object getAdapter(Class adapter) {
+        // TODO Auto-generated method stub
+        return super.getAdapter(adapter);
+    }
 
-	public boolean has3dCoords() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public boolean has3dCoords() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
 }

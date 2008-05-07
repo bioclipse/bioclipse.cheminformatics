@@ -41,74 +41,74 @@ import javax.swing.Icon;
 public class JCPFileView extends javax.swing.filechooser.FileView
 {
 
-	/**
-	 *  Gets the name attribute of the JCPFileView object
-	 *
-	 *@param  f  Description of the Parameter
-	 *@return    The name value
-	 */
-	public String getName(File f)
-	{
-		return null;
-		// let the L&F FileView figure this out
-	}
+    /**
+     *  Gets the name attribute of the JCPFileView object
+     *
+     *@param  f  Description of the Parameter
+     *@return    The name value
+     */
+    public String getName(File f)
+    {
+        return null;
+        // let the L&F FileView figure this out
+    }
 
 
-	/**
-	 *  Gets the description attribute of the JCPFileView object
-	 *
-	 *@param  f  Description of the Parameter
-	 *@return    The description value
-	 */
-	public String getDescription(File f)
-	{
-		return null;
-		// let the L&F FileView figure this out
-	}
+    /**
+     *  Gets the description attribute of the JCPFileView object
+     *
+     *@param  f  Description of the Parameter
+     *@return    The description value
+     */
+    public String getDescription(File f)
+    {
+        return null;
+        // let the L&F FileView figure this out
+    }
 
 
-	/**
-	 *  Gets the traversable attribute of the JCPFileView object
-	 *
-	 *@param  f  Description of the Parameter
-	 *@return    The traversable value
-	 */
-	public Boolean isTraversable(File f)
-	{
-		return null;
-		// let the L&F FileView figure this out
-	}
+    /**
+     *  Gets the traversable attribute of the JCPFileView object
+     *
+     *@param  f  Description of the Parameter
+     *@return    The traversable value
+     */
+    public Boolean isTraversable(File f)
+    {
+        return null;
+        // let the L&F FileView figure this out
+    }
 
 
-	/**
-	 *  Gets the typeDescription attribute of the JCPFileView object
-	 *
-	 *@param  f  Description of the Parameter
-	 *@return    The typeDescription value
-	 */
-	public String getTypeDescription(File f)
-	{
-		String extension = JCPFileFilter.getExtension(f);
-		JCPFileFilter jcpff = new JCPFileFilter(extension);
-		String type = null;
+    /**
+     *  Gets the typeDescription attribute of the JCPFileView object
+     *
+     *@param  f  Description of the Parameter
+     *@return    The typeDescription value
+     */
+    public String getTypeDescription(File f)
+    {
+        String extension = JCPFileFilter.getExtension(f);
+        JCPFileFilter jcpff = new JCPFileFilter(extension);
+        String type = null;
 
-		if (extension != null)
-		{
-			type = jcpff.getDescription();
-		}
-		return type;
-	}
+        if (extension != null)
+        {
+            type = jcpff.getDescription();
+        }
+        return type;
+    }
 
 
-	/**
-	 *  Gets the icon attribute of the JCPFileView object
-	 *
-	 *@param  f  Description of the Parameter
-	 *@return    The icon value
-	 */
-	public Icon getIcon(File f)
-	{
-		Icon icon = null;
+    /**
+     *  Gets the icon attribute of the JCPFileView object
+     *
+     *@param  f  Description of the Parameter
+     *@return    The icon value
+     */
+    public Icon getIcon(File f)
+    {
+        Icon icon = null;
 
 //        String extension = JCPFileFilter.getExtension(f);
 
@@ -123,8 +123,8 @@ public class JCPFileView extends javax.swing.filechooser.FileView
 //                icon = tiffIcon;
 //            }
 //        }
-		return icon;
-	}
+        return icon;
+    }
 
 }
 

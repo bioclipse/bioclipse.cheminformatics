@@ -43,195 +43,195 @@ import javax.swing.JFileChooser;
 public class JCPFileFilter extends javax.swing.filechooser.FileFilter implements IJCPFileFilter
 {
 
-	/**
-	 *  Description of the Field
-	 */
-	public final static String rxn = "rxn";
-	/**
-	 *  Description of the Field
-	 */
-	public final static String rdf = "rdf";
-	/**
-	 *  Description of the Field
-	 */
-	public final static String sdf = "sdf";
-	/**
-	 *  Description of the Field
-	 */
-	public final static String mol = "mol";
-	/**
-	 *  Description of the Field
-	 */
-	public final static String cml = "cml";
-	/**
-	 *  Description of the Field
-	 */
-	public final static String xml = "xml";
-	/**
-	 *  Description of the Field
-	 */
-	public final static String inchi = "txt";
-	/**
-	 *  Description of the Field
-	 */
-	public final static String smi = "smi";
+    /**
+     *  Description of the Field
+     */
+    public final static String rxn = "rxn";
+    /**
+     *  Description of the Field
+     */
+    public final static String rdf = "rdf";
+    /**
+     *  Description of the Field
+     */
+    public final static String sdf = "sdf";
+    /**
+     *  Description of the Field
+     */
+    public final static String mol = "mol";
+    /**
+     *  Description of the Field
+     */
+    public final static String cml = "cml";
+    /**
+     *  Description of the Field
+     */
+    public final static String xml = "xml";
+    /**
+     *  Description of the Field
+     */
+    public final static String inchi = "txt";
+    /**
+     *  Description of the Field
+     */
+    public final static String smi = "smi";
 
-	/**
-	 *  Description of the Field
-	 */
-	protected List types;
-
-
-	/**
-	 *  Constructor for the JCPFileFilter object
-	 *
-	 *@param  type  Description of the Parameter
-	 */
-	public JCPFileFilter(String type)
-	{
-		super();
-		types = new ArrayList();
-		types.add(type);
-	}
+    /**
+     *  Description of the Field
+     */
+    protected List types;
 
 
-	/**
-	 *  Adds an additional file type to the list
-	 *
-	 *@param  type  The feature to be added to the Type attribute
-	 */
-	public void addType(String type)
-	{
-		types.add(type);
-	}
+    /**
+     *  Constructor for the JCPFileFilter object
+     *
+     *@param  type  Description of the Parameter
+     */
+    public JCPFileFilter(String type)
+    {
+        super();
+        types = new ArrayList();
+        types.add(type);
+    }
 
 
-	/**
-	 *  Adds the JCPFileFilter to the JFileChooser object.
-	 *
-	 *@param  chooser  The feature to be added to the ChoosableFileFilters
-	 *      attribute
-	 */
-	public static void addChoosableFileFilters(JFileChooser chooser)
-	{
-		chooser.addChoosableFileFilter(new JCPSaveFileFilter(JCPFileFilter.mol));
-		chooser.addChoosableFileFilter(new JCPFileFilter(JCPFileFilter.smi));
-		chooser.addChoosableFileFilter(new JCPFileFilter(JCPFileFilter.inchi));
-		chooser.addChoosableFileFilter(new JCPFileFilter(JCPFileFilter.sdf));
-		chooser.addChoosableFileFilter(new JCPFileFilter(JCPFileFilter.rxn));
-		chooser.addChoosableFileFilter(new JCPFileFilter(JCPFileFilter.rdf));
-		JCPFileFilter cmlFilter = new JCPFileFilter(JCPFileFilter.cml);
-		cmlFilter.addType(JCPFileFilter.xml);
-		chooser.addChoosableFileFilter(cmlFilter);
-	}
+    /**
+     *  Adds an additional file type to the list
+     *
+     *@param  type  The feature to be added to the Type attribute
+     */
+    public void addType(String type)
+    {
+        types.add(type);
+    }
 
 
-	/*
-	 *  Get the extension of a file.
-	 */
-	/**
-	 *  Gets the extension attribute of the JCPFileFilter class
-	 *
-	 *@param  f  Description of the Parameter
-	 *@return    The extension value
-	 */
-	public static String getExtension(File f)
-	{
-		String ext = null;
-		String s = f.getName();
-		int i = s.lastIndexOf('.');
-
-		if (i > 0 && i < s.length() - 1)
-		{
-			ext = s.substring(i + 1).toLowerCase();
-		}
-		return ext;
-	}
+    /**
+     *  Adds the JCPFileFilter to the JFileChooser object.
+     *
+     *@param  chooser  The feature to be added to the ChoosableFileFilters
+     *      attribute
+     */
+    public static void addChoosableFileFilters(JFileChooser chooser)
+    {
+        chooser.addChoosableFileFilter(new JCPSaveFileFilter(JCPFileFilter.mol));
+        chooser.addChoosableFileFilter(new JCPFileFilter(JCPFileFilter.smi));
+        chooser.addChoosableFileFilter(new JCPFileFilter(JCPFileFilter.inchi));
+        chooser.addChoosableFileFilter(new JCPFileFilter(JCPFileFilter.sdf));
+        chooser.addChoosableFileFilter(new JCPFileFilter(JCPFileFilter.rxn));
+        chooser.addChoosableFileFilter(new JCPFileFilter(JCPFileFilter.rdf));
+        JCPFileFilter cmlFilter = new JCPFileFilter(JCPFileFilter.cml);
+        cmlFilter.addType(JCPFileFilter.xml);
+        chooser.addChoosableFileFilter(cmlFilter);
+    }
 
 
-	// Accept all directories and all gif, jpg, or tiff files.
-	public boolean accept(File f)
-	{
-		if (f.isDirectory())
-		{
-			return true;
-		}
+    /*
+     *  Get the extension of a file.
+     */
+    /**
+     *  Gets the extension attribute of the JCPFileFilter class
+     *
+     *@param  f  Description of the Parameter
+     *@return    The extension value
+     */
+    public static String getExtension(File f)
+    {
+        String ext = null;
+        String s = f.getName();
+        int i = s.lastIndexOf('.');
 
-		String extension = getExtension(f);
-		if (extension != null)
-		{
-			if (types.contains(extension))
-			{
-				return true;
-			} else
-			{
-				return false;
-			}
-		}
-		return false;
-	}
-
-
-	// The description of this filter
-	/**
-	 *  Gets the description attribute of the JCPFileFilter object
-	 *
-	 *@return    The description value
-	 */
-	public String getDescription()
-	{
-		String type = (String) types.get(0);
-		if (type.equals(mol))
-		{
-			return "MDL MOL file";
-		}
-		if (type.equals(sdf))
-		{
-			return "MDL SDF Molfile";
-		}
-		if (type.equals(rxn))
-		{
-			return "MDL RXN Molfile";
-		}
-		if (type.equals(rdf))
-		{
-			return "MDL RDF Molfile";
-		}
-		if (type.equals(inchi))
-		{
-			return "IUPAC Chemical Identifier";
-		}
-		if (type.equals(smi))
-		{
-			return "SMILES";
-		}
-		if (type.equals(cml) || type.equals(xml))
-		{
-			return "Chemical Markup Language";
-		}
-		return null;
-	}
+        if (i > 0 && i < s.length() - 1)
+        {
+            ext = s.substring(i + 1).toLowerCase();
+        }
+        return ext;
+    }
 
 
-	/**
-	 *  Gets the type attribute of the JCPFileFilter object
-	 *
-	 *@return    The type value
-	 */
-	public String getType()
-	{
-		return (String) types.get(0);
-	}
+    // Accept all directories and all gif, jpg, or tiff files.
+    public boolean accept(File f)
+    {
+        if (f.isDirectory())
+        {
+            return true;
+        }
+
+        String extension = getExtension(f);
+        if (extension != null)
+        {
+            if (types.contains(extension))
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
+        return false;
+    }
 
 
-	/**
-	 *  Sets the type attribute of the JCPFileFilter object
-	 *
-	 *@param  type  The new type value
-	 */
-	public void setType(String type)
-	{
-		types.add(type);
-	}
+    // The description of this filter
+    /**
+     *  Gets the description attribute of the JCPFileFilter object
+     *
+     *@return    The description value
+     */
+    public String getDescription()
+    {
+        String type = (String) types.get(0);
+        if (type.equals(mol))
+        {
+            return "MDL MOL file";
+        }
+        if (type.equals(sdf))
+        {
+            return "MDL SDF Molfile";
+        }
+        if (type.equals(rxn))
+        {
+            return "MDL RXN Molfile";
+        }
+        if (type.equals(rdf))
+        {
+            return "MDL RDF Molfile";
+        }
+        if (type.equals(inchi))
+        {
+            return "IUPAC Chemical Identifier";
+        }
+        if (type.equals(smi))
+        {
+            return "SMILES";
+        }
+        if (type.equals(cml) || type.equals(xml))
+        {
+            return "Chemical Markup Language";
+        }
+        return null;
+    }
+
+
+    /**
+     *  Gets the type attribute of the JCPFileFilter object
+     *
+     *@return    The type value
+     */
+    public String getType()
+    {
+        return (String) types.get(0);
+    }
+
+
+    /**
+     *  Sets the type attribute of the JCPFileFilter object
+     *
+     *@param  type  The new type value
+     */
+    public void setType(String type)
+    {
+        types.add(type);
+    }
 }
 

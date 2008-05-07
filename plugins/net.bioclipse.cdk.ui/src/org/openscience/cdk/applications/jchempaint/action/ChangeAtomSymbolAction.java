@@ -50,49 +50,49 @@ import org.openscience.cdk.controller.Controller2DModel;
 public class ChangeAtomSymbolAction extends JCPAction
 {
 
-	/**
-	 *  Description of the Method
-	 *
-	 *@param  event  Description of the Parameter
-	 */
-	public void run(ActionEvent event) 
-	{
-		logger.debug("About to change atom type of relevant atom!");
-		JChemPaintModel jcpm = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
-		
-		if (jcpm != null)
-		{
-			Controller2DModel c2dm = jcpm.getControllerModel();
-			Atom atomInRange = null;
-			ChemObject object = getSource(event);
-			logger.debug("Source of call: " +  object);
-			if (object instanceof Atom)
-			{
-				atomInRange = (Atom) object;
-			} else
-			{
-				atomInRange = (Atom) jcpm.getRendererModel().getHighlightedAtom();
-			}
+    /**
+     *  Description of the Method
+     *
+     *@param  event  Description of the Parameter
+     */
+    public void run(ActionEvent event) 
+    {
+        logger.debug("About to change atom type of relevant atom!");
+        JChemPaintModel jcpm = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
+        
+        if (jcpm != null)
+        {
+            Controller2DModel c2dm = jcpm.getControllerModel();
+            Atom atomInRange = null;
+            ChemObject object = getSource(event);
+            logger.debug("Source of call: " +  object);
+            if (object instanceof Atom)
+            {
+                atomInRange = (Atom) object;
+            } else
+            {
+                atomInRange = (Atom) jcpm.getRendererModel().getHighlightedAtom();
+            }
             String formerSymbol = atomInRange.getSymbol();
-			String s = event.getActionCommand();
-			String symbol = s.substring(s.indexOf("@") + 1);
+            String s = event.getActionCommand();
+            String symbol = s.substring(s.indexOf("@") + 1);
             atomInRange.setSymbol(symbol);
-			// modify the current atom symbol
-			c2dm.setDrawElement(symbol);
-			// configure the atom, so that the atomic number matches the symbol
-			try
-			{
-				IsotopeFactory.getInstance(atomInRange.getBuilder()).configure(atomInRange);
-			} catch (Exception exception)
-			{
-				logger.error("Error while configuring atom");
-				logger.debug(exception);
-			}
+            // modify the current atom symbol
+            c2dm.setDrawElement(symbol);
+            // configure the atom, so that the atomic number matches the symbol
+            try
+            {
+                IsotopeFactory.getInstance(atomInRange.getBuilder()).configure(atomInRange);
+            } catch (Exception exception)
+            {
+                logger.error("Error while configuring atom");
+                logger.debug(exception);
+            }
             UndoableEdit  edit = new ChangeAtomSymbolEdit(atomInRange, formerSymbol, symbol);
             UndoableAction.pushToUndoRedoStack(edit,jcpm,((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getUndoContext(), ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getDrawingPanel());
-			jcpm.fireChange();
-		}
-	}
+            jcpm.fireChange();
+        }
+    }
 
 }
 

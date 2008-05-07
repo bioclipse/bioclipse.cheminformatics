@@ -23,18 +23,18 @@ import org.eclipse.jface.resource.ImageDescriptor;
  */
 public class Activator extends BioclipseActivator {
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "net.bioclipse.cdk.ui";
+    // The plug-in ID
+    public static final String PLUGIN_ID = "net.bioclipse.cdk.ui";
 
-	
-	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path
-	 *
-	 * @param path the path
-	 * @return the image descriptor
-	 */
-	public static ImageDescriptor getImageDescriptor(String path) {
-		return imageDescriptorFromPlugin(PLUGIN_ID, path);
-	}
+    
+    /**
+     * Returns an image descriptor for the image file at the given
+     * plug-in relative path
+     *
+     * @param path the path
+     * @return the image descriptor
+     */
+    public static ImageDescriptor getImageDescriptor(String path) {
+        return imageDescriptorFromPlugin(PLUGIN_ID, path);
+    }
 }

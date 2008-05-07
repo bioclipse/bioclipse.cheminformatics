@@ -65,52 +65,52 @@ import org.openscience.cdk.renderer.Renderer2DModel;
 public class CleanupAction extends JCPAction
 {
 
-	private StructureDiagramGenerator diagramGenerator;
-    
+    private StructureDiagramGenerator diagramGenerator;
 
-	public void run() {
-		run(null);			
-	}
 
-	/**
-	 *  Relayouts a molecule
-	 *
-	 *@param  e  Description of the Parameter
-	 */
-	public void run(ActionEvent e)
-	{	
-		HashMap atomCoordsMap = new HashMap();
+    public void run() {
+        run(null);
+    }
+
+    /**
+     *  Relayouts a molecule
+     *
+     *@param  e  Description of the Parameter
+     */
+    public void run(ActionEvent e)
+    {
+        HashMap atomCoordsMap = new HashMap();
         JChemPaintModel jcpmodel = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
         logger.info("Going to performe a clean up...");
-		if (jcpmodel != null)
-		{
-			if (diagramGenerator == null) {
+        if (jcpmodel != null)
+        {
+            if (diagramGenerator == null) {
                 diagramGenerator = new StructureDiagramGenerator();
                 diagramGenerator.setTemplateHandler(
                     new TemplateHandler(jcpmodel.getChemModel().getBuilder())
                 );
             }
-			Renderer2DModel renderModel = jcpmodel.getRendererModel();
-			double bondLength = renderModel.getBondLength() / renderModel.getScaleFactor();
-			diagramGenerator.setBondLength(bondLength * 2.0);
-			// FIXME this extra factor should not be necessary
-			logger.debug("getting ChemModel");
-			IChemModel model = jcpmodel.getChemModel();
-			logger.debug("got ChemModel");
-			IMoleculeSet som = model.getMoleculeSet();
-			if (som != null)
-			{
-                
-				logger.debug("no mols in som: " + som.getMoleculeCount());
-				MoleculeSet newsom = new MoleculeSet();
-				Iterator molsI = som.molecules();
-				while(molsI.hasNext()){
-					IMolecule mol = (IMolecule)molsI.next();
+            Renderer2DModel renderModel = jcpmodel.getRendererModel();
+            double bondLength = renderModel.getBondLength() / renderModel.getScaleFactor();
+            diagramGenerator.setBondLength(bondLength * 2.0);
+            // FIXME this extra factor should not be necessary
+            logger.debug("getting ChemModel");
+            IChemModel model = jcpmodel.getChemModel();
+            logger.debug("got ChemModel");
+            IMoleculeSet som = model.getMoleculeSet();
+            if (som != null)
+            {
+
+                logger.debug("no mols in som: " + som.getMoleculeCount());
+                MoleculeSet newsom = new MoleculeSet();
+                Iterator molsI = som.molecules();
+                while(molsI.hasNext()){
+                    IMolecule mol = (IMolecule)molsI.next();
                     IMolecule molecule = mol;
                     IMolecule cleanedMol = relayoutMolecule(mol);
-					newsom.addMolecule(cleanedMol);
+                    newsom.addMolecule(cleanedMol);
 //                  IAtom[] atoms = molecule.getAtoms();
-//					IAtom[] newAtoms = cleanedMol.getAtoms();
+//                    IAtom[] newAtoms = cleanedMol.getAtoms();
                     for (int j=0; j< molecule.getAtomCount(); j++) {
                         Point2d oldCoord = molecule.getAtom(j).getPoint2d();
                         Point2d newCoord = cleanedMol.getAtom(j).getPoint2d();
@@ -121,87 +121,87 @@ public class CleanupAction extends JCPAction
                             atomCoordsMap.put(cleanedMol.getAtom(j), coords);
                         }
                     }
-				}
-				model.setMoleculeSet(newsom);
-                
+                }
+                model.setMoleculeSet(newsom);
+
                 UndoableEdit  edit = new CleanUpEdit(atomCoordsMap);
-                
+
                 UndoableAction.pushToUndoRedoStack(edit,jcpmodel,((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getUndoContext(), ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getDrawingPanel());
-			}
-			IReactionSet reactionSet = model.getReactionSet();
-			if (reactionSet != null)
-			{
-				ReactionSet newSet = new ReactionSet();
-				// FIXME, this does not preserve reactionset properties!
-				Iterator reactionsI = reactionSet.reactions();
-				while(reactionsI.hasNext()){
-					IReaction reaction = (IReaction)reactionsI.next();
-					Reaction newReaction = new Reaction();
-					// FIXME, this does not preserve reaction properties!
-					Iterator reactantsI = reaction.getReactants().molecules();
-					while(reactantsI.hasNext()){
-						newReaction.addReactant(relayoutMolecule((IMolecule)reactantsI.next()));
-					}
-					Iterator productsI = reaction.getProducts().molecules();
-					while(productsI.hasNext()){
-						newReaction.addProduct(relayoutMolecule((IMolecule)productsI.next()));
-					}
-					newSet.addReaction(newReaction);
-				}
-				model.setReactionSet(newSet);
-			}
+            }
+            IReactionSet reactionSet = model.getReactionSet();
+            if (reactionSet != null)
+            {
+                ReactionSet newSet = new ReactionSet();
+                // FIXME, this does not preserve reactionset properties!
+                Iterator reactionsI = reactionSet.reactions();
+                while(reactionsI.hasNext()){
+                    IReaction reaction = (IReaction)reactionsI.next();
+                    Reaction newReaction = new Reaction();
+                    // FIXME, this does not preserve reaction properties!
+                    Iterator reactantsI = reaction.getReactants().molecules();
+                    while(reactantsI.hasNext()){
+                        newReaction.addReactant(relayoutMolecule((IMolecule)reactantsI.next()));
+                    }
+                    Iterator productsI = reaction.getProducts().molecules();
+                    while(productsI.hasNext()){
+                        newReaction.addProduct(relayoutMolecule((IMolecule)productsI.next()));
+                    }
+                    newSet.addReaction(newReaction);
+                }
+                model.setReactionSet(newSet);
+            }
 
-			jcpmodel.getRendererModel().setSelectedPart(new AtomContainer());
-			jcpmodel.fireChange();
-			DrawingPanel drawingPanel = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getDrawingPanel();
-			drawingPanel.updateRingSetInRenderer();
-		}
-	}
+            jcpmodel.getRendererModel().setSelectedPart(new AtomContainer());
+            jcpmodel.fireChange();
+            DrawingPanel drawingPanel = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getDrawingPanel();
+            drawingPanel.updateRingSetInRenderer();
+        }
+    }
 
 
-	/**
-	 *  Description of the Method
-	 *
-	 *@param  molecule  Description of the Parameter
-	 *@return           Description of the Return Value
-	 */
-	private IMolecule relayoutMolecule(IMolecule molecule)
-	{
-		JChemPaintModel jcpmodel = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
-		IMolecule cleanedMol = molecule;
+    /**
+     *  Description of the Method
+     *
+     *@param  molecule  Description of the Parameter
+     *@return           Description of the Return Value
+     */
+    private IMolecule relayoutMolecule(IMolecule molecule)
+    {
+        JChemPaintModel jcpmodel = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
+        IMolecule cleanedMol = molecule;
        if (molecule != null)
-		{
-			if (molecule.getAtomCount() > 2)
-			{
-				try
-				{
-			    	Point2d centre = GeometryTools.get2DCentreOfMass(molecule,jcpmodel.getRendererModel().getRenderingCoordinates());
-					diagramGenerator.setMolecule(molecule);
-					diagramGenerator.generateExperimentalCoordinates(new Vector2d(0, 1));
-					cleanedMol = diagramGenerator.getMolecule();
+        {
+            if (molecule.getAtomCount() > 2)
+            {
+                try
+                {
+                    Point2d centre = GeometryTools.get2DCentreOfMass(molecule,jcpmodel.getRendererModel().getRenderingCoordinates());
+                    diagramGenerator.setMolecule(molecule);
+                    diagramGenerator.generateExperimentalCoordinates(new Vector2d(0, 1));
+                    cleanedMol = diagramGenerator.getMolecule();
                     /*
-					 *  make the molecule end up somewhere reasonable
-					 *  See constructor of JCPPanel
-					 */
-					Thread.sleep(5000);
-					GeometryTools.translateAllPositive(cleanedMol,jcpmodel.getRendererModel().getRenderingCoordinates());
-					double scaleFactor = GeometryTools.getScaleFactor(cleanedMol, jcpmodel.getRendererModel().getBondLength(),jcpmodel.getRendererModel().getRenderingCoordinates());
-					GeometryTools.scaleMolecule(cleanedMol, scaleFactor,jcpmodel.getRendererModel().getRenderingCoordinates());
-					GeometryTools.translate2DCentreOfMassTo(cleanedMol, centre,jcpmodel.getRendererModel().getRenderingCoordinates());
-				} catch (Exception exc)
-				{
-					logger.error("Could not generate coordinates for molecule");
-					logger.debug(exc);
-				}
-			} else
-			{
-				logger.info("Molecule with less than 2 atoms are not cleaned up");
-			}
-		} else
-		{
-			logger.error("Molecule is null! Cannot do layout!");
-		}
-		return cleanedMol;
-	}
+                     *  make the molecule end up somewhere reasonable
+                     *  See constructor of JCPPanel
+                     */
+                    Thread.sleep(5000);
+                    GeometryTools.translateAllPositive(cleanedMol,jcpmodel.getRendererModel().getRenderingCoordinates());
+                    double scaleFactor = GeometryTools.getScaleFactor(cleanedMol, jcpmodel.getRendererModel().getBondLength(),jcpmodel.getRendererModel().getRenderingCoordinates());
+                    GeometryTools.scaleMolecule(cleanedMol, scaleFactor,jcpmodel.getRendererModel().getRenderingCoordinates());
+                    GeometryTools.translate2DCentreOfMassTo(cleanedMol, centre,jcpmodel.getRendererModel().getRenderingCoordinates());
+                } catch (Exception exc)
+                {
+                    logger.error("Could not generate coordinates for molecule");
+                    logger.debug(exc);
+                }
+            } else
+            {
+                logger.info("Molecule with less than 2 atoms are not cleaned up");
+            }
+        } else
+        {
+            logger.error("Molecule is null! Cannot do layout!");
+        }
+        return cleanedMol;
+    }
 }
 

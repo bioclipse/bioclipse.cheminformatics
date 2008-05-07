@@ -24,86 +24,86 @@ import org.jmol.modelsetbio.Monomer;
  */
 public class JmolChain extends JmolObject{
 
-	Chain chain;
-	ChainPropertySource chainPropSrc;
-	
-	/**
-	 * Construct a JmolChain for a Chain. Set name to ChainID
-	 * @param chain
-	 */
-	public JmolChain(Chain chain) {
-		this.chain=chain;
-		if (chain.getChainID()>0){
-			setName("Chain " + String.valueOf(chain.getChainID()));
-		}
-	}
+    Chain chain;
+    ChainPropertySource chainPropSrc;
+    
+    /**
+     * Construct a JmolChain for a Chain. Set name to ChainID
+     * @param chain
+     */
+    public JmolChain(Chain chain) {
+        this.chain=chain;
+        if (chain.getChainID()>0){
+            setName("Chain " + String.valueOf(chain.getChainID()));
+        }
+    }
 
-	public Object getObject() {
-		return chain;
-	}
+    public Object getObject() {
+        return chain;
+    }
 
-	public void setObject(Object object) {
-		chain=(Chain)object;
-	}
+    public void setObject(Object object) {
+        chain=(Chain)object;
+    }
 
-	public Object getAdapter(Class adapter) {
-		if (adapter == IPropertySource.class) {
-			if (chainPropSrc == null) {
-				// cache the chainPropSource
-				chainPropSrc = new ChainPropertySource(this);
-			}
-			return chainPropSrc;
-		}
-		return super.getAdapter(adapter);
-	}
+    public Object getAdapter(Class adapter) {
+        if (adapter == IPropertySource.class) {
+            if (chainPropSrc == null) {
+                // cache the chainPropSource
+                chainPropSrc = new ChainPropertySource(this);
+            }
+            return chainPropSrc;
+        }
+        return super.getAdapter(adapter);
+    }
 
-	/**
-	 * Create the children as all Monomers of this Chain
-	 */
-	public void createChildren() {
+    /**
+     * Create the children as all Monomers of this Chain
+     */
+    public void createChildren() {
 
-		ArrayList<IJmolObject> newChildren=new ArrayList<IJmolObject>();
+        ArrayList<IJmolObject> newChildren=new ArrayList<IJmolObject>();
 
-		for (int i=0; i< chain.getGroupCount(); i++){
-			Group group=chain.getGroup(i);
-			if (group instanceof Monomer) {
-				Monomer monomer = (Monomer) group;
-				JmolMonomer m=new JmolMonomer(monomer);
-				newChildren.add(m);
-			}
-			else {
-				int a=0;
-			}
-		}
-		setChildren(newChildren);
-	}
+        for (int i=0; i< chain.getGroupCount(); i++){
+            Group group=chain.getGroup(i);
+            if (group instanceof Monomer) {
+                Monomer monomer = (Monomer) group;
+                JmolMonomer m=new JmolMonomer(monomer);
+                newChildren.add(m);
+            }
+            else {
+                int a=0;
+            }
+        }
+        setChildren(newChildren);
+    }
 
-	/**
-	 * Returns "*:" + chainID to select entire chain
-	 */
-	public String getSelectString() {
-		if (chain==null) return null;
-		if (chain.getChainID()<=0) return "*";
-		String ret="*:" + chain.getChainID();
-		return ret;
-	}
+    /**
+     * Returns "*:" + chainID to select entire chain
+     */
+    public String getSelectString() {
+        if (chain==null) return null;
+        if (chain.getChainID()<=0) return "*";
+        String ret="*:" + chain.getChainID();
+        return ret;
+    }
 
 
-	/**
-	 * @return the sequence of this chain (aminoacid or nucleotide)
-	 */
-	public String getSequence(){
+    /**
+     * @return the sequence of this chain (aminoacid or nucleotide)
+     */
+    public String getSequence(){
 
-		if (chain==null) return "";
-		String seq="";
-		
-		for (int i=0; i<chain.getGroupCount();i++){
-			if (chain.getGroup(i) instanceof Monomer) {
-				Monomer monomer = (Monomer) chain.getGroup(i);
-				seq+=monomer.getGroup1();
-			}
-		}
-		return seq;
-	}
+        if (chain==null) return "";
+        String seq="";
+        
+        for (int i=0; i<chain.getGroupCount();i++){
+            if (chain.getGroup(i) instanceof Monomer) {
+                Monomer monomer = (Monomer) chain.getGroup(i);
+                seq+=monomer.getGroup1();
+            }
+        }
+        return seq;
+    }
 
 }

@@ -4,10 +4,10 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Ola Spjuth
- *     
+ *
  ******************************************************************************/
 package net.bioclipse.cdk.domain.tests;
 
@@ -27,47 +27,47 @@ import org.junit.Test;
 
 public class TestCDKMolecule {
 
-	ICDKManager cdk;
-	
-	//Do not use SPRING OSGI for this manager	
-	//since we are only testing the implementations of the manager methods
-	@Before
-	public void initialize() {
-		cdk=new CDKManager();
-	}
+    ICDKManager cdk;
 
-	@Test
-	public void testFingerprinter() throws IOException, BioclipseException{
-		InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
+    //Do not use SPRING OSGI for this manager
+    //since we are only testing the implementations of the manager methods
+    @Before
+    public void initialize() {
+        cdk=new CDKManager();
+    }
 
-		CDKMolecule mol=cdk.loadMolecule(cmlFile);
-		assertNotNull(mol);
-		BitSet bs=mol.getFingerprint(false);
-		assertNotNull(bs);
-		System.out.println("FP: " + bs.toString());
-	}
-	
-	@Test
-	public void testGetCML() throws IOException, BioclipseException{
-		InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
+    @Test
+    public void testFingerprinter() throws IOException, BioclipseException{
+        InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
 
-		CDKMolecule mol=cdk.loadMolecule(cmlFile);
-		assertNotNull(mol);
-		String cmlString=mol.getCML();
-		assertNotNull(cmlString);
-		System.out.println("CML:\n" + cmlString);
-	}
+        CDKMolecule mol=cdk.loadMolecule(cmlFile);
+        assertNotNull(mol);
+        BitSet bs=mol.getFingerprint(false);
+        assertNotNull(bs);
+        System.out.println("FP: " + bs.toString());
+    }
 
-	@Test
-	public void testGetSmiles() throws IOException, BioclipseException{
-		InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
+    @Test
+    public void testGetCML() throws IOException, BioclipseException{
+        InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
 
-		CDKMolecule mol=cdk.loadMolecule(cmlFile);
-		assertNotNull(mol);
-		String smiles=mol.getSmiles();
-		assertNotNull(smiles);
-		System.out.println("Smiles: " + smiles);
-		
-	}
+        CDKMolecule mol=cdk.loadMolecule(cmlFile);
+        assertNotNull(mol);
+        String cmlString=mol.getCML();
+        assertNotNull(cmlString);
+        System.out.println("CML:\n" + cmlString);
+    }
+
+    @Test
+    public void testGetSmiles() throws IOException, BioclipseException{
+        InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
+
+        CDKMolecule mol=cdk.loadMolecule(cmlFile);
+        assertNotNull(mol);
+        String smiles=mol.getSmiles();
+        assertNotNull(smiles);
+        System.out.println("Smiles: " + smiles);
+
+    }
 
 }

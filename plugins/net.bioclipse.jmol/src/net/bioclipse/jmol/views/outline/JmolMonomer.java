@@ -19,49 +19,49 @@ import org.jmol.modelsetbio.Monomer;
  */
 public class JmolMonomer extends JmolObject{
 
-	Monomer monomer;
-	
-	/**
-	 * Construct a JmolChain for a Chain. Set name to ChainID
-	 * @param chain
-	 */
-	public JmolMonomer(Monomer monomer) {
-		this.monomer=monomer;
-		if (monomer.getSeqcodeString()!=null){
-			setName(monomer.toString());
-		}
-//		monomer.getGroup3(monomer.getGroupID());
-	}
+    Monomer monomer;
+    
+    /**
+     * Construct a JmolChain for a Chain. Set name to ChainID
+     * @param chain
+     */
+    public JmolMonomer(Monomer monomer) {
+        this.monomer=monomer;
+        if (monomer.getSeqcodeString()!=null){
+            setName(monomer.toString());
+        }
+//        monomer.getGroup3(monomer.getGroupID());
+    }
 
-	
-	public Object getObject() {
-		return monomer;
-	}
+    
+    public Object getObject() {
+        return monomer;
+    }
 
-	public void setObject(Object object) {
-		monomer=(Monomer)object;
-	}
+    public void setObject(Object object) {
+        monomer=(Monomer)object;
+    }
 
-	public Object getAdapter(Class adapter) {
-		// TODO Auto-generated method stub
-		return super.getAdapter(adapter);
-	}
+    public Object getAdapter(Class adapter) {
+        // TODO Auto-generated method stub
+        return super.getAdapter(adapter);
+    }
 
-	@Override
-	public void createChildren() {
-		//No children yet
-	}
+    @Override
+    public void createChildren() {
+        //No children yet
+    }
 
 
-	/**
-	 * Return monomerNo + ":" + chainID to select only this monomer 
-	 * or monomerNo if no chainID exists
-	 */
-	public String getSelectString() {
-		if (monomer==null) return null;
-		if (monomer.getChainID()<=0) return monomer.getSeqcodeString(); 
-		String ret=monomer.getSeqcodeString() + ":" + monomer.getChainID();
-		return ret;
-	}
+    /**
+     * Return monomerNo + ":" + chainID to select only this monomer 
+     * or monomerNo if no chainID exists
+     */
+    public String getSelectString() {
+        if (monomer==null) return null;
+        if (monomer.getChainID()<=0) return monomer.getSeqcodeString(); 
+        String ret=monomer.getSeqcodeString() + ":" + monomer.getChainID();
+        return ret;
+    }
 
 }

@@ -58,6 +58,6 @@ public class PTDialog extends JFrame {
         ptp = new PeriodicTablePanel();
         getContentPane().add("Center",ptp);
         pack();
-		setVisible(true);
+        setVisible(true);
   }
 }

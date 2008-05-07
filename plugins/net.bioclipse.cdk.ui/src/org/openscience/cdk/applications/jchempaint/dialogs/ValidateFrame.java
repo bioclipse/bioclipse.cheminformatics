@@ -74,7 +74,7 @@ public class ValidateFrame extends JFrame  {
     private JPanel warningTreePanel;
     private JPanel cdkErrorTreePanel;
     private JTextArea detailText;
-	private ValidateAction validateAction;
+    private ValidateAction validateAction;
     
     public ValidateFrame(ValidateAction action) {
         super("Validation Results");

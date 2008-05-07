@@ -28,40 +28,40 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  */
 public class JmolSelection implements IStructuredSelection {
 
-	Set<String> selectionSet;
-	
-	public JmolSelection(String monomer, String chain) {
+    Set<String> selectionSet;
+    
+    public JmolSelection(String monomer, String chain) {
 
-		selectionSet=new HashSet<String>();
-		selectionSet.add(monomer + ":" + chain);
-	}
+        selectionSet=new HashSet<String>();
+        selectionSet.add(monomer + ":" + chain);
+    }
 
-	public Object getFirstElement() {
-		return selectionSet.toArray()[0];
-	}
+    public Object getFirstElement() {
+        return selectionSet.toArray()[0];
+    }
 
-	public Iterator iterator() {
-		return selectionSet.iterator();
-	}
+    public Iterator iterator() {
+        return selectionSet.iterator();
+    }
 
-	public int size() {
-		return selectionSet.size();
-	}
+    public int size() {
+        return selectionSet.size();
+    }
 
-	public Object[] toArray() {
-		return selectionSet.toArray();
-	}
+    public Object[] toArray() {
+        return selectionSet.toArray();
+    }
 
-	public List toList() {
-		List lst=new ArrayList<String>();
-		lst.addAll(selectionSet);
-		return lst;
-	}
+    public List toList() {
+        List lst=new ArrayList<String>();
+        lst.addAll(selectionSet);
+        return lst;
+    }
 
-	public boolean isEmpty() {
-		if (selectionSet==null) return true;
-		if (selectionSet.size()<=0) return true;
-		return false;
-	}
+    public boolean isEmpty() {
+        if (selectionSet==null) return true;
+        if (selectionSet.size()<=0) return true;
+        return false;
+    }
 
 }

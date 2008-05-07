@@ -34,50 +34,50 @@ import org.openscience.cdk.nonotify.NNChemFile;
 
 public class CDKManagerHelper {
 
-	/**
-	 * Register all formats that we support for reading in Bioclipse
-	 * @param fac
-	 */
-	public static void registerFormats(ReaderFactory fac) {
-		if (fac.getFormats().contains(PDBFormat.getInstance())==false){
-			fac.registerFormat((IChemFormatMatcher) PDBFormat.getInstance());
-		}
-		if (fac.getFormats().contains(SDFFormat.getInstance())==false){
-			fac.registerFormat((IChemFormatMatcher) SDFFormat.getInstance());
-		}
-		if (fac.getFormats().contains(CMLFormat.getInstance())==false){
-			fac.registerFormat((IChemFormatMatcher) CMLFormat.getInstance());
-		}
-		if (fac.getFormats().contains(MDLV2000Format.getInstance())==false){
-			fac.registerFormat((IChemFormatMatcher) MDLV2000Format.getInstance());
-		}
-		if (fac.getFormats().contains(MDLV3000Format.getInstance())==false){
-			fac.registerFormat((IChemFormatMatcher) MDLV3000Format.getInstance());
-		}
-		
+    /**
+     * Register all formats that we support for reading in Bioclipse
+     * @param fac
+     */
+    public static void registerFormats(ReaderFactory fac) {
+        if (fac.getFormats().contains(PDBFormat.getInstance())==false){
+            fac.registerFormat((IChemFormatMatcher) PDBFormat.getInstance());
+        }
+        if (fac.getFormats().contains(SDFFormat.getInstance())==false){
+            fac.registerFormat((IChemFormatMatcher) SDFFormat.getInstance());
+        }
+        if (fac.getFormats().contains(CMLFormat.getInstance())==false){
+            fac.registerFormat((IChemFormatMatcher) CMLFormat.getInstance());
+        }
+        if (fac.getFormats().contains(MDLV2000Format.getInstance())==false){
+            fac.registerFormat((IChemFormatMatcher) MDLV2000Format.getInstance());
+        }
+        if (fac.getFormats().contains(MDLV3000Format.getInstance())==false){
+            fac.registerFormat((IChemFormatMatcher) MDLV3000Format.getInstance());
+        }
+        
 
-	}
-	
-	public static void customizeReading(ISimpleChemObjectReader reader, IChemFile chemFile) {
-		System.out.println("customingIO, reader found: " + reader.getClass().getName());
-		System.out.println("Found # IO settings: " + reader.getIOSettings().length);
-		if (reader instanceof PDBReader) {
-			chemFile = new NNChemFile();
+    }
+    
+    public static void customizeReading(ISimpleChemObjectReader reader, IChemFile chemFile) {
+        System.out.println("customingIO, reader found: " + reader.getClass().getName());
+        System.out.println("Found # IO settings: " + reader.getIOSettings().length);
+        if (reader instanceof PDBReader) {
+            chemFile = new NNChemFile();
 
-			Properties customSettings = new Properties();
-			customSettings.setProperty("DeduceBonding", "false");
+            Properties customSettings = new Properties();
+            customSettings.setProperty("DeduceBonding", "false");
 
-			PropertiesListener listener = new PropertiesListener(customSettings);
-			reader.addChemObjectIOListener(listener);
-		}
+            PropertiesListener listener = new PropertiesListener(customSettings);
+            reader.addChemObjectIOListener(listener);
+        }
 
-		if (reader instanceof CMLReader) {
-			((CMLReader)reader).registerConvention("md:mdMolecule", new MDMoleculeConvention(new ChemFile()));
-			System.out.println("****** CmlReader, registered MDMoleculeConvention");
+        if (reader instanceof CMLReader) {
+            ((CMLReader)reader).registerConvention("md:mdMolecule", new MDMoleculeConvention(new ChemFile()));
+            System.out.println("****** CmlReader, registered MDMoleculeConvention");
 
-		}
+        }
 
-	}
+    }
 
 
 }

@@ -41,22 +41,22 @@ import org.openscience.cdk.applications.jchempaint.dialogs.InsertFromSmiles;
  */
 public class InsertSmilesAction extends JCPAction
 {
-	
-	public void run() {
-		run(null);
-	}
-	/**
-	 *  Description of the Method
-	 *
-	 *@param  e  Description of the Parameter
-	 */
-	public void run(ActionEvent e)
-	{
-		logger.debug("Gonna show the InsertFromSmiles dialog...");
-		InsertFromSmiles ifs = new InsertFromSmiles(this.getContributor().getActiveEditorPart().getEditorSite().getShell(), 0, this.getContributor());
-		ifs.open();
-		logger.debug("Should be visible now!...");
-	}
+    
+    public void run() {
+        run(null);
+    }
+    /**
+     *  Description of the Method
+     *
+     *@param  e  Description of the Parameter
+     */
+    public void run(ActionEvent e)
+    {
+        logger.debug("Gonna show the InsertFromSmiles dialog...");
+        InsertFromSmiles ifs = new InsertFromSmiles(this.getContributor().getActiveEditorPart().getEditorSite().getShell(), 0, this.getContributor());
+        ifs.open();
+        logger.debug("Should be visible now!...");
+    }
 
 }
 

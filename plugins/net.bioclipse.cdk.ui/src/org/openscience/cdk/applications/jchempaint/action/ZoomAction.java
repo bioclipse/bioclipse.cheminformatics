@@ -45,37 +45,37 @@ import org.openscience.cdk.renderer.Renderer2DModel;
 public class ZoomAction extends JCPAction
 {
 
-	public void run() {
-		run(null);
-	}
-	
-	/**
-	 *  Description of the Method
-	 *
-	 *@param  e  Description of the Parameter
-	 */
-	public void run(ActionEvent e)
-	{
-		logger.debug("Zooming in/out in mode: " + type);
-		JChemPaintModel jcpm = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
-		Renderer2DModel renderModel = jcpm.getRendererModel();
-		if (type.equals("in"))
-		{
-			renderModel.setZoomFactor(renderModel.getZoomFactor() * 1.5);
-//			jcpPanel.getScrollPane().getViewport().setViewPosition(new Point((int)(jcpPanel.getScrollPane().getViewport().getViewPosition().x*1.5),(int)(jcpPanel.getScrollPane().getViewport().getViewPosition().y*1.5)));
-		} else if (type.equals("out"))
-		{
-			renderModel.setZoomFactor(renderModel.getZoomFactor() / 1.5);
-//			jcpPanel.getScrollPane().getViewport().setViewPosition(new Point((int)(jcpPanel.getScrollPane().getViewport().getViewPosition().x/1.5),(int)(jcpPanel.getScrollPane().getViewport().getViewPosition().y/1.5)));
-		} else if (type.equals("original"))
-		{
-			renderModel.setZoomFactor(1.0);
-		} else
-		{
-			logger.error("Unkown zoom command: " + type);
-		}
-		jcpm.fireChange();
-	}
+    public void run() {
+        run(null);
+    }
+    
+    /**
+     *  Description of the Method
+     *
+     *@param  e  Description of the Parameter
+     */
+    public void run(ActionEvent e)
+    {
+        logger.debug("Zooming in/out in mode: " + type);
+        JChemPaintModel jcpm = ((JCPMultiPageEditor)this.getContributor().getActiveEditorPart()).getJcpModel();
+        Renderer2DModel renderModel = jcpm.getRendererModel();
+        if (type.equals("in"))
+        {
+            renderModel.setZoomFactor(renderModel.getZoomFactor() * 1.5);
+//            jcpPanel.getScrollPane().getViewport().setViewPosition(new Point((int)(jcpPanel.getScrollPane().getViewport().getViewPosition().x*1.5),(int)(jcpPanel.getScrollPane().getViewport().getViewPosition().y*1.5)));
+        } else if (type.equals("out"))
+        {
+            renderModel.setZoomFactor(renderModel.getZoomFactor() / 1.5);
+//            jcpPanel.getScrollPane().getViewport().setViewPosition(new Point((int)(jcpPanel.getScrollPane().getViewport().getViewPosition().x/1.5),(int)(jcpPanel.getScrollPane().getViewport().getViewPosition().y/1.5)));
+        } else if (type.equals("original"))
+        {
+            renderModel.setZoomFactor(1.0);
+        } else
+        {
+            logger.error("Unkown zoom command: " + type);
+        }
+        jcpm.fireChange();
+    }
 
 }
 
