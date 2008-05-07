@@ -48,7 +48,7 @@ public class JmolModelSet extends JmolObject{
 	 */
 	public Object getAdapter(Class adapter) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.getAdapter(adapter);
 	}
 
 	/**

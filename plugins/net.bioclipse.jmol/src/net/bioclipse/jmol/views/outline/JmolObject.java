@@ -52,4 +52,9 @@ public abstract class JmolObject implements IJmolObject {
 	 */
 	public abstract void createChildren();
 
+	public Object getAdapter(Class adapter) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 }

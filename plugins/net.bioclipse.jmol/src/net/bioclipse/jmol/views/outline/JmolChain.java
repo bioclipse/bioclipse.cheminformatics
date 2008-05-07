@@ -54,7 +54,7 @@ public class JmolChain extends JmolObject{
 			}
 			return chainPropSrc;
 		}
-		return null;
+		return super.getAdapter(adapter);
 	}
 
 	/**
