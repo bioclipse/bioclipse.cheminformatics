@@ -81,7 +81,7 @@ public class CdkJmolAdapter extends JmolAdapter {
 	public Object openBufferedReader(String name, BufferedReader bufferedReader) {
 		IChemFile chemFile = null;
 		try {
-			IChemObjectReader chemObjectReader = null;
+			ISimpleChemObjectReader chemObjectReader = null;
 			try {
 				chemObjectReader = new ReaderFactory()
 						.createReader(bufferedReader);
