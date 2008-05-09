@@ -31,6 +31,7 @@ import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
+import org.openscience.cdk.fingerprint.FingerprinterTool;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
@@ -273,7 +274,7 @@ public class CDKManager implements ICDKManager {
      * Create molecule from SMILES.
      * @throws BioclipseException 
      */
-    public CDKMolecule moleculeFromSmiles(String smilesDescription)
+    public CDKMolecule fromSmiles(String smilesDescription)
         throws BioclipseException {
 
         SmilesParser parser
@@ -320,5 +321,13 @@ public class CDKManager implements ICDKManager {
         public void remove() {
             reader.remove();
         }
+    }
+
+    public boolean containsSubstructure( ICDKMolecule molecule,
+                                         ICDKMolecule subStructure ) 
+                   throws BioclipseException {
+
+        return FingerprinterTool.isSubset( molecule.getFingerprint( true ),
+                                           molecule.getFingerprint( true ) );
     }
 }

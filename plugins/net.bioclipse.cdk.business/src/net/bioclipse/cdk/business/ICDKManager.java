@@ -18,6 +18,7 @@ import java.util.Iterator;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculeList;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IBioclipseManager;
@@ -32,7 +33,7 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws BioclipseException
      */
     @Recorded
-    public CDKMolecule moleculeFromSmiles(String smiles)
+    public CDKMolecule fromSmiles(String smiles)
         throws BioclipseException;
 
     /**
@@ -98,4 +99,22 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @Recorded
     public Iterator<ICDKMolecule> creatMoleculeIterator(InputStream instream);
+
+    /**
+     * 
+     * 
+     * @param molecule
+     * @param subStructure
+     * @return
+     * @throws BioclipseException
+     */
+    @PublishedMethod (params = "ICDKMolecule molecule, " +
+    		                       "ICDKMolecule subStructure",
+                      methodSummary = "Returns true if the substructure " +
+                      		            "is a possible substructure to the " +
+                      		            "molecule")
+    @Recorded
+    public boolean containsSubstructure( ICDKMolecule molecule, 
+                                         ICDKMolecule subStructure ) 
+                   throws BioclipseException;
 }

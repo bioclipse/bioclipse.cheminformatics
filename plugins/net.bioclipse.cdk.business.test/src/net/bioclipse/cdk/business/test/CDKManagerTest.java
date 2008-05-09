@@ -25,12 +25,15 @@ import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.CDKManagerHelper;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
+import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 
 import org.junit.Test;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.ReaderFactory;
+import org.openscience.cdk.smiles.SmilesGenerator;
+import org.openscience.cdk.templates.MoleculeFactory;
 
 public class CDKManagerTest {
 
@@ -89,7 +92,7 @@ public class CDKManagerTest {
     @Test
     public void testCreateMoleculeFromSMILES() throws BioclipseException {
 
-        CDKMolecule mol=cdk.moleculeFromSmiles("C1CCCCC1CCO");
+        CDKMolecule mol=cdk.fromSmiles("C1CCCCC1CCO");
 
         assertEquals(mol.getAtomContainer().getAtomCount(), 9);
         assertEquals(mol.getAtomContainer().getBondCount(), 9);
@@ -110,5 +113,18 @@ public class CDKManagerTest {
         }
 
         assertEquals( 2, molecules.size() );
+    }
+    
+    @Test
+    public void isSubstructure() throws BioclipseException {
+        SmilesGenerator generator = new SmilesGenerator();
+        String indoleSmiles  = generator
+                               .createSMILES( MoleculeFactory.makeIndole() );
+        String pyrroleSmiles = generator
+                               .createSMILES( MoleculeFactory.makePyrrole() );
+        ICDKMolecule indole  = cdk.fromSmiles( indoleSmiles );
+        ICDKMolecule pyrrole = cdk.fromSmiles( pyrroleSmiles );
+        
+        assertTrue( cdk.containsSubstructure(indole, pyrrole) );
     }
 }
