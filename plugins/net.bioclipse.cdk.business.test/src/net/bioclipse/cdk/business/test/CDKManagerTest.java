@@ -89,7 +89,7 @@ public class CDKManagerTest {
     @Test
     public void testCreateMoleculeFromSMILES() throws BioclipseException {
 
-        CDKMolecule mol=cdk.createMoleculeFromSMILES("C1CCCCC1CCO");
+        CDKMolecule mol=cdk.moleculeFromSmiles("C1CCCCC1CCO");
 
         assertEquals(mol.getAtomContainer().getAtomCount(), 9);
         assertEquals(mol.getAtomContainer().getBondCount(), 9);
