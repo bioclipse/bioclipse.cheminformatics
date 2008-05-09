@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculeList;
+import net.bioclipse.cdk10.jchempaint.ui.editor.JCPPage;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 
@@ -38,15 +39,20 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IShowEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.openscience.cdk.CDKConstants;
 
-public class SDFEditor extends FormEditor implements IResourceChangeListener, IAdaptable{
+public class SDFEditor extends FormEditor implements IResourceChangeListener, 
+                                                IAdaptable, IShowEditorInput{
 
     private static final Logger logger = Logger.getLogger(SDFEditor.class);
+
+    //If used, if JCP should be shown
+    private JCPPage jcpPage;
 
 //    private TextEditor textEditor;
     private StructureTablePage tablePage;
@@ -214,5 +220,25 @@ public class SDFEditor extends FormEditor implements IResourceChangeListener, IA
             e.printStackTrace();
         }
 
+    }
+
+
+    public void showEditorInput( IEditorInput editorInput ) {
+
+        removePage( 0 );
+        
+        jcpPage=new JCPPage();
+        
+        try {
+            int ix=addPage(jcpPage, editorInput);
+            jcpPage.activateJCP();
+            setPageText(ix, "Structure");
+            jcpPage.getDrawingPanel().repaint();
+            //FIXME: does not repaint JCP properly!
+
+        } catch (PartInitException e) {
+            LogUtils.debugTrace(logger, e);
+        }
+        
     }
 }

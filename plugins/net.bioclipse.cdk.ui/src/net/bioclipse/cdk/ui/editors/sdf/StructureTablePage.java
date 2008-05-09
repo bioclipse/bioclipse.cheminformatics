@@ -16,24 +16,33 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.bioclipse.cdk10.jchempaint.ui.editor.SDFileEditorInput;
+import net.bioclipse.cdk10.jchempaint.ui.editor.MDLMolfileEditor;
+import net.bioclipse.core.util.LogUtils;
+
 import org.apache.log4j.Logger;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ColumnPixelData;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.OwnerDrawLabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -47,20 +56,20 @@ public class StructureTablePage extends FormPage implements ISelectionProvider{
     private Table table;
     private TableViewer viewer;
     private String[] colHeaders;
-    
+
     /** Registered listeners */
     private List<ISelectionChangedListener> selectionListeners;
 
     /** Store last selection */
     private StructureEntitySelection selectedRows;
 
-    
+
     public StructureTablePage(FormEditor editor, String[] colHeaders) {
         super(editor, "bc.structuretable", "Structure table");
         this.colHeaders=colHeaders;
         selectionListeners=new ArrayList<ISelectionChangedListener>();
-        
-//        selectedRows=new StructureEntitySelection();
+
+//      selectedRows=new StructureEntitySelection();
     }
 
     /**
@@ -72,11 +81,11 @@ public class StructureTablePage extends FormPage implements ISelectionProvider{
         FormToolkit toolkit = managedForm.getToolkit();
         ScrolledForm form = managedForm.getForm();
         form.setText("Structure table");
-//        form.setBackgroundImage(FormArticlePlugin.getDefault().getImage(FormArticlePlugin.IMG_FORM_BG));
+//      form.setBackgroundImage(FormArticlePlugin.getDefault().getImage(FormArticlePlugin.IMG_FORM_BG));
         final Composite body = form.getBody();
         FillLayout layout=new FillLayout();
         body.setLayout(layout);
-        
+
         viewer = new TableViewer(body, SWT.BORDER  | SWT.MULTI |  SWT.FULL_SELECTION | SWT.VIRTUAL);
         table = viewer.getTable();
         table.setHeaderVisible(true);
@@ -85,61 +94,97 @@ public class StructureTablePage extends FormPage implements ISelectionProvider{
 
         TableLayout tableLayout = new TableLayout();
         table.setLayout(tableLayout);
-        
+
         //Add Structure column
         TableViewerColumn col=new TableViewerColumn(viewer,SWT.BORDER);
         col.getColumn().setText("Structure");
         tableLayout.addColumnData(new ColumnPixelData(100));
-        
+
         for (String colkey : colHeaders){
             TableViewerColumn col2=new TableViewerColumn(viewer,SWT.BORDER);
             col2.getColumn().setText(colkey);
             col2.getColumn().setAlignment(SWT.LEFT);
             tableLayout.addColumnData(new ColumnPixelData(100));
         }
-        
-//        table.addSelectionListener(new SelectionListener(){
-//
-//            public void widgetDefaultSelected(SelectionEvent e) {
-//            }
-//
-//            public void widgetSelected(SelectionEvent e) {
-//                
-//                if (e.item instanceof TableItem) {
-//                    TableItem item = (TableItem)e.item;
-//                    if (item.getData() instanceof StructureTableEntry) {
-//                        StructureTableEntry entry = (StructureTableEntry) item.getData();
-//                        Set<StructureTableEntry> newsel=new HashSet<StructureTableEntry>();
-//                        newsel.add(entry);
-//                        setSelection(new StructureEntitySelection(newsel));
-//                    }
-//                }
-//            }
-//            
-//        });
-//        
-//        viewer.addSelectionChangedListener(new ISelectionChangedListener(){
-//
-//            public void selectionChanged(SelectionChangedEvent event) {
-//                if (event.getSelection() instanceof IStructuredSelection) {
-//                    IStructuredSelection ssel = (IStructuredSelection) event.getSelection();
-//                    Set<StructureTableEntry> newsel=new HashSet<StructureTableEntry>();
-//                    for (Object obj : ssel.toArray()){
-//                        if (obj instanceof StructureTableEntry) {
-//                            StructureTableEntry entry = (StructureTableEntry) obj;
-//                            newsel.add(entry);
+
+        viewer.addDoubleClickListener( new IDoubleClickListener(){
+
+            public void doubleClick( DoubleClickEvent event ) {
+                if ( event.getSelection() instanceof IStructuredSelection ) {
+                    IStructuredSelection ssel 
+                        = (IStructuredSelection) event.getSelection();
+                    Object obj=ssel.getFirstElement();
+                    if (!( obj instanceof StructureTableEntry )) {
+                        logger.debug("DC on something else than " +
+                        		"StructureTableEntry. Not handled.");
+                        return;
+                    }
+
+                    if (!( getEditorInput() instanceof IFileEditorInput )) {
+                        showMessage( "This operation is only available " +
+                            "if backed by a File." );
+                        return;
+                    }
+                    
+                    //Our casted editor
+                    SDFEditor sdfEditor=(SDFEditor)getEditor();
+                    
+                    //This is the DC'ed entry
+                    StructureTableEntry entry = (StructureTableEntry) obj;
+
+                    //These are all entries in editor
+                    StructureTableEntry[] entries 
+                        = (sdfEditor).entries;
+
+                    int ix=-1;
+                    //Find index of the DC'ed entry
+                    for (int i=0; i<sdfEditor.entries.length; i++){
+                        if (sdfEditor.entries[i].equals( entry )){
+                            ix=i;
+                        }
+                    }
+                    
+                    if (ix<0){
+                        //Should not happen
+                        showMessage( "Index of double-clicked is negative." );
+                        return;
+                    }
+                    
+                    logger.debug( "DC detected on index: " + ix 
+                                  + "in entry list" );
+                    
+                    IFileEditorInput finput 
+                        = (IFileEditorInput) getEditorInput();
+                    SDFileEditorInput input
+                        = new SDFileEditorInput(finput.getFile(), ix);
+                    
+                    
+
+                    String editorId= MDLMolfileEditor.EDITOR_ID;
+                    IWorkbenchPage page= getEditorSite().getPage();
+                    try {
+                        IEditorPart editor=page.openEditor(input,
+                                                           editorId);
+//                        if (editor instanceof MDLMolfileEditor) {
+//                            MDLMolfileEditor bmed = (MDLMolfileEditor) editor;
+//                            //TODO: init data?
 //                        }
-//                    }
-//                    setSelection(new StructureEntitySelection(newsel));
-//                }
-//            }
-//        });
+
+                    } catch (PartInitException e) {
+                        LogUtils.debugTrace(logger, e);
+                    }
+
+                }
+
+            }
+
+        });
 
         viewer.setContentProvider(new MoleculeListContentProvider());
         viewer.setLabelProvider(new MoleculeListLabelProviderNew());
         viewer.setUseHashlookup(true);
         OwnerDrawLabelProvider.setUpOwnerDraw(viewer);
-        
+
         StructureTableEntry[] mlist=((SDFEditor)getEditor()).getEntries();
         if (mlist!=null){
             logger.debug("Setting table input with: " + mlist.length + " molecules.");
@@ -148,12 +193,19 @@ public class StructureTablePage extends FormPage implements ISelectionProvider{
         else{
             logger.debug("Editor moleculeList is empty.");
         }
-        
+
         //Post selections in Table to Eclipse
         getSite().setSelectionProvider(viewer);
 
     }
-    
+
+    protected IEditorInput createEditorInput( StructureTableEntry entry,
+                                              StructureTableEntry[] entries ) {
+
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     /*
      * Below is for providing selections from table to e.g. Jmol view
      */
@@ -187,7 +239,7 @@ public class StructureTablePage extends FormPage implements ISelectionProvider{
     }
 
     public void removeSelectionChangedListener(
-            ISelectionChangedListener listener) {
+                                               ISelectionChangedListener listener) {
         if(selectionListeners.contains(listener))
             selectionListeners.remove(listener);
     }
@@ -196,5 +248,12 @@ public class StructureTablePage extends FormPage implements ISelectionProvider{
         if (!(selection instanceof StructureEntitySelection)) return;
         this.selectedRows=(StructureEntitySelection)selection;
     }
-    
+
+    private void showMessage(String message) {
+        MessageDialog.openInformation(
+                                      viewer.getControl().getShell(),
+                                      "Message",
+                                      message);
+    }
+
 }

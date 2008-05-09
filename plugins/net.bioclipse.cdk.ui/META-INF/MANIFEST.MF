@@ -16,7 +16,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.navigator,
  net.bioclipse.core,
  net.bioclipse.cdk.business,
- org.eclipse.ui.forms
+ org.eclipse.ui.forms,
+ net.bioclipse.cdk10.jchempaint
 Eclipse-LazyStart: true
 Export-Package: net.bioclipse.cdk.ui.views
 Import-Package: org.apache.log4j
