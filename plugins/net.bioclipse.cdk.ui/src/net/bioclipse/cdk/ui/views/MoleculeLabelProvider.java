@@ -24,7 +24,6 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.navigator.IDescriptionProvider;
 import org.openscience.cdk.geometry.GeometryTools;
-import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 
 /**
  * This Provider provides text, image, and description for Molecules
