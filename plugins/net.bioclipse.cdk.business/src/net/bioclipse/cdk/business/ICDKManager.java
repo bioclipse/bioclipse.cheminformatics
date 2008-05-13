@@ -114,7 +114,7 @@ public interface ICDKManager extends IBioclipseManager {
                       		            "is a possible substructure to the " +
                       		            "molecule")
     @Recorded
-    public boolean containsSubstructure( ICDKMolecule molecule, 
+    public boolean fingerPrintMatches( ICDKMolecule molecule, 
                                          ICDKMolecule subStructure ) 
                    throws BioclipseException;
 }

@@ -323,7 +323,7 @@ public class CDKManager implements ICDKManager {
         }
     }
 
-    public boolean containsSubstructure( ICDKMolecule molecule,
+    public boolean fingerPrintMatches( ICDKMolecule molecule,
                                          ICDKMolecule subStructure ) 
                    throws BioclipseException {
 

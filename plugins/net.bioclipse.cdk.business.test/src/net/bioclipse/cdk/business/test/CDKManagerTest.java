@@ -125,6 +125,6 @@ public class CDKManagerTest {
         ICDKMolecule indole  = cdk.fromSmiles( indoleSmiles );
         ICDKMolecule pyrrole = cdk.fromSmiles( pyrroleSmiles );
         
-        assertTrue( cdk.containsSubstructure(indole, pyrrole) );
+        assertTrue( cdk.fingerPrintMatches(indole, pyrrole) );
     }
 }
