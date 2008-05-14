@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.renderer.Renderer2D;
+import org.openscience.cdk.renderer.old.Renderer2D;
 import org.openscience.cdk.renderer.Renderer2DModel;
 
 /**
