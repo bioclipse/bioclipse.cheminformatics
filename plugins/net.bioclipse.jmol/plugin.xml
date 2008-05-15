@@ -15,7 +15,7 @@
          point="org.eclipse.ui.editors">
       <editor
             name="Jmol Editor"
-            extensions="pdb"
+            extensions="pdb,cml"
           icon="icons/molecule3D.gif"
             contributorClass="net.bioclipse.jmol.editors.JmolEditorContributor"
             class="net.bioclipse.jmol.editors.JmolEditor"
