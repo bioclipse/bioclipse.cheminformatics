@@ -330,4 +330,11 @@ public class CDKManager implements ICDKManager {
         return FingerprinterTool.isSubset( molecule.getFingerprint( true ),
                                            molecule.getFingerprint( true ) );
     }
+
+    public boolean subStructureMatches( ICDKMolecule molecule,
+                                        ICDKMolecule subStructure ) {
+
+        logger.error( "FIXME cdk.subStructureMatches" );
+        return false;
+    }
 }

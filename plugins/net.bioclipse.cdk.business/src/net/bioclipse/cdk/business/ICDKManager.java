@@ -101,7 +101,7 @@ public interface ICDKManager extends IBioclipseManager {
     public Iterator<ICDKMolecule> creatMoleculeIterator(InputStream instream);
 
     /**
-     * 
+     * True if the two molecules has equal fingerprints
      * 
      * @param molecule
      * @param subStructure
@@ -110,11 +110,27 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @PublishedMethod (params = "ICDKMolecule molecule, " +
     		                       "ICDKMolecule subStructure",
-                      methodSummary = "Returns true if the substructure " +
-                      		            "is a possible substructure to the " +
-                      		            "molecule")
+                      methodSummary = "Returns true if the two molecules has " +
+                      		          "equal fingerprints")
     @Recorded
     public boolean fingerPrintMatches( ICDKMolecule molecule, 
-                                         ICDKMolecule subStructure ) 
+                                       ICDKMolecule subStructure ) 
                    throws BioclipseException;
+
+    
+    /**
+     * True if the paramater substructure is a substructure to the 
+     * paramater molecule
+     * 
+     * @param molecule
+     * @param subStructure
+     * @return
+     */
+    @PublishedMethod (params = "ICDKMolecule molecule, " +
+    		                   "ICDKMolecule subStructure",
+    		          methodSummary = "Returns true if the paramater named " +
+    		          		          "subStructure is a substructure of the " +
+    		          		          "paramater named molecule")
+    public boolean subStructureMatches( ICDKMolecule molecule,
+                                        ICDKMolecule subStructure );
 }
