@@ -337,4 +337,9 @@ public class CDKManager implements ICDKManager {
         logger.error( "FIXME cdk.subStructureMatches" );
         return false;
     }
+
+    public ICDKMolecule create( IMolecule m ) throws BioclipseException {
+
+        return fromSmiles( m.getSmiles() );
+    }
 }

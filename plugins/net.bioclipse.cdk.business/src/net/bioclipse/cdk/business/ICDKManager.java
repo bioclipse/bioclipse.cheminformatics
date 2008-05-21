@@ -133,4 +133,17 @@ public interface ICDKManager extends IBioclipseManager {
     		          		          "paramater named molecule")
     public boolean subStructureMatches( ICDKMolecule molecule,
                                         ICDKMolecule subStructure );
+
+    
+    /**
+     * Creates a cdk molecule from an IMolecule
+     * 
+     * @param m
+     * @return
+     * @throws BioclipseException 
+     */
+    @PublishedMethod ( params = "IMolecule m",
+                       methodSummary = "Creates a cdk molecule from a" +
+                       		           " molecule" )
+    public ICDKMolecule create( IMolecule m ) throws BioclipseException;
 }

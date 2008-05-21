@@ -27,6 +27,8 @@ import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.business.IMoleculeManager;
+import net.bioclipse.core.business.MoleculeManager;
 import net.bioclipse.core.domain.IMolecule;
 
 import org.junit.Test;
@@ -142,8 +144,13 @@ public class CDKManagerTest {
     }
     
     @Test
-    public void testCDKMoleculeFromIMolecule() {
-        //TODO write me
-        fail("not written");
+    public void testCDKMoleculeFromIMolecule() throws BioclipseException {
+        SmilesGenerator generator = new SmilesGenerator();
+        String indoleSmiles  = generator
+                               .createSMILES( MoleculeFactory.makeIndole() );
+        IMoleculeManager molecule = new MoleculeManager();
+        IMolecule m = molecule.fromSmiles( indoleSmiles );
+        ICDKMolecule cdkm = cdk.create( m );
+        assertEquals( cdkm.getSmiles(), m.getSmiles() );
     }
 }
