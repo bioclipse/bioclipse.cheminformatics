@@ -116,7 +116,7 @@ public class CDKManagerTest {
     }
     
     @Test
-    public void isSubstructure() throws BioclipseException {
+    public void testFingerPrintMatch() throws BioclipseException {
         SmilesGenerator generator = new SmilesGenerator();
         String indoleSmiles  = generator
                                .createSMILES( MoleculeFactory.makeIndole() );
@@ -126,5 +126,24 @@ public class CDKManagerTest {
         ICDKMolecule pyrrole = cdk.fromSmiles( pyrroleSmiles );
         
         assertTrue( cdk.fingerPrintMatches(indole, pyrrole) );
+    }
+    
+    @Test
+    public void testSubStructureMatch() throws BioclipseException {
+        SmilesGenerator generator = new SmilesGenerator();
+        String indoleSmiles  = generator
+                               .createSMILES( MoleculeFactory.makeIndole() );
+        String pyrroleSmiles = generator
+                               .createSMILES( MoleculeFactory.makePyrrole() );
+        ICDKMolecule indole  = cdk.fromSmiles( indoleSmiles  );
+        ICDKMolecule pyrrole = cdk.fromSmiles( pyrroleSmiles );
+        
+        assertTrue( cdk.subStructureMatches( indole, pyrrole ) );
+    }
+    
+    @Test
+    public void testCDKMoleculeFromIMolecule() {
+        //TODO write me
+        fail("not written");
     }
 }
