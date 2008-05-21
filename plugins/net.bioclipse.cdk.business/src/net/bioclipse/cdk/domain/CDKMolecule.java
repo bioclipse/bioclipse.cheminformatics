@@ -43,6 +43,24 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
         super();
         this.atomContainer=atomContainer;
     }
+    
+    /**
+     * Used for creating a CDKMolecule if all values already are calculated
+     * 
+     * @param name
+     * @param atomContainer
+     * @param smiles
+     * @param fingerprint
+     */
+    public CDKMolecule( String name, 
+                        IAtomContainer atomContainer, 
+                        String smiles, 
+                        BitSet fingerprint ) {
+        this.name = name;
+        this.atomContainer = atomContainer;
+        this.cachedFingerprint = fingerprint;
+        this.cachedSMILES = smiles;
+    }
 
     public Object getParsedResource() {
         return atomContainer;
