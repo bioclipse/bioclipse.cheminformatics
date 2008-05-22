@@ -39,6 +39,8 @@ import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.formats.IResourceFormat;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
+import org.openscience.cdk.isomorphism.IsomorphismTester;
+import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
@@ -333,9 +335,14 @@ public class CDKManager implements ICDKManager {
 
     public boolean subStructureMatches( ICDKMolecule molecule,
                                         ICDKMolecule subStructure ) {
-
-        logger.error( "FIXME cdk.subStructureMatches" );
-        return false;
+        try {
+            return UniversalIsomorphismTester
+                   .isSubgraph( molecule.getAtomContainer(), 
+                                subStructure.getAtomContainer() );
+        } 
+        catch ( CDKException e ) {
+            throw new RuntimeException(e);
+        }
     }
 
     public ICDKMolecule create( IMolecule m ) throws BioclipseException {
