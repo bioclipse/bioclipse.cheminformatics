@@ -53,7 +53,7 @@
             name="JCPEditor"/>
    </extension-->
 
-   <extension
+   <!--extension
          point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent
             contentProvider="net.bioclipse.cdk.ui.views.MoleculeContentProvider"
@@ -76,7 +76,7 @@
          </and>
          </triggerPoints>
       </navigatorContent>
-   </extension>
+   </extension-->
 
 <!-- Add MoleculeContent to expand molecules with CDK -->
 <extension
