@@ -14,7 +14,7 @@ Require-Bundle: org.eclipse.ui,
  org.springframework.osgi.bundle.io,
  net.bioclipse.scripting,
  org.eclipse.core.resources,
- net.bioclipse.cdk,
+ org.openscience.cdk,
  org.eclipse.ui.views
 Eclipse-LazyStart: true
 Export-Package: net.bioclipse.cdk.business,

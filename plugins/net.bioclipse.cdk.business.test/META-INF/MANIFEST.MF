@@ -8,7 +8,7 @@ Bundle-Vendor: The Bioclipse Team
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.junit4,
- net.bioclipse.cdk,
+ org.openscience.cdk,
  net.bioclipse.cdk.business,
  net.bioclipse.core
 Eclipse-LazyStart: true
