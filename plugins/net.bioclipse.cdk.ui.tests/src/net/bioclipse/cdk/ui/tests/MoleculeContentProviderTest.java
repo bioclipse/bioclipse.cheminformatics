@@ -83,10 +83,7 @@ public class MoleculeContentProviderTest {
         
         obj=provider.getChildren(malFile);
         assertNotNull(obj);
-        assertEquals(3, obj.length);
-        assertTrue(obj[0] instanceof IMolecule);
-        assertTrue(obj[1] instanceof IMolecule);
-        assertTrue(obj[2] instanceof IMolecule);
+        assertEquals(67, obj.length);
 
     }
 
