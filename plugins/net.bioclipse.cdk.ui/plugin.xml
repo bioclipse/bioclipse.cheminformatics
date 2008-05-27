@@ -31,29 +31,7 @@
       </category>
    </extension>
 
-   <!--extension
-         point="org.eclipse.ui.editors">
-      <editor
-            class="net.bioclipse.cdk.ui.editors.JCPMultiPageEditor"
-            contributorClass="net.bioclipse.cdk.ui.editors.JCPMultiPageEditorContributor"
-            icon="icons/molecule2D.gif"
-            id="net.bioclipse.plugins.bc_jchempaint.editors.JCPMultiPageEditor"
-            name="JChemPaint"
-            >
-            <contentTypeBinding
-                  contentTypeId="net.bioclipse.cdk.ui.moleculeType">
-            </contentTypeBinding>
-      </editor>
-      <editor
-            class="net.bioclipse.cdk.ui.editors.JCPEditor"
-            contributorClass="net.bioclipse.cdk.ui.editors.JCPEditor"
-            default="false"
-            icon="icons/molecule2D.gif"
-            id="net.bioclipse.cdk.ui.editors.JCPEditor"
-            name="JCPEditor"/>
-   </extension-->
-
-   <!--extension
+   <extension
          point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent
             contentProvider="net.bioclipse.cdk.ui.views.MoleculeContentProvider"
@@ -76,7 +54,7 @@
          </and>
          </triggerPoints>
       </navigatorContent>
-   </extension-->
+   </extension>
 
 <!-- Add MoleculeContent to expand molecules with CDK -->
 <extension
