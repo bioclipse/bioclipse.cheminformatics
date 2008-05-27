@@ -76,6 +76,18 @@ public class MoleculeContentProviderTest {
         assertEquals(1, obj.length);
         assertTrue(obj[0] instanceof IMolecule);
 
+        //New file to test
+        //================
+        IFile malFile=files.get("mal.sdf");
+        assertNotNull(malFile);
+        
+        obj=provider.getChildren(malFile);
+        assertNotNull(obj);
+        assertEquals(3, obj.length);
+        assertTrue(obj[0] instanceof IMolecule);
+        assertTrue(obj[1] instanceof IMolecule);
+        assertTrue(obj[2] instanceof IMolecule);
+
     }
 
 
@@ -138,6 +150,14 @@ public class MoleculeContentProviderTest {
         sarFile.create(gbkIS,true,dummyMonitor);
         gbkIS.close();        
         files.put("sar.sdf", sarFile);
+
+        //Create test file for mal sdf
+        IPath malPath= projectPath.append("mal.sdf");
+        IFile malFile = root.getFile(malPath);
+        InputStream malIS = getClass().getResourceAsStream("/testFiles/mal.sdf");
+        malFile.create(malIS,true,dummyMonitor);
+        malIS.close();        
+        files.put("mal.sdf", malFile);
 
         IPath gbkFailPath= projectPath.append("iterconftest.sdf");
         IFile iterFile = root.getFile(gbkFailPath);
