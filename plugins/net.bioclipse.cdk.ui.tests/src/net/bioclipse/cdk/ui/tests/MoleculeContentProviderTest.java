@@ -83,7 +83,7 @@ public class MoleculeContentProviderTest {
         
         obj=provider.getChildren(malFile);
         assertNotNull(obj);
-        assertEquals(67, obj.length);
+        assertEquals(3, obj.length);
 
     }
 
