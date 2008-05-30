@@ -15,11 +15,16 @@ package net.bioclipse.cdk.ui.views;
 
 
 
+import net.bioclipse.cdk.business.CDKManager;
+import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.ui.Activator;
 import net.bioclipse.cdk.ui.widgets.JChemPaintWidget;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -31,6 +36,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.Molecule;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
@@ -51,6 +57,8 @@ public class Java2DRendererView extends ViewPart
     private final static StructureDiagramGenerator sdg = new StructureDiagramGenerator();
     
     private IChemObjectBuilder chemObjBuilder;
+
+    private ICDKManager cdk;
     
     /**
      * The constructor.
@@ -58,6 +66,7 @@ public class Java2DRendererView extends ViewPart
     public Java2DRendererView() {
         
         chemObjBuilder=DefaultChemObjectBuilder.getInstance();
+        cdk=net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
         
     }
 
@@ -107,39 +116,64 @@ public class Java2DRendererView extends ViewPart
         }
         
         //We can always get the SMILES and render an IMolecule
-        else if (obj instanceof net.bioclipse.core.domain.IMolecule) {
-            net.bioclipse.core.domain.IMolecule mol = (net.bioclipse.core.domain.IMolecule) obj;
-            try {
-                setMoleculeFromSMILES(mol.getSmiles());
-            } catch (BioclipseException e) {
-                e.printStackTrace();
+        else if (obj instanceof IAdaptable) {
+            IAdaptable ada=(IAdaptable)obj;
+            
+            Object molobj=ada
+                    .getAdapter( net.bioclipse.core.domain.IMolecule.class );
+            if (molobj==null || 
+                   (!(molobj instanceof net.bioclipse.core.domain.IMolecule ))){
+                //Nothing to show
+                clearView();
+                return;
             }
+
+            net.bioclipse.core.domain.IMolecule bcmol 
+                                = (net.bioclipse.core.domain.IMolecule) molobj;
+            
+            try {
+
+                //Create cdkmol from IMol, via CML or SMILES if that fails
+                ICDKMolecule cdkMol=cdk.create( bcmol );
+
+                //Set AC as input to SDG
+                IAtomContainer ac=cdkMol.getAtomContainer();
+                molecule=new Molecule(ac);
+                sdg.setMolecule((IMolecule)molecule.clone());
+                sdg.generateCoordinates();
+                molecule = sdg.getMolecule();
+                setAtomContainer(molecule);
+            } catch (CloneNotSupportedException e) {
+                clearView();
+                logger.debug( "Unable to clone structure in 2Dview: " 
+                              + e.getMessage() );
+            } catch ( BioclipseException e ) {
+                clearView();
+                logger.debug( "Unable to generate structure in 2Dview: " 
+                              + e.getMessage() );
+            } catch ( Exception e ) {
+                clearView();
+                logger.debug( "Unable to generate structure in 2Dview: " 
+                              + e.getMessage() );
+            }
+
         }
         
     }
 
 
-    private void setMoleculeFromSMILES(String smiles) {
-        try {
-//            molecule = new SmilesParser(chemObjBuilder).parseSmiles("CCOCCN(C)C");
-            molecule = new SmilesParser(chemObjBuilder).parseSmiles("smiles");
-            sdg.setMolecule((IMolecule)molecule.clone());
-            sdg.generateCoordinates();
-            molecule = sdg.getMolecule();
-            setAtomContainer(molecule);
-        } catch (InvalidSmilesException e) {
-            e.printStackTrace();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
+    /**
+     * Hide canvasview
+     */
+    private void clearView() {
+        canvasView.setVisible( false );
     }
+
 
     private void setAtomContainer(IAtomContainer ac) {
             try {
                 canvasView.setAtomContainer(ac);
+                canvasView.setVisible( true );
                 canvasView.redraw();
             } catch (Exception e) {
                 logger.debug("Error displaying molecule in viewer: " + e.getMessage());
