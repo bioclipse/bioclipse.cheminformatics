@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.BitSet;
 
+import org.eclipse.ui.views.properties.IPropertySource;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.fingerprint.Fingerprinter;
 import org.openscience.cdk.geometry.GeometryTools;
@@ -26,6 +27,7 @@ import org.openscience.cdk.smiles.SmilesGenerator;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.BioObject;
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.domain.props.BioObjectPropertySource;
 
 /**
  * The CKMolecule wraps an IAtomContainer and is able to cache SMILES
@@ -172,6 +174,17 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
     public boolean has3dCoords() throws BioclipseException {
         if (atomContainer==null) throw new BioclipseException("Atomcontainer is null!");
         return GeometryTools.has3DCoordinates(atomContainer);
+    }
+    
+    @Override
+    public Object getAdapter( Class adapter ) {
+    
+        if (adapter == IMolecule.class){
+            return this;
+        }
+        
+        // TODO Auto-generated method stub
+        return super.getAdapter( adapter );
     }
 
 }
