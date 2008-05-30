@@ -21,6 +21,8 @@ import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk10.business.CDK10Manager;
+import net.bioclipse.cdk10.business.CDK10Molecule;
 import net.bioclipse.core.business.BioclipseException;
 
 import org.junit.Before;
@@ -69,6 +71,51 @@ public class TestCDKMolecule {
         assertNotNull(smiles);
         System.out.println("Smiles: " + smiles);
 
+    }
+    
+    
+    @Test
+    public void testCreateFromString() throws IOException, BioclipseException{
+        InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
+        byte[] buf=new byte[60000];
+        int a=cmlFile.read( buf );
+        System.out.println("Read: " + a + "bytes");
+        String content=new String(buf);
+        String cutcontent=content.substring( 0,a );
+        System.out.println("Content: " + cutcontent.length());
+        
+        ICDKMolecule mol=cdk.fromString( cutcontent );
+        assertNotNull(mol);
+        String smiles=mol.getSmiles();
+        assertNotNull(smiles);
+        System.out.println("Smiles: " + smiles);
+    }
+
+    /**
+     * Test conversion of CDK10Molecule to CDKMolecule
+     * @throws IOException
+     * @throws BioclipseException
+     */
+    @Test
+    public void testCreateFromImolecule() throws IOException, BioclipseException{
+        
+        CDK10Manager cdk10=new CDK10Manager();
+        CDKManager cdk=new CDKManager();
+
+        CDK10Molecule cdk10mol=cdk10.createMoleculeFromSMILES(
+                                  "CC1CCCC(C#N)N1C(CO[Si](C)(C)C)C2=CC=CC=C2" );
+        
+        ICDKMolecule convertedmol=cdk.create( cdk10mol );
+        assertNotNull(convertedmol);
+        String smiles=convertedmol.getSmiles();
+        assertNotNull(smiles);
+        System.out.println("Smiles: " + smiles);
+        
+        ICDKMolecule cdkmol=cdk.fromSmiles(
+                                  "CC1CCCC(C#N)N1C(CO[Si](C)(C)C)C2=CC=CC=C2" );
+        
+        assertTrue( cdk.fingerPrintMatches( cdkmol, convertedmol ));
+        
     }
 
 }
