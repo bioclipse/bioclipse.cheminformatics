@@ -27,6 +27,8 @@ import net.bioclipse.core.business.BioclipseException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
 
 public class TestCDKMolecule {
 
@@ -95,9 +97,10 @@ public class TestCDKMolecule {
      * Test conversion of CDK10Molecule to CDKMolecule
      * @throws IOException
      * @throws BioclipseException
+     * @throws CDKException 
      */
     @Test
-    public void testCreateFromImolecule() throws IOException, BioclipseException{
+    public void testCreateFromImolecule() throws IOException, BioclipseException, CDKException{
         
         CDK10Manager cdk10=new CDK10Manager();
         CDKManager cdk=new CDKManager();
@@ -115,6 +118,20 @@ public class TestCDKMolecule {
                                   "CC1CCCC(C#N)N1C(CO[Si](C)(C)C)C2=CC=CC=C2" );
         
         assertTrue( cdk.fingerPrintMatches( cdkmol, convertedmol ));
+
+        assertTrue( UniversalIsomorphismTester
+          .isIsomorph( cdk10mol.getAtomContainer(), cdkmol.getAtomContainer()));        
+
+        assertTrue( UniversalIsomorphismTester
+                    .isIsomorph( cdk10mol.getAtomContainer(), convertedmol.getAtomContainer()));        
+
+        assertTrue( UniversalIsomorphismTester
+                    .isIsomorph( cdkmol.getAtomContainer(), convertedmol.getAtomContainer()));        
+
+        //It seems that MassNumber is not created from Smiles?
+        System.out.println("MassNumber cdk10: " + cdk10mol.getAtomContainer().getAtom( 0 ).getMassNumber());
+        System.out.println("MassNumber cdk: " + cdkmol.getAtomContainer().getAtom( 0 ).getMassNumber());
+        System.out.println("MassNumber converted: " + convertedmol.getAtomContainer().getAtom( 0 ).getMassNumber());
         
     }
 
