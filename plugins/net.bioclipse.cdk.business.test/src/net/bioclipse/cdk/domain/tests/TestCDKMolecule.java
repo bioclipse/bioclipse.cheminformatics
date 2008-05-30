@@ -20,6 +20,7 @@ import java.util.BitSet;
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
+import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 
 import org.junit.Before;
@@ -40,7 +41,7 @@ public class TestCDKMolecule {
     public void testFingerprinter() throws IOException, BioclipseException{
         InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
 
-        CDKMolecule mol=cdk.loadMolecule(cmlFile);
+        ICDKMolecule mol=cdk.loadMolecule(cmlFile);
         assertNotNull(mol);
         BitSet bs=mol.getFingerprint(false);
         assertNotNull(bs);
@@ -51,7 +52,7 @@ public class TestCDKMolecule {
     public void testGetCML() throws IOException, BioclipseException{
         InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
 
-        CDKMolecule mol=cdk.loadMolecule(cmlFile);
+        ICDKMolecule mol=cdk.loadMolecule(cmlFile);
         assertNotNull(mol);
         String cmlString=mol.getCML();
         assertNotNull(cmlString);
@@ -62,7 +63,7 @@ public class TestCDKMolecule {
     public void testGetSmiles() throws IOException, BioclipseException{
         InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
 
-        CDKMolecule mol=cdk.loadMolecule(cmlFile);
+        ICDKMolecule mol=cdk.loadMolecule(cmlFile);
         assertNotNull(mol);
         String smiles=mol.getSmiles();
         assertNotNull(smiles);
