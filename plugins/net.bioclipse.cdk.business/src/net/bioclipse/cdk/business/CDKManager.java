@@ -11,6 +11,7 @@
  ******************************************************************************/
 package net.bioclipse.cdk.business;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -59,7 +60,7 @@ public class CDKManager implements ICDKManager {
      * Load a molecule from a file. If many molecules, just return first.
      * To return a list of molecules, use loadMolecules(...)
      */
-    public CDKMolecule loadMolecule(String path)
+    public ICDKMolecule loadMolecule(String path)
         throws IOException, BioclipseException {
         
         File file=new File(path);
@@ -83,7 +84,7 @@ public class CDKManager implements ICDKManager {
      * Load a molecule from an InputStream. If many molecules, just return
      * first. To return list of molecules, use loadMolecules(...)
      */
-    public CDKMolecule loadMolecule(InputStream instream)
+    public ICDKMolecule loadMolecule(InputStream instream)
         throws IOException, BioclipseException {
 
         if (readerFactory==null){
@@ -276,7 +277,7 @@ public class CDKManager implements ICDKManager {
      * Create molecule from SMILES.
      * @throws BioclipseException 
      */
-    public CDKMolecule fromSmiles(String smilesDescription)
+    public ICDKMolecule fromSmiles(String smilesDescription)
         throws BioclipseException {
 
         SmilesParser parser
@@ -291,6 +292,25 @@ public class CDKManager implements ICDKManager {
         
     }
 
+    /**
+     * Create molecule from String
+     * @throws BioclipseException 
+     * @throws BioclipseException 
+     * @throws IOException 
+     */
+    public ICDKMolecule fromString( String molstring ) throws BioclipseException, IOException {
+
+        if (molstring==null) throw new BioclipseException("Input cannot be null");
+
+        ByteArrayInputStream bais=new ByteArrayInputStream(molstring.getBytes());
+        
+        return loadMolecule( bais );
+        
+    }
+
+    
+    
+    
     public Iterator<ICDKMolecule> creatMoleculeIterator(InputStream instream) {
         return new IteratingBioclipseMDLReader(
             instream,
@@ -345,8 +365,16 @@ public class CDKManager implements ICDKManager {
         }
     }
 
+    /**
+     * Create an ICDKMolecule from an IMolecule.
+     * First tries to create ICDKMolecule from CML. If that fails, tries to
+     * create from SMILES.
+     */
     public ICDKMolecule create( IMolecule m ) throws BioclipseException {
-
+        //First try to create from CML
+        
+        //Secondly, try to create from SMILES
         return fromSmiles( m.getSmiles() );
     }
+
 }

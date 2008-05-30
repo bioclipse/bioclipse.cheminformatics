@@ -33,7 +33,7 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws BioclipseException
      */
     @Recorded
-    public CDKMolecule fromSmiles(String smiles)
+    public ICDKMolecule fromSmiles(String smiles)
         throws BioclipseException;
 
     /**
@@ -45,7 +45,7 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws BioclipseException
      */
     @Recorded
-    public CDKMolecule loadMolecule( String path )
+    public ICDKMolecule loadMolecule( String path )
         throws IOException, BioclipseException;
 
     /**
@@ -56,7 +56,7 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws BioclipseException
      */
     @Recorded
-    public CDKMolecule loadMolecule(InputStream instream)
+    public ICDKMolecule loadMolecule(InputStream instream)
         throws IOException, BioclipseException;
 
     /**
@@ -146,4 +146,17 @@ public interface ICDKManager extends IBioclipseManager {
                        methodSummary = "Creates a cdk molecule from a" +
                        		           " molecule" )
     public ICDKMolecule create( IMolecule m ) throws BioclipseException;
+
+    /**
+     * Creates a cdk molecule from a String
+     * 
+     * @param m
+     * @return
+     * @throws BioclipseException if input is null or parse fails
+     * @throws IOException if file cannot be read
+     */
+    @PublishedMethod ( params = "IMolecule m",
+                       methodSummary = "Creates a cdk molecule from a" +
+                                     " String" )
+    public ICDKMolecule fromString( String cml ) throws BioclipseException, IOException;
 }
