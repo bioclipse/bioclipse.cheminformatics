@@ -372,6 +372,14 @@ public class CDKManager implements ICDKManager {
      */
     public ICDKMolecule create( IMolecule m ) throws BioclipseException {
         //First try to create from CML
+        try {
+            String cmlString=m.getCML();
+            if (cmlString!=null){
+                fromString( cmlString );
+            }
+        } catch ( IOException e ) {
+            logger.debug( "Could not create mol from CML" );
+        }
         
         //Secondly, try to create from SMILES
         return fromSmiles( m.getSmiles() );
