@@ -375,7 +375,7 @@ public class CDKManager implements ICDKManager {
         try {
             String cmlString=m.getCML();
             if (cmlString!=null){
-                fromString( cmlString );
+                return fromString( cmlString );
             }
         } catch ( IOException e ) {
             logger.debug( "Could not create mol from CML" );

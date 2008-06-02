@@ -38,6 +38,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.exception.InvalidSmilesException;
+import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecule;
@@ -115,7 +116,7 @@ public class Java2DRendererView extends ViewPart
             setAtomContainer(mol.getAtomContainer());
         }
         
-        //We can always get the SMILES and render an IMolecule
+        //Try to get an IMolecule via the adapter
         else if (obj instanceof IAdaptable) {
             IAdaptable ada=(IAdaptable)obj;
             
@@ -136,12 +137,22 @@ public class Java2DRendererView extends ViewPart
                 //Create cdkmol from IMol, via CML or SMILES if that fails
                 ICDKMolecule cdkMol=cdk.create( bcmol );
 
-                //Set AC as input to SDG
+                //Create molecule
                 IAtomContainer ac=cdkMol.getAtomContainer();
                 molecule=new Molecule(ac);
-                sdg.setMolecule((IMolecule)molecule.clone());
-                sdg.generateCoordinates();
-                molecule = sdg.getMolecule();
+
+                //Create 2D-coordinates if not available
+                if (GeometryTools.has2DCoordinatesNew( molecule )==0){
+                    sdg.setMolecule((IMolecule)molecule.clone());
+                    sdg.generateCoordinates();
+                    molecule = sdg.getMolecule();
+                }
+                
+                //Set AtomColorer based on active editor
+                //RFE: AtomColorer på JCPWidget
+                //TODO
+
+                //Update widget
                 setAtomContainer(molecule);
             } catch (CloneNotSupportedException e) {
                 clearView();
