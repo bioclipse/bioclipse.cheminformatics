@@ -156,12 +156,10 @@ public class CDKManagerTest {
     
     @Test
     public void testSMARTSMatching() throws BioclipseException {
-        SmilesGenerator generator = new SmilesGenerator();
-        String indoleSmiles  = generator
-                               .createSMILES( MoleculeFactory.makeIndole() );
+        String propaneSmiles = "CCC"; 
         
-        ICDKMolecule indole  = cdk.fromSmiles( indoleSmiles  );
+        ICDKMolecule propane  = cdk.fromSmiles( propaneSmiles  );
         
-        assertTrue( cdk.smartsMatches(indole, indoleSmiles) );
+        assertTrue( cdk.smartsMatches(propane, propaneSmiles) );
     }
 }
