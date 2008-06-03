@@ -159,4 +159,17 @@ public interface ICDKManager extends IBioclipseManager {
                        methodSummary = "Creates a cdk molecule from a" +
                                      " String" )
     public ICDKMolecule fromString( String cml ) throws BioclipseException, IOException;
+
+    /**
+     * 
+     * @param molecule
+     * @param smarts
+     * @return whether the given SMARTS matches the given molecule
+     * @throws BioclipseException 
+     */
+    @PublishedMethod ( params = "ICDKMolecule molecule, String smarts", 
+                       methodSummary = "Tests whether the given SMARTS " +
+                       		           "matches the given molecule")
+    public boolean smartsMatches( ICDKMolecule molecule, String smarts ) 
+                   throws BioclipseException;
 }

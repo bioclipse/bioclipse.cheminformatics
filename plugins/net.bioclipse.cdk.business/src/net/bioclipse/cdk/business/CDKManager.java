@@ -40,10 +40,10 @@ import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.formats.IResourceFormat;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
-import org.openscience.cdk.isomorphism.IsomorphismTester;
 import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesParser;
+import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 
 public class CDKManager implements ICDKManager {
@@ -385,4 +385,20 @@ public class CDKManager implements ICDKManager {
         return fromSmiles( m.getSmiles() );
     }
 
+    public boolean smartsMatches( ICDKMolecule molecule, String smarts ) 
+                   throws BioclipseException {
+
+        SMARTSQueryTool querytool;
+        try {
+            querytool = new SMARTSQueryTool(smarts);
+        } catch ( CDKException e ) {
+            throw new BioclipseException("Could not parse SMARTS query", e);
+        }
+        try {
+            return querytool.matches( molecule.getAtomContainer() );
+        } catch ( CDKException e ) {
+            throw new BioclipseException( "A problem occured trying to " +
+            		                      "match SMARTS query");
+        }
+    }
 }

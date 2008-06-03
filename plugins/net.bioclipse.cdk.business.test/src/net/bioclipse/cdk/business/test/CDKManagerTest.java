@@ -153,4 +153,15 @@ public class CDKManagerTest {
         ICDKMolecule cdkm = cdk.create( m );
         assertEquals( cdkm.getSmiles(), m.getSmiles() );
     }
+    
+    @Test
+    public void testSMARTSMatching() throws BioclipseException {
+        SmilesGenerator generator = new SmilesGenerator();
+        String indoleSmiles  = generator
+                               .createSMILES( MoleculeFactory.makeIndole() );
+        
+        ICDKMolecule indole  = cdk.fromSmiles( indoleSmiles  );
+        
+        assertTrue( cdk.smartsMatches(indole, indoleSmiles) );
+    }
 }
