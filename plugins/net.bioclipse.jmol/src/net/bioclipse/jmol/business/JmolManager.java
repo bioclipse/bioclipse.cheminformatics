@@ -13,10 +13,13 @@ package net.bioclipse.jmol.business;
 
 import net.bioclipse.jmol.editors.JmolEditor;
 
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 
 public class JmolManager implements IJmolManager{
+
+    private JmolEditor jmolEditor;
 
     public String getNamespace() {
         return "jmol";
@@ -51,14 +54,23 @@ public class JmolManager implements IJmolManager{
      */
     private JmolEditor findActiveJmolEditor() {
 
-        IEditorPart activeEditor=PlatformUI.getWorkbench()
-            .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        final Display display = PlatformUI.getWorkbench().getDisplay();
+        display.syncExec(new Runnable() {
+            public void run() {
+                IEditorPart activeEditor=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 
-        if (activeEditor instanceof JmolEditor) {
-            return (JmolEditor) activeEditor;
-        }
+                if (activeEditor instanceof JmolEditor) {
+                    setActiveJmolEditor((JmolEditor)activeEditor);
+                }
+            }
+        });
+       
 
         return null;
+    }
+
+    protected void setActiveJmolEditor( JmolEditor activeEditor ) {
+        jmolEditor=activeEditor;
     }
     
 }

@@ -17,9 +17,13 @@ import java.util.List;
 
 import javax.swing.JScrollPane;
 
-import net.bioclipse.core.business.ChemicalStructureProvider;
+import net.bioclipse.cdk.business.ICDKManager;
+import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.IMolecule;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -71,6 +75,8 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
     private List<ISelectionChangedListener> selectionListeners;
     private JmolSelection selection;
 
+    private ICDKManager cdk;
+
 
     /**
      * The constructor.
@@ -78,6 +84,8 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
     public JmolView() {
         history = new ArrayList<String>(50);
         jmolPanel= new JmolPanel(this);
+        cdk=net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
+
     }
 
     /**
@@ -232,53 +240,94 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
      * @param selection
      */
     private void reactOnSelection(ISelection selection) {
-        if (selection instanceof IStructuredSelection) {
-            IStructuredSelection structsel = (IStructuredSelection) selection;
 
-            if (structsel.toList().size()<=0){
-                //TODO: clear Jmol here?
-                return;
-            }
+        if (!(selection instanceof IStructuredSelection))
+            return;
+            IStructuredSelection ssel = (IStructuredSelection) selection;
             
+//            Object obj = ssel.getFirstElement();
+            
+                
             ChemFile cf=new ChemFile();
             ChemSequence seq=new ChemSequence();
             cf.addChemSequence(seq);
             ChemModel model=new ChemModel();
             seq.addChemModel(model);
 
-            for (Object obj : structsel.toList()){
+            IMoleculeSet moleculeSet=new MoleculeSet();
+            model.setMoleculeSet(moleculeSet);
 
-                //TODO: Handle multile selections!
+            //Loop all selections; if they can provide AC: add to moleculeSet
+            for (Object obj : ssel.toList()){
 
-                if (obj instanceof ChemicalStructureProvider) {
-                    ChemicalStructureProvider struct = (ChemicalStructureProvider) obj;
-                    Object obj2=struct.getMoleculeImpl();
+                //TODO: Handle multiple selections!
 
-
-                    IMoleculeSet set=new MoleculeSet();
-                    model.setMoleculeSet(set);
-
-
-                    if (obj2 instanceof IAtomContainer) {
-                        IAtomContainer newAC = (IAtomContainer) obj2;
-
-                        //Only add if have 3D coords
-                        if (GeometryTools.has3DCoordinates(newAC)){
-                            set.addAtomContainer(newAC);
-                        }
-
+                //If we have an ICDKMolecule, just get the AC
+                if (obj instanceof ICDKMolecule) {
+                    ICDKMolecule mol = (ICDKMolecule) obj;
+                    if (mol.getAtomContainer()==null){
+                        logger.debug("CDKMolecule but can't get AtomContainer.");
+                    }
+                    //Only add if have 3D coords
+                    IAtomContainer ac=mol.getAtomContainer();
+                    if (GeometryTools.has3DCoordinates(ac)){
+                        moleculeSet.addAtomContainer(ac);
                     }
                 }
+                
+                //Try to get an IMolecule via the adapter
+                else if (obj instanceof IAdaptable) {
+                    IAdaptable ada=(IAdaptable)obj;
+
+                    Object molobj=ada
+                    .getAdapter( net.bioclipse.core.domain.IMolecule.class );
+                    if (molobj==null || 
+                            (!(molobj instanceof net.bioclipse.core.domain.IMolecule ))){
+                        //Nothing to show
+//                      clearView();
+//                      return;
+                    }
+
+                    if (molobj!=null){
+
+                        net.bioclipse.core.domain.IMolecule bcmol 
+                        = (net.bioclipse.core.domain.IMolecule) molobj;
+
+                        //Create cdkmol from IMol, via CML or SMILES if that fails
+                        ICDKMolecule cdkMol;
+                        try {
+                            //Create molecule
+                            cdkMol = cdk.create( bcmol );
+                            IAtomContainer ac=cdkMol.getAtomContainer();
+
+
+                            //Only add if have 3D coords
+                            if (GeometryTools.has3DCoordinates(ac)){
+                                moleculeSet.addAtomContainer(ac);
+                            }
+
+                        } catch ( BioclipseException e ) {
+                            e.printStackTrace();
+                        }
+                    }
             }
 
+                
             //Set new mol in Jmol
-            if (cf!=null)
+            if (moleculeSet.getAtomContainerCount()>0)
                 setMolecule(cf);
-
+            else
+                clearView();
 
         }
 
 
+    }
+
+     private void clearView() {
+
+        // TODO Auto-generated method stub
+        
     }
 
     private void setMolecule(IChemFile cf) {
