@@ -87,17 +87,6 @@ IResourceChangeListener, IResourceDeltaVisitor {
                         CDKMoleculeList col2=cachedModelMap.get(modelFile);
                         if (col2!=null){
                             children = col2.toArray();
-//                            if (children!=null){
-//                                if (children[0] instanceof IDNASequence) {
-//                                    System.out.println("child is DNASeq");
-//                                }
-//                                if (children[0] instanceof IRNASequence) {
-//                                    System.out.println("child is RNASeq");
-//                                }
-//                                if (children[0] instanceof IAASequence) {
-//                                    System.out.println("child is AASeq");
-//                                }
-//                            }
                             return children != null ? children : NO_CHILDREN;
                         }
                     }
