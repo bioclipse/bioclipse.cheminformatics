@@ -12,14 +12,18 @@
 package net.bioclipse.jmol.business;
 
 import net.bioclipse.jmol.editors.JmolEditor;
+import net.bioclipse.jmol.views.JmolView;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PlatformUI;
 
 public class JmolManager implements IJmolManager{
 
     private JmolEditor jmolEditor;
+    private JmolView jmolView;
 
     public String getNamespace() {
         return "jmol";
@@ -37,7 +41,10 @@ public class JmolManager implements IJmolManager{
         }
 
         //Run script in view (if open)
-        //TODO: Implement later if/when JmolView exists
+        JmolView view=findActiveJmolView();
+        if (view!=null){
+            view.runScript(script);
+        }
 
     }
 
@@ -55,6 +62,7 @@ public class JmolManager implements IJmolManager{
     private JmolEditor findActiveJmolEditor() {
 
         final Display display = PlatformUI.getWorkbench().getDisplay();
+        setActiveJmolEditor(null);
         display.syncExec(new Runnable() {
             public void run() {
                 IEditorPart activeEditor=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
@@ -64,9 +72,39 @@ public class JmolManager implements IJmolManager{
                 }
             }
         });
-       
 
-        return null;
+        return jmolEditor;
+    }
+    
+    /**
+     * @return Active editor or null if not instance of JmolEditor
+     */
+    private JmolView findActiveJmolView() {
+
+        final Display display = PlatformUI.getWorkbench().getDisplay();
+        setActiveJmolView( null );
+        display.syncExec(new Runnable() {
+            public void run() {
+                IViewReference[] views=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
+
+                for (IViewReference viewref: views){
+                    if (viewref.getId().equals( JmolView.ID )) {
+                        IViewPart part=viewref.getView( false );
+                        if (part!=null){
+                            setActiveJmolView((JmolView)part);
+                        }
+                    }
+                }
+                
+            }
+        });
+
+        return jmolView;
+    }
+
+
+    protected void setActiveJmolView( JmolView view ) {
+        jmolView=view;
     }
 
     protected void setActiveJmolEditor( JmolEditor activeEditor ) {

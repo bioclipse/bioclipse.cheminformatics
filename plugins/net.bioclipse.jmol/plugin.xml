@@ -68,7 +68,7 @@
           allowMultiple="false"
           class="net.bioclipse.jmol.views.JmolView"
           icon="icons/molecule3D.gif"
-          id="net.bioclipse.jmol.view1"
+          id="net.bioclipse.jmol.views.JmolView"
           name="Jmol">
     </view>
  </extension>

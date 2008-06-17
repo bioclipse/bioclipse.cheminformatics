@@ -77,7 +77,10 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
     private ICDKManager cdk;
 
+    //Keep track if we have contents in view
+    private boolean cleared;
 
+    
     /**
      * The constructor.
      */
@@ -85,8 +88,18 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
         history = new ArrayList<String>(50);
         jmolPanel= new JmolPanel(this);
         cdk=net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
-
+        setCleared( true );
     }
+
+    public boolean isCleared() {
+        return cleared;
+    }
+
+    
+    public void setCleared( boolean cleared ) {
+        this.cleared = cleared;
+    }
+
 
     /**
      * This is a callback that will allow us
@@ -243,93 +256,107 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
         if (!(selection instanceof IStructuredSelection))
             return;
-            IStructuredSelection ssel = (IStructuredSelection) selection;
-            
-//            Object obj = ssel.getFirstElement();
-            
-                
-            ChemFile cf=new ChemFile();
-            ChemSequence seq=new ChemSequence();
-            cf.addChemSequence(seq);
-            ChemModel model=new ChemModel();
-            seq.addChemModel(model);
 
-            IMoleculeSet moleculeSet=new MoleculeSet();
-            model.setMoleculeSet(moleculeSet);
+        IStructuredSelection ssel = (IStructuredSelection) selection;
 
-            //Loop all selections; if they can provide AC: add to moleculeSet
-            for (Object obj : ssel.toList()){
+        IMoleculeSet moleculeSet=new MoleculeSet();
 
-                //TODO: Handle multiple selections!
+        //Loop all selections; if they can provide AC: add to moleculeSet
+        for (Object obj : ssel.toList()){
 
-                //If we have an ICDKMolecule, just get the AC
-                if (obj instanceof ICDKMolecule) {
-                    ICDKMolecule mol = (ICDKMolecule) obj;
-                    if (mol.getAtomContainer()==null){
-                        logger.debug("CDKMolecule but can't get AtomContainer.");
-                    }
-                    //Only add if have 3D coords
-                    IAtomContainer ac=mol.getAtomContainer();
-                    if (GeometryTools.has3DCoordinates(ac)){
-                        moleculeSet.addAtomContainer(ac);
-                    }
+            //TODO: Handle multiple selections!
+
+            //If we have an ICDKMolecule, just get the AC
+            if (obj instanceof ICDKMolecule) {
+                ICDKMolecule mol = (ICDKMolecule) obj;
+                if (mol.getAtomContainer()==null){
+                    logger.debug("CDKMolecule but can't get AtomContainer.");
                 }
-                
-                //Try to get an IMolecule via the adapter
-                else if (obj instanceof IAdaptable) {
-                    IAdaptable ada=(IAdaptable)obj;
-
-                    Object molobj=ada
-                    .getAdapter( net.bioclipse.core.domain.IMolecule.class );
-                    if (molobj==null || 
-                            (!(molobj instanceof net.bioclipse.core.domain.IMolecule ))){
-                        //Nothing to show
-//                      clearView();
-//                      return;
-                    }
-
-                    if (molobj!=null){
-
-                        net.bioclipse.core.domain.IMolecule bcmol 
-                        = (net.bioclipse.core.domain.IMolecule) molobj;
-
-                        //Create cdkmol from IMol, via CML or SMILES if that fails
-                        ICDKMolecule cdkMol;
-                        try {
-                            //Create molecule
-                            cdkMol = cdk.create( bcmol );
-                            IAtomContainer ac=cdkMol.getAtomContainer();
-
-
-                            //Only add if have 3D coords
-                            if (GeometryTools.has3DCoordinates(ac)){
-                                moleculeSet.addAtomContainer(ac);
-                            }
-
-                        } catch ( BioclipseException e ) {
-                            e.printStackTrace();
-                        }
-                    }
+                //Only add if have 3D coords
+                IAtomContainer ac=mol.getAtomContainer();
+                if (GeometryTools.has3DCoordinates(ac)){
+                    moleculeSet.addAtomContainer(ac);
+                }
             }
 
-                
+            //Try to get an IMolecule via the adapter
+            else if (obj instanceof IAdaptable) {
+                IAdaptable ada=(IAdaptable)obj;
+
+                Object molobj=ada
+                .getAdapter( net.bioclipse.core.domain.IMolecule.class );
+                if (molobj==null || 
+                        (!(molobj instanceof net.bioclipse.core.domain.IMolecule ))){
+                    //Nothing to show
+//                  clearView();
+//                  return;
+                }
+
+                if (molobj!=null){
+
+                    net.bioclipse.core.domain.IMolecule bcmol 
+                    = (net.bioclipse.core.domain.IMolecule) molobj;
+
+                    //Create cdkmol from IMol, via CML or SMILES if that fails
+                    ICDKMolecule cdkMol;
+                    try {
+                        //Create molecule
+                        cdkMol = cdk.create( bcmol );
+                        IAtomContainer ac=cdkMol.getAtomContainer();
+
+
+                        //Only add if have 3D coords
+                        if (GeometryTools.has3DCoordinates(ac)){
+                            moleculeSet.addAtomContainer(ac);
+                        }
+
+                    } catch ( BioclipseException e ) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
             //Set new mol in Jmol
-            if (moleculeSet.getAtomContainerCount()>0)
+            if (moleculeSet.getAtomContainerCount()>0){
+                ChemFile cf=new ChemFile();
+                ChemSequence seq=new ChemSequence();
+                cf.addChemSequence(seq);
+                ChemModel model=new ChemModel();
+                seq.addChemModel(model);
+
+                //Set the molset to the model
+                model.setMoleculeSet(moleculeSet);
+                
+                //Set the ChemFile as input to jmol
                 setMolecule(cf);
+
+                //Indicate that we now have content
+                setCleared( false );
+
+            }
             else
-                clearView();
-
+                if (isCleared()==false){
+                    clearView();
+                    setCleared( true );
+                }
         }
-
 
     }
 
+    /**
+     * Clear JmolView by issuing the "zap" command
+     */
      private void clearView() {
 
-        // TODO Auto-generated method stub
+         runScript( "zap" );
         
     }
 
+     /**
+      * Set a chemfile as mol in Jmol with openClientFile("","",ChemFile)
+      * @param cf
+      */
     private void setMolecule(IChemFile cf) {
 
         logger.debug("Opening Jmol via CDK's ChemFile and CdkJmolAdapter...");
@@ -345,6 +372,19 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
             logger.error(strError);
             text.setEnabled(false);
         }
+    }
+
+    /**
+     * Execute a script in Jmol
+     * @param script
+     */
+    public void runScript( String script ) {
+
+        logger.debug("Running jmol script: '" + script + "'");
+        String res=jmolPanel.getViewer().evalString(script);
+        if (res!=null)
+            logger.debug("Jmol said: '" + res + "'");
+        
     }
 
 }
