@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.renderer.old.Renderer2D;
+import org.openscience.cdk.renderer.Java2DRenderer;
 import org.openscience.cdk.renderer.Renderer2DModel;
 
 /**
@@ -48,7 +48,7 @@ import org.openscience.cdk.renderer.Renderer2DModel;
  */
 public class JChemPaintWidget extends Canvas {
     
-    private Renderer2D renderer;
+    private Java2DRenderer renderer;
     private IAtomContainer molecule;
     private HashMap coordinates = new HashMap();
     
@@ -66,7 +66,7 @@ public class JChemPaintWidget extends Canvas {
     public JChemPaintWidget(Composite parent, int style) {
         super(parent, style);
         
-        renderer = new Renderer2D(new Renderer2DModel());
+        renderer = new Java2DRenderer(new Renderer2DModel());
         Dimension screenSize = new Dimension(this.getSize().x, this.getSize().y);
         renderer.getRenderer2DModel().setBackgroundDimension(screenSize);
         renderer.getRenderer2DModel().setDrawNumbers(false);
@@ -154,8 +154,7 @@ public class JChemPaintWidget extends Canvas {
             renderer.getRenderer2DModel().setBackgroundDimension(oldDimensions);
             renderer.paintMolecule(
                 molecule, 
-                (Graphics2D)graphics,
-                false, true
+                (Graphics2D)graphics
             );
 
             Image swtimage = new Image(
