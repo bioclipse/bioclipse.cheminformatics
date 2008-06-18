@@ -17,6 +17,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DirectColorModel;
@@ -152,9 +153,11 @@ public class JChemPaintWidget extends Canvas {
 
             renderer.getRenderer2DModel().setRenderingCoordinates(coordinates);
             renderer.getRenderer2DModel().setBackgroundDimension(oldDimensions);
+            Rectangle2D.Double rect = new Rectangle2D.Double(0, 0, oldDimensions.getWidth(), oldDimensions.getHeight());
             renderer.paintMolecule(
                 molecule, 
-                (Graphics2D)graphics
+                (Graphics2D)graphics,
+                rect
             );
 
             Image swtimage = new Image(
