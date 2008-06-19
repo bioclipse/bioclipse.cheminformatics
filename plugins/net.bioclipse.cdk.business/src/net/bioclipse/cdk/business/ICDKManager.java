@@ -172,4 +172,17 @@ public interface ICDKManager extends IBioclipseManager {
                        		           "matches the given molecule")
     public boolean smartsMatches( ICDKMolecule molecule, String smarts ) 
                    throws BioclipseException;
+
+    
+    /**
+     * @param filePath
+     * @return the number of entries in the sdf file at the given path or
+     *         0 if failed to read somehow.
+     */
+    @PublishedMethod ( params = "String filePath",
+                       methodSummary = "Counts the number of entries " +
+                       		             "in an SDF file at the given " +
+                       		             "file path. Returns 0 in case " +
+                       		             "of problem.")
+    public int numberOfEntriesInSDF( String filePath );
 }

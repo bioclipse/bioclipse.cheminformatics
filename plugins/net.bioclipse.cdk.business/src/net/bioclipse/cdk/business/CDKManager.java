@@ -401,4 +401,35 @@ public class CDKManager implements ICDKManager {
             		                      "match SMARTS query");
         }
     }
+
+    public int numberOfEntriesInSDF( String filePath ) {
+        int num = 0;
+        try {
+            FileInputStream counterStream = new FileInputStream(filePath);
+            int c = 0;
+            while (c != -1) {
+                c = counterStream.read();
+                if (c == '$') {
+                    c = counterStream.read();
+                    if (c == '$') {
+                        c = counterStream.read();
+                        if (c == '$') {
+                            c = counterStream.read();
+                            if (c == '$') {
+                                num++;
+                                counterStream.read();
+                            }
+                        }
+                    }
+                }
+            }
+            counterStream.close();
+        } catch (Exception exception) {
+            // ok, I give up...
+            logger.debug("Could not determine the number of molecules to read, because: " +
+                         exception.getMessage(), exception
+            );
+        }
+        return 0;
+    }
 }
