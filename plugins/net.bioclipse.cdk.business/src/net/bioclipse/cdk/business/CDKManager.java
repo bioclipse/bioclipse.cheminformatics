@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Ola Spjuth
+ *     Jonathan Alvarsson
  *     
  ******************************************************************************/
 package net.bioclipse.cdk.business;
@@ -23,6 +24,7 @@ import java.util.List;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculeList;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
@@ -46,6 +48,12 @@ import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 
+/**
+ * The manager class for CDK. Contains CDK related methods.
+ * 
+ * @author olas, jonalv
+ *
+ */
 public class CDKManager implements ICDKManager {
 
     private static final Logger logger = Logger.getLogger(CDKManager.class);
