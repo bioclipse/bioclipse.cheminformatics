@@ -19,8 +19,8 @@ import javax.swing.JScrollPane;
 
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.domain.MoleculeSelection;
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IMolecule;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
@@ -42,16 +42,15 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.openscience.cdk.BioPolymer;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.ChemModel;
 import org.openscience.cdk.ChemSequence;
-import org.openscience.cdk.Molecule;
 import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IMoleculeSet;
+import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 
 /**
  * A view for Jmol embedded in an SWT_AWT frame (requires java5.0+)
@@ -80,6 +79,8 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
     //Keep track if we have contents in view
     private boolean cleared;
 
+    //Store the chemfile we are displaying
+    IChemFile chemFile;
     
     /**
      * The constructor.
@@ -260,6 +261,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
         IStructuredSelection ssel = (IStructuredSelection) selection;
 
         IMoleculeSet moleculeSet=new MoleculeSet();
+        MoleculeSelection molSelection=null;
 
         //Loop all selections; if they can provide AC: add to moleculeSet
         for (Object obj : ssel.toList()){
@@ -283,6 +285,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
             else if (obj instanceof IAdaptable) {
                 IAdaptable ada=(IAdaptable)obj;
 
+                //Handle case where Iadaptable can return a molecule
                 Object molobj=ada
                 .getAdapter( net.bioclipse.core.domain.IMolecule.class );
                 if (molobj==null || 
@@ -314,6 +317,16 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                         e.printStackTrace();
                     }
                 }
+                
+                //Handle case where Iadaptable can return a molecule
+                Object selobj=ada
+                .getAdapter( net.bioclipse.cdk.domain.MoleculeSelection.class );
+                if (selobj!=null){
+                    molSelection=(MoleculeSelection)selobj;
+                    
+                }
+
+                
             }
 
 
@@ -334,12 +347,32 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                 //Indicate that we now have content
                 setCleared( false );
 
-            }
-            else
+            }else
                 if (isCleared()==false){
                     clearView();
                     setCleared( true );
                 }
+
+            //Handle highlighting if we have any
+            if (molSelection!=null){
+                
+                IAtomContainer selAC=molSelection.getSelection();
+                List<IAtomContainer> lst=ChemFileManipulator.getAllAtomContainers( chemFile );
+                if (lst!=null && lst.size()>0){
+                    IAtomContainer ac=lst.get( 0 );
+                    System.out.println("** Current AC is:\n");
+                    for (int i=0; i<ac.getAtomCount();i++){
+                        System.out.println("Atom: " + ac.getAtom( i ));
+                    }
+                    System.out.println("\n** Should highlight these atoms:\n");
+                    for (int i=0; i<selAC.getAtomCount();i++){
+                        System.out.println("Atom: " + selAC.getAtom( i ));
+                    }
+                    
+                }
+
+            }
+            
         }
 
     }
@@ -358,6 +391,8 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
       * @param cf
       */
     private void setMolecule(IChemFile cf) {
+        
+        chemFile=cf;
 
         logger.debug("Opening Jmol via CDK's ChemFile and CdkJmolAdapter...");
 
