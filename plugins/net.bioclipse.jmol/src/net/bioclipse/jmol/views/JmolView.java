@@ -13,13 +13,17 @@ package net.bioclipse.jmol.views;
 
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JScrollPane;
 
 import net.bioclipse.cdk.business.ICDKManager;
+import net.bioclipse.cdk.domain.AtomIndexSelection;
+import net.bioclipse.cdk.domain.IAtomSelection;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.domain.MoleculeSelection;
+import net.bioclipse.cdk.domain.AtomContainerSelection;
 import net.bioclipse.core.business.BioclipseException;
 
 import org.apache.log4j.Logger;
@@ -261,7 +265,9 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
         IStructuredSelection ssel = (IStructuredSelection) selection;
 
         IMoleculeSet moleculeSet=new MoleculeSet();
-        MoleculeSelection molSelection=null;
+        IAtomSelection molSelection=null;
+        
+        ArrayList<Integer> atomSelectionIndices=new ArrayList<Integer>();
 
         //Loop all selections; if they can provide AC: add to moleculeSet
         for (Object obj : ssel.toList()){
@@ -320,9 +326,9 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                 
                 //Handle case where Iadaptable can return a molecule
                 Object selobj=ada
-                .getAdapter( net.bioclipse.cdk.domain.MoleculeSelection.class );
+                .getAdapter( IAtomSelection.class );
                 if (selobj!=null){
-                    molSelection=(MoleculeSelection)selobj;
+                    molSelection=(IAtomSelection)selobj;
                     
                 }
 
@@ -356,20 +362,46 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
             //Handle highlighting if we have any
             if (molSelection!=null){
                 
-                IAtomContainer selAC=molSelection.getSelection();
-                List<IAtomContainer> lst=ChemFileManipulator.getAllAtomContainers( chemFile );
-                if (lst!=null && lst.size()>0){
-                    IAtomContainer ac=lst.get( 0 );
-                    System.out.println("** Current AC is:\n");
-                    for (int i=0; i<ac.getAtomCount();i++){
-                        System.out.println("Atom: " + ac.getAtom( i ));
-                    }
+                if ( molSelection instanceof AtomIndexSelection ) {
+                    AtomIndexSelection isel = (AtomIndexSelection) molSelection;
+                    int[] selindices = isel.getSelection();
                     System.out.println("\n** Should highlight these atoms:\n");
-                    for (int i=0; i<selAC.getAtomCount();i++){
-                        System.out.println("Atom: " + selAC.getAtom( i ));
+                    for (int i=0; i<selindices.length;i++){
+                        atomSelectionIndices.add( new Integer(selindices[i]) );
                     }
-                    
                 }
+
+                else if ( molSelection instanceof AtomContainerSelection ) {
+                    //TODO
+                }
+
+//                IAtomContainer selAC=molSelection.getSelection();
+//                List<IAtomContainer> lst=ChemFileManipulator.getAllAtomContainers( chemFile );
+//                if (lst!=null && lst.size()>0){
+//                    IAtomContainer ac=lst.get( 0 );
+//                    System.out.println("** Current AC is:\n");
+//                    for (int i=0; i<ac.getAtomCount();i++){
+//                        System.out.println("Atom: " + ac.getAtom( i ));
+//                    }
+//                    System.out.println("\n** Should highlight these atoms:\n");
+//                    for (int i=0; i<selAC.getAtomCount();i++){
+//                        System.out.println("Atom: " + selAC.getAtom( i ));
+//                    }
+//                    
+//                }
+                
+                //Collect atoms, bonds etc and create script to highlight
+                String selectionString="selectionHalos on; Select none; SELECT ";
+                Collections.sort( atomSelectionIndices );
+                for (Integer i : atomSelectionIndices){
+                    selectionString=selectionString + "atomno=" + i.intValue()+",";
+                }
+
+                //Remove last comma
+                selectionString=selectionString.substring(0, selectionString.length()-1);
+                logger.debug("Collected display string: '" + selectionString + "'");
+                
+                runScript( selectionString );
 
             }
             
