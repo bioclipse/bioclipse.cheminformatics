@@ -20,11 +20,11 @@ import java.util.List;
 import javax.swing.JScrollPane;
 
 import net.bioclipse.cdk.business.ICDKManager;
-import net.bioclipse.cdk.domain.AtomIndexSelection;
-import net.bioclipse.cdk.domain.IAtomSelection;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.AtomContainerSelection;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.AtomIndexSelection;
+import net.bioclipse.core.domain.IAtomSelection;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
@@ -324,7 +324,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                     }
                 }
                 
-                //Handle case where Iadaptable can return a molecule
+                //Handle case where Iadaptable can return atoms to be highlighted
                 Object selobj=ada
                 .getAdapter( IAtomSelection.class );
                 if (selobj!=null){
