@@ -7,7 +7,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
  * @author ola
  *
  */
-public class MoleculeSelection {
+public class AtomContainerSelection {
 
     IAtomContainer selection;
 
@@ -27,7 +27,7 @@ public class MoleculeSelection {
      * Constructor
      * @param selection
      */
-    public MoleculeSelection(IAtomContainer selection) {
+    public AtomContainerSelection(IAtomContainer selection) {
 
         super();
         this.selection = selection;
