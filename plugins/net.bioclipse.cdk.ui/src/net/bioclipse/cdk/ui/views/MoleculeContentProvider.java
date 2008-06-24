@@ -19,7 +19,7 @@ import java.util.Map;
 
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
-import net.bioclipse.cdk.domain.CDKMoleculeList;
+import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 
 import org.apache.log4j.Logger;
@@ -50,7 +50,7 @@ IResourceChangeListener, IResourceDeltaVisitor {
 
     private final List<String> MOLECULE_EXT;
 
-    private final Map<IFile, CDKMoleculeList> cachedModelMap;
+    private final Map<IFile, List<ICDKMolecule>> cachedModelMap;
 
     private StructuredViewer viewer;
 
@@ -60,7 +60,7 @@ IResourceChangeListener, IResourceDeltaVisitor {
     //Register us as listener for resource changes
     public MoleculeContentProvider() {
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
-        cachedModelMap = new HashMap<IFile, CDKMoleculeList>();
+        cachedModelMap = new HashMap<IFile, List<ICDKMolecule>>();
         MOLECULE_EXT=new ArrayList<String>();
         MOLECULE_EXT.add("PDB");
         MOLECULE_EXT.add("CML");
@@ -78,13 +78,13 @@ IResourceChangeListener, IResourceDeltaVisitor {
             /* possible model file */
             IFile modelFile = (IFile) parentElement;
             if(MOLECULE_EXT.contains(modelFile.getFileExtension().toUpperCase())) {
-                CDKMoleculeList col=cachedModelMap.get(modelFile);
+                List<ICDKMolecule> col=cachedModelMap.get(modelFile);
                 if (col!=null){
                     children = col.toArray(new IMolecule[0]);
                     return children != null ? children : NO_CHILDREN;
                 }else{
                     if (updateModel(modelFile)!=null){
-                        CDKMoleculeList col2=cachedModelMap.get(modelFile);
+                        List<ICDKMolecule> col2=cachedModelMap.get(modelFile);
                         if (col2!=null){
                             children = col2.toArray();
                             return children != null ? children : NO_CHILDREN;
@@ -170,10 +170,10 @@ IResourceChangeListener, IResourceDeltaVisitor {
      * Load the model from the given file, if possible.
      * @param modelFile The IFile which contains the persisted model
      */
-    private synchronized CDKMoleculeList updateModel(IFile modelFile) {
+    private synchronized List<ICDKMolecule> updateModel(IFile modelFile) {
 
         if(MOLECULE_EXT.contains(modelFile.getFileExtension().toUpperCase()) ) {
-            CDKMoleculeList model;
+            List<ICDKMolecule> model;
             if (modelFile.exists()) {
 
                 try {

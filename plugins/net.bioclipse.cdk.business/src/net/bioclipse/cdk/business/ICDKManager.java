@@ -14,9 +14,9 @@ package net.bioclipse.cdk.business;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.List;
 
 import net.bioclipse.cdk.domain.CDKMolecule;
-import net.bioclipse.cdk.domain.CDKMoleculeList;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
@@ -91,7 +91,7 @@ public interface ICDKManager extends IBioclipseManager {
                       methodSummary = "Loads molecules from a file at " +
                       		            "a given path into a list of " +
                       		            "molecules")
-    public CDKMoleculeList loadMolecules(String path)
+    public List<ICDKMolecule> loadMolecules(String path)
         throws IOException, BioclipseException;
 
     /**
@@ -106,7 +106,7 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod( params = "InputStream instream", 
                       methodSummary = "Loads molecules from an " +
                       		            "InputStream")
-    public CDKMoleculeList loadMolecules(InputStream instream)
+    public List<ICDKMolecule> loadMolecules(InputStream instream)
         throws IOException, BioclipseException;
 
     /**

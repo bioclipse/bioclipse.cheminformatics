@@ -18,14 +18,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import net.bioclipse.cdk.domain.CDKMolecule;
-import net.bioclipse.cdk.domain.CDKMoleculeList;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.BioList;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 
@@ -140,7 +141,7 @@ public class CDKManager implements ICDKManager {
             return retmol;
         }
         
-        CDKMoleculeList moleculesList=new CDKMoleculeList();
+        List<ICDKMolecule> moleculesList = new ArrayList<ICDKMolecule>();
 
         for (int i=0; i<atomContainersList.size();i++){
             IAtomContainer ac=null;
@@ -174,7 +175,7 @@ public class CDKManager implements ICDKManager {
     /**
      * Load a molecules from a file. 
      */
-    public CDKMoleculeList loadMolecules(String path)
+    public List<ICDKMolecule> loadMolecules(String path)
         throws IOException, BioclipseException {
         
         File file=new File(path);
@@ -199,7 +200,7 @@ public class CDKManager implements ICDKManager {
     /**
      * Load one or more molecules from an InputStream and return a CDKMoleculeList.
      */
-    public CDKMoleculeList loadMolecules(InputStream instream)
+    public List<ICDKMolecule> loadMolecules(InputStream instream)
         throws IOException, BioclipseException {
 
         if (readerFactory==null){
@@ -240,7 +241,7 @@ public class CDKManager implements ICDKManager {
         int nuMols=atomContainersList.size();
         System.out.println("This file contained: " + nuMols + " molecules");
 
-        CDKMoleculeList moleculesList=new CDKMoleculeList();
+        List<ICDKMolecule> moleculesList = new BioList<ICDKMolecule>();
 //        CDKMolecule[] moleculesData = new CDKMolecule[atomContainersList.size()];
 
         for (int i=0; i<atomContainersList.size();i++){
