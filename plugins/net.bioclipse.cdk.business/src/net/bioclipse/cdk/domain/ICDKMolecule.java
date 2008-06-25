@@ -39,4 +39,8 @@ public interface ICDKMolecule extends IMolecule{
      */
     public IAtomContainer getAtomContainer();
 
+    String getName();
+
+    void setName( String name );
+
 }

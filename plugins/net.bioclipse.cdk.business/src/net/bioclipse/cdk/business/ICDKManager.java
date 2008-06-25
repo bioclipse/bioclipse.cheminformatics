@@ -228,5 +228,21 @@ public interface ICDKManager extends IBioclipseManager {
                        		             "file path. Returns 0 in case " +
                        		             "of problem.")
     public int numberOfEntriesInSDF( String filePath );
+
+    /**
+     * Reads files and extracts conformers if available.
+     * @param path the full path to the file
+     * @return a list of molecules that may have multiple conformers
+     */
+    public List<ICDKMolecule> loadConformers( String path );
+
+    /**
+     * Reads files and extracts conformers if available.
+     * @param stream to (file) contents
+     * @return a list of molecules that may have multiple conformers
+     */
+    public List<ICDKMolecule> loadConformers( InputStream stream );
+
+    Iterator<ICDKMolecule> creatConformerIterator( InputStream instream );
     
 }

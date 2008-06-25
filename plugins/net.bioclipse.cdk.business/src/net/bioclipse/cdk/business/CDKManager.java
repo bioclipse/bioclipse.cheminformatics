@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.PublishedClass;
@@ -31,7 +32,9 @@ import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.openscience.cdk.CDKConstants;
+import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
@@ -42,6 +45,7 @@ import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.formats.IResourceFormat;
+import org.openscience.cdk.io.iterator.IteratingMDLConformerReader;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
 import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
@@ -353,6 +357,41 @@ public class CDKManager implements ICDKManager {
             reader.remove();
         }
     }
+    
+    public Iterator<ICDKMolecule> creatConformerIterator(InputStream instream) {
+        return new IteratingBioclipseMDLConformerReader(
+            instream,
+            NoNotificationChemObjectBuilder.getInstance()
+        );
+    }
+
+
+    class IteratingBioclipseMDLConformerReader implements Iterator<ICDKMolecule> {
+
+        IteratingMDLConformerReader reader;
+        
+        public IteratingBioclipseMDLConformerReader(InputStream input,
+                                           IChemObjectBuilder builder) {
+            
+            reader = new IteratingMDLConformerReader(input, builder);
+        }
+
+        public boolean hasNext() {
+            return reader.hasNext();
+        }
+
+        public ICDKMolecule next() {
+            ConformerContainer cdkMol
+                = (ConformerContainer)reader.next();
+            
+            ICDKMolecule bioclipseMol = new CDKConformer(cdkMol);
+            return bioclipseMol;
+        }
+
+        public void remove() {
+            reader.remove();
+        }
+    }
 
     public boolean fingerPrintMatches( ICDKMolecule molecule,
                                          ICDKMolecule subStructure ) 
@@ -387,6 +426,8 @@ public class CDKManager implements ICDKManager {
                 return fromString( cmlString );
             }
         } catch ( IOException e ) {
+            logger.debug( "Could not create mol from CML" );
+        } catch ( UnsupportedOperationException e ) {
             logger.debug( "Could not create mol from CML" );
         }
         
@@ -440,5 +481,58 @@ public class CDKManager implements ICDKManager {
             );
         }
         return 0;
+    }
+
+    /**
+     * Reads files and extracts conformers if available. 
+     * Currently limited to read SDFiles, CMLFiles is for the future.
+     * @param path the full path to the file
+     * @return a list of molecules that may have multiple conformers
+     */
+    public List<ICDKMolecule> loadConformers( String path ) {
+        
+        File file=new File(path);
+        if (file.canRead()==false){
+            throw new IllegalArgumentException(
+                "Could not read file: " + file.getPath()
+            );
+        }
+        FileInputStream stream;
+        try {
+            stream = new FileInputStream(file);
+            return loadConformers(stream);
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException(
+                "Could not read file: " + file.getPath()
+            );
+        }
+        
+    }
+
+    /**
+     * Reads files and extracts conformers if available. 
+     * Currently limited to read SDFiles, CMLFiles is for the future.
+     * @param path the full path to the file
+     * @return a list of molecules that may have multiple conformers
+     */
+    public List<ICDKMolecule> loadConformers( InputStream stream ) {
+        
+
+        Iterator<ICDKMolecule> it=creatConformerIterator( stream );
+        
+        List<ICDKMolecule> mols=new ArrayList<ICDKMolecule>();
+        while ( it.hasNext() ) {
+            ICDKMolecule molecule = (ICDKMolecule) it.next();
+            String moleculeName="Molecule X";
+//            String molName=(String) molecule.getAtomContainer().getProperty(CDKConstants.TITLE);
+//            if (molName!=null && (!(molName.equals("")))){
+//                moleculeName=molName;
+//            }
+//            molecule.setName(moleculeName);
+            mols.add( molecule );
+        }
+        
+        return mols;
+
     }
 }
