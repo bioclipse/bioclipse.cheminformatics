@@ -7,4 +7,7 @@ public class ValidateCMLManager implements IValidateCMLManager {
 		//validation goes in here
 	}
 
+    public String getNamespace() {
+        return "cml";
+    }
 }
