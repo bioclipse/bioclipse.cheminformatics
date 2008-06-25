@@ -162,4 +162,19 @@ public class CDKManagerTest {
         
         assertTrue( cdk.smartsMatches(propane, propaneSmiles) );
     }
+
+    @Test
+    public void testLoadConformers() throws BioclipseException, IOException {
+        InputStream sdfFile = getClass().getResourceAsStream("/testFiles/dbsmallconf.sdf");
+
+        List<ICDKMolecule> mols = cdk.loadConformers(sdfFile);
+        assertNotNull( mols );
+        assertEquals( 3, mols.size() );
+        
+        assertEquals( 3, mols.get( 0 ).getConformers().size() );
+        assertEquals( 1, mols.get( 1 ).getConformers().size() );
+        assertEquals( 2, mols.get( 2 ).getConformers().size() );
+
+    }
+
 }
