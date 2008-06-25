@@ -8,6 +8,7 @@ import java.util.List;
 import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.interfaces.IAtomContainer;
 
+import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 
 
@@ -45,6 +46,10 @@ public class CDKConformer extends CDKMolecule implements ICDKMolecule {
         return conformers;
     }
     
+    @Override
+    public IAtomContainer getAtomContainer() {
+        return conformerContainer.get( 0 );
+    }
     
     
 }

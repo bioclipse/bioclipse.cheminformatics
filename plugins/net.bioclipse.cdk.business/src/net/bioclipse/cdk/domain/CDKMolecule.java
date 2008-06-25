@@ -24,6 +24,7 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.smiles.SmilesGenerator;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -95,7 +96,12 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
 
         // Create the SMILES
         SmilesGenerator generator = new SmilesGenerator();
-        cachedSMILES = generator.createSMILES(molecule);
+        
+        //Operate on a clone with removed hydrogens
+        org.openscience.cdk.interfaces.IMolecule newMol;
+        newMol=(org.openscience.cdk.interfaces.IMolecule)
+                           AtomContainerManipulator.removeHydrogens( molecule );
+        cachedSMILES = generator.createSMILES(newMol);
 
         return cachedSMILES;
     }
