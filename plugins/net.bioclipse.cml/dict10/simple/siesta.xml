@@ -1,0 +1,187 @@
+<dictionary 
+  namespace="http://www.uam.es/siesta/namespace"
+  dictionaryPrefix="siesta"
+  title="SIESTA dictionary"
+  xmlns="http://www.xml-cml.org/schema"
+  xmlns:siesta="http://www.uam.es/siesta/namespace"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema24/schema.xsd"
+  >
+  <!--
+   <entry id="fullvol" term="Full cell volume">
+     <annotation>
+       <appinfo>
+	     <xsd:complexType name="scalar">
+	        <xsd:simpleContent>
+	          <xsd:extension base="xsd:double">
+	            <xsd:attributeGroup ref="title"/>
+	            <xsd:attributeGroup ref="id"/>
+	            <xsd:attributeGroup ref="convention"/>
+	            <xsd:attribute name="dictRef" fixed="siesta:fullvol"/>
+	            <xsd:attribute name="dataType" fixed="xsd:double"/>
+	            <xsd:attributeGroup ref="units"/>
+		    <xsd:attributeGroup ref="multiplierToSI"/>
+		    <xsd:attribute ref="unitType" fixed="unit:volume"/>
+	          </xsd:extension>
+	        </xsd:simpleContent>
+	      </xsd:complexType>
+        </appinfo>
+      </annotation>
+    <definition>The full cell volume.</definition>
+    <description>Contrast primitive cell volume which may not reflect the full symmetry.</description>
+  </entry>
+-->
+
+<entry id="shape">
+</entry>
+<entry id="E_Fermi">
+</entry>
+<entry id="nkpoints">
+</entry>
+<entry id="Eions">
+</entry>
+<entry id="Ena">
+</entry>
+<entry id="Ekin">
+</entry>
+<entry id="Enl">
+</entry>
+<entry id="DEna">
+</entry>
+<entry id="DUscf">
+</entry>
+<entry id="DUext">
+</entry>
+<entry id="Exc">
+</entry>
+<entry id="Ecorrec">
+</entry>
+<entry id="Emad">
+</entry>
+<entry id="Ekinion">
+</entry>
+<entry id="EharrsK">
+</entry>
+<entry id="EtotK">
+</entry>
+<entry id="FreeEK">
+</entry>
+<entry id="Ekin">
+</entry>
+<entry id="Uscf">
+</entry>
+<entry id="DUext">
+</entry>
+<entry id="Exc">
+</entry>
+<entry id="I-e">
+</entry>
+<entry id="I-I">
+</entry>
+<entry id="Ekinion">
+</entry>
+<entry id="Etot">
+</entry>
+<entry id="cellvol">
+</entry>
+<entry id="pressSol">
+</entry>
+<entry id="pressMol">
+</entry>
+<entry id="sname">
+</entry>
+<entry id="slabel">
+</entry>
+<entry id="verbosity">
+</entry>
+<entry id="ns">
+</entry>
+<entry id="g2max">
+</entry>
+<entry id="NetCharge">
+</entry>
+<entry id="maxscf">
+</entry>
+<entry id="maxsav">
+</entry>
+<entry id="broyden_maxit">
+</entry>
+<entry id="mix">
+</entry>
+<entry id="pulfile">
+</entry>
+<entry id="wmix">
+</entry>
+<entry id="occtol">
+</entry>
+<entry id="nkick">
+</entry>
+<entry id="wmixkick">
+</entry>
+<entry id="dDtol">
+</entry>
+<entry id="usesavedm">
+</entry>
+<entry id="negl">
+</entry>
+<entry id="SCFmethod">
+</entry>
+<entry id="DaC">
+</entry>
+<entry id="MemoryFactor">
+</entry>
+<entry id="etemp">
+</entry>
+<entry id="fixspin">
+</entry>
+<entry id="ts">
+</entry>
+<entry id="MD.MaxCGDispl"></entry>
+<entry id="MD.MaxForceTol"></entry>
+<entry id="MD.BulkModulus"></entry>
+<entry id="g2mesh"></entry>
+<entry id="Eharrs"></entry>
+<entry id="FreeE"></entry>
+<entry id="Ef"></entry>
+<entry id="Eharrs"></entry>
+<entry id="E_KS"></entry>
+<entry id="E_KS_egg"></entry>
+<entry id="fmax"></entry>
+<entry id="fres"></entry>
+<entry id="cfmax"></entry>
+<entry id="MD.TypeOfRun"></entry>
+<entry id="MD.UseSaveCG"></entry>
+<entry id="MD.NumCGSteps"></entry>
+<entry id="WriteDenChar"></entry>
+<entry id="WriteMullikenPop"></entry>
+
+<entry id="ntm"/>
+
+<entry id="forces"/>
+
+<entry id="ftot"/>
+
+<entry id="stress"/>
+
+<entry id="dipol"/>
+
+<entry id="Program"/>
+
+<entry id="Version"/>
+
+<entry id="Arch"/>
+
+<entry id="Flags"/>
+
+<entry id="StartTime"/>
+
+<entry id="Mode"/>
+
+<entry id="Nodes"/>
+
+<entry id="EndTime"/>
+
+
+</dictionary>
+

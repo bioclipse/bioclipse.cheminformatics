@@ -1,0 +1,2438 @@
+<dictionary 
+  namespace="http://www.xml-cml.org/dict/gulp"
+  title="GULP dictionary"
+  dictionaryPrefix="gulp"
+  xmlns="http://www.xml-cml.org/schema"
+  xmlns:h="http://www.w3.org/1999/xhtml"
+  xmlns:m="http://www.w3.org/foo/mathml"
+  xmlns:gulp="http://www.xml-cml.org/dict/gulp"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema24/schema.xsd"
+>
+
+<!-- modules -->
+
+  <entry id="bulkopt" term="Bulk optimization">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    Bulk optimization
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="configs" term="Configurations">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    Configurations in GULP. 
+    </definition>
+    <description>
+These are different arrangements of atoms, parameters, forcefields, etc. (I think)    </description>
+  </entry>
+
+   <entry id="config" term="GULP Configuration">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">config</alternative>
+    <definition>
+    A Configuration in GULP. 
+    </definition>
+    <description>
+Particular arrangement of atoms, parameters, forcefields, etc. (I think)    </description>
+  </entry>
+
+  <entry id="enercomp" term="Components of energy">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+Components of energy
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="optimize" term="Optimization">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    Optimization
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <!-- terms -->
+   <entry id="acclattsum" term="Accuracy factor for lattice sums">
+    <annotation>
+      <appinfo>
+        <scalar/>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="atoms" term="Total number atoms/shells">
+    <annotation>
+      <appinfo>
+        <scalar/>
+      </appinfo>
+    </annotation>
+    <definition>
+Total number atoms/shells
+    </definition>
+    <description>
+    This is a GULP-specific concept, I think
+    </description>
+  </entry>
+
+  <entry id="bulkmod" term="Bulk modulus">
+    <annotation>
+      <appinfo>
+        <scalar/>
+      </appinfo>
+    </annotation>
+    <definition>
+    Bulk modulus
+    </definition>
+    <description>
+      <h:div>Similar to Young's modulus</h:div>
+    </description>
+  </entry>
+
+   <entry id="cartlatt" term="Cartesian Lattice Vectors">
+    <annotation>
+      <appinfo>
+        <matrix rows="3" columns="3"/>
+      </appinfo>
+      <appinfo>
+        <m:math><!-- relationship to cell parameters goes here !!! for the future --></m:math>
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">cartlatt</alternative>
+    <definition>
+The unit cell expressed as Cartesian Lattice Vectors
+    </definition>
+    <description>
+    The 3 unit cell vectors are expressed in Cartesian coordinates relative to: ??? !!! (see ref!!)
+    </description>
+  </entry>
+
+   <entry id="centre" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="c6" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="compos" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="config" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="descript" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="dispersion" term="Dispersion (real+recip) ">
+    <annotation>
+      <appinfo>
+        <scalar/>
+      </appinfo>
+    </annotation>
+    <definition>
+Dispersion energy real and reciprocal spaces
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="dos" term="Density of phonon states">
+    <annotation>
+      <appinfo>
+        <table dictRef="gulp:dophs">
+          <array dictRef="cml:freq"/>
+          <array dictRef="ccml:dophs"/>
+        </table>
+      </appinfo>
+    </annotation>
+    <definition>
+Density of phonon states against frequency
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="family" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="fractcoord" term="GULP fractional coordinates">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">fractcoord</alternative>
+    <definition>
+GULP fractional coordinates
+    </definition>
+    <description>
+    A combination of fractional coordinates and constraints that should be refactored
+    </description>
+  </entry>
+
+   <entry id="geninterpot" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="factors" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="functtol" term="Maximum function  tolerance">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+Maximum function  tolerance
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="generalinp" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="gradtol" term="Maximum gradient  tolerance">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>Maximum gradient  tolerance</definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="hessupdate" term="Maximum Hessian update interval">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="interat" term="Energy contribution from Interatomic potentials">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+Energy contribution from Interatomic potentials
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="iratoms" term="Number of irreducible atoms/shells">
+    <annotation>
+      <appinfo>
+        <scalar/>
+      </appinfo>
+    </annotation>
+    <definition>
+Number of irreducible atoms/shells
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="kpoint" term="K point">
+    <annotation>
+      <appinfo>
+        <array/>
+      </appinfo>
+    </annotation>
+    <definition>
+    K point
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="kpoint.wt" term="K point weight">
+    <annotation>
+      <appinfo>
+        <scalar/>
+      </appinfo>
+    </annotation>
+    <definition>
+    K point weight
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="lim" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="monomono.real" term="Monopole - monopole (real) energy">
+    <annotation>
+      <appinfo>
+        <scalar/>
+      </appinfo>
+    </annotation>
+    <definition>
+Monopole - monopole energy in real space (?)
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="monomono.recip" term="Monopole - monopole (recip)">
+    <annotation>
+      <appinfo>
+        <scalar/>
+      </appinfo>
+    </annotation>
+    <definition>
+Monopole - monopole energy in reciprocal space</definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="monomono.total" term="Monopole - monopole (total)">
+    <annotation>
+      <appinfo>
+        <scalar/>
+      </appinfo>
+    </annotation>
+    <definition>
+Total Monopole - monopole energy (real + reciprocal?)    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="nconfig" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="num" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="maxcalc" term="Maximum number of calculations">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="maxfuncttol" term="Maximum function tolerance">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+Maximum function tolerance
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="maxparamtol" term="Maximum parameter tolerance">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+Maximum parameter tolerance
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="optimize.option" term="Optimization options">
+    <annotation>
+      <appinfo>
+        <scalar dataType="xsd:string"></scalar>
+        <enumeration value="gulp:optimize.symmconn"> <description>Symmetry constrained optimization</description>
+        </enumeration>
+        <enumeration value="optimize.symmsecderiv"><description>Symmetry used for second derivatives</description>
+        </enumeration>
+        <enumeration value="optimize.newtonraph"><description>Newton-Raphson optimizer to be used</description>
+        </enumeration>
+        <enumeration value="optimize.bfgshessian"><description>BFGS hessian update to be used</description>
+        </enumeration>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="outcalc" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="outconfig" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="outenercomp" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="outphonon.num" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="outphonoprop.temp" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="maxgradtol" term="Maximum gradient tolerance ">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+Maximum gradient tolerance 
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="pattgroup.spgp" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="speciesout" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="spgp" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="maxstepsize" term="Maximum step size">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+Maximum step size
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="symm" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="speciesout" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="totlaten.prim" term="Total lattice energy  Primitive unit cell">
+    <annotation>
+      <appinfo>
+        <scalar/>
+      </appinfo>
+    </annotation>
+    <definition>
+Total lattice energy for primitive unit cell
+    </definition>
+    <description>
+    Quantity refers to 1 mole of unit cells
+    </description>
+  </entry>
+
+   <entry id="totlaten.nonprim" term="Total lattice energy   Non-primitive unit cell">
+    <annotation>
+      <appinfo>
+        <scalar/>
+      </appinfo>
+    </annotation>
+    <definition>
+Total lattice energy for non-primitive unit cell
+    </definition>
+    <description>
+    Quantity refers to 1 mole of unit cells
+    </description>
+  </entry>
+
+   <entry id="symm" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="timeanal.time" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="time.opt" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="temp" term="">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <!-- ========================= keywords ====================== -->
+
+<entry id="keyword" term="keyword">
+  <annotation>
+    <documentation>
+      <h:ul>
+        <h:li>
+<h:h3>Control of calculation type</h:h3>
+angle, bond, defect, distance, eem, efg, fit, free_energy, genetic, gradients, md, noenergy, optimize, pot, predict, property, phonon, single, torsion, transition_state
+        </h:li>
+        <h:li>
+<h:h3>Geometric variable specification</h:h3>
+breathe, bulk_noopt, cellonly, conp, conv, isotropic, nobreathe, noflags, shell
+        </h:li>
+        <h:li>
+<h:h3>Energy calculation algorithm</h:h3>
+c6, fix_molecule, minimum_image, molecule, molmec, molq, noanisotropic, nod2sym, nodsymmetry, noelectrostatics, noexclude, nofcentral, noksymmetry, nolist_md, noreal, norecip, norepulsive, nosderv, nozeropt
+        </h:li>
+        <h:li>
+<h:h3>Optimization method</h:h3>
+conjugate, numdiag, positive, rfo, unit
+        </h:li>
+        <h:li>
+<h:h3>Output control</h:h3>
+average, broaden_dos, cartesian, compare, eigenvectors, hessian, intensity, linmin, nodensity, nodpsym, nofirst_point, nofrequency, nokpoints, operators, outcon, regi_before, restore, save
+        </h:li>
+        <h:li>
+<h:h3>Structure control</h:h3>
+full, hexagonal, lower_symmetry, nosymmetry
+        </h:li>
+      </h:ul>
+    </documentation>
+    <appinfo>
+      <parameter dictRef="gulp:keyword">
+        <scalar dictRef="gulp:keyword.value"/>
+      </parameter>
+    </appinfo>
+  </annotation>
+  <definition>keywords which control the progress of the calculation</definition>
+  <description>The document will contain a <h:tt>parameter</h:tt> constructed as in the template above. The <h:tt>scalar</h:tt> must contain a value from the <h:tt>keyword.value</h:tt> entry. </description>
+</entry>
+
+
+<!-- =options= -->
+
+<entry id="option" term="option">
+<annotation>
+<appinfo>
+<enumeration id="a14_scale">
+  <documentation>specifies the 1-4 scaling factor for molecular mechanics</documentation>
+</enumeration>
+<enumeration id="accuracy">
+  <documentation>specifies the accuracy of the Ewald summation</documentation>
+</enumeration>
+<enumeration id="atomab">
+  <documentation>specifies the one-centre A and B terms for combination rules</documentation>
+</enumeration>
+<enumeration id="axilrod-teller">
+  <documentation>specifies an Axilrod-Teller three-body potential</documentation>
+</enumeration>
+<enumeration id="best">
+  <documentation>output best N configurations from genetic algorithm run</documentation>
+</enumeration>
+<enumeration id="bcross">
+  <documentation>specifies a bond-bond cross term three-body potential</documentation>
+</enumeration>
+<enumeration id="both">
+  <documentation>all subsequent potentials are both inter- and intra-molecular</documentation>
+</enumeration>
+<enumeration id="box">
+  <documentation>specify box size/number for dispersion and DOS plots</documentation>
+</enumeration>
+<enumeration id="broaden_dos">
+  <documentation>alters the default DOS broadening factor</documentation>
+</enumeration>
+<enumeration id="bsm">
+  <documentation>specifies radial parameters for a breathing shell model</documentation>
+</enumeration>
+<enumeration id="buck4">
+  <documentation>specifies a four range Buckingham potential</documentation>
+</enumeration>
+<enumeration id="buckingham">
+  <documentation>specifies a Buckingham potential</documentation>
+</enumeration>
+<enumeration id="bulk_modulus">
+  <documentation>gives the experimental bulk modulus for fitting (cubic only)</documentation>
+</enumeration>
+<enumeration id="cartesian">
+  <documentation>input crystal structure using Cartesian coordinates</documentation>
+</enumeration>
+<enumeration id="cell">
+  <documentation>input unit cell as a, b, c, alpha, beta, gamma</documentation>
+</enumeration>
+<enumeration id="centre">
+  <documentation>specifies location of defect centre</documentation>
+</enumeration>
+<enumeration id="charge">
+  <documentation>vary specified atomic charges during fitting</documentation>
+</enumeration>
+<enumeration id="cmm">
+  <documentation>selects cell multipole method for Coulomb terms and order</documentation>
+</enumeration>
+<enumeration id="configurations">
+  <documentation>controls the number of configurations in genetic algorithm</documentation>
+</enumeration>
+<enumeration id="constrain">
+  <documentation>input constraints between variables (fitting and optimization)</documentation>
+</enumeration>
+<enumeration id="contents">
+  <documentation>specifies the unit cell contents for structure prediction</documentation>
+</enumeration>
+<enumeration id="cost">
+  <documentation>set the parameters for the cost function</documentation>
+</enumeration>
+<enumeration id="coulomb">
+  <documentation>specifies a coulomb subtraction potential</documentation>
+</enumeration>
+<enumeration id="covalent">
+  <documentation>specifies the covalent radii for an element</documentation>
+</enumeration>
+<enumeration id="covexp">
+  <documentation>specifies the covalent-exponential potential</documentation>
+</enumeration>
+<enumeration id="crossover">
+  <documentation>specifies the crossover probability in the genetic algorithm</documentation>
+</enumeration>
+<enumeration id="cutd">
+  <documentation>cutoff for distance calculation</documentation>
+</enumeration>
+<enumeration id="cutp">
+  <documentation>overall interatomic potential cutoff</documentation>
+</enumeration>
+<enumeration id="cuts">
+  <documentation>core-shell cutoff distance</documentation>
+</enumeration>
+<enumeration id="cv">
+  <documentation>specifies the constant volume heat capacity for fitting</documentation>
+</enumeration>
+<enumeration id="damped_dispersion">
+  <documentation> C6 and C8 potentials with short range damping</documentation>
+</enumeration>
+<enumeration id="deflist">
+  <documentation> input defect species list for restart</documentation>
+</enumeration>
+<enumeration id="delf">
+  <documentation>maximum energy change before hessian is recalculated</documentation>
+</enumeration>
+<enumeration id="delta">
+  <documentation>specifies the differencing interval for numerical gradients</documentation>
+</enumeration>
+<enumeration id="discrete">
+  <documentation> specifies the discretisation interval for the genetic algorithm</documentation>
+</enumeration>
+<enumeration id="dispersion">
+  <documentation>produces phonon dispersion curves</documentation>
+</enumeration>
+<enumeration id="dump">
+  <documentation>write out a dumpfile for restarts</documentation>
+</enumeration>
+<enumeration id="eam_density">
+  <documentation>specifies the form and parameters for the Embedded Atom density</documentation>
+</enumeration>
+<enumeration id="eam_functional">
+  <documentation>specifies the functional form of the Embedded Atom Method</documentation>
+</enumeration>
+<enumeration id="elastic">
+  <documentation>specifies elastic constant values for fitting</documentation>
+</enumeration>
+<enumeration id="electroneg">
+  <documentation>input new parameters for electronegativity equalisation</documentation>
+</enumeration>
+<enumeration id="element">
+  <documentation>opens the element parameter options section</documentation>
+</enumeration>
+<enumeration id="energy">
+  <documentation>specifies the lattice energy for fitting</documentation>
+</enumeration>
+<enumeration id="ensemble">
+  <documentation>selects either the NVE or NVT ensemble for MD</documentation>
+</enumeration>
+<enumeration id="entropy">
+  <documentation>specifies the entropy for fitting</documentation>
+</enumeration>
+<enumeration id="epsilon_sigma">
+  <documentation>specifies the one-centre ?/? for combination rules"></documentation>
+</enumeration>
+<enumeration id="equilibriation">
+  <documentation>length of equilibriation period in a molecular dynamics run</documentation>
+</enumeration>
+<enumeration id="exponential">
+  <documentation>specifies an exponential three-body potential</documentation>
+</enumeration>
+<enumeration id="factor">
+  <documentation>temperature reduction factor for simulated annealing</documentation>
+</enumeration>
+<enumeration id="finite">
+  <documentation>use finite differences to evaluate numerical derivatives</documentation>
+</enumeration>
+<enumeration id="fractional">
+  <documentation>input crystal structure using fractional coordinates</documentation>
+</enumeration>
+<enumeration id="ftol">
+  <documentation>specifies the function tolerance for optimizations</documentation>
+</enumeration>
+<enumeration id="gdcrit">
+  <documentation>controls change from energy to force balance in defect calculation</documentation>
+</enumeration>
+<enumeration id="general">
+  <documentation>specifies a general interatomic potential</documentation>
+</enumeration>
+<enumeration id="genetic">
+  <documentation>general option for genetic algorithm sub-options</documentation>
+</enumeration>
+<enumeration id="gexp">
+  <documentation>specifies expotential weights for genetic algorithms</documentation>
+</enumeration>
+<enumeration id="gradients">
+  <documentation>specifies gradients that are to be used in fitting</documentation>
+</enumeration>
+<enumeration id="grid">
+  <documentation>specifies the grid for genetic algorithms</documentation>
+</enumeration>
+<enumeration id="gtol">
+  <documentation>specifies the gradient tolerance for optimizations</documentation>
+</enumeration>
+<enumeration id="harmonic">
+  <documentation>specifies an harmonic potential</documentation>
+</enumeration>
+<enumeration id="hfdlc">
+  <documentation>specifies high frequency dielectric constants for fitting</documentation>
+</enumeration>
+<enumeration id="hfrefractive">
+  <documentation>specifies the high frequency refractive index for fitting</documentation>
+</enumeration>
+<enumeration id="ignore">
+  <documentation>tells the program to ignore input until "erongi" is found</documentation>
+</enumeration>
+<enumeration id="impurity">
+  <documentation>replace one ion by another for a defect calculation</documentation>
+</enumeration>
+<enumeration id="integrator">
+  <documentation>specifies MD integrator algorithm to use</documentation>
+</enumeration>
+<enumeration id="intermolecular">
+  <documentation>all subsequent potentials are intermolecular only</documentation>
+</enumeration>
+<enumeration id="interstitial">
+  <documentation>insert an interstitial for a defect calculation</documentation>
+</enumeration>
+<enumeration id="intramolecular">
+  <documentation>all subsequent potentials are intramolecular only</documentation>
+</enumeration>
+<enumeration id="ionic">
+  <documentation>specifies the ionic radii for an element</documentation>
+</enumeration>
+<enumeration id="iterations">
+  <documentation>specifies that the number of cycles of shell optimization in MD</documentation>
+</enumeration>
+<enumeration id="keyword">
+  <documentation>allows the input of keywords on any line</documentation>
+</enumeration>
+<enumeration id="kpoints">
+  <documentation>specify explicit k points for phonon calculation</documentation>
+</enumeration>
+<enumeration id="lennard">
+  <documentation>specifies a Lennard-Jones potential</documentation>
+</enumeration>
+<enumeration id="library">
+  <documentation>specifies a file containing a library of interatomic potentials</documentation>
+</enumeration>
+<enumeration id="lin3">
+  <documentation>specifies parameters for the ESFF linear three-body potential</documentation>
+</enumeration>
+<enumeration id="line">
+  <documentation>maximum number of points in a line minimisation</documentation>
+</enumeration>
+<enumeration id="lowest_mode">
+  <documentation> sets the lowest and highest modes to be included in the free energy</documentation>
+</enumeration>
+<enumeration id="manybody">
+  <documentation>specifies that a manybody potential should act between two atoms</documentation>
+</enumeration>
+<enumeration id="marvin">
+  <documentation>input commands to be passed through to a Marvin run</documentation>
+</enumeration>
+<enumeration id="mass">
+  <documentation>specifies the atomic mass for an element</documentation>
+</enumeration>
+<enumeration id="maxcyc">
+  <documentation>specifies the maximum number of cycles</documentation>
+</enumeration>
+<enumeration id="maximum">
+  <documentation>upper bound for genetic algorithm parameters</documentation>
+</enumeration>
+<enumeration id="maxone">
+  <documentation>limits size of second derivative arrays for dynamic memory</documentation>
+</enumeration>
+<enumeration id="mdarchive">
+  <documentation>specifies the name for an MD archive file</documentation>
+</enumeration>
+<enumeration id="minimum">
+  <documentation>lower bound for genetic algorithm parameters</documentation>
+</enumeration>
+<enumeration id="mode2a">
+  <documentation>allows the user to chose how region 2a is treated</documentation>
+</enumeration>
+<enumeration id="morse">
+  <documentation>specifies a Morse potential</documentation>
+</enumeration>
+<enumeration id="move_2a_to_1">
+  <documentation>after a defect calc region 2a ions are moved to region 1"></documentation>
+</enumeration>
+<enumeration id="murrell-mottram">
+  <documentation>species parameters for the Murrell-Mottram 3-body potential</documentation>
+</enumeration>
+<enumeration id="mutation">
+  <documentation>specifies the mutation probability in the genetic algorithm</documentation>
+</enumeration>
+<enumeration id="name">
+  <documentation>give a one-word name to a structure</documentation>
+</enumeration>
+<enumeration id="nobond">
+  <documentation>excludes bond formation between species in molecule run</documentation>
+</enumeration>
+<enumeration id="observables">
+  <documentation>opens the observables option section</documentation>
+</enumeration>
+<enumeration id="outofplane">
+  <documentation>out of plane distance four-body potential</documentation>
+</enumeration>
+<enumeration id="origin">
+  <documentation>gives the origin setting number or explicit origin</documentation>
+</enumeration>
+<enumeration id="output">
+  <documentation>creates dumpfiles for input to other programs</documentation>
+</enumeration>
+<enumeration id="piezo">
+  <documentation>specifies the piezoelectric constants for fitting</documentation>
+</enumeration>
+<enumeration id="polynomial">
+  <documentation>specifies a polynomial potential</documentation>
+</enumeration>
+<enumeration id="potential">
+  <documentation>inputs electrostatic potential at a point for fitting"></documentation>
+</enumeration>
+<enumeration id="potgrid">
+  <documentation>specifies a grid of points at which to calculate the potential</documentation>
+</enumeration>
+<enumeration id="pressure">
+  <documentation>specifies the applied external pressure</documentation>
+</enumeration>
+<enumeration id="production">
+  <documentation>controls the length of the production time for MD run</documentation>
+</enumeration>
+<enumeration id="project_dos">
+  <documentation>generate projected densities of states</documentation>
+</enumeration>
+<enumeration id="qeqiter">
+  <documentation>specifies maximum number of iterations for QEq charges</documentation>
+</enumeration>
+<enumeration id="qeqradius">
+  <documentation>sets the radius at which two-centre integrals switch to 1/r</documentation>
+</enumeration>
+<enumeration id="qeqtol">
+  <documentation>tolerance for convergance of QEq charges for H</documentation>
+</enumeration>
+<enumeration id="qerfc">
+  <documentation>specifies that an erfc screened Coulomb terms should be used</documentation>
+</enumeration>
+<enumeration id="qtaper">
+  <documentation>tapers Coulomb term at short range to a constant value</documentation>
+</enumeration>
+<enumeration id="region_1">
+  <documentation>explicit specification of region ions for defect calculation</documentation>
+</enumeration>
+<enumeration id="reldef">
+  <documentation>maps defect region 1 atoms to perfect ones for restarting</documentation>
+</enumeration>
+<enumeration id="rspeed">
+  <documentation>controls the balance between real and reciprocal space</documentation>
+</enumeration>
+<enumeration id="rtol">
+  <documentation>specifies the bond length tolerance for molecule generation</documentation>
+</enumeration>
+<enumeration id="rydberg">
+  <documentation>specifies the parameters for a Rydberg potential</documentation>
+</enumeration>
+<enumeration id="ryckaert">
+  <documentation>specifies a Ryckaert-Bellemans four-body potential</documentation>
+</enumeration>
+<enumeration id="sample">
+  <documentation>controls sampling frequency during an MD run</documentation>
+</enumeration>
+<enumeration id="scale">
+  <documentation>specifies scaling factor for vectors and Cartesian coordinates</documentation>
+</enumeration>
+<enumeration id="scmaxsearch">
+  <documentation> sets maximum search range for many body potentials in FEM</documentation>
+</enumeration>
+<enumeration id="sdlc">
+  <documentation>specifies static dielectric constants for fitting</documentation>
+</enumeration>
+<enumeration id="seed">
+  <documentation>specifies seed for random number generator</documentation>
+</enumeration>
+<enumeration id="shear_modulus">
+  <documentation>specifies the shear modulus for fitting (cubic case only)</documentation>
+</enumeration>
+<enumeration id="shellmass">
+  <documentation>specifies the proportion of atoms mass for the shell in MD</documentation>
+</enumeration>
+<enumeration id="shift">
+  <documentation>adds an offset to the energy for fitting energy hypersurfaces</documentation>
+</enumeration>
+<enumeration id="shrink">
+  <documentation>specify shrinking factors for Brillouin zone integration</documentation>
+</enumeration>
+<enumeration id="size">
+  <documentation>specifies the sizes of regions 1 and 2a for a defect calculation</documentation>
+</enumeration>
+<enumeration id="spacegroup">
+  <documentation>gives either the space group number or symbol</documentation>
+</enumeration>
+<enumeration id="species">
+  <documentation>specifies the charges for all atomic species</documentation>
+</enumeration>
+<enumeration id="spline">
+  <documentation>specifies spline potential and splining data</documentation>
+</enumeration>
+<enumeration id="split">
+  <documentation>vary specified core-shell charge split during fitting</documentation>
+</enumeration>
+<enumeration id="spring">
+  <documentation>specifies core-shell spring constant</documentation>
+</enumeration>
+<enumeration id="srefractive">
+  <documentation>specifies the static refractive index for fitting</documentation>
+</enumeration>
+<enumeration id="start">
+  <documentation>tells the program to ignore the remaining input and to begin</documentation>
+</enumeration>
+<enumeration id="stepmx">
+  <documentation>controls the maximum step during a minimisation</documentation>
+</enumeration>
+<enumeration id="stop">
+  <documentation>tells the program to stop executing immediately</documentation>
+</enumeration>
+<enumeration id="supercell">
+  <documentation>creates a supercell</documentation>
+</enumeration>
+<enumeration id="sw2">
+  <documentation>specifies a Stillinger-Weber two-body potential</documentation>
+</enumeration>
+<enumeration id="sw3">
+  <documentation>specifies a Stillinger-Weber three-body potential</documentation>
+</enumeration>
+<enumeration id="switch_minim">
+  <documentation>changes the minimiser according to a given criteria</documentation>
+</enumeration>
+<enumeration id="symbol">
+  <documentation>changes element symbol from those in eledata</documentation>
+</enumeration>
+<enumeration id="temperature">
+  <documentation>specifies temperature for thermodynamic properties and MD</documentation>
+</enumeration>
+<enumeration id="three">
+  <documentation>specifies a three-body potential</documentation>
+</enumeration>
+<enumeration id="time">
+  <documentation>places a limit on the run time for the job</documentation>
+</enumeration>
+<enumeration id="timestep">
+  <documentation>controls the timestep in a molecular dynamics run</documentation>
+</enumeration>
+<enumeration id="title">
+  <documentation>inputs title lines for a job</documentation>
+</enumeration>
+<enumeration id="torsion">
+  <documentation>specifies a four-body potential</documentation>
+</enumeration>
+<enumeration id="tournament">
+  <documentation>defines the tournament probability for the genetic algorithm</documentation>
+</enumeration>
+<enumeration id="tpxo">
+  <documentation>species two point crossover in genetic algorithms</documentation>
+</enumeration>
+<enumeration id="translate">
+  <documentation>scans a potential energy surface by translating atoms</documentation>
+</enumeration>
+<enumeration id="tscale">
+  <documentation>controls the temperature scaling in a molecular dynamics run</documentation>
+</enumeration>
+<enumeration id="ttol">
+  <documentation>specifies minimum temperature for simulated annealing</documentation>
+</enumeration>
+<enumeration id="unfreeze">
+  <documentation>sets optimization flags to 1 within a spherical region</documentation>
+</enumeration>
+<enumeration id="unique">
+  <documentation>sets cost function difference for structures to be unique</documentation>
+</enumeration>
+<enumeration id="update">
+  <documentation>sets the maximum number of hessian updates</documentation>
+</enumeration>
+<enumeration id="urey-bradley">
+  <documentation>specifies a Urey-Bradley three-body potential</documentation>
+</enumeration>
+<enumeration id="vacancy">
+  <documentation>creates a vacancy for a defect calculation</documentation>
+</enumeration>
+<enumeration id="variables">
+  <documentation>opens the variables option section</documentation>
+</enumeration>
+<enumeration id="vectors">
+  <documentation>input lattice vectors to define unit cell</documentation>
+</enumeration>
+<enumeration id="weight">
+  <documentation>changes the weights of observables in fitting</documentation>
+</enumeration>
+<enumeration id="write">
+  <documentation>controls the frequency of writing for the MD dumpfile</documentation>
+</enumeration>
+<enumeration id="xtol">
+  <documentation>controls the parameter tolerance in optimization</documentation>
+</enumeration>
+</appinfo>
+</annotation>
+</entry>
+<!-- == -->
+
+<entry id="angle" term="angle">
+  <description>calculate valid three body angles</description>
+</entry>
+
+<entry id="anneal" term="anneal">
+  <description>perform simulated annealing</description>
+</entry>
+
+<entry id="average" term="average">
+  <description>output average bond lengths</description>
+</entry>
+
+<entry id="bond" term="bond">
+  <description>calculate valid bond lengths based on covalent radii</description>
+</entry>
+
+<entry id="breathe" term="breathe">
+  <description>only calculate gradients for breathing shell radii</description>
+</entry>
+
+<entry id="broaden_dos" term="broaden_dos">
+  <description>apply Lorenzian broadening to density of states data</description>
+</entry>
+
+<entry id="bulk_noopt" term="bulk_noopt">
+  <description>fix bulk structure prior to a defect calculation</description>
+</entry>
+
+<entry id="c6" term="c6">
+  <description>calculate C6 terms using lattice sum method</description>
+</entry>
+
+<entry id="cartesian" term="cartesian">
+  <description>output Cartesian coordinates for initial structure</description>
+</entry>
+
+<entry id="cellonly" term="cellonly">
+  <description>only calculate gradients for and optimize cell parameters</description>
+</entry>
+
+<entry id="cmm" term="cmm">
+  <description>calculate cluster electrostatics using cell multipole method</description>
+</entry>
+
+<entry id="compare" term="compare">
+  <description> produce a table comparing the initial and final geometries</description>
+</entry>
+
+<entry id="conjugate" term="conjugate">
+  <description>use conjugate gradients</description>
+</entry>
+
+<entry id="conp" term="conp">
+  <description>perform constant pressure calculation - cell to vary</description>
+</entry>
+
+<entry id="conv" term="conv">
+  <description>perform constant volume calculation - hold cell fixed</description>
+</entry>
+
+<entry id="cost" term="cost">
+  <description>perform cost function calculation</description>
+</entry>
+
+<entry id="dcharge" term="dcharge">
+  <description>output the first derivatives of the atomic charges</description>
+</entry>
+
+<entry id="defect" term="defect">
+  <description>perform a defect calculation after bulk calculation</description>
+</entry>
+
+<entry id="dfp" term="dfp">
+  <description>use Davidon-Fletcher-Powell update rather than BFGS</description>
+</entry>
+
+<entry id="dipole" term="dipole">
+  <description>add the dipole correction energy for the unit cell</description>
+</entry>
+
+<entry id="distance" term="distance">
+  <description>calculate interatomic distances</description>
+</entry>
+
+<entry id="eem" term="eem">
+  <description>calculate charges using electronegativity equalisation</description>
+</entry>
+
+<entry id="efg" term="efg">
+  <description>calculate the electric field gradients</description>
+</entry>
+
+<entry id="eigenvectors" term="eigenvectors">
+  <description>write out eigenvectors for phonons/frequencies</description>
+</entry>
+
+<entry id="fit" term="fit">
+  <description>perform a fitting run</description>
+</entry>
+
+<entry id="fix_molecule" term="fix_molecule">
+  <description>fix connectivity for molecules at start and do not update</description>
+</entry>
+
+<entry id="free_energy" term="free_energy">
+  <description>perform a free energy instead of internal energy calc</description>
+</entry>
+
+<entry id="frequency" term="frequency">
+  <description>calculate defect frequencies</description>
+</entry>
+
+<entry id="full" term="full">
+  <description>write out structure as full rather than primitive cell</description>
+</entry>
+
+<entry id="gear" term="gear">
+  <description>use the Gear fifth order algorithm for molecular dynamics</description>
+</entry>
+
+<entry id="genetic" term="genetic">
+  <description>perform a genetic algorithm run</description>
+</entry>
+
+<entry id="global" term="global">
+  <description>after global optimization, dump out restart file before opt</description>
+</entry>
+
+<entry id="gradients" term="gradients">
+  <description>perform a single point calculation of energy and gradients</description>
+</entry>
+
+<entry id="hessian" term="hessian">
+  <description>output hessian matrix</description>
+</entry>
+
+<entry id="hexagonal" term="hexagonal">
+  <description>write out structure as hexagonal rather than rhombohedral</description>
+</entry>
+
+<entry id="intensity" term="intensity">
+  <description>calculate IR intensities for phonon/vibrational modes</description>
+</entry>
+
+<entry id="isotropic" term="isotropic">
+  <description>allow cell parameters to vary isotropically</description>
+</entry>
+
+<entry id="linmin" term="linmin">
+  <description>output details of line minimisation</description>
+</entry>
+
+<entry id="lower_sym" term="lower_sym">
+  <description>try to lower the symmetry using imaginary modes</description>
+</entry>
+
+<entry id="md" term="md">
+  <description>perform a molecular dynamics run</description>
+</entry>
+
+<entry id="minimum_image" term="minimum_image">
+  <description> use the minimum image convention during MD</description>
+</entry>
+
+<entry id="molecule" term="molecule">
+  <description>locate molecules and coulomb subtract within them</description>
+</entry>
+
+<entry id="molmec" term="molmec">
+  <description>locate molecules and coulomb subtract 1-2 and 1-3</description>
+</entry>
+
+<entry id="molq" term="molq">
+  <description>locate molecules for intramolecular potentials only</description>
+</entry>
+
+<entry id="noanisotropic" term="noanisotropic">
+  <description>use isotropic formula for region 2b energy</description>
+</entry>
+
+<entry id="nobreathe" term="nobreathe">
+  <description>freeze breathing shell radii during optimization</description>
+</entry>
+
+<entry id="nod2sym" term="nod2sym">
+  <description>do not use symmetry for second derivatives</description>
+</entry>
+
+<entry id="nodpsym" term="nodpsym">
+  <description>do not use symmetry for defect potential calculation</description>
+</entry>
+
+<entry id="noelectrostatics" term="noelectrostatics">
+  <description>turns off Ewald sum even when charges are present</description>
+</entry>
+
+<entry id="noenergy" term="noenergy">
+  <description>do not calculate the energy - useful for debugging datasets</description>
+</entry>
+
+<entry id="noexclude" term="noexclude">
+  <description>do not use atom freezing algorithm during optimization</description>
+</entry>
+
+<entry id="nodensity" term="nodensity">
+  <description>do not output density of state plot after phonon calculation</description>
+</entry>
+
+<entry id="nodsymmetry" term="nodsymmetry">
+  <description>do not use symmetry during a defect calculation</description>
+</entry>
+
+<entry id="nofirst_point" term="nofirst_point">
+  <description>skip first point in a translate run</description>
+</entry>
+
+<entry id="noflags" term="noflags">
+  <description>no variable flags are present and all variables to be excluded</description>
+</entry>
+
+<entry id="nofrequency" term="nofrequency">
+  <description>do not print out frequencies at each k point</description>
+</entry>
+
+<entry id="nokpoints" term="nokpoints">
+  <description>do not print out k point list</description>
+</entry>
+
+<entry id="noksymmetry" term="noksymmetry">
+  <description>do not use Patterson symmetry in Brillouin zone</description>
+</entry>
+
+<entry id="nolist_md" term="nolist_md">
+  <description>do not use list method for 3- and 4-body terms in MD</description>
+</entry>
+
+<entry id="noreal" term="noreal">
+  <description>exclude all real space two-body interactions</description>
+</entry>
+
+<entry id="norecip" term="norecip">
+  <description>exclude all reciprocal space two-body interactions</description>
+</entry>
+
+<entry id="norepulsive" term="norepulsive">
+  <description>do not use truncate repulsive terms based on Ewald accuracy</description>
+</entry>
+
+<entry id="nosderv" term="nosderv">
+  <description>do not use symmetry for gradient calculations</description>
+</entry>
+
+<entry id="nosymmetry" term="nosymmetry">
+  <description>turn after symmetry once unit cell has been generated</description>
+</entry>
+
+<entry id="nozeropt" term="nozeropt">
+  <description>exclude zero point energy from free energy calculation</description>
+</entry>
+
+<entry id="numdiag" term="numdiag">
+  <description>estimate on-diagonal hessian elements numerically</description>
+</entry>
+
+<entry id="operators" term="operators">
+  <description>print out listing of symmetry operators used</description>
+</entry>
+
+<entry id="optimize" term="optimize">
+  <description>minimise the energy with respect to geometrical variables</description>
+</entry>
+
+<entry id="outcon" term="outcon">
+  <description>output constraints in restart file</description>
+</entry>
+
+<entry id="phonon" term="phonon">
+  <description>calculate the lattice phonon modes and cluster frequencies</description>
+</entry>
+
+<entry id="positive" term="positive">
+  <description>force hessian to remain positive on the diagonal</description>
+</entry>
+
+<entry id="pot" term="pot">
+  <description>calculate the electrostatic potential at the atomic sites</description>
+</entry>
+
+<entry id="potgrid" term="potgrid">
+  <description>calculate the electrostatic potential over a grid</description>
+</entry>
+
+<entry id="predict" term="predict">
+  <description>perform structure prediction calculation</description>
+</entry>
+
+<entry id="property" term="property">
+  <description>calculate the bulk lattice properties</description>
+</entry>
+
+<entry id="qeq" term="qeq">
+  <description>calculate charges using the QEq scheme of Rappe and Goddard</description>
+</entry>
+
+<entry id="qok" term="qok">
+  <description>its OK to run with a non-charge neutral unit cell</description>
+</entry>
+
+<entry id="regi_before" term="regi_before">
+  <description>output region 1 coordinates before defect calculation</description>
+</entry>
+
+<entry id="relax" term="relax">
+  <description>use relax fitting</description>
+</entry>
+
+<entry id="restore" term="restore">
+  <description>read in defect calculation restart info and skip property calcn</description>
+</entry>
+
+<entry id="rfo" term="rfo">
+  <description>use the rational function optimization method</description>
+</entry>
+
+<entry id="save" term="save">
+  <description>write out defect calculation restart information</description>
+</entry>
+
+<entry id="shell" term="shell">
+  <description>only calculate gradients for and optimize shell positions</description>
+</entry>
+
+<entry id="simultaneous" term="simultaneous">
+  <description>simultaneously optimize shells while fitting</description>
+</entry>
+
+<entry id="single" term="single">
+  <description>perform a single point calculation of the energy</description>
+</entry>
+
+<entry id="static_first" term="static_first">
+  <description>perform a static optimization before a free energy one</description>
+</entry>
+
+<entry id="torsion" term="torsion">
+  <description>calculate valid four body torsion angles</description>
+</entry>
+
+<entry id="transition_state" term="transition_state">
+  <description>optimize using RFO to first order transition state</description>
+</entry>
+
+<entry id="unit" term="unit">
+  <description>use a unit matrix as the initial hessian for optimization</description>
+</entry>
+
+<entry id="verlet" term="verlet">
+  <description>use the Verlet algorithm for molecular dynamics</description>
+</entry>
+
+<entry id="zsisa" term="zsisa">
+  <description>use the ZSISA approximation in a free energy minimisation</description>
+</entry>
+
+<!-- generated from GULP write statements -->
+
+<entry id="atomtype" term="atomtype">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="canonensem" term="canonensem">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="cartlatt" term="cartlatt">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="centro" term="centro">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="charge" term="charge">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="compenthalpy" term="compenthalpy">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="compfreeener" term="compfreeener">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="configname" term="configname">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="consave" term="consave">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="cost" term="cost">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="crysfam" term="crysfam">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="crysgroth" term="crysgroth">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="cstemp" term="cstemp">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="cycle" term="cycle">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="defect" term="defect">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="defener" term="defener">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="defoin" term="defoin">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="dens" term="dens">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="dimen" term="dimen">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="ebgd" term="ebgd">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="ec6" term="ec6">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="ecmm" term="ecmm">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="econs" term="econs">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="econs1" term="econs1">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="econs2" term="econs2">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="econs3" term="econs3">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="edipole" term="edipole">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="elconmat" term="elconmat">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="ener" term="ener">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="enthtot" term="enthtot">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="entot" term="entot">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="epolar" term="epolar">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="epv" term="epv">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="eqeq" term="eqeq">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="equilitime" term="equilitime">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="ereal" term="Real-space Electrostatic Energy">
+  <annotation></annotation>
+  <definition>Real-space Electrostatic Energy</definition>
+  <description>For 3-D periodic systems this is the real-space component of the Ewald sum. The partitioning between real and reciprocal components depends on the eta value. </description>
+</entry>
+
+<entry id="erecip" term="erecip">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="eself" term="eself">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="etot" term="etot">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="etotal" term="etotal">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="etotave" term="etotave">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="evib" term="evib">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="fener" term="fener">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="fhigh" term="fhigh">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="finalsumq" term="finalsumq">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="firsderivfit" term="firsderivfit">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="flow" term="flow">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="fourbodypot" term="fourbodypot">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="frictemp" term="frictemp">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="frictpress" term="frictpress">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="fstepmx" term="fstepmx">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="ftol" term="ftol">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="fullcell" term="fullcell">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="genalg" term="genalg">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="gnorm" term="gnorm">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="gtol" term="gtol">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="hesscalc" term="hesscalc">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="hms" term="hms">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="interatompot" term="interatompot">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="isobartherm" term="isobartherm">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="ke" term="ke">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="keave" term="keave">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="key" term="key">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="manybodypot" term="manybodypot">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="maxcal" term="maxcal">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="maxfcal" term="maxfcal">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="mdprop" term="mdprop">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="microcanon" term="microcanon">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="nconfig" term="nconfig">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="ncpu" term="ncpu">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="ndof" term="ndof">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="nmoving" term="nmoving">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="nonprim" term="nonprim">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="nonprimvol" term="nonprimvol">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="nonstand" term="nonstand">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="nosymconfit" term="nosymconfit">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="npar" term="npar">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="numat" term="numat">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="numirrat" term="numirrat">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="nupdate" term="nupdate">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="nvar" term="nvar">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="ooppot" term="ooppot">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="optim" term="optim">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="optout" term="optout">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="outmdin" term="outmdin">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="outputener" term="outputener">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="patt" term="patt">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="pe" term="pe">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="peave" term="peave">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="press" term="press">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="pressconfig" term="Pressure of Configuration">
+  <annotation></annotation>
+  <definition>The preset pressure at which the calculation was run???</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="primcell" term="primcell">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="prodtime" term="prodtime">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="property" term="property">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="repeat" term="repeat">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="sampfreq" term="sampfreq">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="scalfreq" term="scalfreq">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="scaltime" term="scaltime">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="sft" term="sft">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="shifto" term="shifto">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="shrink" term="shrink">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="simuloptfit" term="simuloptfit">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="stepmx" term="stepmx">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="sumsq" term="sumsq">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="supercell" term="supercell">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="symconfit" term="symconfit">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="tempconfig" term="Temperature of Configuration">
+  <annotation></annotation>
+  <definition>Temperature of Configuration</definition>
+  <description>Temperature of Configuration</description>
+</entry>
+
+<entry id="threebodypot" term="threebodypot">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="time" term="time">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="timesofar" term="timesofar">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="timestep" term="timestep">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="travec" term="travec">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="unitmathess" term="unitmathess">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="writefreq" term="writefreq">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<entry id="xtol" term="xtol">
+  <annotation></annotation>
+  <definition>no definition yet</definition>
+  <description>no description</description>
+</entry>
+
+<!-- more output terms -->
+
+<entry id="configuration" term="configuration">
+  <annotation>no appinfo</annotation>
+  <definition>no def yet</definition>
+  <description>no desc yet</description>
+</entry>
+
+<entry id="energy" term="energy">
+  <annotation>no appinfo</annotation>
+  <definition>no def yet</definition>
+  <description>no desc yet</description>
+</entry>
+
+<entry id="getkeywrd" term="getkeywrd">
+  <annotation>no appinfo</annotation>
+  <definition>no def yet</definition>
+  <description>no desc yet</description>
+</entry>
+
+<entry id="hfdiconstens" term="hfdiconstens">
+  <annotation>no appinfo</annotation>
+  <definition>no def yet</definition>
+  <description>no desc yet</description>
+</entry>
+
+<entry id="hfri" term="hfri">
+  <annotation>no appinfo</annotation>
+  <definition>no def yet</definition>
+  <description>no desc yet</description>
+</entry>
+
+<entry id="job" term="job">
+  <annotation>no appinfo</annotation>
+  <definition>no def yet</definition>
+  <description>no desc yet</description>
+</entry>
+
+<entry id="outgen" term="outgen">
+  <annotation>no appinfo</annotation>
+  <definition>no def yet</definition>
+  <description>no desc yet</description>
+</entry>
+
+<entry id="outkey" term="outkey">
+  <annotation>no appinfo</annotation>
+  <definition>no def yet</definition>
+  <description>no desc yet</description>
+</entry>
+
+<entry id="outpot" term="outpot">
+  <annotation>no appinfo</annotation>
+  <definition>no def yet</definition>
+  <description>no desc yet</description>
+</entry>
+
+<entry id="outspec" term="outspec">
+  <annotation>no appinfo</annotation>
+  <definition>no def yet</definition>
+  <description>no desc yet</description>
+</entry>
+
+<entry id="piezostressmat" term="piezostressmat">
+  <annotation>no appinfo</annotation>
+  <definition>no def yet</definition>
+  <description>no desc yet</description>
+</entry>
+
+<entry id="recip" term="recip">
+  <annotation>no appinfo</annotation>
+  <definition>no def yet</definition>
+  <description>no desc yet</description>
+</entry>
+
+<entry id="recipsd" term="recipsd">
+  <annotation>no appinfo</annotation>
+  <definition>no def yet</definition>
+  <description>no desc yet</description>
+</entry>
+
+<entry id="recipsd2" term="recipsd2">
+  <annotation>no appinfo</annotation>
+  <definition>no def yet</definition>
+  <description>no desc yet</description>
+</entry>
+
+<entry id="setcfg" term="setcfg">
+  <annotation>no appinfo</annotation>
+  <definition>no def yet</definition>
+  <description>no desc yet</description>
+</entry>
+
+<entry id="statdiconstens" term="statdiconstens">
+  <annotation>no appinfo</annotation>
+  <definition>no def yet</definition>
+  <description>no desc yet</description>
+</entry>
+
+<entry id="statri" term="statri">
+  <annotation>no appinfo</annotation>
+  <definition>no def yet</definition>
+  <description>no desc yet</description>
+</entry>
+
+<!-- more output -->
+<entry id="fitcon" term="fitted parameters with constraints">
+  <annotation>no appinfo</annotation>
+  <definition>Apply constraints to fitted parameters</definition>
+  <description>Apply constraints to fitted parameters</description>
+</entry>
+
+<entry id="fitfun" term="Sum of squares module">
+  <annotation>no appinfo</annotation>
+  <definition>Supplies the sum of the squares of the differences</definition>
+  <description>Supplies the sum of the squares of the differences</description>
+</entry>
+
+<entry id="putpar" term="update parameters">
+  <annotation>no appinfo</annotation>
+  <definition>Updates parameters in main arrays from those in xc</definition>
+  <description>Updates parameters in main arrays from those in xc</description>
+</entry>
+
+<entry id="minimise" term="General optimisation routine">
+  <annotation>no appinfo</annotation>
+  <definition>General optimisation routine</definition>
+  <description>C  General optimisation routine by either:
+
+  (1) Newton-Raphson
+  (2) RFO method
+  (3) Conjugate gradients
+
+</description>
+</entry>
+
+<entry id="fitgrad" term="fitgrad module">
+  <annotation>no appinfo</annotation>
+  <definition>sum of the squares</definition>
+  <description>Supplies the sum of the squares of the differences and
+  their first and second derivatives.</description>
+</entry>
+
+<entry id="fitbfgs" term="fitbfgs module">
+  <annotation>no appinfo</annotation>
+  <definition>Minimises sum of squares</definition>
+  <description>Minimises the sum of squares during a fit using the BFGS
+ update of the hessian matrix</description>
+</entry>
+
+<!-- messages -->
+
+<entry id="err.nolibfile" term="Missing library file">
+  <annotation>no appinfo</annotation>
+  <definition>Missing library file</definition>
+  <description>Called from SETLIB</description>
+</entry>
+
+<entry id="freq"/>
+
+</dictionary>

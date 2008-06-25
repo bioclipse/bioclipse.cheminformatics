@@ -1,0 +1,1477 @@
+<dictionary 
+  namespace="http://www.xml-cml.org/dict/cmlMeasured"
+  title="CML Measured Values dictionary"
+  xmlns="http://www.xml-cml.org/schema/stmml"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema24/schema.xsd"
+>
+
+
+<!-- role, mainly for modules -->
+  
+  <entry id="entry" term="Entry">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    An entry containing CCML elements
+    </definition>
+    <description>
+    This could be part of a database or XML repository
+    </description>
+  </entry>
+
+  <entry id="final" term="Final">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    The final module
+    </definition>
+    <description>
+    In this the results of the calculation are summarised and the final data reported
+    </description>
+  </entry>
+
+  
+  <entry id="job" term="Job">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    A computational job
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  
+<!-- control, etc -->
+
+  
+<!-- quantities -->
+
+
+  <entry id="regnumber" title="Registry number">
+    <annotation>
+      <appinfo>
+        <!--<scalar title="Registry number"></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Registry number unique to each molecule</definition>
+    <description></description>
+  </entry> 
+   
+   <entry id="molformula" title="Molecular formula">
+    <annotation>
+      <appinfo>
+        <!--<scalar title="Molecular formula"></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry> 
+   
+   <entry id="meltrange" title="Melting range">
+    <annotation>
+      <appinfo>
+        <!--<scalar title="T_m_e_l_t" unitType="units:temperature"></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Minimum and maximum values of melting range in degrees celsius</definition>
+    <description></description>
+  </entry> 
+   
+  <entry id="boilrange" title="Boiling range">
+    <annotation>
+      <appinfo>
+        <!--<scalar title="T_b_o_i_l" unitType="units:temperature"></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Minimum and maximum values of boiling range in degrees celsius</definition>
+    <description></description>
+  </entry> 
+  
+   <entry id="boilpressure" title="Pressure at boiling temp">
+    <annotation>
+      <appinfo>
+        <!--<scalar title="P_b_o_i_l" unitType="units:pressure"></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Pressure at which boiling range is measured</definition>
+    <description></description>
+  </entry>  
+  
+  <entry id="Fp" title="Flash point">
+    <annotation>
+      <appinfo>
+        <!--<scalar title="T_f_l_a_s_h" unitType="units:temperature"></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Flash point in degrees celsius</definition>
+    <description>The lowest temperature at which a liquid can form an ignitable mixture in air near the surface of the liquid</description>
+  </entry> 
+     
+  <entry id="density" title="Density">
+    <annotation>
+      <appinfo>
+        <!--<scalar title="[rho]" unitType="units:density"></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Density of substance</definition>
+    <description></description>
+  </entry> 
+      
+  <entry id="decomp" title="Decomposition">
+    <annotation>
+      <appinfo>
+        <!--<scalar title="T_d_e_c_o_m_p" unitType="units:temperature"></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Minimum and maximum values of decomposition temperature in degrees celsius</definition>
+    <description></description>
+  </entry> 
+  
+  <entry id="nD20" title="Refractive index nD20">
+    <annotation>
+      <appinfo>
+        <!--<scalar title="nD20" unitType="units:none"></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Minimum and maximum values of refractive index at 20 degrees celsius</definition>
+    <description>The velocity of light in a vacuum divided by the velocity of light in the substance</description>
+  </entry> 
+         
+  <entry id="deltaHc" title="Enthalpy of combustion at STP">
+    <annotation>
+      <appinfo>
+        <!--<scalar title="[DELTA]_cH^o" unitType="units:enthalpy"></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Enthalpy of combustion at STP (nominally 298K, 1 atm.)</definition>
+    <description></description>
+  </entry> 
+  
+  <entry id="deltaHf" term="Enthalpy of formation of condensed phase at STP">
+    <annotation>
+      <appinfo>
+        <!--<scalar title="[DELTA]_fH^o" unitType="units:enthalpy"></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Enthalpy of formation of condensed phase at STP (nominally 298K, 1 atm.)</definition>
+    <description></description>
+  </entry> 
+  
+ <entry id="deltaHfg" term="Enthalpy of formation of gas at STP">
+    <annotation>
+      <appinfo>
+        <!--<scalar title="[DELTA]_fH^o_g_a_s" unitType="units:enthalpy"></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Enthalpy of formation of gas at STP (nominally 298K, 1 atm.)</definition>
+    <description></description>
+  </entry>   
+  
+ <entry id="compname" term="Compound name">
+    <annotation>
+      <appinfo>
+        <!--<scalar title="Compound name"></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Synonyms including systematic names and commercial names</definition>
+    <description></description>
+  </entry>        
+  
+  <entry id="description" term="Description">
+    <annotation>
+      <appinfo>
+        <!--<scalar title="Description"></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Qualitative information such as colour and nature of crystals</definition>
+    <description></description>
+  </entry> 
+  
+
+
+  
+  <entry id="mp" term="Melting Point">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>The temperature range at which the substance melts</definition>
+    <description></description>
+  </entry>
+
+  <entry id="bp" term="Boiling Point">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>The temperature range at which the substance boils</definition>
+    <description></description>
+  </entry>
+  
+  <entry id="fp" term="Flash Point">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>The temperature at which the substance spontaneously ignites</definition>
+    <description></description>
+  </entry>
+
+  <entry id="decomp" term="Decomposition">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>The temperature at which the substance decomposes</definition>
+    <description></description>
+  </entry>
+
+  <entry id="optrot" term="Optical Rotation">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>The angle through which the substance moves polarised light</definition>
+    <description></description>
+  </entry>
+
+  
+   <entry id="hof" term="Heat of formation">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>Heat of formation (state undefined)</definition>
+    <description></description>
+  </entry>
+
+  <entry id="dens" term="Density">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>The mass per unit volume of the substance</definition>
+    <description></description>
+  </entry>
+
+  
+  <entry id="hofgas" term="Heat of formation">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>Heat of formation of the gas phase</definition>
+    <description></description>
+  </entry>
+
+  <entry id="hoc" term="Heat of combustion">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>Heat of combustion</definition>
+    <description></description>
+  </entry>
+
+   <entry id="date" term="Date">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>date</definition>
+    <description>Output by program. Formats can vary and this probably has not been parsed yet.
+    </description>
+  </entry>
+
+   <entry id="dimens" term="Dimensionality">
+    <annotation>
+      <appinfo>
+        <!--<scalar/>
+      </appinfo>
+    </annotation>
+    <definition>
+Dimensionality
+    </definition>
+    <description>
+    Dimensionality of problem (3, 2, 1) for volume, surface or line.
+    </description>
+  </entry>
+
+  <entry id="dipole" term="Electric Dipole">
+    <annotation>
+      <appinfo>
+        <!--<scalar>
+        </scalar>-->
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">dipole</alternative>
+    <definition>
+    </definition>
+    <description>
+    An electric dipole. Either or both the magnitude and the components may be given. 
+    </description>
+  </entry>
+
+  <entry id="dielectensor" term="Dielectric Tensor">
+    <annotation>
+      <appinfo>
+        <!--<scalar>
+        </scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="dipole.point" term="Electric Point Dipole">
+    <annotation>
+      <appinfo>
+        <!--<scalar>
+        </scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    An electric point dipole. Either or both the magnitude and the components may be given. 
+    </description>
+  </entry>
+
+  <entry id="dipole.hybrid" term="Electric Hybrid Dipole">
+    <annotation>
+      <appinfo>
+        <!--<scalar>
+        </scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    A concept originally from MOPAC. I don't have a formal definition yet 
+    </description>
+  </entry>
+
+  <entry id="double_occ" term="Doubly occupied orbitals">
+    <annotation>
+      <appinfo>
+        <!--<scalar>
+        </scalar>-->
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">doubOcc</alternative>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="elastconstmat" term="Elastic Constant Matrix">
+    <annotation>
+      <appinfo>
+        <matrix>
+        </matrix>
+      </appinfo>
+    </annotation>
+    <definition>
+    The elastic constant matrix....
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="energy" term="Energy">
+    <annotation>
+      <appinfo>
+        <!--<scalar>
+        </scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>
+    Energy (generic)
+    </definition>
+    <description>
+    A quantity reported as "energy" but exact nature not specified. Use with care!
+    </description>
+  </entry>
+
+  <entry id="geomBasis" term="Geometry basis set">
+    <annotation>
+      <appinfo>
+        <!--<scalar dataType="xsd:string">
+        </scalar>-->
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">geoBasis</alternative>
+    <definition>
+    Basis set used to optimise geometry
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="gradient" term="Gradient">
+    <annotation>
+      <appinfo>
+        <!--<scalar>
+        </scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>
+    Gradient (exact form unspecified)
+    </definition>
+    <description>
+    A quantity reported as "gradient" but exact nature of dWhat/dWhich not specified. Use with very great care!
+    </description>
+  </entry>
+
+  <entry id="energy.gnorm" term="Energy GNorm">
+    <annotation>
+      <appinfo>
+        <!--<scalar>
+        </scalar>-->
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">gNorm</alternative>
+    <definition>
+    Gradient norm of energy (generic)
+    </definition>
+    <description>
+    A quantity reported as the gnorm of "energy" but exact nature of energy or quantities defingin the derivative not specified. Use with great care!
+    </description>
+  </entry>
+
+  <entry id="heat" term="Heat">
+    <annotation>
+      <appinfo>
+        <!--<scalar>
+        </scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>
+    Heat (exact nature unspecified)
+    </definition>
+    <description>
+    A quantity reported as "heat" but exact nature not specified. Use with care!
+    </description>
+  </entry>
+
+  <entry id="ffCharge" term="Forcefield charge">
+    <annotation>
+      <appinfo>
+        <!--<scalar>
+        </scalar>-->
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">ffChg</alternative>
+    <definition>
+    An atom-based charge used in forcefields and other algorithms
+    </definition>
+    <description>
+    A charge used to model the behaviour of an atom or group in an algorithm rather than a reflection of computed charge, formal charge or experiemental measurements.
+    </description>
+  </entry>
+
+  <entry id="ionRad" term="Ionic radius">
+    <annotation>
+      <appinfo>
+        <!--<scalar>
+        </scalar>-->
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">ionRad</alternative>
+    <definition>Ionic radius</definition>
+    <description>
+    Used for estimating whether ions are "in contact" and as input for various algorithms
+    </description>
+  </entry>
+
+  <entry id="ip" term="Ionization Potential">
+    <annotation>
+      <appinfo>
+        <!--<scalar>
+        </scalar>-->
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">IP</alternative>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="hamilt" term="Hamiltonian">
+    <annotation>
+      <appinfo>
+        <!--<scalar>
+        </scalar>-->
+      </appinfo>
+    </annotation>
+     <alternative type="abbreviation">hamilt</alternative>
+   <definition>
+    Hamiltonian (QM)
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="method" term="Method">
+    <annotation>
+      <appinfo>
+        <!--<scalar>
+        </scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>
+    Method used in the calculation
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="mulliken" term="Mulliken Charge">
+    <annotation>
+      <appinfo>
+        <!--<scalar unitType="charge"/>
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">mull</alternative>
+    <definition>Mulliken Charge</definition>
+    <description>Mulliken's method for calculating atom-based charges</description>
+  </entry>
+
+  <entry id="npa" term="NPA">
+    <annotation>
+      <appinfo>
+        <!--<scalar unitType="charge"/>
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">NPA</alternative>
+    <definition>NPA method for Charges</definition>
+    <description>Not yet finalised (came in G2 data set)</description>
+  </entry>
+
+   <entry id="numvar" term="Number of variables">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">nVar</alternative>
+    <definition>
+    Number of variables
+    </definition>
+    <description>
+    The number of variables in a calculation.  
+    </description>
+  </entry>
+
+   <entry id="piezostrain" term="Piezoelectric Strain">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="piezostress" term="Piezoelectric Stress">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="prog" term="Program">
+    <annotation>
+      <appinfo>
+        <!--<scalar>
+        </scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>
+    The program or code used
+    </definition>
+    <description>See entry program
+    </description>
+  </entry>
+
+  <entry id="program" term="Program">
+    <annotation>
+      <appinfo>
+        <!--<scalar>
+        </scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>
+    The program or code used
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="version" term="Version">
+    <annotation>
+      <appinfo>
+        <!--<scalar>
+        </scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>
+    The version of program or code or document...
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="refract" term="Refractive Index">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">RI</alternative>
+    <definition>
+Refractive Index
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="rhfEnergy" term="Energy from RHF calculation">
+    <annotation>
+      <appinfo>
+        <!--<scalar>
+        </scalar>-->
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">enerRHF</alternative>
+    <definition>
+    An energy reported from a RHF calculation. 
+    </definition>
+    <description>
+This is a rather loose concept and this entry may be obsoleted in favour of more context-specific constructs
+    </description>
+  </entry>
+
+  <entry id="stockholder" term="Stockholder Charge">
+    <annotation>
+      <appinfo>
+        <!--<scalar unitType="charge"/>
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">stock</alternative>
+    <definition>Stockholder Charge</definition>
+    <description>(presumably) Stockholder's method for calculating atom-based charges</description>
+  </entry>
+
+   <entry id="time" term="Time">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>Time (generic)</definition>
+    <description>
+    Specified by context
+    </description>
+  </entry>
+
+   <entry id="zpe" term="Zero Point Energy">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">zpe</alternative>
+    <definition>Zero Point Energy</definition>
+    <description>
+    </description>
+  </entry>
+
+  <!-- ================================================================== -->
+  <!-- ===== Generic concepts translated to individual programs ========= -->
+  <!-- ================================================================== -->
+  <entry id="generic.hamilton" term="Generic Hamiltonians">
+    <annotation>
+      <appinfo>
+        <parameter>
+          <!--<scalar dictRef="ccml:hamilton"/>
+          <enumeration value="AM1"/>
+          <enumeration value="PM3"/>
+        </parameter>
+      </appinfo>
+    </annotation>
+    <definition>Generic codes for Hamiltonians</definition>
+    <description>The values are the generic values; specific keywords are provided by the individual dictionary programs.</description>
+  </entry>
+
+  <entry id="generic.output" term="Generic Output options">
+    <annotation>
+      <appinfo>
+        <parameter>
+          <array dictRef="ccml:output"/>
+          <enumeration dictRef="ccml:outputinput"     value="outputinput"/>
+          <enumeration dictRef="ccml:a1elecmat"        value="1elecmat"/>
+          <enumeration dictRef="ccml:bondorder"       value="bondorder"/>
+          <enumeration dictRef="ccml:dcart"           value="cartesianDerivatives"/>
+          <enumeration dictRef="ccml:debug"           value="debug"/>
+          <enumeration dictRef="ccml:densityMatrix"   value="densmat"/>
+          <enumeration dictRef="ccml:partitionEner"   value="partitionEnergy"/>
+          <enumeration dictRef="ccml:esr"             value="esr"/>
+          <enumeration dictRef="ccml:geomOpt"         value="geometryOptimisation"/>
+          <enumeration dictRef="ccml:gradients"       value="gradients"/>
+          <enumeration dictRef="ccml:contourmap"      value="contourmap"/>
+          <enumeration dictRef="ccml:lineminim"       value="lineminimisation"/>
+          <enumeration dictRef="ccml:localizeMOs"     value="localizedMos"/>
+          <enumeration dictRef="ccml:multielectronci" value="multielectronci"/>
+          <enumeration dictRef="ccml:mullikenPop"     value="mullikenPopulation"/>
+          <enumeration dictRef="ccml:piBonds"         value="pibonds"/>
+          <enumeration dictRef="ccml:spinMatrix"      value="spinmatrix"/>
+          <enumeration dictRef="ccml:thermodynamic"   value="thermodynamic"/>
+          <enumeration dictRef="ccml:eigenvectors"    value="eigvec"/>
+        </parameter>
+      </appinfo>
+    </annotation>
+    <definition>Generic codes for output</definition>
+    <description>The values are the generic values; specific keywords are provided by the individual dictionary programs.</description>
+  </entry>
+
+  <entry id="outputinput" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar>outputinput</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Echo the input</definition>
+    <description>Often the only keyword/parameter</description>
+  </entry>
+  <entry id="a1elecmat" term="1 Electron matrix">
+    <annotation>
+      <appinfo>
+        <!--<scalar>1elecmat</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>1 Electron matrix</definition>
+    <description></description>
+  </entry>
+  <entry id="bondorder" term="Bond Orders">
+    <annotation>
+      <appinfo>
+        <!--<scalar>bondorder</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Output bond orders</definition>
+    <description></description>
+  </entry>
+  <entry id="dcart" term="Cartesian Derivatives">
+    <annotation>
+      <appinfo>
+        <!--<scalar>cartesianDerivatives</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Cartesian Derivatives</definition>
+    <description></description>
+  </entry>
+  <entry id="debug" term="Debug">
+    <annotation>
+      <appinfo>
+        <!--<scalar>debug</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Debug output</definition>
+    <description></description>
+  </entry>
+  <entry id="densityMatrix" term="Density Matrix">
+    <annotation>
+      <appinfo>
+        <!--<scalar>densmat</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Density Matrix</definition>
+    <description></description>
+  </entry>
+  <entry id="partitionEner" term="Energy Partition">
+    <annotation>
+      <appinfo>
+        <!--<scalar>partitionEnergy</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Energy Partition</definition>
+    <description>Partition the energy (probably in a program-specific way)</description>
+  </entry>
+  <entry id="esr" term="Electron Spin Resonance">
+    <annotation>
+      <appinfo>
+        <!--<scalar>esr</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Electron Spin Resonance</definition>
+    <description>Electron Spin Resonance output</description>
+  </entry>
+  <entry id="geomOpt" term="Geometry Optimisation">
+    <annotation>
+      <appinfo>
+        <!--<scalar>geometryOptimisation</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Geometry Optimisation</definition>
+    <description></description>
+  </entry>
+  <entry id="gradients" term="Gradients">
+    <annotation>
+      <appinfo>
+        <!--<scalar>gradients</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Gradients</definition>
+    <description>Output gradients (may require calculating them first)</description>
+  </entry>
+  <entry id="contourmap" term="Contour Map">
+    <annotation>
+      <appinfo>
+        <!--<scalar>contourmap</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Contour Map</definition>
+    <description>Output Contour Map</description>
+  </entry>
+  <entry id="lineminim" term="Line Minimisation">
+    <annotation>
+      <appinfo>
+        <!--<scalar>lineminimisation</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Line Minimisation</definition>
+    <description>Output details of the Line Minimisation</description>
+  </entry>
+  <entry id="localizeMOs" term="Localized Molecular Orbitals">
+    <annotation>
+      <appinfo>
+        <!--<scalar>localizedMos</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Localized Molecular Orbitals</definition>
+    <description>Output Localized Molecular Orbitals (may need calculating first)</description>
+  </entry>
+  <entry id="multielectronci" term="Multiple Electron Configuration Interaction">
+    <annotation>
+      <appinfo>
+        <!--<scalar>multielectronci</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Multiple Electron Configuration Interaction</definition>
+    <description>Output Multiple Electron Configuration Interaction</description>
+  </entry>
+  <entry id="mullikenPop" term="Mulliken Population Analysis">
+    <annotation>
+      <appinfo>
+        <!--<scalar>mullikenPopulation</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Mulliken Population Analysis</definition>
+    <description></description>
+  </entry>
+  <entry id="piBonds" term="Pi Bond Analysis">
+    <annotation>
+      <appinfo>
+        <!--<scalar>pibonds</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Pi Bond Analysis</definition>
+    <description></description>
+  </entry>
+  <entry id="spinMatrix" term="Spin Matrix">
+    <annotation>
+      <appinfo>
+        <!--<scalar>spinmatrix</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Spin Matrix</definition>
+    <description>Output the Spin Matrix</description>
+  </entry>
+  <entry id="thermodynamic" term="Thermodynamic Analysis">
+    <annotation>
+      <appinfo>
+        <!--<scalar>thermodynamic</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Thermodynamic Analysis</definition>
+    <description></description>
+  </entry>
+  <entry id="eigenvectors" term="Eigenvectors">
+    <annotation>
+      <appinfo>
+        <!--<scalar>eigvec</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Eigenvectors</definition>
+    <description>Output Eigenvectors</description>
+  </entry>
+
+ <entry id="generic.control" term="Generic control">
+    <annotation>
+      <appinfo>
+        <parameter>
+          <array dictRef="ccml:generic.control"/>
+          <enumeration dictRef="ccml:a1scf"          value="onescf"/>
+          <enumeration dictRef="ccml:biradical"     value="biradical"/>
+          <enumeration dictRef="ccml:cin"        value="multielectronci"/>
+          <enumeration dictRef="ccml:chargen"      value="charge"/>
+          <enumeration dictRef="ccml:dipole"        value="fitEspToDipole"/>
+          <enumeration dictRef="ccml:doublet"       value="doublet"/>
+          <enumeration dictRef="ccml:drc"           value="dynamicReactionCoordinate"/>
+          <enumeration dictRef="ccml:ef"            value="eigenvectorFollowing"/>
+          <enumeration dictRef="ccml:esp"           value="espCalculation"/>
+          <enumeration dictRef="ccml:excited"       value="optimiseFirstExcitedSinglet"/>
+          <enumeration dictRef="ccml:fill"          value="fillMo"/>
+          <enumeration dictRef="ccml:force"         value="calculateForce"/>
+          <enumeration dictRef="ccml:irc"           value="intrinsicReactionCoordinate"/>
+          <enumeration dictRef="ccml:knnnn"    value="brillouinCalculation"/>
+          <enumeration dictRef="ccml:kinetic"       value="addKeToDrc"/>
+          <enumeration dictRef="ccml:mode"          value="modeForEf"/>
+          <enumeration dictRef="ccml:nllsq"         value="NonLinearLsq"/>
+          <enumeration dictRef="ccml:openn1n2"   value="openshellRhf"/>
+          <enumeration dictRef="ccml:quartet"       value="quartet"/>
+          <enumeration dictRef="ccml:quintet"       value="quintet"/>
+          <enumeration dictRef="ccml:rotn"         value="symmetryNumber"/>
+          <enumeration dictRef="ccml:saddle"        value="optimiseTS"/>
+          <enumeration dictRef="ccml:scale"         value="espScale"/>
+          <enumeration dictRef="ccml:singlet"       value="singlet"/>
+          <enumeration dictRef="ccml:uhf"           value="uhf"/>
+        </parameter>
+      </appinfo>
+    </annotation>
+    <definition>Generic values for input</definition>
+    <description></description>
+  </entry>
+
+  <entry id="eigenvectors" term="Eigenvectors">
+    <annotation>
+      <appinfo>
+        <!--<scalar>eigvec</scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Eigenvectors</definition>
+    <description>Output Eigenvectors</description>
+  </entry>
+  
+  <entry id="onescf" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="biradical" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="multielectronci" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="charge" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="fitEspToDipole" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="doublet" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="dynamicReactionCoordinate" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="eigenvectorFollowing" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="espCalculation" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="optimiseFirstExcitedSinglet" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="fillMo" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="calculateForce" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="intrinsicReactionCoordinate" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="brillouinCalculation" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="addKeToDrc" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="modeForEf" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="NonLinearLsq" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="openshellRhf" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="quartet" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="quintet" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="symmetryNumber" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="optimiseTS" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="espScale" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="singlet" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+  <entry id="uhf" term="">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+        </appinfo>
+    </annotation>
+    <definition></definition>
+    <description></description>
+  </entry>
+
+
+  <entry id="generic.working" term="Generic working">
+    <annotation>
+      <appinfo>
+        <parameter>
+          <array dictRef="ccml:generic.working"/>
+            <enumeration dictRef="ccml:dfp"      value="dfp"/>        
+            <enumeration dictRef="ccml:gnorm"    value="gradientNorm"/>        
+            <enumeration dictRef="ccml:itry"     value="scfCalculation"/>        
+            <enumeration dictRef="ccml:precise"  value="precise"/>        
+            <enumeration dictRef="ccml:pulay"    value="pulay"/>        
+            <enumeration dictRef="ccml:restartfromCheckpoint" value="restartFromCheckpoint"/>        
+            <enumeration dictRef="ccml:xyz"      value="cartesian"/>
+        </parameter>
+      </appinfo>
+    </annotation>
+    <definition>Generic values for input</definition>
+    <description></description>
+  </entry>
+
+  <entry id="dfp" term="DavidonFletcherPowell">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>DavidonFletcherPowell</definition>
+    <description>A minimisation method predating BFGS</description>
+  </entry>
+        
+  <entry id="gradientNorm" term="Gradient Norm">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Gradient Norm</definition>
+    <description></description>
+  </entry>
+        
+  <entry id="scfCalculation" term="Number of SCF Calculations">
+    <annotation>
+      <appinfo>
+        <parameter>
+          <!--<scalar>
+          </scalar>-->
+        </parameter>
+      </appinfo>
+    </annotation>
+    <definition>Number of SCF Calculations</definition>
+    <description></description>
+  </entry>
+        
+  <entry id="precise" term="Precise">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Increase precision of calculation</definition>
+    <description></description>
+  </entry>
+        
+  <entry id="pulay" term="Pulay">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Pulay</definition>
+    <description>Method for SCF</description>
+  </entry>
+
+  <entry id="restartFromCheckpoint" term="Restart From Checkpoint">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Restart the job after a checkpoint in an earlier job</definition>
+    <description>Note. The resources required may vary between programs. For example the density matrix is almost always beneficial for a restart to avoid recalculation. The "restartBundle" element  defines the essentials and desirables for each program. </description>
+  </entry>
+
+  <entry id="restartBundle" term="Restart Bundle">
+    <annotation>
+      <appinfo>
+        <array/>
+      </appinfo>
+    </annotation>
+    <definition>The bundle of resources required or desirable for a restart</definition>
+    <description>This is an array of dictRefs describing the types of object making up the bundle. The order is important. The semantics are yet to be developed</description>
+  </entry>
+        
+  <entry id="cartesian" term="Cartesian">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Cartesian Coordinates</definition>
+    <description></description>
+  </entry>
+
+  <!-- keywords -->
+  <entry id="echoInput" term="Echo input">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>echo input</definition>
+    <description>Not yet finished. Values can be 'none'</description>
+  </entry>
+  
+  <entry id="geomCalculation" term="Calculate Geometry">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>keyword</definition>
+    <description>Not yet finished. Values can be 'none' (do not calculate or optimise)</description>
+  </entry>
+  
+  <!-- time -->
+  <entry id="sec" term="second">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>A calendar second</definition>
+    <description>Used in cpu or elapsed time or other reports of time</description>
+  </entry>
+  
+  <entry id="min" term="minute">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>A calendar minute</definition>
+    <description>Used in cpu or elapsed time or other reports of time</description>
+  </entry>
+  
+  <entry id="hour" term="hour">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>A calendar hour</definition>
+    <description>Used in cpu or elapsed time or other reports of time</description>
+  </entry>
+  
+  <entry id="day" term="day">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>A calendar day</definition>
+    <description>Used in cpu or elapsed time or other reports of time</description>
+  </entry>
+  
+  <entry id="wday" term="day of week">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>A calendar weekday (by name)</definition>
+    <description>Used in cpu or elapsed time or other reports of time</description>
+  </entry>
+  
+  <entry id="month" term="month">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>A calendar month</definition>
+    <description>Used in cpu or elapsed time or other reports of time</description>
+  </entry>
+  
+  <entry id="year" term="year">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>A calendar year</definition>
+    <description>Used in cpu or elapsed time or other reports of time</description>
+  </entry>
+  
+  <entry id="totalen" term="total energy">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Total energy of a molecular system</definition>
+    <description>To be added</description>
+  </entry>
+  
+  <entry id="electen" term="electronic energy">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Electronic energy of a molecular system</definition>
+    <description>To be added</description>
+  </entry>
+  
+  <entry id="corecore" term="nuclear repulsion energy">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Repulsive energy between nuclei (core-core)</definition>
+    <description>To be added</description>
+  </entry>
+  
+  <entry id="ionpot" term="ionisation potential">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>First ionization potential</definition>
+    <description>Often calculated as the one-electron energy of the highest occupied molecular orbital</description>
+  </entry>
+  
+  <entry id="filledlev" term="filled level count">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Number of filled levels (doubly occupied)</definition>
+    <description></description>
+  </entry>
+  
+  <entry id="state" term="electronic state">
+    <annotation>
+      <appinfo>
+        <!--<scalar></scalar>-->
+      </appinfo>
+    </annotation>
+    <definition>Electronic state</definition>
+    <description>Examples are singlet or doublet. Not to be confused with physical state</description>
+  </entry>
+  
+
+</dictionary>
+

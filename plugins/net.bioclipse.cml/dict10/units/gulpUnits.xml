@@ -1,0 +1,23 @@
+<unitList
+  namespace="http://www.gulp.org/units/units"
+  type="unit"
+  xmlns:h="http://www.w3.org/XHTML"
+  dictionaryPrefix="gulpUnits"
+  title="GULP units dictionary"
+  xmlns:gulpUnits="http://www.gulp.org/units/units"
+  xmlns:unitType="http://www.xml-cml.org/units/unitTypes"
+  xmlns="http://www.xml-cml.org/schema"
+>
+<!-- entries waiting for editing have dummy multipliers of -99 -->
+  <unit id="tenGPa" name="10^7 Pascal"
+    multiplierToSI="1.E+07"  unitType="unitType:pressure">
+        <definition>confused - 10 megapascal???</definition>
+    <description/>
+  </unit>
+  
+  <unit id="decimicroCperdyne" name="???"
+    multiplierToSI="-99"  unitType="unitType:xxx">
+        <definition>confused - ???</definition>
+    <description/>
+  </unit>
+</unitList>

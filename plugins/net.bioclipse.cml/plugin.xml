@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.TaskList"
+               relationship="right"
+               id="net.bioclipse.cml.views.CMLValidatorView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+
+  <extension
+        point="org.eclipse.ui.commands">
+        <category
+              id="net.bioclipse.ui.CMLCategory"
+              name="CmlCategory">
+        </category>
+     <command
+           id="net.bioclipse.ui.commands.validateCmlCommand"
+           categoryId="net.bioclipse.ui.CMLCategory"
+           name="Validate CML"/>
+  </extension>
+
+	<extension
+        point="org.eclipse.ui.handlers">
+     <handler
+        class="net.bioclipse.cml.handlers.CMLValidationHandler"
+        commandId="net.bioclipse.ui.commands.validateCmlCommand"> 
+     </handler>
+	</extension> 
+	
+	<extension 
+  id="add.item"
+  point="org.eclipse.ui.menus">
+  <menuContribution
+           locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+        <command
+              commandId="net.bioclipse.ui.commands.validateCmlCommand">
+        </command>
+     </menuContribution>
+     </extension>
+     
+     
+        <extension
+         point="net.bioclipse.scripting.contribution">
+      <scriptContribution
+            id="net.bioclipse.cml.ValidateCMLManager"
+            service="net.bioclipse.cml.managers.ValidateCMLManagerFactory">
+      </scriptContribution>
+   </extension>
+
+<!--extension
+	 point="org.eclipse.ui.editors">
+	<editor
+		  id="net.bioclipse.editors.jmol.JmolEditor"
+		  name="JmolEditor"
+		  icon="icons/sample.gif"
+		  extensions="scr,spt"
+          contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+		  class="net.bioclipse.editors.jmol.JmolEditor">
+	</editor>
+</extension-->
+<extension
+      point="org.eclipse.help.toc">
+   <toc
+         file="toc.xml"
+         primary="true"/>
+</extension>
+
+<!--extension
+      point="net.bioclipse.bioResourceFormatDetector">
+   <FormatDetector
+         FormatDetectorName="Bc_cml.CMLFormatDetector"
+         class="net.bioclipse.model.CMLFormatDetector"/>
+</extension>
+
+ <extension
+       point="net.bioclipse.childResourceExtractor">
+    <ChildResourceExtractor
+          class="net.bioclipse.extensions.CMLChildResourceCreator"
+          id="bioclipse.CMLChildResourceCreator"
+          name="CML Child Resource Creator"/>
+ </extension-->
+
+</plugin>

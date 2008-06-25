@@ -1,0 +1,37 @@
+<dictionary   
+namespace="http://www.xml-cml.org/dict/cdk"
+title="CDK dictionary"  
+xmlns="http://www.xml-cml.org/schema/stmml"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema24/schema.xsd">
+
+  <entry id="bitset" term="Bitset">
+    <annotation>
+      <appinfo>
+        <xsd:complexType>
+<!--        <array dataType="xsd:integer" />-->
+      </appinfo>
+    </annotation>
+    <definition>CDK fingerprint serialized as a bitset</definition>
+    <description>The bits set are identified by their decimal value. Current upper limit is 1024</description>
+  </entry>
+  
+  <entry id="fingerprint" term="Fingerprint">
+    <annotation>
+      <appinfo></appinfo>
+    </annotation>
+    <definition>CDK fingerprint</definition>
+    <description>The fingerprint is currently computed on paths up to 6 atoms, without atom typing other than elements. Syntax not finalised</description>
+  </entry>
+  
+  <entry id="uid" term="UID">
+    <annotation>
+      <appinfo>
+        <scalar dataType="xsd:string"/>
+      </appinfo>
+    </annotation>
+    <definition>"UID" for fingerprint</definition>
+    <description>Actually the Java hashcode for the bitset string (fragile and obsolete)</description>
+  </entry>
+  
+</dictionary>

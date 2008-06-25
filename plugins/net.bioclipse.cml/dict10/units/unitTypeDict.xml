@@ -1,0 +1,730 @@
+<unitTypeList
+  namespace="http://www.xml-cml.org/units/unitTypes"
+  title="unit type dictionary"
+  siNamespace="http://www.xml-cml.org/units/siUnits"
+  xmlns="http://www.xml-cml.org/schema"
+  xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+
+<!--CML unitTypes-->
+<unitType id="unknown"
+  name="Unknown"
+  title="Unknown">
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="dimensionless"
+  name="Dimensionless"
+  title="Dimensionless">
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="none"
+  name="None"
+  title="None">
+  <definition>
+  </definition>
+  </unitType>
+
+<!--SI base units-->
+<unitType id="mass"
+  name="Mass"
+  title="Mass">
+  <dimension name="mass" power="1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="time"
+  name="Time"
+  title="Time">
+  <dimension name="time" power="1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="length"
+  name="Length"
+  title="Length">
+  <dimension name="length" power="1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="current"
+  name="Electrical current"
+  title="Electrical current">
+  <dimension name="current" power="1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="temperature"
+  name="Temperature"
+  title="Temperature">
+  <dimension name="temperature" power="1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="amount"
+  name="Amount"
+  title="Amount of substance">
+  <dimension name="amount" power="1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="luminous_intensity"
+  name="Luminous intensity"
+  title="Luminous intensity">
+  <dimension name="luminous_intensity" power="1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="angle"
+  name="Angle"
+  title="angle">
+  <dimension name="angle" power="1"/>
+  <definition>
+  </definition>
+  </unitType>
+  
+<unitType id="solid_angle"
+  name="Solid ngle"
+  title="solid_angle">
+  <dimension name="solid_angle" power="1"/>
+  <definition>
+  </definition>
+</unitType>
+
+<!-- derived units, whose SI units have special names -->
+
+<unitType id="frequency"
+  name="Frequency"
+  title="Frequency">
+  <dimension name="time" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="force"
+  name="Force"
+  title="Force">
+  <dimension name="length" power="1"/>
+  <dimension name="mass" power="1"/>
+  <dimension name="time" power="-2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="energy"
+  name="Energy"
+  title="energy">
+  <dimension name="length" power="2"/>
+  <dimension name="mass" power="1"/>
+  <dimension name="time" power="-2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="power"
+  name="Power"
+  title="Power">
+  <dimension name="length" power="2"/>
+  <dimension name="mass" power="1"/>
+  <dimension name="time" power="-3"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="radiant_flux"
+  name="Radiant flux"
+  title="Radiant flux">
+  <dimension name="length" power="2"/>
+  <dimension name="mass" power="1"/>
+  <dimension name="time" power="-3"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="pressure"
+  name="Pressure"
+  title="Pressure">
+  <dimension name="length" power="-1"/>
+  <dimension name="mass" power="1"/>
+  <dimension name="time" power="-2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="luminous_flux"
+  name="Luminous flux"
+  title="Luminous flux">
+  <dimension name="cd" power="1"/>
+  <dimension name="sr" power="1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="illuminance"
+  name="Illuminance"
+  title="Illuminance">
+  <dimension name="length" power="-2"/>
+  <dimension name="cd" power="1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="flux"
+  name="Flux"
+  title="Flux">
+  <dimension name="time" power="1"/>
+  <dimension name="current" power="1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="electric_charge"
+  name="Electric charge"
+  title="Electric charge">
+  <dimension name="time" power="1"/>
+  <dimension name="current" power="1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="electric_potential_difference"
+  name="Electromotive force"
+  title="Electrical potential difference, Electromotive force">
+  <dimension name="length" power="2"/>
+  <dimension name="mass" power="1"/>
+  <dimension name="time" power="-3"/>
+  <dimension name="current" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="electric_resistance"
+  name="Resistance"
+  title="Resistance, reactance, impedance">
+  <dimension name="length" power="2"/>
+  <dimension name="mass" power="1"/>
+  <dimension name="time" power="-3"/>
+  <dimension name="current" power="-2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<!--
+
+<unitType id="impedance"
+  name="Impedance"
+  title="Impedance">
+  <dimension name="length" power="2"/>
+  <dimension name="mass" power="1"/>
+  <dimension name="time" power="-3"/>
+  <dimension name="current" power="-2"/>
+  <definition>
+  </definition>
+  </unitType>
+-->
+
+<unitType id="electric_capacitance"
+  name="Electric capacitance"
+  title="Electric capacitance">
+  <dimension name="length" power="-2"/>
+  <dimension name="mass" power="-1"/>
+  <dimension name="time" power="4"/>
+  <dimension name="current" power="2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="magnetic_flux"
+  name="Magnetic flux"
+  title="Magnetic flux">
+  <dimension name="length" power="2"/>
+  <dimension name="mass" power="1"/>
+  <dimension name="time" power="-2"/>
+  <dimension name="current" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="magnetic_flux_density"
+  name="Magnetic flux density"
+  title="Magnetic flux density, magnetic inductivity">
+  <dimension name="mass" power="1"/>
+  <dimension name="time" power="-2"/>
+  <dimension name="current" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="magnetic_inductance"
+  name="Inductance"
+  title="Inductance">
+  <dimension name="length" power="2"/>
+  <dimension name="mass" power="1"/>
+  <dimension name="time" power="-2"/>
+  <dimension name="current" power="-2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="electric_conductance"
+  name="Electric conductance"
+  title="Electric conductance">
+  <dimension name="length" power="-2"/>
+  <dimension name="mass" power="-1"/>
+  <dimension name="time" power="3"/>
+  <dimension name="current" power="2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="radioactivity"
+  name="Radioactivity"
+  title="Radioactivity">Radioactivity (decay per unit time)">
+  <dimension name="time" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="radioactive_absorbed_dose"
+  name="absorbed dose"
+  title="absorbed dose (of ionising radiation)">
+  <dimension name="length" power="2"/>
+  <dimension name="time" power="-2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="radioactive_equivalent_dose"
+  name="equivalent dose"
+  title="equivalent dose (of ionising radiation)">
+  <dimension name="length" power="2"/>
+  <dimension name="time" power="-2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="catalytic_activity"
+  name="Catalytic activity"
+  title="Catalytic activity">
+  <dimension name="time" power="-1"/>
+  <dimension name="amount" power="1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="molarity"
+  name="Concentration"
+  title="Concentration (moles of substance per volume of solution)">
+  <dimension name="length" power="-3"/>
+  <dimension name="amount" power="1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="molality"
+  name="Concentration"
+  title="Concentration (moles of substance per mass of solution)">
+  <dimension name="mass" power="-1"/>
+  <dimension name="amount" power="1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<!-- derived units, whose SI units have no special names -->
+
+<unitType id="area"
+  name="Area"
+  title="Area">
+  <dimension name="length" power="2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="volume"
+  title="Volume"
+  name="Volume">
+  <dimension name="length" power="3"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="velocity"
+  title="Velocity"
+  name="Velocity">
+  <dimension name="length" power="1"/>
+  <dimension name="time" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="acceleration"
+  title="Acceleration"
+  name="Acceleration">
+  <dimension name="length" power="1"/>
+  <dimension name="time" power="-2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="angular_velocity"
+  title="Angular velocity"
+  name="Angular velocity">
+  <dimension name="time" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="momentum"
+  name="Momentum"
+  title="Momentum">
+  <dimension name="mass" power="1"/>
+  <dimension name="length" power="1"/>
+  <dimension name="time" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+
+<unitType id="angular_momentum"
+  name="Angular_momentum"
+  title="Angular momentum">
+  <dimension name="mass" power="1"/>
+  <dimension name="length" power="2"/>
+  <dimension name="time" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="torque"
+  name="Torque"
+  title="Torque, moment of force">
+  <dimension name="mass" power="1"/>
+  <dimension name="length" power="2"/>
+  <dimension name="time" power="-2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="wavenumber"
+  name="Wavenumber"
+  title="Wavenumber">
+  <dimension name="length" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="mass_density"
+  title="Density"
+  name="Density">
+  <dimension name="mass" power="1"/>
+  <dimension name="length" power="-3"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="specific_volume"
+  name="specific volume"
+  title="specific volume">
+  <dimension name="mass" power="-1"/>
+  <dimension name="length" power="3"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="amount_concentration"
+  name="amount concentration"
+  title="amount (-of-substance) concentration">
+  <dimension name="length" power="-3"/>
+  <dimension name="amount" power="1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="molar_volume"
+  name="molar volume"
+  title="molar volume">
+  <dimension name="length" power="3"/>
+  <dimension name="amount" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="heat_capacity"
+  name="Entropy"
+  title="Entropy, Heat Capacity">
+  <dimension name="mass" power="1"/>
+  <dimension name="length" power="2"/>
+  <dimension name="time" power="-2"/>
+  <dimension name="temp" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="molar_heat_capacity"
+  name="molar heat capacity"
+  title="molar heat capacity">
+  <dimension name="mass" power="1"/>
+  <dimension name="length" power="2"/>
+  <dimension name="time" power="-2"/>
+  <dimension name="temp" power="-1"/>
+  <dimension name="amount" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="molar_entropy"
+  name="molar entropy"
+  title="molar entropy">
+  <dimension name="mass" power="1"/>
+  <dimension name="length" power="2"/>
+  <dimension name="time" power="-2"/>
+  <dimension name="temp" power="-1"/>
+  <dimension name="amount" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="specific_heat_capacity"
+  name="Specific_heat_capacity"
+  title="Specific heat capacity">
+  <dimension name="length" power="2"/>
+  <dimension name="time" power="-2"/>
+  <dimension name="temp" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="specific_entropy"
+  name="Specific entropy"
+  title="Specific entropy">
+  <dimension name="length" power="2"/>
+  <dimension name="time" power="-2"/>
+  <dimension name="temp" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="molar_energy"
+  title="molar energy"
+  name="molar energy">
+  <dimension name="mass" power="1"/>
+  <dimension name="length" power="2"/>
+  <dimension name="time" power="-2"/>
+  <dimension name="amount" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="specific_energy"
+  name="specific energy"
+  title="specific energy">
+  <dimension name="length" power="2"/>
+  <dimension name="time" power="-2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="energy_density"
+  name="energy density"
+  title="energy density">
+  <dimension name="mass" power="1"/>
+  <dimension name="length" power="-1"/>
+  <dimension name="time" power="-2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="surface_tension"
+  name="Surface tension"
+  title="Surface tension">
+  <dimension name="mass" power="1"/>
+  <dimension name="time" power="-2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="heat_flux_density"
+  name="heat flux density"
+  title="heat flux density">
+  <dimension name="mass" power="1"/>
+  <dimension name="time" power="-3"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="irradiance"
+  name="irradiance"
+  title="irradiance">
+  <dimension name="mass" power="1"/>
+  <dimension name="time" power="-3"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="thermal_conductivity"
+  name="Thermal_conductivity"
+  title="Thermal conductivity">
+  <dimension name="mass" power="1"/>
+  <dimension name="length" power="1"/>
+  <dimension name="time" power="-3"/>
+  <dimension name="temp" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+
+<unitType id="kinematic_viscosity"
+  name="Diffusion coefficient"
+  title="Diffusion coefficient, kinematic viscosity">
+  <dimension name="length" power="2"/>
+  <dimension name="time" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="dynamic_viscosity"
+  name="Viscosity"
+  title="Dynamic Viscosity">
+  <dimension name="mass" power="1"/>
+  <dimension name="length" power="-1"/>
+  <dimension name="time" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="electric_charge_density"
+  name="electric charge density"
+  title="electric charge density">
+  <dimension name="length" power="-3"/>
+  <dimension name="time" power="1"/>
+  <dimension name="current" power="1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="electric_current_density"
+  name="electric current density"
+  title="electric current density">
+  <dimension name="current" power="1"/>
+  <dimension name="length" power="-2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="electrical_conductivity"
+  name="Electrical_conductivity"
+  title="Electrical conductivity">
+  <dimension name="mass" power="-1"/>
+  <dimension name="length" power="-3"/>
+  <dimension name="time" power="3"/>
+  <dimension name="current" power="2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="molar_conductivity"
+  name="molar conductivity"
+  title="molar conductivity">
+  <dimension name="mass" power="-1"/>
+  <dimension name="time" power="3"/>
+  <dimension name="amount" power="-1"/>
+  <dimension name="current" power="2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="permittivity"
+  name="Permittivity"
+  title="Permittivity">
+  <dimension name="mass" power="-1"/>
+  <dimension name="length" power="-3"/>
+  <dimension name="time" power="4"/>
+  <dimension name="current" power="2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="permeability"
+  name="Permeability"
+  title="Permeability (electromagnetism)">
+  <dimension name="mass" power="1"/>
+  <dimension name="length" power="1"/>
+  <dimension name="time" power="-2"/>
+  <dimension name="current" power="-2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="electric_field_strength"
+  name="Electric_field strength"
+  title="Electric field strength">
+  <dimension name="mass" power="1"/>
+  <dimension name="length" power="1"/>
+  <dimension name="time" power="-3"/>
+  <dimension name="current" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="magnetic_field_strength"
+  name="Magnetic_field"
+  title="Magnetic field strength">
+  <dimension name="current" power="1"/>
+  <dimension name="length" power="-1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="luminance"
+  name="Luminance"
+  title="Luminance">
+  <dimension name="luminous" power="1"/>
+  <dimension name="length" power="-2"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="exposure"
+  name="exposure"
+  title="exposure (X and gamma rays)">
+  <dimension name="mass" power="-1"/>
+  <dimension name="time" power="1"/>
+  <dimension name="current" power="1"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<unitType id="absorbed_dose_rate"
+  name="absorbed dose rate"
+  title="absorbed dose rate">
+  <dimension name="length" power="2"/>
+  <dimension name="time" power="-3"/>
+  <definition>
+  </definition>
+  </unitType>
+
+<!-- locally created unitTypes -->
+<unitType id="energy_length_gradient"
+  name="energy_length_gradient"
+  title="energy_length_gradient">
+  <dimension name="mass" power="1"/>
+  <dimension name="length" power="1"/>
+  <dimension name="time" power="-2"/>
+  <definition>
+  Gradient of energy with respct to length.
+  </definition>
+  </unitType>
+
+
+  </unitTypeList>

@@ -1,0 +1,335 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="dict2html.xsl" type="text/xsl"?>
+
+<dictionary 
+  namespace="http://www.materialsgrid.org/castep/namespace"
+  dictionaryPrefix="castep"
+  title="CASTEP dictionary"
+  xmlns="http://www.xml-cml.org/schema"
+  xmlns:castep="http://www.materialsgrid.org/castep/namespace"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema24/schema.xsd">
+
+   <metadataList>
+      <metadata name="dc:creator" content="Peter Murray-Rust"/>
+      <metadata name="dc:date" content="2006-01-25"/>
+      <metadata name="dc:description" content="tested against example file"/>
+      <metadata name="dc:description" content="metadata names added to dictionary"/>
+    </metadataList>
+<!-- Params -->
+
+  <entry id="release" term="CASTEP Release">
+    <annotation>
+      <appinfo/>
+    </annotation>
+    <definition>Distribution of CASTEP. Currently either Academic Release or Materials Studio.</definition>
+
+    <description>
+      <div class="dictDescription" xmlns="http://www.w3.org/1999/xhtml">
+      </div>
+    </description>
+   <metadataList>
+      <metadata name="dc:creator" content="Dan Wilson"/>
+      <metadata name="dc:date" content="14-NOV-2005"/>
+      <metadata name="dc:source" content=""/>
+    </metadataList>
+
+  </entry>
+
+  <entry id="version" term="CASTEP Version">
+    <annotation>
+      <appinfo/>
+    </annotation>
+    <definition>CASTEP version number. It may be worth noting that with the F90 rewrite, the version numbers were reset! Now should now move in step with Materials Studio releases.</definition>
+    <description>
+   </description>
+
+   <metadataList>
+      <metadata name="dc:creator" content="Dan Wilson"/>
+      <metadata name="dc:date" content="14-NOV-2005"/>
+      <metadata name="dc:source" content=""/>
+    </metadataList>
+  </entry>
+
+  <entry id="task" term="Task">
+    <annotation>
+
+      <appinfo/>
+    </annotation>
+    <definition>Task of current calculation. eg. SINGLEPOINT, GEOMETRYOPTIMIZATION, MOLECULARDYNAMICS, OPTICS, PHONON, EFIELD, TRANSITIONSTATESEARCH, MAGRES</definition>
+    <description>
+      <div class="dictDescription" xmlns="http://www.w3.org/1999/xhtml">
+      </div>
+   </description>
+   <metadataList>
+
+      <metadata name="dc:creator" content="Dan Wilson"/>
+      <metadata name="dc:date" content="14-NOV-2005"/>
+      <metadata name="dc:source" content=""/>
+    </metadataList>
+  </entry>
+
+    <entry id="xcFunctional" term="Exchange-Correlation Functional">
+    <annotation>
+      <appinfo/>
+
+    </annotation>
+    <definition>The approximation used for the exchange-correlation potential. eg. LDA, PW91, PBE, RPBE</definition>
+    <description>
+      <div class="dictDescription" xmlns="http://www.w3.org/1999/xhtml">
+      </div>
+   </description>
+   <metadataList>
+      <metadata name="dc:creator" content="Dan Wilson"/>
+
+      <metadata name="dc:date" content="14-NOV-2005"/>
+      <metadata name="dc:source" content=""/>
+    </metadataList>
+  </entry>
+
+  <entry id="basisPrecision" term="Basis Set Precision">
+    <annotation>
+      <appinfo/>
+    </annotation>
+
+    <definition>The quality of the basis set, as determined by values in the pseudopotential file(s). eg. COURSE, MEDIUM, FINE. Either this term, or 'cutoff' (see below) must exist, but not both.  </definition>
+    <description>
+      <div class="dictDescription" xmlns="http://www.w3.org/1999/xhtml">
+      </div>
+   </description>
+   <metadataList>
+      <metadata name="dc:creator" content="Dan Wilson"/>
+      <metadata name="dc:date" content="14-NOV-2005"/>
+
+      <metadata name="dc:source" content=""/>
+    </metadataList>
+  </entry>
+
+  <entry id="cutoff" term="Basis Set Cutoff Energy">
+    <annotation>
+      <appinfo/>
+    </annotation>
+    <definition>The quality of the plane wave basis set, quoted as the maximum allowed kinetic energy of a component wave</definition>
+
+    <description>
+      <div class="dictDescription" xmlns="http://www.w3.org/1999/xhtml">
+      </div>
+   </description>
+   <metadataList>
+      <metadata name="dc:creator" content="Dan Wilson"/>
+      <metadata name="dc:date" content="14-NOV-2005"/>
+      <metadata name="dc:source" content=""/>
+    </metadataList>
+
+  </entry>
+
+  <entry id="nElectrons" term="Number of Electrons">
+    <annotation>
+      <appinfo/>
+    </annotation>
+    <definition>The number of electrons in the system</definition>
+    <description>
+      <div class="dictDescription" xmlns="http://www.w3.org/1999/xhtml">
+
+      </div>
+   </description>
+   <metadataList>
+      <metadata name="dc:creator" content="Dan Wilson"/>
+      <metadata name="dc:date" content="14-NOV-2005"/>
+      <metadata name="dc:source" content=""/>
+    </metadataList>
+  </entry>
+
+    <entry id="netCharge" term="Net Charge">
+    <annotation>
+      <appinfo/>
+    </annotation>
+    <definition>Net charge of the system</definition>
+    <description>
+      <div class="dictDescription" xmlns="http://www.w3.org/1999/xhtml">
+      </div>
+
+   </description>
+   <metadataList>
+      <metadata name="dc:creator" content="Dan Wilson"/>
+      <metadata name="dc:date" content="14-NOV-2005"/>
+      <metadata name="dc:source" content=""/>
+    </metadataList>
+  </entry>
+
+  <entry id="netSpin" term="Net Spin">
+
+    <annotation>
+      <appinfo/>
+    </annotation>
+    <definition>Net Spin of System</definition>
+    <description>
+      <div class="dictDescription" xmlns="http://www.w3.org/1999/xhtml">
+      </div>
+   </description>
+
+   <metadataList>
+      <metadata name="dc:creator" content="Dan Wilson"/>
+      <metadata name="dc:date" content="14-NOV-2005"/>
+      <metadata name="dc:source" content=""/>
+    </metadataList>
+  </entry>
+
+  <entry id="fixSpin" term="Fixed Spin">
+    <annotation>
+
+      <appinfo/>
+    </annotation>
+    <definition>Is the spin fixed or variable? Logical value</definition>
+    <description>
+      <div class="dictDescription" xmlns="http://www.w3.org/1999/xhtml">
+      </div>
+   </description>
+   <metadataList>
+
+      <metadata name="dc:creator" content="Dan Wilson"/>
+      <metadata name="dc:date" content="14-NOV-2005"/>
+      <metadata name="dc:source" content=""/>
+    </metadataList>
+  </entry>
+
+  <entry id="fixOcc" term="Fixed Occupancy">
+    <annotation>
+      <appinfo/>
+
+    </annotation>
+    <definition>Is the occupancy fixed? Do we know the material is an insulator? Logical value.</definition>
+    <description>
+      <div class="dictDescription" xmlns="http://www.w3.org/1999/xhtml">
+      </div>
+    </description>
+   <metadataList>
+      <metadata name="dc:creator" content="Dan Wilson"/>
+
+      <metadata name="dc:date" content="14-NOV-2005"/>
+      <metadata name="dc:source" content=""/>
+    </metadataList>
+  </entry>
+
+  <entry id="metalsMethod" term="Metals Method">
+    <annotation>
+      <appinfo/>
+    </annotation>
+
+    <definition>This determines the method used in calculations on metals. eg. None, DM (Density Mixing), EDFT (Ensemble DFT). Only available if fixOcc is false.</definition>
+    <description>
+      <div class="dictDescription" xmlns="http://www.w3.org/1999/xhtml">
+      </div>
+    </description>
+   <metadataList>
+      <metadata name="dc:creator" content="Dan Wilson"/>
+      <metadata name="dc:date" content="14-NOV-2005"/>
+
+      <metadata name="dc:source" content=""/>
+    </metadataList>
+  </entry>
+
+  <entry id="geomMethod" term="Geometry Optimization Method">
+    <annotation>
+      <appinfo/>
+    </annotation>
+    <definition>The method to use for geometry optimization. eg. BFGS, DampedMD, Delocalized</definition>
+
+    <description>
+      <div class="dictDescription" xmlns="http://www.w3.org/1999/xhtml">
+      </div>
+   </description>
+   <metadataList>
+      <metadata name="dc:creator" content="Dan Wilson"/>
+      <metadata name="dc:date" content="14-NOV-2005"/>
+      <metadata name="dc:source" content=""/>
+    </metadataList>
+
+  </entry>
+
+<!-- Cell details -->
+  <entry id="pspFile" term="Pseudopotential Files">
+    <annotation>
+      <appinfo/>
+    </annotation>
+    <definition>Files used for pseudopotentials, assumed from standard Accelrys library. </definition>
+    <description>
+
+      <div class="dictDescription" xmlns="http://www.w3.org/1999/xhtml">
+      </div>
+   </description>
+   <metadataList>
+      <metadata name="dc:creator" content="Dan Wilson"/>
+      <metadata name="dc:date" content="14-NOV-2005"/>
+      <metadata name="dc:source" content=""/>
+    </metadataList>
+  </entry>
+
+  <entry id="ucell" term="Unit Cell">
+    <annotation>
+      <appinfo/>
+    </annotation>
+    <definition>The system unit cell</definition>
+    <description>
+      <div class="dictDescription" xmlns="http://www.w3.org/1999/xhtml">
+      </div>
+
+    </description>
+   <metadataList>
+      <metadata name="dc:creator" content="Dan Wilson"/>
+      <metadata name="dc:date" content="14-NOV-2005"/>
+      <metadata name="dc:source" content=""/>
+    </metadataList>
+  </entry>
+
+<!-- Output -->
+
+<entry id="Etot" term="Total Energy">
+    <annotation>
+      <appinfo/>
+    </annotation>
+    <definition>Total energy of the system</definition>
+    <description>
+      <div class="dictDescription" xmlns="http://www.w3.org/1999/xhtml">
+      </div>
+   </description>
+
+   <metadataList>
+      <metadata name="dc:creator" content="Dan Wilson"/>
+      <metadata name="dc:date" content="14-NOV-2005"/>
+      <metadata name="dc:source" content=""/>
+    </metadataList>
+  </entry>
+
+  <entry id="totalTime" term="Total Time">
+    <annotation>
+
+      <appinfo/>
+    </annotation>
+    <definition>Total time taken for calcultion.</definition>
+    <description>
+      <div class="dictDescription" xmlns="http://www.w3.org/1999/xhtml">
+      </div>
+   </description>
+   <metadataList>
+
+      <metadata name="dc:creator" content="Dan Wilson"/>
+      <metadata name="dc:date" content="14-NOV-2005"/>
+      <metadata name="dc:source" content=""/>
+    </metadataList>
+  </entry>
+
+<!-- need editing -->
+
+  <entry id="stress"/>
+
+<!-- metadata -->
+<entry id="filename"/>
+<entry id="user"/>
+<entry id="date"/>
+<entry id="host"/>
+<entry id="title"/>
+<entry id="geomConv"/>
+
+</dictionary>

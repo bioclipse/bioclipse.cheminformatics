@@ -1,0 +1,84 @@
+<dictionary 
+  namespace="http://www.xml-cml.org/dict/cryst"
+  title="Cryst dictionary"
+  xmlns="http://www.xml-cml.org/schema/stmml"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema24/schema.xsd"
+>
+
+<!-- crystallography -->
+
+  <entry id="a" term="a cell parameter">
+    <annotation>
+      <appinfo>
+        <scalar/>
+      </appinfo>
+    </annotation>
+    <definition>the a cell parameter
+    </definition>
+    <description>
+    </description>
+  </entry>
+  
+  <entry id="b" term="b cell parameter">
+    <annotation>
+      <appinfo>
+        <scalar/>
+      </appinfo>
+    </annotation>
+    <definition>the b cell parameter
+    </definition>
+    <description>
+    </description>
+  </entry>
+  
+  <entry id="c" term="c cell parameter">
+    <annotation>
+      <appinfo>
+        <scalar/>
+      </appinfo>
+    </annotation>
+    <definition>the c cell parameter
+    </definition>
+    <description>
+    </description>
+  </entry>
+  
+  <entry id="alpha" term="alpha cell angle">
+    <annotation>
+      <appinfo>
+        <scalar/>
+      </appinfo>
+    </annotation>
+    <definition>the alpha cell angle
+    </definition>
+    <description>
+    </description>
+  </entry>
+  
+  <entry id="alpha" term="beta cell angle">
+    <annotation>
+      <appinfo>
+        <scalar/>
+      </appinfo>
+    </annotation>
+    <definition>the beta cell angle
+    </definition>
+    <description>
+    </description>
+  </entry>
+  
+  <entry id="gamma" term="gamma cell angle">
+    <annotation>
+      <appinfo>
+        <scalar/>
+      </appinfo>
+    </annotation>
+    <definition>the gamma cell angle
+    </definition>
+    <description>
+    </description>
+  </entry>
+  
+</dictionary>
+

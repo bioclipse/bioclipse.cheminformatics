@@ -1,0 +1,65 @@
+<unitList
+  id="simpleUnits"
+  namespace="http://www.xml-cml.org/units/newUnits"
+  dictionaryPrefix="newUnits"
+  title="Simple units dictionary"
+  xmlns:units="http://www.xml-cml.org/units/units"
+  siNamespace="http://www.xml-cml.org/units/siUnits"
+  xmlns:si="http://www.xml-cml.org/units/siUnits"
+  xmlns:unitType="http://www.xml-cml.org/units/unitTypes"
+  xmlns="http://www.xml-cml.org/schema"
+  xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+  <!-- composed units -->
+  
+  <unit
+      id="kcal.mol-1.ang-1"
+      title="kcal per mole per Angstrom"
+      parentSI="si:xx"
+      multiplierToSI="-99"
+      symbol="kcal mol-1 ang-1"
+      unitType="unitType:xx">
+    <description>
+    </description>
+  </unit>
+
+  <unit
+      id="evpa"
+      parentSI="si:unknown"
+      title="from siesta"
+      unitType="unitType:unknown">
+    <description>
+    </description>
+  </unit>
+
+  <unit
+      id="kcal.ang-1"
+      parentSI="si:unknown"
+      title="from mopac"
+      symbol="kcal A-1"
+      unitType="unitType:unknown">
+      >
+    <description>
+    </description>
+  </unit>
+  
+  <unit
+      id="kcal.rad-1"
+      parentSI="si:unknown"
+      symbol="kcal rad-1"
+      title="from mopac">
+    <description>
+    </description>
+  </unit>
+  
+  <unit
+      id="cm-1"
+      parentSI="si:m-1"
+      symbol="cm-1"
+      title="wavenumber">
+    <description>
+    </description>
+  </unit>
+  
+</unitList>

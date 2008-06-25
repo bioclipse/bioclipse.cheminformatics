@@ -1,0 +1,82 @@
+
+<dictionary
+  namespace="http://www.xml-cml.org/dict/pub"
+  title="publication terms"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema24/schema.xsd"
+>
+
+	<entry term="volume" id="volume">
+		<annotation>
+			<appinfo>
+				<scalar />
+			</appinfo>
+		</annotation>
+		<definition>The volume number or identifier</definition>
+		<description>xxx</description>
+	</entry>
+
+	<entry term="starting page" id="startingPage">
+		<annotation>
+			<appinfo>
+				<scalar/>
+			</appinfo>
+		</annotation>
+		<definition>The first page of the article</definition>
+		<description>This may be the only page number if end page numbers are omitted or the article is one page or less.</description>
+	</entry>
+
+	<entry term="last page" id="endingPage">
+		<annotation>
+			<appinfo>
+				<scalar/>
+			</appinfo>
+		</annotation>
+		<definition>The last page of the article</definition>
+		<description>This may not be pressent if there is only one (or less) pages to the article</description>
+	</entry>
+	
+	<entry id="medlineId" term="Medline ID">
+		<annotation>
+			<documentation>
+				<metadata name="dc:contributor" content="Gemma Holliday"/>
+				<metadata name="dc:date" content="2003-11-27"/>
+			</documentation>
+		</annotation>
+		<definition>
+       The Medline ID 
+    </definition>
+		<description>
+		   This is the number by which the article is known in the Medline Database. It is only present for papers which are of a biological nature.
+		</description>
+	</entry>
+	
+	<entry id="author" term="Author">
+		<annotation>
+			<documentation>
+				<metadata name="dc:contributor" content="Gemma Holliday"/>
+				<metadata name="dc:date" content="2003-11-26"/>
+			</documentation>
+		</annotation>
+		<definition>
+       The author(s) of the reference cited
+    </definition>
+	</entry>
+	
+	<entry id="journal" term="Journal">
+		<annotation>
+			<documentation>
+				<metadata name="dc:contributor" content="Gemma Holliday"/>
+				<metadata name="dc:date" content="2003-11-26"/>
+			</documentation>
+		</annotation>
+		<definition>
+       The journal title
+    </definition>
+		<description>
+		   This is the title of the journal that the reference was found in.
+		</description>
+	</entry>
+	
+</dictionary>
+

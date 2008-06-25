@@ -1,0 +1,172 @@
+ <unitList
+      id="castepUnits"
+      namespace="http://www.xml-cml.org/units/castepUnits"
+      title="CASTEP units dictionary"
+      siNamespace="http://www.xml-cml.org/units/siUnits"
+      xmlns="http://www.xml-cml.org/schema"
+      xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema.xsd"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:h="http://www.w3.org/1999/xhtml"
+      xmlns:dc="http://www.xml-cml.org/dict/dcDict"
+      xmlns:siUnits="http://www.xml-cml.org/units/siUnits"
+      xmlns:unitType="http://www.xml-cml.org/units/unitTypes"
+    >
+    
+<!-- length -->
+    <unit
+    title="Bohr"
+    id="bohr"
+    symbol="Bohr"
+    parentSI="siUnits:m"
+    multiplierToSI="5.291772108E-11" 
+    unitType="unitType:length">
+    <metadata name="dc:source" content="Wikipedia" />
+    <metadata name="dc:creator" content="Andrew Walkingshaw" />
+	<definition>
+	The smallest possible orbital radius for an electron in hydrogen in the 
+	Bohr model.
+	</definition>	
+    <description>
+    Note that the definition of Bohr radius does not include the effect of 
+    reduced mass, and so it is not precisely equal to the orbital radius of 
+    the electron in a hydrogen atom in the more physical model where reduced 
+    mass is included. This is done for convenience: the Bohr radius as defined 
+    above appears in equations relating to atoms other than hydrogen, where 
+    the reduced mass correction is different. If the definition of Bohr radius 
+    included the reduced mass of hydrogen, it would be necessary to include a 
+    more complex adjustment in equations relating to other atoms.
+    </description>
+    </unit>
+
+    <unit
+    title="Angstrom"
+    id="angstrom"
+    symbol="[Angstrom]"
+    parentSI="siUnits:m"
+    multiplierToSI="1E-10" 
+    unitType="unitType:length">
+    <metadata name="dc:source" content="Wikipedia" />
+    <metadata name="dc:creator" content="Andrew Walkingshaw" />
+	<definition>
+	1E-10 metres.
+	</definition>	
+    <description>
+    The angstrom is named after the Swedish physicist Anders Jonas Angstrom 
+    (1814–1874), one of the founders of spectroscopy, after his spectrum chart 
+    of solar radiation in the electromagnetic spectrum on the order 
+    of multiples of one ten-millionth of a millimetre, or 1E-10 metres. 
+    </description>
+    </unit>
+
+<!-- mass -->
+	
+    <unit
+    title="Electron mass"
+    id="electron_mass"
+    symbol="m_e"
+    parentSI="siUnits:kg"
+    multiplierToSI="9.1093826E-31"
+    unitType="unitType:mass">
+    <metadata name="dc:source" content="Wikipedia" />
+    <metadata name="dc:creator" content="Andrew Walkingshaw" />
+	<definition>
+	Mass of a single electron in vacuum.
+	</definition>	
+    <description>
+    </description>
+    </unit>
+
+    <unit
+    title="Unified Atomic Mass Unit"
+    id="atomic_mass_unit"
+    symbol="amu"
+    parentSI="siUnits:kg"
+    multiplierToSI="1.66053886E-27"
+    unitType="unitType:mass">
+    <metadata name="dc:source" content="Wikipedia" />
+    <metadata name="dc:creator" content="Andrew Walkingshaw" />
+	<definition>
+	1/12 of the mass of one atom of carbon-12.
+	</definition>	
+    <description>
+    The unit is convenient because one hydrogen atom has a mass of 
+    approximately 1 amu, and more generally an atom or molecule that contains 
+    n protons and neutrons will have a mass approximately equal to n amu. 
+    (The reason is that a carbon-12 atom contains 6 protons, 6 neutrons and 
+    6 electrons, with the protons and neutrons having about the same mass 
+    and the electron mass being negligible in comparison.) This is only a 
+    rough approximation however, since it does not account for the mass 
+    contained in the binding energy of an atom's nucleus; this binding energy 
+    mass is not a fixed fraction of an atom's total mass.
+    </description>
+    </unit>
+	
+<!-- time -->
+	<unit
+    title="Atomic Unit of Time"
+    id="atomic_unit_time"
+    symbol="aut"
+    parentSI="siUnits:s"
+    multiplierToSI="2.418884326505E-17" 
+    unitType="unitType:time">
+    <metadata name="dc:source" content="NIST" />
+	<definition>
+	</definition>
+    <description>
+	</description>
+	</unit>
+	
+<!-- charge -->
+    <unit
+    title="Elementary charge"
+    id="elementary_charge"
+    symbol="e"
+    parentSI="siUnits:coulomb" 
+    multiplierToSI="1.60217653E-19"
+    unitType="unitType:electric_charge">
+    <metadata name="dc:source" content="Wikipedia" />
+    <metadata name="dc:creator" content="Andrew Walkingshaw" />
+	<definition>
+	Magnitude of the charge of a single electron (or positron) in vacuum.
+	</definition>	
+    <description>
+    The electron is one of a class of subatomic particles called leptons 
+    which are believed to be fundamental particles (that is, they cannot 
+    be broken down into smaller constituent parts). The word "particle" 
+    is somewhat misleading however, because quantum mechanics shows that 
+    electrons also behave like a wave, e.g. in the double-slit experiment; 
+    this is called wave-particle duality.
+    </description>
+    </unit>
+
+<!-- energy -->
+    <unit
+    title="Hartree"
+    id="hartree"
+    symbol="Ha"
+    parentSI="siUnits:joule"
+    multiplierToSI="0.35974417E-18"
+    unitType="unitType:energy">
+	<metadata name="dc:source" content="Wikipedia" />
+	<metadata name="dc:creator" content="Andrew Walkingshaw" />
+    <definition>
+    Twice the absolute value of the binding energy of the electron in the
+    ground state of the hydrogen atom.
+    </definition>
+    <description>
+    </description>
+    </unit>
+    
+<!-- force -->
+
+<!-- velocity -->
+
+<!-- pressure / stress -->
+
+<!-- reciprocal length -->
+
+<!-- force/length -->
+
+<!-- volume -->
+
+</unitList>

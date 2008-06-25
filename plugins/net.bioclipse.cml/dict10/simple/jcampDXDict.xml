@@ -1,0 +1,716 @@
+<dictionary namespace="http://www.xml-cml.org/dict/jcampDXDict"
+	dictionaryPrefix="jcamp-dx" title="JCAMP-DX dictionary"
+	xmlns="http://www.xml-cml.org/schema"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema24/schema.xsd">
+
+	<annotation>
+		<appinfo>
+			<html:p xmlns:html="http://www.w3.org/1999/xhtml">
+				JCAMP-DX identifiers do not match with XML identifiers;
+				the folowing transformation rules apply when mapping
+				JCAMP-DX identifiers onto identifiers in this
+				dictionary:
+				<html:ol>
+					<html:li>Any space is removed</html:li>
+					<html:li>
+						A '.' character as first characted is replaced
+						by the string "dot"
+					</html:li>
+				</html:ol>
+			</html:p>
+		</appinfo>
+	</annotation>
+
+	<entry id="DATATYPE" term="DATA TYPE">
+		<definition>The data type of the spectrum</definition>
+		<description>
+			Can hold the following values: RAMAN SPECTRUM. INFRARED PEAK
+			TABLE, INFRARED INTERFEROGRAM, INFRARED TRANSFORMED
+			SPECTRUM, NMR FID; NMR SPECTRUM; NMR PEAK TABLE; NMR PEAK
+			ASSIGNMENTS, MASS SPECTRUM; CONTINUOUS MASS SPECTRUM
+		</description>
+	</entry>
+	<entry id="XUNITS" term="XUNITS">
+		<definition>Abscissa units</definition>
+		<description>
+			Specifies the abscissa units for XYDATA, the following
+			entries are allowed: SECONDS, HZ, M/Z
+		</description>
+	</entry>
+	<entry id="YUNITS" term="YUNITS">
+		<definition>Ordinate units</definition>
+		<description>
+			Specifies the ordinate units for XYDATA, the following
+			entries are allowed: TRANSMITTANCE, REFLECTANCE, ABSORBANCE,
+			KUBELKA-MUNK, ARBITRARY UNITS, RELATIVE ABUNBDANCE
+		</description>
+	</entry>
+	<entry id="FIRSTX" term="FIRSTX">
+		<definition>First actual abscissa value</definition>
+	</entry>
+	<entry id="LASTX" term="LASTX">
+		<definition>Last actual abscissa value</definition>
+	</entry>
+	<entry id="MAXX" term="MAXX">
+		<definition>Largest x value</definition>
+	</entry>
+	<entry id="MINX" term="MINX">
+		<definition>Smallest x value</definition>
+	</entry>
+	<entry id="MAXY" term="MAXY">
+		<definition>Largest y value</definition>
+	</entry>
+	<entry id="MINY" term="MINY">
+		<definition>Smallest y value</definition>
+	</entry>
+	<entry id="DELTAX" term="DELTAX">
+		<definition>The nominal spacing points</definition>
+		<description>
+			This LDR gives the nominal spacing between points for
+			inspection by the user. Actual X-values are calculated from
+			the spacing by (LASTX-FIRSTX)/(NPOINTS-1))
+		</description>
+	</entry>
+	<entry id="XFACTOR" term="XFACTOR">
+		<definition>
+			Factor by which x-components of XYDATA are multiplied to
+			obtain actual values
+		</definition>
+	</entry>
+	<entry id="YFACTOR" term="YFACTOR">
+		<definition>
+			Factor by which y-components of XYDATA are multiplied to
+			obtain actual values
+		</definition>
+		<description>
+			YFactor is normally chosen to convert Y-values to integers
+			to save space required by decimal points, i.e., if YFACTOR,
+			transmittance of 0.9999 is tabulated as 9999
+		</description>
+	</entry>
+	<entry id="NPOINTS" term="NPOINTS">
+		<definition>
+			Number of components of XYDATA, XYPOINTS, PEAKTABLE or
+			RADATA
+		</definition>
+	</entry>
+	<entry id="FIRSTY" term="FIRSTY">
+		<definition>Actual Y-value corresponding to FIRSTX.</definition>
+		<description>
+			FIRSTY should equal YFACTOR times the frst Y-value in XYDATA
+		</description>
+	</entry>
+	<entry id="RESOLUTION" term="RESOLUTION">
+		<definition>
+			Nominal resolution in units specified by XUNITS.
+		</definition>
+	</entry>
+	<entry id="XYDATA" term="XYDATA">
+		<definition>The actual data is encoded in here</definition>
+		<description>
+			Contains the table of ordinates at equal X-intervals. Will
+			extend over many lines.
+		</description>
+	</entry>
+	<entry id="CLASS" term="CLASS">
+		<definition>
+			Specifies the Coblentz Class of the spectrum (1,2,3 or 4)
+			and th IUPAC Class of digital representation (A,B,C)
+		</definition>
+	</entry>
+	<entry id="ORIGIN" term="ORIGIN">
+		<definition>
+			Name of organization, adress, telephone number, name of
+			indivual contributor, etc., as appropriate.
+		</definition>
+	</entry>
+	<entry id="OWNER" term="OWNER">
+		<definition>Name of owner of a proprietary spectrum</definition>
+		<description>
+			The organization or person named under ORIGIN is responsible
+			for accuracy of this field. If data is copyrighted, this
+			line should read "COPYRIGHT (C) (year) by (name)".
+		</description>
+	</entry>
+	<entry id="DATE" term="DATE">
+		<definition>
+			Date when the spectrum was measured, in the form YY/MM/DD.
+		</definition>
+	</entry>
+	<entry id="TIME" term="TIME">
+		<definition>
+			Time when the spectrum was measured, in the form HH/MM/SS.
+		</definition>
+	</entry>
+	<entry id="LONGDATE" term="LONGDATE">
+		<definition>
+			the long date format is YYYY/MM/DD [HH/MM/SS] [+/-UUUU],
+			where UUUU is time zone difference to GMT
+		</definition>
+	</entry>
+	<entry id="SOURCE_REFERENCE" term="SOURCE REFERENCE">
+		<definition>
+			Adequate identification to locate the original spectrum,
+			ie., name of file containing the spectrum, or library name
+			and serial nuber of the spectrum.
+		</definition>
+	</entry>
+	<entry id="CROSSREFERENCE" term="CROSS REFERENCE">
+		<definition>Reference to additional spectra</definition>
+		<description>
+			Cross reference refer to additional spectra of the same
+			sample, i.e., different thickness, mulling agent,
+			polarization, temperature, time, etc. or serve to link a
+			peak table or interferogram with a spectrum
+		</description>
+	</entry>
+	<entry id="SAMPLEDESCRIPTION" term="SAMPLE DESCRIPTION">
+		<definition>Decription of the sample.</definition>
+		<description>
+			If the sample is not a pure compound, this field should
+			contain its description, i.e, compositon, origin,
+			appearance, result of interpretion, etc. If the sample is a
+			known compund, the following entries should specify
+			structure an properties, as appropriate.
+		</description>
+	</entry>
+	<entry id="CAS_NAME" term="CAS NAME">
+		<definition>The chemical abstracts compliant name.</definition>
+		<description>
+			Name according to Chemical Abstracts naming conventions as
+			described in the 1985 CAS Index Guide. Examples can be found
+			in Chemical Abstracts indices or the Merck Index.
+		</description>
+	</entry>
+	<entry id="NAMES" term="NAMES">
+		<definition>Common trade or other names.</definition>
+	</entry>
+	<entry id="MOLFORM" term="MOLFORM">
+		<definition>Molecular formular.</definition>
+		<description>
+			Element symbols are arranged with carbon firts, followed by
+			hydrogen, and the remaining element symbols in alphabetic
+			order.
+		</description>
+	</entry>
+	<entry id="CASREGISTRYNO" term="CAS REGISTRY NO">
+		<definition>CAS Registry Number.</definition>
+	</entry>
+	<entry id="WISWESSER" term="WISWESSER">
+		<definition>
+			The Wiswesser line notation is a precise and concise means
+			of expressing structural formulas as character strings.
+		</definition>
+	</entry>
+	<entry id="BEILSTEINLAWSONNO" term="BEILSTEIN LAWSON NO">
+		<definition>
+			The Beilstein Lawson Number is a structural formula
+			clustering code based on the Beilstein System..
+		</definition>
+		<description>
+			Is used for locating information in Beilstein databases,
+			including STN online database. The code contains only
+			structural information and can be generated locally.
+		</description>
+	</entry>
+	<entry id="BP" term="BP">
+		<definition>Boiling point in degrees C.</definition>
+	</entry>
+	<entry id="REFRACTIVEINDEX" term="REFRACTIVE INDEX">
+		<definition>
+			In the form: ND = 1542A20(index at 20°C for NaD line).
+		</definition>
+	</entry>
+	<entry id="DENSITY" term="DENSITY">
+		<definition>Density in g/cm^3.</definition>
+	</entry>
+	<entry id="MW" term="MW">
+		<definition>Molecular weight.</definition>
+	</entry>
+	<entry id="CONCENTRATIONS" term="CONCENTRATIONS">
+		<definition>
+			List of components and imurities and their concentrations.
+		</definition>
+	</entry>
+	<entry id="SPECTROMETERDATASYSTEM"
+		term="SPECTROMETER/DATA SYSTEM">
+		<definition>
+			Contains the manufacturers name, model of the spectrometer,
+			software system, and release number, as appropriate, in the
+			form used by the manufacturer.
+		</definition>
+	</entry>
+	<entry id="INSTRUMENTALPARAMETERS" term="INSTRUMENTAL PARAMETERS">
+		<definition>
+			List of pertinent instrumental settings.
+		</definition>
+	</entry>
+	<entry id="SAMPLINGPROCEDURE" term="SAMPLING PROCEDURE">
+		<definition>Sampling procedure.</definition>
+		<description>
+			First entry should be MODE of observation(transmission,
+			specular reflection, PAS, matrix isolation, photothermal
+			beam deflection, etc.), followed by appropriate additional
+			information, i.e., name and model of accessories, cell
+			thickness, and window material for fixed liquid cells, ATR
+			plate material...
+		</description>
+	</entry>
+	<entry id="STATE" term="STATE">
+		<definition>State of the compund.</definition>
+		<description>
+			Solid, liquid, gas, solution, KBr pellet, powder, nujol
+			mull, etc. in infrared spectroscopy
+		</description>
+	</entry>
+	<entry id="PATHLENGTH" term="PATH LENGTH">
+		<definition>Pathlength in cm.</definition>
+	</entry>
+	<entry id="PRESSURE" term="PRESSURE">
+		<definition>
+			Sample pressure in appropriate units if significantly
+			different from room temperature.
+		</definition>
+	</entry>
+	<entry id="TEMPERATURE" term="TEMPERATURE">
+		<definition>
+			Sample temperature in degrees C if significantly different
+			from room temperature.
+		</definition>
+	</entry>
+	<entry id="DATAPROCESSING" term="DATA PROCESSING">
+		<definition>
+			Description of bacground correction, smoothing,
+			substraction, deconvolution procedures, apodization
+			function, zero-fill, or other data processing.
+		</definition>
+	</entry>
+	<entry id="dotACCELERATINGVOLTAGE" term=".ACCELERATING VOLTAGE">
+
+		<definition>Accelerating voltage in V</definition>
+	</entry>
+	<entry id="dotACQUISITIONMODE" term=".ACQUISITION MODE">
+		<definition></definition>
+		<description>
+			Possible entries: SIMULTANEOUS, SINGLE, SEQUENTIAL
+		</description>
+	</entry>
+	<entry id="dotACQUISITIONRANGE" term=".ACQUISITION RANGE">
+		<definition>Acquisition range in AMU (first, last)</definition>
+	</entry>
+	<entry id="dotACQUISITIONTIME" term=".ACQUISITION TIME">
+		<definition></definition>
+	</entry>
+	<entry id="dotAVERAGES" term=".AVERAGES">
+		<definition></definition>
+	</entry>
+	<entry id="dotBASEPEAK" term=".BASEPEAK">
+		<definition>base peak position in XUNITS</definition>
+	</entry>
+	<entry id="dotBASEPEAKINTENSITY" term=".BASEPEAK INTENSITY">
+		<definition>
+			base peak intensity in COUNTS or VOLTS, units
+		</definition>
+	</entry>
+	<entry id="dotCARRIERGAS" term=".CARRIERGAS">
+		<definition>description of the carrier gas</definition>
+	</entry>
+	<entry id="dotCARRIERGASFLOW" term=".CARRIERGAS FLOW">
+		<definition>
+			carrier gas flow in the ionization [and in the drift
+			chamber] in L/min
+		</definition>
+	</entry>
+	<entry id="dotCARRIERGASMOISTURE" term=".CARRIERGAS MOISTURE">
+		<definition>
+			water concentration in the carrier gas in ppm
+		</definition>
+	</entry>
+	<entry id="dotCOUPLINGCONSTANTS" term=".COUPLING CONSTANTS">
+		<definition>
+			J (A,B) (coupling constant in Hz (Atom no. A, Hetero Atom
+			no. B))
+		</definition>
+	</entry>
+	<entry id="dotDECOUPLER" term=".DECOUPLER">
+		<definition>
+			table of decoupler frequencies (F, 90) in MHz and decoupler
+			90° pulses in µs
+		</definition>
+	</entry>
+	<entry id="dotDELAY" term=".DELAY">
+		<definition>
+			RD, ID (preacquisition delay for real and imaginary values
+			in µs)
+		</definition>
+	</entry>
+	<entry id="dotDETECTOR" term=".DETECTOR">
+		<definition>type of detector</definition>
+	</entry>
+	<entry id="dotDIGITISERRES" term=".DIGITISER RES">
+		<definition>
+			digitizer resolution in bits (12, 16 etc.)
+		</definition>
+	</entry>
+	<entry id="dotDRIFTCHAMBER" term=".DRIFT CHAMBER">
+		<definition>
+			drift chamber geometry: RECT, length, width, height or CYL,
+			length, radius in mm
+		</definition>
+	</entry>
+	<entry id="dotDRIFTGAS" term=".DRIFT GAS">
+		<definition>description of the drift gas (if used)</definition>
+	</entry>
+	<entry id="dotDRIFTGASFLOW" term=".DRIFT GAS FLOW">
+		<definition>
+			drift gas flow into the drift chamber in L/min
+		</definition>
+	</entry>
+	<entry id="dotELECTRICFIELD" term=".ELECTRIC FIELD">
+		<definition>
+			electric field in the ionisation and in the drift chamber in
+			V/cm
+		</definition>
+	</entry>
+	<entry id="dotFIELD" term=".FIELD">
+		<definition>magnetic field strength in Tessla</definition>
+	</entry>
+	<entry id="dotFILTERWIDTH" term=".FILTER WIDTH">
+		<definition>
+			filter width in Hz, description of filter algorithm
+		</definition>
+	</entry>
+	<entry id="dotIMSPRESSURE" term=".IMS PRESSURE">
+		<definition>pressure inside the IMS system in kPa</definition>
+	</entry>
+	<entry id="dotIMSTEMPERATURE" term=".IMS TEMPERATURE">
+		<definition>
+			temperature in the ionization [and in the drift chamber] in
+			degrees C
+		</definition>
+	</entry>
+	<entry id="dotINLET" term=".INLET">
+		<description>
+			Possible entries: DIRECT, BATCH, GC, LC, CZE, PB, MOB
+		</description>
+	</entry>
+	<entry id="dotINLETTEMPERATURE" term=".INLET TEMPERATURE">
+		<definition>inlet temperature in degrees C</definition>
+	</entry>
+	<entry id="dotIONIZATIONCHAMBER" term=".IONIZATION CHAMBER">
+		<definition>
+			ionization chamber geometry: RECT, length, width, height or
+			CYL, length, radius in mm
+		</definition>
+	</entry>
+	<entry id="dotIONIZATIONENERGY" term=".IONIZATION ENERGY">
+		<definition>ionization energy in eV</definition>
+	</entry>
+	<entry id="dotIONIZATIONMODE" term=".IONIZATION MODE">
+		<description>
+			UV, BR, AL, PD, CD, ESI, LI, LD, SI, or SY
+		</description>
+	</entry>
+	<entry id="dotIONIZATIONSOURCE" term=".IONIZATION SOURCE">
+		<definition>description of the ionization source</definition>
+	</entry>
+	<entry id="dotIONPOLARITY" term=".ION POLARITY">
+		<description>POSITIVE or NEGATIVE</description>
+	</entry>
+	<entry id="dotMASFREQUENCY" term=".MAS FREQUENCY">
+		<definition>magic angle spinning frequency in HZ</definition>
+	</entry>
+	<entry id="dotMAXINTENSITY" term=".MAX INTENSITY">
+		<definition>
+			used to represent maximum intensity used for peak picking
+		</definition>
+	</entry>
+	<entry id="dotMININTENSITY" term=".MIN INTENSITY">
+		<definition>minimum intensity used for peak picking</definition>
+	</entry>
+	<entry id="dotMONOISOTOPICMASS" term=".MONOISOTOPIC MASS">
+		<definition>
+			mass of the most common isotopic peak in AMU
+		</definition>
+	</entry>
+	<entry id="dotNOMINALMASS" term=".NOMINAL MASS">
+		<definition>nominal mass of the molecule</definition>
+	</entry>
+	<entry id="dotOBSERVE90" term=".OBSERVE90">
+		<definition>90° observe pulse time in µs</definition>
+	</entry>
+	<entry id="dotOBSERVEFREQUENCY" term=".OBSERVE FREQUENCY">
+		<definition>observer frequency in MHz</definition>
+	</entry>
+	<entry id="dotOBSERVENUCLEUS" term=".OBSERVE NUCLEUS">
+		<definition>observed nucleus e.g. ^13C</definition>
+	</entry>
+	<entry id="dotPHASE0" term=".PHASE0">
+		<definition>0 order phase correction in degrees</definition>
+	</entry>
+	<entry id="dotPHASE1" term=".PHASE1">
+		<definition>
+			1st order phase correction in degrees per Hz relative to
+			maximum X value
+		</definition>
+	</entry>
+	<entry id="dotPULSESEQUENCE" term=".PULSE SEQUENCE">
+		<definition>
+			information concerning pulse squences, pulse delays,
+			relaxation delays, pulse angles, etc
+		</definition>
+	</entry>
+	<entry id="dotREDUCEDMOBILITY" term=".REDUCED MOBILITY">
+		<definition>
+			(K0, A) (K0 in cm^2/(V*s), A = &lt;assignment>)
+		</definition>
+	</entry>
+	<entry id="dotRELAXATIONTIMES" term="RELAXATION TIMES">
+		<definition>(XYR) (R = relaxation in seconds)</definition>
+	</entry>
+	<entry id="dotREPETITIONRATE" term=".REPETITIONRATE">
+		<definition>time between shutter openings in ms</definition>
+	</entry>
+	<entry id="dotRETENTIONTIME" term=".RETENTIONTIME">
+		<definition>retention time in seconds</definition>
+	</entry>
+	<entry id="dotRIC" term=".RIC">
+		<definition>reconstructed ion current in COUNTS</definition>
+	</entry>
+	<entry id="dotSCANNUMBER" term=".SCAN NUMBER">
+		<definition>scan number</definition>
+	</entry>
+	<entry id="dotSCANRATE" term=".SCAN RATE">
+		<definition>
+			scan rate in SECONDS/DECADE or MASSES/SECOND, units
+		</definition>
+	</entry>
+	<entry id="dotSHIFTREFERENCE" term=".SHIFT REFERENCE">
+		<definition>
+			INTERNAL or EXTERNAL, name of ref. compound, data point
+			number, shift value in ppm
+		</definition>
+	</entry>
+	<entry id="dotSHUTTERGRIDPOTENTIAL"
+		term=".SHUTTER GRID POTENTIAL">
+		<definition>
+			voltage between the wires of the shutter in V
+		</definition>
+	</entry>
+	<entry id="dotSHUTTEROPENINGTIME" term=".SHUTTER OPENING TIME">
+		<definition>shutter opening time in µs</definition>
+	</entry>
+	<entry id="dotSOLVENTNAME" term=".SOLVENTNAME">
+		<definition>description of the solvent</definition>
+	</entry>
+	<entry id="dotSOLVENTREFERENCE" term=".SOLVENT REFERENCE">
+		<definition>solvent lock signal in ppm</definition>
+	</entry>
+	<entry id="dotSOURCETEMPERATURE" term=".SOURCE TEMPERATURE">
+		<definition>source temperature in degrees C</definition>
+	</entry>
+	<entry id="dotSPECTROMETERTYPE" term=".SPECTROMETER TYPE">
+		<definition></definition>
+		<description>
+			Possible Entries: B, EB, BE, Q, TRAP, TOF
+		</description>
+	</entry>
+	<entry id="dotSPINNINGRATE" term=".SPINNING RATE">
+		<definition>sample spinning rate in Hz</definition>
+	</entry>
+	<entry id="dotTOTALIONCURRENT" term=".TOTAL ION CURRENT">
+		<definition>
+			total ion current in VOLTS or COUNTS, units
+		</definition>
+	</entry>
+	<entry id="dotZEROFILL" term=".ZERO FILL">
+		<definition>no. of complex zero filling points</definition>
+	</entry>
+	<entry id="AFACTOR" term="A FACTOR">
+		<definition>
+			factor to convert scaled amplitude values to actual values
+		</definition>
+	</entry>
+	<entry id="ALIAS" term="ALIAS">
+		<definition>1/2</definition>
+	</entry>
+	<entry id="ATOMLIST" term="ATOM LIST">
+		<definition>AN AS NH (AtomNo., Atomic Symbol, No. of implicit Hydrogen atoms)</definition>
+	</entry>
+	<entry id="AUDITTRAIL" term="AUDIT TRAIL">
+		<definition>list of audit trail entries in the form:
+(id no., &lt;longdate>, &lt;who>, &lt;where>, &lt;what>&lt;)</definition>
+	</entry>
+	<entry id="AUNITS" term="A UNITS">
+		<definition>ARBITRARY UNITS, VOLTS(units of amplitude of interferograms)</definition>
+	</entry>
+	<entry id="BLOCKID" term="BLOCK ID">
+		<definition>a unique positive integer assigned to each block in a compound file used as a block identifier</definition>
+	</entry>
+	<entry id="BLOCKS" term="BLOCKS">
+		<definition>number of blocks enclosed in a link block of a compound file</definition>
+	</entry>
+	<entry id="BONDLIST" term="BOND LIST">
+		<definition>AN1 AN2 BT (AtomNo.1, AtomNo. 2, BondType)</definition>
+	</entry>
+	<entry id="CHARGE" term="CHARGE">
+		<definition>CH AN1 AN2 … ANI
+(CHarge, AtomNo. 1, ... AtomNo. I)</definition>
+	</entry>
+	<entry id="COMMENTS" term="COMMENTS">
+		<definition></definition>
+	</entry>
+	<entry id="DATACLASS" term="DATA CLASS">
+		<definition></definition>
+		<description>
+			XYDATA, XYPOINTS, PEAK TABLE, ASSIGNMENTS, NTUPLES
+		</description>
+	</entry>
+	<entry id="DATATABLE" term="DATA TABLE">
+		<definition></definition>
+		<description>
+			(XY..XY) or (X++(Y..Y))
+		</description>
+	</entry>
+	<entry id="DELTAR" term="DELTA R">
+		<definition>optical retardation per data point in RUNITS</definition>
+	</entry>
+	<entry id="END" term="END">
+		<definition></definition>
+	</entry>
+	<entry id="ENDNTUPLES" term="END NTUPLES">
+		<definition>data type, e.g.: NMR FID, MASS SPECTRUM</definition>
+	</entry>
+	<entry id="FACTOR" term="FACTOR">
+		<definition>factor to convert scaled values of the corresponding axis to actual values</definition>
+	</entry>
+	<entry id="FIRST" term="FIRST">
+		<definition>first unscaled value of the corresponding axis in the belonging UNITS</definition>
+	</entry>
+	<entry id="FIRSTA" term="FIRST A">
+		<definition>first unscaled amlitude value in AUNITS, corresponding to FIRSTR</definition>
+	</entry>
+	<entry id="FIRSTR" term="FIRST R">
+		<definition>first unscaled optical retardation value of an interferogram in RUNITS</definition>
+	</entry>
+	<entry id="IUPACNAME" term="IUPACNAME">
+		<definition>substance name in IUPAC form</definition>
+	</entry>
+	<entry id="JCAMP-CS" term="JCAMP-CS">
+		<definition>3.7 (version number)</definition>
+	</entry>
+	<entry id="JCAMP-DX" term="JCAMP-DX">
+		<definition>4.24, 5.00, 5.01 (version number)</definition>
+	</entry>
+	<entry id="LAST" term="LAST">
+		<definition>last unscaled value of the corresponding axis in the belonging UNITS</definition>
+	</entry>
+	<entry id="LASTR" term="LAST R">
+		<definition>last unscaled optical retardation value of an interferogram in RUNITS</definition>
+	</entry>
+	<entry id="MAX" term="MAX">
+		<definition>largest unscaled value of the corresponding axis in the belonging UNITS</definition>
+	</entry>
+	<entry id="MAXA" term="MAX A">
+		<definition>unscaled maximum amplitude of interferogram in AUNITS</definition>
+	</entry>
+	<entry id="MAXRASTER" term="MAX RASTER">
+		<definition>maximum of absolute value of X or Y coordinates</definition>
+	</entry>
+	<entry id="MAXXYZ" term="MAX XYZ">
+		<definition>maximum of the absolute value of either the X, Y or Z coordinates of the atoms</definition>
+	</entry>
+	<entry id="MIN" term="MIN">
+		<definition>smallest unscaled value of the corresponding axis in the belonging UNITS</definition>
+	</entry>
+	<entry id="MINA" term="MIN A">
+		<definition>unscaled minimum amplitude of interferogram in AUNITS</definition>
+	</entry>
+	<entry id="MP" term="MP">
+		<definition>melting point in degrees C</definition>
+	</entry>
+	<entry id="NTUPLES" term="NTUPLES">
+		<definition>data type, e.g.: NMR FID MASS SPECTRUM</definition>
+	</entry>
+	<entry id="PAGE" term="PAGE">
+		<definition>SYMBOL = value</definition>
+	</entry>
+	<entry id="PEAKASSIGNMENTS" term="PEAKASSIGNMENTS">
+		<definition>(XA) or (XYA) or (XYWA) (A = &lt;assignment>)</definition>
+	</entry>
+	<entry id="PEAKTABLE" term="PEAKTABLE">
+		<definition>(XY..XY), (XYW..XYW) or (XYM..XYM) (M = multiplicity)</definition>
+	</entry>
+	<entry id="RADATA" term="RADATA">
+		<definition>(R++(A..A))</definition>
+	</entry>
+	<entry id="RADICAL" term="RADICAL">
+		<definition>UE AN1 AN2 … ANI (no. of Unpaired Electrons, AtomNo. 1, … AtomNo. I)</definition>
+	</entry>
+	<entry id="RFACTOR" term="RFACTOR">
+		<definition>factor to convert scaled optical retardation values to actual values</definition>
+	</entry>
+	<entry id="RUNITS" term="RUNITS">
+		<definition>MICROMETERS (units of optical retardation for interferograms)</definition>
+	</entry>
+	<entry id="SOURCEREFERENCE" term="SOURCEREFERENCE">
+		<definition>information to locate original spectrum</definition>
+	</entry>
+	<entry id="STEREOCENTER" term="STEREOCENTER">
+		<definition>AN SD SG (AtomNo., StereoDescriptor (P or M), StereoGroup)</definition>
+	</entry>
+	<entry id="STEREOMOLECULE" term="STEREOMOLECULE">
+		<definition>YES</definition>
+	</entry>
+	<entry id="STEREOPAIR" term="STEREOPAIR">
+		<definition>AN1 AN2 SD SG (AtomNo. 1, AtomNo. 2, StereoDescriptor (P, M or 0), StereoGroup)</definition>
+	</entry>
+	<entry id="SYMBOL" term="SYMBOL">
+		<definition>symbol to indicate an axis, e.g.: X, Y, R, I, T, N</definition>
+	</entry>
+	<entry id="TITLE" term="TITLE">
+		<definition>description of the spectrum</definition>
+	</entry>
+	<entry id="UNITS" term="UNITS">
+		<definition>units belonging to the values of the corresponding axis, e.g.: SECONDS, ARBITRARY UNITS, M/Z, RELATIVE ABUNDANCE</definition>
+	</entry>
+	<entry id="VARDIM" term="VARDIM">
+		<definition>number of data points of the corresponding axis</definition>
+	</entry>
+	<entry id="VARFORM" term="VARFORM">
+		<definition>data form: AFFN or ASDF</definition>
+	</entry>
+	<entry id="VARNAME" term="VARNAME">
+		<definition>variable name, e.g.: TIME, FID/REAL, FID/IMAG, PAGE NUMBER, MASS, INTENSITY, RETENTION TIME</definition>
+	</entry>
+	<entry id="VARTYPE" term="VARTYPE">
+		<definition>INDEPENDENT DEPENDENT PAGE</definition>
+	</entry>
+	<entry id="XLABEL" term="XLABEL">
+		<definition>label of the X-axis</definition>
+	</entry>
+	<entry id="XYPOINTS" term="XYPOINTS">
+		<definition>(XY..XY)</definition>
+	</entry>
+	<entry id="XYRASTER" term="XYRASTER">
+		<definition>AN X Y Z (AtomNo., coordinates for graphical representation of the structure)</definition>
+	</entry>
+	<entry id="XYZ" term="XYZ">
+		<definition>AN X Y Z (AtomNo., physically meaningful coordinates)</definition>
+	</entry>
+	<entry id="XYZFACTOR" term="XYZFACTOR">
+		<definition>factor used to scale the integer atom coordinates into the original Angstrom units</definition>
+	</entry>
+	<entry id="XYZSOURCE" term="XYZSOURCE">
+		<definition>source of the 3D coordinates</definition>
+	</entry>
+	<entry id="YLABEL" term="YLABEL">
+		<definition>label of the Y-axis</definition>
+	</entry>
+	<entry id="ZPD" term="ZPD">
+		<definition>zero path difference</definition>
+	</entry>
+</dictionary>
+

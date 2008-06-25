@@ -1,0 +1,38 @@
+<dictionary 
+  namespace="http://www.xml-cml.org/dict/cmlComp"
+  dictionaryPrefix="cmlComp"
+  title="CML Comp dictionary"
+  xmlns="http://www.xml-cml.org/schema"
+  xmlns:cmlComp="http://www.xml-cml.org/dict/cmlComp"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema24/schema.xsd">
+
+   <entry id="ionPot" term="Ionization Potential">
+     <annotation>
+       <appinfo>
+       <!--
+	     <xsd:complexType name="scalar">
+	        <xsd:simpleContent>
+	          <xsd:extension base="xsd:double">
+	            <xsd:attributeGroup ref="title"/>
+	            <xsd:attributeGroup ref="id"/>
+	            <xsd:attributeGroup ref="convention"/>
+	            <xsd:attribute name="dictRef" fixed="cmlDict:ionPot"/>
+	            <xsd:attribute name="dataType" fixed="xsd:double"/>
+	            <xsd:attributeGroup ref="units"/>
+		    <xsd:attributeGroup ref="multiplierToSI"/>
+		    <xsd:attribute ref="unitType" fixed="unit:voltage"/>
+	          </xsd:extension>
+	        </xsd:simpleContent>
+	      </xsd:complexType>
+	      -->
+        </appinfo>
+      </annotation>
+    <definition>The ionization potential.</definition>
+    <description>...</description>
+  </entry>
+
+
+</dictionary>
+

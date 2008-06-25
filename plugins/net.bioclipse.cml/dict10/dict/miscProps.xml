@@ -1,0 +1,1386 @@
+<dictionary title="properties scraped off the net"
+  namespace="http://www.xml-cml.org/dict/miscProps"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema24/schema.xsd"
+>
+<entry term="z" id="x" title="Absolute viscosity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Absorption coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Acid dissociation constant">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Acidity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Acidity constant">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Acoustic impedence">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Activation energy">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Activity coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Air-water partition coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Ambipolar diffusion length">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Association constant">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Atomic mass">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Atomic radius">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Atomic weight">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Bohr radius">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Boiling point">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="=Bond">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Bond angles">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Bond length">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Bond strength">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Brinell hardness">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Bulk modulus">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Bulk volume">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Cell dimensions">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Cell volume">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Characteristic impedence">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Chemical composition">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Chemical formula">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Chemical resistance">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Chemical structure">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Chemical synonyms">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="coefficent of gas permeation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Coefficient of absoprtion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Coefficient of coupling">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Coefficient of cubical expansion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Coefficient of electrical resistance">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Coefficient of expansion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Coefficient of linear expansion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Coefficient of linear thermal expansion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Coefficient of thermal compressibility">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Coefficient of thermal expansion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Coefficient of thermodiffusion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Coercive force">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Coercivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Cohesive energy">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Cohesive strength">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Color">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Composition">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Comprehensive strength">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="compressibility">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Compressibility factor">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Compression Modulus">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Compression Poisson's Ratio">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Compressive modulus">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Compressive strength">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Compressive Yield Strength">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Condensed phase enthalpy coefficients">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Conductivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Congealing point">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Critical compressibility">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Critical constants">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Critical density">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Critical pressure">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Critical temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Critical volume">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Cryoscopic constant">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Curie temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Debye temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Density">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Dielectric breakdown voltage">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Dielectric constant">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Dielectric loss angle">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Dielectric strength">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Differential stress">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Differential volume">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="=Diffusion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Diffusion Activation Energy">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Diffusion coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Diffusion parameters">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Diffusity in water">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Diffusivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Dipole length">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Dipole moment">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Dispersion coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Dissipation factor">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Dissociation constant">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Dissociation energy">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Distillation range">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Distribution coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Dynamic viscosity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Elastic coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Elastic constant">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Elastic limit">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Elasticity modulus">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Electrical conductivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Electrical resistance">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Electrochemical equivalents">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Electrode potential">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Electron affinity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Electron diffusion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Electron mobility">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Electron spin resonance">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Electronic heat capacity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Elongation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Elongation at Yield">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Emissivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Endurance limit">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="energy of activation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="energy of formation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Enthalpy">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Enthalpy of combustion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Enthalpy of formation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Enthalpy of fusion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Enthalpy of vaporization">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Entropy">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Entropy of fusion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Entropy of transition">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Entropy of vaporization">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Equilibrium constant of formation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Equilibrium internuclear distance">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Expansion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="expansion coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Expansivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Explosive limit">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Exposures">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Extinction coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Fire point">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Flammability">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Flammability limits">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Flash point">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Flexural">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Flexural modulus">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Flexural strength">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Free energy">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Free energy of formation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Free energy of vaporization">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Freezing point">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Fugacity ratio">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Generic names">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Gibbs energy of formation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Gibbs potential">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Glass transition temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Half life">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Half-wave potential">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Hall constant">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Hardening coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Hardening exponent">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="hardness">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Hardness conversion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heat capacity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heat capacity at constant pressure">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heat capacity at constant volume">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Partial accommodation coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="heat conductivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heat content">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heat of combustion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="heat of crystallization">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heat of dissociation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heat of evaporation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heat of formation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heat of fusion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heat of melting">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heat of mixing">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heat of phase change">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heat of reaction">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="heat of solution">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heat of sublimation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heat of transition">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heat of vaporization">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heat of volumorphic conversion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heat transfer coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Heating volume">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Henry's law coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Henry's Law constant">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Ideal heat capacity coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Ignition temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Index of refraction">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Interfacial tension">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Interfacial tension with water">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Internal energy">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Ion absorption">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Ionic conductivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Ionic diffusion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Ionic mobility">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Ionic radius">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Ionization constant">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Ionization potential">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Isothermal compressibility coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Isotopic abundance">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Kinematic viscosity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Latent heat of vaporization coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Light transmission">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Logarithm of equilibrium constant ">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="longitudinal sound velocity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Magnetic susceptibility">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Magnetic transition temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Melting point">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Melting range">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Miscibility">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Mobility">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Modulus of elasticity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Modulus of Elasticity in Flexure">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Modulus of Elasticity in Tension">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Modulus of rigidity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Moisture absorption">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Moisture resistance">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Molar conductivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Molar heat capacity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Molar heat constant">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Molar volume">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Molar volume of liquids coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Molecular">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Molecular formula">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Molecular mass">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Molecular refraction">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Molecular volume">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Molecular weight">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Neel temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Normal electrode potential">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Normalized temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Octanol-water partition">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Octanol-water partition coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Odor threshold values">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Odor thresholds in air">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Optical energy gap">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Osmotic pressure">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Oxidation parameters">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Oxidation potential">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Oxidation rate">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Partition coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Permeability">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="permittivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Phase transition temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Phonon wavenumber">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Photoconductivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Photoelectric work function">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Physical appearance">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Plasticity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Poisson's ratio">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Polarization colors">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Polarography">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Polymerization rate">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Potential energy function">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Pressure coefficient of boiling point">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="pseudocritical compressibility">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="pseudocritical pressure">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="pseudocritical temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="pseudocritical volume">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Rate of evaporation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Rate of vaporization">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Autoignition temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Reactivity ratio">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Refractive index">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Refractive Indices">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Refractivity intercept">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Refractory temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Relative density">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Relative molar mass">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Relative permissivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Relative pressure">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Relative retention">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Relative volume">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Resistance">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Resistivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Saturation concentration">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Saturation magnetization">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Saturation magnetization">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Schottky barrier">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Shear Moduli">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Shear modulus">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Shear strength">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Sheer strength">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Softening point temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Softening temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Solidification point">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Solubility">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="solubility coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Solvent resistance">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Specific dispersion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Specific gravity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Specific heat ">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Specific moisture content">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Specific resistance">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Specific resistivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Specific retention volume ">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Specific rotation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Specific volume">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Stress ratio">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Stress relaxation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Stress-strain relation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Superconducting transition temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Molecular Surface area">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Surface resistivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="surface tension">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="susceptibility">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Temperature at saturation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Temperature coefficient of resistivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Temperature coefficient of thermal conductivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Temperature of fusion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Temperature of phase change">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Temperature of vaporization">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Temperature of volumorphic conversion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Tensile elongation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Tensile Moduli">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Tensile modulus">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Tensile shear strength">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Tensile strength">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Theoretical density">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Thermal accommodation coefficient ">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Thermal conductivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Thermal decomposition">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Thermal degradation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Thermal diffusivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Thermal expansion">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="thermal expansion coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Thermionic work function">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Thermocoupling temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Theta temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="third virial correlation">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Torsion Poisson's Ratio">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Torsional Moduli">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Torsional Shear Strength">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Torsional strength">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Transition heat">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Transition pressure">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Transition temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Transition temperature">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="=Transmittance">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Transport number">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="transverse sound velocity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Triple point">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Valence">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Vapor density">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Vapor pressure">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="vapor pressure coefficients">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Velocity of sound">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Virial coefficient">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Viscosity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Viscosity annealing point">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Viscosity softening point">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Volume resistivity">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="volume thermal">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Volumetric component fraction">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Volumetric expansion coefficient ">
+  <definition></definition>
+  <description></description>
+</entry>
+<entry term="z" id="x" title="Young's modulus">
+  <definition></definition>
+  <description></description>
+</entry>
+</dictionary>

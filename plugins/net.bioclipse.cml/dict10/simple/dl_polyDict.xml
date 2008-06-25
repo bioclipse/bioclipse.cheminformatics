@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="dict2html.xsl" type="text/xsl"?>
+
+<dictionary 
+  namespace="http://www.dlpoly.org/dict"
+  dictionaryPrefix="castep"
+  title="CASTEP dictionary"
+  xmlns="http://www.xml-cml.org/schema"
+  xmlns:dl_poly="http://www.dlpoly.org/dict"
+  xmlns:units="http://www.xml-cml.org/units/units"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema24/schema.xsd">
+
+   <metadataList>
+      <metadata name="dc:creator" content="Peter Murray-Rust"/>
+      <metadata name="dc:date" content="2006-01-25"/>
+      <metadata name="dc:description" content="not tested"/>
+    </metadataList>
+<!-- Params -->
+
+
+<!-- metadata -->
+<entry id="levcfg"/>
+<entry id="imcon"/>
+<entry id="megatm"/>
+
+</dictionary>

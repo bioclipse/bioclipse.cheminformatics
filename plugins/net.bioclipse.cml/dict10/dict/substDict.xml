@@ -1,0 +1,93 @@
+<dictionary 
+  title="substance dictionary"
+  xmlns="http://www.xml-cml.org/schema/stmml"
+  namespace="http://www.xml-cml.org/dict/subst"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema24/schema.xsd"
+>
+
+<!-- role; this is normally the "purpose" rather than the constitution of the substance -->
+  <entry id="buffer" term="Buffer">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">buff</alternative>
+    <definition>
+    A buffer to maintain constant acidity
+    </definition>
+    <description>
+    In CRML the buffer is normally omitted from the stoichiometry
+    </description>
+  </entry>
+  
+  <entry id="catalyst" term="Catalyst">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">cat</alternative>
+    <definition>
+    A catalyst in a reaction
+    </definition>
+    <description>
+    In CRML the catalyst is omitted from the stoichiometry
+    </description>
+  </entry>
+
+  <entry id="enzyme" term="Enzyme">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">enz</alternative>
+    <definition>
+    An enzyme
+    </definition>
+    <description>
+    In CRML the enzyme is omitted from the stoichiometry
+    </description>
+  </entry>
+
+  <entry id="indicator" term="Indicator">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">ind</alternative>
+    <definition>
+    An acid-base indicator
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="photons" term="Photons/Light">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">phot</alternative>
+    <definition>
+    Irradiation or illumination
+    </definition>
+    <description>
+    Used in reactions to specify irradiation or in other contexts where light plays a specific role. Can be associated with a wavelength
+    </description>
+  </entry>
+
+  <entry id="solvent" term="Solvent">
+    <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">sol</alternative>
+    <definition>
+    A solvent
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+</dictionary>
+

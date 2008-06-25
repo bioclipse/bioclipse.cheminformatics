@@ -1,0 +1,3841 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dictionary
+  namespace="http://www.xml-cml.org/dict/mopac"
+  dictionaryPrefix="mopac"
+  xmlns="http://www.xml-cml.org/schema"
+  xmlns:h="http://www.w3.org/1999/xhtml"
+  xmlns:m="http://www.w3.org/foo/mathml"
+  xmlns:mopac="http://www.xml-cml.org/dict/mopac"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema24/schema.xsd">
+
+<entry id="a0scf" term="0scf">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:outputinout">0scf</scalar>
+    </appinfo>
+  </annotation>
+  <definition>read in data, then stop</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">0SCF (O)</h:span>   The data can be read in and output, but  no  actual  calculation  is performed  when  this  keyword is used.  This is useful
+               as a check on the input data.   All  obvious  errors  are  trapped,  and  warning  messages printed.[*]
+
+               <h:p/>      A second use is to convert from one format to  another.   The  input geometry  is printed in various formats at the
+               end of a 0SCF calculation. If   NOINTER   is   absent,   cartesian    coordinates    are    printed. Unconditionally,  MOPAC
+               Z-matrix internal coordinates are printed, and if AIGOUT is present, Gaussian Z-matrix internal  coordinates  are  printed.
+               0SCF should now be used in place of DDUM. <h:br/>
+    </h:div>
+  </description>
+</entry>
+
+<entry id="a1electron" term="1electron">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:a1elecmat">1elec[tron]</scalar>
+    </appinfo>
+  </annotation>
+  <definition>print final one-electron matrix</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">1ELECTRON (O)</h:span>  The final one-electron  matrix  is  printed  out. This  matrix  is composed  of  atomic orbitals; the array element between
+               orbitals <h:span class="math">i</h:span> and <h:span class="math">j</h:span>  on different atoms is given by: <h:span class="math">(i,j) = 0.5 x (β<h:sub>i</h:sub> + β<h:sub>j</h:sub>) x <h:span class="curly"><h:span class="rm"> overlap</h:span></h:span>(i,j)</h:span>
+               <h:p/>      The matrix elements between orbitals i and j on the  same  atom  are calculated from the electron-nuclear attraction
+               energy, and also from the <h:span class="math">U(i)</h:span> value if <h:span class="math">i=j</h:span>. <h:br/>      The one-electron matrix is unaffected by (a) the charge and (b)  the electron  density.  It is only a function of the
+               geometry.  Abbreviation: 1ELEC.[*]
+
+               <h:p/>
+            
+    </h:div>
+  </description>
+</entry>
+<entry id="a1scf" term="1scf">
+  <annotation>
+    <appinfo>
+      <parameter>
+        <scalar dictRef="ccml:scfcalccount"/>
+        <enumeration dictRef="mopac:a1scf" value="1"/>
+      </parameter>
+    </appinfo>
+  </annotation>
+  <definition>do one scf and then stop</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">1SCF (C)</h:span>         When users want to examine the results of a single  SCF  calculation of a geometry, 1SCF should be used.  1SCF can
+               be used in conjunction with RESTART, in which case a single SCF calculation will  be  done,  and  the results printed. <h:br/>      When 1SCF is used on its own (that is, RESTART  is  not  also  used) then derivatives will only be calculated if GRAD
+               is also specified. <h:br/>      1SCF is helpful in a learning situation.   MOPAC  normally  performs many SCF calculations, and in order to minimize
+               output when following the working of the SCF calculation, 1SCF is very useful.[*]
+
+               <h:p/>
+            
+    </h:div>
+  </description>
+</entry>
+<entry id="aider" term="aider">
+  <annotation>
+    <appinfo>
+      <scalar>aider</scalar>
+    </appinfo>
+  </annotation>
+  <definition>read in ab initio derivatives</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">AIDER (C)</h:span>   <h:span class="index">AIDER</h:span> allows MOPAC to optimize an ab-initio geometry.   To  use  it, calculate  the  ab-initio  gradients using, e.g., Gaussian.
+                Supply MOPAC with these gradients, after converting them into kcal/mol.  The  geometry resulting  from  a  MOPAC  run  will
+               be nearer to the optimized ab-initio geometry than if the geometry optimizer in Gaussian had been used. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="aigin" term="aigin">
+  <annotation>
+    <appinfo>
+      <scalar>aigin</scalar>
+    </appinfo>
+  </annotation>
+  <definition>geometry must be in gaussian format</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">AIGIN (C)</h:span>        If the geometry (Z-matrix) is specified using the Gaussian-8X,  then normally  this  will be read in without difficulty.
+                In the event that it is mistaken for a  normal  MOPAC-type  Z-matrix,  the  keyword  AIGIN  is provided. <h:span class="index">AIGIN</h:span> will force the data-set to be read in assuming Gaussian format.  This is necessary if more than one system is  being  studied
+                in one run. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="aigout" term="aigout">
+  <annotation>
+    <appinfo>
+      <scalar>aigout</scalar>
+    </appinfo>
+  </annotation>
+  <definition>in arc file, include ab-initio geometry</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">AIGOUT (O)</h:span>       The ARCHIVE file contains a  data-set  suitable  for  submission  to MOPAC.  If, in addition to this data-set, the
+               Z-matrix for Gaussian input is wanted, then <h:span class="index">AIGOUT</h:span> (ab initio geometry output), should be used. <h:br/>     The Z-matrix is in full Gaussian  form.   Symmetry,  where  present, will  be correctly defined.  Names of symbolics
+               will be those used if the original geometry was in Gaussian format, otherwise `logical' names  will be  used.  Logical names
+               are of form <h:span class="verb">/&lt;t&gt;&lt;a&gt;&lt;b&gt;[&lt;c&gt;][&lt;d&gt;]</h:span>  where <h:span class="verb">/&lt;t&gt;</h:span> is `r' for bond length, `a' for angle, or `d' for  dihedral, <h:span class="verb">/&lt;a&gt;</h:span> is the atom number, <h:span class="verb">/&lt;b&gt;</h:span> is the atom to which <h:span class="verb">/&lt;a&gt;</h:span> is related, <h:span class="verb">/&lt;c&gt;</h:span>, if present, is the atom number to which <h:span class="verb">/&lt;a&gt;</h:span> makes an angle, and <h:span class="verb">/&lt;d&gt;</h:span>, if present, is the atom number to which <h:span class="verb">/&lt;a&gt;</h:span> makes a dihedral. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="analyt" term="analyt">
+  <annotation>
+    <appinfo>
+      <scalar>analyt</scalar>
+    </appinfo>
+  </annotation>
+  <definition>use analytical derivatives of energy wrt geometry</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">ANALYT (W)</h:span>        By default, finite difference derivatives of energy with respect  to geometry  are  used.  If <h:span class="index">ANALYT</h:span> is specified, then analytical derivatives are used instead.  Since the analytical  derivatives  are  over  Gaussian functions---a
+                STO-6G  basis set is used---the overlaps are also over Gaussian functions.  This will result in a  very  small  (less  than
+                0.1 kcal/mole)  change  in heat of formation.  Use analytical derivatives (a) when the mantissa used is  less  than  about
+               51--53  bits,  or  (b)  when comparison   with   finite  difference  is  desired.   Finite  difference derivatives are still
+               used when non-variationally optimized wavefunctions are present. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="am1" term="am1">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:generic.hamilton">AM1</scalar>
+    </appinfo>
+  </annotation>
+  <definition>use the AM1 hamiltonian</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">AM1 (C)</h:span>  The <h:span class="index">AM1</h:span> method is to be used.  By default MNDO is run. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="bar" term="bar">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>reduce bar length by a maximum of n.n</definition>
+  <description>
+  <h:div class="subsection"><h:span class="subsection_title">BAR=n.nn (W)</h:span>  In the SADDLE calculation the distance between the two geometries is steadily  reduced  until  the  transition  state  is
+               located.  Sometimes, however, the user may want  to  alter  the  maximum  rate  at  which  the distance  between  the  two
+               geometries reduces. <h:span class="index">BAR</h:span> is a ratio, normally 0.15, or 15 percent.  This represents a maximum rate of reduction of  the bar  of 15 percent per step.
+                Alternative values that might be considered are BAR=0.05 or BAR=0.10, although other values may be  used.   See  also SADDLE.
+               <h:br/>   If CPU time is not a major consideration, use BAR=0.03. <h:br/><h:br/></h:div>
+            </description>
+</entry>
+<entry id="biradical" term="biradical">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>system has two unpaired electrons</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">BIRADICAL (C)</h:span>     Note: <h:span class="index">BIRADICAL</h:span> is a redundant keyword, and represents a particular configuration  interaction calculation.  Experienced users of MECI (q.v.)
+               can duplicate the effect of the  keyword  BIRADICAL  by  using  the  MECI keywords OPEN(2,2) and SINGLET. <h:br/>        For molecules which are believed to have biradicaloid character  the option  exists  to optimize the lowest singlet
+               energy state which results from the mixing of three states.  These states are,  in  order,  (1)  the (micro)state  arising
+               from a one electron excitation from the HOMO to the LUMO,  which  is  combined  with  the  microstate  resulting   from
+               the time-reversal  operator acting on the parent microstate, the result being a full singlet state; (2) the state resulting
+               from de-excitation from the formal  LUMO  to  the  HOMO;  and (3) the state resulting from the single electron in the formal
+               HOMO being excited into the LUMO. <h:pre>
+                       Microstate 1          Microstate 2      Microstate 3
+
+
+                  Alpha Beta   Alpha Beta    Alpha  Beta       Alpha  Beta
+
+
+      LUMO         *                 *                           *    *
+                  ---  ---     ---  ---       ---  ---          ---  ---
+
+
+                             +
+
+
+      HOMO              *       *              *    *
+                  ---  ---     ---  ---       ---  ---          ---  ---
+</h:pre> <h:p/>   A configuration interaction calculation is involved  here.   A  biradical calculation  done  without  C.I. at  the  RHF
+               level would be meaningless. Either rotational invariance would  be  lost,  as  in  the  D2d  form  of ethylene,  or  very
+               artificial barriers to rotations would be found, such as in a methane molecule ``orbiting'' a D2d ethylene.  In  both  cases
+                the inclusion  of  limited  configuration  interaction  corrects  the  error. BIRADICAL should not be used if either the
+               HOMO or LUMO is degenerate; in this case, the full manifold of HOMO <h:span class="math">x</h:span> LUMO should be included in the C.I., using MECI options.  The user should be aware  of  this  situation. When  the  biradical
+                calculation  is  performed correctly, the result is normally a net stabilization.  However,  if  the  first  singlet  excited
+               state  is  much  higher  in  energy  than  the closed-shell ground state, BIRADICAL can lead to a destabilization.  Abbreviation:
+                BIRAD.  See also MECI, C.I., OPEN, SINGLET. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="bonds" term="bonds">
+  <annotation>
+    <appinfo>
+      <parameter>
+        <scalar dictRef="ccml:bondorder">bonds</scalar>
+      </parameter>
+    </appinfo>
+  </annotation>
+  <definition>print final bond-order matrix</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">BONDS (O)</h:span>     The rotationally invariant bond order between all pairs of atoms  is printed.   In this context a bond is defined as
+               the sum of the squares of the density matrix  elements  connecting  any  two  atoms.   For  ethane, ethylene,  and  acetylene
+               the carbon-carbon bond orders are roughly 1.00, 2.00, and 3.00  respectively.   The  diagonal  terms  are  the  valencies
+               calculated  from  the atomic terms only and are defined as the sum of the bonds the atom makes with other  atoms.   In  UHF
+                and  non-variationally optimized  wavefunctions  the  calculated  valency will be incorrect, the degree of error  being
+               proportional  to  the  non-duodempotency  of  the density matrix.  For an RHF wavefunction the square of the density matrix
+               is equal to twice the density matrix.[*]
+
+               <h:p/>        The bonding contributions of all M.O.'s in the  system  are  printed immediately  before  the  bonds  matrix.   The
+                idea of molecular orbital valency was developed by Gopinathan, Siddarth, and Ravimohan.  Just as an atomic  orbital  has
+               a `valency', so has a molecular orbital.  This leads to the following relations:  The sum of the bonding contributions of
+                all occupied M.O.'s is the same as the sum of all valencies which, in turn is equal to two times the  sum  of  all  bonds.
+                 The  sum  of  the  bonding contributions of all M.O.'s is zero. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="c.i." term="c.i.">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>a multi-electron configuration interaction specified</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">C.I.=n (C)</h:span>     Normally configuration interaction is invoked if any of the keywords which imply a <h:span class="index">C.I.</h:span> calculation are used, such as BIRADICAL, TRIPLET or QUARTET.  Note that ROOT= does not imply a  C.I. calculation:   ROOT=
+                is only  used  when  a  C.I. calculation is done.  However, as these implied C.I.'s involve the minimum number of configurations
+               practical,  the  user may  want to define a larger than minimum C.I., in which case the keyword C.I.=n can be used.   When
+                C.I.=n  is  specified,  the  n  M.O.'s  which `bracket' the occupied- virtual energy levels will be used.  Thus, C.I.=2 will
+               include both the HOMO  and  the  LUMO,  while  C.I.=1  (implied  for odd-electron  systems)  will  only include the HOMO (This
+               will do nothing for a closed-shell system, and leads to Dewar's half-electron  correction for  odd-electron  systems).  Users
+               should be aware of the rapid increase in the size of the C.I. with increasing numbers  of  M.O.'s  being  used. Numbers  of
+                microstates  implied by the use of the keyword C.I.=n on its own are as follows: <h:pre>
+    Keyword        Even-electron systems           Odd-electron systems
+                No. of electrons, configs       No. of electrons, configs
+                Alpha   Beta                    Alpha Beta
+
+     C.I.=1       1      1          1            1     0             1
+     C.I.=2       1      1          4            1     0             2
+     C.I.=3       2      2          9            2     1             9
+     C.I.=4       2      2         36            2     1            24
+     C.I.=5       3      3        100            3     2           100
+     C.I.=6       3      3        400            3     2           300
+     C.I.=7       4      4       1225            4     3          1225
+     C.I.=8   (Do not use unless other keywords also used, see below)
+</h:pre> <h:p/>    If a change of spin is defined, then larger numbers of M.O.'s can be used  up  to a maximum of 10.  The C.I. matrix is
+               of size 100 x 100.  For calculations involving up to  100  configurations,  the  spin-states  are exact  eigenstates of the
+               spin operators.  For systems with more than 100 configurations, the 100 configurations of lowest energy  are  used.   See
+               also MICROS and the keywords defining spin-states. <h:br/>    Note that for any system, use of C.I.=5 or higher  normally  implies the  diagonalization  of a 100 by 100 matrix.  As
+               a geometry optimization using a C.I. requires the derivatives to be calculated using  derivatives of  the C.I. matrix, geometry
+               optimization with large C.I.'s will require more time than smaller C.I.'s. <h:br/>Associated keywords:  MECI, ROOT=, MICROS, SINGLET, DOUBLET, etc. <h:br/></h:div><h:div class="subsection"><h:span class="subsection_title">C.I.=(n,m)</h:span>      In addition to specifying the number of M.O.'s in the active  space, the  number  of  electrons  can also be defined.
+                In C.I.=(n,m), n is the number of M.O.s in the active space, and m is the number of doubly filled levels to be used. Examples:
+               <h:pre>
+  Keywords           Number of M.O.s  No. Electrons
+
+  C.I.=2                   2             2 (1)
+  C.I.=(2,1)               2             2 (3)
+  C.I.=(3,1)               3             2 (3)
+  C.I.=(3,2)               3             4 (5)
+  C.I.=(3,0) OPEN(2,3)     3             2 (N/A)
+  C.I.=(3,1) OPEN(2,2)     3             4 (N/A)
+  C.I.=(3,1) OPEN(1,2)     3           N/A (3)
+</h:pre>  Odd electron systems given in parentheses. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="charge" term="charge">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>charge on system = n (e.g. nh4 =&gt; charge=1)</definition>
+  <description>
+  <h:div class="subsection"><h:span class="subsection_title">CHARGE=n (C)</h:span>   When the system being studied is an ion, the charge, <h:span class="math">n</h:span>, on  the  ion must be supplied by <h:span class="verb">/CHARGE=n</h:span>.  For cations <h:span class="math">n</h:span> can be 1, 2, 3, etc, for anions <h:span class="math">-1</h:span> or <h:span class="math">-2</h:span> or <h:span class="math">-3</h:span>, etc.[*]
+                  Examples: <h:pre>
+      ION               KEYWORD              ION          KEYWORD
+
+      NH4(+)           CHARGE=1             CH3COO(-)      CHARGE=-1
+      C2H5(+)          CHARGE=1             (COO)(=)       CHARGE=-2
+      SO4(=)           CHARGE=-2            PO4(3-)        CHARGE=-3
+      HSO4(-)          CHARGE=-1            H2PO4(-)       CHARGE=-1
+</h:pre> <h:p></h:p>
+            </h:div>
+            </description>
+</entry>
+<entry id="compfg" term="Calculation of H.O.F.">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>Calculate Heat of formation</definition><description>
+   COMPFG CALCULATES (A) THE HEAT OF FORMATION OF THE SYSTEM, AND
+                     (B) THE GRADIENTS, IF LGRAD IS .TRUE.
+</description>
+</entry>
+<entry id="connolly" term="connolly">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>use connolly surface</definition><description/>
+</entry>
+
+<entry id="dcart" term="Cartesian Derivatives">
+  <annotation>
+    <appinfo>
+      <scalar>DCART</scalar>
+    </appinfo>
+  </annotation>
+  <definition>Cartesian Derivatives</definition>
+  <description>DCART (O)
+ The cartesian derivatives which are calculated in DCART for variationally optimized systems are printed if the keyword DCART is present. The derivatives are in units of kcals/Angstrom, and the coordinates are displacements in x, y, and z. 
+</description>
+</entry>
+
+<entry id="debug" term="debug">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:debug">debug</scalar>
+    </appinfo>
+  </annotation>
+  <definition>debug option turned on</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">DEBUG (O)</h:span>          Certain keywords have specific  output  control  meanings,  such  as FOCK,  VECTORS  and  DENSITY.  If they are
+               used, only the final arrays of the relevant type are printed.  If DEBUG is supplied, then all arrays are printed.   This is
+               useful in debugging ITER. <h:span class="index">DEBUG</h:span> can also increase the amount of output produced when certain output  keywords  are  used,  e.g. COMPFG. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="denout" term="denout">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:densmat_out">true</scalar>
+    </appinfo>
+  </annotation>
+  <definition>density matrix output (channel 10)</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">DENOUT (O)</h:span>          The density matrix at the end of the calculation is to be output  in a  form  suitable  for input in another job.
+                If an automatic dump due to the time being exceeded occurs during the  current  run  then  DENOUT  is invoked automatically.
+                (see RESTART)[*]
+
+               <h:p/>
+               <h:p/>
+            
+    </h:div>
+  </description>
+</entry>
+<entry id="density" term="density">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:densitymatrix">dens[ity]</scalar>
+    </appinfo>
+  </annotation>
+  <definition>print final density matrix</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">DENSITY (O)</h:span>          At the end of a job, when the results are being printed, the density matrix  is  also  printed.  For RHF the normal
+               density matrix is printed. For UHF the sum of the alpha and beta density matrices is printed. <h:br/>        If density is not  requested,  then  the  diagonal  of  the  density matrix,  i.e.,  the  electron  density  on  the
+                atomic orbitals, will be printed.[*]
+
+               <h:p/>
+            
+    </h:div>
+  </description>
+</entry>
+<entry id="dep" term="dep">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>generate fortran code for parameters for new elements</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">DEP (O)</h:span>        For use only with EXTERNAL=.  When  new  parameters  are  published, they  can  be  entered  at  run-time  by  using
+               EXTERNAL=, but as this is somewhat clumsy, a permanent change can be made by use of DEP. <h:br/>      If DEP is  invoked,  a  complete  block  of  FORTRAN  code  will  be generated, and this can be inserted directly into
+               the BLOCK DATA file. <h:br/>      Note that the output is designed for use with PM3.  By modifying the names, the output can be used with MNDO or AM1.
+               <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="depvar" term="depvar">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>translation vector is a multiple of bond-length</definition>
+  <description>
+  <h:div class="subsection"><h:span class="subsection_title">DEPVAR=n.nn (C)</h:span>        In polymers the translation vector is frequently a multiple of  some internal  distance.   For example, in polythene
+               it is the C1--C3 distance. If a cluster unit cell of C6H12 is used, then symmetry can be used to tie together  all  the  carbon
+                atom  coordinates  and the translation vector distance.  In this example DEPVAR=3.0 would be suitable. <h:br/></h:div>
+            </description>
+</entry>
+<entry id="deriv" term="deriv">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>print part of working in deriv</definition><description/>
+</entry>
+<entry id="dforce" term="dforce">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>force calculation specified, also print force matrix.</definition><description/>
+</entry>
+<entry id="dfp" term="dfp">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>use davidon-fletcher-powell method to optimize geometries</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">DFP (W)</h:span>  By default the Broyden--Fletcher--Goldfarb--Shanno method will be  used to  optimize geometries.  The older Davidon--Fletcher--Powell
+               method can be invoked by specifying DFP.  This is intended to be used for comparison of the two methods. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="dipole" term="dipole">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>fit the esp to the calculated dipole</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">DIPOLE (C)</h:span>   Used in the ESP calculation, DIPOLE will  constrain  the  calculated charges  to  reproduce  the cartesian dipole moment
+               components calculated from the density matrix and nuclear charges. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="dipx" term="dipx">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>x component of dipole to be fitted</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">DIPX (C)</h:span>   Similar to DIPOLE, except the fit will be for the X-component only. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="dipy" term="dipy">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>y component of dipole to be fitted</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">DIPY (C)</h:span>  Similar to DIPOLE, except the fit will be for the Y-component only. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="dipz" term="dipz">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>z component of dipole to be fitted</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">DIPZ (C)</h:span>  Similar to DIPOLE, except the fit will be for the Z-component only. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="dmax" term="dmax">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>maximum stepsize in eigenvector following</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">DMAX=n.nn (W)</h:span>  In the EF routine,  the  maximum  step-size  is  <h:span class="math">0.2</h:span>  (Angstroms  or radians),  by  default.   This  can  be  changed by specifying DMAX=n.nn. Increasing DMAX can lead to faster
+               convergence  but  can  also  make  the optimization  go  bad  very  fast.  Furthermore, the Hessian updating may deteriorate
+               when using large stepsizes.  Reducing the stepsize to <h:span class="math">0.10</h:span> or <h:span class="math">0.05</h:span> is recommended when encountering convergence problems. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="doublet" term="doublet">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>doublet state required</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">DOUBLET (C)</h:span>     When a configuration  interaction  calculation  is  done,  all  spin states are calculated simultaneously, either for
+               component of spin=0 or 1/2.  When only doublet states are  of  interest,  then  DOUBLET  can  be specified,  and  all  other
+               spin states, while calculated, are ignored in the choice of root to be used. <h:br/>        Note that while almost every odd-electron system will have a doublet ground state, DOUBLET should still be specified
+               if the desired state must be a doublet. <h:br/>        DOUBLET has no meaning in a UHF calculation. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="drc" term="drc">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>dynamic reaction coordinate calculation</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">DRC (C)</h:span>          A Dynamic Reaction Coordinate calculation is to be run.  By default, total  energy  is  conserved, so that as the
+               `reaction' proceeds in time, energy is transferred between kinetic and potential forms. <h:br/></h:div><h:div class="subsection"><h:span class="subsection_title">DRC=n.nnn (C)</h:span>          In a DRC calculation, the `half-life' for loss of kinetic energy  is defined as n.nnn femtoseconds.  If n.nnn is
+               set to zero, infinite damping simulating a very condensed phase is obtained. <h:br/>        This keyword cannot be written with spaces around the `=' sign. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="dump" term="dump">
+  <annotation>
+    <appinfo>
+      <scalar dataType="xsd:string"/>
+    </appinfo>
+  </annotation>
+  <definition>write restart files every n seconds</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">DUMP (W)</h:span>   Restart files  are  written  automatically  at  one  hour  cpu  time intervals  to  allow  a long job to be restarted if
+               the job is terminated catastrophically.  To change  the  frequency  of  dump,  set  DUMP=nn  to request  a dump every nn seconds.
+                Alternative forms, DUMP=nnM, DUMP=nnH, DUMP=nnD for a dump every nn minutes, hours, or days, respectively.  DUMP only  works
+                with geometry optimization, gradient minimization, path, and FORCE calculations.  It does not (yet) work with a SADDLE calculation.
+               <h:br/></h:div>
+            </description>
+</entry>
+<entry id="echo" term="echo">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>data are echoed back before calculation starts</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">ECHO (O)</h:span>  Data are echoed back if ECHO is specified.  Only useful if data  are suspected to be corrupt. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="ef" term="ef">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>use ef routine for minimum search</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">EF (C)</h:span>        The Eigenvector Following routine is an alternative to the BFGS, and appears  to be much faster.  To invoke the Eigenvector
+               Following routine, specify EF.  EF is particularly good in the end-game, when  the  gradient is small.  See also HESS, DMAX,
+               EIGINV. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="eiginv" term="eiginv">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation><definition/><description>
+    <h:div class="subsection"><h:span class="subsection_title">EIGINV (W)</h:span>  Not recommended for normal use.  Used  with  the  EF  routine.   See source code for more details. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="eigs" term="eigs">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>print all eigenvalues in iter</definition><description/>
+</entry>
+<entry id="enpart" term="enpart">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:partitionEnergy">enpart</scalar>
+    </appinfo>
+  </annotation>
+  <definition>partition energy into components</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">ENPART (O)</h:span>   This is a very useful tool for analyzing the energy terms  within  a system.   The  total  energy,  in  eV,  obtained
+               by  the addition of the electronic and nuclear terms, is partitioned into  mono-  and  bi-centric contributions,  and  these
+               contributions in turn are divided into nuclear and one- and two-electron terms. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="esp" term="esp">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>electrostatic potential calculation</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">ESP (C)</h:span>   This is the ElectroStatic Potential calculation  of  K. M. Merz  and B. H. Besler.  ESP calculates the expectation values
+               of the electrostatic potential of a  molecule  on  a  uniform  distribution  of  points.   The resultant  ESP  surface is
+               then fitted to atom centered charges that best reproduce the distribution, in a least squares sense. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="esprst" term="esprst">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>restart of electrostatic potential</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">ESPRST (W)</h:span>   ESPRST restarts a stopped ESP calculation.  Do not use with RESTART. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="esr" term="esr">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:unpairedSpinDensity">esr</scalar>
+    </appinfo>
+  </annotation>
+  <definition>calculate rhf unpaired spin density</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">ESR (O)</h:span>     The unpaired spin density arising from an odd-electron system can be calculated  both  RHF  and  UHF.  In a UHF calculation
+               the alpha and beta M.O.'s have  different  spatial  forms,  so  unpaired  spin  density  can naturally  be  present  on in-plane
+               hydrogen atoms such as in the phenoxy radical. <h:br/>        In the RHF formalism  a  MECI  calculation  is  performed.   If  the keywords  OPEN  and  C.I.=  are  both  absent
+               then only a single state is calculated.  The unpaired spin density is then calculated from the  state function.   In  order
+                to have unpaired spin density on the hydrogens in, for example, the phenoxy radical, several states should be mixed. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="excited" term="excited">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>optimize first excited singlet state</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">EXCITED (C)</h:span>          The state to be calculated is the first excited  open-shell  singlet state.   If the ground state is a singlet,
+               then the state calculated will be S(1); if the ground state is a triplet, then S(2).  This  state  would normally  be  the
+               state resulting from a one-electron excitation from the HOMO to the LUMO.  Exceptions would be if the lowest singlet state
+               were a biradical, in which case the EXCITED state could be a closed shell. <h:br/>        The EXCITED state will be calculated from a BIRADICAL calculation in which  the  second  root  of  the C.I. matrix
+               is selected.  Note that the eigenvector of the C.I. matrix is not  used  in  the  current  formalism. Abbreviation:  EXCI.
+               <h:br/>        Note:  EXCITED is a redundant keyword, and represents  a  particular configuration  interaction  calculation.   Experienced
+                users of MECI can duplicate the effect of the keyword EXCITED by using  the  MECI  keywords OPEN(2,2), SINGLET, and ROOT=2.
+               <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="external" term="external">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>read parameters off disk</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">EXTERNAL=name (C)</h:span>         Normally, PM3, AM1 and MNDO parameters are taken from the BLOCK DATA files within MOPAC.  When the supplied parameters
+               are not suitable, as in an element recently  parameterized,  and  the  parameters  have  not  yet installed  in  the  user's
+                copy of MOPAC, then the new parameters can be inserted at run time by use of EXTERNAL=<h:span class="verb">/&lt;filename&gt;</h:span>, where <h:span class="verb">/&lt;filename&gt;</h:span> is the name of the file which contains the new parameters. <h:br/>   <h:span class="verb">/&lt;filename&gt;</h:span> consists of a series  of  parameter  definitions  in  the format: <h:pre>
+&lt;Parameter&gt; &lt;Element&gt; &lt;Value of parameter&gt;
+</h:pre>     where the possible parameters are USS, UPP, UDD, ZS, ZP, ZD,  BETAS, BETAP, BETAD, GSS, GSP, GPP, GP2, HSP, ALP, FNnm,
+               n=1,2, or 3, and m=1 to 10, and the elements are defined by their chemical symbols, such as Si or SI. <h:br/>        When new parameters for elements are published, they can be typed in as  shown.   This file is ended by a blank line,
+               the word END or nothing, i.e., no end-of-file delimiter.  An example  of  a  parameter  data  file would be (put at least
+               2 spaces before and after parameter name): <h:pre>
+  Line  1:     USS      Si      -34.08201495
+  Line  2:     UPP      Si      -28.03211675
+  Line  3:     BETAS    Si       -5.01104521
+  Line  4:     BETAP    Si       -2.23153969
+  Line  5:     ZS       Si        1.28184511
+  Line  6:     ZP       Si        1.84073175
+  Line  7:     ALP      Si        2.18688712
+  Line  8:     GSS      Si        9.82
+  Line  9:     GPP      Si        7.31
+  Line 10:     GSP      Si        8.36
+  Line 11:     GP2      Si        6.54
+  Line 12:     HSP      Si        1.32
+</h:pre> <h:p/>        Derived parameters do no need to be entered; they will be calculated from  the optimized parameters.  All "constants"
+               such as the experimental heat of atomization are already inserted for all elements. <h:br/>        NOTE:  EXTERNAL can only be used to input parameters for MNDO,  AM1, or  PM3.   It is unlikely, however, that any
+               more MINDO/3 parameters will be published. <h:br/>        See also DEP to make a permanent change. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="fill" term="fill">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>in rhf open and closed shell, force m.o. n to be filled</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">FILL=n (C)</h:span>          The n'th M.O.  in an RHF calculation is constrained  to  be  filled. It  has no effect on a UHF calculation.  After
+               the first iteration (NOTE: not after the first SCF calculation, but after the first iteration within the first SCF calculation)
+               the n'th M.O.  is stored, and, if occupied, no further action is taken at that time.  If unoccupied, then the  HOMO  and the
+               n'th M.O.'s are swapped around, so that the n'th M.O.  is now filled. On all subsequent iterations the M.O.  nearest in character
+               to the stored M.O.   is forced to be filled, and the stored M.O.  replaced by that M.O. This is necessitated by the fact that
+               in a  reaction  a  particular  M.O. may change its character considerably.  A useful procedure is to run 1SCF and DENOUT first,
+               in order to identify the M.O.'s; the  complete  job  is then  run  with OLDENS and FILL=nn, so that the eigenvectors at the
+               first iteration are fully known.  As FILL is known to give difficulty at times, consider also using C.I.=n and ROOT=m. <h:br/><h:br/></h:div>
+         </description>
+</entry>
+<entry id="flepo" term="flepo">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:geometryOptimisation">flepo</scalar>
+    </appinfo>
+  </annotation>
+  <definition>print details of geometry optimization</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">FLEPO (O)</h:span>          The predicted and actual changes in the geometry,  the  derivatives, and  search  direction  for each geometry optimization
+               cycle are printed. This is useful if there is any question regarding the efficiency  of  the geometry optimizer. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="fmat" term="fmat">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>print details of working in fmat</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">FMAT</h:span>          Details of the construction of the  Hessian  matrix  for  the  force calculation are to be printed. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="fock" term="fock">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>fock matrix</definition><description/>
+  <description>Fock matrix...
+  <h:div>FOCK prints out the last Fock matrix</h:div>
+  </description>
+</entry>
+<entry id="force" term="force">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>force calculation specified</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">FORCE (C)</h:span>          A force-calculation is to be run.  The Hessian, that is  the  matrix (in  millidynes  per  Angstrom)  of second
+               derivatives of the energy with respect to displacements of all pairs of atoms in x, y, and z directions, is calculated.  On
+               diagonalization this gives the force constants for the molecule.  The force matrix, weighted for isotopic masses, is  then
+                used for   calculating   the  vibrational  frequencies.   The  system  can  be characterized as a ground state or a transition
+               state by the presence  of five  (for a linear system) or six eigenvalues which are very small (less than about 30 reciprocal
+               centimeters).  A  transition  state  is  further characterized by one, and exactly one, negative force constant. <h:br/>        A FORCE calculation is a prerequisite for a THERMO calculation. <h:br/>        Before a FORCE calculation is started, a check  is  made  to  ensure that  a  stationary point is being used.  This
+               check involves calculating the gradient norm (GNORM) and if it is significant,  the  GNORM  will  be reduced  using  BFGS.
+                 All  internal  coordinates are optimized, and any symmetry constraints are ignored at this point.  An implication  of  this
+               is  that  if the specification of the geometry relies on any angles being exactly 180 or zero degrees, the calculation may
+               fail. <h:br/>        The geometric definition supplied to FORCE should not rely on angles or  dihedrals  assuming  exact  values.   (The
+               test of exact linearity is sufficiently slack that most molecules that are linear, such as acetylene and  but-2-yne,  should
+                not  be  stopped.)  See also THERMO, LET, TRANS, ISOTOPE. <h:br/>        In a FORCE calculation, PRECISE will eliminate quartic contamination (part  of  the anharmonicity).  This is normally
+               not important, therefore PRECISE should not routinely be used.  In a FORCE  calculation,  the  SCF criterion is automatically
+               made more stringent; this is the main cause of the SCF failing in a FORCE calculation. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="geo-ok" term="geo-ok">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>override interatomic distance check</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">GEO-OK (W)</h:span>          Normally the program will stop with a warning message if  two  atoms are within <h:span class="math">0.8</h:span> Angstroms of each other, or, more rarely, the BFGS routine has difficulty optimizing the geometry.  GEO-OK will  over-ride
+                the  job termination sequence, and allow the calculation to proceed.  In practice, most jobs that terminate due to these
+               checks contain errors in  data,  so caution should be exercised if GEO-OK is used.  An important exception to this warning
+               is when the system contains, or may give rise to, a Hydrogen molecule.  GEO-OK will override other geometric safety checks
+               such as the unstable  gradient  in  a  geometry  optimization   preventing   reliable optimization. <h:br/>   See also the message <h:span class="verb">/"GRADIENTS OF OLD GEOMETRY, GNORM= nn.nnnn"</h:span>. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="gnorm" term="Gradient Norm">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>exit when gradient norm drops below n.n</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">GNORM=n.nn (W)</h:span>          The geometry optimization  termination  criteria  in  both  gradient minimization  and  energy minimization can
+               be over-ridden by specifying a gradient  norm  requirement.   For  example,  GNORM=20  would  allow  the geometry  optimization
+               to exit as soon as the gradient norm dropped below 20.0, the default being 1.0. <h:br/>        For high-precision work, GNORM=0.0 is recommended.   Unless  LET  is also  used, the GNORM will be set to the larger
+               of 0.01 and the specified GNORM.   Results  from  GNORM=0.01  are  easily  good  enough   for   all high-precision work. <h:br/><h:br/></h:div>
+            </description>
+</entry>
+<entry id="gradients" term="gradients">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:gradients">grad[ients]</scalar>
+    </appinfo>
+  </annotation>
+  <definition>print all gradients</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">GRADIENTS (O)</h:span>          In a 1SCF calculation gradients are not calculated by  default:   in non-variationally  optimized  systems  this
+               would take an excessive time. GRADIENTS allows the gradients to  be  calculated.   Normally,  gradients will  not  be printed
+               if the gradient norm is less than 2.0.  However, if GRADIENTS is present, then the  gradient  norm  and  the  gradients  will
+               unconditionally be printed.  Abbreviation:  GRAD. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="graph" term="graph">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:contourMap">graph</scalar>
+    </appinfo>
+  </annotation>
+  <definition>generate file for graphics</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">GRAPH (O)</h:span>          Information needed to generate electron density contour maps can  be written to a file by calling GRAPH.  GRAPH
+               first calls MULLIK in order to generate the inverse-square-root of the overlap matrix, which is required for the re-normalization
+               of the eigenvectors.  All data essential for the graphics package DENSITY are then output. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="hcore" term="hcore">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>print details of working in hcore</definition><description/>
+</entry>
+<entry id="hess" term="hess">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>options for calculating hessian matrices in ef</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">HESS=n (W)</h:span>          When  the  Eigenvector  Following  routine  is  used  for   geometry optimization,  it  frequently  works faster
+               if the Hessian is constructed first.  If HESS=1 is specified, the Hessian matrix  will  be  constructed before the geometry
+               is optimized.  There are other, less common, options, e.g.  HESS=2.  See comments in subroutine EF for details. <h:br/><h:br/></h:div>
+            </description>
+</entry>
+<entry id="h-prio" term="h-prio">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>heat of formation takes priority in drc</definition><description/>
+</entry>
+<entry id="hyperfine" term="hyperfine">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>hyperfine coupling constants to be calculated</definition><description/>
+</entry>
+<entry id="irc" term="irc">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>intrinsic reaction coordinate calculation</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">IRC (C)</h:span>          An Intrinsic Reaction Coordinate calculation  is  to  be  run.   All kinetic   energy  is  shed  at  every  point
+                in  the  calculation.   See Background. <h:br/><h:br/></h:div><h:div class="subsection"><h:span class="subsection_title">IRC=n (C)</h:span>          An Intrinsic Reaction Coordinate calculation to be run;  an  initial perturbation in the direction of normal coordinate
+               n to be applied.  If n is negative, then perturbation is reversed, i.e., initial  motion  is  in the  opposite direction to
+               the normal coordinate.  This keyword cannot be written with spaces around the `=' sign. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="isotope" term="isotope">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>force matrix written to disk (channel 9 )</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">ISOTOPE (O)</h:span>          Generation of the  FORCE  matrix  is  very  time-consuming,  and  in isotopic  substitution  studies  several  vibrational
+               calculations may be needed.  To allow the frequencies to be calculated  from  the  (constant) force  matrix,  ISOTOPE  is
+               used.  When a FORCE calculation is completed, ISOTOPE will cause the force matrix to be stored, regardless  of  whether or
+                not  any  intervening  restarts  have been made.  To re-calculate the frequencies, etc.  starting at the end of the force
+                matrix  calculation, specify RESTART. <h:br/>        The two keywords RESTART and ISOTOPE  can  be  used  together.   For example, if a normal FORCE calculation runs for
+               a long time, the user may want to divide it up into stages and save the final force  matrix.   Once ISOTOPE  has been used,
+               it does not need to be used on subsequent RESTART runs. <h:br/>        ISOTOPE can also be used with FORCE to set up a RESTART file for  an IRC=n calculation. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="iter" term="iter">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>print details of working in iter</definition><description/>
+</entry>
+<entry id="itry" term="itry">
+  <annotation>
+    <appinfo>
+      <scalar>ITRY=%</scalar>
+    </appinfo>
+  </annotation>
+  <definition>set limit of number of scf iterations to n.</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">ITRY=NN (W)</h:span>
+          The default maximum number of SCF  iterations  is  200.   When  this limit  presents  difficulty,  ITRY=nn  can
+                be used to re-define it.  For example, if ITRY=400 is used, the maximum number of  iterations  will  be set to 400.  ITRY
+               should normally not be changed until all other means of obtaining a SCF have been exhausted, e.g.  PULAY CAMP-KING etc. <h:br/><h:br/></h:div>
+            </description>
+</entry>
+<entry id="iupd" term="iupd">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>mode of hessian update in eigenvector following</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">IUPD=n (W)</h:span>             IUPD is used only in the EF routine.  IUPD  should  very  rarely  be touched.   IUPD=1  can  be  used  in  minimum
+               searches if the message <h:pre>
+   "HEREDITARY POSITIVE DEFINITENESS ENDANGERED.  UPDATE SKIPPED THIS CYCLE"
+</h:pre>     occurs  every  cycle  for  10--20  iterations.   Never use IUPD=2 for a TS search!  For more information, read the comments
+               in subroutine EF. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="k" term="k">
+  <annotation>
+    <appinfo>
+      <scalar/>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>brillouin zone structure to be calculated</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">K=(n.nn,n) (C)</h:span>             Used  in  band-structure  calculations,  K=(n.nn,n)  specifies   the step-size in the Brillouin zone, and the
+               number of atoms in the monomeric unit.  Two band-structure calculations  are  supported:   electronic  and phonon.   Both
+                require a polymer to be used.  If FORCE is used, a phonon spectrum is assumed, otherwise an electronic band structure  is
+                assumed. For  both  calculations,  a  density  of  states  is also done.  The band structure calculation is very fast, so
+               a small  step-size  will  not  use much time. <h:br/>        The output is designed to be fed into a graphics package, and is not `elegant'.  For polyethylene, a suitable keyword
+               would be K=(0.01,6). <h:br/><h:br/></h:div>
+            </description>
+</entry>
+<entry id="kinetic" term="kinetic">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>excess kinetic energy added to drc calculation</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">KINETIC=n.nnn (C)</h:span>          In a DRC calculation n.nnn kcals/mole of excess  kinetic  energy  is added  to  the  system  as  soon  as  the kinetic
+               energy builds up to 0.2 kcal/mole.  The excess energy is added to the  velocity  vector,  without change of direction. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="linmin" term="linmin">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:lineminimisation">linmin</scalar>
+    </appinfo>
+  </annotation>
+  <definition>print details of line minimization</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">LINMIN (O)</h:span>             There  are  two  line-minimization  routines  in  MOPAC,  an  energy minimization  and  a  gradient  norm  minimization.
+                 LINMIN  will output details of the line minimization used in a given job. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="large" term="large">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>print expanded output</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">LARGE (O)</h:span>        Most of the time the  output  invoked  by  keywords  is  sufficient. LARGE  will  cause  less-commonly  wanted, but
+               still useful, output to be printed. <h:br/> 1.  To save space, DRC and IRC outputs will, by default, only  print  the line  with  the percent sign.  Other output can
+               be obtained by use of the keyword LARGE, according to the following rules:
+               <h:ul class="description">
+                  <h:li>[LARGE] Print all internal and cartesian coordinates and cartesian velocities. </h:li>
+                  <h:li>[LARGE=1]  Print all internal coordinates. </h:li>
+                  <h:li>[LARGE=-1] Print all internal and cartesian coordinates and cartesian velocities. </h:li>
+                  <h:li>[LARGE=n] Print every n'th set of internal coordinates. </h:li>
+                  <h:li>[LARGE=-n] Print every n'th set of internal and cartesian coordinates and cartesian velocities. </h:li>
+               </h:ul>
+               <h:p/>        If LARGE=1 is used, the output will be the same as that  of  Version 5.0,  when  LARGE was not used.  If LARGE is
+               used, the output will be the same as that of Version 5.0, when LARGE was used.  To save disk space, do not use LARGE. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="let" term="let">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>override certain safety checks</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">LET (W)</h:span>          As MOPAC evolves, the meaning of LET is changing. <h:br/>        Now LET means essentially ``I know what I'm  doing,  override  safety checks''. <h:br/>        Currently, LET has the following meanings:
+               <h:ul class="enumerate">
+                  <h:li> In a FORCE calculation, it means that the supplied  geometry  is to be used, even if the gradients are large. <h:br/></h:li>
+                  <h:li> In a geometry optimization, the specified GNORM is to  be  used, even if it is less than 0.01. <h:br/></h:li>
+                  <h:li> In a POLAR calculation, the molecule is to be  orientated  along its  principal moments of inertia before the calculation
+                     starts. LET will prevent this step being done.
+                  </h:li>
+               </h:ul>
+               <h:p/>
+               <h:p/>
+            
+    </h:div>
+  </description>
+</entry>
+<entry id="localize" term="localize">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:localizedMos">local[ize]</scalar>
+    </appinfo>
+  </annotation>
+  <definition>print localized orbitals</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">LOCALIZE (O)</h:span>          The occupied eigenvectors are transformed into a  localized  set  of M.O.'s by a series of 2 by 2 rotations which
+               maximize <h:span class="math">〈ψ<h:sup>4</h:sup>〉</h:span>.  The value of <h:span class="math">1/〈ψ<h:sup>4</h:sup>〉</h:span> is a direct measure of the number of centers involved in  the MO. Thus  the value of <h:span class="math">1/〈ψ<h:sup>4</h:sup>〉</h:span> is 2.0 for H2, 3.0 for a three-center bond and 1.0 for a  lone  pair.   Higher  degeneracies  than allowed by point group
+               theory are readily obtained.  For example, benzene would give rise to a 6-fold degenerate C--H bond, a 6-fold degenerate
+               C--C sigma  bond and a three-fold degenerate C--C pi bond.  In principle, there is no single step method to unambiguously
+               obtain the most  localized  set of  M.O.'s  in  systems  where several canonical structures are possible, just as no simple
+               method exists for finding the most stable conformer  of some  large  compound.   However,  the  localized  bonds  generated
+                will normally be quite acceptable  for  routine  applications.   Abbreviation: LOCAL. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="max" term="max">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>prints maximum grid size (23*23)</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">MAX</h:span>    In a grid  calculation,  the  maximum  number  of  points  (23)  in  each direction  is  to  be  used.  The default is
+               11.  The number of points in each direction can be set with POINTS1 and POINTS2. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="meci" term="meci">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:multielectronci">meci</scalar>
+    </appinfo>
+  </annotation>
+  <definition>print details of meci calculation</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">MECI (O)</h:span>          At the  end  of  the  calculation  details  of  the  Multi  Electron Configuration  Interaction  calculation are
+               printed if MECI is specified. The state vectors  can  be  printed  by  specifying  VECTORS.   The  MECI calculation is either
+               invoked automatically, or explicitly invoked by the use of the C.I.=n keyword. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="micros" term="micros">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>use specific microstates in the c.i.</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">MICROS=n (C)</h:span>          The microstates used by MECI are normally  generated  by  use  of  a permutation operator.  When individually defined
+               microstates are desired, then MICROS=n can be used, where n defines the number of  microstates  to be read in. <h:br/><h:div class="subsubsection"><h:span class="subsubsection_title">Format for Microstates</h:span>          After the geometry data plus any symmetry data  are  read  in,  data defining  each  microstate  is read in, using
+                  format 20I1, one microstate per line.  The microstate data is preceded by the word ``MICROS'' on a line by  itself.   There
+                   is  at  present no mechanism for using MICROS with a reaction path. <h:br/>        For a system with n M.O.'s in the C.I. (use OPEN=(n1,n) or C.I.=n to do  this), the populations of the n alpha M.O.'s
+                  are defined, followed by the n beta M.O.'s.  Allowed occupancies are zero and one.   For  n=6  the closed-shell  ground  state
+                  would be defined as 111000111000, meaning one electron in each of the first three alpha M.O.'s,  and  one  electron  in each
+                  of the first three beta M.O.'s. <h:br/>        Users are warned that they are responsible for completing  any  spin manifolds.   Thus  while  the  state 111100110000
+                  is a triplet state with component of spin = 1, the state 111000110100, while having  a  component of spin = 0 is neither a
+                  singlet nor a triplet.  In order to complete the spin manifold the microstate 110100111000 must also be included. <h:br/>        If a manifold of spin states is not complete, then  the  eigenstates of  the  spin  operator will not be quantized.
+                   When and only when 100 or fewer microstates are supplied, can spin quantization be conserved. <h:br/>        There are two other limitations on possible microstates.  First, the number  of  electrons  in  every  microstate
+                  should be the same.  If they differ, a warning message will be printed, and the calculation  continued (but  the  results
+                   will  almost  certainly  be  nonsense).   Second, the component of spin for every microstate  must  be  the  same,  except
+                   for teaching  purposes.  Two microstates of different components of spin will have a zero matrix element connecting them.
+                   No warning will be given  as this  is a reasonable operation in a teaching situation.  For example, if all states arising
+                  from two electrons in two levels are to be calculated, say for teaching Russel-Saunders coupling, then the following microstates
+                  would be used: <h:pre>
+         Microstate       No. of alpha, beta electrons  Ms  State
+
+           1100                    2     0              1   Triplet
+           1010                    1     1              0   Singlet
+           1001                    1     1              0   Mixed
+           0110                    1     1              0   Mixed
+           0101                    1     1              0   Singlet
+           0011                    0     2             -1   Triplet
+</h:pre> <h:p/>        Constraints on the space manifold are just  as  rigorous,  but  much easier  to  satisfy.   If  the  energy  levels
+                   are  degenerate, then all components of a manifold of degenerate M.O.'s should be  either  included or  excluded.   If  only
+                   some,  but  not  all,  components are used, the required degeneracy of the states will be missing. <h:br/>        As an example, for the  tetrahedral  methane  cation,  if  the  user supplies  the  microstates  corresponding  to
+                   a component of spin = 3/2, neglecting Jahn-Teller distortion, the minimum number of states that  can be supplied is <h:span class="math">90 = (6!/(1!5!))(6!/(4!2!))</h:span>. <h:br/>        While the total number of electrons  should  be  the  same  for  all microstates,  this  number  does not need to
+                  be the same as the number of electrons supplied to the C.I.; thus in the  example  above,  a  cationic state could be 110000111000.
+                  <h:br/>        The format is defined as 20I1 so that spaces can be used  for  empty M.O.'s. <h:br/></h:div>
+            
+    </h:div>
+  </description>
+</entry>
+<entry id="mindo3" term="mindo/3">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:generic.hamilton">MINDO/3</scalar>
+    </appinfo>
+  </annotation>
+  <definition>use the mindo/3 hamiltonian</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">MINDO/3 (C)</h:span>          The default Hamiltonian within MOPAC is MNDO, with the  alternatives of  AM1  and MINDO/3.  To use the MINDO/3 Hamiltonian
+               the keyword MINDO/3 should be used.  Acceptable alternatives to the keyword MINDO/3 are MINDO and MINDO3. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="mmok" term="mmok">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>use molecular mechanics correction to conh bonds</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">MMOK (C)</h:span>          If the system contains a peptide linkage, then  MMOK  will  allow  a molecular  mechanics  correction  to  be  applied
+                so that the barrier to rotation is increased (to 14.00 kcal/mole in N-methyl acetamide). <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="mode" term="mode">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>in ef, follow hessian mode no. n</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">MODE (C)</h:span>          MODE is used in the EF routine.  Normally the default MODE=1 is used to locate a transition state, but if this is
+               incorrect, explicitly define the vector to be followed by using MODE=n.  (MODE is  not  a  recommended keyword).   If  you
+                use  the  FORCE  option  when deciding which mode to follow, set all isotopic masses to 1.0.  The normal modes from FORCE
+                are normally  mass-weighted; this can mislead.  Alternatively, use LARGE with FORCE:  this gives the force constants and
+               vectors  in  addition  to  the mass-weighted  normal  modes.   Only the mass-weighted modes can be drawn with DRAW. <h:br/></h:div>
+            </description>
+</entry>
+<entry id="moldat" term="moldat">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>?initialisation?</definition>?initialises parameters?<description/>
+</entry>
+<entry id="ms" term="ms">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>in meci, magnetic component of spin</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">MS=n</h:span>          Useful for checking the MECI calculation  and  for  teaching.   MS=n overrides  the normal choice of magnetic component
+               of spin.  Normally, if a triplet is requested, an MS of  1  will  be  used;  this  excludes  all singlets.   If MS=0 is also
+               given, then singlets will also be calculated. The use of MS should not affect the values of the results at all. <h:br/></h:div>
+            </description>
+</entry>
+<entry id="mullik" term="mullik">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:mullikenPop">mullik</scalar>
+    </appinfo>
+  </annotation>
+  <definition>print the mulliken population analysis</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">MULLIK (O)</h:span>          A full Mulliken Population analysis is to be done on the  final  RHF wavefunction.  This involves the following
+               steps:
+               <h:ul class="enumerate">
+                  <h:li> The eigenvector matrix is divided by the square root of the overlap matrix, <h:span class="math">S</h:span>.
+                  </h:li>
+                  <h:li> The Coulson-type density matrix, <h:span class="math">P</h:span>, is formed.
+                  </h:li>
+                  <h:li> The overlap population is formed from <h:span class="math">P(i,j) S(i,j)</h:span>.
+                  </h:li>
+                  <h:li> Half the off-diagonals are added onto the diagonals. </h:li>
+               </h:ul>
+               <h:p/>
+            
+    </h:div>
+  </description>
+</entry>
+<entry id="nllsq" term="nllsq">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>minimize gradients using nllsq</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">NLLSQ (C)</h:span>          The gradient norm is to be minimized by Bartel's method.  This is  a Non-Linear   Least   Squares  gradient  minimization
+                routine.   Gradient minimization will locate one of three possible points: <h:br/>        (a) A minimum in the energy surface.  The gradient norm will  go  to zero,  and  the  lowest  five  or  six eigenvalues
+               resulting from a FORCE calculation will be approximately zero. <h:br/>        (b) A transition state.  The gradient norm will vanish, as  in  (a), but  in  this  case  the  system  is  characterized
+               by one, and only one, negative force constant. <h:br/>        (c) A local minimum in the gradient norm space.  In  this  (normally unwanted)  case  the gradient norm is minimized,
+               but does not go to zero. A FORCE calculation will not  give  the  five  or  six  zero  eigenvalues characteristic  of  a stationary
+               point.  While normally undesirable, this is sometimes the only way to obtain  a  geometry.   For  instance,  if  a system
+               is formed which cannot be characterized as an intermediate, and at the same time is  not  a  transition  state,  but  nonetheless
+                has  some chemical significance, then that state can be refined using NLLSQ. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="noanci" term="noanci">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>do not use analytical c.i. derivatives</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">NOANCI (W)</h:span>             RHF open-shell derivatives are normally calculated  using  Liotard's analytical C.I. method.  If this method
+               is NOT to be used, specify NOANCI (NO ANalytical Configuration Interaction derivatives). <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="nodiis" term="nodiis">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>do not use diis geometry optimizer</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">NODIIS (W)</h:span>          In the event that the G-DIIS option is not  wanted,  NODIIS  can  be used.   The  G-DIIS  normally  accelerates
+               the geometry optimization, but there is no guarantee that it will do so.  If the heat of formation rises unexpectedly  (i.e.,
+               rises during a geometry optimization while the GNORM is larger than about 0.3), then try NODIIS. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="nointer" term="nointer">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>do not print interatomic distances</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">NOINTER (O)</h:span>          The interatomic distances are printed by default.   If  you  do  not want  them to be printed, specify NOINTER.
+                For big jobs this reduces the output file considerably. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="nolog" term="nolog">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>suppress log file trail, where possible</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">NOLOG (O)</h:span>             Normally a copy of the archive file will  be  directed  to  the  LOG file, along with a synopsis of the job.
+                If this is not wanted, it can be suppressed completely by NOLOG. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="nomm" term="nomm">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>do not use molecular mechanics correction to conh bonds</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">NOMM (C)</h:span>        All  four  semi-empirical  methods  underestimate  the  barrier   to rotation  of  a  peptide bond.  A Molecular Mechanics
+               correction has been added which increases the barrier in N-methyl acetamide to 14  kcal/mole. If   you  do  not  want  this
+                correction,  specify  NOMM  (NO  Molecular Mechanics). <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="nonr" term="nonr">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation><definition/><description>
+    <h:div class="subsection"><h:span class="subsection_title">NONR (W)</h:span>  Not recommended for normal use.  Used  with  the  EF  routine.   See source code for more details. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="nothiel" term="nothiel">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>do not use thiel's fstmin technique</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">NOTHIEL (W)</h:span>             In a normal geometry optimization using the  BFGS  routine,  Thiel's FSTMIN  technique  is  used.  If normal
+               line-searches are wanted, specify NOTHIEL. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="nsurf" term="nsurf">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>number of surfaces in an esp calculation</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">NSURF (C)</h:span>          In an ESP calculation,  NSURF=n  specifies  the  number  of  surface layers for the Connolly surface. <h:br/></h:div>
+            <h:div class="subsection"><h:span class="subsection_title">OLDENS (W)</h:span>          A density matrix produced by an earlier run of MOPAC is to  be  used to start the current calculation.  This can
+               be used in attempts to obtain an SCF when a previous calculation ended successfully  but  a  subsequent run failed to go SCF.
+               <h:br/></h:div>
+            </description>
+</entry>
+<entry id="noxyz" term="noxyz">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>do not print cartesian coordinates</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">NOXYZ (O)</h:span>          The cartesian coordinates are printed by default.   If  you  do  not want  them  to  be printed, specify NOXYZ.
+                For big jobs this reduces the output file considerably. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="nsurf" term="nsurf">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>number of layers used in electrostatic potential</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">NSURF (C)</h:span>          In an ESP calculation,  NSURF=n  specifies  the  number  of  surface layers for the Connolly surface. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="oldens" term="oldens">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>read initial density matrix off disk</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">OLDENS (W)</h:span>          A density matrix produced by an earlier run of MOPAC is to  be  used to start the current calculation.  This can
+               be used in attempts to obtain an SCF when a previous calculation ended successfully  but  a  subsequent run failed to go SCF.
+               <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="oldgeo" term="oldgeo">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>previous geometry to be used</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">OLDGEO (C)</h:span>          If multiple geometries are to be run, and the  final  geometry  from one  calculation  is  to  be  used  to start
+               the next calculation, OLDGEO should be specified.  Example:  If a MNDO, AM1, and PM3 calculation  were to  be done on one
+               system, for which only a rough geometry was available, then after the MNDO calculation, the AM1 calculation could be done
+                using the  optimized  MNDO  geometry  as  the  starting geometry, by specifying OLDGEO. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="open" term="open">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>open-shell rhf calculation requested</definition><description/>
+</entry>
+<entry id="oride" term="oride">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation><definition/><description>
+    <h:div class="subsection"><h:span class="subsection_title">ORIDE (W)</h:span>  Do not use this keyword until you have read Simons' article.   ORIDE is  part  of  the EF routine, and means ``Use whatever
+               <h:span class="math">Λ</h:span>'s are produced even if they would normally be `unacceptable'.''<h:br/>  J. Simons, P. Jorgensen, H. Taylor, J. Ozment, <h:span class="curly"><h:span class="em"> J. Phys. Chem.</h:span></h:span> 87:2745 (1983). <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="parasok" term="parasok">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>in am1 calculations some mndo parameters are to be used</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">PARASOK (W)</h:span>     <h:span class="curly"><h:span class="em"> Use this keyword with extreme caution!</h:span></h:span> The  AM1  method  has  been parameterized  for only a few elements, less than the number available to MNDO or PM3.  If any
+               elements which are  not  parameterized  at  the  AM1 level  are  specified,  the  MNDO parameters, if available, will be used.
+               The resulting mixture of methods, AM1 with MNDO, has not been studied  to see  how good the results are, and users are strictly
+               on their own as far as accuracy and  compatibility  with  other  methods  is  concerned.   In particular,  while all parameter
+               sets are referenced in the output, other programs may not cite the parameter sets used and thus compatibility with other MNDO
+               programs is not guaranteed. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="pi" term="pi">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:pibonds">pi</scalar>
+    </appinfo>
+  </annotation>
+  <definition>resolve density matrix into sigma and pi bonds</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">PI (O)</h:span>          The normal density matrix is composed of atomic orbitals, that is s, px,  py and pz.  PI allows the user to see
+               how each atom-atom interaction is split into <h:span class="math">σ</h:span> and <h:span class="math">π</h:span> bonds. The  resulting ``density  matrix'' is composed  of  the  following  basis-functions:- s-<h:span class="math">σ</h:span>,  p-<h:span class="math">σ</h:span>, p-<h:span class="math">π</h:span>, d-<h:span class="math">σ</h:span>, d-<h:span class="math">π</h:span>, d-<h:span class="math">δ</h:span>. The on-diagonal  terms  give  the  hybridization state,  so  that an sp<h:span class="math"><h:sup>2</h:sup></h:span> hybridized system would be represented as s-<h:span class="math">σ</h:span>: 1.0, p-<h:span class="math">σ</h:span>: 2.0, p-<h:span class="math">π</h:span>: 1<h:span class="curly">.</h:span>0. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="pl" term="pl">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>monitor convergence of density matrix in iter</definition><description/>
+</entry>
+<entry id="pm3" term="pm3">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:generic.hamilton">PM3</scalar>
+    </appinfo>
+  </annotation>
+  <definition>use the mndo-pm3 hamiltonian</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">PM3 (C)</h:span>  The PM3 method is to be used. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="point" term="point">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>number of points in reaction path</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">POINT=n (C)</h:span>          The number of  points  to  be  calculated  on  a  reaction  path  is specified by POINT=n.  Used only with STEP
+               in a path calculation. <h:br/></h:div>
+</description>            </entry>
+<entry id="point1" term="point1">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>number of points in first direction in grid calculation</definition>
+  <description>            <h:div class="subsection"><h:span class="subsection_title">POINT1=n (C)</h:span>          In a grid calculation, the number of points to be calculated in  the first  direction  is  given  by  POINT1=n.
+                 `n'  should be less than 24; default:  11. <h:br/></h:div>
+            </description>
+</entry>
+<entry id="point2" term="point2">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>number of points in second direction in grid calculation</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">POINT2=n (C)</h:span>          In a grid calculation, the number of points to be calculated in  the second  direction  is  given  by  POINT2=n.
+                `n' should be less than 24, default:  11; <h:br/></h:div>
+</description>
+</entry>
+<entry id="polar" term="polar">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>calculate first, second and third order polarizabilities</definition><description/>
+</entry>
+<entry id="potwrt" term="potwrt">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>in esp, write out electrostatic potential to unit 21</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">POTWRT (W)</h:span>     In an  ESP  calculation,  write  out  surface  points  and  electrostatic potential values to UNIT 21. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="powsq" term="powsq">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>print details of working in powsq</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">POWSQ (C)</h:span>          Details of the working of POWSQ  are  printed  out.   This  is  only useful in debugging. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="precise" term="precise">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>criteria to be increased by 100 times</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">PRECISE (W)</h:span>          The criteria  for  terminating  all  optimizations,  electronic  and geometric,  are  to be increased by a factor,
+               normally, 100.  This can be used where more precise results are wanted.  If the results are going  to be  used  in  a  FORCE
+                calculation, where the geometry needs to be known quite precisely, then PRECISE is recommended; for small systems the extra
+               cost  in CPU time is minimal.  PRECISE is not recommended for experienced users, instead GNORM=n.nn and SCFCRT=n.nn are suggested.
+                PRECISE  should only  very  rarely  be  necessary in a FORCE calculation:  all it does is remove quartic  contamination,
+                which  only  affects  the  trivial  modes significantly, and is very expensive in CPU time. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="pulay" term="pulay">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>use pulay's converger to obtain a scf</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">PULAY (W)</h:span>          The default converger in the SCF calculation is to  be  replaced  by Pulay's  procedure  as soon as the density
+               matrix is sufficiently stable. A considerable improvement in speed can be achieved by the use of  PULAY. If a large number
+               of SCF calculations are envisaged, a sample calculation using 1SCF and PULAY should be compared with using 1SCF on its  own,
+                and if  a  saving  in  time  results,  then  PULAY should be used in the full calculation.  PULAY should be used with care
+               in that its use will prevent the  combined  package  of  convergers  (SHIFT,  PULAY  and the CAMP-KING convergers) from automatically
+               being used in the event  that  the  system fails to go SCF in (ITRY-10) iterations. <h:br/>        The combined set of convergers very seldom fails. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="quartet" term="quartet">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>quartet state required</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">QUARTET (C)</h:span>          RHF interpretation:  The desired spin-state is a quartet, i.e.,  the state  with component of spin = 1/2 and spin
+               = 3/2.  When a configuration interaction calculation is done, all spin states of  spin  equal  to,  or greater  than  1/2
+               are calculated simultaneously, for component of spin = 1/2.  From these states the quartet states are selected when  QUARTET
+                is specified,  and  all  other spin states, while calculated, are ignored in the choice of root to be used.  If QUARTET is
+               used on  its  own,  then  a single  state, corresponding to an alpha electron in each of three M.O.'s is calculated. <h:br/>        UHF interpretation:  The system will have three more alpha electrons than beta electrons. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="quintet" term="quintet">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>quintet state required</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">QUINTET (C)</h:span>          RHF interpretation:  The desired spin-state is a quintet,  that  is, the  state with component of spin = 0 and spin
+               = 2.  When a configuration interaction calculation is done, all spin states of  spin  equal  to,  or greater  than 0 are calculated
+               simultaneously, for component of spin = 0. From these states  the  quintet  states  are  selected  when  QUINTET  is specified,
+                and  the  septet states, while calculated, will be ignored in the choice of root to be used.  If QUINTET is used on  its
+                own,  then  a single  state,  corresponding to an alpha electron in each of four M.O.'s is calculated. <h:br/>        UHF interpretation:  The system will have three more alpha electrons than beta electrons. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="recalc" term="recalc">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>in ef, recalculate hessian every n steps</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">RECALC=n</h:span>     RECALC=n  calculates  the  Hessian  every  n   steps   in   the   EF optimization.   For  small n this is costly but
+               is also very effective in terms  of  convergence.   RECALC=10  and  DMAX=0.10  can  be  useful  for difficult  cases.   In
+                extreme  cases RECALC=1 and DMAX=0.05 will always find a stationary point, if it exists. <h:br/><h:br/></h:div>
+            </description>
+</entry>
+<entry id="restart" term="restart">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>calculation restarted</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">RESTART (W)</h:span>          When a job has been stopped, for whatever reason,  and  intermediate results  have  been  stored, then the calculation
+               can be restarted at the point where it stopped by specifying RESTART.  The most common cause of a job  stopping  before  completion
+               is its exceeding the time allocated.  A saddle-point calculation has no restart, but  the  output  file  contains information
+                which  can  easily  be  used to start the calculation from a point near to where it stopped. <h:br/>        It is not necessary to change the geometric data to reflect the  new geometry.   As a result, the geometry printed
+               at the start of a restarted job will be that of the original data, not that of the restarted file. A convenient way to monitor
+               a  long  run  is  to  specify  1SCF  and RESTART; this will give a normal output file at very little cost.
+               <h:ul class="description">
+                  <h:li>[Note 1:]  In the FORCE calculation two restarts are possible.   These are (a) a restart in FLEPO if the geometry was not
+                     optimized fully before FORCE was called, and (b) the normal restart in the construction  of  the force  matrix.   If the restart
+                     is in FLEPO within FORCE then the keyword FORCE should be deleted,  and  the  keyword  RESTART  used  on  its  own. Forgetting
+                     this point is a frequent cause of failed jobs. <h:br/></h:li>
+                  <h:li>[Note 2:]  Two restarts also exist in the IRC calculation.  If an  IRC calculation  stops  while in the FORCE calculation,
+                     then a normal restart can be done.  If the job stops while doing  the  IRC  calculation  itself then  the keyword IRC=n should
+                     be changed to IRC, or it can be omitted if DRC is also specified.  The absence of  the  string  "IRC="  is  used  to indicate
+                      that  the  FORCE  calculation  was completed before the restart files were written.
+                  </h:li>
+               </h:ul>
+               <h:p/>
+            
+    </h:div>
+  </description>
+</entry>
+<entry id="root" term="root">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>root n to be optimized in a c.i. calculation</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">ROOT=n (C)</h:span>          The  n'th  root  of  a  C.I. calculation  is  to  be  used  in   the calculation.   If  a  keyword  specifying the
+               spin-state is also present, e.g.  SINGLET or TRIPLET, then the  n'th  root  of  that  state  will  be selected.   Thus  ROOT=3
+                and SINGLET will select the third singlet root. If ROOT=3 is used on its own, then the third root will be used, which may
+               be  a  triplet, the third singlet, or the second singlet (the second root might be a triplet).  In normal use, this keyword
+               would not be used.   It is  retained  for educational and research purposes.  Unusual care should be exercised when ROOT=
+               is specified. <h:br/></h:div>
+            </description>
+</entry>
+<entry id="rot" term="rot">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>the symmetry number of the system is n.</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">ROT=n (C)</h:span>          In  the  calculation  of  the  rotational   contributions   to   the thermodynamic  quantities  the  symmetry  number
+                of the molecule must be supplied.  The symmetry  number  of  a  point  group  is  the  number  of equivalent  positions
+               attainable  by  pure rotations.  No reflections or improper rotations  are  allowed.   This  number  cannot  be  assumed
+               by default,  and  may  be  affected by subtle modifications to the molecule, such as isotopic substitution.  A list of  the
+                most  important  symmetry numbers follows: <h:pre>
+            ----    TABLE OF SYMMETRY NUMBERS    ----
+
+
+       C1 CI CS     1      D2 D2D D2H  4       C(INF)V   1
+       C2 C2V C2H   2      D3 D3D D3H  6       D(INF)H   2
+       C3 C3V C3H   3      D4 D4D D4H  8       T TD     12
+       C4 C4V C4H   4      D6 D6D D6H  12      OH       24
+       C6 C6V C6H   6      S6          3
+</h:pre> <h:p></h:p>
+            </h:div>
+        </description>
+</entry>
+<entry id="saddle" term="saddle">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>optimize transition state</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">SADDLE (C)</h:span>          The transition  state  in  a  simple  chemical  reaction  is  to  be optimized.    Extra   data  are  required.
+                 After  the  first  geometry, specifying the reactants, and any symmetry functions have  been  defined, the  second geometry,
+               specifying the products, is defined, using the same format as that of the first geometry. <h:br/>        SADDLE often fails to work successfully.  Frequently this is due  to equivalent dihedral angles in the reactant and
+               product differing by about 360 degrees rather than zero degrees.  As the choice of dihedral  can  be difficult,  users  should
+                consider  running  this  calculation  with the keyword XYZ.  There  is  normally  no  ambiguity  in  the  definition  of
+               cartesian coordinates.  See also BAR=. <h:br/>        Many of the bugs in SADDLE have been removed in this  version.   Use of the XYZ option is strongly recommended. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="scale" term="scale">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>scaling factor for van der waals distance in esp</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">SCALE (C)</h:span>          SCALE=n.n specifies the scaling factor for Van der Waals' radii  for the initial layer of the Connolly surface in
+               the ESP calculation. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="scfcrt" term="scfcrt">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>default scf criterion replaced by the value supplied</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">SCFCRT=n.nn (W)</h:span>          The default SCF criterion is to  be  replaced  by  that  defined  by SCFCRT=. <h:br/>        The SCF criterion is  the  change  in  energy  in  kcal/mol  on  two successive  iterations.   Other  minor criteria
+               may make the requirements for an SCF slightly more stringent.  The SCF criterion can be varied from about 0.001 to 1.D-25,
+               although numbers in the range 0.0001 to 1.D-9 will suffice for most applications. <h:br/>        An overly tight criterion can lead to failure to achieve a SCF,  and consequent failure of the run. <h:br/></h:div>
+            </description>
+</entry>
+<entry id="scincr" term="scincr">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>increment between layers in esp</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">SCINCR=n.nn</h:span>          In an ESP calculation, SCINCR=n.nn specifies the  increment  between layers of the surface in the Connolly surface.
+                (default:  0.20) <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="setup" term="setup">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>extra keywords to be read of setup file</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">SETUP (C)</h:span>          If, on the keyword line, the word `SETUP' is specified, then one  or two  lines  of  keywords  will  be read from
+               a file with the logical name SETUP.  The logical file SETUP must exist, and must contain at least  one line.  If the second
+               line is defined by the first line as a keyword line, and the second line contains the word SETUP, then one  line  of  keywords
+               will be read from a file with the logical name SETUP. <h:br/></h:div><h:div class="subsection"><h:span class="subsection_title">SETUP=name (C)</h:span>             Same as SETUP, only the logical or actual name of the SETUP file  is `name'. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="sextet" term="sextet">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>sextet state required</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">SEXTET (C)</h:span>          RHF interpretation:  The desired spin-state is a sextet:  the  state with component of spin = 1/2 and spin = 5/2.
+               <h:br/>        The sextet states are the highest spin  states  normally  calculable using MOPAC in its unmodified form.  If SEXTET
+               is used on its own, then a single state, corresponding to one alpha electron in each of five M.O.'s, is  calculated.   If
+               several sextets are to be calculated, say the second or third, then OPEN(n1,n2) should be used. <h:br/>        UHF interpretation:  The system will have five more alpha  electrons than beta electrons. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="shift" term="shift">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>a damping factor of n defined to start scf</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">SHIFT=n.nn (W)</h:span>          In an attempt to obtain an SCF by damping  oscillations  which  slow down  the  convergence or prevent an SCF being
+               achieved, the virtual M.O. energy levels are shifted up or down in energy by a shift technique.  The principle is that if
+               the virtual M.O.'s are changed in energy relative to the occupied set, then the polarizability of  the  occupied  M.O.'s
+               will change  pro  rata.   Normally,  oscillations  are due to autoregenerative charge fluctuations. <h:br/>        The SHIFT method has been re-written so  that  the  value  of  SHIFT changes  automatically  to  give  a  critically-damped
+                system.  This can result in a positive or  negative  shift  of  the  virtual  M.O.   energy levels.   If  a non-zero SHIFT
+               is specified, it will be used to start the SHIFT technique, rather than the default 15eV.  If SHIFT=0 is  specified, the SHIFT
+               technique will not be used unless normal convergence techniques fail and the automatic ``ALL CONVERGERS '' message is produced. <h:br/></h:div>
+           </description>
+</entry>
+<entry id="sigma" term="sigma">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>minimize gradients using sigma</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">SIGMA (C)</h:span>          The McIver-Komornicki gradient norm minimization routines, POWSQ and SEARCH  are  to  be used.  These are very rapid
+               routines, but do not work for all species.  If the gradient norm is low, i.e., less  than  about  5 units,   then   SIGMA
+                will  probably  work;  in  most  cases,  NLLSQ  is recommended.  SIGMA first calculates a quite accurate Hessian  matrix,
+                a slow  step,  then works out the direction of fastest decent, and searches along that direction until the gradient norm
+               is minimized.   The  Hessian is  then  partially  updated  in  light of the new gradients, and a fresh search direction found.
+                Clearly, if the Hessian changes  markedly  as  a result  of  the  line-search, the update done will be inaccurate, and the
+               new search direction will be faulty. <h:br/>        SIGMA should be avoided if at all  possible  when  non-variationally optimized calculations are being done. <h:br/>        If the Hessian is suspected to be corrupt within SIGMA  it  will  be automatically  recalculated.  This frequently
+               speeds up the rate at which the transition state is located.  If you do not want the  Hessian  to  be reinitialized  ---
+               it is costly in CPU time --- specify LET on the keyword line. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="singlet" term="singlet">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>singlet state required</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">SINGLET (C)</h:span>          When a configuration  interaction  calculation  is  done,  all  spin states are calculated simultaneously, either
+               for component of spin = 0 or 1/2.  When only singlet states are  of  interest,  then  SINGLET  can  be specified,  and  all
+                other spin states, while calculated, are ignored in the choice of root to be used. <h:br/>        Note that while  almost  every  even-electron  system  will  have  a singlet  ground  state,  SINGLET should still
+               be specified if the desired state must be a singlet. <h:br/>        SINGLET has no meaning in a UHF calculation, but see also TRIPLET. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="slope" term="slope">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>multiplier used to scale mndo charges</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">SLOPE (C)</h:span>          In an ESP calculation, SLOPE=n.nn specifies  the  scale  factor  for MNDO charges.  (default=1.422) <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="spin" term="spin">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:spinmatrix">spin</scalar>
+    </appinfo>
+  </annotation>
+  <definition>print final uhf spin matrix</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">SPIN (O)</h:span>          The spin matrix, defined as the difference  between  the  alpha  and beta   density  matrices,  is  to  be  printed.
+                 If  the  system  has  a closed-shell ground state, e.g.  methane run UHF, the spin matrix will be null. <h:br/>        If SPIN is not requested in a UHF calculation, then the diagonal  of the spin matrix, that is the spin density on
+               the atomic orbitals, will be printed. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="step" term="step">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>step size in path</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">STEP (C)</h:span>          In a reaction path, if the path step is constant, STEP can  be  used instead  of  explicitly  specifying  each
+               point.  The number of steps is given by POINT.  If the reaction coordinate is an  interatomic  distance, only positive STEPs
+               are allowed. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="step1" term="step1">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>step size n for first coordinate in grid calculation</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">STEP1=n.nnn (C)</h:span>          In a grid calculation the step size in degrees or Angstroms for  the first  of  the two parameters is given by n.nnn.
+                By default, an 11 by 11 grid is generated.  See POINT1 and POINT2 on how to adjust  this  number. The  first point calculated
+               is the supplied geometry, and is in the upper left hand corner.  This is a change from Version 5.00, where the supplied geometry
+               was the central point. <h:br/></h:div>
+            </description>
+</entry>
+<entry id="step2" term="step2">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>step size n for second coordinate in grid calculation</definition>
+  <description>            <h:div class="subsection"><h:span class="subsection_title">STEP2=n.nnn (C)</h:span>          In a grid calculation the step size in degrees or Angstroms for  the second of the two parameters is given by n.nnn.
+               <h:br/></h:div>
+</description>
+</entry>
+<entry id="sto3g" term="sto3g">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>deorthogonalize orbitals in sto-3g basis</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">STO3G (W)</h:span>          In an ESP calculation STO3G means ``Use  the  STO-3G  basis  set  to de-orthogonalize the semiempirical orbitals''.
+               <h:br/></h:div>
+            </description>
+</entry>
+<entry id="symavg" term="symavg">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>average symmetry equivalent esp charges</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">SYMAVG (W)</h:span>          Used by the ESP, SYMAVG will average charges which should  have  the same value by symmetry. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="symmetry" term="symmetry">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>impose symmetry conditions</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">SYMMETRY (C)</h:span>          Symmetry data defining related bond lengths,  angles  and  dihedrals can  be included by supplying additional data
+               after the geometry has been entered.  If there are any other data, such as values  for  the  reaction coordinates,  or  a
+               second geometry, as required by SADDLE, then it would follow the symmetry data.  Symmetry data  are  terminated  by  one
+               blank line.   For  non-variationally optimized systems symmetry constraints can save a lot of time because many derivatives
+               do not need to be calculated. At  the  same  time,  there  is  a  risk that the geometry may be wrongly specified,  e.g.
+                if  methane  radical  cation  is  defined   as   being tetrahedral,  no  indication  that  this  is faulty will be given
+               until a FORCE calculation is run.  (This system undergoes spontaneous Jahn-Teller distortion.) <h:br/>        Usually a lower heat of formation can be obtained when  SYMMETRY  is specified.   To  see  why,  consider  the  geometry
+                of  benzene.   If no assumptions are made regarding  the  geometry,  then  all  the  C--C bond lengths  will  be very slightly
+               different, and the angles will be almost, but not quite 120 degrees.  Fixing all angles at 120  degrees,  dihedrals at  180
+               or 0 degrees, and only optimizing one C--C and one C--H bond-length will  result  in  a  2--D optimization, and exact D<h:span class="math"><h:sub>6h</h:sub></h:span> symmetry. Any deformation  from  this  symmetry  must  involve  error,  so  by imposing symmetry some error is removed. <h:br/>The layout of the symmetry data is: <h:pre>
+   &lt;defining atom&gt; &lt;symmetry relation&gt; &lt;defined atom&gt; &lt;defined atom&gt;,...
+</h:pre>  where the numerical code for <h:span class="verb">/&lt;symmetry relation&gt;</h:span> is given in the table of symmetry functions below. <h:br/>   For example,  ethane,  with  three  independent  variables,  can  be defined as: <h:pre>
+     SYMMETRY
+     ETHANE, D3D                                   NA NB NC
+
+      C
+      C    1.528853 1                               1
+      H    1.105161 1  110.240079 1                 2  1
+      H    1.105161 0  110.240079 0  120.000000 0   2  1  3
+      H    1.105161 0  110.240079 0  240.000000 0   2  1  3
+      H    1.105161 0  110.240079 0   60.000000 0   1  2  3
+      H    1.105161 0  110.240079 0  180.000000 0   1  2  3
+      H    1.105161 0  110.240079 0  300.000000 0   1  2  3
+      0    0.000000 0    0.000000 0    0.000000 0   0  0  0
+       3,    1,    4,    5,     6,     7,     8,
+       3,    2,    4,    5,     6,     7,     8,
+</h:pre> <h:p/>        Here atom 3,  a  hydrogen,  is  used  to  define  the  bond  lengths (symmetry  relation  1)  of  atoms  4,5,6,7 and
+               8 with the atoms they are specified to bond with in the NA column of the data file; similarly,  its angle  (symmetry  relation
+                2)  is used to define the bond-angle of atoms 4,5,6,7 and 8 with the two atoms specified in the NA and  NB  columns  of the
+                data  file.   The other angles are point-group symmetry defined as a multiple of 60 degrees. <h:br/>        Spaces, tabs or commas can be used to separate data.  Note that only three  parameters  are  marked to be optimized.
+                The symmetry data can be the last line of the data file unless more data follows, in which case  a blank line must be inserted
+               after the symmetry data. <h:br/>The full list of available symmetry relations is as follows:[*]
+                 <h:pre>
+&lt;Symmetry                  SYMMETRY FUNCTIONS
+ relation&gt;
+
+   1     BOND LENGTH    IS SET EQUAL TO THE REFERENCE BOND LENGTH
+   2     BOND ANGLE     IS SET EQUAL TO THE REFERENCE BOND ANGLE
+   3     DIHEDRAL ANGLE IS SET EQUAL TO THE REFERENCE DIHEDRAL ANGLE
+   4     DIHEDRAL ANGLE VARIES AS  90 DEGREES - REFERENCE DIHEDRAL
+   5     DIHEDRAL ANGLE VARIES AS  90 DEGREES + REFERENCE DIHEDRAL
+   6     DIHEDRAL ANGLE VARIES AS 120 DEGREES - REFERENCE DIHEDRAL
+   7     DIHEDRAL ANGLE VARIES AS 120 DEGREES + REFERENCE DIHEDRAL
+   8     DIHEDRAL ANGLE VARIES AS 180 DEGREES - REFERENCE DIHEDRAL
+   9     DIHEDRAL ANGLE VARIES AS 180 DEGREES + REFERENCE DIHEDRAL
+  10     DIHEDRAL ANGLE VARIES AS 240 DEGREES - REFERENCE DIHEDRAL
+  11     DIHEDRAL ANGLE VARIES AS 240 DEGREES + REFERENCE DIHEDRAL
+  12     DIHEDRAL ANGLE VARIES AS 270 DEGREES - REFERENCE DIHEDRAL
+  13     DIHEDRAL ANGLE VARIES AS 270 DEGREES + REFERENCE DIHEDRAL
+  14     DIHEDRAL ANGLE VARIES AS THE NEGATIVE OF THE REFERENCE
+         DIHEDRAL
+  15     BOND LENGTH VARIES AS HALF THE REFERENCE BOND LENGTH
+  16     BOND ANGLE VARIES AS HALF THE REFERENCE BOND ANGLE
+  17     BOND ANGLE VARIES AS 180 DEGREES - REFERENCE BOND ANGLE
+  18     BOND LENGTH IS A MULTIPLE OF REFERENCE BOND-LENGTH
+</h:pre> <h:p/>        Function  18  is  intended  for  use  in  polymers,  in  which   the translation  vector  may be a multiple of some
+               bond-length.  1,2,3 and 14 are most commonly used.  Abbreviation:  SYM. <h:br/>        SYMMETRY is not available for use with cartesian coordinates. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="t" term="t">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>a time of n seconds requested</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">T= (W)</h:span>          This is a facility to allow the program to shut down in  an  orderly manner on computers with execution time cpu
+                limits. <h:br/>        The total cpu  time allowed for the current  job  is  limited  to nn.nn  seconds;  by default this is one hour, i.e.,
+               3600 seconds.  If the next cycle of the calculation cannot be completed without running a  risk of  exceeding the assigned
+               time the calculation will write a restart file and then stop.  The safety margin is 100 percent; that is, to do  another cycle,
+               enough time to do at least two full cycles must remain. <h:br/>        Alternative specifications of the time are  T=nn.nnM,  this  defines the  time in minutes, T=nn.nnH, in hours, and
+               T=nn.nnD, in days, for very long jobs.  This keyword cannot be written with  spaces  around the `=' sign. <h:br/></h:div>
+            </description>
+</entry>
+<entry id="thermo" term="thermo">
+  <annotation>
+    <appinfo>
+      <scalar dictRef="ccml:thermodynamics">thermo</scalar>
+    </appinfo>
+  </annotation>
+  <definition>perform a thermodynamics calculation</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">THERMO (O)</h:span>          The  thermodynamic  quantities,  internal  energy,  heat   capacity, partition  function,  and  entropy  can  be
+                calculated  for translation, rotation and vibrational degrees of freedom for a single temperature,  or a  range  of temperatures.
+                Special situations such as linear systems and transition states are  accommodated.   The  approximations  used  in  the THERMO
+                calculation  are  invalid  below  100K, and checking of the lower bound of the temperature range is done to prevent  temperatures
+                of  less than 100K being used. <h:br/>        Another limitation, for which no checking is  done,  is  that  there should  be  no  internal  rotations.   If  any
+                exist,  they  will not be recognized as such, and the calculated quantities will be too  low  as  a result. <h:br/>        In order to use THERMO the keyword FORCE must also be specified,  as well as the value for the symmetry number; this
+               is given by ROT=n. <h:br/>        If THERMO is specified on its own, then the default  values  of  the temperature  range  are  assumed.   This  starts
+               at 200K and increases in steps of 10 degrees to 400K.  Three  options  exist  for  overriding  the default temperature range.
+                These are: <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="times" term="times">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>print times of various stages</definition><description/>
+</entry>
+<entry id="t-prio" term="t-prio">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>time takes priority in drc</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">T-PRIORITY (O)</h:span>  In  a  DRC  calculation,  results  will  be  printed  whenever   the calculated time changes by 0.1 femtoseconds.  Abbreviation,
+               T-PRIO. <h:br/></h:div>
+            <h:div class="subsection"><h:span class="subsection_title">T-PRIORITY=n.nn (O)</h:span>  In  a  DRC  calculation,  results  will  be  printed  whenever   the calculated time changes by n.nn femtoseconds. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="trans" term="trans">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>the system is a transition state (used in thermodynamics calculation)</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">TRANS (C)</h:span>          The imaginary frequency due to the reaction vector in  a  transition state calculation must not be included in the
+               thermochemical calculation. The number of genuine vibrations considered can be: <h:span class="math">3N-5</h:span> for a linear ground state system, <h:span class="math">3N-6</h:span> for a non-linear ground state system, or <h:span class="math">3N-6</h:span> for a linear transition-state complex, <h:span class="math">3N-7</h:span> for a non-linear transition-state complex. <h:br/>        This keyword must be used in conjunction with THERMO if a transition state is being calculated. <h:br/><h:br/></h:div><h:div class="subsection"><h:span class="subsection_title">TRANS=n  (C)</h:span>          The facility exists  to  allow  the  THERMO  calculation  to  handle systems  with  internal  rotations.   TRANS=n
+                will  remove  the n lowest vibrations.  Note that TRANS=1 is equivalent to TRANS on  its  own.   For xylene, for example,
+               TRANS=2 would be suitable. <h:br/>        This keyword cannot be written with spaces around the `=' sign. <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="triplet" term="triplet">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>triplet state required</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">TRIPLET (C)</h:span>          The triplet state is defined.  If the system has an  odd  number  of electrons, an error message will be printed.
+               <h:br/><h:div class="subsubsection"><h:span class="subsubsection_title">UHF interpretation</h:span>          The number of alpha electrons exceeds that of the beta electrons  by 2.   If  TRIPLET  is  not  specified,  then
+                  the numbers of alpha and beta electrons are set equal.  This  does  not  necessarily  correspond  to  a singlet. <h:br/></h:div>
+               <h:div class="subsubsection"><h:span class="subsubsection_title">RHF interpretation</h:span>          An RHF MECI calculation is performed to calculate the triplet state. If  no other C.I. keywords are used, then only
+                  one state is calculated by default.  The occupancy of the M.O.'s in the SCF calculation  is  defined as ( 2,1,1,0,), that is, one electron is put in each of the two highest occupied M.O.'s. <h:br/>   See keywords C.I.=n and OPEN(n1,n2). <h:br/></h:div>
+            
+    </h:div>
+  </description>
+</entry>
+<entry id="ts" term="ts">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>using ef routine for ts search</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">TS (C)</h:span>          Within the Eigenvector  Following  routine,  the  option  exists  to optimize   a   transition  state.   To  do
+                this,  use  TS.   Preliminary indications are that the TS method is much faster and more reliable  than either SIGMA or NLLSQ.
+               <h:br/>        TS appears to work well with cartesian coordinates. <h:br/>        In the event that TS does not converge on a  stationary  point,  try adding RECALC=5 to the keyword line. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="uhf" term="uhf">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>unrestricted hartree-fock calculation</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">UHF (C)</h:span>          The unrestricted Hartree-Fock Hamiltonian is to be used. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="vectors" term="vectors">
+  <annotation>
+    <appinfo role="ccml:output">
+      <scalar dictRef="ccml:eigvec_out">vect[ors]</scalar>
+    </appinfo>
+  </annotation>
+  <definition>print final eigenvectors</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">VECTORS (O)</h:span>          The eigenvectors are to be printed.  In UHF calculations both  alpha and  beta  eigenvectors  are printed; in all
+               cases the full set, occupied and virtual, are output.  The eigenvectors are normalized to unity,  that is  the  sum of the
+               squares of the coefficients is exactly one.  If DEBUG is specified, then ALL eigenvectors  on  every  iteration  of  every
+                SCF calculation  will  be printed.  This is useful in a learning context, but would normally be very undesirable. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="velocity" term="velocity">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>supply the initial velocity vector in a drc calculation</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">VELOCITY (C)</h:span>          The user can supply the initial  velocity  vector  to  start  a  DRC calculation.  Limitations have to be imposed
+               on the geometry in order for this keyword to work.  These are  (a)  the  input  geometry  must  be  in cartesian coordinates,
+               (b) the first three atoms must not be coaxial, (c) triatomic systems are not allowed (See geometry specification - triatomic
+               systems are in internal coordinates, by definition.) <h:br/>        Put the velocity vector after the geometry as three data  per  line, representing  the  x, y, and z components of
+               velocity for each atom.  The units of velocity are centimeters per second. <h:br/>        The velocity vector  will  be  rotated  so  as  to  suit  the  final cartesian coordinate orientation of the molecule.
+               <h:br/>        If KINETIC=n.n is also specified, the velocity vector will be scaled to  equal  the  velocity corresponding to n.n
+               kcal/mole.  This allows the user to define the direction of the velocity  vector;  the  magnitude  is given by KINETIC=n.n.
+               <h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="williams" term="williams">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>use williams surface</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">WILLIAMS (C)</h:span>          Within the ESP calculation, the Connolly  surface  is  used  as  the default.   If  the  surface  generation  procedure
+                of Donald Williams is wanted, the keyword WILLIAMS should be used. <h:br/><h:br/>
+    </h:div>
+  </description>
+</entry>
+<entry id="x-prio" term="x-prio">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>geometry changes take priority in drc</definition>
+  <description>            <h:div class="subsection"><h:span class="subsection_title">X-PRIORITY (O)</h:span>          In  a  DRC  calculation,  results  will  be  printed  whenever   the calculated  geometry  changes  by 0.05~.  The geometry change is defined as the linear sum of the translation vectors of  motion  for  all atoms in the system.
+               Abbreviation, X-PRIO. <h:br/><h:br/></h:div>
+</description>
+</entry>
+<entry id="xyz" term="xyz">
+  <annotation>
+    <appinfo>
+      <scalar/>
+    </appinfo>
+  </annotation>
+  <definition>do all geometric operations in cartesian coordinates.</definition>
+  <description>
+    <h:div class="subsection"><h:span class="subsection_title">XYZ (W)</h:span>          The SADDLE calculation quite often fails due to faulty definition of the  second  geometry because the dihedrals
+               give a lot of difficulty.  To make this option easier to use, XYZ was developed.  A  calculation  using XYZ runs entirely
+               in cartesian coordinates, thus eliminating the problems associated with dihedrals.  The connectivity of the two  systems
+               can  be different,  but the numbering must be the same.  Dummy atoms can be used; these will be removed at the start of the
+               run.  A  new  numbering  system will be generated by the program, when necessary. <h:br/>        XYZ is also  useful  for  removing  dummy  atoms  from  an  internal coordinate file; use XYZ and 0SCF. <h:br/>        If a large ring system is being optimized, sometimes the closure  is difficult, in which case XYZ will normally work.
+               <h:br/>        Except for SADDLE, do not use XYZ by  default:   use  it  only  when something goes wrong! <h:br/>        In order for XYZ to be used, the supplied geometry must either be in cartesian coordinates or, if internal coordinates
+               are used, symmetry must not be used, and all coordinates must be flagged  for  optimization.   If dummy  atoms  are  present,
+                only 3N-6 coordinates need to be flagged for optimization. <h:br/>        If at all possible, the first 3 atoms should  be  real.   Except  in SADDLE,  XYZ  will still work if one or more
+               dummy atoms occur before the fourth real atom, in which  case  more  than  3N-6  coordinates  will  be flagged  for  optimization.
+                 This  could  cause difficulties with the EF method,  which  is  why  dummy  atoms  at  the  start  of  the   geometry specification
+                should be avoided.  The coordinates to be optimized depend on the internal coordinate definition of real atoms 1, 2, and
+               3.  If  the position  of  any  of  these  atoms  depends  on  dummy  atoms,  then the optimization flags will be different
+               from the case where the first  three atoms defined are all real.  The geometry is first converted to cartesian coordinates
+               and dummy atoms excluded.  The cartesian  coordinates  to  be optimized are: <h:pre>
+    Atoms  R R R  R R X  R X R  X R R  R X X  X R X  X X R  X X X
+
+           X Y Z  X Y Z  X Y Z  X Y Z  X Y Z  X Y Z  X Y Z  X Y Z
+   Atom 1
+        2  +      +      + +    + +    + + +  + +    + + +  + + +
+        3  + +    + + +  + + +  + + +  + + +  + + +  + + +  + + +
+     4 on  + + +  + + +  + + +  + + +  + + +  + + +  + + +  + + +
+</h:pre> <h:p/>    Where R and X apply to real and dummy atoms in the internal coordinate Z-matrix, and atoms 1, 2, 3, and 4 are the real
+               atoms in cartesian coordinates.  A `+' means that the relevant coordinate is flagged for optimization.  Note that the number
+               of flagged coordinates varies from <h:span class="math">3N-6</h:span> to <h:span class="math">3N-3</h:span>, atom 1 is never optimized. <h:br/>
+    </h:div>
+  </description>
+</entry>
+  
+  <!-- ================================================================== -->
+  <!-- ================================================================== -->
+
+  <entry id="atomicOrbElectronPop" term="Atomic Orbital Electron Population">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+    The calculated orbital electron population on an atom
+    </definition>
+    <description>
+ (method unspecified or determined by context)
+    </description>
+  </entry>
+
+  <entry id="bondContribMo" term="Bonding contribution to molecular orbitals">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+    The calculated bonding contribution to MOs
+    </definition>
+    <description>
+ (method unspecified or determined by context)
+    </description>
+  </entry>
+
+  <entry id="calc" term="Calc?">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+   <entry id="cpus" term="Number of CPUs">
+    
+  <annotation>
+      <appinfo>
+      </appinfo>
+    </annotation>
+    <definition>
+Number of CPUs
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="counts" term="Counts?">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="degbond" term="Degree of bonding">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="double_occ" term="Doubly occupied orbital count">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+Doubly occupied orbital count
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="elem" term="Elem?">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="finalpoint" term="Final Point">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="geomOpt" term="Geometry Optimisation">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <alternative type="abbreviation">geomOpt</alternative>
+    <definition>Geometry Optimisation</definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="hamiltref" term="Hamiltonian Literature">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+    Literature reference for the Hamiltonian
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="job" term="MOPAC job">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+    A complete MOPAC job
+    </definition>
+    <description>
+    A complete job, from submission of keywords to final summary. Note that MOPAC allows chaining jobs so that a program output could have several mopac:job
+    </description>
+  </entry>
+
+  <entry id="method" term="Method/Hamiltonian">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    The method used in MOPAC (usually rerefenced by the abbreviation for the Hamiltonian)
+    </description>
+  </entry>
+
+  <entry id="nclose" term="Number of closed shell electrons">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+  
+  <entry id="nelecs" term="Number of electrons">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+  
+  <entry id="nopen" term="Number of open shell electrons">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="nopn" term="Number of open orbitals">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="refs" term="References for parameters">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="scf" term="SCF achieved">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+SCF FIELD WAS ACHIEVED 
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="statpop" term="Statistical analysis of populations">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+Statistical analysis of populations
+    </definition>
+    <description>
+    Not yet fully analysed
+    </description>
+  </entry>
+
+  <entry id="shell" term="Openness of shell">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="totale" term="Total energy">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="timeLeft" term="Time left">
+    
+  <annotation>
+      <appinfo>
+        <scalar>
+        </scalar>
+      </appinfo>
+    </annotation>
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+<!-- obsolete, replaced by CML elements -->
+
+  <entry id="at1" term="At1?">
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="at2" term="at2?">
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="at3" term="at3?">
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="num" term="num?">
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="dist" term="Interatomic Distances">
+    <definition>Interatomic Distances</definition>
+    <description>Lower triangle</description>
+  </entry>
+
+  <entry id="dist.sym" term="dist.sym?">
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="ang" term="ang?">
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="ang.sym" term="ang.sym?">
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="tor" term="tor?">
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="tor.sym" term="tor.sym?">
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="line" term="line?">
+    <definition>
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="selfq" term="Self-Q">
+    <definition>
+    SELF-Q analysis (relatively specific to MOPAC)
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <entry id="selfq.line" term="Self-Q">
+    <definition>
+    SELF-Q analysis (relatively specific to MOPAC)
+    </definition>
+    <description>
+    </description>
+  </entry>
+
+  <!-- ================================================================== -->
+  <!-- ============Generic concepts translated to MOPAC============== -->
+  <!-- ================================================================== -->
+  <entry id="hamilton" term="Hamiltonians">
+    <annotation>
+      <appinfo>
+        <parameter>
+          <scalar dictRef="ccml:hamilton"/>
+          <enumeration dictRef="mopac:am1"     value="AM1" default="yes"/>
+          <enumeration dictRef="mopac:pm3"     value="PM3"/>
+          <enumeration dictRef="mopac:mindo3"  value="MINDO3"/>
+        </parameter>
+      </appinfo>
+    </annotation>
+    <definition>Codes for Hamiltonians</definition>
+    <description>The values are the generic values; specific keywords are provided by the individual dictionary entries.</description>
+  </entry>
+
+
+  <entry id="generic.output" term="Generic Output options">
+    <annotation>
+      <appinfo>
+        <link to="mopac:a0scf"         from="ccml:outputinput"/>
+        <link to="mopac:a1electron"    from="ccml:a1elecmat"/>
+        <link to="mopac:aigout"       from="x:x"/>
+        <link to="mopac:bonds"        from="ccml:bondorder"/>
+        <link to="mopac:dcart"        from="ccml:cartesianDerivatives"/>
+        <link to="mopac:debug"        from="ccml:debug"/>
+        <link to="mopac:density"      from="ccml:densmat"/>
+        <link to="mopac:dep"          from="x:x"/>
+        <link to="mopac:echo"         from="x:x"/>
+        <link to="mopac:enpart"       from="ccml:partitionEnergy"/>
+        <link to="mopac:esr"          from="ccml:unpairedSpinDensity"/>
+        <link to="mopac:flepo"        from="ccml:geometryOptimisation"/>
+        <link to="mopac:gradients"    from="ccml:gradients"/>
+        <link to="mopac:graph"        from="ccml:contourmap"/>
+        <link to="mopac:h-priority"   from="x:x"/>
+        <link to="mopac:isotope"      from="x:x"/>
+        <link to="mopac:large"        from="x:x"/>
+        <link to="mopac:linmin"       from="ccml:lineminimisation"/>
+        <link to="mopac:localize"     from="ccml:localizedMos"/>
+        <link to="mopac:meci"         from="ccml:multielectronci"/>
+        <link to="mopac:mullik"       from="ccml:mullikenPopulation"/>
+        <link to="mopac:nointer"      from="x:x"/>
+        <link to="mopac:nolog"        from="x:x"/>
+        <link to="mopac:noxyz"        from="x:x"/>
+        <link to="mopac:pi"           from="ccml:pibonds"/>
+        <link to="mopac:spin"         from="ccml:spinmatrix"/>
+        <link to="mopac:thermo"       from="ccml:thermodynamic"/>
+        <link to="mopac:t-priority"   from="x:x"/>
+        <link to="mopac:vectors"      from="ccml:eigvec"/>
+        <link to="mopac:x-priority"   from="x:x"/>
+      </appinfo>
+    </annotation>
+    <definition>Generic codes for output</definition>
+    <description>The values are the generic values; specific keywords are provided by the individual dictionary programs.</description>
+  </entry>
+
+ <entry id="generic.control" term="Generic control">
+    <annotation>
+      <appinfo>
+        <link to="mopac:a1scf"          from="ccml:onescf"/>
+        <link to="mopac:biradical"     from="ccml:biradical"/>
+        <link to="mopac:ci"          from="ccml:multielectronci"/>
+        <link to="mopac:charge"        from="ccml:charge"/>
+        <link to="mopac:depvar"        from="x:x"/>
+        <link to="mopac:dipole"        from="ccml:fitEspToDipole"/>
+        <link to="mopac:dipx"          from="x:x"/>
+        <link to="mopac:dipy"          from="x:x"/>
+        <link to="mopac:dipz"          from="x:x"/>
+        <link to="mopac:doublet"       from="ccml:doublet"/>
+        <link to="mopac:drc"           from="ccml:dynamicReactionCoordinate"/>
+        <link to="mopac:ef"            from="ccml:eigenvectorFollowing"/>
+        <link to="mopac:esp"           from="ccml:espCalculation"/>
+        <link to="mopac:excited"       from="ccml:optimiseFirstExcitedSinglet"/>
+        <link to="mopac:external"      from="x:x"/>
+        <link to="mopac:fill"          from="ccml:fillMo"/>
+        <link to="mopac:force"         from="ccml:calculateForce"/>
+        <link to="mopac:irc"           from="ccml:intrinsicReactionCoordinate"/>
+        <link to="mopac:irc"           from="x:x"/>
+        <link to="mopac:k"             from="ccml:brillouinCalculation"/>
+        <link to="mopac:kinetic"       from="ccml:addKeToDrc"/>
+        <link to="mopac:micros"        from="x:x"/>
+        <link to="mopac:mmok"          from="x:x"/>
+        <link to="mopac:mode"          from="ccml:modeForEf"/>
+        <link to="mopac:nllsq"         from="ccml:NonLinearLsq"/>
+        <link to="mopac:nomm"          from="x:x"/>
+        <link to="mopac:nsurf"         from="x:x"/>
+        <link to="mopac:oldgeo"        from="x:x"/>
+        <link to="mopac:open"          from="ccml:openshellRhf"/>
+        <link to="mopac:point"         from="x:x"/>
+        <link to="mopac:point1"        from="x:x"/>
+        <link to="mopac:point2"        from="x:x"/>
+        <link to="mopac:polar"         from="x:x"/>
+        <link to="mopac:powsq"         from="x:x"/>
+        <link to="mopac:quartet"       from="ccml:quartet"/>
+        <link to="mopac:quintet"       from="ccml:quintet"/>
+        <link to="mopac:root"          from="x:x"/>
+        <link to="mopac:rot"           from="ccml:symmetryNumber"/>
+        <link to="mopac:saddle"        from="ccml:optimiseTS"/>
+        <link to="mopac:scale"         from="ccml:espScale"/>
+        <link to="mopac:setup"         from="x:x"/>
+        <link to="mopac:sextet"        from="x:x"/>
+        <link to="mopac:sigma"         from="x:x"/>
+        <link to="mopac:singlet"       from="x:x"/>
+        <link to="mopac:slope"         from="x:x"/>
+        <link to="mopac:step"          from="x:x"/>
+        <link to="mopac:step1"         from="x:x"/>
+        <link to="mopac:step2"         from="x:x"/>
+        <link to="mopac:symmetry"      from="x:x"/>
+        <link to="mopac:trans"         from="x:x"/>
+        <link to="mopac:trans"         from="x:x"/>
+        <link to="mopac:triplet"       from="x:x"/>
+        <link to="mopac:ts"            from="x:x"/>
+        <link to="mopac:uhf"           from="x:x"/>
+        <link to="mopac:velocity"      from="x:x"/>
+        <link to="mopac:williams"      from="x:x"/>
+      </appinfo>
+    </annotation>
+    <definition>Generic values for input</definition>
+    <description></description>
+  </entry>
+  
+ <entry id="generic.working" term="Generic working">
+    <annotation>
+      <appinfo>
+        <link to="mopac:analyt"   from="x:x"/>        
+        <link to="mopac:bar"      from="x:x"/>        
+        <link to="mopac:dfp"      from="ccml:dfp"/>        
+        <link to="mopac:dmax"     from="x:x"/>        
+        <link to="mopac:dump"     from="x:x"/>        
+        <link to="mopac:eiginv"   from="x:x"/>        
+        <link to="mopac:esprst"   from="x:x"/>        
+        <link to="mopac:geo-ok"   from="x:x"/>        
+        <link to="mopac:gnorm"    from="ccml:gradientNorm"/>        
+        <link to="mopac:hamilton" from="ccml:hamilton"/>        
+        <link to="mopac:hess"     from="x:x"/>        
+        <link to="mopac:itry"     from="ccml:scfCalculation"/>        
+        <link to="mopac:iupd"     from="x:x"/>        
+        <link to="mopac:let"      from="x:x"/>        
+        <link to="mopac:noanci"   from="x:x"/>        
+        <link to="mopac:nodiis"   from="x:x"/>        
+        <link to="mopac:nonr"     from="x:x"/>        
+        <link to="mopac:nothiel"  from="x:x"/>        
+        <link to="mopac:oldens"   from="ccml:restartfromCheckpoint"/>        
+        <link to="mopac:oride"    from="x:x"/>        
+        <link to="mopac:parasok"  from="x:x"/>        
+        <link to="mopac:potwrt"   from="x:x"/>        
+        <link to="mopac:precise"  from="ccml:precise"/>        
+        <link to="mopac:pulay"    from="ccml:pulay"/>        
+        <link to="mopac:restart"  from="x:x"/>        
+        <link to="mopac:scfcrt"   from="x:x"/>        
+        <link to="mopac:shift"    from="x:x"/>        
+        <link to="mopac:sto3g"    from="x:x"/>        
+        <link to="mopac:symavg"   from="x:x"/>        
+        <link to="mopac:t"        from="x:x"/>        
+        <link to="mopac:xyz"      from="ccml:cartesian"/>
+      </appinfo>
+    </annotation>
+    <definition>Generic values for input</definition>
+    <description></description>
+  </entry>
+  
+            <!--
+ 1SCF     - DO ONE SCF AND THEN STOP
+ AIDER    - READ IN AB INITIO DERIVATIVES
+ AIGIN    - GEOMETRY MUST BE IN GAUSSIAN FORMAT
+ AIGOUT   - IN ARC FILE, INCLUDE AB-INITIO GEOMETRY
+ ANALYT   - USE ANALYTICAL DERIVATIVES OF ENERGY WRT GEOMETRY
+ AM1      - USE THE AM1 HAMILTONIAN
+ BAR=n.n  - REDUCE BAR LENGTH BY A MAXIMUM OF n.n
+ BIRADICAL- SYSTEM HAS TWO UNPAIRED ELECTRONS
+ BONDS    - PRINT FINAL BOND-ORDER MATRIX
+ C.I.     - A MULTI-ELECTRON CONFIGURATION INTERACTION SPECIFIED
+ CHARGE=n - CHARGE ON SYSTEM = n (e.g. NH4 => CHARGE=1)
+ COMPFG   - PRINT HEAT OF FORMATION CALCULATED IN COMPFG
+ CONNOLLY - USE CONNOLLY SURFACE
+ DEBUG    - DEBUG OPTION TURNED ON
+ DENOUT   - DENSITY MATRIX OUTPUT (CHANNEL 10)
+ DENSITY  - PRINT FINAL DENSITY MATRIX
+ DEP      - GENERATE FORTRAN CODE FOR PARAMETERS FOR NEW ELEMENTS
+ DEPVAR=n - TRANSLATION VECTOR IS A MULTIPLE OF BOND-LENGTH
+ DERIV    - PRINT PART OF WORKING IN DERIV
+ DFORCE   - FORCE CALCULATION SPECIFIED, ALSO PRINT FORCE MATRIX.
+ DFP      - USE DAVIDON-FLETCHER-POWELL METHOD TO OPTIMIZE GEOMETRIES
+ DIPOLE   - FIT THE ESP TO THE CALCULATED DIPOLE
+ DIPX     - X COMPONENT OF DIPOLE TO BE FITTED
+ DIPY     - Y COMPONENT OF DIPOLE TO BE FITTED
+ DIPZ     - Z COMPONENT OF DIPOLE TO BE FITTED
+ DMAX     - MAXIMUM STEPSIZE IN EIGENVECTOR FOLLOWING
+ DOUBLET  - DOUBLET STATE REQUIRED
+ DRC      - DYNAMIC REACTION COORDINATE CALCULATION
+ DUMP=n   - WRITE RESTART FILES EVERY n SECONDS
+ ECHO     - DATA ARE ECHOED BACK BEFORE CALCULATION STARTS
+ EF       - USE EF ROUTINE FOR MINIMUM SEARCH
+ EIGINV   -
+ EIGS     - PRINT ALL EIGENVALUES IN ITER
+ ENPART   - PARTITION ENERGY INTO COMPONENTS
+ ESP      - ELECTROSTATIC POTENTIAL CALCULATION
+ ESPRST   - RESTART OF ELECTROSTATIC POTENTIAL
+ ESR      - CALCULATE RHF UNPAIRED SPIN DENSITY
+ EXCITED  - OPTIMIZE FIRST EXCITED SINGLET STATE
+ EXTERNAL - READ PARAMETERS OFF DISK
+ FILL=n   - IN RHF OPEN AND CLOSED SHELL, FORCE M.O. n
+            TO BE FILLED
+ FLEPO    - PRINT DETAILS OF GEOMETRY OPTIMIZATION
+ FMAT     - PRINT DETAILS OF WORKING IN FMAT
+ FOCK     - PRINT LAST FOCK MATRIX
+ FORCE    - FORCE CALCULATION SPECIFIED
+ GEO-OK   - OVERRIDE INTERATOMIC DISTANCE CHECK
+ GNORM=n.n- EXIT WHEN GRADIENT NORM DROPS BELOW n.n
+ GRADIENTS- PRINT ALL GRADIENTS
+ GRAPH    - GENERATE FILE FOR GRAPHICS
+ HCORE    - PRINT DETAILS OF WORKING IN HCORE
+ HESS=N   - OPTIONS FOR CALCULATING HESSIAN MATRICES IN EF
+ H-PRIO   - HEAT OF FORMATION TAKES PRIORITY IN DRC
+ HYPERFINE- HYPERFINE COUPLING CONSTANTS TO BE CALCULATED
+ IRC      - INTRINSIC REACTION COORDINATE CALCULATION
+ ISOTOPE  - FORCE MATRIX WRITTEN TO DISK (CHANNEL 9 )
+ ITER     - PRINT DETAILS OF WORKING IN ITER
+ ITRY=N   - SET LIMIT OF NUMBER OF SCF ITERATIONS TO N.
+ IUPD     - MODE OF HESSIAN UPDATE IN EIGENVECTOR FOLLOWING
+ K=(N,N)  - BRILLOUIN ZONE STRUCTURE TO BE CALCULATED
+ KINETIC  - EXCESS KINETIC ENERGY ADDED TO DRC CALCULATION
+ LINMIN   - PRINT DETAILS OF LINE MINIMIZATION
+ LARGE    - PRINT EXPANDED OUTPUT
+ LET      - OVERRIDE CERTAIN SAFETY CHECKS
+ LOCALIZE - PRINT LOCALIZED ORBITALS
+ MAX      - PRINTS MAXIMUM GRID SIZE (23*23)
+ MECI     - PRINT DETAILS OF MECI CALCULATION
+ MICROS   - USE SPECIFIC MICROSTATES IN THE C.I.
+ MINDO/3  - USE THE MINDO/3 HAMILTONIAN
+ MMOK     - USE MOLECULAR MECHANICS CORRECTION TO CONH BONDS
+ MODE=N   - IN EF, FOLLOW HESSIAN MODE NO. N
+ MOLDAT   - PRINT DETAILS OF WORKING IN MOLDAT
+ MS=N     - IN MECI, MAGNETIC COMPONENT OF SPIN
+ MULLIK   - PRINT THE MULLIKEN POPULATION ANALYSIS
+ NLLSQ    - MINIMIZE GRADIENTS USING NLLSQ
+ NOANCI   - DO NOT USE ANALYTICAL C.I. DERIVATIVES
+ NODIIS   - DO NOT USE DIIS GEOMETRY OPTIMIZER
+ NOINTER  - DO NOT PRINT INTERATOMIC DISTANCES
+ NOLOG    - SUPPRESS LOG FILE TRAIL, WHERE POSSIBLE
+ NOMM     - DO NOT USE MOLECULAR MECHANICS CORRECTION TO CONH BONDS
+ NONR     -
+ NOTHIEL  - DO NOT USE THIEL'S FSTMIN TECHNIQUE
+ NSURF=N  - NUMBER OF SURFACES IN AN ESP CALCULATION
+ NOXYZ    - DO NOT PRINT CARTESIAN COORDINATES
+ NSURF    - NUMBER OF LAYERS USED IN ELECTROSTATIC POTENTIAL
+ OLDENS   - READ INITIAL DENSITY MATRIX OFF DISK
+ OLDGEO   - PREVIOUS GEOMETRY TO BE USED
+ OPEN     - OPEN-SHELL RHF CALCULATION REQUESTED
+ ORIDE    -
+ PARASOK  - IN AM1 CALCULATIONS SOME MNDO PARAMETERS ARE TO BE USED
+ PI       - RESOLVE DENSITY MATRIX INTO SIGMA AND PI BONDS
+ PL       - MONITOR CONVERGENCE OF DENSITY MATRIX IN ITER
+ PM3      - USE THE MNDO-PM3 HAMILTONIAN
+ POINT=N  - NUMBER OF POINTS IN REACTION PATH
+ POINT1=N - NUMBER OF POINTS IN FIRST DIRECTION IN GRID CALCULATION
+ POINT2=N - NUMBER OF POINTS IN SECOND DIRECTION IN GRID CALCULATION
+ POLAR    - CALCULATE FIRST, SECOND AND THIRD ORDER POLARIZABILITIES
+ POTWRT   - IN ESP, WRITE OUT ELECTROSTATIC POTENTIAL TO UNIT 21
+ POWSQ    - PRINT DETAILS OF WORKING IN POWSQ
+ PRECISE  - CRITERIA TO BE INCREASED BY 100 TIMES
+ PULAY    - USE PULAY'S CONVERGER TO OBTAIN A SCF
+ QUARTET  - QUARTET STATE REQUIRED
+ QUINTET  - QUINTET STATE REQUIRED
+ RECALC=N - IN EF, RECALCULATE HESSIAN EVERY N STEPS
+ RESTART  - CALCULATION RESTARTED
+ ROOT=n   - ROOT n TO BE OPTIMIZED IN A C.I. CALCULATION
+ ROT=n    - THE SYMMETRY NUMBER OF THE SYSTEM IS n.
+ SADDLE   - OPTIMIZE TRANSITION STATE
+ SCALE    - SCALING FACTOR FOR VAN DER WAALS DISTANCE IN ESP
+ SCFCRT=n - DEFAULT SCF CRITERION REPLACED BY THE VALUE SUPPLIED
+ SCINCR   - INCREMENT BETWEEN LAYERS IN ESP
+ SETUP    - EXTRA KEYWORDS TO BE READ OF SETUP FILE
+ SEXTET   - SEXTET STATE REQUIRED
+ SHIFT=n  - A DAMPING FACTOR OF n DEFINED TO START SCF
+ SIGMA    - MINIMIZE GRADIENTS USING SIGMA
+ SINGLET  - SINGLET STATE REQUIRED
+ SLOPE    - MULTIPLIER USED TO SCALE MNDO CHARGES
+ SPIN     - PRINT FINAL UHF SPIN MATRIX
+ STEP     - STEP SIZE IN PATH
+ STEP1=n  - STEP SIZE n FOR FIRST COORDINATE IN GRID CALCULATION
+ STEP2=n  - STEP SIZE n FOR SECOND COORDINATE IN GRID CALCULATION
+ STO-3G   - DEORTHOGONALIZE ORBITALS IN STO-3G BASIS
+ SYMAVG   - AVERAGE SYMMETRY EQUIVALENT ESP CHARGES
+ SYMMETRY - IMPOSE SYMMETRY CONDITIONS
+ T=n      - A TIME OF n SECONDS REQUESTED
+ THERMO   - PERFORM A THERMODYNAMICS CALCULATION
+ TIMES    - PRINT TIMES OF VARIOUS STAGES
+ T-PRIO   - TIME TAKES PRIORITY IN DRC
+ TRANS    - THE SYSTEM IS A TRANSITION STATE
+            (USED IN THERMODYNAMICS CALCULATION)
+ TRIPLET  - TRIPLET STATE REQUIRED
+ TS       - USING EF ROUTINE FOR TS SEARCH
+ UHF      - UNRESTRICTED HARTREE-FOCK CALCULATION
+ VECTORS  - PRINT FINAL EIGENVECTORS
+ VELOCITY - SUPPLY THE INITIAL VELOCITY VECTOR IN A DRC CALCULATION
+ WILLIAMS - USE WILLIAMS SURFACE
+ X-PRIO   - GEOMETRY CHANGES TAKE PRIORITY IN DRC
+ XYZ      - DO ALL GEOMETRIC OPERATIONS IN CARTESIAN COORDINATES.
+-->
+
+<!-- the internal variables in write statements -->
+<entry id="a1elec" term="1elec">
+  <annotation> no annotation yet</annotation>
+  <definition>ONE-ELECTRON MATRIX</definition>
+  <description>as lower triangle</description>
+</entry>
+
+<entry id="a1emat" term="1emat">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="a2ejmat" term="2ejmat">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="a2ekmat" term="2ekmat">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="a2elecj" term="2elecj">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="a2eleck" term="2eleck">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="a2emat" term="2emat">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="abprt" term="abprt">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="activq" term="activq">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="alpha" term="alpha">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="asseig" term="asseig">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="atomeldens" term="atomeldens">
+  <annotation> no annotation yet</annotation>
+  <definition>ELECTRON DENSITY</definition>
+  <description>Total (valence) charge on atom??</description>
+</entry>
+
+<entry id="atspin" term="atspin">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="basis1" term="basis1">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="basis2" term="basis2">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="beta" term="beta">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="betaeigv" term="Beta Eigenvalues">
+  <annotation> no annotation yet</annotation>
+  <definition>BETA EIGENVALUES</definition>
+  <description>BETA EIGENVALUES.</description>
+</entry>
+
+<entry id="bonds" term="bonds">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="cart" term="Cartesian Coordinates">
+  <annotation> no annotation yet</annotation>
+  <definition>Cartesian Coordinates</definition>
+  <description>Can appear anywhere?</description>
+</entry>
+
+<entry id="cimat" term="cimat">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="cnorml" term="cnorml">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="compspin" term="compspin">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="coord" term="coord">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="corecore" term="Core-Core Repulsion">
+  <annotation> no annotation yet</annotation>
+  <definition>Core-Core Repulsion Energy</definition>
+  <description>Core-Core (Internuclear) Repulsion Energy</description>
+</entry>
+
+<entry id="cputime" term="cputime">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="degbontab" term="degbontab">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="deltae" term="deltae">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="deltatchg" term="deltatchg">
+  <annotation> no annotation yet</annotation>
+  <definition>ATOMIC CHARGE</definition>
+  <description>Seems to be the difference between nuclear charge and ELECTRON density</description>
+</entry>
+
+<entry id="denrot" term="denrot">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="densmat" term="densmat">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="deriv" term="deriv">
+  <annotation> no annotation yet</annotation>
+  <definition>CALCULATES THE DERIVATIVES OF THE ENERGY WITH RESPECT TO THE
+      INTERNAL COORDINATES</definition>
+  <description>DERIV CALCULATES THE DERIVATIVES OF THE ENERGY WITH RESPECT TO THE
+          INTERNAL COORDINATES. THIS IS DONE BY FINITE DIFFERENCES</description>
+</entry>
+
+<entry id="dernvo" term="dernvo">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="dfpsav" term="dfpsav">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="dielener" term="dielener">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="diis" term="diis">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="diphyb" term="Hybrid Dipole">
+  <annotation> no annotation yet</annotation>
+  <definition>Hybrid Dipole</definition>
+  <description>Hybrid Dipole</description>
+</entry>
+
+<entry id="diphybtot" term="Total Hybrid Dipole">
+  <annotation> no annotation yet</annotation>
+  <definition>Total Hybrid Dipole</definition>
+  <description>Total Hybrid Dipole</description>
+</entry>
+
+<entry id="dipole" term="dipole">
+  <annotation> no annotation yet</annotation>
+  <definition>Dipole</definition>
+  <description>Dipole</description>
+</entry>
+
+<entry id="dipptchg" term="Point-charge Dipole">
+  <annotation> no annotation yet</annotation>
+  <definition>Point-charge Dipole</definition>
+  <description>Point-charge Dipole</description>
+</entry>
+
+<entry id="dipptchgtot" term="Total Point-charge Dipole">
+  <annotation> no annotation yet</annotation>
+  <definition>Total Point-charge Dipole</definition>
+  <description>Total Point-charge Dipole</description>
+</entry>
+
+<entry id="dipsum" term="dipsum">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="dipsumtot" term="dipsumtot">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="dist" term="dist">
+  <annotation> no annotation yet</annotation>
+  <definition>Interatomic distances</definition>
+  <description>Arranged as lower triangle.</description>
+</entry>
+
+<entry id="dofs" term="dofs">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="doubleocc" term="Number of doubly-occupied orbitals">
+  <annotation> no annotation yet</annotation>
+  <definition>Number of doubly-occupied orbitals</definition>
+  <description>Number of doubly-occupied orbitals</description>
+</entry>
+
+<entry id="drcout" term="drcout">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="eelen" term="Electronic Energy">
+  <annotation> no annotation yet</annotation>
+  <definition>Electronic Energy</definition>
+  <description>Electronic Energy</description>
+</entry>
+
+<entry id="eig" term="eig">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="eigb" term="eigb">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="eignointer" term="eignointer">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="eigval" term="eigval">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="eionis" term="Ionization Potential">
+  <annotation> no annotation yet</annotation>
+  <definition>Ionization Potential</definition>
+  <description>Ionization Potential</description>
+</entry>
+
+<entry id="elect" term="Electronic energy">
+  <annotation> no annotation yet</annotation>
+  <definition>Electronic energy</definition>
+  <description>Electronic energy</description>
+</entry>
+
+<entry id="elemnum" term="Element Number">
+  <annotation> no annotation yet</annotation>
+  <definition>Element Number</definition>
+  <description>Presumably serial number of atom</description>gra
+</entry>
+
+<entry id="elemtype" term="elemtype">
+  <annotation> no annotation yet</annotation>
+  <definition>Element Type</definition>
+  <description>Presumably atomic symbol?</description>gra
+</entry>
+
+<entry id="energy" term="energy">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="enuclr" term="Core-core repulsion">
+  <annotation> no annotation yet</annotation>
+  <definition>Core-core repulsion</definition>
+  <description>Core-core repulsion</description>
+</entry>
+
+<entry id="escf" term="escf">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="expect1" term="expect1">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="expect2" term="expect2">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="ffhpol" term="ffhpol">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="first" term="first">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="forsav" term="forsav">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="frecqy" term="frecqy">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="freeval" term="freeval">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="gdiismat" term="gdiismat">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="gdiismatscaled" term="gdiismatscaled">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="geout" term="Current Geometry">
+  <annotation> no annotation yet</annotation>
+  <definition>PRINTS THE CURRENT GEOMETRY</definition>
+  <description>
+   GEOUT PRINTS THE CURRENT GEOMETRY.  IT CAN BE CALLED ANY TIME,         FROM ANY POINT IN THE PROGRAM AND DOES NOT AFFECT ANYTHING</description>
+</entry>
+
+<entry id="geoutg" term="geoutg">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="getdat" term="getdat">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="getgeg" term="getgeg">
+  <annotation> no annotation yet</annotation>
+  <definition>Reads element info?</definition>
+  <description>Reads element info?</description>
+</entry>
+
+<entry id="getgeo" term="GETGEO">
+  <annotation> no annotation yet</annotation>
+  <definition>GETGEO READS IN THE GEOMETRY</definition>
+  <description> GETGEO READS IN THE GEOMETRY. THE ELEMENT IS SPECIFIED BY IT'S
+CHEMICAL SYMBOL, OR, OPTIONALLY, BY IT'S ATOMIC NUMBER.
+</description>
+</entry>
+
+<entry id="getsym" term="getsym">
+  <annotation> no annotation yet</annotation>
+  <definition>READS IN THE SYMMETRY DEPENDENCE RELATIONSHIPS</definition>
+  <description>GETSYM READS IN THE SYMMETRY DEPENDENCE RELATIONSHIPS</description>
+</entry>
+
+<entry id="gmetry" term="Geometry calculation">
+  <annotation> no annotation yet</annotation>
+  <definition>COMPUTES COORDINATES FROM BOND-ANGLES AND LENGTHS</definition>
+  <description>COMPUTES COORDINATES FROM BOND-ANGLES AND LENGTHS.
+IT IS ADAPTED FROM THE PROGRAM WRITTEN BY M.J.S. DEWAR.</description>
+</entry>
+
+<entry id="grad" term="Gradient">
+  <annotation> no annotation yet</annotation>
+  <definition>Gradient</definition>
+  <description>Gradient (components may not be specified)</description>
+</entry>
+
+<entry id="gradtype" term="Gradient Type">
+  <annotation> no annotation yet</annotation>
+  <definition>GRADIENT TYPE</definition>
+  <description>Could be length or length angle (expressed as units)</description>
+</entry>
+
+<entry id="greenf" term="greenf">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="grid" term="grid">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="heat" term="heat">
+  <annotation> no annotation yet</annotation>
+  <definition>Heat</definition>
+  <description>Probably heat of formation?</description>
+</entry>
+
+<entry id="heatform" term="Heat of formation">
+  <annotation> no annotation yet</annotation>
+  <definition>Heat of formation</definition>
+  <description>Heat of formation</description>
+</entry>
+
+<entry id="hform" term="Heat of formation">
+  <annotation> no annotation yet</annotation>
+  <definition>Heat of formation</definition>
+  <description>probable duplicate entry</description>
+</entry>
+
+<entry id="hypercoupconst" term="hypercoupconst">
+  <annotation> no annotation yet</annotation>
+  <definition>Hyperfine coupling constants</definition>
+  <description>linear array (mapped onto atoms)</description>
+</entry>
+
+<entry id="inertia" term="Moment of inertia">
+  <annotation> no annotation yet</annotation>
+  <definition>Moment of inertia</definition>
+  <description>Moment of inertia</description>
+</entry>
+
+<entry id="initsv" term="initsv">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="int" term="int">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="internal" term="Internal coordinates">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="interp" term="interp">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="iuhf" term="IUHF eigenvectors">
+  <annotation> no annotation yet</annotation>
+  <definition>Eigenvalues for IUHF??</definition>
+  <description>CALCN(IUHF) EIGENVALUE is printed if that helps</description>
+</entry>
+
+<entry id="jndex" term="jndex">
+  <annotation> no annotation yet</annotation>
+  <definition>atom index</definition>
+  <description>Some form of atom index accompanying eigevectors</description>
+</entry>
+
+<entry id="job" term="job">
+  <annotation> no annotation yet</annotation>
+  <definition>A MOPAC Job</definition>
+  <description>Jobs are defined by inpur records (cards) containing a  complete input. These can be concatenated and the output is then a jobList of jobs.</description>
+</entry>
+
+<entry id="jobList" term="jobList">
+  <annotation> no annotation yet</annotation>
+  <definition>Container for multiple jobs</definition>
+  <description>Container for multiple jobs</description>
+</entry>
+
+<entry id="last" term="last">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="localorb" term="localorb">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="makpol" term="makpol">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="massnormcoord" term="Mass-weighted Normal Coordinates">
+  <annotation> no annotation yet</annotation>
+  <definition>Mass-weighted Normal Coordinates</definition>
+  <description>Mass-weighted Normal Coordinates</description>
+</entry>
+
+<entry id="matou1" term="matou1">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="mecieigvec" term="mecieigvec">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="mullikmat" term="mullikmat">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="mullprom" term="mullprom">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="mwt" term="Molecular Weight">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="nalpha" term="Number of Alpha Electrons">
+  <annotation> no annotation yet</annotation>
+  <definition>NO. OF ALPHA ELECTRONS</definition>
+  <description>NO. OF ALPHA ELECTRONS</description>
+</entry>
+
+<entry id="namo" term="Symmetry species">
+  <annotation> no annotation yet</annotation>
+  <definition>symmetry species</definition>
+  <description>Symmetry species accomanying eigenvectors. More details would be useful!</description>
+</entry>
+
+<entry id="nbeta" term="Number of beta electrons">
+  <annotation> no annotation yet</annotation>
+  <definition>NO. OF BETA ELECTRONS</definition>
+  <description>NO. OF BETA ELECTRONS</description>
+</entry>
+
+<entry id="nclose" term="Number of Filled Levels">
+  <annotation> no annotation yet</annotation>
+  <definition>NO. OF FILLED LEVELS</definition>
+  <description>NO. OF FILLED LEVELS</description>
+</entry>
+
+<entry id="niter" term="Number of Iteration(s)">
+  <annotation> no annotation yet</annotation>
+  <definition>Number of Iteration(s)</definition>
+  <description>Number of Iteration(s)</description>
+</entry>
+
+<entry id="nopn" term="Number of open levels">
+  <annotation> no annotation yet</annotation>
+  <definition>NO. OF OPEN LEVELS</definition>
+  <description>NO. OF OPEN LEVELS</description>
+</entry>
+
+<entry id="normcoord" term="Normal Coordinates">
+  <annotation> no annotation yet</annotation>
+  <definition>Normal Coordinates</definition>
+  <description>Normal Coordinates</description>
+</entry>
+
+<entry id="nscf" term="Number of SCF calculations">
+  <annotation> no annotation yet</annotation>
+  <definition>Number of SCF calculations</definition>
+  <description>Number of SCF calculations</description>
+</entry>
+
+<entry id="numconfig" term="Number of configurations">
+  <annotation> no annotation yet</annotation>
+  <definition>Number of configurations</definition>
+  <description>Number of configurations??</description>
+</entry>
+
+<entry id="numelecci" term="numelecci">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="par" term="Parameter">
+  <annotation> no annotation yet</annotation>
+  <definition>parameter</definition>
+  <description>A parameter. Maybe the number or other label</description>
+</entry>
+
+<entry id="paramtype" term="Parameter Type">
+  <annotation> no annotation yet</annotation>
+  <definition>PARAM TYPE</definition>
+  <description>Defines Bond, angle dihedral</description>
+</entry>
+
+<entry id="parsav" term="parsav">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="pathk" term="pathk">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="paths" term="paths">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="plb" term="plb">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="pls" term="pls">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="pmat" term="pmat">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="polar" term="polar">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="powsav" term="powsav">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="prtdrc" term="prtdrc">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="prtgra" term="FINAL  POINT  AND  DERIVATIVES">
+  <annotation> no annotation yet</annotation>
+  <definition>FINAL  POINT  AND  DERIVATIVES</definition>
+  <description>A section in WRITMO</description>
+</entry>
+
+<entry id="react1" term="react1">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="reactang" term="Reaction coordinate (angular)">
+  <annotation> no annotation yet</annotation>
+  <definition>Reaction coordinate (angular)</definition>
+  <description>Reaction coordinate (angular)</description>
+</entry>
+
+<entry id="reactgrad" term="Reaction gradient">
+  <annotation> no annotation yet</annotation>
+  <definition>Reaction gradient</definition>
+  <description>Reaction gradient</description>
+</entry>
+
+<entry id="reactxx" term="REaction Coordinate">
+  <annotation> no annotation yet</annotation>
+  <definition>Reaction coordinate (length)</definition>
+  <description></description>
+</entry>
+
+<entry id="readmo" term="readmo">
+  <annotation> no annotation yet</annotation>
+  <definition>GEOMETRY FILE</definition>
+  <description>MODULE TO READ IN GEOMETRY FILE, OUTPUT IT TO THE USER,
+AND CHECK THE DATA TO SEE IF IT IS REASONABLE. 
+EXIT IF NECESSARY</description>
+</entry>
+
+<entry id="refer" term="refer">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="selfq" term="selfq">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="selfspin" term="selfspin">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="sharespin" term="Shared Spin">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="spinab" term="spinab">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="spindens" term="Spin Density">
+  <annotation> no annotation yet</annotation>
+  <definition>Spin density matrix</definition>
+  <description>Lower triangle</description>
+</entry>
+
+<entry id="ss2" term="Spin-squared value">
+  <annotation> no annotation yet</annotation>
+  <definition>Spin-squared value</definition>
+  <description>Calculated from the UHF spin-squared</description>
+  <description><appinfo>
+  <m:var>s</m:var><m:times></m:times><m:brack><m:var>S</m:var><m:plus></m:plus><m:const>1</m:const></m:brack>
+  </appinfo></description>
+</entry>
+
+<entry id="statener" term="statener">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="statevec" term="statevec">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="statprom" term="statprom">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="sumw" term="Molecular Weight">
+  <annotation> no annotation yet</annotation>
+  <definition>Molecular Weight</definition>
+  <description>Molecular Weight</description>
+</entry>
+
+<entry id="sympro" term="sympro">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="sz" term="sz">
+  <annotation> no annotation yet</annotation>
+  <definition>SZ</definition>
+  <description>see WRITMO</description>
+</entry>
+
+<entry id="thermo" term="thermo">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="time" term="time">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="timout" term="timout">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="totatspin" term="totatspin">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="toten" term="Total Energy">
+  <annotation> no annotation yet</annotation>
+  <definition>Total Energy</definition>
+  <description>Total Energy</description>
+</entry>
+
+<entry id="totq" term="totq">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="totuncspin" term="totuncspin">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="valence" term="valence">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="vecprt" term="vecprt">
+  <annotation> no annotation yet</annotation>
+  <definition>Prints an eigenvector matrix</definition>
+  <description>Prints an eigenvector matrix</description>
+</entry>
+
+<entry id="writmo" term="writmo">
+  <annotation> no annotation yet</annotation>
+  <definition>RESULTS</definition>
+  <description> WRITE PRINTS OUT MOST OF THE RESULTS. IT SHOULD NOT ALTER ANY PARAMETERS, SO THAT IT CAN BE CALLED AT ANY CONVENIENT TIME.</description>
+</entry>
+
+<entry id="wrttxt" term="wrttxt module">
+  <annotation> no annotation yet</annotation>
+  <definition>WRTTXT</definition>
+  <description>writes keywords</description>
+</entry>
+
+<entry id="xreact" term="xreact">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="xreactang" term="xreactang">
+  <annotation> no annotation yet</annotation>
+  <definition>no definition yet</definition>
+  <description>no definition yet</description>
+</entry>
+
+<entry id="zpe" term="Zero Point Energy">
+  <annotation> no annotation yet</annotation>
+  <definition>Zero Point Energy</definition>
+  <description>Zero Point Energy</description>
+</entry>
+
+<entry id="atomcharge"/>
+
+<entry id="atomeldensity"/>
+
+
+
+
+</dictionary>

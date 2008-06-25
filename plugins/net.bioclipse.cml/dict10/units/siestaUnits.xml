@@ -1,0 +1,107 @@
+<unitList
+    namespace="http://www.uam.es/siesta/units"
+    type="unit"
+    xmlns:h="http://www.w3.org/XHTML"
+    dictionaryPrefix="siestaUnits"
+    title="Siesta units dictionary"
+    xmlns:si="http://xml-cml.org/dict/siUnits"
+    xmlns:unitType="http://xml-cml.org/units/unitTypes"
+    xmlns:siestaUnits="http://www.uam.es/siesta/units"
+   xmlns="http://www.xml-cml.org/schema"
+>
+<!-- entries waiting for editing have dummy multipliers of -99 -->
+  <unit id="ry" 
+    title="Ry"
+    multiplierToSI="1.0973731568525E+07" 
+    symbol="Ry" 
+    unitType="unitType:length-1">
+      <metadata name="dc:source" content="Wikipedia"/>
+    <definition>the "infinity" Rydberg constant</definition>
+    <description>
+<h:p>The Rydberg constant is named after physicist Janne Rydberg, and 
+is a physical constant discovered when measuring the spectrum of hydrogen, 
+and building upon results from Anders Jonas Angstrom and Johann Balmer. 
+Each chemical element has its own Rydberg constant, which can be 
+derived from the "infinity" Rydberg constant.</h:p>
+<h:p>The "infinity" Rydberg constant is (according to 2002 CODATA results):</h:p>
+<h:p>This constant is often used in atomic physics in the form of an energy (see RyEnergy)</h:p>
+    </description>
+  </unit>
+  
+
+  <unit id="ryenergy" 
+    title="Rydberg energy"
+    multiplierToSI="-99" 
+    symbol="Ry" 
+    unitType="unitType:energy">
+      <metadata name="dc:source" content="Wikipedia"/>
+    <definition>energy equivalent of 1 Rydberg</definition>
+    <description>
+    <h:p>h * c * Ryinf = 13.6056923 eV</h:p>
+<h:p>This constant is often used in atomic physics in the form of an energy</h:p>
+    </description>
+  </unit>
+
+ 
+  <unit 
+   id="bohr" 
+   title="Bohr"
+    multiplierToSI="-99" 
+    unitType="unitType:unknown">
+    <description>
+    </description>
+  </unit>
+  
+  <unit 
+    id="ry.bohr" 
+    title="Ry Bohr"
+    multiplierToSI="-99" 
+    symbol="Ry Bohr" 
+    unitType="unitType:unknown">
+    <description>???
+    </description>
+  </unit>
+  
+  <unit 
+  id="ry.bohr3" 
+  title="Ry Bohr cubed" 
+  parentSI="si:unknown"
+    multiplierToSI="-99" 
+    symbol="Ry.Bohr3" 
+    unitType="unitType:unknown">
+    <description>???
+    </description>
+  </unit>
+ 
+  <unit id="kbar" 
+    title="kilobar" 
+    parentSI="si:pa"
+    multiplierToSI="-99" 
+    symbol="kbar" 
+    unitType="unitType:pressure">
+    <description>pressure???
+    </description>
+  </unit>
+  
+  <unit 
+  id="exx" 
+  title="e__" 
+  parentSI="si:unknown"
+    multiplierToSI="-99" 
+    symbol="e__" 
+    unitType="unitType:unknown">
+    <description>???
+    </description>
+  </unit>
+  
+  <unit id="ev.ang-3"
+  title="electron volts per angstrom cubed" 
+  parentSI="si:unknown"
+    multiplierToSI="-99" 
+    symbol="eV.A-3" 
+    unitType="unitType:unknown">
+    <description>???
+    </description>
+  </unit>
+  
+</unitList>
