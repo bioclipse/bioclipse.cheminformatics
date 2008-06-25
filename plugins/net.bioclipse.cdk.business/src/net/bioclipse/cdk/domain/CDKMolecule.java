@@ -68,9 +68,6 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
         this.cachedSMILES = smiles;
     }
 
-    public Object getParsedResource() {
-        return atomContainer;
-    }
 
     public String getSmiles() throws BioclipseException {
 
@@ -132,14 +129,14 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
 
     public String getCML() throws BioclipseException {
 
-        if (atomContainer==null) throw new BioclipseException("No molecule to " +
+        if (getAtomContainer()==null) throw new BioclipseException("No molecule to " +
         "get CML from!");
 
         ByteArrayOutputStream bo=new ByteArrayOutputStream();
 
         CMLWriter writer=new CMLWriter(bo);
         try {
-            writer.write(atomContainer);
+            writer.write(getAtomContainer());
             writer.close();
         } catch (CDKException e) {
             throw new BioclipseException("Could not convert molecule to CML: "
@@ -170,7 +167,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
         }
         Fingerprinter fp=new Fingerprinter();
         try {
-            BitSet fingerprint=fp.getFingerprint(atomContainer);
+            BitSet fingerprint=fp.getFingerprint(getAtomContainer());
             cachedFingerprint=fingerprint;
             return fingerprint;
         } catch (Exception e) {
@@ -181,8 +178,8 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
     }
 
     public boolean has3dCoords() throws BioclipseException {
-        if (atomContainer==null) throw new BioclipseException("Atomcontainer is null!");
-        return GeometryTools.has3DCoordinates(atomContainer);
+        if (getAtomContainer()==null) throw new BioclipseException("Atomcontainer is null!");
+        return GeometryTools.has3DCoordinates(getAtomContainer());
     }
     
     @Override
