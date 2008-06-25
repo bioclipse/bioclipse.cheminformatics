@@ -234,6 +234,11 @@ public interface ICDKManager extends IBioclipseManager {
      * @param path the full path to the file
      * @return a list of molecules that may have multiple conformers
      */
+    @Recorded
+    @PublishedMethod ( params = "String path",
+                       methodSummary = "Loads the molecules at the path into a " +
+                       		"list, and take conformers into account. " +
+                       		"Currently only reads SDFiles.")
     public List<ICDKMolecule> loadConformers( String path );
 
     /**
@@ -241,8 +246,17 @@ public interface ICDKManager extends IBioclipseManager {
      * @param stream to (file) contents
      * @return a list of molecules that may have multiple conformers
      */
+    @Recorded
     public List<ICDKMolecule> loadConformers( InputStream stream );
 
-    Iterator<ICDKMolecule> creatConformerIterator( InputStream instream );
+    /**
+     * Returns an iterator to the molecules in an Inputstream that might
+     * contain conformers.
+     *
+     * @param instream
+     * @return
+     */
+    @Recorded
+    public Iterator<ICDKMolecule> creatConformerIterator( InputStream instream );
     
 }
