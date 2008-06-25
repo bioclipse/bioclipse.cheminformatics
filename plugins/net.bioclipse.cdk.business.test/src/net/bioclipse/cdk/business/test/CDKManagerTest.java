@@ -174,6 +174,13 @@ public class CDKManagerTest {
         assertEquals( 3, mols.get( 0 ).getConformers().size() );
         assertEquals( 1, mols.get( 1 ).getConformers().size() );
         assertEquals( 2, mols.get( 2 ).getConformers().size() );
+        
+//        System.out.println(mols.get( 0 ).getConformers().get( 0 ).getSmiles());
+//        System.out.println(mols.get( 0 ).getConformers().get( 1 ).getSmiles());
+//        System.out.println(mols.get( 0 ).getConformers().get( 2 ).getSmiles());
+//        System.out.println(mols.get( 1 ).getConformers().get( 0 ).getSmiles());
+//        System.out.println(mols.get( 2 ).getConformers().get( 0 ).getSmiles());
+//        System.out.println(mols.get( 2 ).getConformers().get( 1 ).getSmiles());
 
     }
 
