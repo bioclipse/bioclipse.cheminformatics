@@ -564,8 +564,8 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                 //Remove last comma
                 frameScript=frameScript.substring(0, 
                                                    frameScript.length()-1);
-                logger.debug("Jmol running collected display string: '" +
-                                                     frameScript + "'");
+//                logger.debug("Jmol running collected display string: '" +
+//                                                     frameScript + "'");
 
                 runScript(frameScript);
                 runScript(colorScript);
@@ -582,7 +582,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
                 //Remove last comma
                 selectionString=selectionString.substring(0, selectionString.length()-1);
-                logger.debug("Collected display string: '" + selectionString + "'");
+//                logger.debug("Collected display string: '" + selectionString + "'");
 
                 runScript( selectionString );
             }
@@ -591,7 +591,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
             if (collectedScripts.size()>0){
                 logger.debug("Running scripts from selections in jmol: ");
                 for (String script : collectedScripts){
-                    logger.debug("  " + script);
+//                    logger.debug("  " + script);
                     runScript( script );
                 }
                 

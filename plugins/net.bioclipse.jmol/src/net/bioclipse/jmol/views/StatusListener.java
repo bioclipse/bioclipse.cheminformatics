@@ -112,11 +112,11 @@ public class StatusListener implements JmolStatusListener {
     }
 
     public void notifyScriptStart(String statusMessage, String additionalInfo) {
-        logger.info("JmolScript started. Status: " + statusMessage + ". Info: " + additionalInfo);
+        logger.debug("JmolScript started. Status: " + statusMessage + ". Info: " + additionalInfo);
     }
 
     public void notifyScriptTermination(String statusMessage, int msWalltime) {
-        logger.info("JmolScript ended. Status: " + statusMessage + ". Time: " + msWalltime + " ms");
+        logger.debug("JmolScript ended. Status: " + statusMessage + ". Time: " + msWalltime + " ms");
     }
 
     public void sendConsoleEcho(String strEcho) {
@@ -124,7 +124,7 @@ public class StatusListener implements JmolStatusListener {
     }
 
     public void sendConsoleMessage(String strStatus) {
-        logger.info(strStatus);
+        logger.debug(strStatus);
     }
 
     public void sendSyncScript(String script, String appletName) {
