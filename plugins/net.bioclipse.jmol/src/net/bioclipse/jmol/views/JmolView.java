@@ -28,6 +28,7 @@ import net.bioclipse.cdk.domain.AtomContainerSelection;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.AtomIndexSelection;
 import net.bioclipse.core.domain.IChemicalSelection;
+import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.domain.ModelSelection;
 import net.bioclipse.core.domain.ScriptSelection;
 import net.bioclipse.jmol.adapter.cdk.CdkJmolAdapter;
@@ -55,6 +56,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.ChemModel;
 import org.openscience.cdk.ChemSequence;
+import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -417,7 +419,29 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
                     //Extract individual atomContainers
                     //and add multiple models
-                    for (IAtomContainer cac: cdkConf.getConformerContainer()){
+                    for (int i=0; i< cdkConf.getConformerContainer().size();i++){
+                        
+                        IAtomContainer cac= cdkConf.getConformerContainer().get( i );
+                        
+                        //We need to clone, as same AC returned
+                        //TODO: Verfy this
+                        IAtomContainer caccopy;
+                        try {
+                            caccopy = (IAtomContainer) cac.clone();
+                            addAtomContainer(collectedModels, caccopy);
+//                            logger.debug("Added an AC from conformer.");
+
+                        } catch ( CloneNotSupportedException e ) {
+                            logger.debug("Could not clone AC in Conformer."+
+                            " AC omitted in Jmol.");
+                        }
+                        
+                    }
+                    
+                    //FIXME: above uses for, below uses generic iterator.
+                    //Remove one of them when bug fixed.
+                    
+/*                    for (IAtomContainer cac: cdkConf.getConformerContainer()){
                         //We need to clone, as same AC returned
                         //TODO: Verfy this
                         IAtomContainer caccopy;
@@ -431,6 +455,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                             " AC omitted in Jmol.");
                         }
                     }
+                        */
                 }
 
                 //Else, we have an ICDKMolecule
