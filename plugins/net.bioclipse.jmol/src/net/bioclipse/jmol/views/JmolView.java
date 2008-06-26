@@ -92,7 +92,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
     //Store the chemfile we are displaying
     IChemFile chemFile;
 
-    private Object lastSelected;
+    private List lastSelected;
     
     /**
      * The constructor.
@@ -102,6 +102,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
         jmolPanel= new JmolPanel(this, new CdkJmolAdapter());
         cdk=net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
         setCleared( true );
+        lastSelected=new ArrayList();
     }
 
     public boolean isCleared() {
@@ -287,16 +288,26 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
         List<ICDKMolecule> collectedCDKMols=new ArrayList<ICDKMolecule>();
 
         //Store chemical selection
-        IChemicalSelection chemicalSelection=null;
+        List<IChemicalSelection> chemicalSelections = 
+                                        new ArrayList<IChemicalSelection>();
 
-        
-        //Loop all selections; if they can provide AC: add to moleculeSet
+        //See if list is the same as previously selected
+        boolean newSelection=false;
         for (Object obj : ssel.toList()){
             
-            if (obj.equals( lastSelected )){
-                System.out.println("Omitting selection!");
-                return;
+            if (!(lastSelected.contains(obj))){
+                newSelection=true;
             }
+        }
+        if (newSelection==false){
+            System.out.println("Omitting selection!");
+            return;
+        }
+        
+        lastSelected.clear();
+
+        //Loop all selections; if they can provide AC: add to moleculeSet
+        for (Object obj : ssel.toList()){
             
             boolean storeSelection=false;
 
@@ -353,7 +364,15 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                 Object chemSelectionObj=ada
                 .getAdapter( IChemicalSelection.class );
                 if (chemSelectionObj!=null){
-                    chemicalSelection=(IChemicalSelection)chemSelectionObj;
+                    chemicalSelections.add((IChemicalSelection)chemSelectionObj);
+                    storeSelection=true;
+                }
+
+                //Handle case where Iadaptable can return models to be shown
+                Object chemModelSel=ada
+                .getAdapter( ModelSelection.class );
+                if (chemModelSel!=null){
+                    chemicalSelections.add( (IChemicalSelection)chemModelSel);
                     storeSelection=true;
                 }
 
@@ -361,7 +380,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                 Object scriptSelection=ada
                 .getAdapter( ScriptSelection.class );
                 if (scriptSelection != null){
-                    chemicalSelection=(ScriptSelection)scriptSelection;
+                    chemicalSelections.add((ScriptSelection)scriptSelection);
                     storeSelection=true;
                 }
 
@@ -369,7 +388,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
             if (storeSelection==true){
                 System.out.println("Storing selection in jmol");
-                lastSelected=obj;
+                lastSelected.add( obj);
             }
 
         } //End of loop over selections
@@ -460,7 +479,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
         //Handle highlighting if we have any
         //Start by atoms/bonds/models in a chemicalSelection
-        if (chemicalSelection!=null){
+        if (chemicalSelections.size()>0){
 
             //Store new model index
             ArrayList<Integer> modelSelectionIndices=new ArrayList<Integer>();
@@ -471,39 +490,49 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
             //Store collected scripts to run
             ArrayList<String> collectedScripts=new ArrayList<String>();
 
-            //Process model selections to display one or more models
-            if ( chemicalSelection instanceof ModelSelection ) {
-                ModelSelection isel = (ModelSelection) chemicalSelection;
+            //Loop over all stored IChemicalSelections
+            for (IChemicalSelection chemicalSelection : chemicalSelections){
 
-                //Add one, since jmol starts indices on 1, and store in list
-                modelSelectionIndices.add( isel.getSelection() +1 );
-            }
+                //Process model selections to display one or more models
+                if ( chemicalSelection instanceof ModelSelection ) {
+                    ModelSelection modelSel = (ModelSelection) chemicalSelection;
 
-            //Process atom selections to highlight one or more atoms by index
-            else if ( chemicalSelection instanceof AtomIndexSelection ) {
-                AtomIndexSelection isel = (AtomIndexSelection) chemicalSelection;
-                int[] selindices = isel.getSelection();
+                    for (Integer i : modelSel.getSelection()){
+                        //Add one, since jmol starts indices on 1, and store in list
+                        modelSelectionIndices.add( i +1 );
 
-                for (int i=0; i<selindices.length;i++){
+                        logger.debug("# jmol: Added model to be shown: " + (i+1));
+                    }
 
-                    //Add one, since jmol starts indices on 1
-                    atomSelectionIndices.add( new Integer(selindices[i]+1) );
                 }
-            }
 
-            else if ( chemicalSelection instanceof AtomContainerSelection ) {
-                //TODO
-            }
+                //Process atom selections to highlight one or more atoms by index
+                else if ( chemicalSelection instanceof AtomIndexSelection ) {
+                    AtomIndexSelection isel = (AtomIndexSelection) chemicalSelection;
+                    int[] selindices = isel.getSelection();
 
-            else if ( chemicalSelection instanceof ScriptSelection ) {
-                ScriptSelection scriptSelection=(ScriptSelection)chemicalSelection;
-                Map<String, String> scripts = scriptSelection.getSelection();
-                for (String script : scripts.keySet()){
-                    if (scripts.get( script ).equals( "jmol" )){
-                        collectedScripts.add( script );
+                    for (int i=0; i<selindices.length;i++){
+
+                        //Add one, since jmol starts indices on 1
+                        atomSelectionIndices.add( new Integer(selindices[i]+1) );
+                    }
+                }
+
+                else if ( chemicalSelection instanceof AtomContainerSelection ) {
+                    //TODO
+                }
+
+                else if ( chemicalSelection instanceof ScriptSelection ) {
+                    ScriptSelection scriptSelection=(ScriptSelection)chemicalSelection;
+                    Map<String, String> scripts = scriptSelection.getSelection();
+                    for (String script : scripts.keySet()){
+                        if (scripts.get( script ).equals( "jmol" )){
+                            collectedScripts.add( script );
+                        }
                     }
                 }
             }
+            
 
             
             /*
@@ -515,20 +544,31 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
             if (modelSelectionIndices.size()>0){
 
                 //Collect all Select commands into one string
-                String collectedSelects="Display ";
+                String frameScript="Frame all; display ";
                 for (Iterator<Integer> it = modelSelectionIndices.iterator();
                                                                 it.hasNext();) {
                     Integer sel = it.next();
-                    collectedSelects+="1." +sel+",";
+                    frameScript+="1." +sel+",";
+                }
+                
+                String colorScript="Select all; wireframe 40; spacefill 20%; " +
+                		"color bonds cpk; color atoms cpk; ";
+                
+                if (modelSelectionIndices.size()>1){
+                    colorScript="Select all; spacefill off; wireframe 40;";
+                    for (Integer i : modelSelectionIndices){
+                        colorScript=colorScript + " Select 1." + i + "; color bonds " + getColorEnum(i) +";";
+                    }
                 }
 
                 //Remove last comma
-                collectedSelects=collectedSelects.substring(0, 
-                                                   collectedSelects.length()-1);
+                frameScript=frameScript.substring(0, 
+                                                   frameScript.length()-1);
                 logger.debug("Jmol running collected display string: '" +
-                                                     collectedSelects + "'");
+                                                     frameScript + "'");
 
-                runScript(collectedSelects);
+                runScript(frameScript);
+                runScript(colorScript);
             }
 
             //Continue with atoms by index
@@ -560,6 +600,25 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
         }
 
 
+    }
+
+    /**
+     * Return a color from list by index
+     * @param i
+     * @return
+     */
+    private String getColorEnum( Integer i ) {
+
+        switch (i%7){
+            case 1 : return "red";
+            case 2 : return "green";
+            case 3 : return "yellow";
+            case 4 : return "blue";
+            case 5 : return "magenta";
+            case 6 : return "cyan";
+            case 7 : return "amber";
+            default : return "brown";
+        }
     }
 
     private void addAtomContainer( List<ChemModel> models, IAtomContainer ac ) {
