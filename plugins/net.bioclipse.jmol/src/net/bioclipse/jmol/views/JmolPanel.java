@@ -70,6 +70,12 @@ public class JmolPanel extends JPanel {
         viewer = (Viewer)jmolViewer;
     }
 
+    public JmolPanel(ISelectionProvider part, JmolAdapter jmolAdapter) {
+        this.part=part;
+        jmolViewer = createViewer(jmolAdapter);
+        viewer = (Viewer)jmolViewer;
+    }
+
     private JmolViewer createViewer(JmolAdapter adapter) {
         JmolViewer viewer = Viewer.allocateViewer(this, adapter);
         viewer.setColorBackground("white");

@@ -15,16 +15,22 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JScrollPane;
 
 import net.bioclipse.cdk.business.ICDKManager;
+import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.AtomContainerSelection;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.AtomIndexSelection;
-import net.bioclipse.core.domain.IAtomSelection;
+import net.bioclipse.core.domain.IChemicalSelection;
+import net.bioclipse.core.domain.ModelSelection;
+import net.bioclipse.core.domain.ScriptSelection;
+import net.bioclipse.jmol.adapter.cdk.CdkJmolAdapter;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
@@ -85,13 +91,15 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
     //Store the chemfile we are displaying
     IChemFile chemFile;
+
+    private Object lastSelected;
     
     /**
      * The constructor.
      */
     public JmolView() {
         history = new ArrayList<String>(50);
-        jmolPanel= new JmolPanel(this);
+        jmolPanel= new JmolPanel(this, new CdkJmolAdapter());
         cdk=net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
         setCleared( true );
     }
@@ -261,135 +269,270 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
         if (!(selection instanceof IStructuredSelection))
             return;
-
         IStructuredSelection ssel = (IStructuredSelection) selection;
 
-        IMoleculeSet moleculeSet=new MoleculeSet();
-        IAtomSelection molSelection=null;
+        /*
+         * Get info from selections directly or via adapter in this order:
+         * 
+         * 1. Collect (or genrate from IMolecule) ICDKMolecules
+         * 2. Collect ChemModels to visualize
+         * 3. Collect atoms/bonds to highlight (IChemicalSelection)
+         * 4. Collect scripts to run
+         * 
+         * TBC: order to execute these
+         * 
+         */
         
-        ArrayList<Integer> atomSelectionIndices=new ArrayList<Integer>();
+        //Store selected CDKMols here
+        List<ICDKMolecule> collectedCDKMols=new ArrayList<ICDKMolecule>();
 
+        //Store chemical selection
+        IChemicalSelection chemicalSelection=null;
+
+        
         //Loop all selections; if they can provide AC: add to moleculeSet
         for (Object obj : ssel.toList()){
+            
+            if (obj.equals( lastSelected )){
+                System.out.println("Omitting selection!");
+                return;
+            }
+            
+            boolean storeSelection=false;
 
-            //TODO: Handle multiple selections!
-
-            //If we have an ICDKMolecule, just get the AC
+            
+            //If we have an ICDKMolecule, just get the AC directly
             if (obj instanceof ICDKMolecule) {
-                ICDKMolecule mol = (ICDKMolecule) obj;
-                if (mol.getAtomContainer()==null){
-                    logger.debug("CDKMolecule but can't get AtomContainer.");
-                }
-                //Only add if have 3D coords
-                IAtomContainer ac=mol.getAtomContainer();
-                if (GeometryTools.has3DCoordinates(ac)){
-                    moleculeSet.addAtomContainer(ac);
-                }
+                ICDKMolecule cdkmol = (ICDKMolecule) obj;
+                collectedCDKMols.add( cdkmol );
+                storeSelection=true;
+                
+//                if (cdkmol.getAtomContainer()==null){
+//                    logger.debug("CDKMolecule but can't get AtomContainer.");
+//                }
+//                //Only add if have 3D coords
+//                IAtomContainer ac=cdkmol.getAtomContainer();
+//                if (GeometryTools.has3DCoordinates(ac)){
+//                    addAtomContainer( displayedModels, ac );
+//                }
             }
 
-            //Try to get an IMolecule via the adapter
+
+            //Else try to get the different adapters
             else if (obj instanceof IAdaptable) {
                 IAdaptable ada=(IAdaptable)obj;
 
+                
                 //Handle case where Iadaptable can return a molecule
                 Object molobj=ada
                 .getAdapter( net.bioclipse.core.domain.IMolecule.class );
-                if (molobj==null || 
-                        (!(molobj instanceof net.bioclipse.core.domain.IMolecule ))){
-                    //Nothing to show
-//                  clearView();
-//                  return;
-                }
-
                 if (molobj!=null){
-
-                    net.bioclipse.core.domain.IMolecule bcmol 
-                    = (net.bioclipse.core.domain.IMolecule) molobj;
-
-                    //Create cdkmol from IMol, via CML or SMILES if that fails
-                    ICDKMolecule cdkMol;
-                    try {
-                        //Create molecule
-                        cdkMol = cdk.create( bcmol );
-                        IAtomContainer ac=cdkMol.getAtomContainer();
-
-
-                        //Only add if have 3D coords
-                        if (GeometryTools.has3DCoordinates(ac)){
-                            moleculeSet.addAtomContainer(ac);
-                        }
-
-                    } catch ( BioclipseException e ) {
-                        e.printStackTrace();
+                    //If adaptable returns a cdkmolecule, add it directly 
+                    if (molobj instanceof ICDKMolecule) {
+                        ICDKMolecule cdkmol = (ICDKMolecule) molobj;
+                        collectedCDKMols.add( cdkmol );
                     }
-                }
-                
-                //Handle case where Iadaptable can return atoms to be highlighted
-                Object selobj=ada
-                .getAdapter( IAtomSelection.class );
-                if (selobj!=null){
-                    molSelection=(IAtomSelection)selobj;
-                    
+
+                    //If adaptable at least returns an IMolecule
+                    //we can create CDKMolecule from it (this is costly though)
+                    else if (molobj instanceof net.bioclipse.core.domain.IMolecule ){
+                        net.bioclipse.core.domain.IMolecule bcmol 
+                        = (net.bioclipse.core.domain.IMolecule) molobj;
+                        try {
+                            //Lengthy operation, as via CML or SMILES
+                            ICDKMolecule cdkmol=cdk.create( bcmol );
+                            collectedCDKMols.add( cdkmol );
+                        } catch ( BioclipseException e ) {
+                            e.printStackTrace();
+                        }
+                    }
+                    storeSelection=true;
                 }
 
-                
+                //Handle case where Iadaptable can return atoms to be highlighted
+                Object chemSelectionObj=ada
+                .getAdapter( IChemicalSelection.class );
+                if (chemSelectionObj!=null){
+                    chemicalSelection=(IChemicalSelection)chemSelectionObj;
+                    storeSelection=true;
+                }
+
+                //Handle case where Iadaptable can return a script
+                Object scriptSelection=ada
+                .getAdapter( ScriptSelection.class );
+                if (scriptSelection != null){
+                    chemicalSelection=(ScriptSelection)scriptSelection;
+                    storeSelection=true;
+                }
+
+            } //End of adaptable collection
+
+            if (storeSelection==true){
+                System.out.println("Storing selection in jmol");
+                lastSelected=obj;
             }
 
+        } //End of loop over selections
+        
+        
+        /*
+         * We have now collected everything we are interested in.
+         * Process things to display in jmol.
+         */
 
-            //Set new mol in Jmol
-            if (moleculeSet.getAtomContainerCount()>0){
+        logger.debug("######### Process jmol molecules ############");
+
+        //Start by ICDKMolecules to set of the ChemFiles, which Jmol expects
+        //as input
+        if (collectedCDKMols!=null){
+
+            //Store ChemModels here, to add them to ChemFile for input in Jmol
+            List<ChemModel> collectedModels=new ArrayList<ChemModel>();
+
+            //Loop over all collected molecules, extract ChemModels and add to list
+            for (ICDKMolecule cdkMol: collectedCDKMols){
+
+                //The ICDKMolecule could be a CDKConformer
+                if ( cdkMol instanceof CDKConformer ) {
+                    CDKConformer cdkConf = (CDKConformer) cdkMol;
+
+                    //Extract individual atomContainers
+                    //and add multiple models
+                    for (IAtomContainer cac: cdkConf.getConformerContainer()){
+                        //We need to clone, as same AC returned
+                        //TODO: Verfy this
+                        IAtomContainer caccopy;
+                        try {
+                            caccopy = (IAtomContainer) cac.clone();
+                            addAtomContainer(collectedModels, caccopy);
+//                            logger.debug("Added an AC from conformer.");
+
+                        } catch ( CloneNotSupportedException e ) {
+                            logger.debug("Could not clone AC in Conformer."+
+                            " AC omitted in Jmol.");
+                        }
+                    }
+                }
+
+                //Else, we have an ICDKMolecule
+                else {
+                    IAtomContainer ac=cdkMol.getAtomContainer();
+
+                    //Only add if have 3D coords
+                    if (GeometryTools.has3DCoordinates(ac)){
+                        addAtomContainer(collectedModels, ac);
+                    }
+                }
+            }
+            
+            //If we have models collected, add them to a ChemFile and send to Jmol
+            if (collectedModels.size()>0){
+
+                logger.debug("# Jmol, we have " + collectedModels.size() + 
+                             " ChemModels to send to jmol");
+                
+                //Create a chemfile, as jmol expects this
                 ChemFile cf=new ChemFile();
                 ChemSequence seq=new ChemSequence();
                 cf.addChemSequence(seq);
-                ChemModel model=new ChemModel();
-                seq.addChemModel(model);
 
-                //Set the molset to the model
-                model.setMoleculeSet(moleculeSet);
+                //Add all available chemmodels to chemfile
+                for (ChemModel model : collectedModels){
+                    seq.addChemModel(model);
+                }
                 
                 //Set the ChemFile as input to jmol
-                setMolecule(cf);
+                setChemFile(cf);
 
                 //Indicate that we now have content
                 setCleared( false );
 
-            }else
-                if (isCleared()==false){
-                    clearView();
-                    setCleared( true );
-                }
+            }else if (isCleared()==false){
+                clearView();
+                setCleared( true );
+            }
 
-            //Handle highlighting if we have any
-            if (molSelection!=null){
-                
-                if ( molSelection instanceof AtomIndexSelection ) {
-                    AtomIndexSelection isel = (AtomIndexSelection) molSelection;
-                    int[] selindices = isel.getSelection();
-                    System.out.println("\n** Should highlight these atoms:\n");
-                    for (int i=0; i<selindices.length;i++){
-                        atomSelectionIndices.add( new Integer(selindices[i]) );
+            
+        } //End act upon collected ChemModels
+
+
+        logger.debug("######### Jmol Selections ############");
+
+        //Handle highlighting if we have any
+        //Start by atoms/bonds/models in a chemicalSelection
+        if (chemicalSelection!=null){
+
+            //Store new model index
+            ArrayList<Integer> modelSelectionIndices=new ArrayList<Integer>();
+            
+            //Store collected atom indices
+            ArrayList<Integer> atomSelectionIndices=new ArrayList<Integer>();
+
+            //Store collected scripts to run
+            ArrayList<String> collectedScripts=new ArrayList<String>();
+
+            //Process model selections to display one or more models
+            if ( chemicalSelection instanceof ModelSelection ) {
+                ModelSelection isel = (ModelSelection) chemicalSelection;
+
+                //Add one, since jmol starts indices on 1, and store in list
+                modelSelectionIndices.add( isel.getSelection() +1 );
+            }
+
+            //Process atom selections to highlight one or more atoms by index
+            else if ( chemicalSelection instanceof AtomIndexSelection ) {
+                AtomIndexSelection isel = (AtomIndexSelection) chemicalSelection;
+                int[] selindices = isel.getSelection();
+
+                for (int i=0; i<selindices.length;i++){
+
+                    //Add one, since jmol starts indices on 1
+                    atomSelectionIndices.add( new Integer(selindices[i]+1) );
+                }
+            }
+
+            else if ( chemicalSelection instanceof AtomContainerSelection ) {
+                //TODO
+            }
+
+            else if ( chemicalSelection instanceof ScriptSelection ) {
+                ScriptSelection scriptSelection=(ScriptSelection)chemicalSelection;
+                Map<String, String> scripts = scriptSelection.getSelection();
+                for (String script : scripts.keySet()){
+                    if (scripts.get( script ).equals( "jmol" )){
+                        collectedScripts.add( script );
                     }
                 }
+            }
 
-                else if ( molSelection instanceof AtomContainerSelection ) {
-                    //TODO
+            
+            /*
+             * We have now collected what we want from the Chemical Selection.
+             * Now, set up an run the jmol scripts for this.
+             */
+
+            //Start with models by index
+            if (modelSelectionIndices.size()>0){
+
+                //Collect all Select commands into one string
+                String collectedSelects="Display ";
+                for (Iterator<Integer> it = modelSelectionIndices.iterator();
+                                                                it.hasNext();) {
+                    Integer sel = it.next();
+                    collectedSelects+="1." +sel+",";
                 }
 
-//                IAtomContainer selAC=molSelection.getSelection();
-//                List<IAtomContainer> lst=ChemFileManipulator.getAllAtomContainers( chemFile );
-//                if (lst!=null && lst.size()>0){
-//                    IAtomContainer ac=lst.get( 0 );
-//                    System.out.println("** Current AC is:\n");
-//                    for (int i=0; i<ac.getAtomCount();i++){
-//                        System.out.println("Atom: " + ac.getAtom( i ));
-//                    }
-//                    System.out.println("\n** Should highlight these atoms:\n");
-//                    for (int i=0; i<selAC.getAtomCount();i++){
-//                        System.out.println("Atom: " + selAC.getAtom( i ));
-//                    }
-//                    
-//                }
-                
+                //Remove last comma
+                collectedSelects=collectedSelects.substring(0, 
+                                                   collectedSelects.length()-1);
+                logger.debug("Jmol running collected display string: '" +
+                                                     collectedSelects + "'");
+
+                runScript(collectedSelects);
+            }
+
+            //Continue with atoms by index
+            if (atomSelectionIndices.size()>0){
                 //Collect atoms, bonds etc and create script to highlight
                 String selectionString="selectionHalos on; Select none; SELECT ";
                 Collections.sort( atomSelectionIndices );
@@ -400,13 +543,37 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                 //Remove last comma
                 selectionString=selectionString.substring(0, selectionString.length()-1);
                 logger.debug("Collected display string: '" + selectionString + "'");
-                
-                runScript( selectionString );
 
+                runScript( selectionString );
             }
             
+            //Process all collected scripts
+            if (collectedScripts.size()>0){
+                logger.debug("Running scripts from selections in jmol: ");
+                for (String script : collectedScripts){
+                    logger.debug("  " + script);
+                    runScript( script );
+                }
+                
+            }
+
         }
 
+
+    }
+
+    private void addAtomContainer( List<ChemModel> models, IAtomContainer ac ) {
+
+        //Create a MolSet to hold the molecule
+        MoleculeSet ms=new MoleculeSet();
+        ms.addAtomContainer( ac );
+
+        //Create a ChemModel to hold the MolSet
+        ChemModel model=new ChemModel();
+        model.setMoleculeSet(ms);
+        
+        models.add(model);
+        
     }
 
     /**
@@ -422,7 +589,9 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
       * Set a chemfile as mol in Jmol with openClientFile("","",ChemFile)
       * @param cf
       */
-    private void setMolecule(IChemFile cf) {
+    private void setChemFile(IChemFile cf) {
+        
+        //Compare if we have new things, else just return
         
         chemFile=cf;
 
@@ -430,9 +599,6 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
         //Maybe fork off a new thread?? TODO!
         jmolPanel.openClientFile("", "", cf);
-
-        text.setEnabled(true);
-        text.getParent().redraw();
 
         String strError = jmolPanel.getOpenFileError();
         if (strError != null){
