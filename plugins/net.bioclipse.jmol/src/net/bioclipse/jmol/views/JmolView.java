@@ -12,6 +12,7 @@
 package net.bioclipse.jmol.views;
 
 import java.awt.event.MouseListener;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -58,10 +59,12 @@ import org.openscience.cdk.ChemModel;
 import org.openscience.cdk.ChemSequence;
 import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.MoleculeSet;
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IMoleculeSet;
+import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 
 /**
@@ -678,6 +681,24 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
         //Compare if we have new things, else just return
         
         chemFile=cf;
+//        System.out.println("%%%%%%%%%%%");
+//        System.out.println(cf);
+//        System.out.println("%%%%%%%%%%%");
+        
+//        try {
+//            ByteArrayOutputStream bo=new ByteArrayOutputStream();
+//            CMLWriter writer=new CMLWriter(bo);
+//            writer.write( cf );
+//            System.out.println("%%%%%%%%%%%");
+//            System.out.println(bo.toString());
+//            System.out.println("%%%%%%%%%%%");
+//            
+//        } catch ( CDKException e ) {
+//            e.printStackTrace();
+//        }
+//        
+//
+//
 
         logger.debug("Opening Jmol via CDK's ChemFile and CdkJmolAdapter...");
 
