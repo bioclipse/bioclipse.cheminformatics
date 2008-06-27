@@ -63,6 +63,7 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
+import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
@@ -403,6 +404,9 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
          * We have now collected everything we are interested in.
          * Process things to display in jmol.
          */
+        
+        if ((collectedCDKMols.size()<=0) && chemicalSelections.size()<=0)
+            return;
 
         logger.debug("######### Process jmol molecules ############");
 
@@ -478,22 +482,58 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                 logger.debug("# Jmol, we have " + collectedModels.size() + 
                              " ChemModels to send to jmol");
                 
-                //Create a chemfile, as jmol expects this
-                ChemFile cf=new ChemFile();
-                ChemSequence seq=new ChemSequence();
-                cf.addChemSequence(seq);
+                //Check if stored ChemFile's models differs from New ChemModels
+                boolean similar=false;
 
-                //Add all available chemmodels to chemfile
-                for (ChemModel model : collectedModels){
-                    seq.addChemModel(model);
+                if (chemFile!=null){
+                    int oldModelCount=chemFile.getChemSequence( 0 ).getChemModelCount();
+                    int newModelCount=collectedModels.size();
+
+                    similar=true;
+                    
+                    //Fast way to see if we should continue comparing models
+                    if (oldModelCount==newModelCount){
+                        
+                        //Compare one by one
+                        for (int i=0; i<chemFile.getChemSequence( 0 ).getChemModelCount();i++){
+                            IChemModel cm1=chemFile.getChemSequence( 0 ).getChemModel( i );
+                            IChemModel cm2=collectedModels.get( i );
+                            String title1=(String) cm1.getMoleculeSet().getMolecule( 0 ).getProperty( "cdk:Title" );
+                            String title2=(String) cm2.getMoleculeSet().getMolecule( 0 ).getProperty( "cdk:Title" );
+                            
+                            //If all titles are same, we conclude the chemmodels are similar
+                            if (!(title1.equals(title2))){
+                                similar=false;
+                            }
+                                
+                        }
+                        
+                    }
+                    else{
+                        similar=false;
+                    }
+                    
                 }
                 
-                //Set the ChemFile as input to jmol
-                setChemFile(cf);
+                //See if we already have chemModels stored, for example 
+                //clicking on another conformer
+                if (similar==false){
+                    //Create a chemfile, as jmol expects this
+                    ChemFile cf=new ChemFile();
+                    ChemSequence seq=new ChemSequence();
+                    cf.addChemSequence(seq);
 
-                //Indicate that we now have content
-                setCleared( false );
+                    //Add all available chemmodels to chemfile
+                    for (ChemModel model : collectedModels){
+                        seq.addChemModel(model);
+                    }
 
+                    //Set the ChemFile as input to jmol
+                    setChemFile(cf);
+
+                    //Indicate that we now have content
+                    setCleared( false );
+                }
             }else if (isCleared()==false){
                 clearView();
                 setCleared( true );
