@@ -429,11 +429,11 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                     frameScript+="1." +sel+",";
                 }
                 
-                String colorScript="Select all; wireframe 40; spacefill 20%; " +
+                String colorScript="selectionHalos off; Select all; wireframe 40; spacefill 20%; " +
                 		"color bonds cpk; color atoms cpk; select none; ";
                 
                 if (modelSelectionIndices.size()>1){
-                    colorScript="Select all; spacefill off; wireframe 40; select none;";
+                    colorScript="selectionHalos off; Select all; spacefill off; wireframe 25; select none;";
                     for (Integer i : modelSelectionIndices){
                         colorScript=colorScript + " Select 1." + i + "; color bonds " + getColorEnum(i) +";";
                     }
