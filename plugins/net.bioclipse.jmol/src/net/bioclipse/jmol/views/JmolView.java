@@ -304,7 +304,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
             }
         }
         if (newSelection==false){
-            System.out.println("Omitting selection!");
+//            System.out.println("Omitting selection!");
             return;
         }
 
@@ -354,7 +354,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
     private void processChemicalSelections(
                                             List<IChemicalSelection> chemicalSelections ) {
 
-        logger.debug("######### Jmol Selections ############");
+//        logger.debug("######### Jmol Selections ############");
 
         //Handle highlighting if we have any
         //Start by atoms/bonds/models in a chemicalSelection
@@ -430,10 +430,10 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                 }
                 
                 String colorScript="Select all; wireframe 40; spacefill 20%; " +
-                		"color bonds cpk; color atoms cpk; ";
+                		"color bonds cpk; color atoms cpk; select none; ";
                 
                 if (modelSelectionIndices.size()>1){
-                    colorScript="Select all; spacefill off; wireframe 40;";
+                    colorScript="Select all; spacefill off; wireframe 40; select none;";
                     for (Integer i : modelSelectionIndices){
                         colorScript=colorScript + " Select 1." + i + "; color bonds " + getColorEnum(i) +";";
                     }
@@ -479,7 +479,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
     private void processMolecules( List<ICDKMolecule> collectedCDKMols ) {
 
-        logger.debug("######### Process jmol molecules ############");
+//        logger.debug("######### Process jmol molecules ############");
 
         //Start by ICDKMolecules to set of the ChemFiles, which Jmol expects
         //as input
