@@ -505,6 +505,10 @@ public class CDKManager implements ICDKManager {
             throw new IllegalArgumentException(
                 "Could not read file: " + file.getPath()
             );
+        } catch (Exception e) {
+            throw new IllegalArgumentException(
+                           "Problem parsing conformer file. " + e.getMessage()
+            );
         }
         
     }
@@ -514,6 +518,7 @@ public class CDKManager implements ICDKManager {
      * Currently limited to read SDFiles, CMLFiles is for the future.
      * @param path the full path to the file
      * @return a list of molecules that may have multiple conformers
+     * @throws BioclipseException 
      */
     public List<ICDKMolecule> loadConformers( InputStream stream ) {
         
@@ -532,6 +537,9 @@ public class CDKManager implements ICDKManager {
             mols.add( molecule );
         }
         
+        if (mols==null || mols.size()<=0)
+            throw new IllegalArgumentException("No conformers could be read");
+
         return mols;
 
     }

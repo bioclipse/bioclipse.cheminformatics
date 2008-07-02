@@ -18,5 +18,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.views
 Eclipse-LazyStart: true
 Export-Package: net.bioclipse.cdk.business,
- net.bioclipse.cdk.domain
+ net.bioclipse.cdk.domain,
+ net.bioclipse.cdk.providers
 Import-Package: org.apache.log4j
