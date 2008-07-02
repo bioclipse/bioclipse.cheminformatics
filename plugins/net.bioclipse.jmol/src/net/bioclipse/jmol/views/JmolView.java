@@ -13,6 +13,7 @@ package net.bioclipse.jmol.views;
 
 import java.awt.event.MouseListener;
 import java.io.ByteArrayOutputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,6 +28,8 @@ import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.AtomContainerSelection;
+import net.bioclipse.cdk.providers.IPharmacophoreProvider;
+import net.bioclipse.cdk.providers.PharmacophoreDistanceConstraint;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.AtomIndexSelection;
 import net.bioclipse.core.domain.IChemicalSelection;
@@ -62,11 +65,13 @@ import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CMLWriter;
+import org.openscience.cdk.pharmacophore.PharmacophoreBond;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 
 /**
@@ -98,6 +103,9 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
     //Store the chemfile we are displaying
     IChemFile chemFile;
+
+    //A formatter for 2 decimals
+    DecimalFormat formatter = new DecimalFormat("0.00");
 
     private List lastSelected;
     
@@ -289,12 +297,16 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
          */
         
         //Store selected CDKMols in List
-        List<ICDKMolecule> collectedCDKMols=new ArrayList<ICDKMolecule>();
+        List<ICDKMolecule> collectedCDKMols = new ArrayList<ICDKMolecule>();
 
         //Store chemical selections in List
         List<IChemicalSelection> chemicalSelections = 
-                                        new ArrayList<IChemicalSelection>();
+                                            new ArrayList<IChemicalSelection>();
 
+        //Store pharmacophpreProviders in List
+        List<IPharmacophoreProvider> pcoreProviders = 
+                                        new ArrayList<IPharmacophoreProvider>();
+        
         //See if list is the same as previously selected
         boolean newSelection=false;
         for (Object obj : eclipseSelection.toList()){
@@ -313,7 +325,8 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
         //Extract molecules and chemical selection from the eclipseSelection
         //Store extracted info in lists
-        extractFromSelection( eclipseSelection, collectedCDKMols, chemicalSelections );
+        extractFromSelection( eclipseSelection, collectedCDKMols, 
+                              chemicalSelections, pcoreProviders );
         
         //We have now collected everything we are interested in.
         //If no fun, return
@@ -333,6 +346,20 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
             processMolecules( collectedCDKMols );
         }
 
+        /*
+         * Process any pharmacophoreProviders
+        * This means e.g. to draw spheres and lines
+        */
+        if (pcoreProviders.size()>0){
+            
+            logger.debug( "Extracted the following pcoreProviders:" );
+            for (IChemicalSelection csel : chemicalSelections){
+                logger.debug( "  * " + csel.getSelection() );
+            }
+
+            processPcoreProviders( pcoreProviders );
+        }
+
         
         /*
          * Process any chemicalSelections
@@ -349,6 +376,51 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
             processChemicalSelections( chemicalSelections );
         }
 
+    }
+
+    private void processPcoreProviders(
+                                        List<IPharmacophoreProvider> pcoreProviders ) {
+
+        for (IPharmacophoreProvider provider : pcoreProviders){
+                PharmacophoreBond constraint=provider.getConstraint();
+                
+                //For debug issues
+                double dist = constraint.getBondLength();
+                IAtom group1 = constraint.getAtom(0);
+                IAtom group2 = constraint.getAtom(1);
+                logger.debug("      (DistanceConstraint: " + group1.getSymbol() + "," +
+                             group2.getSymbol() + ", dist: " + dist + ") ");
+
+                String group1jmolcoords="{"
+                    + group1.getPoint3d().x 
+                    + " "+ group1.getPoint3d().y 
+                    + " "+ group1.getPoint3d().z + "}";
+
+                String group2jmolcoords="{"
+                    + group2.getPoint3d().x 
+                    + " "+ group2.getPoint3d().y 
+                    + " "+ group2.getPoint3d().z + "}";
+
+                
+                String pcoreString1="isoSurface mySphere1 color purple resolution 4 center " + group1jmolcoords +" sphere 1 mesh nofill";
+                String pcoreString2="isoSurface mySphere2 color green resolution 4 center " + group2jmolcoords +" sphere 1 mesh nofill";
+                String lineString="draw line1 color yellow " + group1jmolcoords + " " + group2jmolcoords; 
+//                String lineString="draw line1 width 0.2 color yellow " + group1jmolcoords + " " + group2jmolcoords; 
+
+                String lineLabel="set echo lineEcho $line1; echo Distance: " + formatter.format( dist ) +"; color echo red";
+
+                String group1Label="set echo group1Echo " + group1jmolcoords + "; echo " + group1.getSymbol() +"; color echo red";
+                String group2Label="set echo group2Echo " + group2jmolcoords + "; echo " + group2.getSymbol() +"; color echo red";
+
+                runScript( pcoreString1 );
+                runScript( pcoreString2 );
+                runScript( lineString );
+                runScript( lineLabel );
+//                runScript( group1Label );
+//                runScript( group2Label );
+
+        }
+        
     }
 
     private void processChemicalSelections(
@@ -379,7 +451,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                         //Add one, since jmol starts indices on 1, and store in list
                         modelSelectionIndices.add( i +1 );
 
-                        logger.debug("# jmol: Added model to be shown: " + (i+1));
+//                        logger.debug("# jmol: Added model to be shown: " + (i+1));
                     }
 
                 }
@@ -615,7 +687,8 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
     private void extractFromSelection(
                                        IStructuredSelection ssel,
                                        List<ICDKMolecule> collectedCDKMols,
-                                       List<IChemicalSelection> chemicalSelections ) {
+                                       List<IChemicalSelection> chemicalSelections,
+                                       List<IPharmacophoreProvider> pcoreProviders) {
 
         //Loop all selections; if they can provide AC: add to moleculeSet
         for (Object obj : ssel.toList()){
@@ -692,6 +765,14 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                 .getAdapter( ScriptSelection.class );
                 if (scriptSelection != null){
                     chemicalSelections.add((ScriptSelection)scriptSelection);
+                    storeSelection=true;
+                }
+
+                //Handle case where Iadaptable can return a pharmacophoreProvider
+                Object pcoreProvider=ada
+                .getAdapter( IPharmacophoreProvider.class );
+                if (pcoreProvider != null){
+                    pcoreProviders.add((IPharmacophoreProvider)pcoreProvider);
                     storeSelection=true;
                 }
 
