@@ -169,6 +169,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
         jmolPanel.addMouseListener((MouseListener) new JmolCompMouseListener(composite));
 
+        /*
         Label label1 = new Label(parent, SWT.NONE);
         label1.setText("Jmol scripting console");
 
@@ -196,10 +197,6 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                             history.add(0, text.getText());
                     text.setText("");
                 }
-                /*laszlo: 
-                 * Store a history of typed commands in Jmol script console,
-                 * toggle UP/DOWN to see previous script.
-                 * */
 
                 if (e.keyCode == SWT.ARROW_UP){
                     text.setText(history.get(0));
@@ -214,7 +211,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                 }
             }
         });
-
+*/
         //Register this page as a listener for selections
         //We want to update information based on selection i e g TreeViewer
         getViewSite().getPage().addSelectionListener(this);
