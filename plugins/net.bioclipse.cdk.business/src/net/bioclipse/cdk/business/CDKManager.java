@@ -39,6 +39,8 @@ import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.fingerprint.FingerprinterTool;
+import org.openscience.cdk.formula.MolecularFormulaManipulator;
+import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
@@ -51,6 +53,7 @@ import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 
 /**
@@ -542,5 +545,18 @@ public class CDKManager implements ICDKManager {
 
         return mols;
 
+    }
+
+    public double calculateMass( IMolecule molecule ) throws BioclipseException {
+
+        ICDKMolecule cdkmol=null;
+        if ( molecule instanceof ICDKMolecule ) {
+            cdkmol = (ICDKMolecule) molecule;
+        }else {
+            cdkmol=create(molecule);
+        }
+        
+        double d=AtomContainerManipulator.getNaturalExactMass(cdkmol.getAtomContainer());
+        return d;
     }
 }

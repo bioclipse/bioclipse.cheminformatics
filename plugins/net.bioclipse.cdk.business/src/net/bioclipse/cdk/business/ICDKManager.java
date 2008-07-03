@@ -258,5 +258,11 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @Recorded
     public Iterator<ICDKMolecule> creatConformerIterator( InputStream instream );
+
+    @PublishedMethod ( params = "Imolecule molecule",
+                       methodSummary = "Calculate and return the molecular " +
+                       		"weight for the molecule.")
+    @Recorded
+    public double calculateMass( IMolecule molecule ) throws BioclipseException;
     
 }
