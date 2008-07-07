@@ -483,7 +483,7 @@ public class CDKManager implements ICDKManager {
                          exception.getMessage(), exception
             );
         }
-        return 0;
+        return num;
     }
 
     /**
