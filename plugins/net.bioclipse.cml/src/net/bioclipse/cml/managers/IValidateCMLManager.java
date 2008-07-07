@@ -10,5 +10,5 @@ public interface IValidateCMLManager extends IBioclipseManager{
 	     * example method
 	     */
 	    @Recorded
-	    public void validate(String filename);
+	    public String validate(String filename);
 }
