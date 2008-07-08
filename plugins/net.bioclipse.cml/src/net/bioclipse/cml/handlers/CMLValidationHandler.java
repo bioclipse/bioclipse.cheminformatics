@@ -5,6 +5,8 @@ import net.bioclipse.cml.managers.Activator;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -18,7 +20,7 @@ public class CMLValidationHandler extends AbstractHandler{
 		  if (sel.isEmpty()==false){
 		      if (sel instanceof IStructuredSelection) {
 		         IStructuredSelection ssel = (IStructuredSelection) sel;
-		         String display=Activator.getDefault().getValidateCMLManager().validate(ssel.getFirstElement().toString());
+		         String display = Activator.getDefault().getValidateCMLManager().validate(((IFile)ssel.getFirstElement()));
 		         MessageBox mb = new MessageBox(new Shell(), SWT.OK);
 		         mb.setText("CML checked");
 		         mb.setMessage(display);

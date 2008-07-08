@@ -2,6 +2,7 @@ package net.bioclipse.cml.managers;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import nu.xom.Element;
 import nu.xom.Elements;
 import nu.xom.ParsingException;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.xmlcml.cml.base.CMLElement;
@@ -36,11 +38,9 @@ public class ValidateCMLManager implements IValidateCMLManager {
 	private static UnitListMap dictListMap = null;
 
 	
-	public String validate(String filename) {
+	public String validate(IFile input) {
 		initDicts();
-		// FIXME quick hack till the file handling is clear
-		File file=new File("/home/shk3/runtime-bioclipse.product"+filename.substring(1));
-		return this.validateCMLFile(file);
+		return this.validateCMLFile(input);
 	}
 
     public String getNamespace() {
@@ -98,18 +98,22 @@ public class ValidateCMLManager implements IValidateCMLManager {
 	}
 
     
-	private String validateCMLFile(File file) {
+	private String validateCMLFile(IFile input) {
 		succeeded = true;
 		StringBuffer returnString=new StringBuffer();
 		CMLElement cmlElement = null;
+		InputStream is=null;
 		try {
-			cmlElement = (CMLElement) new CMLBuilder().build(file).getRootElement() ;
+			is=input.getContents();
+			cmlElement = (CMLElement) new CMLBuilder().build(is).getRootElement() ;
 		} catch (ParsingException e) {
 			returnString.append(e);
 			this.succeeded = false;
 		} catch (ClassCastException ccee) {
+			InputStream is2=null;
 			try{
-				Element element=new CMLBuilder().build(file).getRootElement();
+				is2=input.getContents();
+				Element element=new CMLBuilder().build(is2).getRootElement();
 				namespaceThemAll(element.getChildElements());
 				element.setNamespaceURI(CMLUtil.CML_NS);
 				cmlElement = (CMLElement) new CMLBuilder().parseString(element.toXML());
@@ -117,9 +121,26 @@ public class ValidateCMLManager implements IValidateCMLManager {
 				returnString.append(ex);
 				this.succeeded = false;
 			}
+			finally{
+				
+				try {
+					is2.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		} catch (Exception e) {
 			returnString.append(e);
 			this.succeeded = false;
+		}
+		finally{
+			try {
+				is.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		if (succeeded) {
@@ -144,9 +165,9 @@ public class ValidateCMLManager implements IValidateCMLManager {
 					returnString.append("warning: " + error);
 				}
 			}
-			return(file+" is valid CML. "+returnString.toString());
+			return("Input is valid CML. "+returnString.toString());
 		}else{
-			return(file+" is not valid CML: "+returnString.toString());
+			return("Input is not valid CML: "+returnString.toString());
 		}
 	}
 }
