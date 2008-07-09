@@ -33,8 +33,12 @@ import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
@@ -457,10 +461,17 @@ public class CDKManager implements ICDKManager {
         }
     }
 
-    public int numberOfEntriesInSDF( IFile file ) {
+    public int numberOfEntriesInSDF( IFile file,
+                                     IProgressMonitor monitor ) {
+        if (monitor == null) {
+            monitor = new NullProgressMonitor();
+        }
+        
         int num = 0;
         try {
-            InputStream counterStream = file.getContents();
+            InputStream counterStream = EFS.getStore( 
+                file.getLocationURI() )
+                    .openInputStream( EFS.NONE, monitor );
             int c = 0;
             while (c != -1) {
                 c = counterStream.read();
@@ -486,6 +497,10 @@ public class CDKManager implements ICDKManager {
             );
         }
         return num;
+    }
+    
+    public int numberOfEntriesInSDF( IFile file ) {
+        return numberOfEntriesInSDF( file, null );
     }
     
     public int numberOfEntriesInSDF( String filePath ) {

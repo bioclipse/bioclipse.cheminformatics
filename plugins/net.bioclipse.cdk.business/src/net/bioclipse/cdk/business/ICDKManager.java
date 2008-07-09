@@ -17,6 +17,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -273,6 +275,14 @@ public interface ICDKManager extends IBioclipseManager {
                        		"weight for the molecule.")
     @Recorded
     public double calculateMass( IMolecule molecule ) throws BioclipseException;
+
+    /**
+     * @param file
+     * @param subProgressMonitor
+     * @return
+     */
+    public int numberOfEntriesInSDF( IFile file,
+                                     IProgressMonitor monitor );
 
     
 }
