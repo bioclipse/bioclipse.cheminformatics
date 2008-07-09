@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
+
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.PublishedClass;
@@ -230,6 +232,13 @@ public interface ICDKManager extends IBioclipseManager {
     public int numberOfEntriesInSDF( String filePath );
 
     /**
+     * @param file
+     * @return the number of entries in the sdf file at the given path or
+     *         0 if failed to read somehow.
+     */
+    public int numberOfEntriesInSDF( IFile file );
+    
+    /**
      * Reads files and extracts conformers if available.
      * @param path the full path to the file
      * @return a list of molecules that may have multiple conformers
@@ -264,5 +273,6 @@ public interface ICDKManager extends IBioclipseManager {
                        		"weight for the molecule.")
     @Recorded
     public double calculateMass( IMolecule molecule ) throws BioclipseException;
+
     
 }

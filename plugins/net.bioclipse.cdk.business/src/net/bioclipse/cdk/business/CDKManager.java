@@ -26,12 +26,14 @@ import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.PublishedClass;
+import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.BioList;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ConformerContainer;
@@ -455,10 +457,10 @@ public class CDKManager implements ICDKManager {
         }
     }
 
-    public int numberOfEntriesInSDF( String filePath ) {
+    public int numberOfEntriesInSDF( IFile file ) {
         int num = 0;
         try {
-            FileInputStream counterStream = new FileInputStream(filePath);
+            InputStream counterStream = file.getContents();
             int c = 0;
             while (c != -1) {
                 c = counterStream.read();
@@ -484,6 +486,12 @@ public class CDKManager implements ICDKManager {
             );
         }
         return num;
+    }
+    
+    public int numberOfEntriesInSDF( String filePath ) {
+        return numberOfEntriesInSDF( ResourcePathTransformer
+                                         .getInstance()
+                                         .transform( filePath ) );
     }
 
     /**
