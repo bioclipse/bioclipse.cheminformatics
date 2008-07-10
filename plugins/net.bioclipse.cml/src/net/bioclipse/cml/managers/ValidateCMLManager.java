@@ -35,7 +35,7 @@ public class ValidateCMLManager implements IValidateCMLManager {
 	private static File dictDir = null;
 	private static DictionaryMap simpleMap = null;
 	private static UnitListMap unitListMap = null;
-	private static UnitListMap dictListMap = null;
+	private static DictionaryMap dictListMap = null;
 
 	
 	public String validate(IFile input) {
@@ -88,13 +88,13 @@ public class ValidateCMLManager implements IValidateCMLManager {
 				throw new CMLRuntime("unitListMap could not be created "+e);
 			}
 		}
-		/*if (dictListMap == null) {
+		if (dictListMap == null) {
 			try {
-				dictListMap  = new DictListMap(dictDir, true);
+				dictListMap  = new DictionaryMap(dictDir, true);
 			} catch (IOException e) {
 				throw new CMLRuntime("dictListMap could not be created "+e);
 			}
-		}*/
+		}
 	}
 
     
