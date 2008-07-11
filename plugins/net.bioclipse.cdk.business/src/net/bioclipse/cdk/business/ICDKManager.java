@@ -55,6 +55,7 @@ public interface ICDKManager extends IBioclipseManager {
      * @return a BioJavaSequence object
      * @throws IOException
      * @throws BioclipseException
+     * @throws CoreException 
      */
     @Recorded
     @PublishedMethod( params = "String path", 
@@ -62,7 +63,7 @@ public interface ICDKManager extends IBioclipseManager {
                       		            "Returns the first if multiple " +
                       		            "molecules exists in the file ")
     public ICDKMolecule loadMolecule( String path )
-        throws IOException, BioclipseException;
+        throws IOException, BioclipseException, CoreException;
 
     /**
      * Load molecule from an <code>IFile</code> using CDK.

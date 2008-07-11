@@ -26,6 +26,7 @@ import net.bioclipse.cdk10.business.CDK10Manager;
 import net.bioclipse.cdk10.business.CDK10Molecule;
 import net.bioclipse.core.business.BioclipseException;
 
+import org.eclipse.core.runtime.CoreException;
 import org.junit.Before;
 import org.junit.Test;
 import org.openscience.cdk.exception.CDKException;
@@ -55,8 +56,11 @@ public class TestCDKMolecule {
     }
 
     @Test
-    public void testFingerprinter() throws IOException, BioclipseException{
-        String path = getClass().getResource("/testFiles/0037.cml").getPath();
+    public void testFingerprinter() throws IOException, 
+                                           BioclipseException, 
+                                           CoreException {
+        String path = getClass().getResource("/testFiles/0037.cml")
+                                .getPath();
 
         ICDKMolecule mol=cdk.loadMolecule(path);
         assertNotNull(mol);
@@ -66,8 +70,11 @@ public class TestCDKMolecule {
     }
 
     @Test
-    public void testGetCML() throws IOException, BioclipseException{
-        String path = getClass().getResource("/testFiles/0037.cml").getPath();
+    public void testGetCML() throws IOException, 
+                                    BioclipseException, 
+                                    CoreException {
+        String path = getClass().getResource("/testFiles/0037.cml")
+                                .getPath();
 
         ICDKMolecule mol=cdk.loadMolecule(path);
         assertNotNull(mol);
@@ -77,8 +84,11 @@ public class TestCDKMolecule {
     }
 
     @Test
-    public void testGetSmiles() throws IOException, BioclipseException{
-        String path = getClass().getResource("/testFiles/0037.cml").getPath();
+    public void testGetSmiles() throws IOException, 
+                                       BioclipseException, 
+                                       CoreException {
+        String path = getClass().getResource("/testFiles/0037.cml")
+                                .getPath();
 
         ICDKMolecule mol=cdk.loadMolecule(path);
         assertNotNull(mol);

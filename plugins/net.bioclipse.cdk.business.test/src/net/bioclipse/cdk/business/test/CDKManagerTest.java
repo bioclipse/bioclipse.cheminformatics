@@ -61,7 +61,9 @@ public class CDKManagerTest {
     }
 
     @Test
-    public void testLoadMolecule() throws IOException, BioclipseException {
+    public void testLoadMolecule() throws IOException, 
+                                          BioclipseException, 
+                                          CoreException {
 
 //        InputStream atpFile = getClass().getResourceAsStream("/testFiles/polycarpol.mol");
 //        InputStream pdbFile = getClass().getResourceAsStream("/testFiles/1D66.pdb");
@@ -73,7 +75,9 @@ public class CDKManagerTest {
 
     //FIXME: Fails. See bug #1958097
     @Test
-    public void testLoadATP() throws IOException, BioclipseException {
+    public void testLoadATP() throws IOException, 
+                                     BioclipseException, 
+                                     CoreException {
 
         String path = getClass().getResource("/testFiles/atp.mol").getPath();
         
@@ -84,7 +88,9 @@ public class CDKManagerTest {
 
     //FIXME: Fails. See bug #1958097
     @Test
-    public void testLoadPolycarpol() throws IOException, BioclipseException {
+    public void testLoadPolycarpol() throws IOException, 
+                                            BioclipseException, 
+                                            CoreException {
 
         String path = getClass().getResource("/testFiles/polycarpol.mol").getPath();
         
@@ -94,7 +100,9 @@ public class CDKManagerTest {
     }
 
     @Test
-    public void testCreateSMILES() throws BioclipseException, IOException {
+    public void testCreateSMILES() throws BioclipseException, 
+                                          IOException, 
+                                          CoreException {
         String path = getClass().getResource("/testFiles/0037.cml").getPath();
         
         ICDKMolecule mol = cdk.loadMolecule(path);

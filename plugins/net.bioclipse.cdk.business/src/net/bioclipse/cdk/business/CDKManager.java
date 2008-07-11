@@ -79,28 +79,17 @@ public class CDKManager implements ICDKManager {
         return "cdk";
     }
 
-    /**
+    /*
      * Load a molecule from a file. If many molecules, just return first.
      * To return a list of molecules, use loadMolecules(...)
      */
     public ICDKMolecule loadMolecule(String path)
-        throws IOException, BioclipseException {
+                        throws IOException, 
+                               BioclipseException, 
+                               CoreException {
         
-        File file=new File(path);
-        if (file.canRead()==false){
-            throw new IllegalArgumentException(
-                "Could not read file: " + file.getPath()
-            );
-        }
-        FileInputStream stream;
-        try {
-            stream = new FileInputStream(file);
-            return loadMolecule(stream);
-        } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException(
-                "Could not read file: " + file.getPath()
-            );
-        }
+        return loadMolecule( ResourcePathTransformer.getInstance()
+                                                    .transform( path ) );
     }
 
     private ICDKMolecule loadMolecule(InputStream instream)
