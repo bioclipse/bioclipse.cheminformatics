@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 
@@ -64,23 +65,24 @@ public interface ICDKManager extends IBioclipseManager {
         throws IOException, BioclipseException;
 
     /**
-     * Load molecule from InputStream using CDK.
+     * Load molecule from an <code>IFile</code> using CDK.
      * If many molecules, just return first.
      * To return a list of molecules, use loadMolecules(...)
      * 
-     * @param instream to be loaded
+     * @param file to be loaded
      * @return loaded sequence
      * @throws IOException
      * @throws BioclipseException
+     * @throws CoreException 
      */
     @Recorded
-    @PublishedMethod( params = "InputStream instream", 
+    @PublishedMethod( params = "IFile file", 
                       methodSummary = "Loads a molecule from an " +
-                      		            "inputstream. Returns the first " +
+                      		            "IFile. Returns the first " +
                       		            "if multiple molecules exists " +
                       		            "in the file " )
-    public ICDKMolecule loadMolecule( InputStream instream )
-        throws IOException, BioclipseException;
+    public ICDKMolecule loadMolecule( IFile file )
+        throws IOException, BioclipseException, CoreException;
 
     /**
      * Loads molecules from a file at a given path.
@@ -89,6 +91,7 @@ public interface ICDKManager extends IBioclipseManager {
      * @return a list of molecules
      * @throws IOException
      * @throws BioclipseException on parsing trouble of the molecules
+     * @throws CoreException 
      */
     @Recorded
     @PublishedMethod( params = "String path", 
@@ -96,22 +99,23 @@ public interface ICDKManager extends IBioclipseManager {
                       		            "a given path into a list of " +
                       		            "molecules")
     public List<ICDKMolecule> loadMolecules(String path)
-        throws IOException, BioclipseException;
+        throws IOException, BioclipseException, CoreException;
 
     /**
-     * Loads molecules from an InputStream.
+     * Loads molecules from an IFile.
      * 
-     * @param instream
+     * @param file
      * @return a list of molecules
      * @throws IOException
      * @throws BioclipseException on parsing trouble of the molecules
+     * @throws CoreException 
      */
     @Recorded
-    @PublishedMethod( params = "InputStream instream", 
+    @PublishedMethod( params = "IFile file", 
                       methodSummary = "Loads molecules from an " +
-                      		            "InputStream")
-    public List<ICDKMolecule> loadMolecules(InputStream instream)
-        throws IOException, BioclipseException;
+                      		            "IFile")
+    public List<ICDKMolecule> loadMolecules(IFile file)
+        throws IOException, BioclipseException, CoreException;
 
     /**
      * @param mol
@@ -119,7 +123,6 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @Recorded
     public void saveMolecule(CDKMolecule mol) throws IllegalStateException;
-
 
     /**
      * Calculate SMILES string for an IMolecule
@@ -133,14 +136,26 @@ public interface ICDKManager extends IBioclipseManager {
     public String calculateSmiles (IMolecule molecule) throws BioclipseException;
 
     /**
-     * Returns an iterator to the molecules in an Inputstream
+     * Returns an iterator to the molecules in an IFile
      *
-     * @param instream
+     * @param file
      * @return
+     * @throws CoreException 
      */
     @Recorded
-    public Iterator<ICDKMolecule> creatMoleculeIterator(InputStream instream);
+    public Iterator<ICDKMolecule> creatMoleculeIterator(IFile file) throws CoreException;
 
+    
+    /**
+     * @param path
+     * @return
+     * @throws CoreException
+     */
+    @PublishedMethod (params = "String path",
+                      methodSummary = "creates and iterator to the " +
+                      		            "molecules in the file at the path")
+    public Iterator<ICDKMolecule> createMoleculeIterator(String path) throws CoreException;
+    
     /**
      * True if the fingerprint of the subStructure is a subset of the 
      * fingerprint for the molecule

@@ -177,10 +177,12 @@ IResourceChangeListener, IResourceDeltaVisitor {
             if (modelFile.exists()) {
 
                 try {
-                    model= cdk.loadMolecules(modelFile.getLocation().toOSString());
+                    model= cdk.loadMolecules(modelFile);
                 } catch (IOException e) {
                     return null;
                 } catch (BioclipseException e) {
+                    return null;
+                } catch ( CoreException e ) {
                     return null;
                 }
 

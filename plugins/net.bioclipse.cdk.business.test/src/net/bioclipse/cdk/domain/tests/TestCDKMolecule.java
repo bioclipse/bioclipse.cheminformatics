@@ -33,6 +33,18 @@ import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
 
 public class TestCDKMolecule {
 
+    //Needed to run these tests on some systems. If it breaks them on 
+    //other systems we need to do some sort of checking before 
+    //setting them...
+    static {
+        System.setProperty( "javax.xml.parsers.SAXParserFactory", 
+                            "com.sun.org.apache.xerces.internal." 
+                                + "jaxp.SAXParserFactoryImpl" );
+        System.setProperty( "javax.xml.parsers.DocumentBuilderFactory", 
+                            "com.sun.org.apache.xerces.internal."
+                                + "jaxp.DocumentBuilderFactoryImpl" );
+    }
+    
     ICDKManager cdk;
 
     //Do not use SPRING OSGI for this manager
@@ -44,9 +56,9 @@ public class TestCDKMolecule {
 
     @Test
     public void testFingerprinter() throws IOException, BioclipseException{
-        InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
+        String path = getClass().getResource("/testFiles/0037.cml").getPath();
 
-        ICDKMolecule mol=cdk.loadMolecule(cmlFile);
+        ICDKMolecule mol=cdk.loadMolecule(path);
         assertNotNull(mol);
         BitSet bs=mol.getFingerprint(false);
         assertNotNull(bs);
@@ -55,9 +67,9 @@ public class TestCDKMolecule {
 
     @Test
     public void testGetCML() throws IOException, BioclipseException{
-        InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
+        String path = getClass().getResource("/testFiles/0037.cml").getPath();
 
-        ICDKMolecule mol=cdk.loadMolecule(cmlFile);
+        ICDKMolecule mol=cdk.loadMolecule(path);
         assertNotNull(mol);
         String cmlString=mol.getCML();
         assertNotNull(cmlString);
@@ -66,9 +78,9 @@ public class TestCDKMolecule {
 
     @Test
     public void testGetSmiles() throws IOException, BioclipseException{
-        InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
+        String path = getClass().getResource("/testFiles/0037.cml").getPath();
 
-        ICDKMolecule mol=cdk.loadMolecule(cmlFile);
+        ICDKMolecule mol=cdk.loadMolecule(path);
         assertNotNull(mol);
         String smiles=mol.getSmiles();
         assertNotNull(smiles);

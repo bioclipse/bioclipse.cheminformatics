@@ -31,6 +31,7 @@ import net.bioclipse.core.business.IMoleculeManager;
 import net.bioclipse.core.business.MoleculeManager;
 import net.bioclipse.core.domain.IMolecule;
 
+import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.ReaderFactory;
@@ -39,6 +40,18 @@ import org.openscience.cdk.templates.MoleculeFactory;
 
 public class CDKManagerTest {
 
+    //Needed to run these tests on some systems. If it breaks them on 
+    //other systems we need to do some sort of checking before 
+    //setting them...
+    static {
+        System.setProperty( "javax.xml.parsers.SAXParserFactory", 
+                            "com.sun.org.apache.xerces.internal." 
+                                + "jaxp.SAXParserFactoryImpl" );
+        System.setProperty( "javax.xml.parsers.DocumentBuilderFactory", 
+                            "com.sun.org.apache.xerces.internal."
+                                + "jaxp.DocumentBuilderFactoryImpl" );
+    }
+    
     ICDKManager cdk;
 
     //Do not use SPRING OSGI for this manager
@@ -52,9 +65,8 @@ public class CDKManagerTest {
 
 //        InputStream atpFile = getClass().getResourceAsStream("/testFiles/polycarpol.mol");
 //        InputStream pdbFile = getClass().getResourceAsStream("/testFiles/1D66.pdb");
-        InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
-
-        ICDKMolecule mol = cdk.loadMolecule(cmlFile);
+        String path = getClass().getResource("/testFiles/0037.cml").getPath();
+        ICDKMolecule mol = cdk.loadMolecule(path);
 
         System.out.println("mol: " + mol.toString());
     }
@@ -63,9 +75,9 @@ public class CDKManagerTest {
     @Test
     public void testLoadATP() throws IOException, BioclipseException {
 
-        InputStream atpFile = getClass().getResourceAsStream("/testFiles/atp.mol");
-
-        ICDKMolecule mol = cdk.loadMolecule(atpFile);
+        String path = getClass().getResource("/testFiles/atp.mol").getPath();
+        
+        ICDKMolecule mol = cdk.loadMolecule(path);
 
         System.out.println("mol: " + mol.toString());
     }
@@ -74,18 +86,18 @@ public class CDKManagerTest {
     @Test
     public void testLoadPolycarpol() throws IOException, BioclipseException {
 
-        InputStream atpFile = getClass().getResourceAsStream("/testFiles/polycarpol.mol");
-
-        ICDKMolecule mol = cdk.loadMolecule(atpFile);
+        String path = getClass().getResource("/testFiles/polycarpol.mol").getPath();
+        
+        ICDKMolecule mol = cdk.loadMolecule(path);
 
         System.out.println("mol: " + mol.toString());
     }
 
     @Test
     public void testCreateSMILES() throws BioclipseException, IOException {
-        InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
-
-        ICDKMolecule mol = cdk.loadMolecule(cmlFile);
+        String path = getClass().getResource("/testFiles/0037.cml").getPath();
+        
+        ICDKMolecule mol = cdk.loadMolecule(path);
         String smiles = mol.getSmiles();
 
         assertEquals("CC1CCCC(C#N)N1C(CO[Si](C)(C)C)C2=CC=CC=C2", smiles);
@@ -101,14 +113,14 @@ public class CDKManagerTest {
     }
 
     @Test
-    public void testCreatingMoleculeIterator() {
-        InputStream sdfFile = getClass()
-                              .getResourceAsStream("/testFiles/test.sdf");
+    public void testCreatingMoleculeIterator() throws CoreException {
 
+        String path = getClass().getResource("/testFiles/test.sdf").getPath();
+        
         List<IMolecule> molecules = new ArrayList<IMolecule>();
 
         for ( Iterator<net.bioclipse.cdk.domain.ICDKMolecule> iterator
-                    = cdk.creatMoleculeIterator(sdfFile);
+                    = cdk.createMoleculeIterator( path );
               iterator.hasNext(); ) {
 
             molecules.add( iterator.next() );

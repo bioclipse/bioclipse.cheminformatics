@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
@@ -102,12 +103,8 @@ public class CDKManager implements ICDKManager {
         }
     }
 
-    /**
-     * Load a molecule from an InputStream. If many molecules, just return
-     * first. To return list of molecules, use loadMolecules(...)
-     */
-    public ICDKMolecule loadMolecule(InputStream instream)
-        throws IOException, BioclipseException {
+    private ICDKMolecule loadMolecule(InputStream instream)
+        throws BioclipseException, IOException {
 
         if (readerFactory==null){
             readerFactory=new ReaderFactory();
@@ -115,7 +112,8 @@ public class CDKManager implements ICDKManager {
         }
 
         //Create the reader
-        ISimpleChemObjectReader reader= readerFactory.createReader(instream);
+        ISimpleChemObjectReader reader 
+            = readerFactory.createReader(instream);
 
         if (reader==null) {
             throw new BioclipseException("Could not create reader in CDK.");
@@ -187,34 +185,21 @@ public class CDKManager implements ICDKManager {
     
     /**
      * Load a molecules from a file. 
+     * @throws CoreException 
      */
     public List<ICDKMolecule> loadMolecules(String path)
-        throws IOException, BioclipseException {
+        throws IOException, BioclipseException, CoreException {
         
-        File file=new File(path);
-        if (file.canRead()==false){
-            throw new IllegalArgumentException(
-                "Could not read file: " + file.getPath()
-            );
-        }
-        FileInputStream stream;
-        try {
-            stream = new FileInputStream(file);
-            return loadMolecules(stream);
-        } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException(
-                "Could not read file: " + file.getPath()
-            );
-        }
+        return loadMolecules( 
+            ResourcePathTransformer.getInstance().transform( path ) );
     }
-
-    
     
     /**
      * Load one or more molecules from an InputStream and return a CDKMoleculeList.
+     * @throws CoreException 
      */
-    public List<ICDKMolecule> loadMolecules(InputStream instream)
-        throws IOException, BioclipseException {
+    public List<ICDKMolecule> loadMolecules(IFile file)
+        throws IOException, BioclipseException, CoreException {
 
         if (readerFactory==null){
             readerFactory=new ReaderFactory();
@@ -226,7 +211,7 @@ public class CDKManager implements ICDKManager {
 //        System.out.println("format guess: " + readerFactory.guessFormat(instream).getFormatName());
 
         //Create the reader
-        ISimpleChemObjectReader reader= readerFactory.createReader(instream);
+        ISimpleChemObjectReader reader= readerFactory.createReader(file.getContents());
 
         if (reader==null){
             throw new BioclipseException("Could not create reader in CDK. ");
@@ -317,7 +302,6 @@ public class CDKManager implements ICDKManager {
     /**
      * Create molecule from String
      * @throws BioclipseException 
-     * @throws BioclipseException 
      * @throws IOException 
      */
     public ICDKMolecule fromString( String molstring ) throws BioclipseException, IOException {
@@ -329,13 +313,11 @@ public class CDKManager implements ICDKManager {
         return loadMolecule( bais );
         
     }
-
     
-    
-    
-    public Iterator<ICDKMolecule> creatMoleculeIterator(InputStream instream) {
-        return new IteratingBioclipseMDLReader(
-            instream,
+    public Iterator<ICDKMolecule> creatMoleculeIterator(IFile file) 
+                                  throws CoreException {
+        return new IteratingBioclipseMDLReader( 
+            file.getContents(),
             NoNotificationChemObjectBuilder.getInstance()
         );
     }
@@ -581,5 +563,19 @@ public class CDKManager implements ICDKManager {
         
         double d=AtomContainerManipulator.getNaturalExactMass(cdkmol.getAtomContainer());
         return d;
+    }
+
+    public ICDKMolecule loadMolecule( IFile file ) 
+                        throws IOException,
+                               BioclipseException,
+                               CoreException {
+        return loadMolecule( file.getContents() );
+    }
+
+    public Iterator<ICDKMolecule> createMoleculeIterator( String path )
+                                  throws CoreException {
+        
+        return creatMoleculeIterator( 
+            ResourcePathTransformer.getInstance().transform( path ) );
     }
 }
