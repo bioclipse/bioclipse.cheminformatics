@@ -298,7 +298,7 @@ public class CDKManager implements ICDKManager {
         
     }
     
-    public Iterator<ICDKMolecule> creatMoleculeIterator(IFile file) 
+    public Iterator<ICDKMolecule> createMoleculeIterator(IFile file) 
                                   throws CoreException {
         return new IteratingBioclipseMDLReader( 
             file.getContents(),
@@ -559,7 +559,8 @@ public class CDKManager implements ICDKManager {
     public Iterator<ICDKMolecule> createMoleculeIterator( String path )
                                   throws CoreException {
         
-        return creatMoleculeIterator( 
+        return createMoleculeIterator( 
             ResourcePathTransformer.getInstance().transform( path ) );
     }
+
 }

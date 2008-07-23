@@ -15,12 +15,14 @@ package net.bioclipse.cdk.business.test;
 
 import static org.junit.Assert.*;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.bioclipse.cdk.MockIFile;
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.CDKManagerHelper;
 import net.bioclipse.cdk.business.ICDKManager;
@@ -68,7 +70,7 @@ public class CDKManagerTest {
 //        InputStream atpFile = getClass().getResourceAsStream("/testFiles/polycarpol.mol");
 //        InputStream pdbFile = getClass().getResourceAsStream("/testFiles/1D66.pdb");
         String path = getClass().getResource("/testFiles/0037.cml").getPath();
-        ICDKMolecule mol = cdk.loadMolecule(path);
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path) );
 
         System.out.println("mol: " + mol.toString());
     }
@@ -79,9 +81,10 @@ public class CDKManagerTest {
                                      BioclipseException, 
                                      CoreException {
 
-        String path = getClass().getResource("/testFiles/atp.mol").getPath();
+        String path = getClass().getResource("/testFiles/atp.mol")
+                                .getPath();
         
-        ICDKMolecule mol = cdk.loadMolecule(path);
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path) );
 
         System.out.println("mol: " + mol.toString());
     }
@@ -92,9 +95,10 @@ public class CDKManagerTest {
                                             BioclipseException, 
                                             CoreException {
 
-        String path = getClass().getResource("/testFiles/polycarpol.mol").getPath();
+        String path = getClass().getResource("/testFiles/polycarpol.mol")
+                                .getPath();
         
-        ICDKMolecule mol = cdk.loadMolecule(path);
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path) );
 
         System.out.println("mol: " + mol.toString());
     }
@@ -105,7 +109,7 @@ public class CDKManagerTest {
                                           CoreException {
         String path = getClass().getResource("/testFiles/0037.cml").getPath();
         
-        ICDKMolecule mol = cdk.loadMolecule(path);
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path) );
         String smiles = mol.getSmiles();
 
         assertEquals("CC1CCCC(C#N)N1C(CO[Si](C)(C)C)C2=CC=CC=C2", smiles);
@@ -121,14 +125,17 @@ public class CDKManagerTest {
     }
 
     @Test
-    public void testCreatingMoleculeIterator() throws CoreException {
+    public void testCreatingMoleculeIterator() 
+                throws CoreException, 
+                       FileNotFoundException {
 
-        String path = getClass().getResource("/testFiles/test.sdf").getPath();
+        String path = getClass().getResource("/testFiles/test.sdf")
+                                .getPath();
         
         List<IMolecule> molecules = new ArrayList<IMolecule>();
 
         for ( Iterator<net.bioclipse.cdk.domain.ICDKMolecule> iterator
-                    = cdk.createMoleculeIterator( path );
+                    = cdk.createMoleculeIterator( new MockIFile(path) );
               iterator.hasNext(); ) {
 
             molecules.add( iterator.next() );

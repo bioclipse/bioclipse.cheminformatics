@@ -137,17 +137,6 @@ public interface ICDKManager extends IBioclipseManager {
     public String calculateSmiles (IMolecule molecule) throws BioclipseException;
 
     /**
-     * Returns an iterator to the molecules in an IFile
-     *
-     * @param file
-     * @return
-     * @throws CoreException 
-     */
-    @Recorded
-    public Iterator<ICDKMolecule> creatMoleculeIterator(IFile file) throws CoreException;
-
-    
-    /**
      * @param path
      * @return
      * @throws CoreException
@@ -155,7 +144,15 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod (params = "String path",
                       methodSummary = "creates and iterator to the " +
                       		            "molecules in the file at the path")
-    public Iterator<ICDKMolecule> createMoleculeIterator(String path) throws CoreException;
+    public Iterator<ICDKMolecule> createMoleculeIterator(String path) 
+                                  throws CoreException;
+    
+    /**
+     * @param file
+     * @return
+     * @throws CoreException 
+     */
+    public Iterator<ICDKMolecule> createMoleculeIterator( IFile file ) throws CoreException;
     
     /**
      * True if the fingerprint of the subStructure is a subset of the 

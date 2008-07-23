@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.util.BitSet;
 import java.util.List;
 
+import net.bioclipse.cdk.MockIFile;
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
@@ -52,7 +53,7 @@ public class TestCDKMolecule {
     //since we are only testing the implementations of the manager methods
     @Before
     public void initialize() {
-        cdk=new CDKManager();
+        cdk = new CDKManager();
     }
 
     @Test
@@ -62,9 +63,9 @@ public class TestCDKMolecule {
         String path = getClass().getResource("/testFiles/0037.cml")
                                 .getPath();
 
-        ICDKMolecule mol=cdk.loadMolecule(path);
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path) );
         assertNotNull(mol);
-        BitSet bs=mol.getFingerprint(false);
+        BitSet bs = mol.getFingerprint(false);
         assertNotNull(bs);
         System.out.println("FP: " + bs.toString());
     }
@@ -76,9 +77,9 @@ public class TestCDKMolecule {
         String path = getClass().getResource("/testFiles/0037.cml")
                                 .getPath();
 
-        ICDKMolecule mol=cdk.loadMolecule(path);
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path) );
         assertNotNull(mol);
-        String cmlString=mol.getCML();
+        String cmlString = mol.getCML();
         assertNotNull(cmlString);
         System.out.println("CML:\n" + cmlString);
     }
@@ -90,28 +91,28 @@ public class TestCDKMolecule {
         String path = getClass().getResource("/testFiles/0037.cml")
                                 .getPath();
 
-        ICDKMolecule mol=cdk.loadMolecule(path);
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path) );
         assertNotNull(mol);
-        String smiles=mol.getSmiles();
+        String smiles = mol.getSmiles();
         assertNotNull(smiles);
         System.out.println("Smiles: " + smiles);
-
     }
     
-    
     @Test
-    public void testCreateFromString() throws IOException, BioclipseException{
-        InputStream cmlFile = getClass().getResourceAsStream("/testFiles/0037.cml");
-        byte[] buf=new byte[60000];
-        int a=cmlFile.read( buf );
+    public void testCreateFromString() throws IOException, 
+                                              BioclipseException {
+        InputStream cmlFile 
+            = getClass().getResourceAsStream("/testFiles/0037.cml");
+        byte[] buf = new byte[60000];
+        int a = cmlFile.read( buf );
         System.out.println("Read: " + a + "bytes");
-        String content=new String(buf);
-        String cutcontent=content.substring( 0,a );
+        String content = new String(buf);
+        String cutcontent = content.substring( 0,a );
         System.out.println("Content: " + cutcontent.length());
         
-        ICDKMolecule mol=cdk.fromString( cutcontent );
+        ICDKMolecule mol = cdk.fromString( cutcontent );
         assertNotNull(mol);
-        String smiles=mol.getSmiles();
+        String smiles = mol.getSmiles();
         assertNotNull(smiles);
         System.out.println("Smiles: " + smiles);
     }
@@ -123,13 +124,16 @@ public class TestCDKMolecule {
      * @throws CDKException 
      */
     @Test
-    public void testCreateFromImoleculeSmiles() throws IOException, BioclipseException, CDKException{
+    public void testCreateFromImoleculeSmiles() 
+                throws IOException, 
+                       BioclipseException, 
+                       CDKException {
         
         CDK10Manager cdk10=new CDK10Manager();
         CDKManager cdk=new CDKManager();
 
-        CDK10Molecule cdk10mol=cdk10.createMoleculeFromSMILES(
-                                  "CC1CCCC(C#N)N1C(CO[Si](C)(C)C)C2=CC=CC=C2" );
+        CDK10Molecule cdk10mol = cdk10.createMoleculeFromSMILES(
+            "CC1CCCC(C#N)N1C(CO[Si](C)(C)C)C2=CC=CC=C2" );
         
         ICDKMolecule convertedmol=cdk.create( cdk10mol );
         assertNotNull(convertedmol);
@@ -137,19 +141,22 @@ public class TestCDKMolecule {
         assertNotNull(smiles);
         System.out.println("Smiles: " + smiles);
         
-        ICDKMolecule cdkmol=cdk.fromSmiles(
-                                  "CC1CCCC(C#N)N1C(CO[Si](C)(C)C)C2=CC=CC=C2" );
+        ICDKMolecule cdkmol = cdk.fromSmiles(
+            "CC1CCCC(C#N)N1C(CO[Si](C)(C)C)C2=CC=CC=C2" );
         
         assertTrue( cdk.fingerPrintMatches( cdkmol, convertedmol ));
 
         assertTrue( UniversalIsomorphismTester
-          .isIsomorph( cdk10mol.getAtomContainer(), cdkmol.getAtomContainer()));        
+          .isIsomorph( cdk10mol.getAtomContainer(), 
+                       cdkmol.getAtomContainer()));        
 
         assertTrue( UniversalIsomorphismTester
-                    .isIsomorph( cdk10mol.getAtomContainer(), convertedmol.getAtomContainer()));        
+                    .isIsomorph( cdk10mol.getAtomContainer(), 
+                                 convertedmol.getAtomContainer()));        
 
         assertTrue( UniversalIsomorphismTester
-                    .isIsomorph( cdkmol.getAtomContainer(), convertedmol.getAtomContainer()));        
+                    .isIsomorph( cdkmol.getAtomContainer(), 
+                                 convertedmol.getAtomContainer()));        
 
         //It seems that MassNumber is not created from Smiles?
         System.out.println("MassNumber cdk10: " + cdk10mol.getAtomContainer().getAtom( 0 ).getMassNumber());
@@ -165,12 +172,12 @@ public class TestCDKMolecule {
      * @throws CDKException 
      */
     @Test
-    public void testCreateFromImoleculeCML() throws IOException, BioclipseException, CDKException{
+    public void testCreateFromImoleculeCML() throws IOException, 
+                                                    BioclipseException, 
+                                                    CDKException {
         
-        CDK10Manager cdk10=new CDK10Manager();
-        CDKManager cdk=new CDKManager();
-
-        
+        CDK10Manager cdk10 = new CDK10Manager();
+        CDKManager   cdk   = new CDKManager();
             
         String cmlstring="<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>"
 +"<molecule id=\"m1\" xmlns=\"http://www.xml-cml.org/schema\">"
@@ -216,32 +223,33 @@ public class TestCDKMolecule {
 +"<scalar dictRef=\"cdk:molecularProperty\" title=\"SALTID\" dataType=\"xsd:string\">0</scalar>"
 +"</molecule>";
 
-  CDK10Molecule cdk10mol=cdk10.fromString(cmlstring);
+        CDK10Molecule cdk10mol = cdk10.fromString(cmlstring);
         
-        ICDKMolecule convertedmol=cdk.create( cdk10mol );
+        ICDKMolecule convertedmol = cdk.create( cdk10mol );
         assertNotNull(convertedmol);
         String smiles=convertedmol.getSmiles();
         assertNotNull(smiles);
         System.out.println("Smiles: " + smiles);
         
-        ICDKMolecule cdkmol=cdk.fromString(cmlstring);
+        ICDKMolecule cdkmol = cdk.fromString(cmlstring);
         
         assertTrue( cdk.fingerPrintMatches( cdkmol, convertedmol ));
 
         assertTrue( UniversalIsomorphismTester
-          .isIsomorph( cdk10mol.getAtomContainer(), cdkmol.getAtomContainer()));        
+          .isIsomorph( cdk10mol.getAtomContainer(), 
+                       cdkmol.getAtomContainer()));        
 
         assertTrue( UniversalIsomorphismTester
-                    .isIsomorph( cdk10mol.getAtomContainer(), convertedmol.getAtomContainer()));        
+                    .isIsomorph( cdk10mol.getAtomContainer(), 
+                                 convertedmol.getAtomContainer()));        
 
         assertTrue( UniversalIsomorphismTester
-                    .isIsomorph( cdkmol.getAtomContainer(), convertedmol.getAtomContainer()));        
+                    .isIsomorph( cdkmol.getAtomContainer(), 
+                                 convertedmol.getAtomContainer()));        
 
         //It seems that MassNumber is not created from Smiles?
         System.out.println("MassNumber cdk10: " + cdk10mol.getAtomContainer().getAtom( 0 ).getMassNumber());
         System.out.println("MassNumber cdk: " + cdkmol.getAtomContainer().getAtom( 0 ).getMassNumber());
         System.out.println("MassNumber converted: " + convertedmol.getAtomContainer().getAtom( 0 ).getMassNumber());
-        
     }
-
 }
