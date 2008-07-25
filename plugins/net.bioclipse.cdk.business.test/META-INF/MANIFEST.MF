@@ -14,3 +14,4 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.cdk10.jchempaint,
  org.eclipse.core.resources;bundle-version="3.4.0"
 Eclipse-LazyStart: true
+Export-Package: net.bioclipse.cdk

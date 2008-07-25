@@ -18,3 +18,4 @@ Require-Bundle: org.eclipse.core.runtime,
  net.bioclipse.cdk.ui,
  org.eclipse.jdt.junit4.runtime
 Eclipse-LazyStart: true
+Export-Package: net.bioclipse.cdk.ui.tests
