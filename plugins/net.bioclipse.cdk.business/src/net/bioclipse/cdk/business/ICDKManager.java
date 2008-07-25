@@ -77,11 +77,6 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws CoreException 
      */
     @Recorded
-    @PublishedMethod( params = "IFile file", 
-                      methodSummary = "Loads a molecule from an " +
-                      		            "IFile. Returns the first " +
-                      		            "if multiple molecules exists " +
-                      		            "in the file " )
     public ICDKMolecule loadMolecule( IFile file )
         throws IOException, BioclipseException, CoreException;
 
@@ -112,9 +107,6 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws CoreException 
      */
     @Recorded
-    @PublishedMethod( params = "IFile file", 
-                      methodSummary = "Loads molecules from an " +
-                      		            "IFile")
     public List<ICDKMolecule> loadMolecules(IFile file)
         throws IOException, BioclipseException, CoreException;
 
@@ -123,7 +115,8 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    public void saveMolecule(CDKMolecule mol) throws IllegalStateException;
+    public void saveMolecule(CDKMolecule mol) 
+                throws IllegalStateException;
 
     /**
      * Calculate SMILES string for an IMolecule
@@ -133,8 +126,10 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @Recorded
     @PublishedMethod ( params = "IMolecule molecule", 
-                       methodSummary = "returns the SMILES for a molecule" )
-    public String calculateSmiles (IMolecule molecule) throws BioclipseException;
+                       methodSummary = "returns the SMILES for a " +
+                       		             "molecule" )
+    public String calculateSmiles (IMolecule molecule) 
+                  throws BioclipseException;
 
     /**
      * @param path
@@ -143,7 +138,8 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @PublishedMethod (params = "String path",
                       methodSummary = "creates and iterator to the " +
-                      		            "molecules in the file at the path")
+                      		            "molecules in the file at the " +
+                      		            "path")
     public Iterator<ICDKMolecule> createMoleculeIterator(String path) 
                                   throws CoreException;
     
@@ -152,7 +148,8 @@ public interface ICDKManager extends IBioclipseManager {
      * @return
      * @throws CoreException 
      */
-    public Iterator<ICDKMolecule> createMoleculeIterator( IFile file ) throws CoreException;
+    public Iterator<ICDKMolecule> createMoleculeIterator( IFile file ) 
+                                  throws CoreException;
     
     /**
      * True if the fingerprint of the subStructure is a subset of the 
@@ -190,6 +187,7 @@ public interface ICDKManager extends IBioclipseManager {
     		                       "paramater named molecule. \n" +
     		                       "(Performs an isomophism test without " +
     		                       "checking fingerprints first")
+    @Recorded
     public boolean subStructureMatches( ICDKMolecule molecule,
                                         ICDKMolecule subStructure );
     
@@ -202,7 +200,8 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @PublishedMethod ( params = "IMolecule m",
                        methodSummary = "Creates a cdk molecule from a" +
-                       		           " molecule" )
+                       		             " molecule" )
+    @Recorded
     public ICDKMolecule create( IMolecule m ) throws BioclipseException;
 
     /**
@@ -216,7 +215,9 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod ( params = "String cml",
                        methodSummary = "Creates a cdk molecule from a " +
                        		             "CML String" )
-    public ICDKMolecule fromString( String cml ) throws BioclipseException, IOException;
+    @Recorded
+    public ICDKMolecule fromString( String cml ) 
+                        throws BioclipseException, IOException;
 
     /**
      * Returns true if the given molecule matches the given SMARTS
@@ -230,6 +231,7 @@ public interface ICDKManager extends IBioclipseManager {
                        methodSummary = "Returns true if the given " +
                        		             "SMARTS matches the given " +
                        		             "molecule" )
+    @Recorded
     public boolean smartsMatches( ICDKMolecule molecule, String smarts ) 
                    throws BioclipseException;
 
@@ -244,6 +246,7 @@ public interface ICDKManager extends IBioclipseManager {
                        		             "in an SDF file at the given " +
                        		             "file path. Returns 0 in case " +
                        		             "of problem.")
+    @Recorded
     public int numberOfEntriesInSDF( String filePath );
 
     /**
@@ -251,6 +254,7 @@ public interface ICDKManager extends IBioclipseManager {
      * @return the number of entries in the sdf file at the given path or
      *         0 if failed to read somehow.
      */
+    @Recorded
     public int numberOfEntriesInSDF( IFile file );
     
     /**
@@ -260,9 +264,9 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @Recorded
     @PublishedMethod ( params = "String path",
-                       methodSummary = "Loads the molecules at the path into a " +
-                       		"list, and take conformers into account. " +
-                       		"Currently only reads SDFiles.")
+                       methodSummary = "Loads the molecules at the " +
+                       	  "path into a list, and take conformers into " +
+                       	  "account. Currently only reads SDFiles.")
     public List<ICDKMolecule> loadConformers( String path );
 
     /**
@@ -281,21 +285,24 @@ public interface ICDKManager extends IBioclipseManager {
      * @return
      */
     @Recorded
-    public Iterator<ICDKMolecule> creatConformerIterator( InputStream instream );
+    public Iterator<ICDKMolecule> creatConformerIterator( 
+        InputStream instream );
 
     @PublishedMethod ( params = "Imolecule molecule",
-                       methodSummary = "Calculate and return the molecular " +
-                       		"weight for the molecule.")
+                       methodSummary = "Calculate and return the " +
+                       		             "molecular weight for the " +
+                       		             "molecule.")
     @Recorded
-    public double calculateMass( IMolecule molecule ) throws BioclipseException;
+    public double calculateMass( IMolecule molecule ) 
+                  throws BioclipseException;
 
     /**
      * @param file
      * @param subProgressMonitor
      * @return
      */
+    @Recorded
     public int numberOfEntriesInSDF( IFile file,
                                      IProgressMonitor monitor );
-
     
 }
