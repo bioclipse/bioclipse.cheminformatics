@@ -11,6 +11,8 @@
  ******************************************************************************/
 package net.bioclipse.jmol.business;
 
+import org.eclipse.core.resources.IFile;
+
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.business.IBioclipseManager;
@@ -22,19 +24,24 @@ public interface IJmolManager extends IBioclipseManager{
      * In the future, if JmolView active, there too.
      * @param script The script command to run
      */
-    @PublishedMethod(methodSummary="Execute a script in Jmol."
-        ,params="String to execute as Jmol script")
+    @PublishedMethod( methodSummary = "Execute the given String as a " +
+    		                              "script in Jmol.",
+                      params = "String script" )
     @Recorded
-    void run(String script);
+    public void run(String script);
 
     
     /**
      * Load jmoo with a file
      * @param path Path to file, relative workspace
      */
-    @PublishedMethod(methodSummary="Load jmoo with a file"
-        , params="Path to file, relative workspace")
+    @PublishedMethod( methodSummary = "Load jmol with a file", 
+                      params = "Path to file" )
     @Recorded
-    void load(String path);
+    public void load(String path);
 
+    /**
+     * @param file
+     */
+    public void load(IFile file);
 }

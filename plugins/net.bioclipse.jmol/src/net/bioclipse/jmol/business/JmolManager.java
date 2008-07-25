@@ -11,9 +11,11 @@
  ******************************************************************************/
 package net.bioclipse.jmol.business;
 
+import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.jmol.editors.JmolEditor;
 import net.bioclipse.jmol.views.JmolView;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewPart;
@@ -31,31 +33,34 @@ public class JmolManager implements IJmolManager{
 
     public void run(String script){
 
-        if (script==null || script.length()<=0)
-            throw new IllegalArgumentException("Script parameter cannot be empty");
+        if (script == null || script.length() <= 0)
+            throw new IllegalArgumentException(
+                "Script parameter cannot be empty" );
 
         //Run script in editor
-        JmolEditor editor=findActiveJmolEditor();
-        if (editor!=null){
+        JmolEditor editor = findActiveJmolEditor();
+        if (editor != null){
             editor.runScript(script);
         }
 
         //Run script in view (if open)
         JmolView view=findActiveJmolView();
-        if (view!=null){
+        if (view != null){
             view.runScript(script);
         }
-
     }
 
-
-    public void load(String path){
+    public void load( String path ) {
         
-        System.out.println("jmol load called with input: " + path);
-        System.out.println("Not implemented");
-        
+        load( ResourcePathTransformer.getInstance().transform( path ) );
     }
 
+    public void load( IFile file ) {
+        //TODO FIXME implement this load method 
+        throw new UnsupportedOperationException(
+            "FIXME: jmol.load is not implemented yet" );
+    }
+    
     /**
      * @return Active editor or null if not instance of JmolEditor
      */
@@ -63,12 +68,16 @@ public class JmolManager implements IJmolManager{
 
         final Display display = PlatformUI.getWorkbench().getDisplay();
         setActiveJmolEditor(null);
-        display.syncExec(new Runnable() {
+        display.syncExec( new Runnable() {
             public void run() {
-                IEditorPart activeEditor=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+                IEditorPart activeEditor 
+                    = PlatformUI.getWorkbench()
+                                .getActiveWorkbenchWindow()
+                                .getActivePage()
+                                .getActiveEditor();
 
                 if (activeEditor instanceof JmolEditor) {
-                    setActiveJmolEditor((JmolEditor)activeEditor);
+                    setActiveJmolEditor( (JmolEditor)activeEditor );
                 }
             }
         });
@@ -85,17 +94,20 @@ public class JmolManager implements IJmolManager{
         setActiveJmolView( null );
         display.syncExec(new Runnable() {
             public void run() {
-                IViewReference[] views=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
+                IViewReference[] views 
+                    = PlatformUI.getWorkbench()
+                                .getActiveWorkbenchWindow()
+                                .getActivePage()
+                                .getViewReferences();
 
                 for (IViewReference viewref: views){
-                    if (viewref.getId().equals( JmolView.ID )) {
-                        IViewPart part=viewref.getView( false );
-                        if (part!=null){
-                            setActiveJmolView((JmolView)part);
+                    if ( viewref.getId().equals( JmolView.ID ) ) {
+                        IViewPart part = viewref.getView( false );
+                        if (part != null){
+                            setActiveJmolView( (JmolView)part );
                         }
                     }
                 }
-                
             }
         });
 
@@ -104,11 +116,10 @@ public class JmolManager implements IJmolManager{
 
 
     protected void setActiveJmolView( JmolView view ) {
-        jmolView=view;
+        jmolView = view;
     }
 
     protected void setActiveJmolEditor( JmolEditor activeEditor ) {
-        jmolEditor=activeEditor;
+        jmolEditor = activeEditor;
     }
-    
 }
