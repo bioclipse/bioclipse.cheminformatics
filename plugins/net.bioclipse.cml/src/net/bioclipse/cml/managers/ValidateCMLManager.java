@@ -36,7 +36,8 @@ public class ValidateCMLManager implements IValidateCMLManager {
 	private static DictionaryMap simpleMap = null;
 	private static UnitListMap unitListMap = null;
 	private static DictionaryMap dictListMap = null;
-
+	CMLElement cmlElement = null;
+	
 	
 	public String validate(IFile input) {
 		initDicts();
@@ -101,7 +102,6 @@ public class ValidateCMLManager implements IValidateCMLManager {
 	private String validateCMLFile(IFile input) {
 		succeeded = true;
 		StringBuffer returnString=new StringBuffer();
-		CMLElement cmlElement = null;
 		InputStream is=null;
 		try {
 			is=input.getContents();
@@ -169,5 +169,15 @@ public class ValidateCMLManager implements IValidateCMLManager {
 		}else{
 			return("Input is not valid CML: "+returnString.toString());
 		}
+	}
+
+	@Override
+	public boolean getSuceeded() {
+		return succeeded;
+	}
+
+	@Override
+	public CMLElement getCMLElement() {
+		return cmlElement;
 	}
 }
