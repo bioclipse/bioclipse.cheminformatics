@@ -171,12 +171,10 @@ public class ValidateCMLManager implements IValidateCMLManager {
 		}
 	}
 
-	@Override
 	public boolean getSuceeded() {
 		return succeeded;
 	}
 
-	@Override
 	public CMLElement getCMLElement() {
 		return cmlElement;
 	}
