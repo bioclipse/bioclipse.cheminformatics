@@ -70,7 +70,7 @@ public class CDKManagerTest {
 //        InputStream atpFile = getClass().getResourceAsStream("/testFiles/polycarpol.mol");
 //        InputStream pdbFile = getClass().getResourceAsStream("/testFiles/1D66.pdb");
         String path = getClass().getResource("/testFiles/0037.cml").getPath();
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path) );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
 
         System.out.println("mol: " + mol.toString());
     }
@@ -84,7 +84,7 @@ public class CDKManagerTest {
         String path = getClass().getResource("/testFiles/atp.mol")
                                 .getPath();
         
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path) );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
 
         System.out.println("mol: " + mol.toString());
     }
@@ -98,7 +98,7 @@ public class CDKManagerTest {
         String path = getClass().getResource("/testFiles/polycarpol.mol")
                                 .getPath();
         
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path) );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
 
         System.out.println("mol: " + mol.toString());
     }
@@ -109,7 +109,7 @@ public class CDKManagerTest {
                                           CoreException {
         String path = getClass().getResource("/testFiles/0037.cml").getPath();
         
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path) );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
         String smiles = mol.getSmiles();
 
         assertEquals("CC1CCCC(C#N)N1C(CO[Si](C)(C)C)C2=CC=CC=C2", smiles);
@@ -135,7 +135,8 @@ public class CDKManagerTest {
         List<IMolecule> molecules = new ArrayList<IMolecule>();
 
         for ( Iterator<net.bioclipse.cdk.domain.ICDKMolecule> iterator
-                    = cdk.createMoleculeIterator( new MockIFile(path) );
+                    = cdk.createMoleculeIterator( new MockIFile(path),
+                                                  null );
               iterator.hasNext(); ) {
 
             molecules.add( iterator.next() );
@@ -148,9 +149,11 @@ public class CDKManagerTest {
     public void testFingerPrintMatch() throws BioclipseException {
         SmilesGenerator generator = new SmilesGenerator();
         String indoleSmiles  = generator
-                               .createSMILES( MoleculeFactory.makeIndole() );
+                               .createSMILES( MoleculeFactory
+                                              .makeIndole() );
         String pyrroleSmiles = generator
-                               .createSMILES( MoleculeFactory.makePyrrole() );
+                               .createSMILES( MoleculeFactory
+                                              .makePyrrole() );
         ICDKMolecule indole  = cdk.fromSmiles( indoleSmiles );
         ICDKMolecule pyrrole = cdk.fromSmiles( pyrroleSmiles );
         
@@ -161,9 +164,11 @@ public class CDKManagerTest {
     public void testSubStructureMatch() throws BioclipseException {
         SmilesGenerator generator = new SmilesGenerator();
         String indoleSmiles  = generator
-                               .createSMILES( MoleculeFactory.makeIndole() );
+                               .createSMILES( MoleculeFactory
+                                              .makeIndole() );
         String pyrroleSmiles = generator
-                               .createSMILES( MoleculeFactory.makePyrrole() );
+                               .createSMILES( MoleculeFactory.
+                                              makePyrrole() );
         ICDKMolecule indole  = cdk.fromSmiles( indoleSmiles  );
         ICDKMolecule pyrrole = cdk.fromSmiles( pyrroleSmiles );
         
@@ -174,7 +179,8 @@ public class CDKManagerTest {
     public void testCDKMoleculeFromIMolecule() throws BioclipseException {
         SmilesGenerator generator = new SmilesGenerator();
         String indoleSmiles  = generator
-                               .createSMILES( MoleculeFactory.makeIndole() );
+                               .createSMILES( MoleculeFactory
+                                              .makeIndole() );
         IMoleculeManager molecule = new MoleculeManager();
         IMolecule m = molecule.fromSmiles( indoleSmiles );
         ICDKMolecule cdkm = cdk.create( m );
@@ -192,9 +198,11 @@ public class CDKManagerTest {
 
     @Test
     public void testLoadConformers() throws BioclipseException, IOException {
-        InputStream sdfFile = getClass().getResourceAsStream("/testFiles/dbsmallconf.sdf");
+        MockIFile file = new MockIFile( 
+            getClass().getResource("/testFiles/dbsmallconf.sdf")
+                      .getPath() );
 
-        List<ICDKMolecule> mols = cdk.loadConformers(sdfFile);
+        List<ICDKMolecule> mols = cdk.loadConformers(file, null);
         assertNotNull( mols );
         assertEquals( 3, mols.size() );
         
@@ -208,7 +216,5 @@ public class CDKManagerTest {
 //        System.out.println(mols.get( 1 ).getConformers().get( 0 ).getSmiles());
 //        System.out.println(mols.get( 2 ).getConformers().get( 0 ).getSmiles());
 //        System.out.println(mols.get( 2 ).getConformers().get( 1 ).getSmiles());
-
     }
-
 }

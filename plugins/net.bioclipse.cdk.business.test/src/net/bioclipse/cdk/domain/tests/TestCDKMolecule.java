@@ -63,7 +63,7 @@ public class TestCDKMolecule {
         String path = getClass().getResource("/testFiles/0037.cml")
                                 .getPath();
 
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path) );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
         assertNotNull(mol);
         BitSet bs = mol.getFingerprint(false);
         assertNotNull(bs);
@@ -77,7 +77,7 @@ public class TestCDKMolecule {
         String path = getClass().getResource("/testFiles/0037.cml")
                                 .getPath();
 
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path) );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
         assertNotNull(mol);
         String cmlString = mol.getCML();
         assertNotNull(cmlString);
@@ -91,7 +91,7 @@ public class TestCDKMolecule {
         String path = getClass().getResource("/testFiles/0037.cml")
                                 .getPath();
 
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path) );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
         assertNotNull(mol);
         String smiles = mol.getSmiles();
         assertNotNull(smiles);

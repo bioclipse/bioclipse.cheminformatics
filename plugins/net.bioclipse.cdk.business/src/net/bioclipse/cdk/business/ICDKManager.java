@@ -77,9 +77,21 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws CoreException 
      */
     @Recorded
-    public ICDKMolecule loadMolecule( IFile file )
+    public ICDKMolecule loadMolecule( IFile file, 
+                                      IProgressMonitor monitor )
         throws IOException, BioclipseException, CoreException;
 
+    /**
+     * @param file
+     * @return
+     * @throws IOException
+     * @throws BioclipseException
+     * @throws CoreException
+     */
+    @Recorded
+    public ICDKMolecule loadMolecule( IFile file )
+        throws IOException, BioclipseException, CoreException;
+    
     /**
      * Loads molecules from a file at a given path.
      *
@@ -107,9 +119,14 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws CoreException 
      */
     @Recorded
-    public List<ICDKMolecule> loadMolecules(IFile file)
+    public List<ICDKMolecule> loadMolecules( IFile file,
+                                             IProgressMonitor monitor )
         throws IOException, BioclipseException, CoreException;
 
+    @Recorded
+    public List<ICDKMolecule> loadMolecules( IFile file )
+        throws IOException, BioclipseException, CoreException;
+    
     /**
      * @param mol
      * @throws IllegalStateException
@@ -148,7 +165,11 @@ public interface ICDKManager extends IBioclipseManager {
      * @return
      * @throws CoreException 
      */
-    public Iterator<ICDKMolecule> createMoleculeIterator( IFile file ) 
+    public Iterator<ICDKMolecule> createMoleculeIterator( 
+        IFile file,
+        IProgressMonitor monitor ) throws CoreException;
+    
+    public Iterator<ICDKMolecule> createMoleculeIterator(IFile file) 
                                   throws CoreException;
     
     /**
@@ -248,14 +269,6 @@ public interface ICDKManager extends IBioclipseManager {
                        		             "of problem.")
     @Recorded
     public int numberOfEntriesInSDF( String filePath );
-
-    /**
-     * @param file
-     * @return the number of entries in the sdf file at the given path or
-     *         0 if failed to read somehow.
-     */
-    @Recorded
-    public int numberOfEntriesInSDF( IFile file );
     
     /**
      * Reads files and extracts conformers if available.
@@ -271,14 +284,21 @@ public interface ICDKManager extends IBioclipseManager {
 
     /**
      * Reads files and extracts conformers if available.
-     * @param stream to (file) contents
+     * @param file
      * @return a list of molecules that may have multiple conformers
      */
     @Recorded
-    public List<ICDKMolecule> loadConformers( InputStream stream );
+    public List<ICDKMolecule> loadConformers( IFile file, 
+                                              IProgressMonitor monitor );
+    
+    /**
+     * @param file
+     * @return
+     */
+    public List<ICDKMolecule> loadConformers( IFile file);
 
     /**
-     * Returns an iterator to the molecules in an Inputstream that might
+     * Returns an iterator to the molecules in an IFile that might
      * contain conformers.
      *
      * @param instream
@@ -286,7 +306,19 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @Recorded
     public Iterator<ICDKMolecule> creatConformerIterator( 
-        InputStream instream );
+        IFile file, IProgressMonitor monitor );
+    
+    /**
+     * @param file
+     * @return
+     */
+    @Recorded
+    public Iterator<ICDKMolecule> creatConformerIterator(IFile file);
+    
+    @Recorded
+    @PublishedMethod( params = "String path",
+                      methodSummary = "" )
+    public Iterator<ICDKMolecule> createConformerIterator( String path );
 
     @PublishedMethod ( params = "Imolecule molecule",
                        methodSummary = "Calculate and return the " +
@@ -305,4 +337,10 @@ public interface ICDKManager extends IBioclipseManager {
     public int numberOfEntriesInSDF( IFile file,
                                      IProgressMonitor monitor );
     
+    /**
+     * @param file
+     * @return
+     */
+    @Recorded
+    public int numberOfEntriesInSDF( IFile file );
 }
