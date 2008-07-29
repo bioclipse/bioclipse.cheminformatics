@@ -237,7 +237,7 @@ public interface ICDKManager extends IBioclipseManager {
                        methodSummary = "Creates a cdk molecule from a " +
                        		             "CML String" )
     @Recorded
-    public ICDKMolecule fromString( String cml ) 
+    public ICDKMolecule fromCml( String cml ) 
                         throws BioclipseException, IOException;
 
     /**
