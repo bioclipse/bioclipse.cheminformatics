@@ -59,6 +59,8 @@ import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 
+import sun.tools.tree.FinallyStatement;
+
 /**
  * The manager class for CDK. Contains CDK related methods.
  * 
@@ -90,81 +92,91 @@ public class CDKManager implements ICDKManager {
                              null );
     }
 
-    private ICDKMolecule loadMolecule(InputStream instream)
+    private ICDKMolecule loadMolecule( InputStream instream, 
+                                       IProgressMonitor monitor )
         throws BioclipseException, IOException {
 
-        if (readerFactory==null){
-            readerFactory=new ReaderFactory();
-            CDKManagerHelper.registerFormats(readerFactory);
+        if (monitor == null) {
+            monitor = new NullProgressMonitor();
         }
 
-        //Create the reader
-        ISimpleChemObjectReader reader 
-            = readerFactory.createReader(instream);
-
-        if (reader==null) {
-            throw new BioclipseException("Could not create reader in CDK.");
-        }
-
-        IChemFile chemFile = new org.openscience.cdk.ChemFile();
-
-        // Do some customizations...
-        CDKManagerHelper.customizeReading(reader, chemFile);
-
-        //Read file
-        try {
-            chemFile=(IChemFile)reader.read(chemFile);
-        } catch (CDKException e) {
-            // TODO Auto-generated catch block
-            LogUtils.debugTrace(logger, e);
-        }
-
-        //Store the chemFormat used for the reader
-        IResourceFormat chemFormat=reader.getFormat();
-        System.out.println("Rad CDK chemfile with format: "
-                           + chemFormat.getFormatName());
-
-        List<IAtomContainer> atomContainersList
-            = ChemFileManipulator.getAllAtomContainers(chemFile);
-        int nuMols=atomContainersList.size();
-        System.out.println("This file contained: " + nuMols + " molecules");
-
-        //If we have one AtomContainer, return a CDKMolecule with this ac
-        //If we have more than one AtomContainer, return a list of the molecules
-        //FIXME: requires common interface for CDKImplementations
-        
-        if (atomContainersList.size()==1){
-            CDKMolecule retmol
-                = new CDKMolecule((IAtomContainer)atomContainersList.get(0));
-            return retmol;
-        }
-        
         List<ICDKMolecule> moleculesList = new ArrayList<ICDKMolecule>();
-
-        for (int i=0; i<atomContainersList.size();i++){
-            IAtomContainer ac=null;
-            Object obj=atomContainersList.get(i);
-            if (obj instanceof org.openscience.cdk.interfaces.IMolecule) {
-                ac=(org.openscience.cdk.interfaces.IMolecule)obj;
-            }else if (obj instanceof IAtomContainer) {
-                ac=(IAtomContainer)obj;
-            }
-
-            CDKMolecule mol=new CDKMolecule(ac);
-            String moleculeName="Molecule " + i; 
-            if (ac instanceof IMolecule) {
-                org.openscience.cdk.interfaces.IMolecule imol
-                    = (org.openscience.cdk.interfaces.IMolecule) ac;
-                String molName=(String) imol.getProperty(CDKConstants.TITLE);
-                if (molName!=null && (!(molName.equals("")))){
-                    moleculeName=molName;
-                }
-            }
-            mol.setName(moleculeName);
+        try {
             
-            moleculesList.add(mol);
+            if (readerFactory==null){
+                readerFactory=new ReaderFactory();
+                CDKManagerHelper.registerFormats(readerFactory);
+            }
+    
+            //Create the reader
+            ISimpleChemObjectReader reader 
+                = readerFactory.createReader(instream);
+    
+            if (reader==null) {
+                throw new BioclipseException("Could not create reader in CDK.");
+            }
+    
+            IChemFile chemFile = new org.openscience.cdk.ChemFile();
+    
+            // Do some customizations...
+            CDKManagerHelper.customizeReading(reader, chemFile);
+    
+            //Read file
+            try {
+                chemFile=(IChemFile)reader.read(chemFile);
+            } catch (CDKException e) {
+                // TODO Auto-generated catch block
+                LogUtils.debugTrace(logger, e);
+            }
+    
+            //Store the chemFormat used for the reader
+            IResourceFormat chemFormat=reader.getFormat();
+            System.out.println("Rad CDK chemfile with format: "
+                               + chemFormat.getFormatName());
+    
+            List<IAtomContainer> atomContainersList
+                = ChemFileManipulator.getAllAtomContainers(chemFile);
+            int nuMols=atomContainersList.size();
+            System.out.println("This file contained: " + nuMols + " molecules");
+    
+            //If we have one AtomContainer, return a CDKMolecule with this ac
+            //If we have more than one AtomContainer, return a list of the molecules
+            //FIXME: requires common interface for CDKImplementations
+            
+            if (atomContainersList.size()==1){
+                CDKMolecule retmol
+                    = new CDKMolecule((IAtomContainer)atomContainersList.get(0));
+                return retmol;
+            }
+            
+            for (int i=0; i<atomContainersList.size();i++){
+                IAtomContainer ac=null;
+                Object obj=atomContainersList.get(i);
+                if (obj instanceof org.openscience.cdk.interfaces.IMolecule) {
+                    ac=(org.openscience.cdk.interfaces.IMolecule)obj;
+                }else if (obj instanceof IAtomContainer) {
+                    ac=(IAtomContainer)obj;
+                }
+    
+                CDKMolecule mol=new CDKMolecule(ac);
+                String moleculeName="Molecule " + i; 
+                if (ac instanceof IMolecule) {
+                    org.openscience.cdk.interfaces.IMolecule imol
+                        = (org.openscience.cdk.interfaces.IMolecule) ac;
+                    String molName=(String) imol.getProperty(CDKConstants.TITLE);
+                    if (molName!=null && (!(molName.equals("")))){
+                        moleculeName=molName;
+                    }
+                }
+                mol.setName(moleculeName);
+                
+                moleculesList.add(mol);
+            }
+            
         }
-        
+        finally {
+           monitor.done(); 
+        }
         //Just return the first molecule. To return all, use loadMolecules(..)
         return moleculesList.get(0);
     }
@@ -190,71 +202,91 @@ public class CDKManager implements ICDKManager {
                                              IProgressMonitor monitor )
         throws IOException, BioclipseException, CoreException {
 
-        if (readerFactory==null){
-            readerFactory=new ReaderFactory();
-            CDKManagerHelper.registerFormats(readerFactory);
-        }
-
-        System.out.println("no formats supported: "
-                           + readerFactory.getFormats().size());
-//        System.out.println("format guess: " + readerFactory.guessFormat(instream).getFormatName());
-
-        //Create the reader
-        ISimpleChemObjectReader reader= readerFactory.createReader(file.getContents());
-
-        if (reader==null){
-            throw new BioclipseException("Could not create reader in CDK. ");
-        }
-
-        IChemFile chemFile = new org.openscience.cdk.ChemFile();
-
-        // Do some customizations...
-        CDKManagerHelper.customizeReading(reader, chemFile);
-
-        //Read file
-        try {
-            chemFile=(IChemFile)reader.read(chemFile);
-        } catch (CDKException e) {
-            // TODO Auto-generated catch block
-            LogUtils.debugTrace(logger, e);
-        }
-
-        //Store the chemFormat used for the reader
-        IResourceFormat chemFormat=reader.getFormat();
-        System.out.println("Rad CDK chemfile with format: " + chemFormat.getFormatName());
-
-        List<IAtomContainer> atomContainersList
-            = ChemFileManipulator.getAllAtomContainers(chemFile);
-        int nuMols=atomContainersList.size();
-        System.out.println("This file contained: " + nuMols + " molecules");
-
-        List<ICDKMolecule> moleculesList = new BioList<ICDKMolecule>();
-//        CDKMolecule[] moleculesData = new CDKMolecule[atomContainersList.size()];
-
-        for (int i=0; i<atomContainersList.size();i++){
-            IAtomContainer ac=null;
-            Object obj=atomContainersList.get(i);
-            if (obj instanceof org.openscience.cdk.interfaces.IMolecule) {
-                ac=(org.openscience.cdk.interfaces.IMolecule)obj;
-            }else if (obj instanceof IAtomContainer) {
-                ac=(IAtomContainer)obj;
-            }
-
-            CDKMolecule mol=new CDKMolecule(ac);
-            String moleculeName="Molecule " + i; 
-            if (ac instanceof IMolecule) {
-                org.openscience.cdk.interfaces.IMolecule imol
-                    = (org.openscience.cdk.interfaces.IMolecule) ac;
-                String molName=(String) imol.getProperty(CDKConstants.TITLE);
-                if (molName!=null && (!(molName.equals("")))){
-                    moleculeName=molName;
-                }
-            }
-            mol.setName(moleculeName);
-            
-            moleculesList.add(mol);
+        if ( monitor == null ) {
+            monitor = new NullProgressMonitor();
         }
         
+        List<ICDKMolecule> moleculesList = new BioList<ICDKMolecule>();
+        int ticks = 10000;
+        try {
+            monitor.beginTask( "Reading file", ticks );
+            if ( readerFactory == null ) { 
+                readerFactory = new ReaderFactory();
+                CDKManagerHelper.registerFormats(readerFactory);
+            }
+    
+            System.out.println("no formats supported: "
+                               + readerFactory.getFormats().size());
+    //        System.out.println("format guess: " + readerFactory.guessFormat(instream).getFormatName());
+    
+            //Create the reader
+            ISimpleChemObjectReader reader = 
+                readerFactory.createReader( file.getContents() );
+    
+            if ( reader == null ) {
+                throw new BioclipseException (
+                    "Could not create reader in CDK.");
+            }
+    
+            IChemFile chemFile = new org.openscience.cdk.ChemFile();
+    
+            // Do some customizations...
+            CDKManagerHelper.customizeReading(reader, chemFile);
+    
+            //Read file
+            try {
+                chemFile=(IChemFile)reader.read(chemFile);
+            } 
+            catch (CDKException e) {
+                // TODO Auto-generated catch block
+                LogUtils.debugTrace(logger, e);
+            }
+    
+            //Store the chemFormat used for the reader
+            IResourceFormat chemFormat=reader.getFormat();
+            System.out.println("Rad CDK chemfile with format: " 
+                               + chemFormat.getFormatName());
+    
+            List<IAtomContainer> atomContainersList
+                = ChemFileManipulator.getAllAtomContainers(chemFile);
+            int nuMols=atomContainersList.size();
+            System.out.println("This file contained: " 
+                               + nuMols + " molecules");
+            
+    //        CDKMolecule[] moleculesData = new CDKMolecule[atomContainersList.size()];
+    
+            for (int i=0; i<atomContainersList.size();i++){
+                IAtomContainer ac=null;
+                Object obj=atomContainersList.get(i);
+                if (obj instanceof 
+                        org.openscience.cdk.interfaces.IMolecule) {
+                    ac=(org.openscience.cdk.interfaces.IMolecule)obj;
+                }
+                else if (obj instanceof IAtomContainer) {
+                    ac=(IAtomContainer)obj;
+                }
+    
+                CDKMolecule mol=new CDKMolecule(ac);
+                String moleculeName="Molecule " + i; 
+                if (ac instanceof IMolecule) {
+                    org.openscience.cdk.interfaces.IMolecule imol
+                        = (org.openscience.cdk.interfaces.IMolecule) ac;
+                    String molName
+                        = (String) imol.getProperty(CDKConstants.TITLE);
+                    if (molName!=null && (!(molName.equals("")))){
+                        moleculeName=molName;
+                    }
+                }
+                mol.setName(moleculeName);
+                
+                moleculesList.add(mol);
+                monitor.worked( (int) 
+                                (ticks/nuMols) );
+            }
+        }
+        finally {
+            monitor.done();
+        }
         return moleculesList;
     }
 
@@ -303,7 +335,7 @@ public class CDKManager implements ICDKManager {
         ByteArrayInputStream bais 
             = new ByteArrayInputStream( molstring.getBytes() );
         
-        return loadMolecule( bais );
+        return loadMolecule( bais, null );
     }
     
     public Iterator<ICDKMolecule> createMoleculeIterator( 
@@ -383,6 +415,10 @@ public class CDKManager implements ICDKManager {
         public IteratingBioclipseMDLConformerReader(InputStream input,
                                            IChemObjectBuilder builder, 
                                            IProgressMonitor monitor) {
+            
+            if (monitor == null) {
+                monitor = new NullProgressMonitor();
+            }
             
             reader = new IteratingMDLConformerReader(input, builder);
             this.monitor = monitor;
@@ -580,7 +616,7 @@ public class CDKManager implements ICDKManager {
                         throws IOException,
                                BioclipseException,
                                CoreException {
-        return loadMolecule( file.getContents() );
+        return loadMolecule( file.getContents(), monitor );
     }
 
     public Iterator<ICDKMolecule> createMoleculeIterator( String path )
