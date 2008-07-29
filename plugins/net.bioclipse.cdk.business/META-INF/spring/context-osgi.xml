@@ -15,6 +15,9 @@
   <osgi:reference id="recordingAdvice" 
                   interface="net.bioclipse.recording.IRecordingAdvice" />
 
+  <osgi:reference id="createJobAdvice"
+                  interface="net.bioclipse.core.business.ICreateJobAdvice" />
+
   <bean id="recordingAdvisor"
   		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
         <property name="advice"  ref="recordingAdvice" />
@@ -27,8 +30,12 @@
   	          ref="cdkManagerTarget" />
   	<property name="proxyInterfaces" 
   	          value="net.bioclipse.cdk.business.ICDKManager" />
-  	<property name="interceptorNames"
-  	          value="recordingAdvisor" />
+  	<property name="interceptorNames" >
+  	    <list>
+            <value>recordingAdvisor</value>
+            <value>createJobAdvice</value>
+        </list>
+    </property>    
   </bean>
   
 </beans>
