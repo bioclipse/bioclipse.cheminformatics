@@ -7,21 +7,15 @@
  *
  * Contributors:
  *     Ola Spjuth
+ *     Stefan Kuhn
  *
  ******************************************************************************/
 package net.bioclipse.cdk.business;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
-
-import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
@@ -29,6 +23,11 @@ import net.bioclipse.core.Recorded;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.domain.IMolecule;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.openscience.cdk.exception.CDKException;
 
 @PublishedClass( "Contains CDK related methods")
 public interface ICDKManager extends IBioclipseManager {
@@ -132,8 +131,8 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    public void saveMolecule(CDKMolecule mol) 
-                throws IllegalStateException;
+    public void saveMolecule(ICDKMolecule mol, IFile target, String filetype) 
+    	throws BioclipseException, CDKException, CoreException;
 
     /**
      * Calculate SMILES string for an IMolecule
@@ -337,6 +336,9 @@ public interface ICDKManager extends IBioclipseManager {
     public int numberOfEntriesInSDF( IFile file,
                                      IProgressMonitor monitor );
     
+    @Recorded
+    public void generate2dCoordinates(IMolecule molecule) throws Exception;
+
     /**
      * @param file
      * @return

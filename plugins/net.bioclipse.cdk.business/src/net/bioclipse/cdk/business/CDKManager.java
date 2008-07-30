@@ -8,6 +8,7 @@
  * Contributors:
  *     Ola Spjuth
  *     Jonathan Alvarsson
+ *     Stefan Kuhn
  *     
  ******************************************************************************/
 package net.bioclipse.cdk.business;
@@ -15,6 +16,8 @@ package net.bioclipse.cdk.business;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringBufferInputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -44,12 +47,15 @@ import org.openscience.cdk.fingerprint.FingerprinterTool;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
+import org.openscience.cdk.io.MDLWriter;
 import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.formats.IResourceFormat;
 import org.openscience.cdk.io.iterator.IteratingMDLConformerReader;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
 import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
+import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
@@ -291,11 +297,33 @@ public class CDKManager implements ICDKManager {
         return molecule.getSmiles();
     }
 
-    public void saveMolecule(CDKMolecule seq) 
-                throws IllegalStateException {
-        //TODO FIXME Implement me 
-        throw new UnsupportedOperationException(
-            "FIXME: Not implemented yet" );
+    public void saveMolecule(ICDKMolecule mol, IFile target, String filetype) 
+                throws BioclipseException, CDKException, CoreException {
+        IProgressMonitor monitor = new NullProgressMonitor();
+    	try{
+	        int ticks = 10000;
+	        monitor.beginTask( "Writing file", ticks );
+	    	String towrite;
+	    	//TODO we need a file type system
+	    	if(filetype.equals("mol")){
+	            StringWriter writer = new StringWriter();
+	            MDLWriter mdlWriter = new MDLWriter(writer);
+	            mdlWriter.write(mol.getAtomContainer());
+	            towrite=writer.toString();
+	    	} else if(filetype.equals("cml")){
+	    		StringWriter writer = new StringWriter();
+	            CMLWriter cmlWriter = new CMLWriter(writer);
+	            cmlWriter.write(mol.getAtomContainer());
+	            towrite=writer.toString();
+	    	} else {
+	    		throw new BioclipseException("Filetype "+filetype+" not supported!");
+	    	}
+	    	target.setContents(new StringBufferInputStream(towrite), false, true, monitor);
+	        monitor.worked(ticks);
+		}
+		finally {
+			monitor.done();
+		}
     }
 
     /**
@@ -604,6 +632,19 @@ public class CDKManager implements ICDKManager {
         double d=AtomContainerManipulator.getNaturalExactMass(
             cdkmol.getAtomContainer() );
         return d;
+    }
+    
+    public void generate2dCoordinates(IMolecule molecule) throws Exception{
+        ICDKMolecule cdkmol=null;
+        if ( molecule instanceof ICDKMolecule ) {
+            cdkmol = (ICDKMolecule) molecule;
+        }else {
+            cdkmol=create(molecule);
+        }
+        
+    	StructureDiagramGenerator sdg = new StructureDiagramGenerator();
+    	sdg.setMolecule(cdkmol.getAtomContainer().getBuilder().newMolecule(cdkmol.getAtomContainer()));
+    	sdg.generateCoordinates();
     }
 
     public ICDKMolecule loadMolecule( IFile file, 
