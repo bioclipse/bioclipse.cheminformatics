@@ -114,7 +114,7 @@ public class TestCDKMolecule {
         String cutcontent = content.substring( 0,a );
         System.out.println("Content: " + cutcontent.length());
         
-        ICDKMolecule mol = cdk.fromString( cutcontent );
+        ICDKMolecule mol = cdk.fromCml( cutcontent );
         assertNotNull(mol);
         String smiles = mol.getSmiles();
         assertNotNull(smiles);
@@ -296,7 +296,7 @@ public class TestCDKMolecule {
         assertNotNull(smiles);
         System.out.println("Smiles: " + smiles);
         
-        ICDKMolecule cdkmol = cdk.fromString(cmlstring);
+        ICDKMolecule cdkmol = cdk.fromCml(cmlstring);
         
         assertTrue( cdk.fingerPrintMatches( cdkmol, convertedmol ));
 
