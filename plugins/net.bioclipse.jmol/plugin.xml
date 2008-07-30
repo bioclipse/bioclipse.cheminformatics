@@ -11,15 +11,21 @@
    </extension>
 
 
+
    <extension
          point="org.eclipse.ui.editors">
       <editor
             name="Jmol Editor"
-            extensions="pdb,cml"
           icon="icons/molecule3D.gif"
             contributorClass="net.bioclipse.jmol.editors.JmolEditorContributor"
             class="net.bioclipse.jmol.editors.JmolEditor"
             id="net.bioclipse.jmol.editors.JmolEditor">
+            <contentTypeBinding
+                  contentTypeId="net.bioclipse.contenttypes.pdb">
+            </contentTypeBinding>
+            <contentTypeBinding
+                  contentTypeId="net.bioclipse.contenttypes.cml.molecule3d">
+            </contentTypeBinding>
       </editor>
    </extension>
 
@@ -90,6 +96,76 @@
           </viewShortcut>
     </perspectiveExtension>
  </extension>
- 
+
+ <!--extension
+       point="org.eclipse.core.runtime.contentTypes">
+    <content-type
+          id="net.bioclipse.jmol.contenttypes.cml"
+          base-type="org.eclipse.core.runtime.xml"  
+          name="CMLinJmol"
+          priority="normal">
+		 <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+    	    <parameter name="element" value="cml"/>
+       	</describer>
+    </content-type>
+    <file-association
+	    file-extensions="cml,xml"
+        content-type="net.bioclipse.jmol.contenttypes.cml">
+    </file-association>
+ </extension-->
+
+   
+   
+   <extension point = "org.eclipse.ui.popupMenus">
+  <objectContribution
+    id="net.bioclipse.jmol.pdbaction"
+    objectClass="org.eclipse.core.resources.IFile"
+    adaptable="true">
+    <visibility>
+        <objectState name="contentTypeId" 
+		value="net.bioclipse.contenttypes.pdb"/>
+    </visibility>
+    <action id="net.bioclipse.jmol.actions.pdbaction"
+      label="PDBAction"
+      menubarPath="additions"
+      class="net.bioclipse.jmol.actions.PdbAction"
+      enablesFor="1">
+    </action>
+  </objectContribution>
+
+  <objectContribution
+    id="net.bioclipse.jmol.cmlaction"
+    objectClass="org.eclipse.core.resources.IFile"
+    adaptable="true">
+    <visibility>
+        <objectState name="contentTypeId" 
+		value="net.bioclipse.contenttypes.cml.molecule2d"/>
+    </visibility>
+    <action id="net.bioclipse.jmol.actions.cmlaction"
+      label="CMLAction2D"
+      menubarPath="additions"
+      class="net.bioclipse.jmol.actions.CmlAction"
+      enablesFor="1">
+    </action>
+  </objectContribution>
+
+  <objectContribution
+    id="net.bioclipse.jmol.cmlaction"
+    objectClass="org.eclipse.core.resources.IFile"
+    adaptable="true">
+    <visibility>
+        <objectState name="contentTypeId" 
+		value="net.bioclipse.contenttypes.cml.molecule3d"/>
+    </visibility>
+    <action id="net.bioclipse.jmol.actions.cmlaction"
+      label="CMLAction3D"
+      menubarPath="additions"
+      class="net.bioclipse.jmol.actions.CmlAction"
+      enablesFor="1">
+    </action>
+  </objectContribution>
+</extension>
+
+   
    
 </plugin>
