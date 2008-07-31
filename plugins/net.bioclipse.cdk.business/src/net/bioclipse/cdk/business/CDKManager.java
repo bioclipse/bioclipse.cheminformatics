@@ -38,6 +38,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
@@ -318,10 +321,11 @@ public class CDKManager implements ICDKManager {
 	    	} else {
 	    		throw new BioclipseException("Filetype "+filetype+" not supported!");
 	    	}
-	    	if(target.exists())
-	    		target.setContents(new StringBufferInputStream(towrite), false, true, monitor);
-	    	else
+	    	if(target.exists()){
+	        	 target.setContents(new StringBufferInputStream(towrite), false, true, monitor);
+	    	} else {
 		    	target.create(new StringBufferInputStream(towrite), false, monitor);
+	    	}
 	        monitor.worked(ticks);
 		}
 		finally {
