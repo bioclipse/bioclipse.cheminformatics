@@ -19,12 +19,14 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.SaveAsDialog;
 
 /**
  * A handler class for a Generate 2D Coordinates menu item
@@ -57,7 +59,17 @@ public class Create2dHandler extends AbstractHandler {
 						throw new ExecutionException(e.getMessage());
 					}
 		         }else{
-		        	 //TODO
+		        	 SaveAsDialog dialog=new SaveAsDialog(new Shell());
+		        	 dialog.open();
+		        	 IPath result=dialog.getResult();
+		        	 if(dialog.getResult().getFileExtension()==null)
+		        		 result=result.addFileExtension(((IFile)ssel.getFirstElement()).getFileExtension());
+		             try {
+						Activator.getDefault().getCDKManager().saveMolecule(mol, ((IFile)ssel.getFirstElement()).getWorkspace().getRoot().getFile(result), ((IFile)ssel.getFirstElement()).getFileExtension());
+					 } catch (Exception e) {
+						 e.printStackTrace();
+							throw new ExecutionException(e.getMessage());
+					 }
 		         }
 		      }
 		  }		
