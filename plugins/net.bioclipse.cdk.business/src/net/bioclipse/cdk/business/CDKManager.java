@@ -318,7 +318,10 @@ public class CDKManager implements ICDKManager {
 	    	} else {
 	    		throw new BioclipseException("Filetype "+filetype+" not supported!");
 	    	}
-	    	target.setContents(new StringBufferInputStream(towrite), false, true, monitor);
+	    	if(target.exists())
+	    		target.setContents(new StringBufferInputStream(towrite), false, true, monitor);
+	    	else
+		    	target.create(new StringBufferInputStream(towrite), false, monitor);
 	        monitor.worked(ticks);
 		}
 		finally {
