@@ -122,4 +122,12 @@ public class JmolManager implements IJmolManager{
     protected void setActiveJmolEditor( JmolEditor activeEditor ) {
         jmolEditor = activeEditor;
     }
+
+    public void spinOff() {
+        run( "spin off" );
+    }
+
+    public void spinOn() {
+        run( "spin" );
+    }
 }

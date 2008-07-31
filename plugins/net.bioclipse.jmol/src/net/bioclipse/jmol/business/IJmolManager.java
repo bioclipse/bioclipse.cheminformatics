@@ -44,4 +44,21 @@ public interface IJmolManager extends IBioclipseManager{
      * @param file
      */
     public void load(IFile file);
+    
+    
+    /**
+     * Runs "spin on" in jmol
+     */
+    @Recorded
+    @PublishedMethod( methodSummary = "Causes active jmol to " +
+    		                              "spin molecule")
+    public void spinOn();
+    
+    /**
+     * Runs "spin off" in jmol
+     */
+    @Recorded
+    @PublishedMethod( methodSummary = "Causes active jmol to stop " +
+    		                              "spinning molecule" )
+    public void spinOff();
 }
