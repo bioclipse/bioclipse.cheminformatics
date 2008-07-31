@@ -30,6 +30,8 @@ import net.bioclipse.jmol.views.outline.JmolModel;
 import net.bioclipse.jmol.views.outline.JmolObject;
 
 import org.apache.log4j.Logger;
+
+import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 
 import org.eclipse.core.resources.IFile;
@@ -100,6 +102,8 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
     //Ola 2007-11-20
     String content;        //Read from EditorInput
 
+	private int jmolModel;
+
 
     /**
      * Creates a multi-page editor example.
@@ -160,7 +164,6 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         }
 
         jmolPanel.getViewer().openStringInline(content);
-
 
         //Initialize jmol
         //===============
@@ -353,6 +356,14 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
             }
             return fOutlinePage;
         }
+        
+        if (required==IMolecule.class){
+            int ii=jmolPanel.getViewer().getModelCount();
+            jmolModel=jmolPanel.getViewer().getModelNumber(0);
+
+        	
+        }
+        
         return super.getAdapter(required);
     }
 

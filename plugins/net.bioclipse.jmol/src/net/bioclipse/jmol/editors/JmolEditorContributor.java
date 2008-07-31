@@ -37,7 +37,7 @@ public class JmolEditorContributor extends MultiPageEditorActionBarContributor {
      */
     public JmolEditorContributor() {
         super();
-        createActions();
+//        createActions();
     }
     /**
      * Returns the action registed with the given text editor.
@@ -92,23 +92,23 @@ public class JmolEditorContributor extends MultiPageEditorActionBarContributor {
         }
     }
     private void createActions() {
-        sampleAction = new Action() {
-            public void run() {
-                MessageDialog.openInformation(null, "TestMPE Plug-in", "Sample Action Executed");
-            }
-        };
-        sampleAction.setText("Sample Action");
-        sampleAction.setToolTipText("Sample Action tool tip");
-        sampleAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-                getImageDescriptor(IDE.SharedImages.IMG_OBJS_TASK_TSK));
+//        sampleAction = new Action() {
+//            public void run() {
+//                MessageDialog.openInformation(null, "TestMPE Plug-in", "Sample Action Executed");
+//            }
+//        };
+//        sampleAction.setText("Sample Action");
+//        sampleAction.setToolTipText("Sample Action tool tip");
+//        sampleAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+//                getImageDescriptor(IDE.SharedImages.IMG_OBJS_TASK_TSK));
     }
     public void contributeToMenu(IMenuManager manager) {
-        IMenuManager menu = new MenuManager("Editor &Menu");
-        manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
-        menu.add(sampleAction);
+//        IMenuManager menu = new MenuManager("&Jmol editor menu");
+//        manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
+//        menu.add(sampleAction);
     }
     public void contributeToToolBar(IToolBarManager manager) {
-        manager.add(new Separator());
-        manager.add(sampleAction);
+//        manager.add(new Separator());
+//        manager.add(sampleAction);
     }
 }

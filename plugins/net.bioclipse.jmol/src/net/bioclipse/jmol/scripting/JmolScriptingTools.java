@@ -20,6 +20,7 @@ package net.bioclipse.jmol.scripting;
  */
 
 import net.bioclipse.jmol.editors.JmolEditor;
+import net.bioclipse.jmol.views.JmolView;
 import net.bioclipse.scripting.INamespaceProvider;
 
 import org.eclipse.swt.widgets.Display;
@@ -27,6 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PlatformUI;
 
 public class JmolScriptingTools implements INamespaceProvider{
@@ -54,6 +56,16 @@ public class JmolScriptingTools implements INamespaceProvider{
             JmolEditor jedit = (JmolEditor) part;
             jedit.runScript(command);
         }
+        
+		IViewReference[] views=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
+		
+		for (int i=0;i<views.length;i++){
+			if (views[i].getId().equals(JmolView.ID)){
+				JmolView jmv=(JmolView)(views[i].getPart(false));
+				jmv.runScript(command);
+			}
+		}
+
         
     }
     

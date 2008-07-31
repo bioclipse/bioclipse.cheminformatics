@@ -19,9 +19,13 @@
           icon="icons/molecule3D.gif"
             contributorClass="net.bioclipse.jmol.editors.JmolEditorContributor"
             class="net.bioclipse.jmol.editors.JmolEditor"
+            default="true"
             id="net.bioclipse.jmol.editors.JmolEditor">
             <contentTypeBinding
                   contentTypeId="net.bioclipse.contenttypes.pdb">
+            </contentTypeBinding>
+            <contentTypeBinding
+                  contentTypeId="net.bioclipse.contenttypes.mdlMolFile3D">
             </contentTypeBinding>
             <contentTypeBinding
                   contentTypeId="net.bioclipse.contenttypes.cml.molecule3d">
@@ -97,75 +101,841 @@
     </perspectiveExtension>
  </extension>
 
- <!--extension
-       point="org.eclipse.core.runtime.contentTypes">
-    <content-type
-          id="net.bioclipse.jmol.contenttypes.cml"
-          base-type="org.eclipse.core.runtime.xml"  
-          name="CMLinJmol"
-          priority="normal">
-		 <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-    	    <parameter name="element" value="cml"/>
-       	</describer>
-    </content-type>
-    <file-association
-	    file-extensions="cml,xml"
-        content-type="net.bioclipse.jmol.contenttypes.cml">
-    </file-association>
- </extension-->
 
    
-   
-   <extension point = "org.eclipse.ui.popupMenus">
-  <objectContribution
-    id="net.bioclipse.jmol.pdbaction"
-    objectClass="org.eclipse.core.resources.IFile"
-    adaptable="true">
-    <visibility>
-        <objectState name="contentTypeId" 
-		value="net.bioclipse.contenttypes.pdb"/>
-    </visibility>
-    <action id="net.bioclipse.jmol.actions.pdbaction"
-      label="PDBAction"
-      menubarPath="additions"
-      class="net.bioclipse.jmol.actions.PdbAction"
-      enablesFor="1">
-    </action>
-  </objectContribution>
 
-  <objectContribution
-    id="net.bioclipse.jmol.cmlaction"
-    objectClass="org.eclipse.core.resources.IFile"
-    adaptable="true">
-    <visibility>
-        <objectState name="contentTypeId" 
-		value="net.bioclipse.contenttypes.cml.molecule2d"/>
-    </visibility>
-    <action id="net.bioclipse.jmol.actions.cmlaction"
-      label="CMLAction2D"
-      menubarPath="additions"
-      class="net.bioclipse.jmol.actions.CmlAction"
-      enablesFor="1">
-    </action>
-  </objectContribution>
+   <!--extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Jmol Action Set"
+            visible="true"
+            id="net.bioclipse.plugins.bc_jmol.actionSet">
+         <menu
+               label="Jmol"
+               id="JmolMenu">
+            <separator name="selectSub" />
+         </menu>
 
-  <objectContribution
-    id="net.bioclipse.jmol.cmlaction"
-    objectClass="org.eclipse.core.resources.IFile"
-    adaptable="true">
-    <visibility>
-        <objectState name="contentTypeId" 
-		value="net.bioclipse.contenttypes.cml.molecule3d"/>
-    </visibility>
-    <action id="net.bioclipse.jmol.actions.cmlaction"
-      label="CMLAction3D"
-      menubarPath="additions"
-      class="net.bioclipse.jmol.actions.CmlAction"
-      enablesFor="1">
-    </action>
-  </objectContribution>
+
+         <menu
+               label="Background"
+               id="Background"
+               path="JmolMenu/selectSub">
+            <separator
+                  name="BackgroundGroup">
+            </separator>         
+         </menu>
+         <action
+               label="&amp;White"
+               class="net.bioclipse.jmol.actions.impl.BGWhiteAction"
+               tooltip="Set background to White"
+               menubarPath="JmolMenu/Background/BackgroundGroup"
+               id="net.bioclipse.jmol.actions.impl.BGWhiteAction">
+         </action>
+         <action
+               label="&amp;Black"
+               class="net.bioclipse.jmol.actions.impl.BGBlackAction"
+               tooltip="Set background to Black"
+               menubarPath="JmolMenu/Background/BackgroundGroup"
+               id="net.bioclipse.jmol.actions.impl.BGBlackAction">
+         </action>
+
+         <menu
+               label="Surface"
+               id="surface"
+               path="JmolMenu/selectSub">
+            <separator
+                  name="SurfaceGroup">
+            </separator>         
+         </menu>
+         <action
+               label="&amp;Dots on"
+               class="net.bioclipse.jmol.actions.impl.DotsOnAction"
+               tooltip="Turn dotted surface on for van der Waals radii"
+               menubarPath="JmolMenu/surface/SurfaceGroup"
+               id="net.bioclipse.jmol.actions.impl.DotsOnAction">
+         </action>
+         <action
+               label="&amp;Dots off"
+               class="net.bioclipse.jmol.actions.impl.DotsOffAction"
+               tooltip="Turn dotted surface off for van der Waals radii"
+               menubarPath="JmolMenu/surface/SurfaceGroup"
+               id="net.bioclipse.jmol.actions.impl.DotsOffAction">
+         </action>
+
+
+         <menu
+               label="Label"
+               id="label"
+               path="JmolMenu/selectSub">
+            <separator
+                  name="LabelGroup">
+            </separator>         
+         </menu>
+         <action
+               label="&amp;Label none"
+               class="net.bioclipse.jmol.actions.impl.LabelNoneAction"
+               tooltip="Label none"
+               menubarPath="JmolMenu/label/LabelGroup"
+               id="net.bioclipse.jmol.actions.impl.LabelNoneAction">
+         </action>
+         <action
+               label="&amp;Label symbol"
+               class="net.bioclipse.jmol.actions.impl.LabelSymbolAction"
+               tooltip="Label symbol"
+               menubarPath="JmolMenu/label/LabelGroup"
+               id="net.bioclipse.jmol.actions.impl.LabelSymbolAction">
+         </action>
+         <action
+               label="&amp;Label name"
+               class="net.bioclipse.jmol.actions.impl.LabelNameAction"
+               tooltip="Label name"
+               menubarPath="JmolMenu/label/LabelGroup"
+               id="net.bioclipse.jmol.actions.impl.LabelNameAction">
+         </action>
+         <action
+               label="&amp;Label number"
+               class="net.bioclipse.jmol.actions.impl.LabelNumberAction"
+               tooltip="Label number"
+               menubarPath="JmolMenu/label/LabelGroup"
+               id="net.bioclipse.jmol.actions.impl.LabelNumberAction">
+         </action>
+         <action
+               label="&amp;Label centered"
+               class="net.bioclipse.jmol.actions.impl.LabelCenteredAction"
+               tooltip="Label centered"
+               menubarPath="JmolMenu/label/LabelGroup"
+               id="net.bioclipse.jmol.actions.impl.LabelCenteredAction">
+         </action>
+         <action
+               label="&amp;Label upper right"
+               class="net.bioclipse.jmol.actions.impl.LabelUpperRightAction"
+               tooltip="Label upper right"
+               menubarPath="JmolMenu/label/LabelGroup"
+               id="net.bioclipse.jmol.actions.impl.LabelUpperRightAction">
+         </action>
+         
+
+
+         <menu
+               label="BioPolymer"
+               id="biopolymer"
+               path="JmolMenu/selectSub">
+            <separator
+                  name="biopolymerGroup">
+            </separator>         
+         </menu>
+         <action
+               class="net.bioclipse.jmol.actions.impl.CartoonOnAction"
+               id="net.bioclipse.jmol.actions.impl.CartoonOnAction"
+               label="&amp;Cartoon on"
+               menubarPath="JmolMenu/biopolymer/biopolymerGroup"
+               tooltip="Turn cartoons on for selected atoms"/>
+         <action
+               class="net.bioclipse.jmol.actions.impl.CartoonOffAction"
+               id="net.bioclipse.jmol.actions.impl.CartoonOffAction"
+               label="&amp;Cartoon off"
+               menubarPath="JmolMenu/biopolymer/biopolymerGroup"
+               tooltip="Turn cartoons off on for selected atoms"/>
+         <action
+               label="&amp;Ribbons on"
+               class="net.bioclipse.jmol.actions.impl.RibbonsOnAction"
+               tooltip="Turn ribbons on for selected atoms"
+               menubarPath="JmolMenu/biopolymer/biopolymerGroup"
+               id="net.bioclipse.jmol.actions.impl.RibbonsOnAction"/>
+         <action
+               label="&amp;Ribbons off"
+               class="net.bioclipse.jmol.actions.impl.RibbonsOffAction"
+               tooltip="Turn ribbons off for selected atoms"
+               menubarPath="JmolMenu/biopolymer/biopolymerGroup"
+               id="net.bioclipse.jmol.actions.impl.RibbonsOffAction"/>
+
+
+         <menu
+               label="Bond style"
+               id="bondStyle"
+               path="JmolMenu/selectSub">
+            <separator
+                  name="BondGroup">
+            </separator>         
+         </menu>
+         <action
+               label="&amp;20 Å"
+               class="net.bioclipse.jmol.actions.impl.Bonds20Action"
+               tooltip="Set bond size to 20 Å"
+               menubarPath="JmolMenu/bondStyle/BondGroup"
+               id="net.bioclipse.jmol.actions.impl.Bonds20Action">
+         </action>
+         <action
+               label="&amp;15 Å"
+               class="net.bioclipse.jmol.actions.impl.Bonds15Action"
+               tooltip="Set bond size to 15 Å"
+               menubarPath="JmolMenu/bondStyle/BondGroup"
+               id="net.bioclipse.jmol.actions.impl.Bonds15Action">
+         </action>
+         <action
+               label="&amp;10 Å"
+               class="net.bioclipse.jmol.actions.impl.Bonds10Action"
+               tooltip="Set bond size to 10 Å"
+               menubarPath="JmolMenu/bondStyle/BondGroup"
+               id="net.bioclipse.jmol.actions.impl.Bonds10Action">
+         </action>
+         <action
+               label="&amp;Wireframe"
+               class="net.bioclipse.jmol.actions.impl.WireframeAction"
+               tooltip="Show bonds as wireframe"
+               menubarPath="JmolMenu/bondStyle/BondGroup"
+               id="net.bioclipse.jmol.actions.impl.WireframeAction">
+         </action>
+         <action
+               label="&amp;None"
+               class="net.bioclipse.jmol.actions.impl.BondsNoneAction"
+               tooltip="Do not show bonds"
+               menubarPath="JmolMenu/bondStyle/BondGroup"
+               id="net.bioclipse.jmol.actions.impl.BondsNoneAction">
+         </action>
+
+
+         <menu
+               label="Atom style"
+               id="spacefill"
+               path="JmolMenu/selectSub">
+            <separator
+                  name="SpacefillGroup">
+            </separator>         
+         </menu>
+         <action
+               label="&amp;100% vanderWaals"
+               class="net.bioclipse.jmol.actions.impl.Spacefill100Action"
+               tooltip="100% vanderWaals"
+               menubarPath="JmolMenu/spacefill/SpacefillGroup"
+               id="net.bioclipse.jmol.actions.impl.Spacefill100Action">
+         </action>
+         <action
+               label="&amp;25% vanderWaals"
+               class="net.bioclipse.jmol.actions.impl.Spacefill25Action"
+               tooltip="Spacefill 25%"
+               menubarPath="JmolMenu/spacefill/SpacefillGroup"
+               id="net.bioclipse.jmol.actions.impl.Spacefill25Action">
+         </action>
+         <action
+               label="&amp;20% vanderWaals"
+               class="net.bioclipse.jmol.actions.impl.Spacefill20Action"
+               tooltip="Spacefill 20%"
+               menubarPath="JmolMenu/spacefill/SpacefillGroup"
+               id="net.bioclipse.jmol.actions.impl.Spacefill20Action">
+         </action>
+         <action
+               label="&amp;None"
+               class="net.bioclipse.jmol.actions.impl.Spacefill0Action"
+               tooltip="Spacefill 0%"
+               menubarPath="JmolMenu/spacefill/SpacefillGroup"
+               id="net.bioclipse.jmol.actions.impl.Spacefill0Action">
+         </action>
+
+         <menu
+               label="Select"
+               id="select"
+               path="JmolMenu/selectSub">
+            <separator
+                  name="SelectGroup">
+            </separator>         
+         </menu>
+         <action
+               label="&amp;Deselect all"
+               class="net.bioclipse.jmol.actions.impl.DeselectAllAction"
+               tooltip="Select all"
+               menubarPath="JmolMenu/select/SelectGroup"
+               id="net.bioclipse.jmol.actions.impl.DeselectAllAction">
+         </action>
+         <action
+               label="&amp;Select all"
+               class="net.bioclipse.jmol.actions.impl.SelectAllAction"
+               tooltip="Select all"
+               menubarPath="JmolMenu/select/SelectGroup"
+               id="net.bioclipse.jmol.actions.impl.SelectAllAction">
+         </action>
+         <action
+               class="net.bioclipse.jmol.actions.impl.SelectProteinAction"
+               id="net.bioclipse.jmol.actions.impl.SelectProteinAction"
+               label="Select &amp;protein"
+               menubarPath="JmolMenu/select/SelectGroup"
+               tooltip="Select protein"/>
+         <action
+               class="net.bioclipse.jmol.actions.impl.SelectNucleicAction"
+               id="net.bioclipse.jmol.actions.impl.SelectNucleicAction"
+               label="Select &amp;nucleic"
+               menubarPath="JmolMenu/select/SelectGroup"
+               tooltip="Select nucleic"/>
+         <action
+               class="net.bioclipse.jmol.actions.impl.SelectWaterAction"
+               id="net.bioclipse.jmol.actions.impl.SelectWaterAction"
+               label="Select &amp;water"
+               menubarPath="JmolMenu/select/SelectGroup"
+               tooltip="Select water"/>
+         <action
+               class="net.bioclipse.jmol.actions.impl.SelectHeteroAction"
+               id="net.bioclipse.jmol.actions.impl.SelectHeteroAction"
+               label="Select &amp;hetero"
+               menubarPath="JmolMenu/select/SelectGroup"
+               tooltip="Select hetero"/>
+
+
+      </actionSet>
+   </extension-->
+
+
+ <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="net.bioclipse.jmol.actions.runscript"
+            description="Run a Jmol script"
+            name="Run script">
+            <commandParameter
+                  id="net.bioclipse.jmol.scriptParameter"
+                  name="script"
+                  optional="true">
+            </commandParameter>
+      </command>
+      <command
+            id="net.bioclipse.jmol.actions.export"
+            description="Export as image"
+            name="Export">
+      </command>
+      
 </extension>
 
+ <extension
+         point="org.eclipse.ui.handlers">
+		<handler
+            class="net.bioclipse.jmol.actions.RunScriptHandler"
+            commandId="net.bioclipse.jmol.actions.runscript">
+      </handler>
+		<handler
+            class="net.bioclipse.jmol.actions.ExportHandler"
+            commandId="net.bioclipse.jmol.actions.export">
+      </handler>
+      
+</extension>
+
+
+<extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="net.bioclipse.definitions.activeJmolEditor">
+         <with
+               variable="activeEditorId">
+            <equals
+                  value="net.bioclipse.jmol.editors.JmolEditor">
+            </equals>
+         </with>
+      </definition>
+</extension>
+
+<extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="net.bioclipse.jmol.editor.menu"
+               label="Jmol">
+			<separator
+      			name="additions">
+			</separator>               
+               <visibleWhen>
+                  <reference
+                        definitionId="net.bioclipse.definitions.activeJmolEditor">
+                  </reference>
+               </visibleWhen>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="menu:net.bioclipse.jmol.editor.menu?after=additions">
+         <menu
+               id="net.bioclipse.jmol.editor.menu.select"
+               label="Select">
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Select all"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="Select all">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Select none"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="Select none">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Select protein"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="Select protein">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Select amino"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="Select amino">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Select nucleic"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="Select nucleic">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Select water"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="Select water">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Select hetero"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="Select hetero">
+                  </parameter>
+            </command>
+         </menu>
+
+
+         <menu
+               id="net.bioclipse.jmol.editor.menu.background"
+               label="Background">
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="White"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="set background white">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Black"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="set background black">
+                  </parameter>
+            </command>
+         </menu>
+
+         <menu
+               id="net.bioclipse.jmol.editor.menu.atoms"
+               label="Atoms">
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Spacefill 0"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="spacefill 0">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Spacefill 20%"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="spacefill 20%">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Spacefill 100%"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="spacefill 100%">
+                  </parameter>
+            </command>
+         </menu>
+
+         <menu
+               id="net.bioclipse.jmol.editor.menu.bonds"
+               label="Bonds">
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="off"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="wireframe off">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Size 10"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="wireframe 10">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Size 15"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="wireframe 15">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Size 30"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="wireframe 30">
+                  </parameter>
+            </command>
+         </menu>
+
+         <menu
+               id="net.bioclipse.jmol.editor.menu.surface"
+               label="Surface">
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="dots on"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="dots on">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="dots off"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="dots off">
+                  </parameter>
+            </command>
+         </menu>
+
+         <menu
+               id="net.bioclipse.jmol.editor.menu.frame"
+               label="Frame">
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Next frame"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="frame previous">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Previous frame"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="frame previous">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Play once"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="animation mode ONCE; animation fps 1; animation on">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Play repeat"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="animation mode loop; animation fps 1; animation on">
+                  </parameter>
+            </command>
+         </menu>
+
+         <menu
+               id="net.bioclipse.jmol.editor.menu.biopolymer"
+               label="Biopolymer">
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Cartoon on"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="cartoon on">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Cartoon off"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="cartoon off">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Ribbons on"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="ribbons on">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Ribbons off"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="ribbons off">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Rockets on"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="rockets on">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Rockets off"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="rockets off">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Meshribbons on"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="meshribbons on">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Meshribbons off"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="meshribbons off">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Strands on"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="strands on">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Strands off"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="strands off">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Trace on"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="trace on">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Trace off"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="trace off">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Backbone on"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="backbone on">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Backbone off"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="backbone off">
+                  </parameter>
+            </command>
+         </menu>
+
+         <menu
+               id="net.bioclipse.jmol.editor.menu.labels"
+               label="Labels">
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Off"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="labels off">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Names"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="label %a">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Number"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="label %i">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Symbol"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="label %e">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Location: center"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="set labeloffset 0 0">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Location: Top right"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="set labeloffset 4 4">
+                  </parameter>
+            </command>
+         </menu>
+         
+          <menu
+               id="net.bioclipse.jmol.editor.menu.rotate"
+               label="Rotate">
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Rotate around X"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="rotate x 360">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Spin on"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="spin on">
+                  </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runscript"
+                  label="Spin off"
+                  icon="icons/molecule3D.gif">
+                  <parameter
+                        name="net.bioclipse.jmol.scriptParameter"
+                        value="spin off">
+                  </parameter>
+            </command>
+         </menu>
+         
+
+         <!-- It seems we need to have at least one command in top menu 
+         for it to show-->
+            <command
+                  commandId="net.bioclipse.jmol.actions.export"
+                  tooltip="Export as image..."
+                  label="Export as image..."
+                  icon="icons/molecule3D.gif">
+             </command>
+      </menuContribution>
+
+      
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="net.bioclipse.jmol.editor.toolbar">
+            <command
+                  commandId="net.bioclipse.jmol.actions.export"
+                  tooltip="Export as image"
+                  icon="icons/molecule3D.gif">
+               <visibleWhen>
+                  <reference
+                        definitionId="net.bioclipse.definitions.activeJmolEditor">
+                  </reference>
+               </visibleWhen>
+             </command>
+            <separator
+                  name="additions"
+                  visible="false">
+            </separator>
+         </toolbar>
+      </menuContribution>
+      
+</extension>
    
    
 </plugin>
