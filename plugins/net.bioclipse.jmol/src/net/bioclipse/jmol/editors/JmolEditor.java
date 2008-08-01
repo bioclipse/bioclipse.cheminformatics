@@ -259,6 +259,8 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         if (!(editorInput instanceof IFileEditorInput))
             throw new PartInitException("Invalid Input: Must be IFileEditorInput");
         super.init(site, editorInput);
+        setPartName(editorInput.getName());
+
     }
     /* (non-Javadoc)
      * Method declared on IEditorPart.
