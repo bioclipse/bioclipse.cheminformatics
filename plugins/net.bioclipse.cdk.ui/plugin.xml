@@ -113,6 +113,7 @@
   		<menuContribution
         	locationURI="popup:org.eclipse.ui.popup.any?after=additions">
         	<command
+        		icon="icons/molecule2D.gif"
     	    	commandId="net.bioclipse.ui.commands.create2d">
         	</command>
      	</menuContribution>
