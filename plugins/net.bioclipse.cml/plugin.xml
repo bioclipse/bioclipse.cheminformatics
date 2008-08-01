@@ -36,19 +36,6 @@
      	</menuContribution>
 	</extension>
      
-    <extension
-          point="org.eclipse.core.runtime.contentTypes">
-          <content-type
-                id="net.bioclipse.cml.cmlType"
-                name="Chemical Markup Language (CML)"
-                priority="normal">
-          </content-type>
-          <file-association
-                content-type="net.bioclipse.cml.cmlType"
-                file-extensions="cml,xml">
-          </file-association>
-    </extension>
-     
 	<extension
          point="net.bioclipse.scripting.contribution">
     	 <scriptContribution
