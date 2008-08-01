@@ -45,7 +45,7 @@ public class Create2dHandler extends AbstractHandler {
 		         ICDKMolecule mol;
 				 try {
 					mol = Activator.getDefault().getCDKManager().loadMolecule((IFile)ssel.getFirstElement());
-					Activator.getDefault().getCDKManager().generate2dCoordinates(mol);
+					mol = (ICDKMolecule)Activator.getDefault().getCDKManager().generate2dCoordinates(mol);
 				 } catch (Exception e) {
 					throw new ExecutionException(e.getMessage());
 				 }
