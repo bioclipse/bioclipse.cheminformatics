@@ -641,8 +641,12 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                             String title2=(String) cm2.getMoleculeSet().getMolecule( 0 ).getProperty( "cdk:Title" );
                             
                             //If all titles are same, we conclude the chemmodels are similar
-                            if (!(title1.equals(title2))){
-                                similar=false;
+                            if (title1!=null && title1!=null){
+                            	if (!(title1.equals(title2))){
+                            		similar=false;
+                            	}
+                            }else{
+                            	similar=false;
                             }
                                 
                         }
