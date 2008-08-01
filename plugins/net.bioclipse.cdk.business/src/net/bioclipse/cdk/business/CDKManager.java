@@ -38,15 +38,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.fingerprint.FingerprinterTool;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
@@ -641,17 +639,22 @@ public class CDKManager implements ICDKManager {
         return d;
     }
     
-    public void generate2dCoordinates(IMolecule molecule) throws Exception{
+    public IMolecule generate2dCoordinates(IMolecule molecule) throws Exception{
         ICDKMolecule cdkmol=null;
         if ( molecule instanceof ICDKMolecule ) {
             cdkmol = (ICDKMolecule) molecule;
         }else {
             cdkmol=create(molecule);
-        }
-        
+        }        
     	StructureDiagramGenerator sdg = new StructureDiagramGenerator();
     	sdg.setMolecule(cdkmol.getAtomContainer().getBuilder().newMolecule(cdkmol.getAtomContainer()));
     	sdg.generateCoordinates();
+    	IAtomContainer ac=sdg.getMolecule();
+    	Iterator<IAtom> it=ac.atoms();
+    	while(it.hasNext()){
+    		it.next().setPoint3d(null);
+    	}
+    	return new CDKMolecule(ac);
     }
 
     public ICDKMolecule loadMolecule( IFile file, 

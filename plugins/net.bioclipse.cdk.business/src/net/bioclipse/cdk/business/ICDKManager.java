@@ -337,7 +337,7 @@ public interface ICDKManager extends IBioclipseManager {
                                      IProgressMonitor monitor );
     
     @Recorded
-    public void generate2dCoordinates(IMolecule molecule) throws Exception;
+    public IMolecule generate2dCoordinates(IMolecule molecule) throws Exception;
 
     /**
      * @param file
