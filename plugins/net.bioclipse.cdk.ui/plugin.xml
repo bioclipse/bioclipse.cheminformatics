@@ -31,7 +31,7 @@
       </category>
    </extension>
 
-   <extension
+   <!--extension
          point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent
             contentProvider="net.bioclipse.cdk.ui.views.MoleculeContentProvider"
@@ -54,10 +54,10 @@
          </and>
          </triggerPoints>
       </navigatorContent>
-   </extension>
+   </extension-->
 
 <!-- Add MoleculeContent to expand molecules with CDK -->
-<extension
+<!--extension
       point="org.eclipse.ui.navigator.viewer">
       <viewerContentBinding
             viewerId="net.bioclipse.navigator">
@@ -67,11 +67,11 @@
             </contentExtension>
             </includes>
       </viewerContentBinding>
-</extension>
+</extension-->
 
 <!-- Contribute an Object Contribution to delete individual properties in the view -->
 
-   <extension
+   <!--extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="false"
@@ -117,6 +117,6 @@
     	    	commandId="net.bioclipse.ui.commands.create2d">
         	</command>
      	</menuContribution>
-	</extension>
+	</extension-->
 
 </plugin>
