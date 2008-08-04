@@ -63,9 +63,6 @@ import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.ide.IDE;
 import org.jmol.modelset.Model;
-import org.jmol.modelsetbio.BioPolymer;
-import org.jmol.modelsetbio.Monomer;
-import org.jmol.viewer.Viewer;
 
 /**
  * An example showing how to create a multi-page editor.
