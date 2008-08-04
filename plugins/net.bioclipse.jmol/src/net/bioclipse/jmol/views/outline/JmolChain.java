@@ -72,7 +72,8 @@ public class JmolChain extends JmolObject{
                 newChildren.add(m);
             }
             else {
-                int a=0;
+            	JmolGroup jgroup=new JmolGroup(group,chain);
+                newChildren.add(jgroup);
             }
         }
         setChildren(newChildren);
