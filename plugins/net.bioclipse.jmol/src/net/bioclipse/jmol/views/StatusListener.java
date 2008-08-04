@@ -50,39 +50,87 @@ public class StatusListener implements JmolStatusListener {
     public void notifyAtomPicked(int atomIndex, String strInfo) {
         logger.debug("Jmol atom picked: " + atomIndex + ". Info: " + strInfo);
     
-        //Pick out 15 and B from e.g. [LYS]17:B.N #1314 24.648 17.987 18.034
+
+        
 //        if (strInfo.charAt(0)=='['){
 //            if (strInfo.charAt(4)==']'){
-                try{
-                //We start with [XXX] now pick out left and right of colon 
-                int colonIndex = strInfo.indexOf(":");
-                
-                //start first char after ]
-                int startindex=strInfo.lastIndexOf(']', colonIndex)+1;
-                
-                //End before colon
-                if (colonIndex<=startindex) return;
-                String no=strInfo.substring(startindex,colonIndex);
-                
-                //Find first dot after colon
-                int dotIndex=strInfo.indexOf('.', colonIndex-1);
-                
-                //get after colon to before first dot
-                if (dotIndex<=(colonIndex-1)) return;
-                String chain=strInfo.substring(colonIndex+1,dotIndex);
+        
+        
+        //PolymerSelection
+        if (strInfo.contains("[")){
+        	
+        	 //[LYS]17:B.N #1314 24.648 17.987 18.03
 
-                //Create new selection
-                JmolSelection selection=new JmolSelection(no,chain);
-                
-                //Throw a new SelectionEvent
-                part.setSelection(selection);
+        	//[LYS]15.CD/1 #229 -6.294 -5.529 6.598)
+            
+            /*
+           15 is the residue number 
+           . separates that from an atom name
+           CD is the atom name (in this case the fourth carbon on the lysine sidechain)
+           /1 means "in model 1", number as assigned by the PDB MODEL record or just 1 if only one model. When multiple files are loaded, then this might looke like
 
-                } catch (Exception e){
-                    logger.debug("Could not create JmolSelecion, probably something unselectable selected in Jmol");
-                    LogUtils.debugTrace(logger, e);
-                    return;
-                }
+           /3.2
 
+           where 3 is the file number, starting with 1, and 2 is the model number within that file -- disregarding MODEL records -- just assigned sequentially starting with 1.
+           */
+        	
+        	try{
+        		
+        		//We start with [XXX] now pick out left and right of colon 
+        		int colonIndex = strInfo.indexOf(":");
+
+        		//start first char after ]
+        		int startindex=strInfo.indexOf(']')+1;
+
+        		String no;
+        		int dotIndex;
+        		String chain;
+        		//End before colon
+        		if (colonIndex<=startindex){
+        			//No colon, hence a model without chain
+
+
+            		//Find first dot after colon
+            		dotIndex=strInfo.indexOf('.', 0);
+
+            		no=strInfo.substring(startindex,dotIndex);
+            		chain="";
+            		int a=0;
+        			
+        		}else{
+
+            		no=strInfo.substring(startindex,colonIndex);
+
+            		//Find first dot after colon
+            		dotIndex=strInfo.indexOf('.', colonIndex-1);
+
+            		chain=strInfo.substring(colonIndex+1,dotIndex);
+        		}
+
+
+
+        		//Create new selection
+        		JmolPolymerSelection selection=new JmolPolymerSelection(no,chain);
+
+        		//Throw a new SelectionEvent
+        		part.setSelection(selection);
+
+        	} catch (Exception e){
+        		logger.debug("Could not create JmolSelecion, probably something unselectable selected in Jmol");
+        		LogUtils.debugTrace(logger, e);
+        		return;
+        	}
+        }
+
+        //AtomSelection
+        else{
+    		//Create new selection
+    		JmolAtomSelection selection=new JmolAtomSelection(""+(atomIndex+1));
+
+    		//Throw a new SelectionEvent
+    		part.setSelection(selection);
+        	
+        }
                 
 //            }
 //        }

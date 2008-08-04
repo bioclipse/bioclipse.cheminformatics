@@ -27,11 +27,11 @@ import net.bioclipse.jmol.views.JmolPanel;
 import net.bioclipse.jmol.views.JmolSelection;
 import net.bioclipse.jmol.views.outline.JmolContentOutlinePage;
 import net.bioclipse.jmol.views.outline.JmolModel;
+import net.bioclipse.jmol.views.outline.JmolModelString;
 import net.bioclipse.jmol.views.outline.JmolObject;
 
 import org.apache.log4j.Logger;
 
-import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 
 import org.eclipse.core.resources.IFile;
@@ -63,6 +63,7 @@ import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.ide.IDE;
 import org.jmol.modelset.Model;
+import org.jmol.modelset.ModelSet;
 
 /**
  * An example showing how to create a multi-page editor.
@@ -98,8 +99,6 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
     //Must check how react on resource changes works.
     //Ola 2007-11-20
     String content;        //Read from EditorInput
-
-	private int jmolModel;
 
 
     /**
@@ -356,11 +355,10 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
             return fOutlinePage;
         }
         
-        if (required==IMolecule.class){
-            int ii=jmolPanel.getViewer().getModelCount();
-            jmolModel=jmolPanel.getViewer().getModelNumber(0);
-
-        	
+        if (required==JmolModelString.class){
+        	String jms=(String) jmolPanel.getViewer().getProperty("String", "stateinfo", "");
+            JmolModelString jmso = new JmolModelString(jms);
+            return jmso;
         }
         
         return super.getAdapter(required);

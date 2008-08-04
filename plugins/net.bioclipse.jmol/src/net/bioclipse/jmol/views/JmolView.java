@@ -37,6 +37,8 @@ import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.domain.ModelSelection;
 import net.bioclipse.core.domain.ScriptSelection;
 import net.bioclipse.jmol.adapter.cdk.CdkJmolAdapter;
+import net.bioclipse.jmol.views.outline.JmolModelSet;
+import net.bioclipse.jmol.views.outline.JmolModelString;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
@@ -94,7 +96,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
     //Provide selections from Jmol to e.g. outline
     private List<ISelectionChangedListener> selectionListeners;
-    private JmolSelection selection;
+    private JmolPolymerSelection selection;
 
     private ICDKManager cdk;
 
@@ -253,7 +255,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
     }
 
     public void setSelection(ISelection selection) {
-        this.selection = (JmolSelection)selection;
+        this.selection = (JmolPolymerSelection)selection;
         java.util.Iterator<ISelectionChangedListener> iter = selectionListeners.iterator();
         while( iter.hasNext() )
         {
@@ -287,7 +289,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
         /*
          * Get info from selections directly or via adapter in this order:
          * 
-         * 1. Collect (or genrate from IMolecule) ICDKMolecules
+         * 1. Collect (or generate from IMolecule) ICDKMolecules
          * 2. Collect ChemModels to visualize
          * 3. Collect atoms/bonds to highlight (IChemicalSelection)
          * 4. Collect scripts to run
@@ -324,6 +326,19 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
         //Store extracted info in lists
         extractFromSelection( eclipseSelection, collectedCDKMols, 
                               chemicalSelections, pcoreProviders );
+
+        //Extract JmolModelSet from selection.
+        //This happens when JmolEditor provides input via adapter
+        JmolModelString jms=extractJmolModelsetFromSelection(eclipseSelection);
+        System.out.println("** jms: " + jms);
+        if (jms!=null){
+            System.out.println("** jms string: " + jms.getModelString());
+        	//This overrides other ICDKMolecules (for now at least)
+        	runScript(jms.getModelString());
+        	return;
+        }
+        
+        //TODO: continue here
         
         //We have now collected everything we are interested in.
         //If no fun, return
@@ -375,7 +390,25 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
     }
 
-    private void processPcoreProviders(
+    private JmolModelString extractJmolModelsetFromSelection(IStructuredSelection eclipseSelection) {
+    	
+    	for (Object obj : eclipseSelection.toList()){
+    		if (obj instanceof JmolModelString) {
+				return (JmolModelString) obj;
+			}
+    		
+    		if (obj instanceof IAdaptable) {
+				IAdaptable adaptable = (IAdaptable) obj;
+				JmolModelString jms=(JmolModelString) adaptable.getAdapter(JmolModelString.class);
+				return jms;
+			}
+    	}
+
+    	//Default is null
+    	return null;
+	}
+
+	private void processPcoreProviders(
                                         List<IPharmacophoreProvider> pcoreProviders ) {
 
         for (IPharmacophoreProvider provider : pcoreProviders){
