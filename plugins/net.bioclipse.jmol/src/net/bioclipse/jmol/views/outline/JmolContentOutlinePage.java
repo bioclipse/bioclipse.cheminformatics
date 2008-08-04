@@ -31,13 +31,17 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.presentations.util.LeftToRightTabOrder;
@@ -187,7 +191,25 @@ public class JmolContentOutlinePage extends ContentOutlinePage implements ISelec
         JmolModelSet ms=new JmolModelSet(jmolViewer.getModelSet());
         treeViewer.setInput(ms);
         treeViewer.expandToLevel(2);
+        
+        //This is needed to set focus to outline when clicked on an element in 
+        //the treeviewer. Else no selection posted.
+        treeViewer.getTree().addFocusListener(new FocusListener(){
 
+			public void focusGained(FocusEvent e) {
+			
+				System.out.println("tree gain");
+				IViewPart outline=part.getSite().getPage().findView(
+											IPageLayout.ID_OUTLINE);
+				part.getSite().getPage().activate(outline);
+			}
+
+			public void focusLost(FocusEvent e) {
+				// Not interested in this
+			}
+        	
+        });
+        
         getSite().getPage().addSelectionListener(this);
     }
 
@@ -202,7 +224,8 @@ public class JmolContentOutlinePage extends ContentOutlinePage implements ISelec
 
         if (selection instanceof JmolSelection) {
             JmolSelection jmolSelection = (JmolSelection) selection;
-            System.out.println("** jmol selection caught in outline: " + jmolSelection.getFirstElement().toString());
+            System.out.println("** jmol selection caught in outline: " 
+            		           + jmolSelection.getFirstElement().toString());
 
             //Look up in tree and select it
             JmolModelSet ms=(JmolModelSet) treeViewer.getInput();

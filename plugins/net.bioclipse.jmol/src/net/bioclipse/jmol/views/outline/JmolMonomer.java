@@ -11,7 +11,10 @@
  ******************************************************************************/
 package net.bioclipse.jmol.views.outline;
 
+import org.eclipse.ui.views.properties.IPropertySource;
 import org.jmol.modelsetbio.Monomer;
+import org.jmol.modelsetbio.ProteinStructure;
+import org.jmol.viewer.JmolConstants;
 
 /**
  * A class wrapping a Monomer in JmolContentOutline
@@ -20,6 +23,7 @@ import org.jmol.modelsetbio.Monomer;
 public class JmolMonomer extends JmolObject{
 
     Monomer monomer;
+	private MonomerPropertySource monomerPropSrc;
     
     /**
      * Construct a JmolChain for a Chain. Set name to ChainID
@@ -43,7 +47,13 @@ public class JmolMonomer extends JmolObject{
     }
 
     public Object getAdapter(Class adapter) {
-        // TODO Auto-generated method stub
+        if (adapter == IPropertySource.class) {
+            if (monomerPropSrc == null) {
+                // cache the chainPropSource
+                monomerPropSrc = new MonomerPropertySource(this);
+            }
+            return monomerPropSrc;
+        }
         return super.getAdapter(adapter);
     }
 
@@ -64,4 +74,25 @@ public class JmolMonomer extends JmolObject{
         return ret;
     }
 
+    
+    public String getProteinStructure() {
+    	if (monomer.getProteinStructureType()>0){
+    		String str=JmolConstants.getProteinStructureName(
+    								monomer.getProteinStructureType());
+    		if (str!=null)
+    			return "" + str;
+    	}
+
+    	return "N/A";
+    	
+    }
+
+    public String getAtomCount() {
+    	int s=monomer.getFirstAtomIndex();
+    	int e= monomer.getLastAtomIndex();
+    	
+    	return "" + (e-s);
+    }
+    
+    
 }

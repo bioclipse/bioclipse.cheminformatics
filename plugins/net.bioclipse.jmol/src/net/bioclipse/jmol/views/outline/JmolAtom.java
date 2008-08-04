@@ -55,7 +55,7 @@ public class JmolAtom extends JmolObject{
      */
     public String getSelectString() {
         if (atom==null) return null;
-        String ret="";
+        String ret="atomno=" + (atom.getAtomIndex()+1);
         return ret;
     }
 
