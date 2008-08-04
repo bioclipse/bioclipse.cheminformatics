@@ -16,6 +16,7 @@ import java.util.Iterator;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.jmol.modelset.Chain;
@@ -28,6 +29,7 @@ import org.jmol.modelset.Model;
 public class JmolModel extends JmolObject{
 
     private Model model;
+	private ModelPropertySource modelPropSrc;
 
     /**
      * Construct a JmolModel from a Model. Set name to 'Model ' + modelIndex
@@ -77,6 +79,13 @@ public class JmolModel extends JmolObject{
     }
 
     public Object getAdapter(Class adapter) {
+        if (adapter == IPropertySource.class) {
+            if (modelPropSrc == null) {
+                // cache the chainPropSource
+                modelPropSrc = new ModelPropertySource(this);
+            }
+            return modelPropSrc;
+        }
         return super.getAdapter(adapter);
     }
 
@@ -86,6 +95,14 @@ public class JmolModel extends JmolObject{
     public String getSelectString() {
         return null;
     }
+    
+    public int getBiopolymerCount(){
+        return model.getBioPolymerCount();
+    }
 
+    public int getChainCount(){
+    	return model.getChainCount();
+
+    }
 
 }

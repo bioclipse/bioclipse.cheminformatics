@@ -20,17 +20,18 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
  * @author ola
  *
  */
-public class ChainPropertySource implements IPropertySource {
+public class ModelPropertySource implements IPropertySource {
 
-    private static final String PROPERTY_NAME = "jmol.chain.name";     
-    private static final String PROPERTY_SEQUENCE = "jmol.chain.sequence";    
+    private static final String PROPERTY_NAME = "jmol.model.name";     
+    private static final String PROPERTY_BPOL_COUNT = "jmol.model.bpols";    
+    private static final String PROPERTY_CHAIN_COUNT = "jmol.model.chainss";    
 
-    private JmolChain jmolChain;                        //The model
+    private JmolModel jmolModel;                        //The model
 
     private IPropertyDescriptor[] propertyDescriptors;    //Cached descriptors
 
-    public ChainPropertySource(JmolChain jmolChain) {
-        this.jmolChain=jmolChain;
+    public ModelPropertySource(JmolModel jmolModel) {
+        this.jmolModel=jmolModel;
     }
 
     public IPropertyDescriptor[] getPropertyDescriptors() {
@@ -39,13 +40,17 @@ public class ChainPropertySource implements IPropertySource {
             PropertyDescriptor nameDescriptor = new PropertyDescriptor(PROPERTY_NAME, "name");
             nameDescriptor.setCategory("Jmol");
 
-            PropertyDescriptor sequenceDescriptor = new PropertyDescriptor(PROPERTY_SEQUENCE, "Sequence");
-            sequenceDescriptor.setCategory("Jmol");
+            PropertyDescriptor bpolDescriptor = new PropertyDescriptor(PROPERTY_BPOL_COUNT, "Biopolymers");
+            bpolDescriptor.setCategory("Jmol");
+
+            PropertyDescriptor chainDescriptor = new PropertyDescriptor(PROPERTY_CHAIN_COUNT, "Chains");
+            chainDescriptor.setCategory("Jmol");
 
 
             propertyDescriptors = new IPropertyDescriptor[] {
                     nameDescriptor,   // Read-only (instance of PropertyDescriptor)
-                    sequenceDescriptor   // Read-only (instance of PropertyDescriptor)
+                    bpolDescriptor,   // Read-only (instance of PropertyDescriptor)
+                    chainDescriptor   // Read-only (instance of PropertyDescriptor)
             };
         }
         return propertyDescriptors;
@@ -58,9 +63,12 @@ public class ChainPropertySource implements IPropertySource {
 
     public Object getPropertyValue(Object id) {
         if (id.equals(PROPERTY_NAME))
-            return jmolChain.getName();
-        else if (id.equals(PROPERTY_SEQUENCE)) {
-            return jmolChain.getSequence();
+            return jmolModel.getName();
+        else if (id.equals(PROPERTY_BPOL_COUNT)) {
+            return jmolModel.getBiopolymerCount();
+        }
+        else if (id.equals(PROPERTY_CHAIN_COUNT)) {
+            return jmolModel.getChainCount();
         }
         return null;
     }
