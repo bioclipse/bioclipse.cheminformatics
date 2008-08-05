@@ -56,6 +56,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
@@ -75,6 +76,8 @@ import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.pharmacophore.PharmacophoreBond;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
+
+import quicktime.app.image.Redrawable;
 
 /**
  * A view for Jmol embedded in an SWT_AWT frame (requires java5.0+)
@@ -282,8 +285,10 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
      */
     private void reactOnSelection(ISelection selection) {
 
-        if (!(selection instanceof IStructuredSelection))
+        if (!(selection instanceof IStructuredSelection)){
+        	clearView();
             return;
+        }
         IStructuredSelection eclipseSelection = (IStructuredSelection) selection;
 
         /*
@@ -330,9 +335,9 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
         //Extract JmolModelSet from selection.
         //This happens when JmolEditor provides input via adapter
         JmolModelString jms=extractJmolModelsetFromSelection(eclipseSelection);
-        System.out.println("** jms: " + jms);
+//        System.out.println("** jms: " + jms);
         if (jms!=null){
-            System.out.println("** jms string: " + jms.getModelString());
+//            System.out.println("** jms string: " + jms.getModelString());
         	//This overrides other ICDKMolecules (for now at least)
         	runScript(jms.getModelString());
         	return;
@@ -342,8 +347,11 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
         
         //We have now collected everything we are interested in.
         //If no fun, return
-        if ((collectedCDKMols.size()<=0) && chemicalSelections.size()<=0)
+        if ((collectedCDKMols.size()<=0) && chemicalSelections.size()<=0){
+
             return;
+        	
+        }
 
         /*
          * If extracted molecules: Set up Chemfile and and send it to jmol
@@ -858,8 +866,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
      */
      private void clearView() {
 
-         runScript( "zap" );
-        
+         runScript( "zap; echo /No molecule with 3D coordinates available" );
     }
 
      /**
