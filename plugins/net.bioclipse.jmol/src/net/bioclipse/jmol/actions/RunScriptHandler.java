@@ -2,6 +2,7 @@ package net.bioclipse.jmol.actions;
 
 import java.util.Map;
 
+import net.bioclipse.jmol.Activator;
 import net.bioclipse.jmol.editors.JmolEditor;
 
 import org.apache.log4j.Logger;
@@ -18,15 +19,15 @@ public class RunScriptHandler extends AbstractHandler implements IHandler {
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		
-		IEditorPart editor=HandlerUtil.getActiveEditor(event);
-		if (!(editor instanceof JmolEditor)) {
-			logger.error("A jmol command was run but jmol is not active editor");
-			return null;
-		}
-		JmolEditor jmolEditor = (JmolEditor) editor;
+//		IEditorPart editor=HandlerUtil.getActiveEditor(event);
+//		if (!(editor instanceof JmolEditor)) {
+//			logger.error("A jmol command was run but jmol is not active editor");
+//			return null;
+//		}
+//		JmolEditor jmolEditor = (JmolEditor) editor;
 		String script=event.getParameter("net.bioclipse.jmol.scriptParameter");
-		
-		jmolEditor.runScript("select all;" + script + ";select none;");
+
+		Activator.getDefault().getJmolManager().run("select all;" + script + ";select none;");
 //		jmolEditor.runScript(script);
 
 		return null;
