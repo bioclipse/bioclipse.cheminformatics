@@ -28,7 +28,7 @@
                   contentTypeId="net.bioclipse.contenttypes.mdlMolFile3D">
             </contentTypeBinding>
             <contentTypeBinding
-                  contentTypeId="net.bioclipse.contenttypes.cml.molecule3d">
+                  contentTypeId="net.bioclipse.contenttypes.cml.singleMolecule3d">
             </contentTypeBinding>
       </editor>
    </extension>

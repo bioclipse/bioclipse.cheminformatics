@@ -77,7 +77,7 @@ import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.pharmacophore.PharmacophoreBond;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 
-import quicktime.app.image.Redrawable;
+//import quicktime.app.image.Redrawable;
 
 /**
  * A view for Jmol embedded in an SWT_AWT frame (requires java5.0+)
