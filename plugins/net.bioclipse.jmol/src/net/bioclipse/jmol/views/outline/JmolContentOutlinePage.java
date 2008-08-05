@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import net.bioclipse.jmol.Activator;
 import net.bioclipse.jmol.editors.JmolEditor;
 import net.bioclipse.jmol.views.JmolAtomSelection;
 import net.bioclipse.jmol.views.JmolPolymerSelection;
@@ -139,6 +140,17 @@ public class JmolContentOutlinePage extends ContentOutlinePage implements ISelec
             return obj.toString();
         }
         public Image getImage(Object obj) {
+        	
+            if (obj instanceof JmolAtom) {
+                return Activator.getImageDescriptor("icons/atom.png").createImage();
+            }
+            else if (obj instanceof JmolChain) {
+                return Activator.getImageDescriptor("icons/chain.png").createImage();
+            }
+            else if (obj instanceof JmolMonomer) {
+                return Activator.getImageDescriptor("icons/peptide.png").createImage();
+            }
+        	
             String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
             return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
         }
