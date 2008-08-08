@@ -41,7 +41,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod( params = "String smiles", 
                       methodSummary = "Creates a cdk molecule from " +
-                      		            "smiles")
+                      		          "smiles")
     public ICDKMolecule fromSmiles(String smiles)
         throws BioclipseException;
 
@@ -59,8 +59,8 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod( params = "String path", 
                       methodSummary = "Loads a molecule from file. " +
-                      		            "Returns the first if multiple " +
-                      		            "molecules exists in the file ")
+                                      "Returns the first if multiple " +
+                      		          "molecules exists in the file ")
     public ICDKMolecule loadMolecule( String path )
         throws IOException, BioclipseException, CoreException;
 
@@ -103,8 +103,8 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod( params = "String path", 
                       methodSummary = "Loads molecules from a file at " +
-                      		            "a given path into a list of " +
-                      		            "molecules")
+                      		          "a given path into a list of " +
+                      		          "molecules")
     public List<ICDKMolecule> loadMolecules(String path)
         throws IOException, BioclipseException, CoreException;
 
@@ -142,8 +142,8 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @Recorded
     @PublishedMethod ( params = "IMolecule molecule", 
-                       methodSummary = "returns the SMILES for a " +
-                       		             "molecule" )
+                       methodSummary = "Returns the SMILES for a " +
+                       		           "molecule" )
     public String calculateSmiles (IMolecule molecule) 
                   throws BioclipseException;
 
@@ -153,9 +153,9 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws CoreException
      */
     @PublishedMethod (params = "String path",
-                      methodSummary = "creates and iterator to the " +
-                      		            "molecules in the file at the " +
-                      		            "path")
+                      methodSummary = "Creates and iterator to the " +
+                      		          "molecules in the file at the " +
+                      		          "path")
     public Iterator<ICDKMolecule> createMoleculeIterator(String path) 
                                   throws CoreException;
     
@@ -181,10 +181,11 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws BioclipseException
      */
     @PublishedMethod (params = "ICDKMolecule molecule, " +
-    		                       "ICDKMolecule subStructure",
-                      methodSummary = "True if the fingerprint of the " +
-                      		            "subStructure is a subset of the" +
-                      		            "fingerprint for the molecule")
+    		                   "ICDKMolecule subStructure",
+                      methodSummary = "Returns true if the " +
+                      		          "fingerprint of the " +
+                      		          "subStructure is a subset of the" +
+                      		          "fingerprint for the molecule")
     @Recorded
     public boolean fingerPrintMatches( ICDKMolecule molecule, 
                                        ICDKMolecule subStructure ) 
@@ -206,7 +207,7 @@ public interface ICDKManager extends IBioclipseManager {
     		                       "subStructure is a substructure of the " +
     		                       "paramater named molecule. \n" +
     		                       "(Performs an isomophism test without " +
-    		                       "checking fingerprints first")
+    		                       "checking fingerprints)")
     @Recorded
     public boolean subStructureMatches( ICDKMolecule molecule,
                                         ICDKMolecule subStructure );
@@ -220,7 +221,7 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @PublishedMethod ( params = "IMolecule m",
                        methodSummary = "Creates a cdk molecule from a" +
-                       		             " molecule" )
+                                       " molecule" )
     @Recorded
     public ICDKMolecule create( IMolecule m ) throws BioclipseException;
 
@@ -234,7 +235,7 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @PublishedMethod ( params = "String cml",
                        methodSummary = "Creates a cdk molecule from a " +
-                       		             "CML String" )
+                                       "CML String" )
     @Recorded
     public ICDKMolecule fromCml( String cml ) 
                         throws BioclipseException, IOException;
@@ -249,13 +250,12 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @PublishedMethod ( params = "ICDKMolecule molecule, String smarts", 
                        methodSummary = "Returns true if the given " +
-                       		             "SMARTS matches the given " +
-                       		             "molecule" )
+                                       "SMARTS matches the given " +
+                                       "molecule" )
     @Recorded
     public boolean smartsMatches( ICDKMolecule molecule, String smarts ) 
                    throws BioclipseException;
 
-    
     /**
      * @param filePath
      * @return the number of entries in the sdf file at the given path or
@@ -263,9 +263,9 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @PublishedMethod ( params = "String filePath",
                        methodSummary = "Counts the number of entries " +
-                       		             "in an SDF file at the given " +
-                       		             "file path. Returns 0 in case " +
-                       		             "of problem.")
+                                       "in an SDF file at the given " +
+                                       "file path. Returns 0 in case " +
+                                       "of problem.")
     @Recorded
     public int numberOfEntriesInSDF( String filePath );
     
@@ -277,8 +277,8 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod ( params = "String path",
                        methodSummary = "Loads the molecules at the " +
-                       	  "path into a list, and take conformers into " +
-                       	  "account. Currently only reads SDFiles.")
+                          "path into a list, and take conformers into " +
+                          "account. Currently only reads SDFiles.")
     public List<ICDKMolecule> loadConformers( String path );
 
     /**
@@ -321,8 +321,8 @@ public interface ICDKManager extends IBioclipseManager {
 
     @PublishedMethod ( params = "Imolecule molecule",
                        methodSummary = "Calculate and return the " +
-                       		             "molecular weight for the " +
-                       		             "molecule.")
+                                       "molecular weight for the " +
+                                       "molecule.")
     @Recorded
     public double calculateMass( IMolecule molecule ) 
                   throws BioclipseException;
