@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Chemical Markup Language Plug-in
 Bundle-SymbolicName: net.bioclipse.cml;singleton:=true
-Bundle-Version: 1.2.0
+Bundle-Version: 2.0.0.A20080808
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -25,4 +25,4 @@ Bundle-ClassPath: jars/jumbo52.jar,
  .
 Bundle-Activator: net.bioclipse.cml.managers.Activator
 Eclipse-AutoStart: true
-Bundle-Vendor: Tobias Helmus, Stefan Kuhn, Peter Murray-Rust
+Bundle-Vendor: The Bioclipse Team
