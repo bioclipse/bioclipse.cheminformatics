@@ -28,9 +28,16 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.interfaces.IChemModel;
 
 @PublishedClass( "Contains CDK related methods")
 public interface ICDKManager extends IBioclipseManager {
+
+	public final static String rxn = "rxn";
+	public final static String mol = "mol";
+	public final static String cml = "cml";
+	public final static String smi = "smi";
+    public final static String cdk = "cdk";
 
     /**
      * Create a CDKMolecule from SMILES
@@ -127,11 +134,23 @@ public interface ICDKManager extends IBioclipseManager {
         throws IOException, BioclipseException, CoreException;
     
     /**
-     * @param mol
+     * @param mol The molecule to save
+     * @param target Where to save
+     * @param filetype Which format to save (for formats, see constants)
      * @throws IllegalStateException
      */
     @Recorded
     public void saveMolecule(ICDKMolecule mol, IFile target, String filetype) 
+    	throws BioclipseException, CDKException, CoreException;
+
+    /**
+     * @param model The ChemModel to save
+     * @param target Where to save
+     * @param filetype Which format to save (for formats, see constants)
+     * @throws IllegalStateException
+     */
+    @Recorded
+    public void save(IChemModel model, IFile target, String filetype) 
     	throws BioclipseException, CDKException, CoreException;
 
     /**

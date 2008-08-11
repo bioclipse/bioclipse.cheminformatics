@@ -14,13 +14,19 @@
 package net.bioclipse.cdk.business;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
 import java.io.StringWriter;
+import java.io.Writer;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.swing.JOptionPane;
 
 import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
@@ -41,17 +47,24 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.Molecule;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.fingerprint.FingerprinterTool;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
+import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.io.CDKSourceCodeWriter;
 import org.openscience.cdk.io.CMLWriter;
+import org.openscience.cdk.io.IChemObjectWriter;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
+import org.openscience.cdk.io.MDLRXNWriter;
 import org.openscience.cdk.io.MDLWriter;
 import org.openscience.cdk.io.ReaderFactory;
+import org.openscience.cdk.io.SMILESWriter;
 import org.openscience.cdk.io.formats.IResourceFormat;
 import org.openscience.cdk.io.iterator.IteratingMDLConformerReader;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
@@ -62,6 +75,7 @@ import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
+import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 /**
  * The manager class for CDK. Contains CDK related methods.
@@ -70,7 +84,7 @@ import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
  *
  */
 public class CDKManager implements ICDKManager {
-
+	
     private static final Logger logger 
         = Logger.getLogger(CDKManager.class);
     
@@ -297,24 +311,38 @@ public class CDKManager implements ICDKManager {
         
         return molecule.getSmiles();
     }
-
-    public void saveMolecule(ICDKMolecule mol, IFile target, String filetype) 
+    
+    public void save(IChemModel model, IFile target, String filetype) 
                 throws BioclipseException, CDKException, CoreException {
         IProgressMonitor monitor = new NullProgressMonitor();
     	try{
 	        int ticks = 10000;
 	        monitor.beginTask( "Writing file", ticks );
 	    	String towrite;
-	    	//TODO we need a file type system
-	    	if(filetype.equals("mol")){
+	    	if(filetype.equals(mol)){
 	            StringWriter writer = new StringWriter();
 	            MDLWriter mdlWriter = new MDLWriter(writer);
-	            mdlWriter.write(mol.getAtomContainer());
+	            mdlWriter.write(model);
 	            towrite=writer.toString();
-	    	} else if(filetype.equals("cml")){
+	    	} else if(filetype.equals(cml)){
 	    		StringWriter writer = new StringWriter();
 	            CMLWriter cmlWriter = new CMLWriter(writer);
-	            cmlWriter.write(mol.getAtomContainer());
+	            cmlWriter.write(model);
+	            towrite=writer.toString();
+	    	} else if(filetype.equals(rxn)){
+	    		StringWriter writer = new StringWriter();
+	            MDLRXNWriter cmlWriter = new MDLRXNWriter(writer);
+	            cmlWriter.write(model);
+	            towrite=writer.toString();
+	    	} else if(filetype.equals(smi)){
+	    		StringWriter writer = new StringWriter();
+	            SMILESWriter cmlWriter = new SMILESWriter(writer);
+	            cmlWriter.write(model);
+	            towrite=writer.toString();
+	    	} else if(filetype.equals(cdk)){
+	    		StringWriter writer = new StringWriter();
+	            CDKSourceCodeWriter cmlWriter = new CDKSourceCodeWriter(writer);
+	            cmlWriter.write(model);
 	            towrite=writer.toString();
 	    	} else {
 	    		throw new BioclipseException("Filetype "+filetype+" not supported!");
@@ -331,7 +359,15 @@ public class CDKManager implements ICDKManager {
 		}
     }
 
-    /**
+	public void saveMolecule(ICDKMolecule mol, IFile target, String filetype)
+			throws BioclipseException, CDKException, CoreException {
+		IChemModel chemModel=((Molecule)mol).getBuilder().newChemModel();
+		chemModel.getMoleculeSet().addAtomContainer(mol.getAtomContainer());
+		this.save(chemModel, target, filetype);
+	}
+	
+	
+	/**
      * Create molecule from SMILES.
      * @throws BioclipseException 
      */
@@ -702,4 +738,126 @@ public class CDKManager implements ICDKManager {
     public int numberOfEntriesInSDF( IFile file ) {
         return numberOfEntriesInSDF( file, null );
     }
+    
+	protected void saveAsMol(IChemModel model, File outFile) throws Exception
+	{
+		logger.info("Saving the contents in a MDL molfile file...");
+        String fileName = outFile.toString();
+        if (!fileName.endsWith(".mol")) {
+            fileName += ".mol";
+            outFile = new File(fileName);
+        }
+        outFile=new File(fileName);
+        IChemObjectWriter cow = new MDLWriter(new FileWriter(outFile));
+		if (cow != null && askIOSettings())
+		{
+			//cow.addChemObjectIOListener(new SwingGUIListener(jcpPanel, 4));
+		}
+		org.openscience.cdk.interfaces.IMoleculeSet som = model.getMoleculeSet();
+		cow.write(som);
+		cow.close();
+	}
+
+	protected void saveAsCML2(IChemObject object, File outFile) throws Exception
+	{
+		if(Float.parseFloat(System.getProperty("java.specification.version"))<1.5){
+			JOptionPane.showMessageDialog(null,"For saving as CML you need Java 1.5 or higher!");
+			return;
+		}
+		logger.info("Saving the contents in a CML 2.0 file...");
+        String fileName = outFile.toString();
+        if (!fileName.endsWith(".cml")) {
+            fileName += ".cml";
+            outFile = new File(fileName);
+        }
+        FileWriter sw = new FileWriter(outFile);
+        Class cmlWriterClass = this.getClass().getClassLoader().loadClass("org.openscience.cdk.io.CMLWriter");
+
+        IChemObjectWriter cow;
+        if (cmlWriterClass != null) {
+        	cow = (IChemObjectWriter)cmlWriterClass.newInstance();
+        	Constructor constructor = cow.getClass().getConstructor(new Class[]{Writer.class});
+        	cow = (IChemObjectWriter)constructor.newInstance(new Object[]{sw});
+        } else {
+        	// provide a fail save for JChemPaint builds for Java 1.4
+        	cow = new MDLWriter(sw);
+        }
+		if (cow != null && askIOSettings())
+		{
+			//cow.addChemObjectIOListener(new SwingGUIListener(jcpPanel, 4));
+		}
+		cow.write(object);
+		cow.close();
+		sw.close();
+	}
+
+	protected void saveAsSMILES(IChemModel model, File outFile) throws Exception
+	{
+		logger.info("Saving the contents in SMILES format...");
+        String fileName = outFile.toString();
+        if (!fileName.endsWith(".smi")) {
+            fileName += ".smi";
+        }
+        IChemObjectWriter cow = new SMILESWriter(new FileWriter(outFile));
+		if (cow != null && askIOSettings())
+		{
+			//cow.addChemObjectIOListener(new SwingGUIListener(jcpPanel, 4));
+		}
+		org.openscience.cdk.interfaces.IMoleculeSet som = model.getMoleculeSet();
+		cow.write(som);
+		cow.close();
+	}
+
+	protected void saveAsCDKSourceCode(IChemModel model, File outFile) throws Exception
+	{
+		logger.info("Saving the contents as a CDK source code file...");
+        String fileName = outFile.toString();
+        if (!fileName.endsWith(".cdk")) {
+            fileName += ".cdk";
+            outFile = new File(fileName);
+        }
+        IChemObjectWriter cow = new CDKSourceCodeWriter(new FileWriter(outFile));
+		if (cow != null && askIOSettings())
+		{
+			//cow.addChemObjectIOListener(new SwingGUIListener(jcpPanel, 4));
+		}
+		Iterator containers = ChemModelManipulator.getAllAtomContainers(model).iterator();
+		while (containers.hasNext()) {
+			IAtomContainer ac = (IAtomContainer)containers.next();
+			if (ac != null) {
+				cow.write(ac);
+			} else {
+				System.err.println("AC == null!");
+			}
+		}
+		cow.close();
+	}
+
+	/*protected void saveAsSVG(IChemModel model, File outFile) throws Exception
+	{
+		logger.info("Saving the contents as a SVG file...");
+		IChemObjectWriter cow = new SVGWriter(new FileWriter(outFile));
+		if (cow != null && askIOSettings())
+		{
+			cow.addChemObjectIOListener(new SwingGUIListener(jcpPanel, 4));
+		}
+		Iterator containers = ChemModelManipulator.getAllAtomContainers(model).iterator();
+		while (containers.hasNext()) {
+			IAtomContainer ac = (IAtomContainer)containers.next();
+			if (ac != null)
+			{
+				cow.write((IAtomContainer) ac.clone());
+			} else
+			{
+				System.err.println("AC == null!");
+			}
+		}
+		cow.close();
+	}*/
+	
+    private boolean askIOSettings() {
+    	//TODO implement this
+        return false;
+    }
+
 }
