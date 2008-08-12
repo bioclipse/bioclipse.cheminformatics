@@ -16,6 +16,8 @@ import java.io.Reader;
 import java.net.URI;
 import java.util.Map;
 
+import net.bioclipse.cdk.business.test.Activator;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFileState;
@@ -30,7 +32,9 @@ import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
@@ -43,6 +47,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 public class MockIFile implements IFile {
 
     private InputStream inStream;
+    private boolean exists=false;
 
     public MockIFile(InputStream inStream) {
         this.inStream = inStream;
@@ -50,8 +55,13 @@ public class MockIFile implements IFile {
     
     public MockIFile(String path) throws FileNotFoundException {
         this.inStream = new FileInputStream( new File(path) );
+        exists=true;
     }
     
+    public MockIFile() throws FileNotFoundException {
+        exists=false;
+    }
+
     public void appendContents( InputStream source, int updateFlags,
                                 IProgressMonitor monitor ) throws CoreException {
 
@@ -70,14 +80,16 @@ public class MockIFile implements IFile {
     public void create( InputStream source, boolean force,
                         IProgressMonitor monitor ) throws CoreException {
 
-        // TODO Auto-generated method stub
+        inStream=source;
+        exists=true;
         
     }
 
     public void create( InputStream source, int updateFlags,
                         IProgressMonitor monitor ) throws CoreException {
 
-        // TODO Auto-generated method stub
+        inStream=source;
+        exists=true;
         
     }
 
@@ -128,6 +140,8 @@ public class MockIFile implements IFile {
 
     public InputStream getContents() throws CoreException {
 
+    	if(!exists)
+    		throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, 1, "File does not (yet) exist", null));
         return inStream;
     }
 
@@ -314,8 +328,7 @@ public class MockIFile implements IFile {
 
     public boolean exists() {
 
-        // TODO Auto-generated method stub
-        return false;
+        return exists;
     }
 
     public IMarker findMarker( long id ) throws CoreException {

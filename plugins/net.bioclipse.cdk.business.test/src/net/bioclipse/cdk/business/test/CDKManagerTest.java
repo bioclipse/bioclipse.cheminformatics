@@ -13,30 +13,30 @@
 
 package net.bioclipse.cdk.business.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import net.bioclipse.cdk.MockIFile;
 import net.bioclipse.cdk.business.CDKManager;
-import net.bioclipse.cdk.business.CDKManagerHelper;
 import net.bioclipse.cdk.business.ICDKManager;
-import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IMoleculeManager;
 import net.bioclipse.core.business.MoleculeManager;
 import net.bioclipse.core.domain.IMolecule;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.junit.Assert;
 import org.junit.Test;
-import org.openscience.cdk.io.ISimpleChemObjectReader;
-import org.openscience.cdk.io.ReaderFactory;
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.templates.MoleculeFactory;
 
@@ -216,5 +216,30 @@ public class CDKManagerTest {
 //        System.out.println(mols.get( 1 ).getConformers().get( 0 ).getSmiles());
 //        System.out.println(mols.get( 2 ).getConformers().get( 0 ).getSmiles());
 //        System.out.println(mols.get( 2 ).getConformers().get( 1 ).getSmiles());
+    }
+
+    @Test
+    public void testSave() throws BioclipseException, CDKException, CoreException, IOException {
+        String propaneSmiles = "CCC"; 
+        
+        ICDKMolecule propane  = cdk.fromSmiles( propaneSmiles  );
+        
+        getClass().getResource("/testFiles/dbsmallconf.sdf")
+        .getPath();
+        IFile target=new MockIFile();
+        cdk.saveMolecule(propane, target, cdk.mol);
+        StringBuffer readBuffer = new StringBuffer();
+        byte[] bytes=new byte[6];
+        target.getContents().read(bytes);
+        Assert.assertArrayEquals(new byte[]{10,32,32,67,68,75}, bytes);
+    }
+
+    @Test
+    public void testSaveMolecule() throws BioclipseException {
+        String propaneSmiles = "CCC"; 
+        
+        ICDKMolecule propane  = cdk.fromSmiles( propaneSmiles  );
+        
+        assertTrue( cdk.smartsMatches(propane, propaneSmiles) );
     }
 }
