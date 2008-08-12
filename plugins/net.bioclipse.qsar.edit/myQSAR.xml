@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ASCII"?>
+<qsar:DocumentRoot xmlns:qsar="http://www.bioclipse.net/qsar">
+  <qsar>
+    <moleculelist>
+      <molecule path="/path/to/polycarpol.cml" id="molecule01" name="polycarpol"/>
+      <molecule smiles="NS(=O)(=O)c1cc(C(O)=O)c(NCc2ccco2)cc1Cl" id="molecule02" name="furosemide"/>
+      <molecule url="http://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=5770&amp;disopt=SaveXML" id="molecule03" name="reserpine"/>
+    </moleculelist>
+    <descriptorlist>
+      <descriptor id="http://www.blueobelisk.org/ontologies/chemoinformatics-algorithms/#xlogP" name="XlogP" namespace="http://www.blueobelisk.org">
+        <parameter key="checkAromaticity" value="true"/>
+        <parameter key="salicylFlag" value="false"/>
+        <descriptorimpl id="net.sf.cdk"/>
+      </descriptor>
+      <descriptor id="http://www.blueobelisk.org/ontologies/chemoinformatics-algorithms/#atomCount" name="Atom Count" namespace="http://www.blueobelisk.org">
+        <parameter key="elementName" value="C"/>
+        <descriptorimpl id="http://rguha.ath.cx/~rguha/cicc/desc/descriptors/org.openscience.cdk.qsar.descriptors.molecular.XLogPDescriptor" url="http://rguha.ath.cx/~rguha/cicc/desc/descriptors/org.openscience.cdk.qsar.descriptors.molecular.XLogPDescriptor"/>
+      </descriptor>
+    </descriptorlist>
+    <descriptorimpl id="net.sf.cdk" jar="cdk20080808.jar" name="Chemistry Development Kit" namespace="http://cdk.sourceforge.net"/>
+  </qsar>
+</qsar:DocumentRoot>
