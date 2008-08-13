@@ -23,10 +23,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.bioclipse.cdk.MockIFile;
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IMoleculeManager;
 import net.bioclipse.core.business.MoleculeManager;

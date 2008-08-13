@@ -12,6 +12,7 @@ Require-Bundle: org.openscience.cdk,
  net.bioclipse.cdk.business,
  net.bioclipse.core,
  org.eclipse.core.resources,
- net.bioclipse.cdk10.jchempaint
+ net.bioclipse.cdk10.jchempaint,
+ net.bioclipse.core.tests;bundle-version="0.1.0"
 Eclipse-LazyStart: true
 Export-Package: net.bioclipse.cdk

@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.util.BitSet;
 import java.util.List;
 
-import net.bioclipse.cdk.MockIFile;
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
@@ -27,6 +26,7 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk10.business.CDK10Manager;
 import net.bioclipse.cdk10.business.CDK10ManagerHelper;
 import net.bioclipse.cdk10.business.CDK10Molecule;
+import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.business.BioclipseException;
 
 import org.eclipse.core.runtime.CoreException;
