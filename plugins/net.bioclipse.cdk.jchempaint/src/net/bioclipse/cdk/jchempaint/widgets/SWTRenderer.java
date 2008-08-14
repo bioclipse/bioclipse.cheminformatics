@@ -120,7 +120,7 @@ public class SWTRenderer implements IJava2DRenderer {
 		
 		
 		if (affine == null) {
-			System.out.println("paintMolecule should be called first time with the bounds of the graphical object..");
+			//System.out.println("paintMolecule should be called first time with the bounds of the graphical object..");
 			logger.warn("Cannot paintMolecule without transform Matrix");
 			return;			
 		}
@@ -175,7 +175,7 @@ public class SWTRenderer implements IJava2DRenderer {
 		Rectangle2D molBounds = createRectangle2D(atomCon); 
 		if (molBounds == null || molBounds.isEmpty()) {
 			logger.debug("empty atomCon? -> no molBounds -> no drawing ");
-			System.out.println("empty atomCon? -> no molBounds -> no drawing ");
+			//System.out.println("empty atomCon? -> no molBounds -> no drawing ");
 			return;
 		}
 		AffineTransform transformMatrix = createScaleTransform(molBounds,bounds);
@@ -233,7 +233,7 @@ public class SWTRenderer implements IJava2DRenderer {
 	 */
 	public void paintAtom(IAtomContainer container, IAtom atom, GC graphics)
 	{
-		System.out.println("paintAtom Symbol:" + atom.getSymbol() + " atom:" + atom);
+		//System.out.println("paintAtom Symbol:" + atom.getSymbol() + " atom:" + atom);
 				
 	
 
@@ -248,7 +248,7 @@ public class SWTRenderer implements IJava2DRenderer {
 //			} else {
 			//	paintPseudoAtomLabel((IPseudoAtom) atom, atomBackColor, graphics, alignment, isRadical);
 //			}
-			System.out.println("call paintPseudoAtomLabel here?");
+			//System.out.println("call paintPseudoAtomLabel here?");
 			return;
 		} else if (!atom.getSymbol().equals("C"))
 		{
@@ -702,7 +702,7 @@ public class SWTRenderer implements IJava2DRenderer {
 	{
 		double x = atom.getPoint2d().x;
 		double y = atom.getPoint2d().y;
-		System.out.println("painting paintColouredAtomBackground now at " + x + " / " + y);
+		//System.out.println("painting paintColouredAtomBackground now at " + x + " / " + y);
 		//FIXME: right size for this AtomRadius (currently estimate)
 		double atomRadius = rendererModel.getHighlightRadiusModel();
 		
@@ -757,7 +757,7 @@ public class SWTRenderer implements IJava2DRenderer {
 	public void paintInnerBond(org.openscience.cdk.interfaces.IBond bond, IRing ring, Color bondColor, GC graphics)
 	{
 		Point2d center = GeometryTools.get2DCenter(ring);
-		System.out.println("  paintInnerBond (=working) now at " + center);
+		//System.out.println("  paintInnerBond (=working) now at " + center);
 		//next few lines draw a green and pink line just for debugging, to be removed later
 	/*	graphics.setColor(Color.green);
 		Line2D line = new Line2D.Double(
@@ -778,7 +778,7 @@ public class SWTRenderer implements IJava2DRenderer {
 		double u = ((center.x - a.x)*(b.x - a.x) + (center.y - a.y)*(b.y - a.y)) / (Math.pow(distance, 2));
 		double px = a.x + u*(b.x - a.x);
 		double py = a.y + u*(b.y - a.y);
-		System.out.println("distancea and b: " + distance + " u: " + u + " px: " + px + " py " + py);
+		//System.out.println("distancea and b: " + distance + " u: " + u + " px: " + px + " py " + py);
 		
 		Point2d z = new Point2d(px, py);
 
@@ -822,7 +822,7 @@ public class SWTRenderer implements IJava2DRenderer {
 		List<IRing> painted_rings = new ArrayList<IRing>();
 	
 		logger.debug("Painting bonds...");
-		System.out.println("--doing paintBonds now");
+		//System.out.println("--doing paintBonds now");
 		while (bonds.hasNext())
 		{
 			IBond currentBond = bonds.next();
@@ -845,8 +845,8 @@ public class SWTRenderer implements IJava2DRenderer {
 			ring = RingSetManipulator.getHeaviestRing(ringSet, currentBond);
 			if (ring != null)
 			{
-				System.out.println("found a ring, ringIsAromatic(ring) " + ringIsAromatic(ring) + " ,getShowAromaticity: "
-						+ rendererModel.getShowAromaticity());
+				//System.out.println("found a ring, ringIsAromatic(ring) " + ringIsAromatic(ring) + " ,getShowAromaticity: "
+//						+ rendererModel.getShowAromaticity());
 
 				logger.debug("Found ring to draw");
 				if (ringIsAromatic(ring) && rendererModel.getShowAromaticity())
@@ -865,7 +865,7 @@ public class SWTRenderer implements IJava2DRenderer {
 				}
 			} else
 			{
-				System.out.println("no ring found!");
+				//System.out.println("no ring found!");
 
 				logger.debug("Drawing a non-ring bond");
 				paintBond(currentBond, bondColor, graphics);
@@ -881,7 +881,7 @@ public class SWTRenderer implements IJava2DRenderer {
 	public void paintRingBond(org.openscience.cdk.interfaces.IBond bond, IRing ring, Color bondColor, GC graphics)
 	{
 		Point2d center = GeometryTools.get2DCenter(ring);
-		System.out.println(" painting paintRingBond now at " + center + " getOrder: " + bond.getOrder() + " bond: " + bond);
+		//System.out.println(" painting paintRingBond now at " + center + " getOrder: " + bond.getOrder() + " bond: " + bond);
 
 
 		if (bond.getOrder() == IBond.Order.SINGLE)
@@ -900,7 +900,7 @@ public class SWTRenderer implements IJava2DRenderer {
 			} else
 			{
 				// end code by rstefani
-				System.out.println("  singlebond in ring");
+				//System.out.println("  singlebond in ring");
 				paintSingleBond(bond, bondColor, graphics);
 			}
 		} else if (bond.getOrder() == IBond.Order.DOUBLE)
@@ -914,7 +914,7 @@ public class SWTRenderer implements IJava2DRenderer {
 		} else
 		{
 			logger.warn("Drawing bond as single even though it has order: ", bond.getOrder());
-			System.out.println("Drawing bond as single even though it has order: " + bond.getOrder());
+			//System.out.println("Drawing bond as single even though it has order: " + bond.getOrder());
 
 			paintSingleBond(bond, bondColor, graphics);
 		}
@@ -927,10 +927,10 @@ public class SWTRenderer implements IJava2DRenderer {
 	 */
 	public void paintWedgeBond(org.openscience.cdk.interfaces.IBond bond, Color bondColor, GC graphics)
 	{
-		System.out.print("painting paintWedgeBond now for: " + bond);
+		//System.out.print("painting paintWedgeBond now for: " + bond);
 		double wedgeWidth = rendererModel.getBondWidth() /10;
 		//perhaps introduce a new setting instead of using getBondWidth here
-		System.out.println(" wedgeWidth: " + wedgeWidth);
+		//System.out.println(" wedgeWidth: " + wedgeWidth);
 		
 		double x0, x1, y0, y1;
 
@@ -982,7 +982,7 @@ public class SWTRenderer implements IJava2DRenderer {
 	 */
 	public void paintDashedWedgeBond(org.openscience.cdk.interfaces.IBond bond, Color bondColor, GC graphics)
 	{
-		System.out.println("painting paintDashedWedgeBond now for: " + bond);
+		//System.out.println("painting paintDashedWedgeBond now for: " + bond);
 		double wedgeWidth = rendererModel.getBondWidth() /10;
 		double bondWidth = rendererModel.getBondWidth() / 40;
 		double x0, x1, y0, y1;
@@ -1016,7 +1016,7 @@ public class SWTRenderer implements IJava2DRenderer {
 		double bondLength = distance2points(bond.getAtom(0).getPoint2d(), bond.getAtom(1).getPoint2d());
 		int numberOfLines = (int) (bondLength / bondWidth / 3);
 
-		System.out.println("lines: " + numberOfLines);
+		//System.out.println("lines: " + numberOfLines);
 		
 		graphics.setForeground(bondColor);
 		
@@ -1041,7 +1041,7 @@ public class SWTRenderer implements IJava2DRenderer {
 	public void paintRingRing(IRing ring, Color bondColor, GC graphics)
 	{
 		Point2d center = GeometryTools.get2DCenter(ring);
-		System.out.println(" painting a Ringring now at " + center);
+		//System.out.println(" painting a Ringring now at " + center);
 		
 		double[] minmax = GeometryTools.getMinMax(ring);
 		double width = (minmax[2] - minmax[0]) * 0.7;
@@ -1080,8 +1080,8 @@ public class SWTRenderer implements IJava2DRenderer {
 	public void paintBond(IBond bond, Color bondColor, GC graphics)
 	{
 
-		System.out.println("      paintBond, getstereo: " + bond.getStereo() + " getorder: " + bond.getOrder() + " x,y: " + bond.getAtom(0).getPoint2d().x + "," +
-				bond.getAtom(0).getPoint2d().y);
+		//System.out.println("      paintBond, getstereo: " + bond.getStereo() + " getorder: " + bond.getOrder() + " x,y: " + bond.getAtom(0).getPoint2d().x + "," +
+//				bond.getAtom(0).getPoint2d().y);
 		
 		if (!GeometryTools.has2DCoordinates(bond)) {
 			return;
@@ -1120,7 +1120,7 @@ public class SWTRenderer implements IJava2DRenderer {
 			} else
 			{
 				
-				System.out.println("       painting single bond because order = " + bond.getOrder());
+				//System.out.println("       painting single bond because order = " + bond.getOrder());
 				// paint all other bonds as single bonds
 				paintSingleBond(bond, bondColor, graphics);
 			}
@@ -1195,7 +1195,7 @@ public class SWTRenderer implements IJava2DRenderer {
 	 */
 	public void paintTripleBond(org.openscience.cdk.interfaces.IBond bond, Color bondColor, GC graphics)
 	{
-		System.out.println("painting paintTripleBond now at " + bond.getAtom(0).getPoint2d());
+		//System.out.println("painting paintTripleBond now at " + bond.getAtom(0).getPoint2d());
 
 		paintSingleBond(bond, bondColor, graphics);
 		double[] tempc = new double[] { bond.getAtom(0).getPoint2d().x, bond.getAtom(0).getPoint2d().y,
@@ -1226,7 +1226,7 @@ public class SWTRenderer implements IJava2DRenderer {
 
 	public void paintSingleBond(IBond bond, Color bondColor, GC graphics)
 	{
-		System.out.println("  painting paintSingleBond " + bond.getAtom(0).getPoint2d() + " // " + bond.getAtom(1).getPoint2d());
+		//System.out.println("  painting paintSingleBond " + bond.getAtom(0).getPoint2d() + " // " + bond.getAtom(1).getPoint2d());
 		if (GeometryTools.has2DCoordinates(bond))
 		{
 			Line2D line = new Line2D.Double(
@@ -1301,7 +1301,7 @@ public class SWTRenderer implements IJava2DRenderer {
 			affine.inverseTransform(ptSrc, ptDst);
 		}
 		catch (Exception exception) {
-			System.out.println("Unable to reverse affine transformation");
+			//System.out.println("Unable to reverse affine transformation");
 			System.exit(0);
 		}
 		return new Point2d(ptDst.getX(), ptDst.getY());
@@ -1314,12 +1314,12 @@ public class SWTRenderer implements IJava2DRenderer {
 	public static void showClosestAtomOrBond(IAtomContainer container, Point2d ptSrc) {
 		IAtom atom = GeometryTools.getClosestAtom( ptSrc.x, ptSrc.y, container);
 		double Atomdist = atom.getPoint2d().distance(ptSrc);
-		System.out.println("closest Atom distance: " + Atomdist + " Atom:" + atom);
+		//System.out.println("closest Atom distance: " + Atomdist + " Atom:" + atom);
 		
 		IBond bond = GeometryTools.getClosestBond( ptSrc.x, ptSrc.y, container);
 		Point2d bondCenter = GeometryTools.get2DCenter(bond.atoms());
 		double Bonddist = bondCenter.distance(ptSrc);
-		System.out.println("closest Bond distance: " + Bonddist + " Bond: " + bond);
+		//System.out.println("closest Bond distance: " + Bonddist + " Bond: " + bond);
 	}
 	
 	public Rectangle2D createRectangle2D(IAtomContainer atomCon) {
