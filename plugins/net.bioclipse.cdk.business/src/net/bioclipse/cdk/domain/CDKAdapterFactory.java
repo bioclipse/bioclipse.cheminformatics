@@ -18,13 +18,12 @@ public class CDKAdapterFactory implements IAdapterFactory {
     public Object getAdapter( Object adaptableObject, 
                               Class adapterType ) {
 
-        ICDKMolecule molecule = null;
+        Object molecule = null;
         if ( adaptableObject instanceof IFile ) {
             IFile file = (IFile) adaptableObject;
             if ( adapterType.equals( ICDKMolecule.class ) ) {
-                molecule = (ICDKMolecule) BioclipseStore
-                                          .get( file, 
-                                                ICDKMolecule.class ); 
+                molecule = BioclipseStore.get( file, 
+                                               ICDKMolecule.class ); 
                 if ( molecule == null ) {
                     try {
                         molecule = Activator.getDefault()
