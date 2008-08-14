@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JChemPaint Plug-in
+Bundle-SymbolicName: net.bioclipse.cdk.jchempaint;singleton:=true
+Bundle-Version: 2.0.0.A20080808
+Bundle-Activator: net.bioclipse.cdk.jchempaint.Activator
+Require-Bundle: org.openscience.cdk,
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ net.bioclipse.core,
+ org.eclipse.ui.ide,
+ net.bioclipse.ui,
+ net.bioclipse.cdk.business;bundle-version="2.0.0"
+Bundle-ActivationPolicy: lazy
+Import-Package: org.apache.log4j
+Export-Package: net.bioclipse.cdk.jchempaint.editor;
+  uses:="org.eclipse.ui.part,
+   org.eclipse.swt.events,
+   org.openscience.cdk.controller,
+   net.bioclipse.cdk.jchempaint.widgets,
+   org.eclipse.swt.widgets,
+   org.eclipse.core.runtime,
+   org.eclipse.ui,
+   net.bioclipse.cdk.domain"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
