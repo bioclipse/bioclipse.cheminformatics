@@ -56,7 +56,7 @@ public class ValidateCMLManager implements IValidateCMLManager {
         return "cml";
     }
     
-	private void namespaceThemAll(Elements elements) {
+	public void namespaceThemAll(Elements elements) {
 		for (int i = 0; i < elements.size(); i++) {
 			Element elem = elements.get(i);
 			elem.setNamespaceURI(CMLUtil.CML_NS);
