@@ -2,21 +2,24 @@
 <qsar:DocumentRoot xmlns:qsar="http://www.bioclipse.net/qsar">
   <qsar>
     <moleculelist>
-      <molecule path="/path/to/polycarpol.cml" id="molecule01" name="polycarpol"/>
-      <molecule smiles="NS(=O)(=O)c1cc(C(O)=O)c(NCc2ccco2)cc1Cl" id="molecule02" name="furosemide"/>
-      <molecule url="http://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=5770&amp;disopt=SaveXML" id="molecule03" name="reserpine"/>
+      <moleculeResource path="/path/to/polycarpol.cml" id="molecule01" name="polycarpol"/>
+      <moleculeResource smiles="NS(=O)(=O)c1cc(C(O)=O)c(NCc2ccco2)cc1Cl" id="molecule02" name="furosemide"/>
+      <moleculeResource url="http://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=5770&amp;disopt=SaveXML" id="molecule03" name="reserpine"/>
+      <moleculeResource path="/path/to/molcollection.sdf" id="molecule04" name="molcollection"/>
     </moleculelist>
     <descriptorlist>
       <descriptor id="http://www.blueobelisk.org/ontologies/chemoinformatics-algorithms/#xlogP" name="XlogP" namespace="http://www.blueobelisk.org">
         <parameter key="checkAromaticity" value="true"/>
         <parameter key="salicylFlag" value="false"/>
-        <descriptorimpl id="net.sf.cdk"/>
+        <descriptorimpl/>
       </descriptor>
       <descriptor id="http://www.blueobelisk.org/ontologies/chemoinformatics-algorithms/#atomCount" name="Atom Count" namespace="http://www.blueobelisk.org">
         <parameter key="elementName" value="C"/>
-        <descriptorimpl id="http://rguha.ath.cx/~rguha/cicc/desc/descriptors/org.openscience.cdk.qsar.descriptors.molecular.XLogPDescriptor" url="http://rguha.ath.cx/~rguha/cicc/desc/descriptors/org.openscience.cdk.qsar.descriptors.molecular.XLogPDescriptor"/>
+        <descriptorimpl id="org.openscience.cdk.qsar.descriptors.molecular.XLogPDescriptor" type="soap" url="http://rguha.ath.cx/~rguha/cicc/desc/descriptors/org.openscience.cdk.qsar.descriptors.molecular.XLogPDescriptor"/>
+      </descriptor>
+      <descriptor id="http://www.blueobelisk.org/ontologies/chemoinformatics-algorithms/#atomCount" name="DragonDesc1" namespace="http://www.blueobelisk.org">
+        <descriptorimpl id="dragon"/>
       </descriptor>
     </descriptorlist>
-    <descriptorimpl id="net.sf.cdk" jar="cdk20080808.jar" name="Chemistry Development Kit" namespace="http://cdk.sourceforge.net"/>
   </qsar>
 </qsar:DocumentRoot>

@@ -95,7 +95,7 @@ public class MoleculelistTypeItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(QsarPackage.Literals.MOLECULELIST_TYPE__MOLECULE);
+			childrenFeatures.add(QsarPackage.Literals.MOLECULELIST_TYPE__MOLECULE_RESOURCE);
 		}
 		return childrenFeatures;
 	}
@@ -147,7 +147,7 @@ public class MoleculelistTypeItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(MoleculelistType.class)) {
-			case QsarPackage.MOLECULELIST_TYPE__MOLECULE:
+			case QsarPackage.MOLECULELIST_TYPE__MOLECULE_RESOURCE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -167,8 +167,8 @@ public class MoleculelistTypeItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(QsarPackage.Literals.MOLECULELIST_TYPE__MOLECULE,
-				 QsarFactory.eINSTANCE.createMoleculeType()));
+				(QsarPackage.Literals.MOLECULELIST_TYPE__MOLECULE_RESOURCE,
+				 QsarFactory.eINSTANCE.createMoleculeResourceType()));
 	}
 
 	/**

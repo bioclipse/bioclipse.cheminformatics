@@ -4,12 +4,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.bioclipse.qsar.DescriptorType;
 import net.bioclipse.qsar.DescriptorimplType;
 import net.bioclipse.qsar.DescriptorlistType;
 import net.bioclipse.qsar.DocumentRoot;
-import net.bioclipse.qsar.MoleculeType;
+import net.bioclipse.qsar.MoleculeResourceType;
 import net.bioclipse.qsar.MoleculelistType;
 import net.bioclipse.qsar.ParameterType;
 import net.bioclipse.qsar.QsarFactory;
@@ -24,6 +26,8 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.xmi.XMLResource;
+import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMLResourceFactoryImpl;
 import org.eclipse.emf.edit.command.AddCommand;
 import org.eclipse.emf.edit.command.SetCommand;
@@ -54,12 +58,24 @@ public class TestWrite {
 		//Add QSAR root elements
 		//======================
 		DescriptorimplType cdk=QsarFactory.eINSTANCE.createDescriptorimplType();
-		cdk.setId("net.sf.cdk");
-		cdk.setName("Chemistry Development Kit");
+		cdk.setId("cdk");
 		cdk.setNamespace("http://cdk.sourceforge.net");
-		cdk.setJar("cdk20080808.jar");
-		cmd=AddCommand.create(editingDomain, qsar, QsarPackage.Literals.QSAR_TYPE__DESCRIPTORIMPL, cdk);
-		cCmd.append(cmd);
+		cdk.setVendor("Chemistry Development Kit");
+		cdk.setName("Chemistry Development Kit");
+		cdk.setVersion("1.1.0.20080808");
+		cdk.setType("jar");
+		cdk.setJar("cdk.jar");
+		cmd=SetCommand.create(editingDomain, root, QsarPackage.Literals.QSAR_TYPE__DESCRIPTORIMPL, cdk);
+
+		DescriptorimplType dragon=QsarFactory.eINSTANCE.createDescriptorimplType();
+		dragon.setId("dragon");
+		dragon.setNamespace("http://dragon.com");
+		dragon.setVendor("MOLMOLMOL");
+		dragon.setName("Dragon descriptor");
+		dragon.setVersion("5.14");
+		cdk.setType("application");
+		dragon.setPath("/opt/dragon/bin/dragon");
+		cmd=SetCommand.create(editingDomain, root, QsarPackage.Literals.QSAR_TYPE__DESCRIPTORIMPL, dragon);
 
 		MoleculelistType mollist=QsarFactory.eINSTANCE.createMoleculelistType();
 		cmd=SetCommand.create(editingDomain, qsar, QsarPackage.Literals.QSAR_TYPE__MOLECULELIST, mollist);
@@ -71,25 +87,32 @@ public class TestWrite {
 
 		//Add molecules
 		//======================
-		MoleculeType mol1=QsarFactory.eINSTANCE.createMoleculeType();
+		MoleculeResourceType mol1=QsarFactory.eINSTANCE.createMoleculeResourceType();
 		mol1.setId("molecule01");
 		mol1.setName("polycarpol");
 		mol1.setPath("/path/to/polycarpol.cml");
-		cmd=AddCommand.create(editingDomain, mollist, QsarPackage.Literals.MOLECULELIST_TYPE__MOLECULE, mol1);
+		cmd=AddCommand.create(editingDomain, mollist, QsarPackage.Literals.MOLECULELIST_TYPE__MOLECULE_RESOURCE, mol1);
 		cCmd.append(cmd);
 
-		MoleculeType mol2=QsarFactory.eINSTANCE.createMoleculeType();
+		MoleculeResourceType mol2=QsarFactory.eINSTANCE.createMoleculeResourceType();
 		mol2.setId("molecule02");
 		mol2.setName("furosemide");
 		mol2.setSmiles("NS(=O)(=O)c1cc(C(O)=O)c(NCc2ccco2)cc1Cl");
-		cmd=AddCommand.create(editingDomain, mollist, QsarPackage.Literals.MOLECULELIST_TYPE__MOLECULE, mol2);
+		cmd=AddCommand.create(editingDomain, mollist, QsarPackage.Literals.MOLECULELIST_TYPE__MOLECULE_RESOURCE, mol2);
 		cCmd.append(cmd);
 
-		MoleculeType mol3=QsarFactory.eINSTANCE.createMoleculeType();
+		MoleculeResourceType mol3=QsarFactory.eINSTANCE.createMoleculeResourceType();
 		mol3.setId("molecule03");
 		mol3.setName("reserpine");
 		mol3.setUrl("http://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=5770&disopt=SaveXML");
-		cmd=AddCommand.create(editingDomain, mollist, QsarPackage.Literals.MOLECULELIST_TYPE__MOLECULE, mol3);
+		cmd=AddCommand.create(editingDomain, mollist, QsarPackage.Literals.MOLECULELIST_TYPE__MOLECULE_RESOURCE, mol3);
+		cCmd.append(cmd);
+
+		MoleculeResourceType mol4=QsarFactory.eINSTANCE.createMoleculeResourceType();
+		mol4.setId("molecule04");
+		mol4.setName("molcollection");
+		mol4.setPath("/path/to/molcollection.sdf");
+		cmd=AddCommand.create(editingDomain, mollist, QsarPackage.Literals.MOLECULELIST_TYPE__MOLECULE_RESOURCE, mol4);
 		cCmd.append(cmd);
 
 		//Add descriptors with parameters
@@ -102,9 +125,9 @@ public class TestWrite {
 		cmd=AddCommand.create(editingDomain, desclist, QsarPackage.Literals.DESCRIPTORLIST_TYPE__DESCRIPTOR, desc1);
 		cCmd.append(cmd);
 		//Desc1 params
-		DescriptorimplType desc1impl=QsarFactory.eINSTANCE.createDescriptorimplType();
-		desc1impl.setId(cdk.getId());
-		cmd=SetCommand.create(editingDomain, desc1, QsarPackage.Literals.DESCRIPTOR_TYPE__DESCRIPTORIMPL, desc1impl);
+		DescriptorimplType impl1=QsarFactory.eINSTANCE.createDescriptorimplType();
+		cdk.setId(cdk.getId());
+		cmd=SetCommand.create(editingDomain, desc1, QsarPackage.Literals.DESCRIPTOR_TYPE__DESCRIPTORIMPL, impl1);
 		cCmd.append(cmd);
 		ParameterType param1=QsarFactory.eINSTANCE.createParameterType();
 		param1.setKey("checkAromaticity");
@@ -126,7 +149,8 @@ public class TestWrite {
 		cCmd.append(cmd);
 		//Desc2 params
 		DescriptorimplType desc2impl=QsarFactory.eINSTANCE.createDescriptorimplType();
-		desc2impl.setId("http://rguha.ath.cx/~rguha/cicc/desc/descriptors/org.openscience.cdk.qsar.descriptors.molecular.XLogPDescriptor");
+		desc2impl.setId("org.openscience.cdk.qsar.descriptors.molecular.XLogPDescriptor");
+		desc2impl.setType("soap");
 		desc2impl.setUrl("http://rguha.ath.cx/~rguha/cicc/desc/descriptors/org.openscience.cdk.qsar.descriptors.molecular.XLogPDescriptor");
 		cmd=SetCommand.create(editingDomain, desc2, QsarPackage.Literals.DESCRIPTOR_TYPE__DESCRIPTORIMPL, desc2impl);
 		cCmd.append(cmd);
@@ -136,9 +160,27 @@ public class TestWrite {
 		cmd=AddCommand.create(editingDomain, desc2, QsarPackage.Literals.DESCRIPTOR_TYPE__PARAMETER, param3);
 		cCmd.append(cmd);
 
+		//Desc2
+		DescriptorType desc3=QsarFactory.eINSTANCE.createDescriptorType();
+		desc3.setId("http://www.blueobelisk.org/ontologies/chemoinformatics-algorithms/#atomCount");
+		desc3.setName("DragonDesc1");
+		desc3.setNamespace("http://www.blueobelisk.org");
+		cmd=AddCommand.create(editingDomain, desclist, QsarPackage.Literals.DESCRIPTORLIST_TYPE__DESCRIPTOR, desc3);
+		cCmd.append(cmd);
+		//Desc2 params
+		DescriptorimplType desc3impl=QsarFactory.eINSTANCE.createDescriptorimplType();
+		desc3impl.setId(dragon.getId());
+		cmd=SetCommand.create(editingDomain, desc3, QsarPackage.Literals.DESCRIPTOR_TYPE__DESCRIPTORIMPL, desc3impl);
+		cCmd.append(cmd);
+
 		//Execute the CompoundCommand
 		editingDomain.getCommandStack().execute(cCmd); 		
 
+		for (MoleculeResourceType mol : qsar.getMoleculelist().getMoleculeResource()){
+			System.out.println("mol: " + mol.getName());
+		}
+		
+		
 		//Debug out
 		serializeToSTDOUT(root);
 		
@@ -148,17 +190,22 @@ public class TestWrite {
 		ResourceSet resourceSet=new ResourceSetImpl();
 		URI fileURI;
 		try {
-			fileURI = URI.createFileURI(new File("myQSAR.xml").getAbsolutePath());
-			Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("xml", new XMLResourceFactoryImpl());
+			fileURI = URI.createFileURI(new File("myQSAR2.xml").getAbsolutePath());
+//			Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("xml", new XMLResourceFactoryImpl());
+			Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("xml", new EcoreResourceFactoryImpl());
 
 			Resource resource=resourceSet.createResource(fileURI);
 			resource.getContents().add(root);
-			resource.save(Collections.EMPTY_MAP);
+
+			Map opts=new HashMap();
+			opts.put(XMLResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
+			
+			//Save to file
+			resource.save(opts);
 
 			//Serialize to byte[] and print to sysout
 			ByteArrayOutputStream os=new ByteArrayOutputStream();
-			resource.save(os, Collections.EMPTY_MAP);
-
+			resource.save(os, opts);
 			System.out.println(new String(os.toByteArray()));
 
 			System.out.println("end");

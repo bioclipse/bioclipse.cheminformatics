@@ -205,26 +205,26 @@ public class QsarItemProviderAdapterFactory extends QsarAdapterFactory implement
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link net.bioclipse.qsar.MoleculeType} instances.
+	 * This keeps track of the one adapter used for all {@link net.bioclipse.qsar.MoleculeResourceType} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected MoleculeTypeItemProvider moleculeTypeItemProvider;
+	protected MoleculeResourceTypeItemProvider moleculeResourceTypeItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link net.bioclipse.qsar.MoleculeType}.
+	 * This creates an adapter for a {@link net.bioclipse.qsar.MoleculeResourceType}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createMoleculeTypeAdapter() {
-		if (moleculeTypeItemProvider == null) {
-			moleculeTypeItemProvider = new MoleculeTypeItemProvider(this);
+	public Adapter createMoleculeResourceTypeAdapter() {
+		if (moleculeResourceTypeItemProvider == null) {
+			moleculeResourceTypeItemProvider = new MoleculeResourceTypeItemProvider(this);
 		}
 
-		return moleculeTypeItemProvider;
+		return moleculeResourceTypeItemProvider;
 	}
 
 	/**
@@ -377,7 +377,7 @@ public class QsarItemProviderAdapterFactory extends QsarAdapterFactory implement
 		if (descriptorTypeItemProvider != null) descriptorTypeItemProvider.dispose();
 		if (documentRootItemProvider != null) documentRootItemProvider.dispose();
 		if (moleculelistTypeItemProvider != null) moleculelistTypeItemProvider.dispose();
-		if (moleculeTypeItemProvider != null) moleculeTypeItemProvider.dispose();
+		if (moleculeResourceTypeItemProvider != null) moleculeResourceTypeItemProvider.dispose();
 		if (parameterTypeItemProvider != null) parameterTypeItemProvider.dispose();
 		if (qsarTypeItemProvider != null) qsarTypeItemProvider.dispose();
 	}

@@ -17,7 +17,7 @@ package net.bioclipse.qsar.provider;
 import java.util.Collection;
 import java.util.List;
 
-import net.bioclipse.qsar.MoleculeType;
+import net.bioclipse.qsar.MoleculeResourceType;
 import net.bioclipse.qsar.QsarPackage;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -37,12 +37,12 @@ import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link net.bioclipse.qsar.MoleculeType} object.
+ * This is the item provider adapter for a {@link net.bioclipse.qsar.MoleculeResourceType} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class MoleculeTypeItemProvider
+public class MoleculeResourceTypeItemProvider
 	extends ItemProviderAdapter
 	implements
 		IEditingDomainItemProvider,
@@ -63,7 +63,7 @@ public class MoleculeTypeItemProvider
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public MoleculeTypeItemProvider(AdapterFactory adapterFactory) {
+	public MoleculeResourceTypeItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -83,6 +83,7 @@ public class MoleculeTypeItemProvider
 			addSmilesPropertyDescriptor(object);
 			addIdPropertyDescriptor(object);
 			addNamePropertyDescriptor(object);
+			addNamespacePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -98,9 +99,9 @@ public class MoleculeTypeItemProvider
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_MoleculeType_url_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_MoleculeType_url_feature", "_UI_MoleculeType_type"),
-				 QsarPackage.Literals.MOLECULE_TYPE__URL,
+				 getString("_UI_MoleculeResourceType_url_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_MoleculeResourceType_url_feature", "_UI_MoleculeResourceType_type"),
+				 QsarPackage.Literals.MOLECULE_RESOURCE_TYPE__URL,
 				 true,
 				 false,
 				 false,
@@ -120,9 +121,9 @@ public class MoleculeTypeItemProvider
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_MoleculeType_path_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_MoleculeType_path_feature", "_UI_MoleculeType_type"),
-				 QsarPackage.Literals.MOLECULE_TYPE__PATH,
+				 getString("_UI_MoleculeResourceType_path_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_MoleculeResourceType_path_feature", "_UI_MoleculeResourceType_type"),
+				 QsarPackage.Literals.MOLECULE_RESOURCE_TYPE__PATH,
 				 true,
 				 false,
 				 false,
@@ -142,9 +143,9 @@ public class MoleculeTypeItemProvider
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_MoleculeType_smiles_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_MoleculeType_smiles_feature", "_UI_MoleculeType_type"),
-				 QsarPackage.Literals.MOLECULE_TYPE__SMILES,
+				 getString("_UI_MoleculeResourceType_smiles_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_MoleculeResourceType_smiles_feature", "_UI_MoleculeResourceType_type"),
+				 QsarPackage.Literals.MOLECULE_RESOURCE_TYPE__SMILES,
 				 true,
 				 false,
 				 false,
@@ -164,9 +165,9 @@ public class MoleculeTypeItemProvider
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_MoleculeType_id_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_MoleculeType_id_feature", "_UI_MoleculeType_type"),
-				 QsarPackage.Literals.MOLECULE_TYPE__ID,
+				 getString("_UI_MoleculeResourceType_id_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_MoleculeResourceType_id_feature", "_UI_MoleculeResourceType_type"),
+				 QsarPackage.Literals.MOLECULE_RESOURCE_TYPE__ID,
 				 true,
 				 false,
 				 false,
@@ -186,9 +187,9 @@ public class MoleculeTypeItemProvider
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_MoleculeType_name_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_MoleculeType_name_feature", "_UI_MoleculeType_type"),
-				 QsarPackage.Literals.MOLECULE_TYPE__NAME,
+				 getString("_UI_MoleculeResourceType_name_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_MoleculeResourceType_name_feature", "_UI_MoleculeResourceType_type"),
+				 QsarPackage.Literals.MOLECULE_RESOURCE_TYPE__NAME,
 				 true,
 				 false,
 				 false,
@@ -198,14 +199,36 @@ public class MoleculeTypeItemProvider
 	}
 
 	/**
-	 * This returns MoleculeType.gif.
+	 * This adds a property descriptor for the Namespace feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addNamespacePropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_MoleculeResourceType_namespace_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_MoleculeResourceType_namespace_feature", "_UI_MoleculeResourceType_type"),
+				 QsarPackage.Literals.MOLECULE_RESOURCE_TYPE__NAMESPACE,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This returns MoleculeResourceType.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/MoleculeType"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/MoleculeResourceType"));
 	}
 
 	/**
@@ -216,10 +239,10 @@ public class MoleculeTypeItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((MoleculeType)object).getName();
+		String label = ((MoleculeResourceType)object).getName();
 		return label == null || label.length() == 0 ?
-			getString("_UI_MoleculeType_type") :
-			getString("_UI_MoleculeType_type") + " " + label;
+			getString("_UI_MoleculeResourceType_type") :
+			getString("_UI_MoleculeResourceType_type") + " " + label;
 	}
 
 	/**
@@ -233,12 +256,13 @@ public class MoleculeTypeItemProvider
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(MoleculeType.class)) {
-			case QsarPackage.MOLECULE_TYPE__URL:
-			case QsarPackage.MOLECULE_TYPE__PATH:
-			case QsarPackage.MOLECULE_TYPE__SMILES:
-			case QsarPackage.MOLECULE_TYPE__ID:
-			case QsarPackage.MOLECULE_TYPE__NAME:
+		switch (notification.getFeatureID(MoleculeResourceType.class)) {
+			case QsarPackage.MOLECULE_RESOURCE_TYPE__URL:
+			case QsarPackage.MOLECULE_RESOURCE_TYPE__PATH:
+			case QsarPackage.MOLECULE_RESOURCE_TYPE__SMILES:
+			case QsarPackage.MOLECULE_RESOURCE_TYPE__ID:
+			case QsarPackage.MOLECULE_RESOURCE_TYPE__NAME:
+			case QsarPackage.MOLECULE_RESOURCE_TYPE__NAMESPACE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}
