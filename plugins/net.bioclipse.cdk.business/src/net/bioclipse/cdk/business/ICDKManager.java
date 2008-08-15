@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
@@ -364,4 +365,17 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @Recorded
     public int numberOfEntriesInSDF( IFile file );
+
+    public List<SDFElement> loadSDFElements( IFile file,
+                                            IProgressMonitor monitor ) 
+                            throws CoreException, IOException;
+    
+    /**
+     * @param sdfFile
+     * @return
+     * @throws CoreException 
+     * @throws IOException 
+     */
+    public List<SDFElement> loadSDFElements( IFile sdfFile ) 
+                            throws CoreException, IOException;
 }

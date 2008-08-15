@@ -25,12 +25,14 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.swing.JOptionPane;
 
 import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.BioList;
@@ -738,5 +740,91 @@ public class CDKManager implements ICDKManager {
 
     public int numberOfEntriesInSDF( IFile file ) {
         return numberOfEntriesInSDF( file, null );
+    }
+
+    public List<SDFElement> loadSDFElements( IFile sdfFile, 
+                                             IProgressMonitor monitor ) 
+                            throws CoreException, IOException {
+
+        monitor.beginTask( "", IProgressMonitor.UNKNOWN );
+        try {
+            List<SDFElement> result = new ArrayList<SDFElement>();
+            
+            InputStream input = sdfFile.getContents();
+            
+            int c = 0;
+            long position = -1;
+            int dollars = 0;
+            boolean readingName = false;
+            int newlinesFoundWhileReadingName = 0;
+            
+            StringBuffer name = new StringBuffer();
+            long moleculeStartsAt = 0;
+            boolean readingFirstName = true;
+            
+            while ( c != -1 ) {
+                c = input.read();
+                position++;
+                if ( c == '$' ) {
+                    dollars++;
+                }
+                else {
+                    dollars = 0;
+                }
+                if ( dollars == 4 ) {
+                    readingName = true;
+                    moleculeStartsAt = position;
+                }
+                if ( readingFirstName ) {
+                    if (c == '\n') {
+                        newlinesFoundWhileReadingName++;
+                    }
+                    if ( newlinesFoundWhileReadingName == 1 ) {
+                        result.add( new SDFElement( sdfFile, 
+                                                    name.toString(), 
+                                                    0 ) );
+                        readingFirstName = false;
+                        newlinesFoundWhileReadingName = 0;
+                        name = new StringBuffer();
+                    }
+                    else {
+                        if ( c != '\n' ) {
+                            name.append( (char)c );
+                        }
+                    }
+                }
+                if (readingName) {
+                    if (c == '\n') {
+                        newlinesFoundWhileReadingName++;
+                    }
+                    if ( newlinesFoundWhileReadingName == 2 ) {
+                        result.add( new SDFElement( sdfFile, 
+                                                    //remove $ from name
+                                                    name.substring(1), 
+                                                    moleculeStartsAt ) );
+                        readingName = false;
+                        newlinesFoundWhileReadingName = 0;
+                        name = new StringBuffer();
+                    }
+                    else {
+                        if ( c != '\n' ) {
+                            name.append( (char)c );
+                        }
+                    }
+                }
+                monitor.worked( 1 );
+            }
+            input.close();
+            return result;
+        }
+        finally {
+            monitor.done();
+        }
+        
+    }
+
+    public List<SDFElement> loadSDFElements( IFile sdfFile ) 
+                            throws CoreException, IOException {
+        return loadSDFElements( sdfFile, new NullProgressMonitor() );
     }
 }
