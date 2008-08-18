@@ -17,9 +17,9 @@ package net.bioclipse.qsar.provider;
 import java.util.Collection;
 import java.util.List;
 
+import net.bioclipse.qsar.PreprocessingType;
 import net.bioclipse.qsar.QsarFactory;
 import net.bioclipse.qsar.QsarPackage;
-import net.bioclipse.qsar.QsarType;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
@@ -28,22 +28,24 @@ import org.eclipse.emf.common.util.ResourceLocator;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
+import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link net.bioclipse.qsar.QsarType} object.
+ * This is the item provider adapter for a {@link net.bioclipse.qsar.PreprocessingType} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class QsarTypeItemProvider
+public class PreprocessingTypeItemProvider
 	extends ItemProviderAdapter
 	implements
 		IEditingDomainItemProvider,
@@ -64,7 +66,7 @@ public class QsarTypeItemProvider
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public QsarTypeItemProvider(AdapterFactory adapterFactory) {
+	public PreprocessingTypeItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -95,10 +97,7 @@ public class QsarTypeItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(QsarPackage.Literals.QSAR_TYPE__MOLECULELIST);
-			childrenFeatures.add(QsarPackage.Literals.QSAR_TYPE__DESCRIPTORLIST);
-			childrenFeatures.add(QsarPackage.Literals.QSAR_TYPE__DESCRIPTORIMPL);
-			childrenFeatures.add(QsarPackage.Literals.QSAR_TYPE__PREPROCESSING);
+			childrenFeatures.add(QsarPackage.Literals.PREPROCESSING_TYPE__PREPROCESSING_STEP);
 		}
 		return childrenFeatures;
 	}
@@ -117,14 +116,14 @@ public class QsarTypeItemProvider
 	}
 
 	/**
-	 * This returns QsarType.gif.
+	 * This returns PreprocessingType.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/QsarType"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/PreprocessingType"));
 	}
 
 	/**
@@ -135,7 +134,7 @@ public class QsarTypeItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		return getString("_UI_QsarType_type");
+		return getString("_UI_PreprocessingType_type");
 	}
 
 	/**
@@ -149,11 +148,8 @@ public class QsarTypeItemProvider
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(QsarType.class)) {
-			case QsarPackage.QSAR_TYPE__MOLECULELIST:
-			case QsarPackage.QSAR_TYPE__DESCRIPTORLIST:
-			case QsarPackage.QSAR_TYPE__DESCRIPTORIMPL:
-			case QsarPackage.QSAR_TYPE__PREPROCESSING:
+		switch (notification.getFeatureID(PreprocessingType.class)) {
+			case QsarPackage.PREPROCESSING_TYPE__PREPROCESSING_STEP:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -173,23 +169,8 @@ public class QsarTypeItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(QsarPackage.Literals.QSAR_TYPE__MOLECULELIST,
-				 QsarFactory.eINSTANCE.createMoleculelistType()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(QsarPackage.Literals.QSAR_TYPE__DESCRIPTORLIST,
-				 QsarFactory.eINSTANCE.createDescriptorlistType()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(QsarPackage.Literals.QSAR_TYPE__DESCRIPTORIMPL,
-				 QsarFactory.eINSTANCE.createDescriptorimplType()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(QsarPackage.Literals.QSAR_TYPE__PREPROCESSING,
-				 QsarFactory.eINSTANCE.createPreprocessingType()));
+				(QsarPackage.Literals.PREPROCESSING_TYPE__PREPROCESSING_STEP,
+				 QsarFactory.eINSTANCE.createPreprocessingStepType()));
 	}
 
 	/**

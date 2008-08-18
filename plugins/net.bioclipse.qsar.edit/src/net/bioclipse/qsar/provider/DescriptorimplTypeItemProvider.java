@@ -79,13 +79,9 @@ public class DescriptorimplTypeItemProvider
 			super.getPropertyDescriptors(object);
 
 			addIdPropertyDescriptor(object);
-			addJarPropertyDescriptor(object);
 			addNamePropertyDescriptor(object);
 			addNamespacePropertyDescriptor(object);
-			addPathPropertyDescriptor(object);
 			addReferencePropertyDescriptor(object);
-			addTypePropertyDescriptor(object);
-			addUrlPropertyDescriptor(object);
 			addVendorPropertyDescriptor(object);
 			addVersionPropertyDescriptor(object);
 		}
@@ -106,28 +102,6 @@ public class DescriptorimplTypeItemProvider
 				 getString("_UI_DescriptorimplType_id_feature"),
 				 getString("_UI_PropertyDescriptor_description", "_UI_DescriptorimplType_id_feature", "_UI_DescriptorimplType_type"),
 				 QsarPackage.Literals.DESCRIPTORIMPL_TYPE__ID,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Jar feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addJarPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_DescriptorimplType_jar_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_DescriptorimplType_jar_feature", "_UI_DescriptorimplType_type"),
-				 QsarPackage.Literals.DESCRIPTORIMPL_TYPE__JAR,
 				 true,
 				 false,
 				 false,
@@ -181,28 +155,6 @@ public class DescriptorimplTypeItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Path feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addPathPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_DescriptorimplType_path_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_DescriptorimplType_path_feature", "_UI_DescriptorimplType_type"),
-				 QsarPackage.Literals.DESCRIPTORIMPL_TYPE__PATH,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
 	 * This adds a property descriptor for the Reference feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -216,50 +168,6 @@ public class DescriptorimplTypeItemProvider
 				 getString("_UI_DescriptorimplType_reference_feature"),
 				 getString("_UI_PropertyDescriptor_description", "_UI_DescriptorimplType_reference_feature", "_UI_DescriptorimplType_type"),
 				 QsarPackage.Literals.DESCRIPTORIMPL_TYPE__REFERENCE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Type feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addTypePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_DescriptorimplType_type_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_DescriptorimplType_type_feature", "_UI_DescriptorimplType_type"),
-				 QsarPackage.Literals.DESCRIPTORIMPL_TYPE__TYPE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Url feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addUrlPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_DescriptorimplType_url_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_DescriptorimplType_url_feature", "_UI_DescriptorimplType_type"),
-				 QsarPackage.Literals.DESCRIPTORIMPL_TYPE__URL,
 				 true,
 				 false,
 				 false,
@@ -350,13 +258,9 @@ public class DescriptorimplTypeItemProvider
 
 		switch (notification.getFeatureID(DescriptorimplType.class)) {
 			case QsarPackage.DESCRIPTORIMPL_TYPE__ID:
-			case QsarPackage.DESCRIPTORIMPL_TYPE__JAR:
 			case QsarPackage.DESCRIPTORIMPL_TYPE__NAME:
 			case QsarPackage.DESCRIPTORIMPL_TYPE__NAMESPACE:
-			case QsarPackage.DESCRIPTORIMPL_TYPE__PATH:
 			case QsarPackage.DESCRIPTORIMPL_TYPE__REFERENCE:
-			case QsarPackage.DESCRIPTORIMPL_TYPE__TYPE:
-			case QsarPackage.DESCRIPTORIMPL_TYPE__URL:
 			case QsarPackage.DESCRIPTORIMPL_TYPE__VENDOR:
 			case QsarPackage.DESCRIPTORIMPL_TYPE__VERSION:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));

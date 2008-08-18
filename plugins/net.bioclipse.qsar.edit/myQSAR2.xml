@@ -3,12 +3,9 @@
     xmlns:xmi="http://www.omg.org/XMI" xmlns:qsar="http://www.bioclipse.net/qsar">
   <qsar>
     <moleculelist>
-      <moleculeResource path="/path/to/polycarpol.cml" id="molecule01" name="polycarpol"/>
-      <moleculeResource smiles="NS(=O)(=O)c1cc(C(O)=O)c(NCc2ccco2)cc1Cl" id="molecule02"
-          name="furosemide"/>
-      <moleculeResource url="http://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=5770&amp;disopt=SaveXML"
-          id="molecule03" name="reserpine"/>
-      <moleculeResource path="/path/to/molcollection.sdf" id="molecule04" name="molcollection"/>
+      <moleculeResource file="smallCollection.sdf" id="molecule01" name="polycarpol"/>
+      <moleculeResource id="molecule02" name="smallCollection"/>
+      <moleculeResource id="molecule03" name="reserpine" url="http://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=5770&amp;disopt=SaveXML"/>
     </moleculelist>
     <descriptorlist>
       <descriptor id="http://www.blueobelisk.org/ontologies/chemoinformatics-algorithms/#xlogP"
@@ -21,12 +18,22 @@
           name="Atom Count" namespace="http://www.blueobelisk.org">
         <parameter key="elementName" value="C"/>
         <descriptorimpl id="org.openscience.cdk.qsar.descriptors.molecular.XLogPDescriptor"
-            type="soap" url="http://rguha.ath.cx/~rguha/cicc/desc/descriptors/org.openscience.cdk.qsar.descriptors.molecular.XLogPDescriptor"/>
+            namespace="http://rguha.ath.cx/~rguha/cicc/desc/descriptors/"/>
       </descriptor>
       <descriptor id="http://www.blueobelisk.org/ontologies/chemoinformatics-algorithms/#atomCount"
           name="DragonDesc1" namespace="http://www.blueobelisk.org">
         <descriptorimpl id="dragon"/>
       </descriptor>
     </descriptorlist>
+    <descriptorimpl id="cdk" name="Chemistry Development Kit" namespace="http://cdk.sourceforge.net"
+        vendor="Chemistry Development Kit" version="1.1.0.20080808"/>
+    <descriptorimpl id="dragon" name="Dragon descriptor" namespace="http://dragon.com"
+        vendor="MOLMOLMOL" version="5.14"/>
+    <preprocessing>
+      <preprocessingStep id="Smi23d" name="Generate 3D coordinates with smi23d" namespace="http://www.chembiogrid.org/cheminfo/smi23d/"
+          order="1"/>
+      <preprocessingStep id="org.openscience.cdk.atomtype.sybyl" name="Sybyl Atom Types"
+          namespace="http://cdk.sf.net" order="2"/>
+    </preprocessing>
   </qsar>
 </qsar:DocumentRoot>

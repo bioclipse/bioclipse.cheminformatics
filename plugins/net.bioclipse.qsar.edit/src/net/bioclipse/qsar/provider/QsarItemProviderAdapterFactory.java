@@ -251,6 +251,52 @@ public class QsarItemProviderAdapterFactory extends QsarAdapterFactory implement
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link net.bioclipse.qsar.PreprocessingStepType} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected PreprocessingStepTypeItemProvider preprocessingStepTypeItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link net.bioclipse.qsar.PreprocessingStepType}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createPreprocessingStepTypeAdapter() {
+		if (preprocessingStepTypeItemProvider == null) {
+			preprocessingStepTypeItemProvider = new PreprocessingStepTypeItemProvider(this);
+		}
+
+		return preprocessingStepTypeItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link net.bioclipse.qsar.PreprocessingType} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected PreprocessingTypeItemProvider preprocessingTypeItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link net.bioclipse.qsar.PreprocessingType}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createPreprocessingTypeAdapter() {
+		if (preprocessingTypeItemProvider == null) {
+			preprocessingTypeItemProvider = new PreprocessingTypeItemProvider(this);
+		}
+
+		return preprocessingTypeItemProvider;
+	}
+
+	/**
 	 * This keeps track of the one adapter used for all {@link net.bioclipse.qsar.QsarType} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -379,6 +425,8 @@ public class QsarItemProviderAdapterFactory extends QsarAdapterFactory implement
 		if (moleculelistTypeItemProvider != null) moleculelistTypeItemProvider.dispose();
 		if (moleculeResourceTypeItemProvider != null) moleculeResourceTypeItemProvider.dispose();
 		if (parameterTypeItemProvider != null) parameterTypeItemProvider.dispose();
+		if (preprocessingStepTypeItemProvider != null) preprocessingStepTypeItemProvider.dispose();
+		if (preprocessingTypeItemProvider != null) preprocessingTypeItemProvider.dispose();
 		if (qsarTypeItemProvider != null) qsarTypeItemProvider.dispose();
 	}
 
