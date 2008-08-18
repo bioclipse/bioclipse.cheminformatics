@@ -115,8 +115,8 @@ public class MoleculeContentProvider implements ITreeContentProvider,
 
     public boolean hasChildren(Object element) {
         if ( element instanceof IFile ) {
-            return MOLECULE_EXT.equals(
-                ( (IFile) element ).getFileExtension() );
+            return MOLECULE_EXT.contains(
+                ( (IFile) element ).getFileExtension().toUpperCase() );
         }
         if ( element instanceof MoleculesFromSDF ) {
             return contentManager.mayHaveChildren( element );
