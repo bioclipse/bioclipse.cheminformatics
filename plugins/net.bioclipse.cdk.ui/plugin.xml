@@ -31,7 +31,7 @@
       </category>
    </extension>
 
-   <!--extension
+   <extension
          point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent
             contentProvider="net.bioclipse.cdk.ui.views.MoleculeContentProvider"
@@ -39,25 +39,25 @@
             labelProvider="net.bioclipse.cdk.ui.views.MoleculeLabelProvider"
             name="Molecule Content">
          <triggerPoints>
+         <or>
          <and>
             <instanceof value="org.eclipse.core.resources.IResource"/>
             <or>
             <test
             	forcePluginActivation="true"
             	property="org.eclipse.core.resources.extension"
-            	value="pdb"/>
-            <test
-            	forcePluginActivation="true"
-            	property="org.eclipse.core.resources.extension"
             	value="sdf"/>
             </or>
          </and>
+         <instanceof value="net.bioclipse.cdk.ui.model.MoleculesFromSDF" />
+         <instanceof value="net.bioclipse.cdk.domain.SDFElement" />
+         </or>
          </triggerPoints>
       </navigatorContent>
-   </extension-->
+   </extension>
 
 <!-- Add MoleculeContent to expand molecules with CDK -->
-<!--extension
+<extension
       point="org.eclipse.ui.navigator.viewer">
       <viewerContentBinding
             viewerId="net.bioclipse.navigator">
@@ -67,7 +67,7 @@
             </contentExtension>
             </includes>
       </viewerContentBinding>
-</extension-->
+</extension>
 
 <!-- Contribute an Object Contribution to delete individual properties in the view -->
 

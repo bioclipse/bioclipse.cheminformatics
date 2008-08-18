@@ -8,6 +8,7 @@
  * Contributors:
  *     Ola Spjuth
  *     Stefan Kuhn
+ *     Jonathan Alvarsson
  *
  ******************************************************************************/
 package net.bioclipse.cdk.business;
@@ -28,6 +29,7 @@ import net.bioclipse.core.domain.IMolecule;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ui.progress.IElementCollector;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IChemModel;
 
@@ -365,17 +367,16 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @Recorded
     public int numberOfEntriesInSDF( IFile file );
-
-    public List<SDFElement> loadSDFElements( IFile file,
-                                            IProgressMonitor monitor ) 
-                            throws CoreException, IOException;
     
     /**
      * @param sdfFile
-     * @return
+     * @param collector
+     * @param monitor
      * @throws CoreException 
      * @throws IOException 
      */
-    public List<SDFElement> loadSDFElements( IFile sdfFile ) 
-                            throws CoreException, IOException;
+    public void collectSDFElements( IFile sdfFile, 
+                                    IElementCollector collector,
+                                    IProgressMonitor monitor );
+
 }

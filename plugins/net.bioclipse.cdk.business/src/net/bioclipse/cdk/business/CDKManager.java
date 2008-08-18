@@ -39,7 +39,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.ui.progress.IElementCollector;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
@@ -736,16 +738,19 @@ public class CDKManager implements ICDKManager {
         return numberOfEntriesInSDF( file, null );
     }
 
-    public List<SDFElement> loadSDFElements( IFile sdfFile, 
-                                             IProgressMonitor monitor ) 
-                            throws CoreException, IOException {
+    public void collectSDFElements( IFile sdfFile, 
+                                    IElementCollector collector,
+                                    IProgressMonitor monitor ) {
 
-        monitor.beginTask( "", IProgressMonitor.UNKNOWN );
+        InputStream input = null;
         try {
-            List<SDFElement> result = new ArrayList<SDFElement>();
-            
-            InputStream input = sdfFile.getContents();
-            
+            input = sdfFile.getContents();
+        } 
+        catch ( CoreException e ) {
+            logger.error( "Could not open file", e );
+        }
+        monitor.beginTask( "Reading SDF", IProgressMonitor.UNKNOWN );
+        try {
             int c = 0;
             long position = -1;
             int dollars = 0;
@@ -757,6 +762,9 @@ public class CDKManager implements ICDKManager {
             boolean readingFirstName = true;
             
             while ( c != -1 ) {
+                if ( monitor.isCanceled() ) {
+                    throw new OperationCanceledException();
+                }
                 c = input.read();
                 position++;
                 if ( c == '$' ) {
@@ -774,9 +782,11 @@ public class CDKManager implements ICDKManager {
                         newlinesFoundWhileReadingName++;
                     }
                     if ( newlinesFoundWhileReadingName == 1 ) {
-                        result.add( new SDFElement( sdfFile, 
+                        collector.add( new SDFElement( sdfFile, 
                                                     name.toString(), 
-                                                    0 ) );
+                                                    0 ),
+                                       monitor );
+                        monitor.worked( 1 );
                         readingFirstName = false;
                         newlinesFoundWhileReadingName = 0;
                         name = new StringBuffer();
@@ -792,10 +802,12 @@ public class CDKManager implements ICDKManager {
                         newlinesFoundWhileReadingName++;
                     }
                     if ( newlinesFoundWhileReadingName == 2 ) {
-                        result.add( new SDFElement( sdfFile, 
+                        collector.add( new SDFElement( sdfFile, 
                                                     //remove $ from name
                                                     name.substring(1), 
-                                                    moleculeStartsAt ) );
+                                                    moleculeStartsAt ),
+                                       monitor );
+                        monitor.worked( 1 );
                         readingName = false;
                         newlinesFoundWhileReadingName = 0;
                         name = new StringBuffer();
@@ -806,19 +818,22 @@ public class CDKManager implements ICDKManager {
                         }
                     }
                 }
-                monitor.worked( 1 );
             }
-            input.close();
-            return result;
+
+        } 
+        catch ( IOException e ) {
+            logger.error( "Could not read from file", e );
         }
         finally {
             monitor.done();
+            try {
+                input.close();
+            } 
+            catch ( Exception e ) {
+                logger.error( "Could not close file", e );
+            }
+            //note that we reset the list reference 
+            //to null without returning null
         }
-        
-    }
-
-    public List<SDFElement> loadSDFElements( IFile sdfFile ) 
-                            throws CoreException, IOException {
-        return loadSDFElements( sdfFile, new NullProgressMonitor() );
     }
 }

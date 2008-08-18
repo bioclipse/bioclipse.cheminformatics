@@ -7,8 +7,12 @@
  *
  * Contributors:
  *     Ola Spjuth
- *
+ *     Jonathan Alvarsson
+ *     
  ******************************************************************************/
+
+//TODO: Add support for more file formats than sdf
+
 package net.bioclipse.cdk.ui.views;
 
 import java.io.IOException;
@@ -20,7 +24,10 @@ import java.util.Map;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.domain.SDFElement;
+import net.bioclipse.cdk.ui.model.MoleculesFromSDF;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.IBioObject;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -30,100 +37,89 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.ui.progress.DeferredTreeContentManager;
 import org.openscience.cdk.interfaces.IMolecule;
 
 /**
- * This ContentProvider hooks into the CNF to list if IResource contains one
- * or many Molecules.
- * @author ola
+ * This ContentProvider hooks into the CNF to list if IResource contains 
+ * one or many Molecules.
+ * @author ola, jonalv
  *
  */
 public class MoleculeContentProvider implements ITreeContentProvider,
-IResourceChangeListener, IResourceDeltaVisitor {
+                                                IResourceChangeListener, 
+                                                IResourceDeltaVisitor {
 
-    private static final Logger logger = Logger.getLogger(MoleculeContentProvider.class);
+    private static final Logger logger 
+        = Logger.getLogger(MoleculeContentProvider.class);
 
     private static final Object[] NO_CHILDREN = new Object[0];
 
     private final List<String> MOLECULE_EXT;
 
-    private final Map<IFile, List<ICDKMolecule>> cachedModelMap;
-
-    private StructuredViewer viewer;
+    private final Map<IFile, MoleculesFromSDF> cachedModelMap;
 
     private ICDKManager cdk;
-
+    private DeferredTreeContentManager contentManager; 
 
     //Register us as listener for resource changes
+    @SuppressWarnings("serial")
     public MoleculeContentProvider() {
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
-        cachedModelMap = new HashMap<IFile, List<ICDKMolecule>>();
-        MOLECULE_EXT=new ArrayList<String>();
-        MOLECULE_EXT.add("PDB");
-        MOLECULE_EXT.add("CML");
-        MOLECULE_EXT.add("MOL");
-        MOLECULE_EXT.add("SDF");
-        MOLECULE_EXT.add("XYZ");
+        ResourcesPlugin.getWorkspace()
+                       .addResourceChangeListener( this, 
+                                                   IResourceChangeEvent
+                                                   .POST_CHANGE );
+        cachedModelMap = new HashMap<IFile, MoleculesFromSDF>();
+        
+        MOLECULE_EXT = new ArrayList<String>() {
+            { add("SDF"); }
+        };
 
-        cdk=net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
+        cdk = net.bioclipse.cdk.business.Activator
+                 .getDefault().getCDKManager();
     }
 
-
     public Object[] getChildren(Object parentElement) {
-        Object[] children = null;
-        if(parentElement instanceof IFile) {
+        if (parentElement instanceof IFile) {
             /* possible model file */
             IFile modelFile = (IFile) parentElement;
-            if(MOLECULE_EXT.contains(modelFile.getFileExtension().toUpperCase())) {
-                List<ICDKMolecule> col=cachedModelMap.get(modelFile);
-                if (col!=null){
-                    children = col.toArray(new IMolecule[0]);
-                    return children != null ? children : NO_CHILDREN;
-                }else{
-                    if (updateModel(modelFile)!=null){
-                        List<ICDKMolecule> col2=cachedModelMap.get(modelFile);
-                        if (col2!=null){
-                            children = col2.toArray();
-                            return children != null ? children : NO_CHILDREN;
-                        }
-                    }
+            if ( MOLECULE_EXT.contains( modelFile.getFileExtension()
+                                                 .toUpperCase() ) ) {
+                if ( !cachedModelMap.containsKey( modelFile ) ) {
+                    updateModel(modelFile);
                 }
+                return cachedModelMap.containsKey( modelFile ) 
+                       ? new Object[] {cachedModelMap.get( modelFile )}
+                       : NO_CHILDREN;
             }
         }
-        return children != null ? children : NO_CHILDREN;
-    }
-/*
-    public Object[] getChildren(Object parentElement) {
-        Object[] children = null;
-        if(parentElement instanceof IFile) {
-            IFile modelFile = (IFile) parentElement;
-            if(MOLECULE_EXT.contains(modelFile.getFileExtension().toUpperCase())) {
-                children = (Molecule[]) cachedModelMap.get(modelFile);
-                if(children == null && updateModel(modelFile) != null) {
-                    children = (Molecule[]) cachedModelMap.get(modelFile);
-                }
-            }
+        if (parentElement instanceof MoleculesFromSDF) {
+            contentManager.getChildren( parentElement );
         }
-        return children != null ? children : NO_CHILDREN;
+        return NO_CHILDREN;
     }
-    */
-
+        
     public Object getParent(Object element) {
-        if (element instanceof CDKMolecule) {
-            CDKMolecule mol = (CDKMolecule) element;
-            return mol.getResource();
+        if (element instanceof SDFElement) {
+            return ( (SDFElement)element ).getResource();
+        }
+        if (element instanceof MoleculesFromSDF) {
+            return ( (MoleculesFromSDF) element).getParent( element );
         }
         return null;
     }
 
     public boolean hasChildren(Object element) {
-        if (element instanceof IMolecule) {
-            return false;
-        } else if(element instanceof IFile) {
-            return MOLECULE_EXT.equals(((IFile) element).getFileExtension());
+        if ( element instanceof IFile ) {
+            return MOLECULE_EXT.equals(
+                ( (IFile) element ).getFileExtension() );
+        }
+        if ( element instanceof MoleculesFromSDF ) {
+            return contentManager.mayHaveChildren( element );
         }
         return false;
     }
@@ -137,16 +133,24 @@ IResourceChangeListener, IResourceDeltaVisitor {
      */
     public void dispose() {
         cachedModelMap.clear();
-        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        ResourcesPlugin.getWorkspace()
+                       .removeResourceChangeListener(this);
     }
 
     /**
      * When input changes, clear cache so that we will reload content later
      */
-    public void inputChanged(Viewer aViewer, Object oldInput, Object newInput) {
-        if (oldInput != null && !oldInput.equals(newInput))
+    public void inputChanged( Viewer viewer, 
+                              Object oldInput, 
+                              Object newInput ) {
+        
+        if ( oldInput != null && !oldInput.equals(newInput) ) {
             cachedModelMap.clear();
-        viewer = (StructuredViewer) aViewer;
+        }
+        if (viewer instanceof AbstractTreeViewer) {
+            contentManager = new DeferredTreeContentManager(
+                (AbstractTreeViewer) viewer );
+        }
     }
 
     /**
@@ -165,39 +169,29 @@ IResourceChangeListener, IResourceDeltaVisitor {
         return false;
     }
 
-
     /**
      * Load the model from the given file, if possible.
      * @param modelFile The IFile which contains the persisted model
      */
-    private synchronized List<ICDKMolecule> updateModel(IFile modelFile) {
+    private synchronized void updateModel(IFile modelFile) {
 
-        if(MOLECULE_EXT.contains(modelFile.getFileExtension().toUpperCase()) ) {
-            List<ICDKMolecule> model;
+        if ( MOLECULE_EXT.contains( 
+                modelFile.getFileExtension().toUpperCase() ) ) {
+            
+            MoleculesFromSDF model;
             if (modelFile.exists()) {
 
                 try {
-                    model= cdk.loadMolecules(modelFile);
-                } catch (IOException e) {
-                    return null;
-                } catch (BioclipseException e) {
-                    return null;
-                } catch ( CoreException e ) {
-                    return null;
+                    model = new MoleculesFromSDF(modelFile);
+                } 
+                catch (Exception e) {
+                    return;
                 }
-
-                if (model==null) return null;
-                System.out.println("File: " + modelFile + " contained: " + model.size() + " IMolecules");
-
                 cachedModelMap.put(modelFile, model);
-                return model;
-
-            } else {
+            } 
+            else {
                 cachedModelMap.remove(modelFile);
             }
         }
-        return null;
     }
-
-
 }
