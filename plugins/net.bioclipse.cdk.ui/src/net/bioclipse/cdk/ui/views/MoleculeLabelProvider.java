@@ -51,7 +51,7 @@ public class MoleculeLabelProvider implements ILabelProvider,
     public String getText(Object element) {
         if (element instanceof SDFElement) {
             SDFElement mol = (SDFElement) element;
-            return mol.getName();
+            return "[" +  mol.getNumber() + "] " + mol.getName();
         }
         if ( element instanceof MoleculesFromSDF ) {
             return ( (MoleculesFromSDF)element).getLabel( element );

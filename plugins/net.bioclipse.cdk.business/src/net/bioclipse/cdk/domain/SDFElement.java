@@ -26,13 +26,18 @@ public class SDFElement extends BioObject {
 
     private String name;
     private long position;
+    private int number;
     
-    public SDFElement(IFile file, String name, long position) {
+    public SDFElement(IFile file, 
+                      String name, 
+                      long position, 
+                      int number) {
 
         super();
         this.name = name;
         this.position = position;
         this.resource = file;
+        this.setNumber( number ); 
     }
 
     public String getName() {
@@ -53,5 +58,15 @@ public class SDFElement extends BioObject {
     public void setPosition( long position ) {
     
         this.position = position;
+    }
+
+    public void setNumber( int number ) {
+
+        this.number = number;
+    }
+
+    public int getNumber() {
+
+        return number;
     }
 }

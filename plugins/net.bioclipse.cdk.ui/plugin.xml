@@ -38,6 +38,9 @@
             id="net.bioclipse.cdk.ui.views.MoleculeContent"
             labelProvider="net.bioclipse.cdk.ui.views.MoleculeLabelProvider"
             name="Molecule Content">
+            <commonSorter
+                  class="net.bioclipse.cdk.ui.SDFElementSorter">
+            </commonSorter>
          <triggerPoints>
          <or>
          <and>

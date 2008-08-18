@@ -751,6 +751,7 @@ public class CDKManager implements ICDKManager {
         }
         monitor.beginTask( "Reading SDF", IProgressMonitor.UNKNOWN );
         try {
+            int moleculeNumber = 1;
             int c = 0;
             long position = -1;
             int dollars = 0;
@@ -763,6 +764,7 @@ public class CDKManager implements ICDKManager {
             
             while ( c != -1 ) {
                 if ( monitor.isCanceled() ) {
+                    monitor.done();
                     throw new OperationCanceledException();
                 }
                 c = input.read();
@@ -782,10 +784,12 @@ public class CDKManager implements ICDKManager {
                         newlinesFoundWhileReadingName++;
                     }
                     if ( newlinesFoundWhileReadingName == 1 ) {
-                        collector.add( new SDFElement( sdfFile, 
-                                                    name.toString(), 
-                                                    0 ),
-                                       monitor );
+                        collector.add( 
+                            new SDFElement( sdfFile, 
+                                            name.toString(), 
+                                            0,
+                                            moleculeNumber++ ),
+                            monitor );
                         monitor.worked( 1 );
                         readingFirstName = false;
                         newlinesFoundWhileReadingName = 0;
@@ -802,11 +806,13 @@ public class CDKManager implements ICDKManager {
                         newlinesFoundWhileReadingName++;
                     }
                     if ( newlinesFoundWhileReadingName == 2 ) {
-                        collector.add( new SDFElement( sdfFile, 
-                                                    //remove $ from name
-                                                    name.substring(1), 
-                                                    moleculeStartsAt ),
-                                       monitor );
+                        collector.add( 
+                            new SDFElement( sdfFile, 
+                                            //remove $ from name
+                                            name.substring(1), 
+                                            moleculeStartsAt,
+                                            moleculeNumber++ ),
+                            monitor );
                         monitor.worked( 1 );
                         readingName = false;
                         newlinesFoundWhileReadingName = 0;
