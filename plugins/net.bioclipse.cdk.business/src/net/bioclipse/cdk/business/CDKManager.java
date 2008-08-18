@@ -14,20 +14,13 @@
 package net.bioclipse.cdk.business;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
 import java.io.StringWriter;
-import java.io.Writer;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Scanner;
-
-import javax.swing.JOptionPane;
 
 import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
@@ -37,6 +30,7 @@ import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.BioList;
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.jobs.Job;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
@@ -49,7 +43,6 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
-import org.openscience.cdk.Molecule;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.fingerprint.FingerprinterTool;
@@ -57,11 +50,9 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
-import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.io.CDKSourceCodeWriter;
 import org.openscience.cdk.io.CMLWriter;
-import org.openscience.cdk.io.IChemObjectWriter;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.MDLRXNWriter;
 import org.openscience.cdk.io.MDLWriter;
@@ -77,7 +68,6 @@ import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
-import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 /**
  * The manager class for CDK. Contains CDK related methods.
@@ -108,6 +98,20 @@ public class CDKManager implements ICDKManager {
         return loadMolecule( ResourcePathTransformer.getInstance()
                                                     .transform( path ),
                              null );
+    }
+    
+    public ICDKMolecule loadMolecule( IFile file ) throws IOException,
+                                                          BioclipseException,
+                                                          CoreException {
+        return loadMolecule( file, null );
+    }
+
+    public ICDKMolecule loadMolecule( IFile file, 
+                                      IProgressMonitor monitor ) 
+                        throws IOException,
+                               BioclipseException,
+                               CoreException {
+        return loadMolecule( file.getContents(), monitor );
     }
 
     private ICDKMolecule loadMolecule( InputStream instream, 
@@ -204,6 +208,7 @@ public class CDKManager implements ICDKManager {
      * Load a molecules from a file. 
      * @throws CoreException 
      */
+    @Job
     public List<ICDKMolecule> loadMolecules(String path)
         throws IOException, BioclipseException, CoreException {
         
@@ -415,7 +420,7 @@ public class CDKManager implements ICDKManager {
         );
     }
 
-    class IteratingBioclipseMDLReader implements Iterator<ICDKMolecule> {
+    static class IteratingBioclipseMDLReader implements Iterator<ICDKMolecule> {
 
         IteratingMDLReader reader;
         IProgressMonitor monitor = new NullProgressMonitor();
@@ -453,6 +458,7 @@ public class CDKManager implements ICDKManager {
         }
     }
     
+    @Job
     public Iterator<ICDKMolecule> createConformerIterator( String path ) {
         return creatConformerIterator( 
             ResourcePathTransformer.getInstance().transform( path ), 
@@ -473,7 +479,7 @@ public class CDKManager implements ICDKManager {
         }
     }
 
-    class IteratingBioclipseMDLConformerReader 
+    static class IteratingBioclipseMDLConformerReader 
           implements Iterator<ICDKMolecule> {
 
         IteratingMDLConformerReader reader;
@@ -607,7 +613,8 @@ public class CDKManager implements ICDKManager {
         }
         return num;
     }
-       
+    
+    @Job
     public int numberOfEntriesInSDF( String filePath ) {
         return numberOfEntriesInSDF( ResourcePathTransformer
                                          .getInstance()
@@ -621,6 +628,7 @@ public class CDKManager implements ICDKManager {
      * @param path the full path to the file
      * @return a list of molecules that may have multiple conformers
      */
+    @Job
     public List<ICDKMolecule> loadConformers( String path ) {
         
         return loadConformers( ResourcePathTransformer.getInstance()
@@ -696,14 +704,6 @@ public class CDKManager implements ICDKManager {
     	return new CDKMolecule(ac);
     }
 
-    public ICDKMolecule loadMolecule( IFile file, 
-                                      IProgressMonitor monitor ) 
-                        throws IOException,
-                               BioclipseException,
-                               CoreException {
-        return loadMolecule( file.getContents(), monitor );
-    }
-
     public Iterator<ICDKMolecule> createMoleculeIterator( String path )
                                   throws CoreException {
         
@@ -723,12 +723,6 @@ public class CDKManager implements ICDKManager {
 
     public List<ICDKMolecule> loadConformers( IFile file ) {
         return loadConformers( file, null );
-    }
-
-    public ICDKMolecule loadMolecule( IFile file ) throws IOException,
-                                                  BioclipseException,
-                                                  CoreException {
-        return loadMolecule( file, null );
     }
 
     public List<ICDKMolecule> loadMolecules( IFile file ) 
