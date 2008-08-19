@@ -37,6 +37,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.templates.MoleculeFactory;
 
@@ -223,23 +225,32 @@ public class CDKManagerTest {
         String propaneSmiles = "CCC"; 
         
         ICDKMolecule propane  = cdk.fromSmiles( propaneSmiles  );
+        IChemModel chemmodel=propane.getAtomContainer().getBuilder().newChemModel();
+        IMoleculeSet setOfMolecules=chemmodel.getBuilder().newMoleculeSet();
+        setOfMolecules.addAtomContainer(propane.getAtomContainer());
+        chemmodel.setMoleculeSet(setOfMolecules);
         
         getClass().getResource("/testFiles/dbsmallconf.sdf")
         .getPath();
         IFile target=new MockIFile();
-        cdk.saveMolecule(propane, target, cdk.mol);
-        StringBuffer readBuffer = new StringBuffer();
+        cdk.save(chemmodel, target, cdk.mol);
         byte[] bytes=new byte[6];
         target.getContents().read(bytes);
         Assert.assertArrayEquals(new byte[]{10,32,32,67,68,75}, bytes);
     }
 
     @Test
-    public void testSaveMolecule() throws BioclipseException {
+    public void testSaveMolecule() throws BioclipseException, CDKException, CoreException, IOException {
         String propaneSmiles = "CCC"; 
         
         ICDKMolecule propane  = cdk.fromSmiles( propaneSmiles  );
         
-        assertTrue( cdk.smartsMatches(propane, propaneSmiles) );
+        getClass().getResource("/testFiles/dbsmallconf.sdf")
+        .getPath();
+        IFile target=new MockIFile();
+        cdk.saveMolecule(propane, target, cdk.mol);
+        byte[] bytes=new byte[6];
+        target.getContents().read(bytes);
+        Assert.assertArrayEquals(new byte[]{10,32,32,67,68,75}, bytes);
     }
 }
