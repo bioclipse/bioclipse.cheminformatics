@@ -586,9 +586,7 @@ public class CDKManager implements ICDKManager {
         
         int num = 0;
         try {
-            InputStream counterStream = EFS.getStore( 
-                file.getLocationURI() )
-                    .openInputStream( EFS.NONE, monitor );
+            InputStream counterStream = file.getContents();
             int c = 0;
             while (c != -1) {
                 c = counterStream.read();
