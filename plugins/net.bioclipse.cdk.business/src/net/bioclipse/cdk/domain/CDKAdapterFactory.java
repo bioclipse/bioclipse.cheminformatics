@@ -38,12 +38,16 @@ public class CDKAdapterFactory implements IAdapterFactory {
                                         ICDKMolecule.class );
                 }
             }
+            else if (adapterType.equals( Node.class )) {
+                molecule = BioclipseStore.get( file, Node.class );
+            }
         }
         return molecule;
     }
 
     public Class[] getAdapterList() {
 
-        return new Class[] { ICDKMolecule.class };
+        return new Class[] { ICDKMolecule.class,
+                             Node.class };
     }
 }

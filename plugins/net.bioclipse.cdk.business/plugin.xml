@@ -16,6 +16,9 @@
          <adapter
                type="net.bioclipse.cdk.domain.ICDKMolecule">
          </adapter>
+         <adapter
+               type="net.bioclipse.cdk.domain.Node">
+         </adapter>
       </factory>
    </extension>
 

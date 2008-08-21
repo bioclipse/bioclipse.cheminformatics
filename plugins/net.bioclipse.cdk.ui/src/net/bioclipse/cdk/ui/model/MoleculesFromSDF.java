@@ -18,13 +18,16 @@ import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
+import net.bioclipse.cdk.domain.Node;
 import net.bioclipse.cdk.domain.SDFElement;
+import net.bioclipse.core.BioclipseStore;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
@@ -48,10 +51,33 @@ public class MoleculesFromSDF implements IDeferredWorkbenchAdapter {
                                        IProgressMonitor monitor ) {
 
         monitor.beginTask("Reading SDF file", IProgressMonitor.UNKNOWN);
-               
-        cdk.collectSDFElements( sdfFile, collector, monitor );
+        Node first = (Node) sdfFile.getAdapter( Node.class );
+        if ( first == null ) {
+            first = new Node(null);
+            BioclipseStore.put( first, sdfFile, Node.class );
+            //monitor only used for checking when to abort. Nothing else.
+            BuilderThread builder = new BuilderThread(sdfFile, 
+                                                      first, 
+                                                      monitor);
+            builder.start();
+        }
+        readSDFElementsFromList( first, collector, monitor );
+        monitor.done();
     }
-
+    
+    private void readSDFElementsFromList( Node first,
+                                          IElementCollector collector,
+                                          IProgressMonitor monitor ) {
+        Node node = first;
+        while((node = node.next())!=null ) {
+            collector.add( node.data(), monitor);
+            monitor.worked( 1 );
+            if (monitor.isCanceled())
+                throw new OperationCanceledException();
+        }
+            
+    }
+    
     public ISchedulingRule getRule( Object object ) {
 
         // TODO Auto-generated method stub

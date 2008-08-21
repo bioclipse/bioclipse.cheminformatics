@@ -368,15 +368,4 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     public int numberOfEntriesInSDF( IFile file );
     
-    /**
-     * @param sdfFile
-     * @param collector
-     * @param monitor
-     * @throws CoreException 
-     * @throws IOException 
-     */
-    public void collectSDFElements( IFile sdfFile, 
-                                    IElementCollector collector,
-                                    IProgressMonitor monitor );
-
 }

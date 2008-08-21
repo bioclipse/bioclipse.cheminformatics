@@ -63,7 +63,6 @@ public class MoleculeContentProvider implements ITreeContentProvider,
 
     private final Map<IFile, MoleculesFromSDF> cachedModelMap;
 
-    private ICDKManager cdk;
     private DeferredTreeContentManager contentManager; 
 
     //Register us as listener for resource changes
@@ -79,8 +78,6 @@ public class MoleculeContentProvider implements ITreeContentProvider,
             { add("SDF"); }
         };
 
-        cdk = net.bioclipse.cdk.business.Activator
-                 .getDefault().getCDKManager();
     }
 
     public Object[] getChildren(Object parentElement) {
