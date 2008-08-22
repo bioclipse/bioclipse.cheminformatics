@@ -129,13 +129,14 @@ public class BuilderThread extends Thread {
                     }
                 }
             }
-            node.link( null );
+            
         } 
         catch ( IOException e ) {
             logger.error( "Could not read from file", e );
         }
         finally {
-            
+            if(node!=null)
+                node.link(null);
             try {
                 input.close();
             } 
