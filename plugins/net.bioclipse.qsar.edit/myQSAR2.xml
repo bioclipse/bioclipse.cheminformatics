@@ -9,19 +9,19 @@
     </moleculelist>
     <descriptorlist>
       <descriptor id="http://www.blueobelisk.org/ontologies/chemoinformatics-algorithms/#xlogP"
-          name="XlogP" namespace="http://www.blueobelisk.org">
+          namespace="http://www.blueobelisk.org">
         <parameter key="checkAromaticity" value="true"/>
         <parameter key="salicylFlag" value="false"/>
-        <descriptorimpl/>
+        <descriptorimpl id="cdk"/>
       </descriptor>
       <descriptor id="http://www.blueobelisk.org/ontologies/chemoinformatics-algorithms/#atomCount"
-          name="Atom Count" namespace="http://www.blueobelisk.org">
+          namespace="http://www.blueobelisk.org">
         <parameter key="elementName" value="C"/>
         <descriptorimpl id="org.openscience.cdk.qsar.descriptors.molecular.XLogPDescriptor"
             namespace="http://rguha.ath.cx/~rguha/cicc/desc/descriptors/"/>
       </descriptor>
       <descriptor id="http://www.blueobelisk.org/ontologies/chemoinformatics-algorithms/#atomCount"
-          name="DragonDesc1" namespace="http://www.blueobelisk.org">
+          namespace="http://www.blueobelisk.org">
         <descriptorimpl id="dragon"/>
       </descriptor>
     </descriptorlist>

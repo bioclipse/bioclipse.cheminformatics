@@ -122,13 +122,12 @@ public class TestWrite {
 		//Desc1
 		DescriptorType desc1=QsarFactory.eINSTANCE.createDescriptorType();
 		desc1.setId("http://www.blueobelisk.org/ontologies/chemoinformatics-algorithms/#xlogP");
-		desc1.setName("XlogP");
 		desc1.setNamespace("http://www.blueobelisk.org");
 		cmd=AddCommand.create(editingDomain, desclist, QsarPackage.Literals.DESCRIPTORLIST_TYPE__DESCRIPTOR, desc1);
 		cCmd.append(cmd);
 		//Desc1 params
 		DescriptorimplType impl1=QsarFactory.eINSTANCE.createDescriptorimplType();
-		cdk.setId(cdk.getId());
+		impl1.setId(cdk.getId());
 		cmd=SetCommand.create(editingDomain, desc1, QsarPackage.Literals.DESCRIPTOR_TYPE__DESCRIPTORIMPL, impl1);
 		cCmd.append(cmd);
 		ParameterType param1=QsarFactory.eINSTANCE.createParameterType();
@@ -145,7 +144,6 @@ public class TestWrite {
 		//Desc2
 		DescriptorType desc2=QsarFactory.eINSTANCE.createDescriptorType();
 		desc2.setId("http://www.blueobelisk.org/ontologies/chemoinformatics-algorithms/#atomCount");
-		desc2.setName("Atom Count");
 		desc2.setNamespace("http://www.blueobelisk.org");
 		cmd=AddCommand.create(editingDomain, desclist, QsarPackage.Literals.DESCRIPTORLIST_TYPE__DESCRIPTOR, desc2);
 		cCmd.append(cmd);
@@ -165,7 +163,6 @@ public class TestWrite {
 		//Desc2
 		DescriptorType desc3=QsarFactory.eINSTANCE.createDescriptorType();
 		desc3.setId("http://www.blueobelisk.org/ontologies/chemoinformatics-algorithms/#atomCount");
-		desc3.setName("DragonDesc1");
 		desc3.setNamespace("http://www.blueobelisk.org");
 		cmd=AddCommand.create(editingDomain, desclist, QsarPackage.Literals.DESCRIPTORLIST_TYPE__DESCRIPTOR, desc3);
 		cCmd.append(cmd);

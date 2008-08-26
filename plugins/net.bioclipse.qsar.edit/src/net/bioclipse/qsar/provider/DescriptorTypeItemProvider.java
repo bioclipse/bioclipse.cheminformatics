@@ -83,7 +83,6 @@ public class DescriptorTypeItemProvider
 
 			addDescriptorimplPropertyDescriptor(object);
 			addIdPropertyDescriptor(object);
-			addNamePropertyDescriptor(object);
 			addNamespacePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
@@ -125,28 +124,6 @@ public class DescriptorTypeItemProvider
 				 getString("_UI_DescriptorType_id_feature"),
 				 getString("_UI_PropertyDescriptor_description", "_UI_DescriptorType_id_feature", "_UI_DescriptorType_type"),
 				 QsarPackage.Literals.DESCRIPTOR_TYPE__ID,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Name feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addNamePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_DescriptorType_name_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_DescriptorType_name_feature", "_UI_DescriptorType_type"),
-				 QsarPackage.Literals.DESCRIPTOR_TYPE__NAME,
 				 true,
 				 false,
 				 false,
@@ -226,7 +203,7 @@ public class DescriptorTypeItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((DescriptorType)object).getName();
+		String label = ((DescriptorType)object).getId();
 		return label == null || label.length() == 0 ?
 			getString("_UI_DescriptorType_type") :
 			getString("_UI_DescriptorType_type") + " " + label;
@@ -246,7 +223,6 @@ public class DescriptorTypeItemProvider
 		switch (notification.getFeatureID(DescriptorType.class)) {
 			case QsarPackage.DESCRIPTOR_TYPE__DESCRIPTORIMPL:
 			case QsarPackage.DESCRIPTOR_TYPE__ID:
-			case QsarPackage.DESCRIPTOR_TYPE__NAME:
 			case QsarPackage.DESCRIPTOR_TYPE__NAMESPACE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
