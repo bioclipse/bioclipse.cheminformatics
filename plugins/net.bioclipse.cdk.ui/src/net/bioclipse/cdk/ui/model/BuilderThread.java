@@ -63,31 +63,35 @@ public class BuilderThread extends Thread {
             long position = -1;
             int dollars = 0;
             boolean readingName = false;
+            boolean readinLineAfterDollar = false;
             int newlinesFoundWhileReadingName = 0;
             
             StringBuffer name = new StringBuffer();
             long moleculeStartsAt = 0;
             boolean readingFirstName = true;
-            
+            // loops through the file
             while ( c != -1 ) {
                 if ( monitor.isCanceled() ) {
                     return;
                 }
                 c = input.read();
                 position++;
+                // catch dollar if $ ends reset
                 if ( c == '$' ) {
                     dollars++;
                 }
                 else {
                     dollars = 0;
                 }
+                // check for 4x$ 
                 if ( dollars == 4 ) {
                     readingName = true;
+                    readinLineAfterDollar = true;
                     moleculeStartsAt = position + 3;
                 }
                 if ( readingFirstName ) {
                     if (c == '\n') {
-                        newlinesFoundWhileReadingName++;
+                        newlinesFoundWhileReadingName++;                        
                     }
                     if ( newlinesFoundWhileReadingName == 1 ) {
                         node.link(node= new Node( 
@@ -109,6 +113,11 @@ public class BuilderThread extends Thread {
                 if (readingName) {
                     if (c == '\n') {
                         newlinesFoundWhileReadingName++;
+                        if(newlinesFoundWhileReadingName == 2 &&
+                                readinLineAfterDollar){
+                            moleculeStartsAt = position;
+                            readinLineAfterDollar = false;
+                        }
                     }
                     if ( newlinesFoundWhileReadingName == 2 ) {
                         node.link(node= new Node( 

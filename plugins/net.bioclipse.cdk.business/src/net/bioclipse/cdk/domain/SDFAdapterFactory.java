@@ -59,6 +59,7 @@ public class SDFAdapterFactory implements IAdapterFactory {
         IFile sourceFile=(IFile)element.getResource();
         InputStream is=null;
         IFile file=null;
+        IFolder folder = null;
         try{
         logger.debug( "Loading "
                       + sourceFile.getName()
@@ -70,7 +71,7 @@ public class SDFAdapterFactory implements IAdapterFactory {
         sc.useDelimiter("\\${3}");        
         String data=sc.next();
         
-        IFolder folder=net.bioclipse.core.Activator.getVirtualProject().
+        folder=net.bioclipse.core.Activator.getVirtualProject().
                                                            getFolder("SDFTemp");
         if(!folder.exists())
            folder.create(true,false,null);
@@ -99,17 +100,16 @@ public class SDFAdapterFactory implements IAdapterFactory {
             logger.debug(e);
         }finally{
             try {
-                if(is!=null)
-                    is.close();
-                if(file!=null)
-                    file.delete(true,null);
+                if(is!=null) is.close();
+                if(file!=null) file.delete(true,null);
+                if(folder!=null) folder.delete(true,null );
+            }catch (CoreException e) {
+                // TODO Auto-generated catch block
+               logger.debug(e);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 logger.debug(e);
-            } catch (CoreException e) {
-                // TODO Auto-generated catch block
-               logger.debug(e);
-            }
+            } 
                
         }
         
