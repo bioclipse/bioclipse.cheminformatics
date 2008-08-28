@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="net.bioclipse.cdk.ui.sdfeditor.SDFEditor"
+            class="net.bioclipse.cdk.ui.sdfeditor.editor.SDFEditor"
             default="true"
             extensions="sdf"
             id="net.bioclipse.cdk.ui.sdfeditor"
