@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.vecmath.Point2d;
+import javax.vecmath.Point3d;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -73,7 +74,7 @@ import org.openscience.cdk.validate.ProblemMarker;
 /**
  * A Java2D based 2D renderer for IChemObjects.
  * 
- * @author      nielsout
+ * @author      nielsout, Arvid Berg
  * @cdk.svnrev  $Revision: 9162 $
  * @cdk.module  render
  */
@@ -1366,4 +1367,29 @@ public class SWTRenderer implements IJava2DRenderer {
 		logger.fatal("Not a java2D renderer");
 		
 	}
+	/*
+	 * Utility method for copying 3D x,y to 2D coordinates 
+	 */
+	public static IAtomContainer generate2Dfrom3D( IAtomContainer atomContainer ) {
+
+	    try {
+	        atomContainer = (IAtomContainer) atomContainer.clone();
+
+	        // For each molecule,
+	        for ( int i = 0; i < atomContainer.getAtomCount(); i++ ) {
+	            IAtom atom = atomContainer.getAtom( i );
+	            Point3d p3 = atom.getPoint3d();
+	            Point2d p2 = new Point2d();
+	            p2.x = p3.x;
+	            p2.y = p3.y;
+	            atom.setPoint3d( null );
+	            atom.setPoint2d( p2 );
+	        }
+	    } catch ( CloneNotSupportedException e ) {
+	        return null;
+	    }
+	    return atomContainer;
+	}
+
+	
 }
