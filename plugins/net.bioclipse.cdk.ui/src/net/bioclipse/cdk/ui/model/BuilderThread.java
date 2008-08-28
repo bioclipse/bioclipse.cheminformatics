@@ -83,7 +83,7 @@ public class BuilderThread extends Thread {
                 }
                 if ( dollars == 4 ) {
                     readingName = true;
-                    moleculeStartsAt = position;
+                    moleculeStartsAt = position + 3;
                 }
                 if ( readingFirstName ) {
                     if (c == '\n') {
