@@ -20,6 +20,13 @@
                type="net.bioclipse.cdk.domain.Node">
          </adapter>
       </factory>
+      <factory
+            adaptableType="net.bioclipse.cdk.domain.SDFElement"
+            class="net.bioclipse.cdk.domain.SDFAdapterFactory">
+         <adapter
+               type="net.bioclipse.cdk.domain.ICDKMolecule">
+         </adapter>
+      </factory>
    </extension>
 
 </plugin>
