@@ -19,4 +19,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.forms
 Eclipse-LazyStart: true
 Import-Package: org.apache.log4j
-Export-Package: net.bioclipse.cdk.ui.views
+Export-Package: net.bioclipse.cdk.ui.model,
+ net.bioclipse.cdk.ui.views
