@@ -6,6 +6,7 @@ Bundle-Version: 2.0.0.A20080808
 Bundle-Activator: net.bioclipse.cdk.jchempaint.Activator
 Require-Bundle: org.openscience.cdk,
  org.eclipse.ui,
+ net.bioclipse.cdk.ui;bundle-version="2.0.0",
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
  net.bioclipse.core,
@@ -22,5 +23,6 @@ Export-Package: net.bioclipse.cdk.jchempaint.editor;
    org.eclipse.swt.widgets,
    org.eclipse.core.runtime,
    org.eclipse.ui,
-   net.bioclipse.cdk.domain"
+   net.bioclipse.cdk.domain",
+ net.bioclipse.cdk.jchempaint.widgets
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
