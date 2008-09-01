@@ -12,16 +12,27 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  net.bioclipse.core,
  net.bioclipse.xom;bundle-version="1.2.0",
- org.eclipse.core.resources;bundle-version="3.4.0"
-Export-Package: net.bioclipse.cml.managers,
+ org.eclipse.core.resources;bundle-version="3.4.0",
+ net.bioclipse.ui;bundle-version="2.0.0"
+Export-Package: net.bioclipse.cml.handlers,
+ net.bioclipse.cml.managers,
+ org.xmlcml.cml.apps,
+ org.xmlcml.cml.attribute,
  org.xmlcml.cml.base,
  org.xmlcml.cml.element,
+ org.xmlcml.cml.graphics,
+ org.xmlcml.cml.html,
+ org.xmlcml.cml.inchi,
+ org.xmlcml.cml.interfacex,
  org.xmlcml.cml.legacy.molecule,
+ org.xmlcml.cml.map,
+ org.xmlcml.cml.schemagen,
  org.xmlcml.cml.tools,
  org.xmlcml.euclid,
- org.xmlcml.molutil
-Bundle-ClassPath: jars/jumbo52.jar,
- .
+ org.xmlcml.molutil,
+ org.xmlcml.util
+Bundle-ClassPath: .,
+ jars/jumbo-5.4.2-b1.jar
 Bundle-Activator: net.bioclipse.cml.managers.Activator
 Eclipse-AutoStart: true
 Bundle-Vendor: The Bioclipse Team
