@@ -14,10 +14,14 @@
 package net.bioclipse.cdk.business;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -45,11 +49,13 @@ import org.eclipse.ui.progress.IElementCollector;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.fingerprint.FingerprinterTool;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
@@ -58,6 +64,7 @@ import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.MDLRXNWriter;
 import org.openscience.cdk.io.MDLWriter;
+import org.openscience.cdk.io.Mol2Writer;
 import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.SMILESWriter;
 import org.openscience.cdk.io.formats.IResourceFormat;
@@ -69,7 +76,9 @@ import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
+import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
+import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 /**
  * The manager class for CDK. Contains CDK related methods.
@@ -338,6 +347,15 @@ public class CDKManager implements ICDKManager {
 	            CMLWriter cmlWriter = new CMLWriter(writer);
 	            cmlWriter.write(model);
 	            towrite=writer.toString();
+	    	} else if(filetype.equals(mol2)){
+	    		StringWriter writer = new StringWriter();
+	    		Mol2Writer mol2Writer=new Mol2Writer();
+	    		IAtomContainer mol=
+	    			ChemModelManipulator.getAllAtomContainers(model).get(0);
+	    		org.openscience.cdk.interfaces.IMolecule nmol=mol.getBuilder().
+	    			newMolecule(mol);
+	    		mol2Writer.write(nmol);
+	            towrite=writer.toString();
 	    	} else if(filetype.equals(rxn)){
 	    		StringWriter writer = new StringWriter();
 	            MDLRXNWriter cmlWriter = new MDLRXNWriter(writer);
@@ -541,12 +559,17 @@ public class CDKManager implements ICDKManager {
     /**
      * Create an ICDKMolecule from an IMolecule.
      * First tries to create ICDKMolecule from CML. If that fails, tries to
-     * create from SMILES.
+     * create from SMILES. If 
      */
-    public ICDKMolecule create( IMolecule m ) throws BioclipseException {
+    public ICDKMolecule create( IMolecule imol ) throws BioclipseException {
+    	
+    	if (imol instanceof ICDKMolecule) {
+			return (ICDKMolecule)imol;
+		}
+    	
         //First try to create from CML
         try {
-            String cmlString=m.getCML();
+            String cmlString=imol.getCML();
             if (cmlString!=null){
                 return fromCml( cmlString );
             }
@@ -557,7 +580,7 @@ public class CDKManager implements ICDKManager {
         }
         
         //Secondly, try to create from SMILES
-        return fromSmiles( m.getSmiles() );
+        return fromSmiles( imol.getSmiles() );
     }
 
     public boolean smartsMatches( ICDKMolecule molecule, String smarts ) 
@@ -735,4 +758,66 @@ public class CDKManager implements ICDKManager {
     public int numberOfEntriesInSDF( IFile file ) {
         return numberOfEntriesInSDF( file, null );
     }
+
+    
+    
+    
+    public ICDKMolecule depictSybylAtomTypes(IMolecule mol) throws InvocationTargetException{
+    	    	
+    	ICDKMolecule cdkmol;
+		try {
+			cdkmol = create(mol);
+		} catch (BioclipseException e) {
+            System.out.println("Error converting cdk10 to cdk");
+            e.printStackTrace();
+            throw new InvocationTargetException(e);
+		}
+		
+    	IAtomContainer ac=cdkmol.getAtomContainer();
+    	
+    	SybylAtomTypeMatcher matcher = SybylAtomTypeMatcher.getInstance(ac.getBuilder());
+    	Iterator<IAtom> atoms = ac.atoms();
+    	while (atoms.hasNext()) {
+    		IAtom atom = atoms.next();
+    		atom.setAtomTypeName(null);
+    		IAtomType matched;
+			try {
+				matched = matcher.findMatchingAtomType(ac, atom);
+        		if (matched != null) AtomTypeManipulator.configure(atom, matched);
+			} catch (CDKException e) {
+	            System.out.println("Error depicting SYbyl atom type with CDK.");
+	            e.printStackTrace();
+	            throw new InvocationTargetException(e);
+			}
+    	}
+	
+    	return cdkmol;
+    	
+    }
+    
+	public void saveMol2(ICDKMolecule mol, String filename) throws InvocationTargetException{
+
+		File file=new File(filename);
+        FileOutputStream fos;
+		try {
+			fos = new FileOutputStream(file);
+	        Mol2Writer writer=new Mol2Writer(fos);
+	        writer.write( mol.getAtomContainer() );
+	        writer.close();
+	        
+		} catch (FileNotFoundException e) {
+            System.out.println("Cant find file: " + filename);
+            e.printStackTrace();
+            throw new InvocationTargetException(e);
+		} catch (IOException e) {
+            e.printStackTrace();
+            throw new InvocationTargetException(e);
+		} catch (CDKException e) {
+            e.printStackTrace();
+            throw new InvocationTargetException(e);
+		}
+		
+	}
+
+    
 }

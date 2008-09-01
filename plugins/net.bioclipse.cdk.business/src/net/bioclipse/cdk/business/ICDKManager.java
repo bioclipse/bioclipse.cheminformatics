@@ -14,6 +14,7 @@
 package net.bioclipse.cdk.business;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -41,6 +42,7 @@ public interface ICDKManager extends IBioclipseManager {
 	public final static String cml = "cml";
 	public final static String smi = "smi";
     public final static String cdk = "cdk";
+	public final static String mol2 = "mol2";
 
     /**
      * Create a CDKMolecule from SMILES
@@ -367,5 +369,10 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @Recorded
     public int numberOfEntriesInSDF( IFile file );
+
+	ICDKMolecule depictSybylAtomTypes(IMolecule mol)
+			throws InvocationTargetException;
+
+	public void saveMol2(ICDKMolecule mol2, String filename) throws InvocationTargetException;
     
 }
