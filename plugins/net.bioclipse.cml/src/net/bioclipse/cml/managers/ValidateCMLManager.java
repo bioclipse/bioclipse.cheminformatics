@@ -23,15 +23,16 @@ import nu.xom.ParsingException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
+import org.xmlcml.cml.attribute.DictRefAttribute;
+import org.xmlcml.cml.attribute.MetadataNameAttribute;
+import org.xmlcml.cml.attribute.UnitsAttribute;
+import org.xmlcml.cml.base.CMLBuilder;
 import org.xmlcml.cml.base.CMLElement;
-import org.xmlcml.cml.base.CMLRuntime;
+import org.xmlcml.cml.base.CMLRuntimeException;
 import org.xmlcml.cml.base.CMLUtil;
-import org.xmlcml.cml.element.CMLBuilder;
-import org.xmlcml.cml.element.DictRefAttribute;
-import org.xmlcml.cml.element.DictionaryMap;
-import org.xmlcml.cml.element.MetadataNameAttribute;
-import org.xmlcml.cml.element.UnitAttribute;
-import org.xmlcml.cml.element.UnitListMap;
+import org.xmlcml.cml.element.CMLDictionary;
+import org.xmlcml.cml.map.DictionaryMap;
+import org.xmlcml.cml.map.UnitListMap;
 
 
 public class ValidateCMLManager implements IValidateCMLManager {
@@ -75,33 +76,30 @@ public class ValidateCMLManager implements IValidateCMLManager {
 			URL dictURL = bundle.getEntry("/dict10/dict");
 			
 			try {
-				simpleDir = new File(simpleURL.toURI().getPath());
-				unitsDir = new File(unitsURL.toURI().getPath());
-				dictDir = new File(dictURL.toURI().getPath());
-				
+				unitsDir = new File(unitsURL.toURI().getPath());				
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
-		}
-		if (simpleMap  == null) {
-			try {
-				simpleMap = new DictionaryMap(simpleDir, true);
-			} catch (IOException e) {
-				throw new CMLRuntime("dictionaryMap could not be created "+e);
-			}
+	    if (simpleMap  == null) {
+	        try {
+	          simpleMap = new DictionaryMap(simpleURL, new CMLDictionary());
+	        } catch (IOException e) {
+	          throw new CMLRuntimeException("dictionaryMap could not be created "+e);
+	        }
+	      }
+	    if (dictListMap == null) {
+	        try {
+	          dictListMap  = new DictionaryMap(dictURL, new CMLDictionary());
+	        } catch (IOException e) {
+	          throw new CMLRuntimeException("dictListMap could not be created "+e);
+	        }
+	      }
 		}
 		if (unitListMap == null) {
 			try {
 				unitListMap  = new UnitListMap(unitsDir, true);
 			} catch (IOException e) {
-				throw new CMLRuntime("unitListMap could not be created "+e);
-			}
-		}
-		if (dictListMap == null) {
-			try {
-				dictListMap  = new DictionaryMap(dictDir, true);
-			} catch (IOException e) {
-				throw new CMLRuntime("dictListMap could not be created "+e);
+				throw new CMLRuntimeException("unitListMap could not be created "+e);
 			}
 		}
 	}
@@ -167,7 +165,7 @@ public class ValidateCMLManager implements IValidateCMLManager {
 				}
 			}
 			errorList.clear();
-			errorList = new UnitAttribute().checkAttribute(cmlElement, unitListMap);
+			errorList = new UnitsAttribute().checkAttribute(cmlElement, unitListMap);
 			if (errorList.size() > 0) {
 				for (String error : errorList) {
 					returnString.append("warning: " + error);

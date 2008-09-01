@@ -17,7 +17,6 @@ Export-Package: net.bioclipse.cml.managers,
  org.xmlcml.cml.base,
  org.xmlcml.cml.element,
  org.xmlcml.cml.legacy.molecule,
- org.xmlcml.cml.legacy.react,
  org.xmlcml.cml.tools,
  org.xmlcml.euclid,
  org.xmlcml.molutil
