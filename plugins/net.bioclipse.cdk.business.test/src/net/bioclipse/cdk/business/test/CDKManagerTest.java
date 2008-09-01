@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -37,6 +38,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.smiles.SmilesGenerator;
@@ -253,4 +255,52 @@ public class CDKManagerTest {
         target.getContents().read(bytes);
         Assert.assertArrayEquals(new byte[]{10,32,32,67,68,75}, bytes);
     }
+    
+    @Test
+    public void testSybylAtomTypePerception() throws FileNotFoundException, IOException, BioclipseException, CoreException, InvocationTargetException{
+
+    	String path = getClass().getResource("/testFiles/atp.mol").getPath();
+    	ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
+
+    	System.out.println("mol: " + mol.toString());
+    	
+    	ICDKMolecule mol2 = cdk.depictSybylAtomTypes(mol);
+    	
+    	for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
+    		IAtom a=mol2.getAtomContainer().getAtom(i);
+    		System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
+    	}
+
+    }
+
+    @Test
+    public void testSybylAtomTypePerception2() throws FileNotFoundException, IOException, BioclipseException, CoreException, InvocationTargetException{
+
+        String path = getClass().getResource("/testFiles/polycarpol.mol")
+        .getPath();
+
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
+
+    	System.out.println("mol: " + mol.toString());
+    	
+    	ICDKMolecule mol2 = cdk.depictSybylAtomTypes(mol);
+    	
+    	for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
+    		IAtom a=mol2.getAtomContainer().getAtom(i);
+    		System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
+    	}
+
+    }
+    @Test
+    public void testSaveMol2() throws BioclipseException, CDKException, CoreException, IOException {
+
+    	String propaneSmiles = "CCC"; 
+        
+        ICDKMolecule propane  = cdk.fromSmiles( propaneSmiles  );
+
+        IFile target=new MockIFile();
+        cdk.saveMolecule(propane, target, cdk.mol2);
+    	
+    }
+
 }
