@@ -777,19 +777,32 @@ public class CDKManager implements ICDKManager {
     	
     	SybylAtomTypeMatcher matcher = SybylAtomTypeMatcher.getInstance(ac.getBuilder());
     	Iterator<IAtom> atoms = ac.atoms();
-    	while (atoms.hasNext()) {
+		IAtomType[] sybylTypes = new IAtomType[ac.getAtomCount()];
+		int atomCounter = 0;
+
+		while (atoms.hasNext()) {
     		IAtom atom = atoms.next();
     		atom.setAtomTypeName(null);
+    		
+    		
     		IAtomType matched;
 			try {
 				matched = matcher.findMatchingAtomType(ac, atom);
-        		if (matched != null) AtomTypeManipulator.configure(atom, matched);
+				sybylTypes[atomCounter]=matched; // yes, setting null's here is important
+
 			} catch (CDKException e) {
 	            System.out.println("Error depicting SYbyl atom type with CDK.");
 	            e.printStackTrace();
 	            throw new InvocationTargetException(e);
 			}
+			atomCounter++;
     	}
+    	
+    	// now that full perception is finished, we can set atom type names:
+    	for (int i=0; i<sybylTypes.length; i++) {
+    	  ac.getAtom(i).setAtomTypeName(sybylTypes[i].getAtomTypeName());
+    	}
+
 	
     	return cdkmol;
     	
