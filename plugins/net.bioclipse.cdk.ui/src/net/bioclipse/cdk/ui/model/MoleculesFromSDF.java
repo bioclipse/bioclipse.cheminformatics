@@ -11,21 +11,16 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.model;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 
-import net.bioclipse.cdk.business.Activator;
-import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.Node;
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.core.BioclipseStore;
-import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -36,11 +31,10 @@ import org.eclipse.ui.progress.IElementCollector;
 
 public class MoleculesFromSDF implements IDeferredWorkbenchAdapter {
 
-    private ICDKManager cdk = Activator.getDefault().getCDKManager();
-    private List<Object> children = new ArrayList<Object>();
+    private List<SDFElement> children = Collections.synchronizedList( 
+                                           new ArrayList<SDFElement>() );
     private IFile sdfFile;
     private Logger logger = Logger.getLogger( this.getClass() );
-    private List<SDFElement> allElements;
     
     public MoleculesFromSDF( IFile sdfFile ) {
         this.sdfFile = sdfFile;
@@ -71,6 +65,7 @@ public class MoleculesFromSDF implements IDeferredWorkbenchAdapter {
         Node node = first;
         while((node = node.next())!=null ) {
             collector.add( node.data(), monitor);
+            children.add( node.data() );
             monitor.worked( 1 );
             if (monitor.isCanceled())
                 throw new OperationCanceledException();
