@@ -95,7 +95,7 @@ public class MoleculeContentProvider implements ITreeContentProvider,
             }
         }
         if (parentElement instanceof MoleculesFromSDF) {
-            contentManager.getChildren( parentElement );
+            return contentManager.getChildren( parentElement );
         }
         return NO_CHILDREN;
     }
