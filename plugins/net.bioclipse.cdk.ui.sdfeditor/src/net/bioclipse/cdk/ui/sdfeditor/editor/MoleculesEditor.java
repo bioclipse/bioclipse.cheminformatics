@@ -53,6 +53,10 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
     public List<String>                          propertyHeaders;
     TreeViewer viewer;
     
+    
+    public MoleculesEditor() {
+    }
+    
     @Override
     public void doSave( IProgressMonitor monitor ) {
 
