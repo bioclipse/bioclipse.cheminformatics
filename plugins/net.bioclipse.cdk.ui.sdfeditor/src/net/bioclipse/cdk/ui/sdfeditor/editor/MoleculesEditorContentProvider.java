@@ -14,6 +14,7 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.model.MoleculesFromSDF;
+import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.cdk.ui.views.MoleculeContentProvider;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
@@ -33,15 +34,11 @@ public class MoleculesEditorContentProvider extends MoleculeContentProvider impl
     }
 
     public void updateChildCount( Object element, int currentChildCount ) {
-
-        if( hasChildren(element )){
-            if(element instanceof MoleculesFromSDF){                
-                int length =  ((MoleculesFromSDF)element)
-                              .getChildren(element ).length;
-                if(length != currentChildCount)
-                    viewer.setChildCount(element,length );
-            }
-            
+        
+        if(element instanceof IMoleculesEditorModel){
+            int count = ((IMoleculesEditorModel)element).getNumberOfMolecules();
+            if(count != currentChildCount)
+                viewer.setChildCount(element, count );
         }
     }
 
@@ -51,26 +48,25 @@ public class MoleculesEditorContentProvider extends MoleculeContentProvider impl
      * @see org.eclipse.jface.viewers.ILazyTreeContentProvider#updateElement(java.lang.Object, int)
      */
     public void updateElement( Object parent, int index ) {
-        Object[] elements;
-        if(parent instanceof MoleculesFromSDF){
-           elements=((MoleculesFromSDF)parent).getChildren(parent);           
-//        }else if(parent instanceof IMoleculesProvider){
-//            logger.debug("SDF.updateElement( AnnotationUIModel)");
-//            elements=new Object[0];
+        
+        Object element;
+        if(parent instanceof IMoleculesEditorModel){
+            element = ((IMoleculesEditorModel)parent).getMoleculeAt(index );          
         }else{
-            elements = getElements( parent );
+            Object[] elements = getElements( parent );
+            if ( index >= elements.length
+                    || !(elements[index] instanceof IAdaptable) )
+                   return;
+            element = elements[index];
         }
             
-        if ( index >= elements.length
-             || !(elements[index] instanceof IAdaptable) )
-            return;
-
-        ICDKMolecule molecule =
-                (ICDKMolecule) ((IAdaptable) elements[index])
-                        .getAdapter( ICDKMolecule.class );
+        
+        if(element instanceof IAdaptable){
+            ICDKMolecule molecule = (ICDKMolecule) ((IAdaptable) element)
+                                    .getAdapter( ICDKMolecule.class );
         if ( molecule != null )
             viewer.replace( parent, index, molecule );
-
+        }
     }
 
     /* (non-Javadoc)

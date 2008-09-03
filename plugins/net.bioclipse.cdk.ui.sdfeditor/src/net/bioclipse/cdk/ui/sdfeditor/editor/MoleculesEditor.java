@@ -21,6 +21,8 @@ import java.util.Set;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.ui.model.MoleculesFromSDF;
+import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
@@ -77,9 +79,7 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
 
         super.setSite( site );
         super.setInput( input );
-        IFile file;
-        if ( (file = (IFile) input.getAdapter( IFile.class )) != null )
-            setPartName( file.getName() );
+        setPartName(input.getName() );
         // TODO listen to selections check and focus on selected element from
         // common navigator, load it and get columns
 
@@ -147,11 +147,11 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
 
         viewer.setContentProvider( new MoleculesEditorContentProvider(viewer) );
         viewer.setLabelProvider( labelProvider = 
-                           new MoleculesEditorLabelProvider(STRUCTURE_COLUMN_WIDTH) );
+                     new MoleculesEditorLabelProvider(STRUCTURE_COLUMN_WIDTH) );
         
         viewer.setUseHashlookup(true );
-        viewer.setInput( new MoleculesFromSDF( (IFile) getEditorInput()
-                .getAdapter( IFile.class ) ) );
+        viewer.setInput( 
+                     getEditorInput().getAdapter(IMoleculesEditorModel.class ) );
 
         getEditorSite().getPage().addSelectionListener( this );
         // See what's currently selected and select it
