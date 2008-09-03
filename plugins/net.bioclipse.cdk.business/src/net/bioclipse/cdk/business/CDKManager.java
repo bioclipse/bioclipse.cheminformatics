@@ -720,9 +720,8 @@ public class CDKManager implements ICDKManager {
     	sdg.setMolecule(cdkmol.getAtomContainer().getBuilder().newMolecule(cdkmol.getAtomContainer()));
     	sdg.generateCoordinates();
     	IAtomContainer ac=sdg.getMolecule();
-    	Iterator<IAtom> it=ac.atoms();
-    	while(it.hasNext()){
-    		it.next().setPoint3d(null);
+    	for (IAtom a : ac.atoms()) {
+    		a.setPoint3d(null);
     	}
     	return new CDKMolecule(ac);
     }
@@ -776,14 +775,11 @@ public class CDKManager implements ICDKManager {
     	IAtomContainer ac=cdkmol.getAtomContainer();
     	
     	SybylAtomTypeMatcher matcher = SybylAtomTypeMatcher.getInstance(ac.getBuilder());
-    	Iterator<IAtom> atoms = ac.atoms();
 		IAtomType[] sybylTypes = new IAtomType[ac.getAtomCount()];
 		int atomCounter = 0;
 
-		while (atoms.hasNext()) {
-    		IAtom atom = atoms.next();
+		for ( IAtom atom : ac.atoms() ) {
     		atom.setAtomTypeName(null);
-    		
     		
     		IAtomType matched;
 			try {

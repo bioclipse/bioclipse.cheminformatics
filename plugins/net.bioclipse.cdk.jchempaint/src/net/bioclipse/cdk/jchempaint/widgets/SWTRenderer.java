@@ -189,9 +189,9 @@ public class SWTRenderer implements IJava2DRenderer {
 	{
 	  IRingSet ringSet = atomContainer.getBuilder().newRingSet();
 	  java.util.Iterator<IAtomContainer> molecules = null;
-  try
+	  try
 	  {
-	    molecules = ConnectivityChecker.partitionIntoMolecules(atomContainer).molecules();
+	    molecules = ConnectivityChecker.partitionIntoMolecules(atomContainer).molecules().iterator();
 	  }
 
 	  catch (Exception exception)
@@ -734,7 +734,7 @@ public class SWTRenderer implements IJava2DRenderer {
 		if (!isAromatic)
 		{
 			isAromatic = true;
-			Iterator<IBond> bonds = ring.bonds();
+			Iterator<IBond> bonds = ring.bonds().iterator();
 			while (bonds.hasNext() )
 				if (!bonds.next().getFlag(CDKConstants.ISAROMATIC))
 					return false;
@@ -819,7 +819,7 @@ public class SWTRenderer implements IJava2DRenderer {
 	{
 		Color bondColor;
 		IRing ring;
-		Iterator<IBond> bonds = atomCon.bonds();
+		Iterator<IBond> bonds = atomCon.bonds().iterator();
 		List<IRing> painted_rings = new ArrayList<IRing>();
 	
 		logger.debug("Painting bonds...");

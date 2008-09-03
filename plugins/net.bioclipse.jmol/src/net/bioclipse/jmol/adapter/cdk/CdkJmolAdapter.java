@@ -91,9 +91,7 @@ public class CdkJmolAdapter extends JmolAdapter {
             IAtomContainer atomContainer
                 = (IAtomContainer)ChemFileManipulator
                   .getAllAtomContainers(chemFile);
-            Iterator<IAtom> it=atomContainer.atoms();
-            while(it.hasNext()) {
-                IAtom atom = it.next();
+            for ( IAtom atom : atomContainer.atoms() ) {
                 try {
                     if (atom instanceof IPDBAtom) {
                         // the PDBReader has the annoying feature to add the
