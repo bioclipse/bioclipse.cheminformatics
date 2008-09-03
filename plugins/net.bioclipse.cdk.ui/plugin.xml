@@ -128,4 +128,14 @@
         	file="toc.xml"
          	primary="true"/>
 	</extension>
+ <extension
+       point="org.eclipse.core.runtime.adapters">
+    <factory
+          adaptableType="org.eclipse.ui.IEditorInput"
+          class="net.bioclipse.cdk.ui.MoleculesEditorModelAdapterFactory">
+       <adapter
+             type="net.bioclipse.cdk.ui.views.IMoleculesEditorModel">
+       </adapter>
+    </factory>
+ </extension>
 </plugin>

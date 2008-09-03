@@ -17,6 +17,7 @@ import java.util.List;
 
 import net.bioclipse.cdk.domain.Node;
 import net.bioclipse.cdk.domain.SDFElement;
+import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.BioclipseStore;
 
 import org.apache.log4j.Logger;
@@ -29,7 +30,8 @@ import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
 
 
-public class MoleculesFromSDF implements IDeferredWorkbenchAdapter {
+public class MoleculesFromSDF implements IDeferredWorkbenchAdapter, 
+                                         IMoleculesEditorModel{
 
     private List<SDFElement> children = Collections.synchronizedList( 
                                            new ArrayList<SDFElement>() );
@@ -98,5 +100,31 @@ public class MoleculesFromSDF implements IDeferredWorkbenchAdapter {
 
     public Object getParent( Object o ) {
         return sdfFile;
+    }
+
+    /* (non-Javadoc)
+     * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#getMoleculeAt(int)
+     */
+    public Object getMoleculeAt( int index ) {
+        
+        return children.get(index );        
+    }
+
+    /* (non-Javadoc)
+     * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#getNumberOfMolecules()
+     */
+    public int getNumberOfMolecules() {
+        
+        return children.size();
+    }
+
+    /* (non-Javadoc)
+     * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#save()
+     */
+    public void save() {
+        throw new UnsupportedOperationException(this.getClass().getName()+
+                                        " does not support this operation yet");
+        // TODO Auto-generated method stub
+        
     }
 }
