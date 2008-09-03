@@ -24,6 +24,7 @@ import net.bioclipse.cdk.ui.model.MoleculesFromSDF;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -117,15 +118,36 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
                         if ( propertyHeaders == null
                              && childElements.length > 0 ) {
                             // TODO make it a job on the GUI thread
-                            if ( childElements[0] instanceof SDFElement ){
+                            if ( childElements[0] instanceof IAdaptable ){
                                 labelProvider.setPropertyHeaders(
                                                createHeaderFromSelection( 
-                                               (SDFElement) childElements[0] ));
+                                               (IAdaptable) childElements[0] ));
                                 
                             }
                         }
                         super.add( parentElementOrTreePath, childElements );
                     }
+                    /* (non-Javadoc)
+                                             * @see org.eclipse.jface.viewers.TreeViewer#replace(java.lang.Object, int, java.lang.Object)
+                                             */
+                                            @Override
+                                            public void replace(
+                                                                 Object parentElementOrTreePath,
+                                                                 int index,
+                                                                 Object element ) {
+                    
+                                                if ( propertyHeaders == null
+                                                        && element != null ) {
+                                                       // TODO make it a job on the GUI thread
+                                                       if ( element instanceof IAdaptable ){
+                                                           labelProvider.setPropertyHeaders(
+                                                                          createHeaderFromSelection( 
+                                                                          (IAdaptable) element ));
+                                                           
+                                                       }
+                                                   }
+                                                super.replace( parentElementOrTreePath, index, element );
+                                            }
                 };
 
         Tree tree = viewer.getTree();
@@ -164,7 +186,7 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
         }
     }
 
-    private List<String> createHeaderFromSelection( SDFElement element ) {
+    private List<String> createHeaderFromSelection( IAdaptable element ) {
 
         ICDKMolecule molecule = null;
 
