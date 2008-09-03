@@ -137,7 +137,7 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
         nameColumn.setResizable( false );
         nameColumn.setWidth( STRUCTURE_COLUMN_WIDTH );
 
-        //viewer.setComparer( new SDFElementComparer() );        
+        viewer.setComparer( new SDFElementComparer() );        
 
         viewer.setColumnProperties( new String[] { "Index", "Name" } );
 
