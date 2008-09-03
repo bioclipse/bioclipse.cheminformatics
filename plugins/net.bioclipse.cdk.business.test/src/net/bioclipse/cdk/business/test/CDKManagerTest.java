@@ -291,6 +291,29 @@ public class CDKManagerTest {
     	}
 
     }
+    
+    @Test
+    public void testSybylAtomTypePerception3() throws FileNotFoundException, IOException, BioclipseException, CoreException, InvocationTargetException{
+
+        String path = getClass().getResource("/testFiles/aromatic.mol")
+        .getPath();
+
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
+
+    	System.out.println("mol: " + mol.toString());
+    	
+    	ICDKMolecule mol2 = cdk.depictSybylAtomTypes(mol);
+    	
+    	assertEquals("C.ar", mol2.getAtomContainer().getAtom(1).getAtomTypeName());
+    	
+    	for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
+    		IAtom a=mol2.getAtomContainer().getAtom(i);
+    		System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
+    	}
+
+    }
+
+    
     @Test
     public void testSaveMol2() throws BioclipseException, CDKException, CoreException, IOException {
 
