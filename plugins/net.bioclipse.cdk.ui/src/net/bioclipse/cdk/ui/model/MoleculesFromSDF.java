@@ -48,7 +48,7 @@ public class MoleculesFromSDF implements IDeferredWorkbenchAdapter {
         Node first = (Node) sdfFile.getAdapter( Node.class );
         if ( first == null ) {
             first = new Node(null);
-            BioclipseStore.put( first, sdfFile, Node.class );
+            BioclipseStore.put(sdfFile,sdfFile, first);
             //monitor only used for checking when to abort. Nothing else.
             BuilderThread builder = new BuilderThread(sdfFile, 
                                                       first, 

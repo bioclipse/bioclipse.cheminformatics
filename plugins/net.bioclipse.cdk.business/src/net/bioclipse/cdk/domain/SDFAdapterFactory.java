@@ -4,8 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -26,22 +24,12 @@ public class SDFAdapterFactory implements IAdapterFactory {
         ICDKMolecule molecule=null;
         if(adaptableObject instanceof SDFElement){
             SDFElement element=(SDFElement)adaptableObject;
-            URI elementURI;
-            URI fileURI=element.getResource().getLocationURI();
-            try{
-                elementURI = new URI( fileURI.getScheme().toString(),
-                                      fileURI.getSchemeSpecificPart(),
-                                      Integer.toString(element.getNumber()));
-            }catch(URISyntaxException x){
-                logger.debug(x);
-                return null;
-            }
-            molecule=(ICDKMolecule)BioclipseStore.get(elementURI,adapterType);
+            
+            molecule=(ICDKMolecule)BioclipseStore.get(element.getResource(),element);
             if(molecule==null){
                 molecule=loadSDFPart( element);
                 if(molecule!=null)
-                    BioclipseStore.put( molecule,elementURI,
-                                        ICDKMolecule.class);
+                    BioclipseStore.put( element.getResource(),element,molecule);
             
         }
         }
