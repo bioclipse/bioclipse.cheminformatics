@@ -26,6 +26,7 @@ import java.util.List;
 
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.ICDKManager;
+import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.business.BioclipseException;
@@ -39,6 +40,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.smiles.SmilesGenerator;
@@ -310,6 +312,32 @@ public class CDKManagerTest {
     		IAtom a=mol2.getAtomContainer().getAtom(i);
     		System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
     	}
+
+    }
+
+    @Test
+    public void testSybylAtomTypePerceptionBenzene() throws FileNotFoundException, IOException, BioclipseException, CoreException, InvocationTargetException{
+
+        IAtomContainer ac=MoleculeFactory.makeBenzene();
+        
+        ICDKMolecule mol = new CDKMolecule(ac);
+
+    	ICDKMolecule mol2 = cdk.depictSybylAtomTypes(mol);
+    	
+    	System.out.println("** BENZENE **");
+    	
+    	for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
+    		IAtom a=mol2.getAtomContainer().getAtom(i);
+    		System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
+    	}
+
+    	assertEquals("C.ar", mol2.getAtomContainer().getAtom(0).getAtomTypeName());
+    	assertEquals("C.ar", mol2.getAtomContainer().getAtom(1).getAtomTypeName());
+    	assertEquals("C.ar", mol2.getAtomContainer().getAtom(2).getAtomTypeName());
+    	assertEquals("C.ar", mol2.getAtomContainer().getAtom(3).getAtomTypeName());
+    	assertEquals("C.ar", mol2.getAtomContainer().getAtom(4).getAtomTypeName());
+    	assertEquals("C.ar", mol2.getAtomContainer().getAtom(5).getAtomTypeName());
+    	
 
     }
 
