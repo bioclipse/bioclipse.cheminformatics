@@ -19,9 +19,12 @@ import net.bioclipse.cdk.domain.Node;
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.BioclipseStore;
+import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -46,7 +49,20 @@ public class MoleculesFromSDF implements IDeferredWorkbenchAdapter,
                                        IElementCollector collector,
                                        IProgressMonitor monitor ) {
 
-        monitor.beginTask("Reading SDF file", IProgressMonitor.UNKNOWN);
+        int ticks = IProgressMonitor.UNKNOWN;
+        try {
+            long fileSize = EFS.getStore( sdfFile.getLocationURI() )
+                               .fetchInfo()
+                               .getLength();
+            if ( fileSize < Integer.MAX_VALUE ) {
+                ticks = (int)fileSize;
+                logger.debug( "ticks: " + ticks );
+            }
+        } 
+        catch ( CoreException e ) {
+            LogUtils.debugTrace( logger, e );
+        }
+        monitor.beginTask("Reading SDF file", ticks);
         Node first = (Node) sdfFile.getAdapter( Node.class );
         if ( first == null ) {
             first = new Node(null);
@@ -65,10 +81,14 @@ public class MoleculesFromSDF implements IDeferredWorkbenchAdapter,
                                           IElementCollector collector,
                                           IProgressMonitor monitor ) {
         Node node = first;
-        while((node = node.next())!=null ) {
+        long lastPos = 0;
+        while ( (node = node.next()) != null ) {
             collector.add( node.data(), monitor);
             children.add( node.data() );
-            monitor.worked( 1 );
+            long currentPos = node.data().getPosition();
+            monitor.worked( (int) (currentPos - lastPos) );
+            logger.debug( "currentpos: " + currentPos );
+            lastPos = currentPos;
             if (monitor.isCanceled())
                 throw new OperationCanceledException();
         }
