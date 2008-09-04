@@ -26,8 +26,10 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
 import org.openscience.cdk.geometry.GeometryTools;
@@ -103,19 +105,29 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
                     new Image( Display.getDefault(),
                                imageWidth,
                                imageWidth );
-            GC gc;
-            image.setBackground( Display.getCurrent()
-                                     .getSystemColor(SWT.COLOR_WHITE ));
+            GC gc= new GC( image );
+            Color greenScreen = new Color(Display.getCurrent(), 222, 223, 224);
+            
+            gc.setBackground( greenScreen );
+            gc.fillRectangle( image.getBounds() );
+            
+            renderer.getRenderer2DModel().setBackColor(new java.awt.Color(222,223,224));
+            
             renderer.paintMolecule(
                                     drawMolecule,
-                                    gc = new GC( image ),
+                                    gc ,
                                     new Rectangle2D.Double(
                                              0,
                                              0,
                                              imageWidth,
                                              imageWidth ) );
+            
+            ImageData imageData = image.getImageData();
+            imageData.transparentPixel = imageData.palette.getPixel(greenScreen
+            .getRGB());
             gc.dispose();
-            return image;
+            greenScreen.dispose();
+            return new Image(Display.getDefault(),imageData);
         }
         return null;
     }
