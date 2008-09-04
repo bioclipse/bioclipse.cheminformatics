@@ -71,7 +71,7 @@ public class SDFAdapterFactory implements IAdapterFactory {
                      new NullProgressMonitor());
         List<ICDKMolecule> result=
             Activator.getDefault().getCDKManager().loadMolecules(file);
-        assert(result.size()<2);
+        assert(result.size()==1);
         is.close();
         file.delete(true,null);
         return result.get(0);
