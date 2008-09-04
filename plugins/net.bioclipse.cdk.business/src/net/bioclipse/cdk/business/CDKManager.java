@@ -29,7 +29,6 @@ import java.util.List;
 import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.BioList;
@@ -38,18 +37,19 @@ import net.bioclipse.core.jobs.Job;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.ui.progress.IElementCollector;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
+import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
+import org.openscience.cdk.atomtype.mapper.AtomTypeMapper;
+import org.openscience.cdk.config.AtomTypeFactory;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.fingerprint.FingerprinterTool;
@@ -763,45 +763,60 @@ public class CDKManager implements ICDKManager {
     
     public ICDKMolecule depictSybylAtomTypes(IMolecule mol) throws InvocationTargetException{
     	    	
-    	ICDKMolecule cdkmol;
-		try {
-			cdkmol = create(mol);
-		} catch (BioclipseException e) {
+        ICDKMolecule cdkmol;
+        try {
+            cdkmol = create(mol);
+        } catch (BioclipseException e) {
             System.out.println("Error converting cdk10 to cdk");
             e.printStackTrace();
             throw new InvocationTargetException(e);
-		}
-		
-    	IAtomContainer ac=cdkmol.getAtomContainer();
-    	
-    	SybylAtomTypeMatcher matcher = SybylAtomTypeMatcher.getInstance(ac.getBuilder());
-		IAtomType[] sybylTypes = new IAtomType[ac.getAtomCount()];
-		int atomCounter = 0;
+        }
 
-		for ( IAtom atom : ac.atoms() ) {
-    		atom.setAtomTypeName(null);
-    		
-    		IAtomType matched;
-			try {
-				matched = matcher.findMatchingAtomType(ac, atom);
-				sybylTypes[atomCounter]=matched; // yes, setting null's here is important
+        IAtomContainer ac=cdkmol.getAtomContainer();
 
-			} catch (CDKException e) {
-	            System.out.println("Error depicting SYbyl atom type with CDK.");
-	            e.printStackTrace();
-	            throw new InvocationTargetException(e);
-			}
-			atomCounter++;
-    	}
-    	
-    	// now that full perception is finished, we can set atom type names:
-    	for (int i=0; i<sybylTypes.length; i++) {
-    	  ac.getAtom(i).setAtomTypeName(sybylTypes[i].getAtomTypeName());
-    	}
+        CDKAtomTypeMatcher cdkMatcher = CDKAtomTypeMatcher.getInstance(ac.getBuilder());
+        AtomTypeMapper mapper = AtomTypeMapper.getInstance("org/openscience/cdk/dict/data/cdk-sybyl-mappings.owl");
+        AtomTypeFactory factory = AtomTypeFactory.getInstance("org/openscience/cdk/dict/data/sybyl-atom-types.owl",
+            ac.getBuilder()
+        );
+        IAtomType[] sybylTypes = new IAtomType[ac.getAtomCount()];
+        int atomCounter = 0;
 
-	
-    	return cdkmol;
-    	
+        try {
+            System.out.println("smiles: " + mol.getSmiles());
+            System.out.println("cml: " + mol.getCML());
+            System.out.println("Arom: " + CDKHueckelAromaticityDetector.detectAromaticity( ac ));
+        } catch ( Exception e1 ) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+        try {
+            for ( IAtom atom : ac.atoms() ) {
+                IAtomType type = cdkMatcher.findMatchingAtomType(ac, atom);
+                AtomTypeManipulator.configure(atom, type);
+            }
+            System.out.println("Arom: " + CDKHueckelAromaticityDetector.detectAromaticity(ac));
+            for ( IAtom atom : ac.atoms() ) {
+                String mappedType = mapper.mapAtomType(atom.getAtomTypeName());
+                if ("C.2".equals(mappedType) && atom.getFlag(CDKConstants.ISAROMATIC)) {
+                    mappedType = "C.ar";
+                } else if ("N.pl3".equals(mappedType) && atom.getFlag(CDKConstants.ISAROMATIC)) {
+                    mappedType = "N.ar";
+                }
+                sybylTypes[atomCounter]=factory.getAtomType(mappedType);; // yes, setting null's here is important
+                atomCounter++;
+            }
+
+            // now that full perception is finished, we can set atom type names:
+            for (int i=0; i<sybylTypes.length; i++) {
+                ac.getAtom(i).setAtomTypeName(sybylTypes[i].getAtomTypeName());
+            }
+        } catch (CDKException exception) {
+            throw new InvocationTargetException(exception, "Error while perceiving atom types: " + exception.getMessage());
+        }
+
+        return cdkmol;
     }
     
 	public void saveMol2(ICDKMolecule mol, String filename) throws InvocationTargetException{

@@ -38,13 +38,17 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Assert;
 import org.junit.Test;
+import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.templates.MoleculeFactory;
+import org.openscience.cdk.tools.diff.AtomContainerDiff;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 public class CDKManagerTest {
 
@@ -316,7 +320,7 @@ public class CDKManagerTest {
     }
 
     @Test
-    public void testSybylAtomTypePerceptionBenzene() throws FileNotFoundException, IOException, BioclipseException, CoreException, InvocationTargetException{
+    public void testSybylAtomTypePerceptionBenzene() throws CDKException, FileNotFoundException, IOException, BioclipseException, CoreException, InvocationTargetException{
 
         IAtomContainer ac=MoleculeFactory.makeBenzene();
         
@@ -325,6 +329,8 @@ public class CDKManagerTest {
     	ICDKMolecule mol2 = cdk.depictSybylAtomTypes(mol);
     	
     	System.out.println("** BENZENE **");
+    	
+    	System.out.println(AtomContainerDiff.diff( ac, mol2.getAtomContainer()));
     	
     	for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
     		IAtom a=mol2.getAtomContainer().getAtom(i);
