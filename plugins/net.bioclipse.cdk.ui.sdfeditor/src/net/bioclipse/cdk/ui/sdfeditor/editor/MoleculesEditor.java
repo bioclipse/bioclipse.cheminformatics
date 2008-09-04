@@ -262,8 +262,8 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
     }
 
     public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
-
-        reactOnSelection( (IStructuredSelection) selection );
+        if(selection instanceof IStructuredSelection)
+            reactOnSelection( (IStructuredSelection) selection );
 
     }
 }
