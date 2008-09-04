@@ -113,9 +113,9 @@ public class BuilderThread extends Thread {
                 if (readingName) {
                     if (c == '\n') {
                         newlinesFoundWhileReadingName++;
-                        if(newlinesFoundWhileReadingName == 2 &&
+                        if(newlinesFoundWhileReadingName >=1 &&
                                 readinLineAfterDollar){
-                            moleculeStartsAt = position;
+                            moleculeStartsAt = position+1;
                             readinLineAfterDollar = false;
                         }
                     }
