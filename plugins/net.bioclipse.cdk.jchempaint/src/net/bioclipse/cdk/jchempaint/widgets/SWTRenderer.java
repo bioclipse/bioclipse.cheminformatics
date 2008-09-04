@@ -85,10 +85,16 @@ public class SWTRenderer implements IJava2DRenderer {
 
 	protected LoggingTool logger;
 	IsotopeFactory isotopeFactory;
+	float fscale = 16;
 
 	public SWTRenderer(Renderer2DModel model) {
 		this.rendererModel = model;
 		logger = new LoggingTool(this);
+	}
+	
+	public SWTRenderer(Renderer2DModel model, float fscale){
+	    this(model);
+	    this.fscale = fscale;
 	}
 	
 	public void paintChemModel(IChemModel model, GC graphics) {
@@ -133,11 +139,12 @@ public class SWTRenderer implements IJava2DRenderer {
 				(float)m[4],	(float)m[5] 	       );
 //		graphics.transform(affine);
 		graphics.setTransform(tf);
-		
+		createFont(graphics,.4f,true );
 //		System.out.println("transform matrix:" + graphics.getTransform());
 
 		if (rendererModel.getUseAntiAliasing())
 		{
+		    graphics.setAntialias(SWT.ON );
 //			graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		}
 		// set basic shape form for bonds
@@ -652,9 +659,17 @@ public class SWTRenderer implements IJava2DRenderer {
 	}
 	private void createFont(GC graphics,float smallFontFactor,boolean force){
 	    
-            if (force || normalAtomFont == null || smallAtomFont==null) {
-            normalAtomFont = new Font(graphics.getDevice(), "Arial", 16,
-                    SWT.NORMAL);
+	    if (force || normalAtomFont == null || smallAtomFont==null) {
+          if(normalAtomFont!=null) normalAtomFont.dispose();
+          if(smallAtomFont != null) smallAtomFont.dispose();
+          
+          
+//        float[] transmatrix = { 1f / fscale, 0f, 0f, -1f / fscale};
+//        AffineTransform trans = new AffineTransform(transmatrix);
+//          double scale=trans.getScaleY();
+          int fontSize =(int) Math.abs( fscale );// (int) Math.abs(16*1-scale);
+          normalAtomFont = new Font(graphics.getDevice(), "Arial", fontSize,
+              SWT.NORMAL);
 
             // the graphics objects has a transform which is 'reversed' to go
             // from world coordinates

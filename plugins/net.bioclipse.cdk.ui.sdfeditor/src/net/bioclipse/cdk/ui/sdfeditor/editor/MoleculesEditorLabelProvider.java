@@ -57,10 +57,10 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
     }
     private void setupRenderer() {
         
-        renderer = new SWTRenderer( new Renderer2DModel() );
+        renderer = new SWTRenderer( new Renderer2DModel() , 7f);
         renderer.getRenderer2DModel().setDrawNumbers( false );
         renderer.getRenderer2DModel().setIsCompact( true );
-        renderer.getRenderer2DModel().setBondWidth( 20 );
+        renderer.getRenderer2DModel().setBondWidth( 15 );
         renderer.getRenderer2DModel().setUseAntiAliasing(true );
         
     }
@@ -92,6 +92,7 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
             GeometryTools.translateAllPositive( drawMolecule );
             GeometryTools.scaleMolecule( drawMolecule, screenSize, 0.8 );
             GeometryTools.center( drawMolecule, screenSize );
+            
 
             // renderer.getRenderer2DModel().setRenderingCoordinates(
             // coordinates);
