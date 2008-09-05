@@ -184,6 +184,9 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
             IStructuredSelection stSelection = (IStructuredSelection) selection;
             reactOnSelection( stSelection );
         }
+        
+        getSite().setSelectionProvider(viewer);
+        
     }
 
     private List<String> createHeaderFromSelection( IAdaptable element ) {
