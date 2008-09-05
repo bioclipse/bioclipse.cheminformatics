@@ -21,6 +21,7 @@ import java.util.Set;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.ui.model.MoleculesFromSDF;
+import net.bioclipse.cdk.ui.sdfeditor.MoleculesOutlinePage;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 
 import org.eclipse.core.resources.IFile;
@@ -43,6 +44,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.interfaces.IAtomContainer;
 
 public class MoleculesEditor extends EditorPart implements ISelectionProvider,
@@ -55,6 +57,8 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
     MoleculesEditorLabelProvider labelProvider;
     public List<String>                          propertyHeaders;
     TreeViewer viewer;
+
+    private MoleculesOutlinePage outlinePage;
     
     
     public MoleculesEditor() {
@@ -268,5 +272,18 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
         if(selection instanceof IStructuredSelection)
             reactOnSelection( (IStructuredSelection) selection );
 
+    }
+    
+    @Override
+    public Object getAdapter( Class adapter ) {
+    
+        if(IContentOutlinePage.class.equals( adapter )) {
+            if(outlinePage == null) {
+                outlinePage = new MoleculesOutlinePage();
+                outlinePage.setInput(getEditorInput());
+            }
+            return outlinePage;
+        }
+        return super.getAdapter( adapter );
     }
 }
