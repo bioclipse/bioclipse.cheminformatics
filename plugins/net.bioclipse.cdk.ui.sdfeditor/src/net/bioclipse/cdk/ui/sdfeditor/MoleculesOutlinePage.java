@@ -134,7 +134,8 @@ public class MoleculesOutlinePage extends ContentOutlinePage implements
             builder.append( o.toString() );
             builder.append( ", " );
         }
-        builder.delete( builder.length()-2, builder.length()-1 );
+        if(builder.length()>=2)
+            builder.delete( builder.length()-2, builder.length()-1 );
         return builder.toString();
     }
 }
