@@ -78,6 +78,7 @@ public class MoleculeResourceTypeItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
+			addExcludedPropertyDescriptor(object);
 			addFilePropertyDescriptor(object);
 			addIdPropertyDescriptor(object);
 			addNamePropertyDescriptor(object);
@@ -85,6 +86,28 @@ public class MoleculeResourceTypeItemProvider
 			addUrlPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
+	}
+
+	/**
+	 * This adds a property descriptor for the Excluded feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addExcludedPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_MoleculeResourceType_excluded_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_MoleculeResourceType_excluded_feature", "_UI_MoleculeResourceType_type"),
+				 QsarPackage.Literals.MOLECULE_RESOURCE_TYPE__EXCLUDED,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -234,6 +257,7 @@ public class MoleculeResourceTypeItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(MoleculeResourceType.class)) {
+			case QsarPackage.MOLECULE_RESOURCE_TYPE__EXCLUDED:
 			case QsarPackage.MOLECULE_RESOURCE_TYPE__FILE:
 			case QsarPackage.MOLECULE_RESOURCE_TYPE__ID:
 			case QsarPackage.MOLECULE_RESOURCE_TYPE__NAME:
