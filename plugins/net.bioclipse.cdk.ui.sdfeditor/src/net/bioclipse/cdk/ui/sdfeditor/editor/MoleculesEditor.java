@@ -209,8 +209,12 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
     private void reactOnSelection( IStructuredSelection selection ) {
 
         Object element = selection.getFirstElement();
-        if ( element instanceof SDFElement )
-            viewer.setSelection( new StructuredSelection( element ), true );
+        if ( element instanceof ICDKMolecule )
+            if (((IStructuredSelection)viewer.getSelection()).toList()
+                                            .containsAll( selection.toList() ))
+                return;
+            else
+                viewer.setSelection( new StructuredSelection( element ), true );
     }
 
     @Override

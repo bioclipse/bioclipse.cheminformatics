@@ -65,7 +65,7 @@ public class MoleculesOutlinePage extends ContentOutlinePage implements
                     ICDKMolecule molecule = (ICDKMolecule)
                         ((IAdaptable)element).getAdapter( ICDKMolecule.class );
                    if(molecule !=null){
-                       return molecule.getName();
+                       return MoleculesOutlinePage.this.getName( molecule );
                    }                  
                 }
                 return "-X-";
@@ -92,7 +92,7 @@ public class MoleculesOutlinePage extends ContentOutlinePage implements
        getTreeViewer().setInput( input
                                  .getAdapter( IMoleculesEditorModel.class ) );
        
-       getSite().setSelectionProvider( this );
+       getSite().setSelectionProvider( getTreeViewer() );
        getSite().getPage().addSelectionListener( this );
         
     }
@@ -126,5 +126,15 @@ public class MoleculesOutlinePage extends ContentOutlinePage implements
             
         }
         return image2d;
+    }
+    
+    private String getName(ICDKMolecule molecule) {        
+        StringBuilder builder = new StringBuilder();
+        for(Object o:molecule.getAtomContainer().getProperties().values()) {
+            builder.append( o.toString() );
+            builder.append( ", " );
+        }
+        builder.delete( builder.length()-2, builder.length()-1 );
+        return builder.toString();
     }
 }
