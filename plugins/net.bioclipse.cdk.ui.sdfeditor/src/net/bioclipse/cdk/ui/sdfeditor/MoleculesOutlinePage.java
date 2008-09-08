@@ -149,8 +149,10 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
     private Image getImage(){
         if(image2d == null) {
             ImageDescriptor imageDescriptor 
-                        = Activator.imageDescriptorFromPlugin(
-                         "net.bioclipse.ui", "icons/mol_2d.png" );
+                        = Activator.imageDescriptorFromPlugin( 
+                                    net.bioclipse.core.Activator.PLUGIN_ID,                         
+                         //"icons/mol_2d.png" );
+                           "icons/source.gif");                                           
             if(imageDescriptor !=null) 
                 image2d = imageDescriptor.createImage();
             
