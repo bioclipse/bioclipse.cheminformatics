@@ -123,6 +123,7 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
                              && childElements.length > 0 ) {
                             // TODO make it a job on the GUI thread
                             if ( childElements[0] instanceof IAdaptable ){
+                                if( ((IAdaptable) childElements[0]).getAdapter( ICDKMolecule.class )!= null)
                                 labelProvider.setPropertyHeaders(
                                                createHeaderFromSelection( 
                                                (IAdaptable) childElements[0] ));
@@ -144,6 +145,7 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
                                                         && element != null ) {
                                                        // TODO make it a job on the GUI thread
                                                        if ( element instanceof IAdaptable ){
+                                                           if( ((IAdaptable) element).getAdapter( ICDKMolecule.class )!= null)
                                                            labelProvider.setPropertyHeaders(
                                                                           createHeaderFromSelection( 
                                                                           (IAdaptable) element ));

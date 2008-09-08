@@ -18,15 +18,21 @@ import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.cdk.ui.views.MoleculeContentProvider;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ILazyTreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.ui.progress.DeferredTreeContentManager;
+import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 
-public class MoleculesEditorContentProvider extends MoleculeContentProvider implements
+public class MoleculesEditorContentProvider  implements
         ILazyTreeContentProvider {
 
     TreeViewer viewer;
     Logger logger = Logger.getLogger(MoleculesEditorContentProvider.class);
+    
+    DeferredTreeContentManager contentManager;
+    
     public MoleculesEditorContentProvider(TreeViewer viewer) {
 
         this.viewer = viewer;
@@ -49,16 +55,17 @@ public class MoleculesEditorContentProvider extends MoleculeContentProvider impl
      */
     public void updateElement( Object parent, int index ) {
         
-        Object element;
+        Object element = null;
         if(parent instanceof IMoleculesEditorModel){
             element = ((IMoleculesEditorModel)parent).getMoleculeAt(index );          
-        }else{
-            Object[] elements = getElements( parent );
-            if ( index >= elements.length
-                    || !(elements[index] instanceof IAdaptable) )
-                   return;
-            element = elements[index];
         }
+//        if(element == null && (parent instanceof IDeferredWorkbenchAdapter)){
+//            Object[] objs = contentManager.getChildren( parent );
+//            if(objs.length>0)
+//                viewer.replace( parent, index, objs[0] );
+//            return;
+//        }
+//        
             
         
         if(element instanceof IAdaptable){
@@ -68,14 +75,38 @@ public class MoleculesEditorContentProvider extends MoleculeContentProvider impl
             viewer.replace( parent, index, molecule );
         }
     }
+   
 
     /* (non-Javadoc)
      * @see net.bioclipse.cdk.ui.views.MoleculeContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
      */
-    @Override
-    public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {       
-        super.inputChanged( viewer, oldInput, newInput );
-        if(newInput instanceof MoleculesFromSDF)
-            getElements(newInput );
+    
+    public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {    
+        if( (viewer instanceof TreeViewer) && ( 
+                (contentManager == null) || 
+                (this.viewer != viewer ))){
+            this.viewer = (TreeViewer)viewer;
+            contentManager = new DeferredTreeContentManager(
+                                                    (AbstractTreeViewer)viewer);            
+        }
+        if(oldInput != newInput && newInput instanceof IDeferredWorkbenchAdapter) {
+            Object[] objs = contentManager.getChildren( newInput );
+            this.viewer.add( newInput, objs[0] );
+        }
+//        super.inputChanged( viewer, oldInput, newInput );
+//        if(newInput instanceof MoleculesFromSDF)
+//            getElements(newInput );
+    }
+
+    public Object getParent( Object element ) {
+
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void dispose() {
+
+        // TODO Auto-generated method stub
+        
     }
 }
