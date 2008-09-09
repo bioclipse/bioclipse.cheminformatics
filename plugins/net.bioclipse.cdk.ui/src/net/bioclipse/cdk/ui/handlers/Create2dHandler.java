@@ -15,29 +15,29 @@ package net.bioclipse.cdk.ui.handlers;
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionDelegate;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 
 /**
  * A handler class for a Generate 2D Coordinates menu item
  */
-public class Create2dHandler extends AbstractHandler {
+public class Create2dHandler extends ActionDelegate {
 
 	public int answer;
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
-	public Object execute(ExecutionEvent arg0) throws ExecutionException {
+	public void run(IAction action){
 		  ISelection sel=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
 		  if (sel.isEmpty()==false){
 		      if (sel instanceof IStructuredSelection) {
@@ -47,7 +47,7 @@ public class Create2dHandler extends AbstractHandler {
 					mol = Activator.getDefault().getCDKManager().loadMolecule((IFile)ssel.getFirstElement());
 					mol = (ICDKMolecule)Activator.getDefault().getCDKManager().generate2dCoordinates(mol);
 				 } catch (Exception e) {
-					throw new ExecutionException(e.getMessage());
+					throw new RuntimeException(e.getMessage());
 				 }
 		         MessageBox mb = new MessageBox(new Shell(), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
 		         mb.setText("Change file");
@@ -57,7 +57,7 @@ public class Create2dHandler extends AbstractHandler {
 		        	 try {
 						Activator.getDefault().getCDKManager().saveMolecule(mol, (IFile)ssel.getFirstElement(), ((IFile)ssel.getFirstElement()).getFileExtension());
 					} catch (Exception e) {
-						throw new ExecutionException(e.getMessage());
+						throw new RuntimeException(e.getMessage());
 					}
 		         }else{
 		        	 SaveAsDialog dialog=new SaveAsDialog(new Shell());
@@ -81,13 +81,12 @@ public class Create2dHandler extends AbstractHandler {
 			     	    		Activator.getDefault().getCDKManager().saveMolecule(mol, ((IFile)ssel.getFirstElement()).getWorkspace().getRoot().getFile(result), ((IFile)ssel.getFirstElement()).getFileExtension());
 			     	    	}
 						 } catch (Exception e) {
-							throw new ExecutionException(e.getMessage());
+							throw new RuntimeException(e.getMessage());
 						 }
 		        	 }
 		         }
 		      }
 		  }		
-		  return null;
 	}
 
 }
