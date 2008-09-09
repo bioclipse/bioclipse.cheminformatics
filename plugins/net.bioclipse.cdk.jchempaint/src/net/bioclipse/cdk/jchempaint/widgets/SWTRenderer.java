@@ -43,6 +43,8 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.LineAttributes;
 import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.graphics.Rectangle;
@@ -86,6 +88,8 @@ public class SWTRenderer implements IJava2DRenderer {
 	protected LoggingTool logger;
 	IsotopeFactory isotopeFactory;
 	float fscale = 16;
+	
+	Map<java.awt.Color,Color> cleanUp= new HashMap<java.awt.Color,Color>();
 
 	public SWTRenderer(Renderer2DModel model) {
 		this.rendererModel = model;
@@ -306,6 +310,51 @@ public class SWTRenderer implements IJava2DRenderer {
 			paintAtomSymbol(atom, graphics, alignment, isRadical);
 		}
 	}
+	
+	private void drawTextUpsideDown(GC graphics, TextLayout layout, int x, int y){
+	    Rectangle bounds = layout.getBounds();
+	    Image image = new Image( graphics.getDevice(), bounds.width, bounds.height );
+	    GC imageGC = new GC( image );
+	        imageGC.setForeground( graphics.getForeground() );
+	        imageGC.setBackground( graphics.getBackground() );
+	        layout.draw( imageGC, 0, 0);
+	        Image im2= new Image(graphics.getDevice(),
+	                             flip(image.getImageData(),true));
+	        graphics.drawImage( im2, x, y );	    
+	    imageGC.dispose();	    
+	    image.dispose();
+	    im2.dispose();
+	}
+	
+  static ImageData flip(ImageData srcData, boolean vertical) {
+      int bytesPerPixel = srcData.bytesPerLine / srcData.width;
+      int destBytesPerLine = srcData.width * bytesPerPixel;
+      byte[] newData = new byte[srcData.data.length];
+      for (int srcY = 0; srcY < srcData.height; srcY++) {
+        for (int srcX = 0; srcX < srcData.width; srcX++) {
+          int destX = 0, destY = 0, destIndex = 0, srcIndex = 0;
+          if (vertical) {
+            destX = srcX;
+            destY = srcData.height - srcY - 1;
+          } else {
+            destX = srcData.width - srcX - 1;
+            destY = srcY;
+          }
+          destIndex = (destY * destBytesPerLine)
+              + (destX * bytesPerPixel);
+          srcIndex = (srcY * srcData.bytesPerLine)
+              + (srcX * bytesPerPixel);
+          System.arraycopy(srcData.data, srcIndex, newData, destIndex,
+              bytesPerPixel);
+        }
+      }
+      // destBytesPerLine is used as scanlinePad to ensure that no padding is
+      // required
+      return new ImageData(srcData.width, srcData.height, srcData.depth,
+          srcData.palette, destBytesPerLine, newData);
+    }
+
+	
 	public void paintAtomSymbol(IAtom atom, GC graphics, int alignment, boolean isRadical)
 	{
 		Color saveColor = graphics.getForeground();
@@ -318,26 +367,7 @@ public class SWTRenderer implements IJava2DRenderer {
 		
 		createFont(graphics,.4f,true);
 		Font fontAtom=getFont(FontSize.NORMAL);
-////		if (rendererModel.getFont() != null) {
-////			fontAtom = rendererModel.getFont();
-////			System.out.println("the font is now: " + fontAtom);
-////		}
-////		else 
-//			fontAtom = new Font(graphics.getDevice(),"Arial",16,SWT.NORMAL);
-//
-//		//the graphics objects has a transform which is 'reversed' to go from world coordinates
-//		//to screencoordinates, so transform the characters back to show them 'up-side-up'.
-//		float fscale = 10f;
-//		float[] transmatrix = { 1f / fscale, 0f, 0f, -1f / fscale};
-//		AffineTransform trans = new AffineTransform(transmatrix);
-//		//fontAtom = fontAtom.deriveFont(trans);
-//		
-//		//FIXME: add this 0.4 in the RendererModel
-//		float sizeSmall = (float)(fontAtom.getFontData()[0].getHeight() * 0.4);
-////		Font fontSmall = fontAtom.deriveFont(sizeSmall); //font for upper/lower text such as Massnumber, Charges, HydrogenCount etc..
-//		
-//		FontData fd=fontAtom.getFontData()[0];
-//		fd.setHeight((int)sizeSmall);
+
 		Font fontSmall =getFont(FontSize.SMALL); 
 		
 		graphics.setFont(fontAtom);
@@ -434,8 +464,9 @@ public class SWTRenderer implements IJava2DRenderer {
 //				graphics.setFont(fontSmall);
 				graphics.setForeground(otherColor);
 //				layoutMass.draw(graphics, (float)massNumberX, (float)massNumberY);// draw Mass Number
-				
-				layoutMass.draw(graphics, (int)massNumberX, (int)massNumberY);
+				// FIXME : draw text
+//				layoutMass.draw(graphics, (int)massNumberX, (int)massNumberY);
+				drawTextUpsideDown( graphics, layoutMass,(int)massNumberX, (int)massNumberY);
 				layoutMass.dispose();
 			}
 		}
@@ -506,12 +537,13 @@ public class SWTRenderer implements IJava2DRenderer {
 			fill(graphics,boundsHydroC);
 
 			graphics.setForeground(otherColor);
-			
+			// FIXME : draw text
 			graphics.setFont(fontAtom);
-			layoutH.draw(graphics, (int)hydroGenX, (int)hydroGenY);// draw the 'H'
+//			layoutH.draw(graphics, (int)hydroGenX, (int)hydroGenY);// draw the 'H'
+			drawTextUpsideDown( graphics, layoutH, (int)hydroGenX, (int)hydroGenY );
 			graphics.setFont(fontSmall);
-			layoutHC.draw(graphics, (int)hydroGenCX, (int)hydroGenCY);// draw the hydrogen Count
-			
+//			layoutHC.draw(graphics, (int)hydroGenCX, (int)hydroGenCY);// draw the hydrogen Count
+			drawTextUpsideDown( graphics, layoutHC, (int)hydroGenCX, (int)hydroGenCY);
 //			layoutH.dispose();
 //			layoutHC.dispose();
 			
@@ -588,11 +620,15 @@ public class SWTRenderer implements IJava2DRenderer {
 				fill(graphics,boundsFormalC);// draw Formal Charge background
 //				graphics.setFont(fontSmall);
 				graphics.setForeground(otherColor);
-				layoutFormal.draw(graphics, (int)formalChargeX2, (int)formalChargeY2);// draw Formal Charge
+				// FIXME : draw text
+//				layoutFormal.draw(graphics, (int)formalChargeX2, (int)formalChargeY2);// draw Formal Charge
+				drawTextUpsideDown(graphics, layoutFormal, (int)formalChargeX2, (int)formalChargeY2);
 //				layoutFormal.dispose();
 			}
 			if (textFormal != "") {
-				layoutFormalC.draw(graphics, (int)formalChargeX, (int)formalChargeY);// draw Formal Charge
+			    // FIXME : draw text
+//				layoutFormalC.draw(graphics, (int)formalChargeX, (int)formalChargeY);// draw Formal Charge
+				drawTextUpsideDown(graphics,layoutFormalC, (int)formalChargeX, (int)formalChargeY);
 			}
 //			layoutFormalC.dispose();
 		}
@@ -601,8 +637,9 @@ public class SWTRenderer implements IJava2DRenderer {
 		graphics.setFont(fontAtom);
 		graphics.setForeground(atomColor);
 		
-		layoutAtom.draw(graphics, (int)atomSymbolX, (int)atomSymbolY);// draw atom symbol 4
-		
+		// FIXME : draw text
+		//layoutAtom.draw(graphics, (int)atomSymbolX, (int)atomSymbolY);// draw atom symbol 4
+		drawTextUpsideDown(graphics, layoutAtom, (int)atomSymbolX, (int)atomSymbolY);
 		
 	/*	String test = "MgH";
 		frc = graphics.getFontRenderContext();
@@ -623,7 +660,9 @@ public class SWTRenderer implements IJava2DRenderer {
 //		layoutAtom.dispose();
 		
 	}
-	Map<java.awt.Color,Color> cleanUp= new HashMap<java.awt.Color,Color>();
+	
+	
+	
 	public  Color toSWTColor(GC graphics,java.awt.Color color) {
 	    if(color==null) color=java.awt.Color.BLACK;
 		Color otherColor=cleanUp.get(color);
