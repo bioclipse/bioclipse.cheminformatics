@@ -89,39 +89,35 @@
                menubarPath="additions"
                tooltip="Create SMILES code for the selected molecule"/>
       </objectContribution> 
+   </extension-->
+
+   <extension point="org.eclipse.ui.popupMenus">
+    <objectContribution
+      id="net.bioclipse.cdk.ui.popup.create2d"
+      objectClass="org.eclipse.core.resources.IFile">
+        <visibility>
+        <or>
+           <objectState
+             name="contentTypeId"
+             value="net.bioclipse.contenttypes.mdlMolFile2D"/>
+           <objectState
+             name="contentTypeId"
+             value="net.bioclipse.contenttypes.cml.singleMolecule3d"/>
+           <objectState
+             name="contentTypeId"
+             value="net.bioclipse.contenttypes.cml.multipleMolecule2d"/>
+        </or>
+        </visibility>
+         <action
+           class="net.bioclipse.cdk.ui.handlers.Create2dHandler"
+           id="net.bioclipse.cdk.ui.handlers.create2d"
+           label="Create 2D coordinates"
+           menubarPath="additions" 
+           icon="icons/molecule2D.png">
+         </action>
+    </objectContribution>
    </extension>
-
-  	<extension
-        point="org.eclipse.ui.commands">
-     	<category
-              id="net.bioclipse.ui.CDKCategory"
-              name="CdkCategory">
-     	</category>
-     	<command
-           id="net.bioclipse.ui.commands.create2d"
-           categoryId="net.bioclipse.ui.CDKCategory"
-           name="Create 2D coordinates"/>
-  	</extension>
-
-	<extension
-        point="org.eclipse.ui.handlers">
-     	<handler
-        	class="net.bioclipse.cdk.ui.handlers.Create2dHandler"
-        	commandId="net.bioclipse.ui.commands.create2d"> 
-     	</handler>
-	</extension> 
-	
-	<extension 
-  		point="org.eclipse.ui.menus">
-  		<menuContribution
-        	locationURI="popup:org.eclipse.ui.popup.any?after=additions">
-        	<command
-        		icon="icons/molecule2D.png"
-    	    	commandId="net.bioclipse.ui.commands.create2d">
-        	</command>
-     	</menuContribution>
-	</extension-->
-	
+   	
 	<extension
     	point="org.eclipse.help.toc">
 		<toc
