@@ -39,9 +39,13 @@ public class CDKAdapterFactory implements IAdapterFactory {
             }
             else if (adapterType.equals( Node.class )) {
                 molecule = BioclipseStore.get( file, file );
+                if(! (molecule instanceof Node) )
+                    molecule = null;
             }
         }
-        return molecule;
+        if(molecule !=null &&adapterType.isAssignableFrom( molecule.getClass()))
+            return molecule;
+        return null;
     }
 
     public Class[] getAdapterList() {
