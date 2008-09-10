@@ -72,7 +72,8 @@ public class MoleculesEditorContentProvider  implements
             ICDKMolecule molecule = (ICDKMolecule) ((IAdaptable) element)
                                     .getAdapter( ICDKMolecule.class );
         if ( molecule != null )
-            viewer.replace( parent, index, molecule );
+            viewer.replace( parent, index, 
+                                new MoleculeEditorElement(index,molecule) );
         }
     }
    

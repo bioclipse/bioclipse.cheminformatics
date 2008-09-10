@@ -153,13 +153,18 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
             IAdaptable row = (IAdaptable) element;
             ICDKMolecule molecule =
                     (ICDKMolecule) row.getAdapter( ICDKMolecule.class );
-
+            MoleculeEditorElement indexE = (MoleculeEditorElement) 
+                                row.getAdapter( MoleculeEditorElement.class );
+            
             // if(propertyHeaders==null && molecule!=null)
             // createPropertyHeaders( molecule.getAtomContainer());
 
             switch ( columnIndex ) {
                 case 0:
-                    text = "NA";//text = Integer.toString( row.getNumber() );
+                    if(indexE != null)
+                        text = Integer.toString( indexE.getIndex() );
+                    else
+                        text = "NA";//text = Integer.toString( row.getNumber() );
                     break;
                 case 1:
                     // text = Long.toString(row.getPosition());
