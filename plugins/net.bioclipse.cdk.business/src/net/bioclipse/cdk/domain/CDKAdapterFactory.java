@@ -1,14 +1,10 @@
 package net.bioclipse.cdk.domain;
 
-import java.io.IOException;
-
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.core.BioclipseStore;
-import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 @SuppressWarnings("unchecked")
@@ -32,9 +28,7 @@ public class CDKAdapterFactory implements IAdapterFactory {
                         LogUtils.traceStringOf( e );
                         return null;
                     }
-                    BioclipseStore.put( file,file,molecule); 
-//                                        file,
-//                                        ICDKMolecule.class );
+                    BioclipseStore.put( file,file,molecule);
                 }
             }
             else if (adapterType.equals( Node.class )) {

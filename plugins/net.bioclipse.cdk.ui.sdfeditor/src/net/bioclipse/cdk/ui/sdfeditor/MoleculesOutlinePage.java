@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
@@ -95,7 +96,15 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
                         ((IAdaptable)element).getAdapter( ICDKMolecule.class );
                    if(molecule !=null){
                        return MoleculesOutlinePage.this.getName( molecule );
-                   }                  
+                   }else {
+                       // TODO Override creation in DeferredTreeContentManager
+                       //  and do a getName from WorkspaceAdapter
+                       Object o=((IAdaptable)element).getAdapter( 
+                                                   IWorkbenchAdapter.class );
+                       if(o != null)
+                           return ((IWorkbenchAdapter)o).getLabel( o );
+                       
+                   }
                 }
                 return "-X-";
             }

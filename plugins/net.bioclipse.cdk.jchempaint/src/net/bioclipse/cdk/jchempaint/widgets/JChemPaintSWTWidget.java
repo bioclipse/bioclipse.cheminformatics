@@ -63,7 +63,7 @@ public class JChemPaintSWTWidget extends Canvas {
         setCompactedNess(screenSize);
         renderer.getRenderer2DModel().setBondWidth(10);
         renderer.getRenderer2DModel().setForeColor(Color.BLACK);
-        renderer.getRenderer2DModel().setBackColor( Color.CYAN );
+        renderer.getRenderer2DModel().setBackColor( Color.WHITE );
         renderer.getRenderer2DModel().setHoverOverColor( Color.LIGHT_GRAY );
         
         

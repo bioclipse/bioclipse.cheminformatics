@@ -26,6 +26,7 @@ package net.bioclipse.cdk.jchempaint.widgets;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -146,11 +147,16 @@ public class SWTRenderer implements IJava2DRenderer {
 		graphics.setTransform(tf);
 		createFont(graphics,.4f,true );
 //		System.out.println("transform matrix:" + graphics.getTransform());
-
-		if (rendererModel.getUseAntiAliasing())
-		{
+		
+		if (rendererModel.getUseAntiAliasing()) {
+		    graphics.setAdvanced( true );
 		    graphics.setAntialias(SWT.ON );
+		    graphics.setInterpolation(SWT.HIGH);
 //			graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		}
+		else {
+		    graphics.setAdvanced( true );
+		    graphics.setAntialias( SWT.OFF );
 		}
 		// set basic shape form for bonds
 		
@@ -315,22 +321,34 @@ public class SWTRenderer implements IJava2DRenderer {
 	private void drawTextUpsideDown(GC graphics, TextLayout layout, int x, int y){
 	    
 	    Rectangle bounds = layout.getBounds();
-	    
-	    ImageData alphaMask = drawText( graphics.getDevice(), layout, bounds );
+	    Rectangle doubleBounds = new Rectangle(
+                                               bounds.x,
+                                               bounds.y,
+                                               bounds.width*4,
+                                               bounds.height*4);
+	    ImageData alphaMask = drawText( graphics.getDevice(), layout, doubleBounds );
 	    alphaMask = superFlip( alphaMask, true, graphics.getForeground());
-
+	    graphics.setInterpolation(SWT.HIGH);
 	    Image image = new Image(graphics.getDevice(),alphaMask);	                                 
-	    graphics.drawImage( image, x, y );	    
+	    graphics.drawImage( image, 0,0,doubleBounds.width, doubleBounds.height,
+	                        x, y ,bounds.width,bounds.height);	    
 	    	    
 	    image.dispose();	    	    
 	}
 	
 	private ImageData drawText(Device device, TextLayout layout, Rectangle rect) {
 	    Image image = new Image(device,rect);
-	    
+	    if(layout.getFont() == getFont( FontSize.NORMAL ))
+	        layout.setFont( getFont( FontSize.DOUBLE_N ) );
+	    else
+	        layout.setFont( getFont( FontSize.DOUBLE_S ) );
 	    GC imageGC = new GC(image);
 	        imageGC.setForeground( device.getSystemColor( SWT.COLOR_WHITE ) );
 	        imageGC.setBackground( device.getSystemColor( SWT.COLOR_BLACK ) );
+	        imageGC.setAdvanced( true );
+	        imageGC.setInterpolation(SWT.HIGH);
+	        imageGC.setAntialias( SWT.OFF);
+	        
 	        imageGC.fillRectangle( rect);
 	        layout.draw( imageGC, 0, 0 );
       imageGC.dispose();
@@ -441,15 +459,14 @@ public class SWTRenderer implements IJava2DRenderer {
 		Color otherColor = toSWTColor(graphics,getRenderer2DModel().getForeColor());
 		
 		Color bgColor = toSWTColor(graphics,getRenderer2DModel().getBackColor());
+		paintColouredAtomBackground( atom, bgColor, graphics );
 		if (atom == getRenderer2DModel().getHighlightedAtom()){
 			bgColor = toSWTColor(graphics,getRenderer2DModel().getHoverOverColor());
 		  paintColouredAtomBackground( atom, bgColor, graphics );
 		}
 		
-		//bgColor = Color.green;
 		
-		graphics.setForeground(bgColor);
-		graphics.setBackground(bgColor);
+		
 //		graphics.fill(boundsAtom);// draw atom symbol background
 		
 //		graphics.fillRectangle(	(int)boundsAtom.getX(), (int)boundsAtom.getY(),
@@ -720,16 +737,23 @@ public class SWTRenderer implements IJava2DRenderer {
 	}
 	enum FontSize{
 	    NORMAL,
-	    SMALL;
+	    SMALL,
+	    DOUBLE_N,
+	    DOUBLE_S;
 	}
-	Font normalAtomFont;
-	Font smallAtomFont;
+	Font normalAtomFont, smallAtomFont;
+	Font smallAtomFontD,normalAtomFontD;
+	
 	private Font getFont(FontSize fontSize){
 	    switch (fontSize) {
         case NORMAL:
             return normalAtomFont;
         case SMALL:
             return smallAtomFont;
+        case DOUBLE_N:
+            return normalAtomFontD;
+        case DOUBLE_S:
+            return smallAtomFontD;
         default:
             return normalAtomFont;
         }
@@ -747,7 +771,8 @@ public class SWTRenderer implements IJava2DRenderer {
           int fontSize =(int) Math.abs( fscale );// (int) Math.abs(16*1-scale);
           normalAtomFont = new Font(graphics.getDevice(), "Arial", fontSize,
               SWT.NORMAL);
-
+          normalAtomFontD = new Font(graphics.getDevice(), "Arial", fontSize*4,
+                                     SWT.NORMAL);
             // the graphics objects has a transform which is 'reversed' to go
             // from world coordinates
             // to screencoordinates, so transform the characters back to show
@@ -764,6 +789,9 @@ public class SWTRenderer implements IJava2DRenderer {
             FontData fd = normalAtomFont.getFontData()[0];
             fd.setHeight((int) (fd.getHeight() * smallFontFactor));
             smallAtomFont = new Font(graphics.getDevice(), fd);
+            smallAtomFontD = new Font(graphics.getDevice(), "Arial",
+                                            (int)(fontSize*smallFontFactor*4+.5),
+                                            SWT.NORMAL);
             }         
 	}
 	public void dispose(){
@@ -779,11 +807,19 @@ public class SWTRenderer implements IJava2DRenderer {
 	public static void fill(GC graphics,Rectangle2D rect){
 		graphics.fillRectangle((int)rect.getX(), 
 				(int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight());
-	}
+	}	
 	public static void draw(GC graphics,Rectangle2D rect){
 		graphics.drawRectangle((int)rect.getX(), 
 				(int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight());
 	}
+	public static void fill(GC graphics,Ellipse2D rect){
+	    graphics.fillOval((int)rect.getX(), 
+	        (int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight());
+	  } 
+	  public static void draw(GC graphics,Ellipse2D rect){
+	    graphics.drawOval((int)rect.getX(), 
+	        (int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight());
+	  }
 	/**
 	 *  Paints a rectangle of the given color at the position of the given atom.
 	 *  For example when the atom is highlighted.
@@ -801,12 +837,14 @@ public class SWTRenderer implements IJava2DRenderer {
 		graphics.setForeground(color);
 		graphics.setBackground( color );
 	
-		Rectangle2D shape = new Rectangle2D.Double();
+		Rectangle2D shape = new Rectangle2D.Double(); 
 		shape.setFrame(x - (atomRadius / 2), y - (atomRadius / 2), atomRadius, atomRadius);
+		Ellipse2D shape2 = new Ellipse2D.Double(  );
+		shape2.setFrameFromCenter( x, y, x - (atomRadius / 2), y - (atomRadius / 2) );
 		if(rendererModel.getIsCompact())
-			draw(graphics,shape);
+			draw(graphics,shape2);
 		else
-			fill(graphics,shape);
+			fill(graphics,shape2);
 	}
 	/**
 	 *  A ring is defined aromatic if all atoms are aromatic, -or- all bonds are

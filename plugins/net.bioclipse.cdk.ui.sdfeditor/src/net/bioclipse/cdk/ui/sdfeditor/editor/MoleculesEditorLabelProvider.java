@@ -33,13 +33,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.renderer.IJava2DRenderer;
 import org.openscience.cdk.renderer.Renderer2DModel;
 
 public class MoleculesEditorLabelProvider implements ITableLabelProvider{
 
     public Logger logger = Logger.getLogger(MoleculesEditorLabelProvider.class );
     public List<String>                          propertyHeaders;
-    public SWTRenderer                           renderer;    
+    public IJava2DRenderer                           renderer;    
     public int imageWidth;
 
     Collection<ILabelProviderListener> listeners =
@@ -56,9 +57,10 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
     }
     private void setupRenderer() {
         
-        renderer = new SWTRenderer( new Renderer2DModel() , 7f);
+        renderer = new SWTRenderer( new Renderer2DModel() , 10f);// 7f old value
+        
         renderer.getRenderer2DModel().setDrawNumbers( false );
-        renderer.getRenderer2DModel().setIsCompact( true );
+        renderer.getRenderer2DModel().setIsCompact( false );
         renderer.getRenderer2DModel().setBondWidth( 15 );
         renderer.getRenderer2DModel().setUseAntiAliasing(true );
         
@@ -101,31 +103,37 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
             renderer.getRenderer2DModel()
                     .setShowExplicitHydrogens( false );
 
-            Image image =
+            Image image;
+            
+            renderer.getRenderer2DModel().setBackColor(new java.awt.Color(252,253,254));
+//            renderer.getRenderer2DModel().setBackColor( java.awt.Color.CYAN );
+            renderer.getRenderer2DModel().setUseAntiAliasing( true );
+            renderer.getRenderer2DModel().setHighlightRadiusModel( 10 );
+            
+            Color greenScreen = new Color(Display.getCurrent(), 252, 253, 254);
+            
+                image =
                     new Image( Display.getDefault(),
                                imageWidth,
                                imageWidth );
-            GC gc= new GC( image );
-            Color greenScreen = new Color(Display.getCurrent(), 222, 223, 224);
+                GC gc= new GC( image );
+                
             
-            gc.setBackground( greenScreen );
-            gc.fillRectangle( image.getBounds() );
+                gc.setBackground( greenScreen );
+                gc.fillRectangle( image.getBounds() );
+                    ((SWTRenderer)renderer).paintMolecule(drawMolecule, gc ,
+                                                      new Rectangle2D.Double(
+                                                                0,
+                                                                0,
+                                                                imageWidth,
+                                                                imageWidth ) );
+                gc.dispose();
             
-            renderer.getRenderer2DModel().setBackColor(new java.awt.Color(222,223,224));
-            
-            renderer.paintMolecule(
-                                    drawMolecule,
-                                    gc ,
-                                    new Rectangle2D.Double(
-                                             0,
-                                             0,
-                                             imageWidth,
-                                             imageWidth ) );
             
             ImageData imageData = image.getImageData();
             imageData.transparentPixel = imageData.palette.getPixel(greenScreen
             .getRGB());
-            gc.dispose();
+            
             greenScreen.dispose();
             image.dispose();
             return new Image(Display.getDefault(),imageData);
