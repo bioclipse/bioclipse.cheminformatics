@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -128,6 +127,7 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
             .getRGB());
             gc.dispose();
             greenScreen.dispose();
+            image.dispose();
             return new Image(Display.getDefault(),imageData);
         }
         return null;

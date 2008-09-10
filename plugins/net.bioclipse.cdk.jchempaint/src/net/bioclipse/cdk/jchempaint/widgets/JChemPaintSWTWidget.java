@@ -19,7 +19,10 @@ import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.vecmath.Point2d;
+
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
@@ -51,6 +54,8 @@ public class JChemPaintSWTWidget extends Canvas {
     public JChemPaintSWTWidget(Composite parent, int style) {
         super(parent, style);
         
+        this.setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
+        
         renderer = new SWTRenderer(new Renderer2DModel());
         Dimension screenSize = new Dimension(this.getSize().x, this.getSize().y);
         renderer.getRenderer2DModel().setBackgroundDimension(screenSize);
@@ -58,7 +63,8 @@ public class JChemPaintSWTWidget extends Canvas {
         setCompactedNess(screenSize);
         renderer.getRenderer2DModel().setBondWidth(10);
         renderer.getRenderer2DModel().setForeColor(Color.BLACK);
-        
+        renderer.getRenderer2DModel().setBackColor( Color.CYAN );
+        renderer.getRenderer2DModel().setHoverOverColor( Color.LIGHT_GRAY );
         
         
         addDisposeListener(new DisposeListener() {
@@ -108,10 +114,11 @@ public class JChemPaintSWTWidget extends Canvas {
     	int xsize = this.getSize().x;
         int ysize = this.getSize().y;
         Dimension newDimensions=new Dimension(xsize,ysize);
-        updateOnReize(newDimensions);
+        if(molecule != null)
+            updateOnReize(newDimensions);
     	setCompactedNess(newDimensions);
     }
-    private void updateOnReize(Dimension newSize){
+    protected void updateOnReize(Dimension newSize){
         GeometryTools.translateAllPositive(molecule);
         GeometryTools.scaleMolecule(molecule, newSize, 0.8);          
         GeometryTools.center(molecule, newSize);
@@ -129,11 +136,11 @@ public class JChemPaintSWTWidget extends Canvas {
 //            );
     }
     private void paintControl(PaintEvent event) {
-        this.setBackground(new org.eclipse.swt.graphics.Color(event.gc.getDevice(),255,255,230));
+       
     	renderer.paintMolecule(molecule,event.gc,new Rectangle2D.Double(0,0,this.getSize().x,this.getSize().y));
     }
 
-	private void setCompactedNess(Dimension dimensions) {
+	protected void setCompactedNess(Dimension dimensions) {
         if (dimensions.height < compactSize ||
             dimensions.width < compactSize) {
             renderer.getRenderer2DModel().setIsCompact(true);

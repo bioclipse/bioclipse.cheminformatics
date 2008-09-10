@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor"
+            class="net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart"
             default="true"
             extensions="sdf"
             id="net.bioclipse.cdk.ui.sdfeditor"

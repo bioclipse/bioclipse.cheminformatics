@@ -15,6 +15,7 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintSWTWidget;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -39,6 +40,7 @@ public class JChemPaintEditor extends EditorPart{
 	JChemPaintSWTWidget widget;
 	Controller2DHub hub;
 	IController2DModel c2dm;
+	SWTMosueEventRelay relay;
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		// TODO Auto-generated method stub
@@ -57,23 +59,28 @@ public class JChemPaintEditor extends EditorPart{
 	    
 	    setSite(site);
         setInput(input);    
-        IFile file = (IFile) input.getAdapter(IFile.class);
-		ICDKMolecule cModel=(ICDKMolecule)  file.getAdapter(ICDKMolecule.class);
-		if(cModel==null){
-//		    site.getPage().closeEditor(this,false);
-		    return;
-		}
+        ICDKMolecule cModel = (ICDKMolecule)input.getAdapter( ICDKMolecule.class );
+        if(cModel == null){
+            IFile file = (IFile) input.getAdapter(IFile.class);
+            if(file != null)
+		            cModel=(ICDKMolecule)  file.getAdapter(ICDKMolecule.class);
+        }
+		if(cModel != null ){
+		  
+		
 		
 		setPartName(input.getName());
 		model=cModel;
 		model.getAtomContainer().addListener(new IChemObjectListener(){
 		   public void stateChanged(IChemObjectChangeEvent event) {
+		       
 		       if(!isDirty()){
 		           dirty=true;		           
 		           firePropertyChange(IEditorPart.PROP_DIRTY);
 		       }		        
 		    } 
 		});
+		}
 //		widget.setAtomContainer(model.getMoleculeSet().getAtomContainer(0));
 	}
 
@@ -89,39 +96,45 @@ public class JChemPaintEditor extends EditorPart{
 
 	@Override
 	public void createPartControl(Composite parent) {
+	    //  create widget
 		widget=new JChemPaintSWTWidget(parent,SWT.NONE);
 		IAtomContainer atomContainer=null;
 		if(model!=null)
 		    widget.setAtomContainer(atomContainer=model.getAtomContainer());
-		   
+		 
+		// setup hub 
+		if(atomContainer != null )
+		    setupControllerHub( atomContainer );
+			// setup renderer
+//			widget.getRendererModel().setBackColor(Color.cyan);
+			widget.getRendererModel().setHighlightRadiusModel(20);
+	}
 
-		IViewEventRelay eventRelay=new IViewEventRelay(){
-			public void updateView() {
-				widget.redraw();
-			}
-		};		
-		
-		hub = new Controller2DHub(
-				c2dm=new Controller2DModel(), widget.getRenderer(),
-				ChemModelManipulator.newChemModel(atomContainer),
-				eventRelay
-			);
-//			hub.registerGeneralControllerModule(new ExampleController2DModule());
-//			hub.registerGeneralControllerModule(new Controller2DModuleMove());
-//			hub.registerGeneralControllerModule(new Controller2DModuleHighlight());
-//			 hub.registerGeneralControllerModule(new Controller2DModuleRemove());
-			SWTMosueEventRelay	 relay = new SWTMosueEventRelay(hub);
+    private void setupControllerHub( IAtomContainer atomContainer ) {
+
+        hub = new Controller2DHub(
+                            c2dm=new Controller2DModel(), widget.getRenderer(),
+                            ChemModelManipulator.newChemModel(atomContainer),
+                            new IViewEventRelay(){
+                                public void updateView() {
+                                    widget.redraw();
+                                }
+                            } );
+
+      if(relay != null) {
+          widget.removeMouseListener( relay );
+          widget.removeMouseMoveListener( relay );
+          widget.removeListener( SWT.MouseEnter, relay );
+          widget.removeListener( SWT.MouseExit, relay );
+      }
+			relay = new SWTMosueEventRelay(hub);
 			c2dm.setDrawMode(DrawMode.MOVE);
 			
 			widget.addMouseListener(relay);
 			widget.addMouseMoveListener(relay);
 			widget.addListener(SWT.MouseEnter, relay);
 			widget.addListener(SWT.MouseExit, relay);
-			
-//			widget.getRendererModel().setBackColor(Color.cyan);
-			widget.getRendererModel().setHighlightRadiusModel(20);
-//			widget.getRendererModel().set
-	}
+    }
 
 	@Override
 	public void setFocus() {
@@ -135,6 +148,17 @@ public class JChemPaintEditor extends EditorPart{
 
     public IController2DModel getControllerModel() {
         return c2dm;
+    }
+
+    public void setInput( Object element ) {
+        if(element instanceof IAdaptable) {
+            ICDKMolecule molecule = (ICDKMolecule)((IAdaptable)element)
+                                              .getAdapter( ICDKMolecule.class );
+            if(molecule != null) {// TODO if null change input to what?
+                widget.setAtomContainer( molecule.getAtomContainer() );
+                // FIXME update / change hubs chemmodel
+            }
+        }
     }
 	
 }

@@ -40,6 +40,7 @@ import javax.vecmath.Point3d;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
@@ -153,8 +154,8 @@ public class SWTRenderer implements IJava2DRenderer {
 		}
 		// set basic shape form for bonds
 		
-		Color bondColor=new Color(graphics.getDevice(),0,0,0);
-		graphics.setForeground(bondColor);
+		//Color bondColor=new Color(graphics.getDevice(),0,0,0);
+		//graphics.setForeground(bondColor);
 		graphics.setLineAttributes(new LineAttributes((float) (rendererModel.getBondWidth()/rendererModel.getBondLength()),
 				SWT.CAP_ROUND, SWT.JOIN_ROUND));
 //		graphics.setStroke(new BasicStroke(
@@ -312,19 +313,55 @@ public class SWTRenderer implements IJava2DRenderer {
 	}
 	
 	private void drawTextUpsideDown(GC graphics, TextLayout layout, int x, int y){
+	    
 	    Rectangle bounds = layout.getBounds();
-	    Image image = new Image( graphics.getDevice(), bounds.width, bounds.height );
-	    GC imageGC = new GC( image );
-	        imageGC.setForeground( graphics.getForeground() );
-	        imageGC.setBackground( graphics.getBackground() );
-	        layout.draw( imageGC, 0, 0);
-	        Image im2= new Image(graphics.getDevice(),
-	                             flip(image.getImageData(),true));
-	        graphics.drawImage( im2, x, y );	    
-	    imageGC.dispose();	    
-	    image.dispose();
-	    im2.dispose();
+	    
+	    ImageData alphaMask = drawText( graphics.getDevice(), layout, bounds );
+	    alphaMask = superFlip( alphaMask, true, graphics.getForeground());
+
+	    Image image = new Image(graphics.getDevice(),alphaMask);	                                 
+	    graphics.drawImage( image, x, y );	    
+	    	    
+	    image.dispose();	    	    
 	}
+	
+	private ImageData drawText(Device device, TextLayout layout, Rectangle rect) {
+	    Image image = new Image(device,rect);
+	    
+	    GC imageGC = new GC(image);
+	        imageGC.setForeground( device.getSystemColor( SWT.COLOR_WHITE ) );
+	        imageGC.setBackground( device.getSystemColor( SWT.COLOR_BLACK ) );
+	        imageGC.fillRectangle( rect);
+	        layout.draw( imageGC, 0, 0 );
+      imageGC.dispose();
+	    ImageData imageData = image.getImageData();
+	    image.dispose();
+	    return imageData;
+	}
+	
+	static ImageData superFlip(ImageData srcData, boolean vertical,Color color) {
+	    
+      ImageData newImageData = (ImageData) srcData.clone();
+      
+      for (int srcY = 0; srcY < srcData.height; srcY++) {
+        for (int srcX = 0; srcX < srcData.width; srcX++) {
+          int destX = 0, destY = 0;
+          if (vertical) {
+            destX = srcX;
+            destY = srcData.height - srcY - 1;
+          } else {
+            destX = srcData.width - srcX - 1;
+            destY = srcY;
+          }          
+          int red = srcData.palette.getRGB( srcData.getPixel( srcX, srcY)).red;
+          newImageData.setAlpha( destX, destY, red );
+          newImageData.setPixel( destX, destY, srcData.palette.getPixel(
+                                                             color.getRGB() ) );          
+        }
+      }
+
+      return newImageData;
+    }
 	
   static ImageData flip(ImageData srcData, boolean vertical) {
       int bytesPerPixel = srcData.bytesPerLine / srcData.width;
@@ -365,7 +402,7 @@ public class SWTRenderer implements IJava2DRenderer {
 		}
 		//symbol = "Mg"; //to test if a certain symbol is spaced out right 
 		
-		createFont(graphics,.4f,true);
+		createFont(graphics,.4f,false);
 		Font fontAtom=getFont(FontSize.NORMAL);
 
 		Font fontSmall =getFont(FontSize.SMALL); 
@@ -404,18 +441,19 @@ public class SWTRenderer implements IJava2DRenderer {
 		Color otherColor = toSWTColor(graphics,getRenderer2DModel().getForeColor());
 		
 		Color bgColor = toSWTColor(graphics,getRenderer2DModel().getBackColor());
-		if (atom == getRenderer2DModel().getHighlightedAtom())
+		if (atom == getRenderer2DModel().getHighlightedAtom()){
 			bgColor = toSWTColor(graphics,getRenderer2DModel().getHoverOverColor());
-		else {
-		
+		  paintColouredAtomBackground( atom, bgColor, graphics );
 		}
+		
 		//bgColor = Color.green;
 		
 		graphics.setForeground(bgColor);
 		graphics.setBackground(bgColor);
 //		graphics.fill(boundsAtom);// draw atom symbol background
-		graphics.fillRectangle(	(int)boundsAtom.getX(), (int)boundsAtom.getY(),
-				(int)boundsAtom.getWidth(),(int) boundsAtom.getHeight());
+		
+//		graphics.fillRectangle(	(int)boundsAtom.getX(), (int)boundsAtom.getY(),
+//				(int)boundsAtom.getWidth(),(int) boundsAtom.getHeight());
 	
 		double massnumberW = 0;
 		//double formalChargW = 0;
@@ -459,8 +497,8 @@ public class SWTRenderer implements IJava2DRenderer {
 				//bgColor = Color.green;
 				graphics.setForeground(bgColor);
 
-				graphics.fillRectangle((int)boundsMass.getX(),(int)boundsMass.getY(),
-						(int)boundsMass.getWidth(),(int)boundsMass.getHeight());// draw Mass number background
+//				graphics.fillRectangle((int)boundsMass.getX(),(int)boundsMass.getY(),
+//						(int)boundsMass.getWidth(),(int)boundsMass.getHeight());// draw Mass number background
 //				graphics.setFont(fontSmall);
 				graphics.setForeground(otherColor);
 //				layoutMass.draw(graphics, (float)massNumberX, (float)massNumberY);// draw Mass Number
@@ -533,8 +571,8 @@ public class SWTRenderer implements IJava2DRenderer {
 			
 //			graphics.fill(boundsHydro);// draw 'H' background
 //			graphics.fill(boundsHydroC);// draw '1/2/3' hydrogen Count background
-			fill(graphics,boundsHydro);
-			fill(graphics,boundsHydroC);
+//			fill(graphics,boundsHydro);
+//			fill(graphics,boundsHydroC);
 
 			graphics.setForeground(otherColor);
 			// FIXME : draw text
@@ -760,8 +798,8 @@ public class SWTRenderer implements IJava2DRenderer {
 		//System.out.println("painting paintColouredAtomBackground now at " + x + " / " + y);
 		//FIXME: right size for this AtomRadius (currently estimate)
 		double atomRadius = rendererModel.getHighlightRadiusModel();
-		
 		graphics.setForeground(color);
+		graphics.setBackground( color );
 	
 		Rectangle2D shape = new Rectangle2D.Double();
 		shape.setFrame(x - (atomRadius / 2), y - (atomRadius / 2), atomRadius, atomRadius);
@@ -882,11 +920,7 @@ public class SWTRenderer implements IJava2DRenderer {
 		{
 			IBond currentBond = bonds.next();
 			
-			bondColor = toSWTColor(graphics, rendererModel.getColorHash().get(currentBond));
-			if (bondColor == null)
-			{
-				bondColor = toSWTColor(graphics,rendererModel.getForeColor());
-			}
+			
 			if (currentBond == rendererModel.getHighlightedBond() && 
 					(rendererModel.getSelectedPart()==null || !rendererModel.getSelectedPart().contains(currentBond)))
 			{
@@ -896,6 +930,11 @@ public class SWTRenderer implements IJava2DRenderer {
 					paintColouredAtomBackground(currentBond.getAtom(j), bondColor, graphics);
 					
 				}
+			}
+			bondColor = toSWTColor(graphics, rendererModel.getColorHash().get(currentBond));
+			if (bondColor == null)
+			{
+				bondColor = toSWTColor(graphics,rendererModel.getForeColor());
 			}
 			ring = RingSetManipulator.getHeaviestRing(ringSet, currentBond);
 			if (ring != null)
@@ -1324,17 +1363,10 @@ public class SWTRenderer implements IJava2DRenderer {
 	    double scaleX = factor * rendererBounds.getWidth() / contextBounds.getWidth();
 	    double scaleY = factor * rendererBounds.getHeight() / contextBounds.getHeight();
 
-	    if (scaleX > scaleY) {
-	    	//System.out.println("Scaled by Y: " + scaleY);
-	    	// FIXME: should be -X: to put the origin in the lower left corner 
-	    	affinet.scale(scaleY, -scaleY);
-	    } else {
-	    	//System.out.println("Scaled by X: " + scaleX);
-	    	// FIXME: should be -X: to put the origin in the lower left corner 
-	    	affinet.scale(scaleX, -scaleX);
-	    }
+	    double scale = Math.min( scaleX, scaleY );
+	    affinet.scale( scale, -scale );	    
 	    //translate
-	    double scale = affinet.getScaleX();
+	    
 		//System.out.println("scale: " + scale);
 	    double dx = -contextBounds.getX() * scale + 0.5 * (rendererBounds.getWidth() - contextBounds.getWidth() * scale);
 	    double dy = -contextBounds.getY() * scale - 0.5 * (rendererBounds.getHeight() + contextBounds.getHeight() * scale);
