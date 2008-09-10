@@ -1103,6 +1103,7 @@ public class SWTRenderer implements IJava2DRenderer {
 //		p.closePath();
 			pp.close();
 		graphics.setForeground(bondColor);
+		graphics.setBackground( bondColor );
         //fill(graphics,pp);
 		graphics.fillPath(pp);
 	}
