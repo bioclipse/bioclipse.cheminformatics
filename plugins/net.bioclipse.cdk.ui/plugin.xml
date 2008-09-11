@@ -29,6 +29,14 @@
             id="net.bioclipse.cdk.category"
             name="Chemoinformatics">
       </category>
+      <view
+            category="net.bioclipse.cdk.category"
+            class="net.bioclipse.cdk.ui.views.Java2DRendererView"
+            icon="icons/molecule2D.png"
+            id="net.bioclipse.cdk.ui.view.Java2DRendererView"
+            name="2D-Structure"
+            restorable="false">
+      </view>
    </extension>
 
    <extension

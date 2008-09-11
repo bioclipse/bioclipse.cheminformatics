@@ -126,8 +126,12 @@ public class MoleculesFromSDF implements IDeferredWorkbenchAdapter,
      * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#getMoleculeAt(int)
      */
     public Object getMoleculeAt( int index ) {
-        
-        return children.get(index );        
+        if(children.size() <=index) {
+            logger.debug( "index out of bounds Index: " 
+                                          +index + ", Size: "+children.size() );
+          return null;
+        } else
+            return children.get(index );        
     }
 
     /* (non-Javadoc)

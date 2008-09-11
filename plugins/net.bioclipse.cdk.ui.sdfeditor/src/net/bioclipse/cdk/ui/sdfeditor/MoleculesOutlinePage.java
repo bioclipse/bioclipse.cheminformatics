@@ -12,6 +12,7 @@
 package net.bioclipse.cdk.ui.sdfeditor;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeEditorElement;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditorContentProvider;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 
@@ -33,6 +34,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.INullSelectionListener;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.model.IWorkbenchAdapter;
@@ -46,7 +48,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
  */
 public class MoleculesOutlinePage extends Page implements IContentOutlinePage, 
         ISelectionChangedListener,
-        ISelectionListener {
+        ISelectionListener, INullSelectionListener{
 
     private ListenerList listeners = new ListenerList();
     private TreeViewer viewer;
@@ -90,23 +92,27 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
             }
 
             public String getText( Object element ) {
-
+                String text = "-X-";
                 if(element instanceof IAdaptable){
                     ICDKMolecule molecule = (ICDKMolecule)
                         ((IAdaptable)element).getAdapter( ICDKMolecule.class );
                    if(molecule !=null){
-                       return MoleculesOutlinePage.this.getName( molecule );
+                       text = MoleculesOutlinePage.this.getName( molecule );
                    }else {
                        // TODO Override creation in DeferredTreeContentManager
                        //  and do a getName from WorkspaceAdapter
                        Object o=((IAdaptable)element).getAdapter( 
                                                    IWorkbenchAdapter.class );
                        if(o != null)
-                           return ((IWorkbenchAdapter)o).getLabel( o );
-                       
+                           text = ((IWorkbenchAdapter)o).getLabel( o );                       
                    }
+                   MoleculeEditorElement mee = (MoleculeEditorElement)
+                                               ((IAdaptable)element)
+                                     .getAdapter( MoleculeEditorElement.class );
+                   if(mee != null)
+                       text = Integer.toString( mee.getIndex() )+ ": "+ text;
                 }
-                return "-X-";
+                return text;
             }
 
             public void addListener( ILabelProviderListener listener ) {
@@ -139,8 +145,13 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
      * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
      */
     public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
-
-        if (part.equals( this )) return;
+        
+        if (part != null && part.equals( this )) return;
+        if( selection.isEmpty()) {
+            if(!getTreeViewer().getSelection().isEmpty())
+                getTreeViewer().setSelection( selection );            
+            return;
+        }                
         if (!( selection instanceof IStructuredSelection )) return;
         IStructuredSelection sel = (IStructuredSelection) selection;
 
@@ -149,7 +160,7 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
             return;
         else
             getTreeViewer().setSelection( selection );
-
+        
     }
     public void setInput( IEditorInput editorInput ) {
         this.input = editorInput;
@@ -172,6 +183,7 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
     
     private String getName(ICDKMolecule molecule) {        
         StringBuilder builder = new StringBuilder();
+        builder.append( "[" );
         for(Object o:molecule.getAtomContainer().getProperties().values()) {
             builder.append( o.toString() );
             builder.append( ", " );
@@ -180,6 +192,7 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
             builder.delete( builder.length()-2, builder.length()-1 );
         else
             builder.append( molecule.getName() );
+        builder.append( "]" );
         return builder.toString();
     }
     

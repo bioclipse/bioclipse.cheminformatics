@@ -132,28 +132,28 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
                         }
                         super.add( parentElementOrTreePath, childElements );
                     }
-                    /* (non-Javadoc)
-                                             * @see org.eclipse.jface.viewers.TreeViewer#replace(java.lang.Object, int, java.lang.Object)
-                                             */
-                                            @Override
-                                            public void replace(
-                                                                 Object parentElementOrTreePath,
-                                                                 int index,
-                                                                 Object element ) {
-                    
-                                                if ( propertyHeaders == null
-                                                        && element != null ) {
-                                                       // TODO make it a job on the GUI thread
-                                                       if ( element instanceof IAdaptable ){
-                                                           if( ((IAdaptable) element).getAdapter( ICDKMolecule.class )!= null)
-                                                           labelProvider.setPropertyHeaders(
-                                                                          createHeaderFromSelection( 
-                                                                          (IAdaptable) element ));
-                                                           
-                                                       }
-                                                   }
-                                                super.replace( parentElementOrTreePath, index, element );
-                                            }
+                    /*
+                     * (non-Javadoc)
+                     * @see
+                     * org.eclipse.jface.viewers.TreeViewer#replace(java.lang
+                     * .Object, int, java.lang.Object)
+                     */
+                    @Override
+                    public void replace( Object parentElementOrTreePath,
+                                         int index, Object element ) {
+
+                        if ( propertyHeaders == null && element != null ) {
+                            // TODO make it a job on the GUI thread
+                            if ( element instanceof IAdaptable ) {
+                                if ( ((IAdaptable) element)
+                                        .getAdapter( ICDKMolecule.class ) != null )
+                                    labelProvider
+                                            .setPropertyHeaders( createHeaderFromSelection( (IAdaptable) element ) );
+
+                            }
+                        }
+                        super.replace( parentElementOrTreePath, index, element );
+                    }
                 };
 
         Tree tree = viewer.getTree();
@@ -208,10 +208,10 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
         return propertyHeaders;
     }
 
-    private void reactOnSelection( IStructuredSelection selection ) {
+    protected void reactOnSelection( IStructuredSelection selection ) {
 
         Object element = selection.getFirstElement();
-        if ( element instanceof ICDKMolecule )
+        //if ( element instanceof ICDKMolecule )
             if (((IStructuredSelection)viewer.getSelection()).toList()
                                             .containsAll( selection.toList() ))
                 return;

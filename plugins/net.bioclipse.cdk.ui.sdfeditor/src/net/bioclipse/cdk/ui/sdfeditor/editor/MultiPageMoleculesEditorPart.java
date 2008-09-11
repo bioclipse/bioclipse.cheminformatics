@@ -15,12 +15,16 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
@@ -37,6 +41,11 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
     private final int MOLECULES_PAGE = 0;
     private final int JCP_PAGE = 1;
 
+
+    public MultiPageMoleculesEditorPart() {
+        super();
+    }
+    
     @Override
     protected void createPages() {
 
@@ -55,6 +64,15 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
             
         
         getEditorSite().getPage().addSelectionListener( this );
+    }
+    
+    @Override
+    public void init( IEditorSite site, IEditorInput input )
+                                                      throws PartInitException {
+        super.init( site, input );
+        
+        site.getPage().addSelectionListener( this );
+     
     }
 
     @Override
@@ -86,35 +104,42 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
     }
 
     private void reactOnSelection(IStructuredSelection selection){  
-        // TODO Implement selection changes
+        moleculesPage.reactOnSelection( selection );
+        if(JCP_PAGE == getActivePage()) {
+            updateJCPPage();
+        }
     }
 
     public void selectionChanged( SelectionChangedEvent event ) {
         ISelection selection = event.getSelection();
         if( selection instanceof IStructuredSelection){
-//            reactOnSelection( (IStructuredSelection) selection );
+            reactOnSelection( (IStructuredSelection) selection );
         }
         
     }
 
    @Override
-protected void pageChange( int newPageIndex ) {
-       if(JCP_PAGE == newPageIndex)
-           updateJCPPage();
-}
+    protected void pageChange( int newPageIndex ) {
 
-    public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
+        if ( JCP_PAGE == newPageIndex )
+            updateJCPPage();
+    }
+
+    public void selectionChanged( IWorkbenchPart part, ISelection selection ) {        
         if( selection instanceof IStructuredSelection){
-//            reactOnSelection( (IStructuredSelection) selection );
+            reactOnSelection( (IStructuredSelection) selection );
         }        
     }
     
-    private void updateJCPPage() {
+    private void updateJCPPage() {        
         ISelection selection = moleculesPage.getSelection();
-        if(selection instanceof IStructuredSelection){
-           Object element = ((IStructuredSelection)selection).getFirstElement();
-           if(element instanceof ICDKMolecule)
-               jcpPage.setInput(((ICDKMolecule)element).getAtomContainer());
+        if(selection instanceof IStructuredSelection) {
+           Object element = ((IStructuredSelection)selection).getFirstElement();           
+           if(element instanceof IAdaptable) {
+               element = ((IAdaptable)element).getAdapter( ICDKMolecule.class );
+               if( element != null )
+                   jcpPage.setInput(((ICDKMolecule)element).getAtomContainer());
+           }
         }
     }
     

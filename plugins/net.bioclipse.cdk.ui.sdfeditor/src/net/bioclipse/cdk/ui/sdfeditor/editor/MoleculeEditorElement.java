@@ -36,5 +36,22 @@ public class MoleculeEditorElement implements IAdaptable{
         }
         return Platform.getAdapterManager().getAdapter( this, adapter );          
     }
-
+    
+    @Override
+    public boolean equals( Object obj ) {
+        if( obj == this) return true;
+        if( !(obj instanceof MoleculeEditorElement))
+            return false;
+        MoleculeEditorElement element = (MoleculeEditorElement) obj;
+        if( this.index == element.index && this.molecule == element.molecule)
+            return true;
+        return false;
+    }
+    @Override
+    public int hashCode() {
+        int var = 3;
+        var = 31 * var + index;
+        var = 31 * var + (molecule == null ? 0: molecule.hashCode());
+        return var;
+    }
 }
