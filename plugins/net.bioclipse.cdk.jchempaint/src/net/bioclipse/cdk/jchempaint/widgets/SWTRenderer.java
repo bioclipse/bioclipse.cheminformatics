@@ -1307,8 +1307,8 @@ public class SWTRenderer implements IJava2DRenderer {
 			double[] tempc = new double[] { bond.getAtom(0).getPoint2d().x, bond.getAtom(0).getPoint2d().y,
 					bond.getAtom(1).getPoint2d().x, bond.getAtom(1).getPoint2d().y};
 			
-			double[] coords = GeometryTools.distanceCalculator(tempc, 0.1);
-
+			double[] coords = GeometryTools.distanceCalculator(tempc, rendererModel.getBondDistance());
+		
 			Line2D line = new Line2D.Double(
 					coords[0], coords[1], coords[6], coords[7]
 				);
@@ -1334,7 +1334,8 @@ public class SWTRenderer implements IJava2DRenderer {
 		double[] tempc = new double[] { bond.getAtom(0).getPoint2d().x, bond.getAtom(0).getPoint2d().y,
 				bond.getAtom(1).getPoint2d().x, bond.getAtom(1).getPoint2d().y};
 		
-		double[] coords = GeometryTools.distanceCalculator(tempc, 0.2);
+		double[] coords = GeometryTools.distanceCalculator(tempc, 
+                                               rendererModel.getBondDistance());
 
 		Line2D line = new Line2D.Double(
 				coords[0], coords[1], coords[6], coords[7]

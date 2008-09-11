@@ -35,6 +35,7 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.IJava2DRenderer;
 import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 public class MoleculesEditorLabelProvider implements ITableLabelProvider{
 
@@ -62,6 +63,8 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
         renderer.getRenderer2DModel().setDrawNumbers( false );
         renderer.getRenderer2DModel().setIsCompact( false );
         renderer.getRenderer2DModel().setBondWidth( 15 );
+        renderer.getRenderer2DModel().setDrawNumbers( false );
+        renderer.getRenderer2DModel().setBondDistance( 1 );
         renderer.getRenderer2DModel().setUseAntiAliasing(true );
         
     }
@@ -81,12 +84,14 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
 
             // If no 2D coordinates
             if ( GeometryTools.has2DCoordinates( drawMolecule ) == false ) {
-                // Test if 3D coordinates
+                // Test if 3D coordinates                
                 if ( GeometryTools.has3DCoordinates( drawMolecule ) == true ) {
                     // Collapse on XY plane
                     drawMolecule = SWTRenderer.generate2Dfrom3D( 
                                                          drawMolecule );
-
+                    drawMolecule = AtomContainerManipulator.
+                          removeHydrogensPreserveMultiplyBonded( drawMolecule );
+                    
                 }
             }
 

@@ -59,7 +59,8 @@ public class JChemPaintSWTWidget extends Canvas {
         renderer = new SWTRenderer(new Renderer2DModel());
         Dimension screenSize = new Dimension(this.getSize().x, this.getSize().y);
         renderer.getRenderer2DModel().setBackgroundDimension(screenSize);
-        renderer.getRenderer2DModel().setDrawNumbers(false);
+        renderer.getRenderer2DModel().setDrawNumbers(true);
+        renderer.getRenderer2DModel().setBondDistance( 2 );
         setCompactedNess(screenSize);
         renderer.getRenderer2DModel().setBondWidth(10);
         renderer.getRenderer2DModel().setForeColor(Color.BLACK);
