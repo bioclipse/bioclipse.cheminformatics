@@ -158,19 +158,19 @@ public class CDKManager implements ICDKManager {
             try {
                 chemFile=(IChemFile)reader.read(chemFile);
             } catch (CDKException e) {
-                // TODO Auto-generated catch block
-                LogUtils.debugTrace(logger, e);
+                throw new RuntimeException("Failed to read file", e);
             }
     
             //Store the chemFormat used for the reader
             IResourceFormat chemFormat=reader.getFormat();
-            System.out.println("Rad CDK chemfile with format: "
-                               + chemFormat.getFormatName());
+            logger.debug( "Rad CDK chemfile with format: "
+                          + chemFormat.getFormatName());
     
             List<IAtomContainer> atomContainersList
                 = ChemFileManipulator.getAllAtomContainers(chemFile);
             int nuMols=atomContainersList.size();
-            System.out.println("This file contained: " + nuMols + " molecules");
+            logger.debug("This file contained: " 
+                         + nuMols + " molecules");
     
             //If we have one AtomContainer, return a CDKMolecule with this ac
             //If we have more than one AtomContainer, return a list of the molecules
