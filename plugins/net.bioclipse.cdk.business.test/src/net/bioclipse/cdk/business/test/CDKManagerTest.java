@@ -73,13 +73,26 @@ public class CDKManagerTest {
     }
 
     @Test
-    public void testLoadMolecule() throws IOException, 
+    public void testLoadMoleculeFromCMLFile() throws IOException, 
                                           BioclipseException, 
                                           CoreException {
 
 //        InputStream atpFile = getClass().getResourceAsStream("/testFiles/polycarpol.mol");
 //        InputStream pdbFile = getClass().getResourceAsStream("/testFiles/1D66.pdb");
         String path = getClass().getResource("/testFiles/0037.cml").getPath();
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
+
+        System.out.println("mol: " + mol.toString());
+    }
+
+    @Test
+    public void testLoadCMLFromFile2() throws IOException, 
+                                          BioclipseException, 
+                                          CoreException {
+
+//        InputStream atpFile = getClass().getResourceAsStream("/testFiles/polycarpol.mol");
+//        InputStream pdbFile = getClass().getResourceAsStream("/testFiles/1D66.pdb");
+        String path = getClass().getResource("/testFiles/cs2a.cml").getPath();
         ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
 
         System.out.println("mol: " + mol.toString());
