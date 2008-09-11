@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.bioclipse.cdk.business.CDKManager;
+import net.bioclipse.cdk.business.CDKManagerHelper;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -34,6 +35,7 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IMoleculeManager;
 import net.bioclipse.core.business.MoleculeManager;
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.util.LogUtils;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -49,6 +51,8 @@ import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CMLReader;
+import org.openscience.cdk.io.ISimpleChemObjectReader;
+import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.templates.MoleculeFactory;
 import org.openscience.cdk.tools.diff.AtomContainerDiff;
@@ -401,6 +405,40 @@ public class CDKManagerTest {
         assertEquals(48, mol.getBondCount());
         assertTrue(GeometryTools.has3DCoordinates(mol));
         assertTrue(!GeometryTools.has2DCoordinates(mol));
+    }
+
+    
+    @Test
+    public void testLoadCMLFromFile3() throws IOException, 
+                                          BioclipseException, 
+                                          CoreException {
+
+        String path = getClass().getResource("/testFiles/cs2a.cml").getPath();
+        MockIFile mf=new MockIFile(path);
+        
+        ReaderFactory readerFactory=new ReaderFactory();
+        CDKManagerHelper.registerFormats(readerFactory);
+
+        //Create the reader
+        ISimpleChemObjectReader reader 
+            = readerFactory.createReader(mf.getContents());
+
+        if (reader==null) {
+            throw new BioclipseException("Could not create reader in CDK.");
+        }
+
+        IChemFile chemFile = new org.openscience.cdk.ChemFile();
+
+        // Do some customizations...
+        CDKManagerHelper.customizeReading(reader, chemFile);
+
+        //Read file
+        try {
+            chemFile=(IChemFile)reader.read(chemFile);
+        } catch (CDKException e) {
+        	e.printStackTrace();
+        }
+
     }
 
 }
