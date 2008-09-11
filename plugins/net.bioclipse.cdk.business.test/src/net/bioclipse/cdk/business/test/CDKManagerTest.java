@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -40,11 +41,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMoleculeSet;
+import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.templates.MoleculeFactory;
 import org.openscience.cdk.tools.diff.AtomContainerDiff;
@@ -371,6 +375,32 @@ public class CDKManagerTest {
         IFile target=new MockIFile();
         cdk.saveMolecule(propane, target, cdk.mol2);
     	
+    }
+
+    @Test
+    public void testCMLOK1() throws Exception {
+        String filename = "testFiles/cs2a.cml";
+        InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
+        CMLReader reader = new CMLReader(ins);
+        IChemFile chemFile = (IChemFile)reader.read(new org.openscience.cdk.ChemFile());
+
+        // test the resulting ChemFile content
+        assertNotNull(chemFile);
+        assertEquals(chemFile.getChemSequenceCount(), 1);
+        org.openscience.cdk.interfaces.IChemSequence seq = chemFile.getChemSequence(0);
+        assertNotNull(seq);
+        assertEquals(seq.getChemModelCount(), 1);
+        org.openscience.cdk.interfaces.IChemModel model = seq.getChemModel(0);
+        assertNotNull(model);
+        assertEquals(model.getMoleculeSet().getMoleculeCount(), 1);
+
+        // test the molecule
+        org.openscience.cdk.interfaces.IMolecule mol = model.getMoleculeSet().getMolecule(0);
+        assertNotNull(mol);
+        assertEquals(38, mol.getAtomCount());
+        assertEquals(48, mol.getBondCount());
+        assertTrue(GeometryTools.has3DCoordinates(mol));
+        assertTrue(!GeometryTools.has2DCoordinates(mol));
     }
 
 }
