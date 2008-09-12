@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<map xmlns="http://www.xml-cml.org/schema">
+    <link from="http://www.xml-cml.org/dict/cdk" to="cdkDict.xml"/>
+    <link from="http://www.xml-cml.org/dict/cml" to="cmlDict.xml"/>
+    <link from="http://www.xml-cml.org/dict/cmlMeasured" to="cmlMeasuredDict.xml"/>
+    <link from="http://www.xml-cml.org/dict/cryst" to="crystDict.xml"/>
+    <link from="http://www.xml-cml.org/dict/macie" to="macieDict.xml"/>
+    <link from="http://www.xml-cml.org/dict/miscProps" to="miscProps.xml"/>
+    <link from="http://www.xml-cml.org/dict/pub" to="pubDict.xml"/>
+    <link from="http://www.xml-cml.org/dict/subst" to="substDict.xml"/>
+</map>

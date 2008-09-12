@@ -2,7 +2,7 @@
   namespace="http://www.xml-cml.org/dict/cml"
   prefix="cml"
   title="CML dictionary"
-  xmlns="http://www.xml-cml.org/schema/stmml"
+  xmlns="http://www.xml-cml.org/schema"
   xmlns:cmlDict="http://www.xml-cml.org/dict/cmlDict"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 

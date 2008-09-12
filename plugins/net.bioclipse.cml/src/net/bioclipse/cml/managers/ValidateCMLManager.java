@@ -21,6 +21,8 @@ import nu.xom.Elements;
 import nu.xom.ParsingException;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.xmlcml.cml.attribute.DictRefAttribute;
@@ -48,7 +50,7 @@ public class ValidateCMLManager implements IValidateCMLManager {
 	CMLElement cmlElement = null;
 	
 	
-	public String validate(IFile input) {
+	public String validate(IFile input) throws IOException {
 		initDicts();
 		return this.validateCMLFile(input);
 	}
@@ -67,13 +69,13 @@ public class ValidateCMLManager implements IValidateCMLManager {
 		}
 	}
 	
-	private void initDicts() {
+	private void initDicts() throws IOException {
 		if (simpleDir == null || unitsDir == null) {
 			Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
 
-			URL simpleURL = bundle.getEntry("/dict10/simple");
-			URL unitsURL = bundle.getEntry("/dict10/units");
-			URL dictURL = bundle.getEntry("/dict10/dict");
+			URL simpleURL = FileLocator.resolve(FileLocator.find(bundle, new Path("/dict10/simple/catalog.cml"),null));
+			URL unitsURL = FileLocator.resolve(FileLocator.find(bundle, new Path("/dict10/units/catalog.cml"),null));
+			URL dictURL = FileLocator.resolve(FileLocator.find(bundle, new Path("/dict10/dict/catalog.cml"),null));
 			
 			try {
 				unitsDir = new File(unitsURL.toURI().getPath());				
@@ -83,14 +85,15 @@ public class ValidateCMLManager implements IValidateCMLManager {
 	    if (simpleMap  == null) {
 	        try {
 	          simpleMap = new DictionaryMap(simpleURL, new CMLDictionary());
-	        } catch (IOException e) {
+	        } catch (Exception e) {
+	        	e.printStackTrace();
 	          throw new CMLRuntimeException("dictionaryMap could not be created "+e);
 	        }
 	      }
 	    if (dictListMap == null) {
 	        try {
 	          dictListMap  = new DictionaryMap(dictURL, new CMLDictionary());
-	        } catch (IOException e) {
+	        } catch (Exception e) {
 	          throw new CMLRuntimeException("dictListMap could not be created "+e);
 	        }
 	      }
@@ -98,7 +101,7 @@ public class ValidateCMLManager implements IValidateCMLManager {
 		if (unitListMap == null) {
 			try {
 				unitListMap  = new UnitListMap(unitsDir, true);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				throw new CMLRuntimeException("unitListMap could not be created "+e);
 			}
 		}

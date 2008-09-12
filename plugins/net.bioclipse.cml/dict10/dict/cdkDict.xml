@@ -1,14 +1,14 @@
 <dictionary   
 namespace="http://www.xml-cml.org/dict/cdk"
 title="CDK dictionary"  
-xmlns="http://www.xml-cml.org/schema/stmml"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema24/schema.xsd">
+xmlns="http://www.xml-cml.org/schema"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema-instance" 
+  xsd:schemaLocation="http://www.xml-cml.org/schema ../../schema24/schema.xsd">
 
   <entry id="bitset" term="Bitset">
     <annotation>
       <appinfo>
-        <xsd:complexType>
+        <xsd:complexType/>
 <!--        <array dataType="xsd:integer" />-->
       </appinfo>
     </annotation>

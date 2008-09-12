@@ -8,33 +8,37 @@
  *******************************************************************************/
 package net.bioclipse.cml.handlers;
 
+import java.io.IOException;
+
 import net.bioclipse.cml.managers.Activator;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionDelegate;
 
-public class CMLValidationHandler extends AbstractHandler{
-	public Object execute(ExecutionEvent arg0) throws ExecutionException {
+public class CMLValidationHandler extends ActionDelegate{
+	public void run(IAction action){
 		  ISelection sel=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
 		  if (sel.isEmpty()==false){
 		      if (sel instanceof IStructuredSelection) {
 		         IStructuredSelection ssel = (IStructuredSelection) sel;
-		         String display = Activator.getDefault().getValidateCMLManager().validate(((IFile)ssel.getFirstElement()));
+		         String display;
+				 try {
+					display = Activator.getDefault().getValidateCMLManager().validate(((IFile)ssel.getFirstElement()));
+				 } catch (IOException e) {
+					throw new RuntimeException(e);
+				 }
 		         MessageBox mb = new MessageBox(new Shell(), SWT.OK);
 		         mb.setText("CML checked");
 		         mb.setMessage(display);
 		         mb.open();
 		      }
 		  }		
-		  return null;
 	}
 }

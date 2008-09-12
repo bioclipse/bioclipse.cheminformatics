@@ -7,9 +7,12 @@
   title="MACiE Dictionary"
   namespace="http://www.xml-cml.org/dict/macie">
 -->
-<dictionary xmlns="http://www.xml-cml.org/schema/" 
+<dictionary xmlns="http://www.xml-cml.org/schema" 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
   xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema24/schema.xsd"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema/"
+  title="MACiE Dictionary"
+  namespace="http://www.xml-cml.org/dict/macie">
 >
     <annotation>
         <documentation>
@@ -138,7 +141,7 @@
                 <identifier convention="EC" dictRef="macie:ecNumber">
                     <label value="%ecNumber.value1Type" dictRef="macie:ecNumberL1"/>
                 </identifier>
-                <simpleType  xmlns:xsd="http://www.w3.org/2001/XMLSchema/" type="xsd:integer" name="ecNumber.value1Type" xsd:minValue="1" xsd:maxValue="6"/>
+                <xsi:simpleType  xmlns:xsd="http://www.w3.org/2001/XMLSchema/" type="xsd:integer" name="ecNumber.value1Type" xsd:minValue="1" xsd:maxValue="6"/>
             </appinfo>
             <documentation>
                 <metadata name="dc:contributor" content="Gemma Holliday"/>
@@ -162,7 +165,7 @@
                 <identifier convention="EC" dictRef="macie:ecNumber">
                     <label value="%ecNumber.value2Type" dictRef="macie:ecNumberL2"/>
                 </identifier>
-                <simpleType  xmlns:xsd="http://www.w3.org/2001/XMLSchema/" type="xsd:integer" name="ecNumber.value2Type" xsd:minValue="1" xsd:maxValue="99"/>
+                <xsi:simpleType  xmlns:xsd="http://www.w3.org/2001/XMLSchema/" type="xsd:integer" name="ecNumber.value2Type" xsd:minValue="1" xsd:maxValue="99"/>
             </appinfo>
             <documentation>
                 <metadata name="dc:contributor" content="Gemma Holliday"/>
@@ -185,7 +188,7 @@
                 <identifier convention="EC" dictRef="macie:ecNumber">
                     <label value="%ecNumber.value3Type" dictRef="macie:ecNumberL3"/>
                 </identifier>
-                <simpleType  xmlns:xsd="http://www.w3.org/2001/XMLSchema/" type="xsd:integer" name="ecNumber.value3Type" xsd:minValue="1" xsd:maxValue="99"/>
+                <xsi:simpleType  xmlns:xsd="http://www.w3.org/2001/XMLSchema/" type="xsd:integer" name="ecNumber.value3Type" xsd:minValue="1" xsd:maxValue="99"/>
             </appinfo>
             <documentation>
                 <metadata name="dc:contributor" content="Gemma Holliday"/>
@@ -208,7 +211,7 @@
                 <identifier convention="EC" dictRef="macie:ecNumber">
                     <label value="%ecNumber.value4Type" dictRef="macie:ecNumberL4"/>
                 </identifier>
-                <simpleType  xmlns:xsd="http://www.w3.org/2001/XMLSchema/" type="xsd:integer" name="ecNumber.value4Type" xsd:minValue="1" xsd:maxValue="999"/>
+                <xsi:simpleType  xmlns:xsd="http://www.w3.org/2001/XMLSchema/" type="xsd:integer" name="ecNumber.value4Type" xsd:minValue="1" xsd:maxValue="999"/>
             </appinfo>
             <documentation>
                 <metadata name="dc:contributor" content="Gemma Holliday"/>
@@ -230,7 +233,7 @@
             <appinfo>
                 <identifier value="%primaryPDBCode.valueType" convention="PDB" dictRef="macie:primaryPDBCode">
                 </identifier>
-                <simpleType  xmlns:xsd="http://www.w3.org/2001/XMLSchema/" type="xsd:string" name="primaryPDBCode.valueType" xsd:pattern="\d[0-9A-Za-z]{3}"/>
+                <xsi:simpleType  xmlns:xsd="http://www.w3.org/2001/XMLSchema/" type="xsd:string" name="primaryPDBCode.valueType" xsd:pattern="\d[0-9A-Za-z]{3}"/>
             </appinfo>
             <documentation>
                 <metadata name="dc:contributor" content="Gemma Holliday"/>

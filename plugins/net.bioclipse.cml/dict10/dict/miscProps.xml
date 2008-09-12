@@ -1,4 +1,5 @@
 <dictionary title="properties scraped off the net"
+  xmlns="http://www.xml-cml.org/schema" 
   namespace="http://www.xml-cml.org/dict/miscProps"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
   xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema24/schema.xsd"

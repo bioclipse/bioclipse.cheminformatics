@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<map xmlns="http://www.xml-cml.org/schema">
+    <link from="http://www.xml-cml.org/units/castepUnits" to="castepUnits.xml"/>
+    <link from="http://www.gulp.org/units/units" to="gulpUnits.xml"/>
+    <link from="http://www.xml-cml.org/units/newUnits" to="newUnitsDict.xml"/>
+    <link from="http://www.uam.es/siesta/units" to="siestaUnits.xml"/>
+    <link from="http://www.xml-cml.org/units/siUnits" to="siUnitsDict.xml"/>
+    <link from="http://www.xml-cml.org/units/units" to="unitsDict.xml"/>
+    <link from="http://www.xml-cml.org/units/unitTypes" to="unitTypeDict.xml"/>
+</map>

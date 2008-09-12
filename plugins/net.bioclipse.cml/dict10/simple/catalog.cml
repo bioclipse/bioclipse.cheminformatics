@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<map xmlns="http://www.xml-cml.org/schema">
+    <link from="http://www.materialsgrid.org/castep/namespace" to="castepDict.xml"/>
+    <link from="http://www.xml-cml.org/dict/ccml" to="ccmlDict.xml"/>
+    <link from="http://www.xml-cml.org/dict/cmlComp" to="cmlComp.xml"/>
+    <link from="http://www.dublincore.org/dict" to="dcDict.xml"/>
+    <link from="http://www.dlpoly.org/dict" to="dl_polyDict.xml"/>
+    <link from="http://www.xml-cml.org/dict/jcampDXDict" to="jcampDXDict.xml"/>
+    <link from="http://www.xml-cml.org/dict/mopac" to="mopacDict.xml"/>
+    <link from="http://www.nmrshiftdb.org/dict" to="nmrDict.xml"/>
+    <link from="http://www.uam.es/siesta/namespace" to="siesta.xml"/>    
+</map>

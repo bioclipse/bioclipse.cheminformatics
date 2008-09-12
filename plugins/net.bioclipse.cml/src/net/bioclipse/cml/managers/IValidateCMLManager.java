@@ -8,6 +8,8 @@
  *******************************************************************************/
 package net.bioclipse.cml.managers;
 
+import java.io.IOException;
+
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.business.IBioclipseManager;
 
@@ -19,9 +21,10 @@ public interface IValidateCMLManager extends IBioclipseManager{
 
 	    /**
 	     * example method
+	     * @throws IOException 
 	     */
 	    @Recorded
-	    public String validate(IFile input);
+	    public String validate(IFile input) throws IOException;
 	    
 	    /*
 	     * After a validation, this tells if the validation was successfull

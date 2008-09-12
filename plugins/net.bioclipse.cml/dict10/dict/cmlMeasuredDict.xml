@@ -1,7 +1,7 @@
 <dictionary 
   namespace="http://www.xml-cml.org/dict/cmlMeasured"
   title="CML Measured Values dictionary"
-  xmlns="http://www.xml-cml.org/schema/stmml"
+  xmlns="http://www.xml-cml.org/schema"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
   xsi:schemaLocation="http://www.xml-cml.org/schema ../../schema24/schema.xsd"
 >
@@ -294,7 +294,7 @@
    <entry id="dimens" term="Dimensionality">
     <annotation>
       <appinfo>
-        <!--<scalar/>
+        <!--<scalar/-->
       </appinfo>
     </annotation>
     <definition>
@@ -541,7 +541,7 @@ Dimensionality
   <entry id="mulliken" term="Mulliken Charge">
     <annotation>
       <appinfo>
-        <!--<scalar unitType="charge"/>
+        <!--<scalar unitType="charge"/-->
       </appinfo>
     </annotation>
     <alternative type="abbreviation">mull</alternative>
@@ -552,7 +552,7 @@ Dimensionality
   <entry id="npa" term="NPA">
     <annotation>
       <appinfo>
-        <!--<scalar unitType="charge"/>
+        <!--<scalar unitType="charge"/-->
       </appinfo>
     </annotation>
     <alternative type="abbreviation">NPA</alternative>
@@ -670,7 +670,7 @@ This is a rather loose concept and this entry may be obsoleted in favour of more
   <entry id="stockholder" term="Stockholder Charge">
     <annotation>
       <appinfo>
-        <!--<scalar unitType="charge"/>
+        <!--<scalar unitType="charge"/-->
       </appinfo>
     </annotation>
     <alternative type="abbreviation">stock</alternative>
@@ -707,7 +707,7 @@ This is a rather loose concept and this entry may be obsoleted in favour of more
     <annotation>
       <appinfo>
         <parameter>
-          <!--<scalar dictRef="ccml:hamilton"/>
+          <!--<scalar dictRef="ccml:hamilton"/-->
           <enumeration value="AM1"/>
           <enumeration value="PM3"/>
         </parameter>
