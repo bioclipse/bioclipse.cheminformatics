@@ -18,8 +18,10 @@ import java.util.Collection;
 import java.util.List;
 
 import net.bioclipse.qsar.DescriptorType;
+import net.bioclipse.qsar.ParameterType;
 import net.bioclipse.qsar.QsarFactory;
 import net.bioclipse.qsar.QsarPackage;
+import net.bioclipse.qsar.descriptor.model.DescriptorParameter;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
@@ -84,8 +86,34 @@ public class DescriptorTypeItemProvider
 			addDescriptorimplPropertyDescriptor(object);
 			addIdPropertyDescriptor(object);
 			addNamespacePropertyDescriptor(object);
+//			addParametersPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
+	}
+
+	private void addParametersPropertyDescriptor(Object object) {
+		
+		ParameterTypeItemProvider p=new ParameterTypeItemProvider(getAdapterFactory());
+		DescriptorType dtype=(DescriptorType)object;
+		if (dtype.getParameter()!=null){
+			for (ParameterType param : dtype.getParameter()){
+				
+				itemPropertyDescriptors.add
+				(createItemPropertyDescriptor
+					(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+					 getResourceLocator(),
+					 param.getKey(),
+					 "description here",
+					 QsarPackage.Literals.PARAMETER_TYPE__VALUE,
+					 true,
+					 false,
+					 false,
+					 null,
+					 "parameters",
+					 null));
+			}
+		}
+		
 	}
 
 	/**
@@ -199,11 +227,13 @@ public class DescriptorTypeItemProvider
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	@Override
 	public String getText(Object object) {
 		String label = ((DescriptorType)object).getId();
+		if (label.indexOf('#')>0){
+			label=label.substring(0, label.lastIndexOf('#'));
+		}
 		return label == null || label.length() == 0 ?
 			getString("_UI_DescriptorType_type") :
 			getString("_UI_DescriptorType_type") + " " + label;
@@ -260,5 +290,7 @@ public class DescriptorTypeItemProvider
 	public ResourceLocator getResourceLocator() {
 		return QsarEditPlugin.INSTANCE;
 	}
+	
+	
 
 }
