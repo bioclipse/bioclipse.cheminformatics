@@ -301,7 +301,16 @@ public class CDKManager implements ICDKManager {
                 }
     
                 CDKMolecule mol=new CDKMolecule(ac);
-                String moleculeName="Molecule " + i; 
+                
+                //Set up name for molecule
+                String moleculeName=file.getName()+"-" + i; 
+
+                //If only one mol, no trailing digit
+                if (atomContainersList.size()==1){
+                    moleculeName=file.getName();
+                }
+
+                //If there's a CDK property TITLE (read from file), use that as name
                 if (ac instanceof IMolecule) {
                     org.openscience.cdk.interfaces.IMolecule imol
                         = (org.openscience.cdk.interfaces.IMolecule) ac;
