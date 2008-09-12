@@ -99,6 +99,7 @@ public class QsarTypeItemProvider
 			childrenFeatures.add(QsarPackage.Literals.QSAR_TYPE__DESCRIPTORLIST);
 			childrenFeatures.add(QsarPackage.Literals.QSAR_TYPE__DESCRIPTORIMPL);
 			childrenFeatures.add(QsarPackage.Literals.QSAR_TYPE__PREPROCESSING);
+			childrenFeatures.add(QsarPackage.Literals.QSAR_TYPE__RESPONSELIST);
 		}
 		return childrenFeatures;
 	}
@@ -154,6 +155,7 @@ public class QsarTypeItemProvider
 			case QsarPackage.QSAR_TYPE__DESCRIPTORLIST:
 			case QsarPackage.QSAR_TYPE__DESCRIPTORIMPL:
 			case QsarPackage.QSAR_TYPE__PREPROCESSING:
+			case QsarPackage.QSAR_TYPE__RESPONSELIST:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -190,6 +192,11 @@ public class QsarTypeItemProvider
 			(createChildParameter
 				(QsarPackage.Literals.QSAR_TYPE__PREPROCESSING,
 				 QsarFactory.eINSTANCE.createPreprocessingType()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(QsarPackage.Literals.QSAR_TYPE__RESPONSELIST,
+				 QsarFactory.eINSTANCE.createResponsesListType()));
 	}
 
 	/**

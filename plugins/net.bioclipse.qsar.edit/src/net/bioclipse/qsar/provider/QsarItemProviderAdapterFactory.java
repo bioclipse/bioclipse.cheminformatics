@@ -320,6 +320,52 @@ public class QsarItemProviderAdapterFactory extends QsarAdapterFactory implement
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link net.bioclipse.qsar.ResponsesListType} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected ResponsesListTypeItemProvider responsesListTypeItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link net.bioclipse.qsar.ResponsesListType}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createResponsesListTypeAdapter() {
+		if (responsesListTypeItemProvider == null) {
+			responsesListTypeItemProvider = new ResponsesListTypeItemProvider(this);
+		}
+
+		return responsesListTypeItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link net.bioclipse.qsar.ResponseType} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected ResponseTypeItemProvider responseTypeItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link net.bioclipse.qsar.ResponseType}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createResponseTypeAdapter() {
+		if (responseTypeItemProvider == null) {
+			responseTypeItemProvider = new ResponseTypeItemProvider(this);
+		}
+
+		return responseTypeItemProvider;
+	}
+
+	/**
 	 * This returns the root adapter factory that contains this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -428,6 +474,8 @@ public class QsarItemProviderAdapterFactory extends QsarAdapterFactory implement
 		if (preprocessingStepTypeItemProvider != null) preprocessingStepTypeItemProvider.dispose();
 		if (preprocessingTypeItemProvider != null) preprocessingTypeItemProvider.dispose();
 		if (qsarTypeItemProvider != null) qsarTypeItemProvider.dispose();
+		if (responsesListTypeItemProvider != null) responsesListTypeItemProvider.dispose();
+		if (responseTypeItemProvider != null) responseTypeItemProvider.dispose();
 	}
 
 }

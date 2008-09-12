@@ -35,5 +35,10 @@
       <preprocessingStep id="org.openscience.cdk.atomtype.sybyl" name="Sybyl Atom Types"
           namespace="http://cdk.sf.net" order="2"/>
     </preprocessing>
+    <responselist>
+      <response value="11.45" moleculeResource="molecule01" resourceIndex="0"/>
+      <response value="15.45" moleculeResource="molecule01" resourceIndex="1"/>
+      <response arrayValues="12.56,23.45,34.56" moleculeResource="molecule02"/>
+    </responselist>
   </qsar>
 </qsar:DocumentRoot>

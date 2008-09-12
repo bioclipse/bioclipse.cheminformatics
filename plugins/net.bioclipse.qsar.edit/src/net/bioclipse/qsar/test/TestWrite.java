@@ -19,6 +19,8 @@ import net.bioclipse.qsar.PreprocessingType;
 import net.bioclipse.qsar.QsarFactory;
 import net.bioclipse.qsar.QsarPackage;
 import net.bioclipse.qsar.QsarType;
+import net.bioclipse.qsar.ResponseType;
+import net.bioclipse.qsar.ResponsesListType;
 import net.bioclipse.qsar.util.QsarAdapterFactory;
 
 import org.eclipse.emf.common.command.BasicCommandStack;
@@ -92,6 +94,11 @@ public class TestWrite {
 		PreprocessingType prelist=QsarFactory.eINSTANCE.createPreprocessingType();
 		cmd=SetCommand.create(editingDomain, qsar, QsarPackage.Literals.QSAR_TYPE__PREPROCESSING, prelist);
 		cCmd.append(cmd);
+		
+		ResponsesListType reslist=QsarFactory.eINSTANCE.createResponsesListType();
+		cmd=SetCommand.create(editingDomain, qsar, QsarPackage.Literals.QSAR_TYPE__RESPONSELIST, reslist);
+		cCmd.append(cmd);
+
 
 		//Add molecules
 		//======================
@@ -188,6 +195,28 @@ public class TestWrite {
 		att.setOrder("2");
 		att.setNamespace("http://cdk.sf.net");
 		cmd=AddCommand.create(editingDomain, prelist, QsarPackage.Literals.PREPROCESSING_TYPE__PREPROCESSING_STEP, att);
+		cCmd.append(cmd);
+
+		//Add responses
+		//=======================
+		ResponseType response1=QsarFactory.eINSTANCE.createResponseType();
+		response1.setMoleculeResource(mol1.getId());
+		response1.setResourceIndex(0);
+		response1.setValue((float)11.45);
+		cmd=AddCommand.create(editingDomain, reslist, QsarPackage.Literals.RESPONSES_LIST_TYPE__RESPONSE, response1);
+		cCmd.append(cmd);
+
+		ResponseType response2=QsarFactory.eINSTANCE.createResponseType();
+		response2.setMoleculeResource(mol1.getId());
+		response2.setResourceIndex(1);
+		response2.setValue((float)15.45);
+		cmd=AddCommand.create(editingDomain, reslist, QsarPackage.Literals.RESPONSES_LIST_TYPE__RESPONSE, response2);
+		cCmd.append(cmd);
+
+		ResponseType response3=QsarFactory.eINSTANCE.createResponseType();
+		response3.setMoleculeResource(mol2.getId());
+		response3.setArrayValues("12.56,23.45,34.56");
+		cmd=AddCommand.create(editingDomain, reslist, QsarPackage.Literals.RESPONSES_LIST_TYPE__RESPONSE, response3);
 		cCmd.append(cmd);
 
 

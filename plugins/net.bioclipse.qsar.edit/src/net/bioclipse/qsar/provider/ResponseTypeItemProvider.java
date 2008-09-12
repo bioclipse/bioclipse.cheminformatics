@@ -17,18 +17,13 @@ package net.bioclipse.qsar.provider;
 import java.util.Collection;
 import java.util.List;
 
-import net.bioclipse.qsar.DescriptorType;
-import net.bioclipse.qsar.ParameterType;
-import net.bioclipse.qsar.QsarFactory;
 import net.bioclipse.qsar.QsarPackage;
-import net.bioclipse.qsar.descriptor.model.DescriptorParameter;
+import net.bioclipse.qsar.ResponseType;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.ResourceLocator;
-
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -42,12 +37,12 @@ import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link net.bioclipse.qsar.DescriptorType} object.
+ * This is the item provider adapter for a {@link net.bioclipse.qsar.ResponseType} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class DescriptorTypeItemProvider
+public class ResponseTypeItemProvider
 	extends ItemProviderAdapter
 	implements
 		IEditingDomainItemProvider,
@@ -68,7 +63,7 @@ public class DescriptorTypeItemProvider
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DescriptorTypeItemProvider(AdapterFactory adapterFactory) {
+	public ResponseTypeItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -83,74 +78,50 @@ public class DescriptorTypeItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addDescriptorimplPropertyDescriptor(object);
-			addIdPropertyDescriptor(object);
-			addNamespacePropertyDescriptor(object);
+			addValuePropertyDescriptor(object);
+			addArrayValuesPropertyDescriptor(object);
+			addMoleculeResourcePropertyDescriptor(object);
+			addResourceIndexPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
-	private void addParametersPropertyDescriptor(Object object) {
-		
-		ParameterTypeItemProvider p=new ParameterTypeItemProvider(getAdapterFactory());
-		DescriptorType dtype=(DescriptorType)object;
-		if (dtype.getParameter()!=null){
-			for (ParameterType param : dtype.getParameter()){
-				
-				itemPropertyDescriptors.add
-				(createItemPropertyDescriptor
-					(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-					 getResourceLocator(),
-					 param.getKey(),
-					 "description here",
-					 QsarPackage.Literals.PARAMETER_TYPE__VALUE,
-					 true,
-					 false,
-					 false,
-					 null,
-					 "parameters",
-					 null));
-			}
-		}
-		
-	}
-
 	/**
-	 * This adds a property descriptor for the Descriptorimpl feature.
+	 * This adds a property descriptor for the Value feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addDescriptorimplPropertyDescriptor(Object object) {
+	protected void addValuePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_DescriptorType_descriptorimpl_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_DescriptorType_descriptorimpl_feature", "_UI_DescriptorType_type"),
-				 QsarPackage.Literals.DESCRIPTOR_TYPE__DESCRIPTORIMPL,
+				 getString("_UI_ResponseType_value_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ResponseType_value_feature", "_UI_ResponseType_type"),
+				 QsarPackage.Literals.RESPONSE_TYPE__VALUE,
 				 true,
 				 false,
 				 false,
-				 null,
+				 ItemPropertyDescriptor.REAL_VALUE_IMAGE,
 				 null,
 				 null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Id feature.
+	 * This adds a property descriptor for the Array Values feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addIdPropertyDescriptor(Object object) {
+	protected void addArrayValuesPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_DescriptorType_id_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_DescriptorType_id_feature", "_UI_DescriptorType_type"),
-				 QsarPackage.Literals.DESCRIPTOR_TYPE__ID,
+				 getString("_UI_ResponseType_arrayValues_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ResponseType_arrayValues_feature", "_UI_ResponseType_type"),
+				 QsarPackage.Literals.RESPONSE_TYPE__ARRAY_VALUES,
 				 true,
 				 false,
 				 false,
@@ -160,19 +131,19 @@ public class DescriptorTypeItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Namespace feature.
+	 * This adds a property descriptor for the Molecule Resource feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addNamespacePropertyDescriptor(Object object) {
+	protected void addMoleculeResourcePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_DescriptorType_namespace_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_DescriptorType_namespace_feature", "_UI_DescriptorType_type"),
-				 QsarPackage.Literals.DESCRIPTOR_TYPE__NAMESPACE,
+				 getString("_UI_ResponseType_moleculeResource_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ResponseType_moleculeResource_feature", "_UI_ResponseType_type"),
+				 QsarPackage.Literals.RESPONSE_TYPE__MOLECULE_RESOURCE,
 				 true,
 				 false,
 				 false,
@@ -182,60 +153,48 @@ public class DescriptorTypeItemProvider
 	}
 
 	/**
-	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
-	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
+	 * This adds a property descriptor for the Resource Index feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
-		if (childrenFeatures == null) {
-			super.getChildrenFeatures(object);
-			childrenFeatures.add(QsarPackage.Literals.DESCRIPTOR_TYPE__PARAMETER);
-		}
-		return childrenFeatures;
+	protected void addResourceIndexPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ResponseType_resourceIndex_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ResponseType_resourceIndex_feature", "_UI_ResponseType_type"),
+				 QsarPackage.Literals.RESPONSE_TYPE__RESOURCE_INDEX,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EStructuralFeature getChildFeature(Object object, Object child) {
-		// Check the type of the specified child object and return the proper feature to use for
-		// adding (see {@link AddCommand}) it as a child.
-
-		return super.getChildFeature(object, child);
-	}
-
-	/**
-	 * This returns DescriptorType.gif.
+	 * This returns ResponseType.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/DescriptorType"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/ResponseType"));
 	}
 
 	/**
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @generated
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((DescriptorType)object).getId();
-		if (label.indexOf('#')>0){
-			label=label.substring(0, label.lastIndexOf('#'));
-		}
-		return label == null || label.length() == 0 ?
-			getString("_UI_DescriptorType_type") :
-			getString("_UI_DescriptorType_type") + " " + label;
+		ResponseType responseType = (ResponseType)object;
+		return getString("_UI_ResponseType_type") + " " + responseType.getValue();
 	}
 
 	/**
@@ -249,14 +208,12 @@ public class DescriptorTypeItemProvider
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(DescriptorType.class)) {
-			case QsarPackage.DESCRIPTOR_TYPE__DESCRIPTORIMPL:
-			case QsarPackage.DESCRIPTOR_TYPE__ID:
-			case QsarPackage.DESCRIPTOR_TYPE__NAMESPACE:
+		switch (notification.getFeatureID(ResponseType.class)) {
+			case QsarPackage.RESPONSE_TYPE__VALUE:
+			case QsarPackage.RESPONSE_TYPE__ARRAY_VALUES:
+			case QsarPackage.RESPONSE_TYPE__MOLECULE_RESOURCE:
+			case QsarPackage.RESPONSE_TYPE__RESOURCE_INDEX:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-				return;
-			case QsarPackage.DESCRIPTOR_TYPE__PARAMETER:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
 		super.notifyChanged(notification);
@@ -272,11 +229,6 @@ public class DescriptorTypeItemProvider
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
-
-		newChildDescriptors.add
-			(createChildParameter
-				(QsarPackage.Literals.DESCRIPTOR_TYPE__PARAMETER,
-				 QsarFactory.eINSTANCE.createParameterType()));
 	}
 
 	/**
@@ -289,7 +241,5 @@ public class DescriptorTypeItemProvider
 	public ResourceLocator getResourceLocator() {
 		return QsarEditPlugin.INSTANCE;
 	}
-	
-	
 
 }
