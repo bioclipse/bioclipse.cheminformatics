@@ -8,7 +8,8 @@
             default="true"
             extensions="sdf"
             id="net.bioclipse.cdk.ui.sdfeditor"
-            name="SDFEditor">
+            name="SDFEditor"
+            icon="icons/many_molecules.png">
          <contentTypeBinding
                contentTypeId="net.bioclipse.contenttypes.sdf">
          </contentTypeBinding>
