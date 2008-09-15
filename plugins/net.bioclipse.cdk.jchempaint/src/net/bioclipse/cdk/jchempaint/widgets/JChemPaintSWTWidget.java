@@ -87,7 +87,8 @@ public class JChemPaintSWTWidget extends Canvas {
 
     public void setAtomContainer(IAtomContainer molecule) throws IllegalArgumentException {
         if (!GeometryTools.has2DCoordinates(molecule)) {
-            throw new IllegalArgumentException("The AtomContainer does not contain 2D coordinates.");
+            //throw new IllegalArgumentException("The AtomContainer does not contain 2D coordinates.");
+            this.molecule = null;
         }
         this.molecule = molecule;
     }

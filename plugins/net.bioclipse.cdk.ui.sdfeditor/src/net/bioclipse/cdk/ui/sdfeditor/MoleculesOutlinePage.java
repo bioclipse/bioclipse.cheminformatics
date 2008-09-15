@@ -16,6 +16,7 @@ import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeEditorElement;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditorContentProvider;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
@@ -39,6 +40,7 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.part.Page;
+import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 
@@ -47,9 +49,10 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
  *
  */
 public class MoleculesOutlinePage extends Page implements IContentOutlinePage, 
-        ISelectionChangedListener,
-        ISelectionListener, INullSelectionListener{
-
+        ISelectionChangedListener,//INullSelectionListener,
+        ISelectionListener 
+        {
+    Logger logger = Logger.getLogger( MoleculesOutlinePage.class );
     private ListenerList listeners = new ListenerList();
     private TreeViewer viewer;
     
@@ -78,7 +81,7 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
                                         SWT.VIRTUAL
                                         );
         
-        viewer.addSelectionChangedListener( this );
+//        viewer.addSelectionChangedListener( this );
         
         
         getTreeViewer().setContentProvider( 
@@ -97,7 +100,7 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
                     ICDKMolecule molecule = (ICDKMolecule)
                         ((IAdaptable)element).getAdapter( ICDKMolecule.class );
                    if(molecule !=null){
-                       text = MoleculesOutlinePage.this.getName( molecule );
+                       text = MoleculesOutlinePage.this.buildNameString( molecule );
                    }else {
                        // TODO Override creation in DeferredTreeContentManager
                        //  and do a getName from WorkspaceAdapter
@@ -137,7 +140,9 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
        getTreeViewer().setInput( input
                                  .getAdapter( IMoleculesEditorModel.class ) );
        
-       getSite().setSelectionProvider( getTreeViewer() );
+       // TreeViewer provides selections and this listens to them
+       getTreeViewer().addSelectionChangedListener( this );
+       getSite().setSelectionProvider( this );
        getSite().getPage().addSelectionListener( this );
         
     }
@@ -145,22 +150,32 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
      * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
      */
     public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
+            //viewer.setSelection( selection );
         
-        if (part != null && part.equals( this )) return;
-        if( selection.isEmpty()) {
-            if(!getTreeViewer().getSelection().isEmpty())
-                getTreeViewer().setSelection( selection );            
-            return;
-        }                
-        if (!( selection instanceof IStructuredSelection )) return;
-        IStructuredSelection sel = (IStructuredSelection) selection;
-
-        //Only set selection if something new
-        if (((IStructuredSelection)getTreeViewer().getSelection()).toList().containsAll( sel.toList() ))
-            return;
-        else
-            getTreeViewer().setSelection( selection );
-        
+        if(part instanceof ContentOutline || part.getSite() == this.getSite()) {
+                logger.debug( "site == site quit ");
+                return;
+        }
+        if(part != this && selection instanceof IStructuredSelection) {
+            logger.debug( "Selection has chaged " + this.getClass().getName() );
+            viewer.setSelection( selection, true );
+            
+            //getTreeViewer().setSelection( selection ,true);
+//        if (part != null && part.equals( this )) return;
+//        if( selection == null || selection.isEmpty()) {
+//            if(!getTreeViewer().getSelection().isEmpty())
+//                getTreeViewer().setSelection( selection );            
+//            return;
+//        }                
+//        if (!( selection instanceof IStructuredSelection )) return;
+//        IStructuredSelection sel = (IStructuredSelection) selection;
+//
+//        //Only set selection if something new
+//        if (((IStructuredSelection)getTreeViewer().getSelection()).toList().containsAll( sel.toList() ))
+//            return;
+//        else
+//            getTreeViewer().setSelection( selection );
+            }        
     }
     public void setInput( IEditorInput editorInput ) {
         this.input = editorInput;
@@ -181,7 +196,7 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
         return image2d;
     }
     
-    private String getName(ICDKMolecule molecule) {        
+    private String buildNameString(ICDKMolecule molecule) {        
         StringBuilder builder = new StringBuilder();
         builder.append( "[" );
         for(Object o:molecule.getAtomContainer().getProperties().values()) {
@@ -205,27 +220,46 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
     public void setFocus() {
         viewer.getControl().setFocus();
     }
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
+     */
     public void addSelectionChangedListener( ISelectionChangedListener listener ) {
 
         listeners.add( listener );
+        //getTreeViewer().addSelectionChangedListener( listener );
     }
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
+     */
     public ISelection getSelection() {
         if( viewer == null) {
             return StructuredSelection.EMPTY;
         }
         return viewer.getSelection();
     }
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
+     */
     public void removeSelectionChangedListener(
                                           ISelectionChangedListener listener ) {
 
         listeners.remove( listener );
+//        getTreeViewer().removeSelectionChangedListener( listener );
         
     }
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
+     */
     public void setSelection( ISelection selection ) {
         if(viewer != null) {
             viewer.setSelection( selection );
         }       
     }
+    
     public void selectionChanged( SelectionChangedEvent event ) {
 
         fireSelectionChanged(event.getSelection());        

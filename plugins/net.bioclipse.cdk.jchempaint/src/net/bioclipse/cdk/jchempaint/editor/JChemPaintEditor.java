@@ -151,11 +151,13 @@ public class JChemPaintEditor extends EditorPart{
     }
 
     public void setInput( Object element ) {
+        getEditorSite().getRegisteredName();
         if(element instanceof IAdaptable) {
             ICDKMolecule molecule = (ICDKMolecule)((IAdaptable)element)
                                               .getAdapter( ICDKMolecule.class );
             if(molecule != null) {// TODO if null change input to what?
                 widget.setAtomContainer( molecule.getAtomContainer() );
+                setupControllerHub( molecule.getAtomContainer());
                 // FIXME update / change hubs chemmodel
             }
         }

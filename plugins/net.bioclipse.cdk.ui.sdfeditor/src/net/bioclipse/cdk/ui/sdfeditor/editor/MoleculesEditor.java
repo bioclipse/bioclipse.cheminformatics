@@ -24,6 +24,7 @@ import net.bioclipse.cdk.ui.model.MoleculesFromSDF;
 import net.bioclipse.cdk.ui.sdfeditor.MoleculesOutlinePage;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -47,10 +48,13 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.interfaces.IAtomContainer;
 
-public class MoleculesEditor extends EditorPart implements ISelectionProvider,
+public class MoleculesEditor extends EditorPart implements 
+        //ISelectionProvider,
         ISelectionListener {
 
     public final static int STRUCTURE_COLUMN_WIDTH = 100;  
+    
+    Logger logger = Logger.getLogger( MoleculesEditor.class );
                         
     Collection<ISelectionChangedListener> selectionListeners = 
                                  new LinkedHashSet<ISelectionChangedListener>();
@@ -180,8 +184,8 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
         viewer.setUseHashlookup(true );
         viewer.setInput( 
                      getEditorInput().getAdapter(IMoleculesEditorModel.class ) );
-
-        getEditorSite().getPage().addSelectionListener( this );
+       
+        
         // See what's currently selected and select it
         ISelection selection =
                 PlatformUI.getWorkbench().getActiveWorkbenchWindow()
@@ -190,7 +194,7 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
             IStructuredSelection stSelection = (IStructuredSelection) selection;
             reactOnSelection( stSelection );
         }
-        
+        //getEditorSite().getPage().addSelectionListener( this );
         getSite().setSelectionProvider(viewer);
         
     }
@@ -208,15 +212,15 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
         return propertyHeaders;
     }
 
-    protected void reactOnSelection( IStructuredSelection selection ) {
+    void reactOnSelection( ISelection selection ) {
 
-        Object element = selection.getFirstElement();
+        
         //if ( element instanceof ICDKMolecule )
-            if (((IStructuredSelection)viewer.getSelection()).toList()
-                                            .containsAll( selection.toList() ))
-                return;
-            else
-                viewer.setSelection( new StructuredSelection( element ), true );
+//            if (((IStructuredSelection)viewer.getSelection()).toList()
+//                                            .containsAll( selection.toList() ))
+//                return;
+//            else
+                viewer.setSelection(selection ,true);
     }
 
     @Override
@@ -226,29 +230,29 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
 
     }
 
-    public void addSelectionChangedListener( ISelectionChangedListener listener ) {
-
-        selectionListeners.add(listener );
-
-    }
-
-    public ISelection getSelection() {
-
-        return viewer.getSelection();
-        
-    }
-
-    public void removeSelectionChangedListener( ISelectionChangedListener listener ) {
-
-        selectionListeners.remove(listener );
-
-    }
-
-    public void setSelection( ISelection selection ) {
-
-        viewer.setSelection( selection );
-
-    }
+//    public void addSelectionChangedListener( ISelectionChangedListener listener ) {
+//
+//        selectionListeners.add(listener );
+//
+//    }
+//
+//    public ISelection getSelection() {
+//
+//        return viewer.getSelection();
+//        
+//    }
+//
+//    public void removeSelectionChangedListener( ISelectionChangedListener listener ) {
+//
+//        selectionListeners.remove(listener );
+//
+//    }
+//
+//    public void setSelection( ISelection selection ) {
+//
+//        viewer.setSelection( selection );
+//
+//    }
 
     @SuppressWarnings("unchecked")
     private List<String> createPropertyHeaders( IAtomContainer ac ) {
@@ -275,9 +279,19 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
     }
 
     public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
-        if(selection instanceof IStructuredSelection)
-            reactOnSelection( (IStructuredSelection) selection );
-
+        logger.debug( "Selection has chaged" + this.getClass().getName() );
+        logger.debug( part.toString() + this.getSite().getPart().toString());
+        if(part != null && part.equals( this )) return;
+            viewer.setSelection( selection );
+//        if( part != null && part.equals( this )) return;
+//        if( selection == null || selection.isEmpty() ) {
+//            if(!viewer.getSelection().isEmpty())
+//                viewer.setSelection( selection );
+//            return;
+//        }           
+//        if(selection instanceof IStructuredSelection)
+//            reactOnSelection( (IStructuredSelection) selection );
+        //viewer.setSelection( selection );
     }
     
     @Override
@@ -292,4 +306,11 @@ public class MoleculesEditor extends EditorPart implements ISelectionProvider,
         }
         return super.getAdapter( adapter );
     }
+    public ISelection getSelection() {
+        if(viewer != null)
+            return viewer.getSelection();
+        else
+            return StructuredSelection.EMPTY;
+    }
+    
 }

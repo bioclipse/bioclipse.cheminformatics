@@ -87,7 +87,7 @@ public class MoleculesFromSDF implements IDeferredWorkbenchAdapter,
             children.add( node.data() );
             long currentPos = node.data().getPosition();
             monitor.worked( (int) (currentPos - lastPos) );
-            logger.debug( "currentpos: " + currentPos );
+//            logger.debug( "currentpos: " + currentPos );
             lastPos = currentPos;
             if (monitor.isCanceled())
                 throw new OperationCanceledException();

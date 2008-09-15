@@ -15,6 +15,8 @@
       </editor>
    </extension>
  <extension
+       id="net.bioclipse.cdk.jchempaint.commands"
+       name="JChemPaintToolbarCommands"
        point="org.eclipse.ui.commands">
     <command
           defaultHandler="net.bioclipse.cdk.jchempaint.handlers.AddHandler"
