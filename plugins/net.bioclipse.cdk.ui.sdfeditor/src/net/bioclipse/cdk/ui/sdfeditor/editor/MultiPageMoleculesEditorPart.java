@@ -15,6 +15,7 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
+import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jmol.editors.JmolEditor;
 
 import org.apache.log4j.Logger;
@@ -60,17 +61,18 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         jmolPage = new JmolEditor();
             try {
                 addPage(MOLECULES_PAGE, moleculesPage , getEditorInput());
+                setPageText( MOLECULES_PAGE, "Molecules" );
                 //addPage(SINGLE_ENTRY_PAGE, jcpPage);
                 addPage(SINGLE_ENTRY_PAGE, jcpEditor=new JChemPaintEditor(),getEditorInput());
-                addPage( JMOL_PAGE, jmolPage, getEditorInput() );
-                
+                setPageText( SINGLE_ENTRY_PAGE, "Singel entry" );
+                addPage( JMOL_PAGE, jmolPage, getEditorInput() );                 
+                setPageText(JMOL_PAGE, "3D-editor");            
+                 
             } catch ( PartInitException e ) {
-                
+                logger.debug( "Failed to create pages: " + e.getMessage() );
+                LogUtils.debugTrace( logger, e );
             }
-            setPageText( 0, "Molecules" );
-            setPageText(JMOL_PAGE, "3D-editor");
-            
-            setPageText( 1, "Singel entry" );
+           
             
             setPartName( getEditorInput().getName());
             
