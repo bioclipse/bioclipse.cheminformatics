@@ -23,6 +23,7 @@ import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
+import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.domain.IMolecule;
@@ -374,5 +375,21 @@ public interface ICDKManager extends IBioclipseManager {
 			throws InvocationTargetException;
 
 	public void saveMol2(ICDKMolecule mol2, String filename) throws InvocationTargetException;
+
+    /**
+     * Loads molecules from a SMILES file.
+     *
+     * @param path String with the path to the file
+     * @return a list of molecules
+     * @throws CoreException 
+     * @throws IOException 
+     */
+    @Recorded
+    @PublishedMethod( params = "String path", 
+                      methodSummary = "Loads molecules from a smiles file at " +
+                      		          "a given path into a list of " +
+                      		          "molecules")
+	public List<ICDKMolecule> loadSmilesFile(String path) throws CoreException, IOException;
     
+	public List<ICDKMolecule> loadSmilesFile(IFile file) throws CoreException, IOException; 
 }

@@ -13,18 +13,24 @@
  ******************************************************************************/
 package net.bioclipse.cdk.business;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringBufferInputStream;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
@@ -850,6 +856,96 @@ public class CDKManager implements ICDKManager {
             throw new InvocationTargetException(e);
 		}
 		
+	}
+
+	public List<ICDKMolecule> loadSmilesFile(String path) throws CoreException, IOException {
+		
+        return loadSmilesFile( ResourcePathTransformer.getInstance()
+                .transform( path ));
+	}
+
+	public List<ICDKMolecule> loadSmilesFile(IFile file) throws CoreException, IOException {
+
+		BufferedInputStream buf=new BufferedInputStream(file.getContents());
+
+		InputStreamReader reader=new InputStreamReader(buf);
+		BufferedReader br=new BufferedReader(reader);
+
+
+		String line=br.readLine();
+		int cnt=0;
+        Map<String, String> entries=new HashMap<String, String>();
+
+        while (line!=null){
+			
+			System.out.println("Line " + cnt + ": " + line);
+			
+	        Scanner smilesScanner = new Scanner(line).useDelimiter("\\s+");
+	        String part1=null;
+	        String part2=null;
+	        ICDKMolecule mol=null;
+	        if (smilesScanner.hasNext()){
+	        	part1=smilesScanner.next();
+		        if (smilesScanner.hasNext()){
+		        	part2=smilesScanner.next();
+		        }
+	        }
+	        
+	        if (part1!=null){
+		        if (part2!=null){
+		        	entries.put(part1, part2);
+		        }
+	        	entries.put(part1, "entry-"+cnt);
+	        	System.out.println("  - " + part1 +" -> " + entries.get(part1) );
+	        }
+			
+			//Get next line
+			line=br.readLine();
+			cnt++;
+		}
+		
+		//Depict where the smiles are, in first or second
+		boolean smilesInFirst=true;
+		String firstKey=(String) entries.keySet().toArray()[0];
+		String firstVal=(String) entries.get(firstKey);
+		
+		ICDKMolecule mol=null;
+		try {
+			mol = fromSmiles(firstKey);
+		} catch (BioclipseException e) {
+		}
+		
+		if (mol==null){
+			try {
+				mol = fromSmiles(firstVal);
+				smilesInFirst=false;
+			} catch (BioclipseException e) {
+			}
+			
+		}
+
+		List<ICDKMolecule> mols=new ArrayList<ICDKMolecule>();
+		
+		for (String part1 : entries.keySet()){
+			if (smilesInFirst){
+				try {
+					mol = fromSmiles(firstKey);
+					mol.setName(entries.get(part1));
+					mols.add(mol);
+				} catch (BioclipseException e) {
+				}
+			}else{
+				try {
+					mol = fromSmiles(entries.get(part1));
+					mol.setName(firstKey);
+					mols.add(mol);
+				} catch (BioclipseException e) {
+				}
+			}
+			
+		}
+		
+		return mols;
 	}
 
     
