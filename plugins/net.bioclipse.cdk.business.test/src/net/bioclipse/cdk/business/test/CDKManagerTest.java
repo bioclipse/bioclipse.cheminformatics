@@ -35,18 +35,15 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IMoleculeManager;
 import net.bioclipse.core.business.MoleculeManager;
 import net.bioclipse.core.domain.IMolecule;
-import net.bioclipse.core.util.LogUtils;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Assert;
 import org.junit.Test;
-import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMoleculeSet;
@@ -56,7 +53,6 @@ import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.templates.MoleculeFactory;
 import org.openscience.cdk.tools.diff.AtomContainerDiff;
-import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 public class CDKManagerTest {
 
@@ -106,7 +102,19 @@ public class CDKManagerTest {
         System.out.println("mol: " + mol.toString());
     }
 
-    //FIXME: Fails. See bug #1958097
+    
+    @Test
+    public void testLoadMoleculeFromSMILESFile() throws IOException, 
+                                          BioclipseException, 
+                                          CoreException {
+
+        String path = getClass().getResource("/testFiles/nprods.smi").getPath();
+        List<ICDKMolecule> mol = cdk.loadSmilesFile( new MockIFile(path));
+        
+        System.out.println("Smiles file size: " + mol.size());
+        assertEquals(30, mol.size());
+    }
+
     @Test
     public void testLoadATP() throws IOException, 
                                      BioclipseException, 
@@ -120,7 +128,6 @@ public class CDKManagerTest {
         System.out.println("mol: " + mol.toString());
     }
 
-    //FIXME: Fails. See bug #1958097
     @Test
     public void testLoadPolycarpol() throws IOException, 
                                             BioclipseException, 
@@ -262,7 +269,7 @@ public class CDKManagerTest {
         getClass().getResource("/testFiles/dbsmallconf.sdf")
         .getPath();
         IFile target=new MockIFile();
-        cdk.save(chemmodel, target, cdk.mol);
+        cdk.save(chemmodel, target, ICDKManager.mol);
         byte[] bytes=new byte[6];
         target.getContents().read(bytes);
         Assert.assertArrayEquals(new byte[]{10,32,32,67,68,75}, bytes);
@@ -277,7 +284,7 @@ public class CDKManagerTest {
         getClass().getResource("/testFiles/dbsmallconf.sdf")
         .getPath();
         IFile target=new MockIFile();
-        cdk.saveMolecule(propane, target, cdk.mol);
+        cdk.saveMolecule(propane, target, ICDKManager.mol);
         byte[] bytes=new byte[6];
         target.getContents().read(bytes);
         Assert.assertArrayEquals(new byte[]{10,32,32,67,68,75}, bytes);
@@ -377,7 +384,7 @@ public class CDKManagerTest {
         ICDKMolecule propane  = cdk.fromSmiles( propaneSmiles  );
 
         IFile target=new MockIFile();
-        cdk.saveMolecule(propane, target, cdk.mol2);
+        cdk.saveMolecule(propane, target, ICDKManager.mol2);
     	
     }
 
