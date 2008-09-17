@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.widgets.SWTRenderer;
 
@@ -92,6 +93,16 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
                     drawMolecule = AtomContainerManipulator.
                           removeHydrogensPreserveMultiplyBonded( drawMolecule );
                     
+                }else {
+                    try {
+                        drawMolecule = ((ICDKMolecule)Activator.getDefault()
+                                                .getCDKManager()
+                                                .generate2dCoordinates( mol ))
+                                                .getAtomContainer();
+                    } catch ( Exception e ) {
+                        logger.info( "Failed to generate 2D-coordinates" );
+                        return null;
+                    }
                 }
             }
 

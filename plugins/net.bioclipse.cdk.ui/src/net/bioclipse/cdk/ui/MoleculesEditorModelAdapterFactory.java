@@ -1,6 +1,7 @@
 package net.bioclipse.cdk.ui;
 
 import net.bioclipse.cdk.ui.model.MoleculesFromSDF;
+import net.bioclipse.cdk.ui.model.MoleculesFromSMI;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 
 import org.eclipse.core.resources.IFile;
@@ -19,6 +20,9 @@ public class MoleculesEditorModelAdapterFactory implements IAdapterFactory {
             }
             if ( file!=null && file.getFileExtension().equalsIgnoreCase( "sdf" ) )
                 return new MoleculesFromSDF( file );
+            // FIXME : use plugin content definition
+            if ( file !=null && file.getFileExtension().equalsIgnoreCase( "smi" ))
+                return new MoleculesFromSMI(file);
         }
         return null;
     }
