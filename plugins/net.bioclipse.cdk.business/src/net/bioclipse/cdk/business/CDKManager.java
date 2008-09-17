@@ -36,6 +36,7 @@ import java.util.Scanner;
 import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.domain.MoleculesInfo;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.BioList;
@@ -60,6 +61,7 @@ import org.openscience.cdk.config.AtomTypeFactory;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.fingerprint.FingerprinterTool;
+import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
@@ -964,5 +966,51 @@ public class CDKManager implements ICDKManager {
 		
 		return -1;
 	}
+
+	public MoleculesInfo getInfo(String path) {
+
+		return getInfo(ResourcePathTransformer.getInstance().transform(
+				path));
+	}
+
+	private MoleculesInfo getInfo(IFile transform) {
+
+
+		int numMols=0;
+		int num2d=0;
+		int num3d=0;
+		
+		List<ICDKMolecule> lst;
+		try {
+			lst = loadMolecules(transform);
+			if (lst!=null){
+				for (ICDKMolecule mol : lst){
+					numMols++;
+					if (has2d(mol))
+						num2d++;
+					if (has3d(mol))
+						num3d++;
+				}
+				
+				MoleculesInfo retInfo=new MoleculesInfo(numMols, num2d, num3d);
+				return retInfo;
+			}
+		} catch (Exception e) {
+			logger.debug("Could not count mols in file: " + 
+					transform.getProjectRelativePath() + ". Reason: " 
+					+ e.getMessage());
+		}
+		
+		return null;
+	}
+
+	public boolean has2d(IMolecule mol) throws BioclipseException {
+		return GeometryTools.has2DCoordinates(create(mol).getAtomContainer());
+	}
+	
+	public boolean has3d(IMolecule mol) throws BioclipseException {
+		return GeometryTools.has3DCoordinates(create(mol).getAtomContainer());
+	}
+	
 
 }

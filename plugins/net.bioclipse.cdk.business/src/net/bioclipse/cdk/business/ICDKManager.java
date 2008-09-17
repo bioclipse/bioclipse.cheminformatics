@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.domain.MoleculesInfo;
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
@@ -402,5 +403,39 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod( params = "String path", 
                       methodSummary = "Returns number of molecules in file.")
 	public int getNoMolecules(String path); 
+    
+	/**
+	 * Return number of molecules in file
+	 * @param file
+	 * @return
+	 */
+    @Recorded
+    @PublishedMethod( params = "String path", 
+                      methodSummary = "Returns number of molecules in file.")
+	public MoleculesInfo getInfo(String path);
+
+    /**
+     * Depict if molecule has 2D coordinates available.
+     * @param mol IMolecule to depict 2D for
+     * @return
+     * @throws BioclipseException if calculation failed
+     */
+    @Recorded
+    @PublishedMethod( params = "IMolecule mol", 
+                      methodSummary = "Returns true if molecule has 2D coordinates, " +
+                      		"false otherwise.")
+	boolean has2d(IMolecule mol) throws BioclipseException; 
+
+    /**
+     * Depict if molecule has 3D coordinates available.
+     * @param mol IMolecule to depict 3D for
+     * @return
+     * @throws BioclipseException if calculation failed
+     */
+    @Recorded
+    @PublishedMethod( params = "IMolecule mol", 
+                      methodSummary = "Returns true if molecule has 3D coordinates, " +
+                      		"false otherwise.")
+	boolean has3d(IMolecule mol) throws BioclipseException; 
     
 }
