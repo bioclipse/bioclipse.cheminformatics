@@ -121,10 +121,28 @@ public class CDKManagerTest {
                                           CoreException {
 
         String path = getClass().getResource("/testFiles/nprods.smi").getPath();
-        List<ICDKMolecule> mol = cdk.loadMolecules( new MockIFile(path));
+        List<ICDKMolecule> mols = cdk.loadMolecules( new MockIFile(path));
         
-        System.out.println("Smiles file size: " + mol.size());
-        assertEquals(30, mol.size());
+        System.out.println("Smiles file size: " + mols.size());
+        assertEquals(30, mols.size());
+        
+        for (ICDKMolecule mol : mols){
+        	System.out.println("Mol: " + mol.getName() + " Smiles: " + mol.getSmiles());
+        	if (mol.getName().equals("1")){
+                ICDKMolecule smilesMol1 = cdk.fromSmiles("C(=O)N(Cc1ccco1)C(c1cc2ccccc2cc1)C(=O)NCc1ccccc1");
+                double expm=cdk.calculateMass(smilesMol1);
+                assertEquals(expm, cdk.calculateMass(mol));
+                assertTrue(cdk.fingerPrintMatches(smilesMol1, mol));
+        	}
+
+        	if (mol.getName().equals("30")){
+                ICDKMolecule smilesMol1 = cdk.fromSmiles("C(=O)N(Cc1ccc(o1)C)C(c1ccccc1)C(=O)NCS(=O)(=O)c1ccc(cc1)C");
+                double expm=cdk.calculateMass(smilesMol1);
+                assertEquals(expm, cdk.calculateMass(mol));
+                assertTrue(cdk.fingerPrintMatches(smilesMol1, mol));
+        	}
+        }
+
     }
 
     @Test
