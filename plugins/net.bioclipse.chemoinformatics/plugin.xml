@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.exportWizards">
+      <category
+            id="net.bioclipse.chemoinformatics.exportwizards.category"
+            name="Chemoinformatics">
+      </category>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="net.bioclipse.chemoinformatics..views.category"
+            name="Chemoinformatics">
+      </category>
+   </extension>
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <category
+            id="net.bioclipse.chemoinformatics.importwizards.category"
+            name="Chemoinformatics">
+      </category>
+   </extension>
+
+</plugin>

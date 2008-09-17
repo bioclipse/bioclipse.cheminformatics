@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Bioclipse Chemoinformatics
+Bundle-SymbolicName: net.bioclipse.chemoinformatics;singleton:=true
+Bundle-Version: 2.0.0.A20080915
+Bundle-Activator: net.bioclipse.chemoinformatics.Activator
+Bundle-Vendor: The Bioclipse Team
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
