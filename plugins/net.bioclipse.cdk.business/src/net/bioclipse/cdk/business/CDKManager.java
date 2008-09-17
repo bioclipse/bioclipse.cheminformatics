@@ -75,6 +75,7 @@ import org.openscience.cdk.io.Mol2Writer;
 import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.SMILESWriter;
 import org.openscience.cdk.io.formats.IResourceFormat;
+import org.openscience.cdk.io.formats.SMILESFormat;
 import org.openscience.cdk.io.iterator.IteratingMDLConformerReader;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
 import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
@@ -849,6 +850,11 @@ public class CDKManager implements ICDKManager {
 	public List<ICDKMolecule> loadSmilesFile(IFile file) throws CoreException,
 			IOException {
 
+		//Only process files with smiles extension
+		if (!(file.getFileExtension().
+				equals(SMILESFormat.getInstance().getPreferredNameExtension())))
+			return null;
+		
 		BufferedInputStream buf = new BufferedInputStream(file.getContents());
 
 		InputStreamReader reader = new InputStreamReader(buf);
@@ -888,8 +894,8 @@ public class CDKManager implements ICDKManager {
 				}else{
 					entries.put(part1, "entry-" + cnt);
 				}
-				System.out
-						.println("  - " + part1 + " -> " + entries.get(part1));
+//				System.out
+//						.println("  - " + part1 + " -> " + entries.get(part1));
 			}
 
 			// Get next line
@@ -939,6 +945,24 @@ public class CDKManager implements ICDKManager {
 		}
 
 		return mols;
+	}
+
+	public int getNoMolecules(String path) {
+		
+		if (path.endsWith("sdf")){
+			return numberOfEntriesInSDF(path);
+		}
+		
+		List<ICDKMolecule> lst;
+		try {
+			lst = loadMolecules(path);
+			if (lst!=null) return lst.size();
+		} catch (Exception e) {
+			logger.debug("Could not count mols in file: " + path + ". Reason: " 
+					+ e.getMessage());
+		}
+		
+		return -1;
 	}
 
 }

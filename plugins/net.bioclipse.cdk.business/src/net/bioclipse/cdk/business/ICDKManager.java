@@ -391,5 +391,16 @@ public interface ICDKManager extends IBioclipseManager {
                       		          "molecules")
 	public List<ICDKMolecule> loadSmilesFile(String path) throws CoreException, IOException;
     
-	public List<ICDKMolecule> loadSmilesFile(IFile file) throws CoreException, IOException; 
+	public List<ICDKMolecule> loadSmilesFile(IFile file) throws CoreException, IOException;
+
+	/**
+	 * Return number of molecules in file
+	 * @param file
+	 * @return
+	 */
+    @Recorded
+    @PublishedMethod( params = "String path", 
+                      methodSummary = "Returns number of molecules in file.")
+	public int getNoMolecules(String path); 
+    
 }
