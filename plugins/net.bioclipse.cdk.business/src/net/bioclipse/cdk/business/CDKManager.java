@@ -869,7 +869,7 @@ public class CDKManager implements ICDKManager {
 
 		while (line != null) {
 
-			System.out.println("Line " + cnt + ": " + line);
+//			System.out.println("Line " + cnt + ": " + line);
 
 			Scanner smilesScanner = new Scanner(line).useDelimiter("\\s+");
 			String part1 = null;
@@ -885,8 +885,9 @@ public class CDKManager implements ICDKManager {
 			if (part1 != null) {
 				if (part2 != null) {
 					entries.put(part1, part2);
+				}else{
+					entries.put(part1, "entry-" + cnt);
 				}
-				entries.put(part1, "entry-" + cnt);
 				System.out
 						.println("  - " + part1 + " -> " + entries.get(part1));
 			}
@@ -921,7 +922,7 @@ public class CDKManager implements ICDKManager {
 		for (String part1 : entries.keySet()) {
 			if (smilesInFirst) {
 				try {
-					mol = fromSmiles(firstKey);
+					mol = fromSmiles(part1);
 					mol.setName(entries.get(part1));
 					mols.add(mol);
 				} catch (BioclipseException e) {
@@ -929,7 +930,7 @@ public class CDKManager implements ICDKManager {
 			} else {
 				try {
 					mol = fromSmiles(entries.get(part1));
-					mol.setName(firstKey);
+					mol.setName(part1);
 					mols.add(mol);
 				} catch (BioclipseException e) {
 				}
