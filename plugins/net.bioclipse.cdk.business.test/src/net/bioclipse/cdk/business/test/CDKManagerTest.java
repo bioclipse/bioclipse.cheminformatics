@@ -104,12 +104,24 @@ public class CDKManagerTest {
 
     
     @Test
-    public void testLoadMoleculeFromSMILESFile() throws IOException, 
+    public void testLoadMoleculeFromSMILESFileDirectly() throws IOException, 
                                           BioclipseException, 
                                           CoreException {
 
         String path = getClass().getResource("/testFiles/nprods.smi").getPath();
         List<ICDKMolecule> mol = cdk.loadSmilesFile( new MockIFile(path));
+        
+        System.out.println("Smiles file size: " + mol.size());
+        assertEquals(30, mol.size());
+    }
+
+    @Test
+    public void testLoadMoleculeFromSMILESFile() throws IOException, 
+                                          BioclipseException, 
+                                          CoreException {
+
+        String path = getClass().getResource("/testFiles/nprods.smi").getPath();
+        List<ICDKMolecule> mol = cdk.loadMolecules( new MockIFile(path));
         
         System.out.println("Smiles file size: " + mol.size());
         assertEquals(30, mol.size());
