@@ -82,6 +82,7 @@ public class ResponseTypeItemProvider
 			addArrayValuesPropertyDescriptor(object);
 			addMoleculeResourcePropertyDescriptor(object);
 			addResourceIndexPropertyDescriptor(object);
+			addStructureIDPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -175,6 +176,28 @@ public class ResponseTypeItemProvider
 	}
 
 	/**
+	 * This adds a property descriptor for the Structure ID feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addStructureIDPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ResponseType_structureID_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ResponseType_structureID_feature", "_UI_ResponseType_type"),
+				 QsarPackage.Literals.RESPONSE_TYPE__STRUCTURE_ID,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
 	 * This returns ResponseType.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -213,6 +236,7 @@ public class ResponseTypeItemProvider
 			case QsarPackage.RESPONSE_TYPE__ARRAY_VALUES:
 			case QsarPackage.RESPONSE_TYPE__MOLECULE_RESOURCE:
 			case QsarPackage.RESPONSE_TYPE__RESOURCE_INDEX:
+			case QsarPackage.RESPONSE_TYPE__STRUCTURE_ID:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}

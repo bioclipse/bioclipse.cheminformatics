@@ -83,6 +83,7 @@ public class MoleculeResourceTypeItemProvider
 			addIdPropertyDescriptor(object);
 			addNamePropertyDescriptor(object);
 			addNamespacePropertyDescriptor(object);
+			addNoMolsPropertyDescriptor(object);
 			addUrlPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
@@ -199,6 +200,28 @@ public class MoleculeResourceTypeItemProvider
 	}
 
 	/**
+	 * This adds a property descriptor for the No Mols feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addNoMolsPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_MoleculeResourceType_noMols_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_MoleculeResourceType_noMols_feature", "_UI_MoleculeResourceType_type"),
+				 QsarPackage.Literals.MOLECULE_RESOURCE_TYPE__NO_MOLS,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
 	 * This adds a property descriptor for the Url feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -262,6 +285,7 @@ public class MoleculeResourceTypeItemProvider
 			case QsarPackage.MOLECULE_RESOURCE_TYPE__ID:
 			case QsarPackage.MOLECULE_RESOURCE_TYPE__NAME:
 			case QsarPackage.MOLECULE_RESOURCE_TYPE__NAMESPACE:
+			case QsarPackage.MOLECULE_RESOURCE_TYPE__NO_MOLS:
 			case QsarPackage.MOLECULE_RESOURCE_TYPE__URL:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
