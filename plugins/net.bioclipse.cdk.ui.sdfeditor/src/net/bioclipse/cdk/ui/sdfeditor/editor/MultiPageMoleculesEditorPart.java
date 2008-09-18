@@ -76,7 +76,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
             
             setPartName( getEditorInput().getName());
             
-            
+         getSite().setSelectionProvider( moleculesPage.getViewer() );
         getSite().getPage().addPostSelectionListener( this );
     }
     

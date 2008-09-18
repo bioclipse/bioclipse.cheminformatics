@@ -24,8 +24,10 @@ public class SDFAdapterFactory implements IAdapterFactory {
         ICDKMolecule molecule=null;
         if(adaptableObject instanceof SDFElement){
             SDFElement element=(SDFElement)adaptableObject;
-            
-            molecule=(ICDKMolecule)BioclipseStore.get(element.getResource(),element);
+            if(element.getResource() !=null )
+                molecule=(ICDKMolecule)BioclipseStore.get( 
+                                                         element.getResource(),
+                                                         element);
             if(molecule==null){
                 molecule=loadSDFPart( element);
                 if(molecule!=null)

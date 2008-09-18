@@ -20,6 +20,7 @@ import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.jchempaint.widgets.SWTRenderer;
 
 import org.apache.log4j.Logger;
@@ -59,7 +60,8 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
     }
     private void setupRenderer() {
         
-        renderer = new SWTRenderer( new Renderer2DModel() , 10f);// 7f old value
+        renderer = new SWTRenderer( new Renderer2DModel() , imageWidth/10f);
+                                    //10f);// 7f old value
         
         renderer.getRenderer2DModel().setDrawNumbers( false );
         renderer.getRenderer2DModel().setIsCompact( false );
@@ -169,16 +171,15 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
             IAdaptable row = (IAdaptable) element;
             ICDKMolecule molecule =
                     (ICDKMolecule) row.getAdapter( ICDKMolecule.class );
-            MoleculeEditorElement indexE = (MoleculeEditorElement) 
-                                row.getAdapter( MoleculeEditorElement.class );
+            
             
             // if(propertyHeaders==null && molecule!=null)
             // createPropertyHeaders( molecule.getAtomContainer());
 
             switch ( columnIndex ) {
                 case 0:
-                    if(indexE != null)
-                        text = Integer.toString( indexE.getIndex() );
+                    if(row instanceof SDFElement)
+                        text = Integer.toString( ((SDFElement)row).getNumber());
                     else
                         text = "NA";//text = Integer.toString( row.getNumber() );
                     break;

@@ -22,6 +22,14 @@ public class SDFElementComparer implements IElementComparer {
         public boolean equals( Object a, Object b ) {
             if ( a == b )
                 return true;
+            if(a instanceof SDFElementComparer && b instanceof SDFElement) {
+                SDFElement aa = (SDFElement)a;
+                SDFElement bb = (SDFElement)b;
+                return aa.getResource().equals( bb.getResource() )
+                            && aa.getNumber() == bb.getNumber() 
+                            && aa.getPosition() == bb.getNumber()
+                            && aa.getName().equals( bb.getName() );
+            }
             if(a instanceof SDFElement){
                 SDFElement e = (SDFElement) a;
                 Object o = BioclipseStore.get(e.getResource(),e);
@@ -40,14 +48,15 @@ public class SDFElementComparer implements IElementComparer {
             
             if ( element instanceof SDFElement ) {                
                 SDFElement e1 = (SDFElement) element;
-                element = BioclipseStore.get(e1.getResource(),e1 );
-//                int var = 8;
-//                var = 31 * var + e1.getNumber();
-//                var = 31 * var                         
-//                     + (int) (e1.getPosition() ^ (e1.getPosition() >>> 32));
-//                var = 31 * var + (e1.getResource() == null ? 
-//                                           0 : e1.getResource().hashCode());
-//                return var;
+                
+                //element = BioclipseStore.get(e1.getResource(),e1 );
+                int var = 8;
+                var = 31 * var + e1.getNumber();
+                var = 31 * var                         
+                     + (int) (e1.getPosition() ^ (e1.getPosition() >>> 32));
+                var = 31 * var + (e1.getResource() == null ? 
+                                           0 : e1.getResource().hashCode());
+                return var;
             }
             return ( element == null ? 0: element.hashCode());
         }

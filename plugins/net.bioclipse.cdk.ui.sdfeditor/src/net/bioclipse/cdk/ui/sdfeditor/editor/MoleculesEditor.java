@@ -195,7 +195,7 @@ public class MoleculesEditor extends EditorPart implements
             reactOnSelection( stSelection );
         }
         //getEditorSite().getPage().addSelectionListener( this );
-        getSite().setSelectionProvider(viewer);
+        //getSite().setSelectionProvider(viewer);
         
     }
 
@@ -220,6 +220,7 @@ public class MoleculesEditor extends EditorPart implements
 //                                            .containsAll( selection.toList() ))
 //                return;
 //            else
+        
                 viewer.setSelection(selection ,true);
     }
 
@@ -311,6 +312,10 @@ public class MoleculesEditor extends EditorPart implements
             return viewer.getSelection();
         else
             return StructuredSelection.EMPTY;
+    }
+    
+    public TreeViewer getViewer() {
+        return viewer;
     }
     
 }

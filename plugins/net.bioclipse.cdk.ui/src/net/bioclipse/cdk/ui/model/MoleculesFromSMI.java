@@ -17,7 +17,9 @@ import org.eclipse.ui.progress.IElementCollector;
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+import net.bioclipse.core.BioclipseStore;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 
@@ -26,11 +28,11 @@ public class MoleculesFromSMI implements IDeferredWorkbenchAdapter,
                                                         IMoleculesEditorModel {
     Logger logger = Logger.getLogger( MoleculesFromSMI.class );
     IFile file;
-    List<ICDKMolecule> molecules;
+    List<SDFElement> molecules;
     
     public MoleculesFromSMI(IFile file) {
        this.file = file;
-       molecules = Collections.synchronizedList( new LinkedList<ICDKMolecule>());
+       molecules = Collections.synchronizedList( new LinkedList<SDFElement>());
     }
 
     public Object getMoleculeAt( int index ) {
@@ -58,9 +60,23 @@ public class MoleculesFromSMI implements IDeferredWorkbenchAdapter,
       
        ICDKManager manager = Activator.getDefault().getCDKManager();
        try {
+           // TODO : merge with MoleculesFromSMI
         List<ICDKMolecule> mols = manager.loadMolecules( file, monitor );
-        collector.add( mols.toArray(), monitor );
-        molecules.addAll( mols );
+        // TODO : Builder thread and Node just as MoleculesFromSDF
+        for(int i=0;i<mols.size();i++) {
+            ICDKMolecule molecule = mols.get( i );
+            SDFElement element = new SDFElement( file,
+                                                 molecule.getName(),
+                                                 -1,
+                                                 i);
+            // FIXME : maybe problem when file changes resource listener should
+            // take care of it
+            BioclipseStore.put( file, element, molecule );
+            collector.add( element, monitor );
+            molecules.add(element);
+        }
+        
+        
     } catch ( IOException e ) {
         // TODO Auto-generated catch block
        LogUtils.debugTrace( logger, e );
