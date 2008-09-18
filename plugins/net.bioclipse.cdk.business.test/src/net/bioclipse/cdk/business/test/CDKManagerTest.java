@@ -16,12 +16,15 @@ package net.bioclipse.cdk.business.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -110,7 +113,7 @@ public class CDKManagerTest {
 
         String path = getClass().getResource("/testFiles/nprods.smi").getPath();
         List<ICDKMolecule> mol = cdk.loadSmilesFile( new MockIFile(path));
-        
+        assertNotNull( mol );
         System.out.println("Smiles file size: " + mol.size());
         assertEquals(30, mol.size());
     }
@@ -144,7 +147,40 @@ public class CDKManagerTest {
         }
 
     }
-
+    
+    @Test
+    public void testloadMoleculesFromSMILESCheck() throws BioclipseException {
+        String[] input = {"CC","CCC(CC)C","CC"};
+        
+        StringBuilder sb = new StringBuilder();
+        for(String s: input) {
+            sb.append( s );
+            sb.append( "\n" );
+        }
+        
+        IFile file = new MockIFile(
+                           new ByteArrayInputStream(sb.toString().getBytes()))
+                            .extension( "smi" );
+        
+        
+        try {
+            List<ICDKMolecule> molecules = cdk.loadSmilesFile( file );
+            Assert.assertNotNull( molecules );
+            List<String> inputList = new ArrayList<String>(Arrays.asList( input ));
+            
+            for(ICDKMolecule molecule:molecules) {
+                String smiles = molecule.getSmiles();
+                if(inputList.contains( smiles ))
+                    inputList.remove( smiles );
+            }
+            Assert.assertEquals( 0, inputList.size() );
+        } catch ( CoreException e ) {
+            Assert.fail( e.getMessage() );
+        } catch ( IOException e ) {
+            Assert.fail( e.getMessage());
+        }
+    }
+    
     @Test
     public void testLoadATP() throws IOException, 
                                      BioclipseException, 
