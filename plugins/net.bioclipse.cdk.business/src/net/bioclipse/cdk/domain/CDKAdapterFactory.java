@@ -18,7 +18,7 @@ public class CDKAdapterFactory implements IAdapterFactory {
         if ( adaptableObject instanceof IFile ) {
             IFile file = (IFile) adaptableObject;
             if ( adapterType.equals( ICDKMolecule.class ) ) {
-                molecule = BioclipseStore.get( file, file ); 
+                molecule = BioclipseStore.get( file, ICDKMolecule.class ); 
                 if ( molecule == null ) {
                     try {
                         molecule = Activator.getDefault()
@@ -28,11 +28,11 @@ public class CDKAdapterFactory implements IAdapterFactory {
                         LogUtils.traceStringOf( e );
                         return null;
                     }
-                    BioclipseStore.put( file,file,molecule);
+                    BioclipseStore.put( file,ICDKMolecule.class,molecule);
                 }
             }
             else if (adapterType.equals( Node.class )) {
-                molecule = BioclipseStore.get( file, file );
+                molecule = BioclipseStore.get( file, Node.class );
                 if(! (molecule instanceof Node) )
                     molecule = null;
             }

@@ -63,18 +63,24 @@ public class MoleculesFromSDF implements IDeferredWorkbenchAdapter,
             LogUtils.debugTrace( logger, e );
         }
         monitor.beginTask("Reading SDF file", ticks);
-        Node first = (Node) sdfFile.getAdapter( Node.class );
-        if ( first == null ) {
-            first = new Node(null);
-            BioclipseStore.put(sdfFile,sdfFile, first);
-            //monitor only used for checking when to abort. Nothing else.
-            BuilderThread builder = new BuilderThread(sdfFile, 
-                                                      first, 
-                                                      monitor);
-            builder.start();
+        //Node first = (Node) sdfFile.getAdapter( Node.class );
+        Node first;
+        synchronized ( BioclipseStore.instance ) {          
+        
+            first = (Node) BioclipseStore.get( sdfFile, Node.class );
+            if ( first == null ) {
+                first = new Node(null);
+                BioclipseStore.put(sdfFile,Node.class, first);
+                //monitor only used for checking when to abort. Nothing else.
+                BuilderThread builder = new BuilderThread(sdfFile, 
+                                                          first, 
+                                                          monitor);
+                builder.start();
+            }
         }
-        readSDFElementsFromList( first, collector, monitor );
-        monitor.done();
+            readSDFElementsFromList( first, collector, monitor );
+            monitor.done();
+            
     }
     
     private void readSDFElementsFromList( Node first,
