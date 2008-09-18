@@ -114,6 +114,9 @@
            <objectState
              name="contentTypeId"
              value="net.bioclipse.contenttypes.cml.singleMolecule2d"/>
+           <objectState
+             name="contentTypeId"
+             value="net.bioclipse.contenttypes.mdlMolFile3D"/>
         </or>
         </visibility>
          <action
