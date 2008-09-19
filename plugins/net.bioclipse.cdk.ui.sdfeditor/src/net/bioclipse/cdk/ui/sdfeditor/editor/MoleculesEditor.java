@@ -19,18 +19,14 @@ import java.util.List;
 import java.util.Set;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.domain.SDFElement;
-import net.bioclipse.cdk.ui.model.MoleculesFromSDF;
 import net.bioclipse.cdk.ui.sdfeditor.MoleculesOutlinePage;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -220,7 +216,7 @@ public class MoleculesEditor extends EditorPart implements
 //                                            .containsAll( selection.toList() ))
 //                return;
 //            else
-        
+        if(viewer != null)
                 viewer.setSelection(selection ,true);
     }
 
