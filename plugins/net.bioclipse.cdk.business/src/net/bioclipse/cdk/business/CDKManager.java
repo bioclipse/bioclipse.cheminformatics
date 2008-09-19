@@ -82,9 +82,11 @@ import org.openscience.cdk.io.iterator.IteratingMDLConformerReader;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
 import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
+import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
+import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
@@ -973,6 +975,59 @@ public class CDKManager implements ICDKManager {
 				path));
 	}
 
+	public IMolecule generate3dCoordinates(IMolecule molecule) throws Exception {
+        ICDKMolecule cdkmol=null;
+        if ( molecule instanceof ICDKMolecule ) {
+            cdkmol = (ICDKMolecule) molecule;
+        }else {
+            cdkmol=create(molecule);
+        }        
+        ModelBuilder3D mb3d=ModelBuilder3D.getInstance();
+    	addExplicitHydrogens(molecule);
+    	org.openscience.cdk.interfaces.IMolecule ac=(org.openscience.cdk.interfaces.IMolecule)cdkmol.getAtomContainer();
+    	org.openscience.cdk.interfaces.IMolecule mol3d  = mb3d.generate3DCoordinates(ac, false);
+    	return new CDKMolecule(mol3d);
+	}
+	
+    public IMolecule addExplicitHydrogens(IMolecule molecule) throws Exception {
+    	addImplicitHydrogens(molecule);
+        ICDKMolecule cdkmol=null;
+        if ( molecule instanceof ICDKMolecule ) {
+            cdkmol = (ICDKMolecule) molecule;
+        }else {
+            cdkmol=create(molecule);
+        }
+        IAtomContainer ac=cdkmol.getAtomContainer();
+    	AtomContainerManipulator.convertImplicitToExplicitHydrogens(ac);
+    	return new CDKMolecule(ac);
+    }
+	
+	public IMolecule addImplicitHydrogens(IMolecule molecule) throws BioclipseException, InvocationTargetException{
+        ICDKMolecule cdkmol=null;
+        if ( molecule instanceof ICDKMolecule ) {
+            cdkmol = (ICDKMolecule) molecule;
+        }else {
+            cdkmol=create(molecule);
+        }
+		IAtomContainer container=cdkmol.getAtomContainer();
+    	CDKAtomTypeMatcher matcher = CDKAtomTypeMatcher.getInstance(container.getBuilder());
+    	Iterator<IAtom> atoms = container.atoms().iterator();
+    	try {
+	    	while (atoms.hasNext()) {
+	    		IAtom atom = atoms.next();
+	    		IAtomType type = matcher.findMatchingAtomType(container, atom);
+	    		AtomTypeManipulator.configure(atom, type);
+	    	}
+	    	CDKHydrogenAdder hAdder = CDKHydrogenAdder.getInstance(container.getBuilder());
+			hAdder.addImplicitHydrogens(container);
+			return new CDKMolecule(container);
+		} catch (CDKException e) {
+            e.printStackTrace();
+            throw new InvocationTargetException(e);
+		}
+	}
+
+	
 	private MoleculesInfo getInfo(IFile transform) {
 
 
@@ -1011,6 +1066,4 @@ public class CDKManager implements ICDKManager {
 	public boolean has3d(IMolecule mol) throws BioclipseException {
 		return GeometryTools.has3DCoordinates(create(mol).getAtomContainer());
 	}
-	
-
 }

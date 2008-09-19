@@ -32,7 +32,6 @@ import net.bioclipse.core.domain.IMolecule;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ui.progress.IElementCollector;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IChemModel;
 
@@ -365,6 +364,9 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     public IMolecule generate2dCoordinates(IMolecule molecule) throws Exception;
 
+    @Recorded
+    public IMolecule generate3dCoordinates(IMolecule molecule) throws Exception;
+
     /**
      * @param file
      * @return
@@ -375,6 +377,7 @@ public interface ICDKManager extends IBioclipseManager {
 	ICDKMolecule depictSybylAtomTypes(IMolecule mol)
 			throws InvocationTargetException;
 
+    @Recorded
 	public void saveMol2(ICDKMolecule mol2, String filename) throws InvocationTargetException;
 
     /**
@@ -438,4 +441,9 @@ public interface ICDKManager extends IBioclipseManager {
                       		"false otherwise.")
 	boolean has3d(IMolecule mol) throws BioclipseException; 
     
+    @Recorded
+    public IMolecule addExplicitHydrogens(IMolecule molecule) throws Exception;
+
+    @Recorded
+   	public IMolecule addImplicitHydrogens(IMolecule molecule) throws BioclipseException, InvocationTargetException;
 }
