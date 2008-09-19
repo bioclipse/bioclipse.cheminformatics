@@ -18,6 +18,7 @@ package net.bioclipse.cdk.ui.views;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,9 @@ import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.SDFElement;
+import net.bioclipse.cdk.ui.model.IMoleculesFromFile;
 import net.bioclipse.cdk.ui.model.MoleculesFromSDF;
+import net.bioclipse.cdk.ui.model.MoleculesFromSMI;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IBioObject;
 
@@ -61,7 +64,7 @@ public class MoleculeContentProvider implements ITreeContentProvider,
 
     private final List<String> MOLECULE_EXT;
 
-    private final Map<IFile, MoleculesFromSDF> cachedModelMap;
+    private final Map<IFile, IMoleculesFromFile> cachedModelMap;
 
     private DeferredTreeContentManager contentManager; 
 
@@ -72,10 +75,11 @@ public class MoleculeContentProvider implements ITreeContentProvider,
                        .addResourceChangeListener( this, 
                                                    IResourceChangeEvent
                                                    .POST_CHANGE );
-        cachedModelMap = new HashMap<IFile, MoleculesFromSDF>();
+        cachedModelMap = new HashMap<IFile, IMoleculesFromFile>();
         
         MOLECULE_EXT = new ArrayList<String>() {
-            { add("SDF"); }
+            { add("SDF");
+              add("SMI");}
         };
 
     }
@@ -84,8 +88,8 @@ public class MoleculeContentProvider implements ITreeContentProvider,
         if (parentElement instanceof IFile) {
             /* possible model file */
             IFile modelFile = (IFile) parentElement;
-            if ( MOLECULE_EXT.contains( modelFile.getFileExtension()
-                                                 .toUpperCase() ) ) {
+            if ( MoleculeExt.valueOf( modelFile ).isSupported() ) {
+                                                 
                 if ( !cachedModelMap.containsKey( modelFile ) ) {
                     updateModel(modelFile);
                 }
@@ -94,7 +98,7 @@ public class MoleculeContentProvider implements ITreeContentProvider,
                        : NO_CHILDREN;
             }
         }
-        if (parentElement instanceof MoleculesFromSDF) {
+        if (parentElement instanceof IMoleculesFromFile) {
             return contentManager.getChildren( parentElement );
         }
         return NO_CHILDREN;
@@ -104,18 +108,17 @@ public class MoleculeContentProvider implements ITreeContentProvider,
         if (element instanceof SDFElement) {
             return ( (SDFElement)element ).getResource();
         }
-        if (element instanceof MoleculesFromSDF) {
-            return ( (MoleculesFromSDF) element).getParent( element );
+        if (element instanceof IMoleculesFromFile) {
+            return ( (IMoleculesFromFile) element).getParent( element );
         }
         return null;
     }
 
     public boolean hasChildren(Object element) {
         if ( element instanceof IFile ) {
-            return MOLECULE_EXT.contains(
-                ( (IFile) element ).getFileExtension().toUpperCase() );
+            return MoleculeExt.valueOf( (IFile) element ).isSupported();            
         }
-        if ( element instanceof MoleculesFromSDF ) {
+        if ( element instanceof IMoleculesFromFile ) {
             return contentManager.mayHaveChildren( element );
         }
         return false;
@@ -171,15 +174,21 @@ public class MoleculeContentProvider implements ITreeContentProvider,
      * @param modelFile The IFile which contains the persisted model
      */
     private synchronized void updateModel(IFile modelFile) {
-
-        if ( MOLECULE_EXT.contains( 
-                modelFile.getFileExtension().toUpperCase() ) ) {
+        MoleculeExt format = MoleculeExt.valueOf( modelFile ); 
+        if ( format.isSupported()) {                
             
-            MoleculesFromSDF model;
+            IMoleculesFromFile model;
             if (modelFile.exists()) {
 
                 try {
-                    model = new MoleculesFromSDF(modelFile);
+                    switch(format) {
+                        case SDF: model = new MoleculesFromSDF(modelFile);
+                            break;
+                        case SMI: model = new MoleculesFromSMI(modelFile);
+                            break;
+                        default: return;
+                    }
+                    
                 } 
                 catch (Exception e) {
                     return;
@@ -189,6 +198,31 @@ public class MoleculeContentProvider implements ITreeContentProvider,
             else {
                 cachedModelMap.remove(modelFile);
             }
+        }
+    }
+    
+    enum MoleculeExt {
+        SDF, SMI, UNKNOWNED {
+
+            @Override
+            public boolean isSupported() {
+
+                return false;
+            }
+        };
+
+       public static  MoleculeExt valueOf( IFile f ) {
+
+            try {
+                return valueOf( f.getFileExtension().toUpperCase() );
+            } catch ( IllegalArgumentException e ) {
+                return UNKNOWNED;
+            }
+        }
+
+        public boolean isSupported() {
+
+            return true;
         }
     }
 }

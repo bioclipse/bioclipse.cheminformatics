@@ -33,8 +33,7 @@ import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
 
 
-public class MoleculesFromSDF implements IDeferredWorkbenchAdapter, 
-                                         IMoleculesEditorModel{
+public class MoleculesFromSDF implements IMoleculesFromFile{
 
     private List<SDFElement> children = Collections.synchronizedList( 
                                            new ArrayList<SDFElement>() );

@@ -13,8 +13,7 @@
 package net.bioclipse.cdk.ui.views;
 
 import net.bioclipse.cdk.domain.SDFElement;
-import net.bioclipse.cdk.ui.model.MoleculesFromSDF;
-
+import net.bioclipse.cdk.ui.model.IMoleculesFromFile;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -47,9 +46,10 @@ public class MoleculeLabelProvider implements ILabelProvider,
         if (element instanceof SDFElement) {
             SDFElement mol = (SDFElement) element;
             return "[" +  mol.getNumber() + "] " + mol.getName();
-        }
-        if ( element instanceof MoleculesFromSDF ) {
-            return ( (MoleculesFromSDF)element).getLabel( element );
+        }        
+        if ( element instanceof IMoleculesFromFile ) {
+            // TODO : Use DeferredWorkbenchAdapter or IWorkbenchAdapter
+            return ( (IMoleculesFromFile)element).getLabel( element );
         }
         if ( element instanceof PendingUpdateAdapter ) {
             return "Pending...";

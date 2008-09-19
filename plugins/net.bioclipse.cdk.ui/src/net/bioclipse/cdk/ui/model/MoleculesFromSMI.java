@@ -24,8 +24,7 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 
 
-public class MoleculesFromSMI implements IDeferredWorkbenchAdapter,
-                                                        IMoleculesEditorModel {
+public class MoleculesFromSMI implements IMoleculesFromFile {
     Logger logger = Logger.getLogger( MoleculesFromSMI.class );
     IFile file;
     List<SDFElement> molecules;
@@ -108,15 +107,13 @@ public class MoleculesFromSMI implements IDeferredWorkbenchAdapter,
     }
 
     public ImageDescriptor getImageDescriptor( Object object ) {
-
-        // TODO Auto-generated method stub
+        
+   // TODO : Implement for specific SMILES icon and update MoleculeLabelProvider
         return null;
     }
 
     public String getLabel( Object o ) {
-
-        // TODO Auto-generated method stub
-        return "SMILES Container";
+        return "Molecules";
     }
 
     public Object getParent( Object o ) {
