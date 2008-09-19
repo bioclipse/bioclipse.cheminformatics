@@ -6,7 +6,7 @@
       <editor
             class="net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart"
             default="true"
-            extensions="sdf"
+            extensions="sdf,smi"
             icon="icons/many_molecules.png"
             id="net.bioclipse.cdk.ui.sdfeditor"
             matchingStrategy="net.bioclipse.cdk.ui.sdfeditor.MoleculesMatchingStrategy"
