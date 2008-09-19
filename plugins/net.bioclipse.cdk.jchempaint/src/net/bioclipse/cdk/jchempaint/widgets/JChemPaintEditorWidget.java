@@ -57,8 +57,7 @@ public class JChemPaintEditorWidget extends JChemPaintSWTWidget{
       }
     	relay = new SWTMosueEventRelay(hub);
     	c2dm.setDrawMode(DrawMode.MOVE);
-    	widget.getRendererModel().setHighlightRadiusModel(20);
-    	
+    	    	
     	widget.addMouseListener(relay);
     	widget.addMouseMoveListener(relay);
     	widget.addListener(SWT.MouseEnter, relay);
@@ -67,7 +66,8 @@ public class JChemPaintEditorWidget extends JChemPaintSWTWidget{
     }
     
     public void setInput(IAtomContainer atomContainer){
-        this.setAtomContainer( atomContainer );        
+        assert(atomContainer != null);
+        super.setInput( atomContainer );        
         setupControllerHub( atomContainer );
         if(atomContainer != null) {
             Dimension newSize=new Dimension(this.getSize().x,this.getSize().y);

@@ -12,6 +12,7 @@
 package net.bioclipse.cdk.jchempaint.editor;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintSWTWidget;
 
 import org.eclipse.core.resources.IFile;
@@ -37,7 +38,7 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 public class JChemPaintEditor extends EditorPart{
     boolean dirty=false;
 	ICDKMolecule model;
-	JChemPaintSWTWidget widget;
+	JChemPaintEditorWidget widget;
 	Controller2DHub hub;
 	IController2DModel c2dm;
 	SWTMosueEventRelay relay;
@@ -97,10 +98,10 @@ public class JChemPaintEditor extends EditorPart{
 	@Override
 	public void createPartControl(Composite parent) {
 	    //  create widget
-		widget=new JChemPaintSWTWidget(parent,SWT.NONE);
+		widget=new JChemPaintEditorWidget(parent,SWT.NONE);
 		IAtomContainer atomContainer=null;
 		if(model!=null)
-		    widget.setAtomContainer(atomContainer=model.getAtomContainer());
+		    widget.setInput(atomContainer=model.getAtomContainer());
 		 
 		// setup hub 
 		if(atomContainer != null )
@@ -151,14 +152,15 @@ public class JChemPaintEditor extends EditorPart{
     }
 
     public void setInput( Object element ) {
-        getEditorSite().getRegisteredName();
+        
         if(element instanceof IAdaptable) {
             ICDKMolecule molecule = (ICDKMolecule)((IAdaptable)element)
                                               .getAdapter( ICDKMolecule.class );
-            if(molecule != null) {// TODO if null change input to what?
-                widget.setAtomContainer( molecule.getAtomContainer() );
-                setupControllerHub( molecule.getAtomContainer());
-                // FIXME update / change hubs chemmodel
+            if(molecule != null && molecule.getAtomContainer() != null) {
+                // TODO : if null change input to what?
+                widget.setInput(molecule.getAtomContainer());
+                
+                // FIXME : update / change hubs chemmodel
             }
         }
     }
