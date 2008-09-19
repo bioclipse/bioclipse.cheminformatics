@@ -60,11 +60,11 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
     }
     private void setupRenderer() {
         
-        renderer = new SWTRenderer( new Renderer2DModel() , imageWidth/10f);
+        renderer = new SWTRenderer( new Renderer2DModel() , imageWidth/16f);
                                     //10f);// 7f old value
         
         renderer.getRenderer2DModel().setDrawNumbers( false );
-        renderer.getRenderer2DModel().setIsCompact( false );
+        renderer.getRenderer2DModel().setIsCompact( true );
         renderer.getRenderer2DModel().setBondWidth( 15 );
         renderer.getRenderer2DModel().setDrawNumbers( false );
         renderer.getRenderer2DModel().setBondDistance( 1 );

@@ -326,14 +326,22 @@ public class SWTRenderer implements IJava2DRenderer {
                                                bounds.y,
                                                bounds.width*4,
                                                bounds.height*4);
-	    ImageData alphaMask = drawText( graphics.getDevice(), layout, doubleBounds );
-	    alphaMask = superFlip( alphaMask, true, graphics.getForeground());
-	    graphics.setInterpolation(SWT.HIGH);
-	    Image image = new Image(graphics.getDevice(),alphaMask);	                                 
-	    graphics.drawImage( image, 0,0,doubleBounds.width, doubleBounds.height,
-	                        x, y ,bounds.width,bounds.height);	    
-	    	    
-	    image.dispose();	    	    
+	    if(rendererModel.getIsCompact()) {
+	        int size = Math.max( bounds.width, bounds.height );
+	        graphics.setBackground( graphics.getForeground() );
+	        graphics.fillOval( x, y, size,size);
+	    } else {
+	        ImageData alphaMask =
+                    drawText( graphics.getDevice(), layout, doubleBounds );
+            alphaMask = superFlip( alphaMask, true, graphics.getForeground() );
+            graphics.setInterpolation( SWT.HIGH );
+            Image image = new Image( graphics.getDevice(), alphaMask );
+            graphics.drawImage( image, 0, 0, doubleBounds.width,
+                                doubleBounds.height, x, y, bounds.width,
+                                bounds.height );
+
+            image.dispose();
+	    }
 	}
 	
 	private ImageData drawText(Device device, TextLayout layout, Rectangle rect) {
