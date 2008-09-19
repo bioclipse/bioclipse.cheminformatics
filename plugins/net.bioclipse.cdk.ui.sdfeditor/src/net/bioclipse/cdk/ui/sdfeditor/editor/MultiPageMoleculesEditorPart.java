@@ -12,7 +12,6 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
-import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.util.LogUtils;
@@ -22,9 +21,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -64,9 +61,9 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                 setPageText( MOLECULES_PAGE, "Molecules" );
                 //addPage(SINGLE_ENTRY_PAGE, jcpPage);
                 addPage(SINGLE_ENTRY_PAGE, jcpEditor=new JChemPaintEditor(),getEditorInput());
-                setPageText( SINGLE_ENTRY_PAGE, "Singel entry" );
+                setPageText( SINGLE_ENTRY_PAGE, "Single 2D" );
                 addPage( JMOL_PAGE, jmolPage, getEditorInput() );                 
-                setPageText(JMOL_PAGE, "3D-editor");            
+                setPageText(JMOL_PAGE, "Single 3D");            
                  
             } catch ( PartInitException e ) {
                 logger.debug( "Failed to create pages: " + e.getMessage() );
