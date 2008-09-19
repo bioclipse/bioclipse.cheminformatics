@@ -58,9 +58,14 @@
             	forcePluginActivation="true"
             	property="org.eclipse.core.resources.extension"
             	value="sdf"/>
+            <test
+                  forcePluginActivation="true"
+                  property="org.eclipse.core.resources.extension"
+                  value="smi">
+            </test>
             </or>
          </and>
-         <instanceof value="net.bioclipse.cdk.ui.model.MoleculesFromSDF" />
+         <instanceof value="net.bioclipse.cdk.ui.model.IMoleculesFromFile" />
          <instanceof value="net.bioclipse.cdk.domain.SDFElement" />
          </or>
          </triggerPoints>
