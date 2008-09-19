@@ -106,6 +106,36 @@
 
    <extension point="org.eclipse.ui.popupMenus">
     <objectContribution
+      id="net.bioclipse.cdk.ui.popup.create3d"
+      objectClass="org.eclipse.core.resources.IFile">
+        <visibility>
+        <or>
+           <objectState
+             name="contentTypeId"
+             value="net.bioclipse.contenttypes.mdlMolFile2D"/>
+           <objectState
+             name="contentTypeId"
+             value="net.bioclipse.contenttypes.cml.singleMolecule3d"/>
+           <objectState
+             name="contentTypeId"
+             value="net.bioclipse.contenttypes.cml.singleMolecule2d"/>
+           <objectState
+             name="contentTypeId"
+             value="net.bioclipse.contenttypes.mdlMolFile3D"/>
+        </or>
+        </visibility>
+         <action
+           class="net.bioclipse.cdk.ui.handlers.Create3dHandler"
+           id="net.bioclipse.cdk.ui.handlers.create3d"
+           label="Create 3D coordinates"
+           menubarPath="additions" 
+           icon="icons/molecule3D.gif">
+         </action>
+    </objectContribution>
+   </extension>
+   
+   <extension point="org.eclipse.ui.popupMenus">
+    <objectContribution
       id="net.bioclipse.cdk.ui.popup.create2d"
       objectClass="org.eclipse.core.resources.IFile">
         <visibility>
