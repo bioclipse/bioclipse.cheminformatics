@@ -12,12 +12,9 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
-import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.ui.model.MoleculesFromSDF;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
-import net.bioclipse.cdk.ui.views.MoleculeContentProvider;
+
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ILazyTreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -66,15 +63,15 @@ public class MoleculesEditorContentProvider  implements
 //            return;
 //        }
 //        
-            
-        
-        if(element instanceof IAdaptable){
-            ICDKMolecule molecule = (ICDKMolecule) ((IAdaptable) element)
-                                    .getAdapter( ICDKMolecule.class );
-        if ( molecule != null )
-            viewer.replace( parent, index, 
-                                new MoleculeEditorElement(index,molecule) );
-        }
+          if( element != null)  
+              viewer.replace( parent, index, element );
+//        if(element instanceof IAdaptable){
+//            ICDKMolecule molecule = (ICDKMolecule) ((IAdaptable) element)
+//                                    .getAdapter( ICDKMolecule.class );
+//        if ( molecule != null )
+//            viewer.replace( parent, index, 
+//                                new MoleculeEditorElement(index,molecule) );
+//        }
     }
    
 
