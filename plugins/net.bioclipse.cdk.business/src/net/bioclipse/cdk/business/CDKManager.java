@@ -1028,7 +1028,7 @@ public class CDKManager implements ICDKManager {
 	}
 
 	
-	private MoleculesInfo getInfo(IFile transform) {
+	public MoleculesInfo getInfo(IFile transform) {
 
 
 		int numMols=0;
