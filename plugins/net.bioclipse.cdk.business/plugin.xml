@@ -26,6 +26,9 @@
          <adapter
                type="net.bioclipse.cdk.domain.ICDKMolecule">
          </adapter>
+         <adapter
+               type="net.bioclipse.cdk.domain.MoleculesIndexEditorInput">
+         </adapter>
       </factory>
    </extension>
 

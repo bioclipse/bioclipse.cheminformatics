@@ -173,28 +173,14 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
             //viewer.setSelection( selection );
         
         if(part instanceof ContentOutline || part.getSite() == this.getSite()) {
-                logger.debug( "site == site quit ");
+//                logger.debug( "site == site quit ");
                 return;
         }
         if(part != this && selection instanceof IStructuredSelection) {
-            logger.debug( "Selection has chaged " + this.getClass().getName() );
+//            logger.debug( "Selection has chaged " + this.getClass().getName() );
             viewer.setSelection( selection, true );
             
-            //getTreeViewer().setSelection( selection ,true);
-//        if (part != null && part.equals( this )) return;
-//        if( selection == null || selection.isEmpty()) {
-//            if(!getTreeViewer().getSelection().isEmpty())
-//                getTreeViewer().setSelection( selection );            
-//            return;
-//        }                
-//        if (!( selection instanceof IStructuredSelection )) return;
-//        IStructuredSelection sel = (IStructuredSelection) selection;
-//
-//        //Only set selection if something new
-//        if (((IStructuredSelection)getTreeViewer().getSelection()).toList().containsAll( sel.toList() ))
-//            return;
-//        else
-//            getTreeViewer().setSelection( selection );
+            
             }        
     }
     public void setInput( IEditorInput editorInput ) {

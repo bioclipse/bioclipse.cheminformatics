@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Set;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
+import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.ui.sdfeditor.MoleculesOutlinePage;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 
@@ -28,9 +30,16 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITableColorProvider;
+import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -40,8 +49,11 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.EditorInputTransfer;
 import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.part.EditorInputTransfer.EditorInputData;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 import org.openscience.cdk.interfaces.IAtomContainer;
 
 public class MoleculesEditor extends EditorPart implements 
@@ -190,11 +202,72 @@ public class MoleculesEditor extends EditorPart implements
             IStructuredSelection stSelection = (IStructuredSelection) selection;
             reactOnSelection( stSelection );
         }
+        
+        setupDragSource();
         //getEditorSite().getPage().addSelectionListener( this );
         //getSite().setSelectionProvider(viewer);
         
     }
+    
+    protected void setupDragSource() {
+        int operations = DND.DROP_COPY | DND.DROP_MOVE;
+        DragSource dragSource = new DragSource(viewer.getTree(),operations);
+        Transfer[] transferTypes = new Transfer[] 
+                                        { 
+                                          LocalSelectionTransfer.getTransfer()};
+        dragSource.setTransfer( transferTypes );
+        
+        dragSource.addDragListener(  new DragSourceListener() {
 
+            
+            public void dragStart( DragSourceEvent event ) {       
+               if(!viewer.getSelection().isEmpty()) {
+                   LocalSelectionTransfer.getTransfer()
+                           .setSelection( viewer.getSelection() );
+                   event.image = ((ITableLabelProvider)viewer
+                           .getLabelProvider())
+                           .getColumnImage( 
+                                            ((IStructuredSelection)viewer.getSelection())
+                                            .getFirstElement(), 1 );
+                   event.doit = true;
+               } else
+                   event.doit = false;
+            }
+            public void dragSetData( DragSourceEvent event ) {
+                ISelection selection = LocalSelectionTransfer
+                                            .getTransfer()
+                                            .getSelection();
+                
+                if ( LocalSelectionTransfer
+                                        .getTransfer()
+                                        .isSupportedType( event.dataType )) {
+                    
+                    event.data = selection;
+                    
+                    
+                } else {
+                IStructuredSelection selection1 = 
+                                  (IStructuredSelection) viewer.getSelection();
+                List<EditorInputData> data = new ArrayList<EditorInputData>();
+                for(Object o : selection1.toList()) {
+                    MoleculesIndexEditorInput input = 
+                                  new MoleculesIndexEditorInput((SDFElement)o);
+                    data.add( EditorInputTransfer
+                              .createEditorInputData( 
+                                      "net.bioclipse.cdk.ui.editors.jchempaint", 
+                                      input ));
+                }
+                event.data = data.toArray( new EditorInputData[0] );
+                }
+                
+            }
+
+            public void dragFinished( DragSourceEvent event ) {
+            }
+            
+        });
+    }
+    
     private List<String> createHeaderFromSelection( IAdaptable element ) {
 
         ICDKMolecule molecule = null;

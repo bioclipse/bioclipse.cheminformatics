@@ -12,17 +12,17 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
+import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
+import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
-import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jmol.editors.JmolEditor;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.SWT;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.ISelectionListener;
@@ -38,7 +38,6 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
 
     Logger logger = Logger.getLogger( MultiPageMoleculesEditorPart.class );
     private MoleculesEditor moleculesPage;
-    private JChemPaintEditorWidget jcpPage;
     private JChemPaintEditor jcpEditor;
     private JmolEditor jmolPage;
 
@@ -53,16 +52,21 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
     @Override
     protected void createPages() {
 
-        moleculesPage = new MoleculesEditor();
-        jcpPage = new JChemPaintEditorWidget(getContainer(),SWT.NONE);  
+        moleculesPage = new MoleculesEditor();        
         jmolPage = new JmolEditor();
+        MoleculesIndexEditorInput input = new MoleculesIndexEditorInput(
+              new SDFElement(
+                              (IFile)getEditorInput().getAdapter( IFile.class ),
+                              "index 0",
+                              0,
+                              0));
             try {
                 addPage(MOLECULES_PAGE, moleculesPage , getEditorInput());
                 setPageText( MOLECULES_PAGE, "Molecules" );
                 //addPage(SINGLE_ENTRY_PAGE, jcpPage);
-                addPage(SINGLE_ENTRY_PAGE, jcpEditor=new JChemPaintEditor(),getEditorInput());
+                addPage(SINGLE_ENTRY_PAGE, jcpEditor=new JChemPaintEditor(),input);
                 setPageText( SINGLE_ENTRY_PAGE, "Single 2D" );
-                addPage( JMOL_PAGE, jmolPage, getEditorInput() );                 
+                addPage( JMOL_PAGE, jmolPage, input );                 
                 setPageText(JMOL_PAGE, "Single 3D");            
                  
             } catch ( PartInitException e ) {
@@ -141,6 +145,14 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
     }
 
     private void updateJMolPage() {
+        ISelection selection = moleculesPage.getSelection();
+        if(selection instanceof IStructuredSelection) {
+           Object element = ((IStructuredSelection)selection).getFirstElement();           
+           if(element instanceof SDFElement) {
+               jmolPage.setDataInput(  (IEditorInput) ((SDFElement) element)
+                              .getAdapter( MoleculesIndexEditorInput.class ) );
+           }
+        }
     
 //        try {
 //            //jmolPage.init( getEditorSite(), getEditorInput() );
@@ -152,11 +164,13 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
 
     public void selectionChanged( IWorkbenchPart part, ISelection selection ) {        
         if( part != this && selection instanceof IStructuredSelection) {
-            logger.debug( "Selection has chaged" + this.getClass().getName() );
-//        if( selection instanceof IStructuredSelection){
-//            reactOnSelection( (IStructuredSelection) selection );
-//        }
+//            logger.debug( "Selection has chaged" + this.getClass().getName() );
+        
             moleculesPage.reactOnSelection( selection );
+            if(getActivePage() == JMOL_PAGE)
+                updateJMolPage();
+            if(getActivePage() == SINGLE_ENTRY_PAGE)
+                updateJCPPage();
         }
     }
 //    
@@ -164,7 +178,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         ISelection selection = moleculesPage.getSelection();
         if(selection instanceof IStructuredSelection) {
            Object element = ((IStructuredSelection)selection).getFirstElement();           
-           if(element instanceof IAdaptable) {
+           if(element instanceof SDFElement) {
                jcpEditor.setInput( element );
 //               element = ((IAdaptable)element).getAdapter( ICDKMolecule.class );
 //               if( element != null )

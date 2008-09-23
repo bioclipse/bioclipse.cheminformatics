@@ -32,6 +32,7 @@ import net.bioclipse.jmol.views.outline.JmolObject;
 
 import org.apache.log4j.Logger;
 
+import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.core.util.LogUtils;
 
 import org.eclipse.core.resources.IFile;
@@ -63,7 +64,6 @@ import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.ide.IDE;
 import org.jmol.modelset.Model;
-import org.jmol.modelset.ModelSet;
 
 /**
  * An example showing how to create a multi-page editor.
@@ -209,7 +209,7 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
      */
     protected void createPages() {
         createPage0();
-        createPage1();
+        //createPage1();
 
         getSite().getPage().addSelectionListener(this);
     }
@@ -314,6 +314,11 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
 
         InputStream instream;
         try {
+            
+            if(finput instanceof MoleculesIndexEditorInput) {
+                return ((MoleculesIndexEditorInput)finput).getData();
+            }
+            
             instream = file.getContents();
             StringBuilder builder = new StringBuilder();
 
@@ -618,5 +623,21 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
 
     public IEditorPart getPart(){
         return this;
+    }
+    
+    public void setDataInput(IEditorInput input){  
+       
+        if(jmolPanel != null && input instanceof MoleculesIndexEditorInput) {
+            try {
+                jmolPanel.getViewer().openStringInline( 
+                                  ((MoleculesIndexEditorInput)input).getData());
+            } catch ( CoreException e ) {
+              logger.debug("Failed to chage JMol input",new RuntimeException(e));
+            } catch ( IOException e ) {
+              logger.debug("Failed to chage JMol input",new RuntimeException(e));
+            }
+        }
+         
+        
     }
 }
