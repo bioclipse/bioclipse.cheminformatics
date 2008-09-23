@@ -13,7 +13,6 @@ package net.bioclipse.cdk.jchempaint.editor;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
-import net.bioclipse.cdk.jchempaint.widgets.JChemPaintSWTWidget;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IAdaptable;
@@ -26,14 +25,10 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.openscience.cdk.controller.Controller2DHub;
-import org.openscience.cdk.controller.Controller2DModel;
 import org.openscience.cdk.controller.IController2DModel;
-import org.openscience.cdk.controller.IViewEventRelay;
-import org.openscience.cdk.controller.IController2DModel.DrawMode;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
 import org.openscience.cdk.interfaces.IChemObjectListener;
-import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 public class JChemPaintEditor extends EditorPart{
     boolean dirty=false;
@@ -101,43 +96,16 @@ public class JChemPaintEditor extends EditorPart{
 		widget=new JChemPaintEditorWidget(parent,SWT.NONE);
 		IAtomContainer atomContainer=null;
 		if(model!=null)
-		    widget.setInput(atomContainer=model.getAtomContainer());
+		    atomContainer=model.getAtomContainer();
 		 
 		// setup hub 
 		if(atomContainer != null )
-		    setupControllerHub( atomContainer );
-			// setup renderer
-//			widget.getRendererModel().setBackColor(Color.cyan);
-			widget.getRendererModel().setHighlightRadiusModel(20);
+		   widget.setInput( atomContainer );
+			
+//			widget.getRendererModel().setHighlightRadiusModel(20);
 	}
 
-    private void setupControllerHub( IAtomContainer atomContainer ) {
-
-        hub = new Controller2DHub(
-                            c2dm=new Controller2DModel(), widget.getRenderer(),
-                            ChemModelManipulator.newChemModel(atomContainer),
-                            new IViewEventRelay(){
-                                public void updateView() {
-                                    widget.redraw();
-                                }
-                            } );
-
-      if(relay != null) {
-          widget.removeMouseListener( relay );
-          widget.removeMouseMoveListener( relay );
-          widget.removeListener( SWT.MouseEnter, relay );
-          widget.removeListener( SWT.MouseExit, relay );
-      }
-			relay = new SWTMosueEventRelay(hub);
-			c2dm.setDrawMode(DrawMode.MOVE);
-			
-			widget.addMouseListener(relay);
-			widget.addMouseMoveListener(relay);
-			widget.addListener(SWT.MouseEnter, relay);
-			widget.addListener(SWT.MouseExit, relay);
-    }
-
-	@Override
+    @Override
 	public void setFocus() {
 		// TODO Auto-generated method stub
 
