@@ -102,7 +102,7 @@ public class JChemPaintEditor extends EditorPart{
 		if(atomContainer != null )
 		   widget.setInput( atomContainer );
 			
-//			widget.getRendererModel().setHighlightRadiusModel(20);
+			widget.getRendererModel().setHighlightRadiusModel(20);
 	}
 
     @Override
@@ -127,7 +127,7 @@ public class JChemPaintEditor extends EditorPart{
             if(molecule != null && molecule.getAtomContainer() != null) {
                 // TODO : if null change input to what?
                 widget.setInput(molecule.getAtomContainer());
-                
+                widget.redraw();
                 // FIXME : update / change hubs chemmodel
             }
         }
