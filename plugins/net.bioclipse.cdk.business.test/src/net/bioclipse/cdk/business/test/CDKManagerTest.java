@@ -18,10 +18,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -216,7 +218,7 @@ public class CDKManagerTest {
         ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
         String smiles = mol.getSmiles();
 
-        assertEquals("CC1CCCC(C#N)N1C(CO[Si](C)(C)C)C2=CC=CC=C2", smiles);
+        assertEquals("N#CC1CCCC(C)N1C(CO[Si](C)(C)C)C2=CC=CC=C2", smiles);
     }
 
     @Test
@@ -332,8 +334,6 @@ public class CDKManagerTest {
         setOfMolecules.addAtomContainer(propane.getAtomContainer());
         chemmodel.setMoleculeSet(setOfMolecules);
         
-        getClass().getResource("/testFiles/dbsmallconf.sdf")
-        .getPath();
         IFile target=new MockIFile();
         cdk.save(chemmodel, target, ICDKManager.mol);
         byte[] bytes=new byte[6];
@@ -347,15 +347,163 @@ public class CDKManagerTest {
         
         ICDKMolecule propane  = cdk.fromSmiles( propaneSmiles  );
         
-        getClass().getResource("/testFiles/dbsmallconf.sdf")
-        .getPath();
         IFile target=new MockIFile();
         cdk.saveMolecule(propane, target, ICDKManager.mol);
         byte[] bytes=new byte[6];
         target.getContents().read(bytes);
         Assert.assertArrayEquals(new byte[]{10,32,32,67,68,75}, bytes);
     }
+
+    @Test
+    public void testSaveMoleculesSDF() throws BioclipseException, CDKException, CoreException, IOException {
+
+        System.out.println("*************************");
+        System.out.println("testSaveMoleculesSDF()");
+
+        MoleculeManager molmg=new MoleculeManager();
+        IMolecule mol1=molmg.fromSmiles("CCC");
+        IMolecule mol2=molmg.fromSmiles("C1CCCCC1CCO");
+        
+        List<IMolecule> mols=new ArrayList<IMolecule>();
+        mols.add(mol1);
+        mols.add(mol2);
+        
+        IFile target=new MockIFile();
+        cdk.saveMolecules(mols, target, ICDKManager.sdf);
+
+        List<ICDKMolecule> readmols = cdk.loadMolecules(target);
+        assertEquals(2, readmols.size());
+        
+    	System.out.println("** Reading back created SDFile: ");
+        for (ICDKMolecule cdkmol : readmols){
+        	System.out.println("  - SMILES: " + cdk.calculateSmiles(cdkmol));
+        }
+        
+        System.out.println("*************************");
+        
+    }
     
+    @Test
+    public void testSaveMoleculesSDFwithProps() throws BioclipseException, CDKException, CoreException, IOException {
+
+        System.out.println("*************************");
+        System.out.println("testSaveMoleculesSDFwithProps()");
+
+        ICDKMolecule mol1=cdk.fromSmiles("CCC");
+        ICDKMolecule mol2=cdk.fromSmiles("C1CCCCC1CCO");
+        
+        mol1.getAtomContainer().setProperty("wee", "how");
+        mol2.getAtomContainer().setProperty("santa", "claus");
+        
+        List<IMolecule> mols=new ArrayList<IMolecule>();
+        mols.add(mol1);
+        mols.add(mol2);
+        
+        IFile target=new MockIFile();
+        cdk.saveMolecules(mols, target, ICDKManager.sdf);
+
+        BufferedReader reader=new BufferedReader(new InputStreamReader(target.getContents()));
+
+        System.out.println("#############################################");
+        String line=reader.readLine();
+        while(line!=null){
+        	System.out.println(line);
+            line=reader.readLine();
+        }
+        System.out.println("#############################################");
+        
+        List<ICDKMolecule> readmols = cdk.loadMolecules(target);
+        assertEquals(2, readmols.size());
+
+    	System.out.println("** Reading back created SDFile: ");
+        for (ICDKMolecule cdkmol : readmols){
+        	System.out.println("  - SMILES: " + cdk.calculateSmiles(cdkmol));
+        	if (cdkmol.getAtomContainer().getAtomCount()==3){
+            	assertEquals("how", cdkmol.getAtomContainer().getProperty("wee"));
+        	}else{
+            	assertEquals("claus", cdkmol.getAtomContainer().getProperty("santa"));
+        	}
+        }
+        
+        System.out.println("*************************");
+        
+    }
+    
+    
+    @Test
+    public void testSaveMoleculesCML() throws BioclipseException, CDKException, CoreException, IOException {
+
+        System.out.println("*************************");
+        System.out.println("testSaveMoleculesCML()");
+
+        MoleculeManager molmg=new MoleculeManager();
+        IMolecule mol1=molmg.fromSmiles("CCC");
+        IMolecule mol2=molmg.fromSmiles("C1CCCCC1CCO");
+        
+        List<IMolecule> mols=new ArrayList<IMolecule>();
+        mols.add(mol1);
+        mols.add(mol2);
+        
+        IFile target=new MockIFile();
+        cdk.saveMolecules(mols, target, ICDKManager.cml);
+
+        List<ICDKMolecule> readmols = cdk.loadMolecules(target);
+        assertEquals(2, readmols.size());
+
+    	System.out.println("** Reading back created CML file: ");
+        for (ICDKMolecule cdkmol : readmols){
+        	System.out.println("  - SMILES: " + cdk.calculateSmiles(cdkmol));
+//            System.out.println("Generated CML: \n");
+//            System.out.println(cdkmol.getCML());
+        }
+        System.out.println("*************************");
+        
+    }
+
+    @Test
+    public void testSaveMoleculesCMLwithProps() throws BioclipseException, CDKException, CoreException, IOException {
+
+        System.out.println("*************************");
+        System.out.println("testSaveMoleculesCMLwithProps()");
+
+        ICDKMolecule mol1=cdk.fromSmiles("CCC");
+        ICDKMolecule mol2=cdk.fromSmiles("C1CCCCC1CCO");
+        
+        mol1.getAtomContainer().setProperty("wee", "how");
+        mol2.getAtomContainer().setProperty("santa", "claus");
+        
+        List<IMolecule> mols=new ArrayList<IMolecule>();
+        mols.add(mol1);
+        mols.add(mol2);
+        
+        IFile target=new MockIFile();
+        cdk.saveMolecules(mols, target, ICDKManager.cml);
+
+        BufferedReader reader=new BufferedReader(new InputStreamReader(target.getContents()));
+
+        System.out.println("#############################################");
+        String line=reader.readLine();
+        while(line!=null){
+        	System.out.println(line);
+            line=reader.readLine();
+        }
+        System.out.println("#############################################");
+        
+        List<ICDKMolecule> readmols = cdk.loadMolecules(target);
+    	System.out.println("** Reading back created CML File: ");
+        for (ICDKMolecule cdkmol : readmols){
+        	System.out.println("  - SMILES: " + cdk.calculateSmiles(cdkmol));
+        	if (cdkmol.getAtomContainer().getAtomCount()==3){
+            	assertEquals("how", cdkmol.getAtomContainer().getProperty("wee"));
+        	}else{
+            	assertEquals("claus", cdkmol.getAtomContainer().getProperty("santa"));
+        	}
+        }
+        
+        System.out.println("*************************");
+        
+    }
+
     @Test
     public void testSybylAtomTypePerception() throws FileNotFoundException, IOException, BioclipseException, CoreException, InvocationTargetException{
 
