@@ -51,8 +51,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.openscience.cdk.CDKConstants;
+import org.openscience.cdk.ChemModel;
 import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.Molecule;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
@@ -166,7 +168,7 @@ public class CDKManager implements ICDKManager {
 
 			// Store the chemFormat used for the reader
 			IResourceFormat chemFormat = reader.getFormat();
-			logger.debug("Rad CDK chemfile with format: "
+			logger.debug("Read CDK chemfile with format: "
 					+ chemFormat.getFormatName());
 
 			List<IAtomContainer> atomContainersList = ChemFileManipulator
@@ -384,8 +386,13 @@ public class CDKManager implements ICDKManager {
 				CDKSourceCodeWriter cmlWriter = new CDKSourceCodeWriter(writer);
 				cmlWriter.write(model);
 				towrite = writer.toString();
+			} else if (filetype.equals(sdf)) {
+				StringWriter writer = new StringWriter();
+				SDFWriter cmlWriter = new SDFWriter(writer);
+				cmlWriter.write(model.getMoleculeSet());
+				towrite = writer.toString();
 			} else {
-				throw new BioclipseException("Filetype " + filetype
+				throw new IllegalArgumentException("Filetype " + filetype
 						+ " not supported!");
 			}
 			if (target.exists()) {
@@ -401,13 +408,50 @@ public class CDKManager implements ICDKManager {
 		}
 	}
 
-	public void saveMolecule(ICDKMolecule mol, IFile target, String filetype)
+	public void saveMolecule(IMolecule mol_in, IFile target, String filetype)
 			throws BioclipseException, CDKException, CoreException {
+
+		ICDKMolecule mol=create(mol_in);
+		
 		IChemModel chemModel = mol.getAtomContainer().getBuilder()
 				.newChemModel();
 		chemModel.setMoleculeSet(chemModel.getBuilder().newMoleculeSet());
 		chemModel.getMoleculeSet().addAtomContainer(mol.getAtomContainer());
 		this.save(chemModel, target, filetype);
+	}
+
+	/**
+	 * Save a list of molecules in SDF or CML
+	 */
+	public void saveMolecules(List<IMolecule> molecules, IFile target, String filetype)
+	throws BioclipseException, CDKException, CoreException {
+		
+		if (!((cml.equalsIgnoreCase(filetype)) 
+				|| (sdf.equalsIgnoreCase(filetype)))){
+			throw new IllegalArgumentException("Multiple molecules can only " +
+					"be serialized in SDF or CML.");
+		}
+
+		IChemModel chemModel = new ChemModel();
+		chemModel.setMoleculeSet(chemModel.getBuilder().newMoleculeSet());
+		
+		for (IMolecule mol : molecules){
+			ICDKMolecule cdkmol=create(mol);
+			org.openscience.cdk.interfaces.IMolecule imol=null;
+			if (cdkmol instanceof IMolecule) {
+				imol = (org.openscience.cdk.interfaces.IMolecule) (cdkmol.getAtomContainer());
+			}else{
+				imol=new Molecule(cdkmol.getAtomContainer());
+				//Properties are lost in this CDK operation, so copy them
+				imol.setProperties(cdkmol.getAtomContainer().getProperties());
+			}
+
+			chemModel.getMoleculeSet().addMolecule(imol);
+			
+		}
+		
+		this.save(chemModel, target, filetype);
+		
 	}
 
 	/**
@@ -775,15 +819,15 @@ public class CDKManager implements ICDKManager {
 		IAtomType[] sybylTypes = new IAtomType[ac.getAtomCount()];
 		int atomCounter = 0;
 
-		try {
-			System.out.println("smiles: " + mol.getSmiles());
-			System.out.println("cml: " + mol.getCML());
-			System.out.println("Arom: "
-					+ CDKHueckelAromaticityDetector.detectAromaticity(ac));
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+//		try {
+//			System.out.println("smiles: " + mol.getSmiles());
+//			System.out.println("cml: " + mol.getCML());
+//			System.out.println("Arom: "
+//					+ CDKHueckelAromaticityDetector.detectAromaticity(ac));
+//		} catch (Exception e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 
 		try {
 			for (IAtom atom : ac.atoms()) {
@@ -1066,4 +1110,5 @@ public class CDKManager implements ICDKManager {
 	public boolean has3d(IMolecule mol) throws BioclipseException {
 		return GeometryTools.has3DCoordinates(create(mol).getAtomContainer());
 	}
+
 }

@@ -44,6 +44,7 @@ public interface ICDKManager extends IBioclipseManager {
 	public final static String smi = "smi";
     public final static String cdk = "cdk";
 	public final static String mol2 = "mol2";
+	public final static String sdf = "sdf";
 
     /**
      * Create a CDKMolecule from SMILES
@@ -146,8 +147,22 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    public void saveMolecule(ICDKMolecule mol, IFile target, String filetype) 
+    public void saveMolecule(IMolecule mol, IFile target, String filetype) 
     	throws BioclipseException, CDKException, CoreException;
+
+    /**
+     * Save a list of molecules to file
+     * @param molecules The molecules to save
+     * @param target The IFile to save to
+     * @param filetype either CML or SDF
+     * @throws BioclipseException
+     * @throws CDKException
+     * @throws CoreException
+     */
+    @Recorded
+    public void saveMolecules(List<IMolecule> molecules, IFile target, String filetype)
+    	throws BioclipseException, CDKException, CoreException;
+
 
     /**
      * @param model The ChemModel to save
@@ -446,4 +461,5 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
    	public IMolecule addImplicitHydrogens(IMolecule molecule) throws BioclipseException, InvocationTargetException;
+
 }
