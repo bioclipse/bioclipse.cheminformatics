@@ -25,4 +25,3 @@ Export-Package: net.bioclipse.cdk.jchempaint.editor;
    org.eclipse.ui,
    net.bioclipse.cdk.domain",
  net.bioclipse.cdk.jchempaint.widgets
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
