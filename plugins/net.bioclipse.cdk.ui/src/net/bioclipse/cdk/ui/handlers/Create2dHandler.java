@@ -14,8 +14,9 @@ package net.bioclipse.cdk.ui.handlers;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.core.util.LogUtils;
 
-import org.eclipse.core.commands.ExecutionException;
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.IAction;
@@ -32,7 +33,8 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
  * A handler class for a Generate 2D Coordinates menu item
  */
 public class Create2dHandler extends ActionDelegate {
-
+	
+	private static final Logger logger = Logger.getLogger(Create2dHandler.class);
 	public int answer;
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
@@ -47,7 +49,8 @@ public class Create2dHandler extends ActionDelegate {
 					mol = Activator.getDefault().getCDKManager().loadMolecule((IFile)ssel.getFirstElement());
 					mol = (ICDKMolecule)Activator.getDefault().getCDKManager().generate2dCoordinates(mol);
 				 } catch (Exception e) {
-					throw new RuntimeException(e.getMessage());
+					 LogUtils.handleException(e, logger);
+					 return;
 				 }
 		         MessageBox mb = new MessageBox(new Shell(), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
 		         mb.setText("Change file");
