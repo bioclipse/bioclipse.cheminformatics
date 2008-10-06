@@ -129,7 +129,7 @@
            id="net.bioclipse.cdk.ui.handlers.create3d"
            label="Create 3D coordinates"
            menubarPath="additions" 
-           icon="icons/molecule3D.gif">
+           icon="icons/molecule3D.png">
          </action>
     </objectContribution>
    </extension>
