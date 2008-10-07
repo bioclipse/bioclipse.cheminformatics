@@ -22,7 +22,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.RandomAccessFile;
 import java.io.StringBufferInputStream;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -57,19 +56,20 @@ import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
-import org.openscience.cdk.atomtype.SybylAtomTypeMatcher;
 import org.openscience.cdk.atomtype.mapper.AtomTypeMapper;
 import org.openscience.cdk.config.AtomTypeFactory;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.fingerprint.FingerprinterTool;
 import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CDKSourceCodeWriter;
 import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
@@ -755,15 +755,19 @@ public class CDKManager implements ICDKManager {
 		} else {
 			cdkmol = create(molecule);
 		}
+		IMoleculeSet mols = ConnectivityChecker.partitionIntoMolecules(cdkmol.getAtomContainer());
 		StructureDiagramGenerator sdg = new StructureDiagramGenerator();
-		sdg.setMolecule(cdkmol.getAtomContainer().getBuilder().newMolecule(
-				cdkmol.getAtomContainer()));
-		sdg.generateCoordinates();
-		IAtomContainer ac = sdg.getMolecule();
-		for (IAtom a : ac.atoms()) {
-			a.setPoint3d(null);
+		org.openscience.cdk.interfaces.IMolecule newmolecule = cdkmol.getAtomContainer().getBuilder().newMolecule();
+		for(IAtomContainer mol : mols.molecules()){
+			sdg.setMolecule(cdkmol.getAtomContainer().getBuilder().newMolecule(mol));
+			sdg.generateCoordinates();
+			IAtomContainer ac = sdg.getMolecule();
+			for (IAtom a : ac.atoms()) {
+				a.setPoint3d(null);
+			}
+			newmolecule.add(ac);
 		}
-		return new CDKMolecule(ac);
+		return new CDKMolecule(newmolecule);
 	}
 
 	public Iterator<ICDKMolecule> createMoleculeIterator(String path)
