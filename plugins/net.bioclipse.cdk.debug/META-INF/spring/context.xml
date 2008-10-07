@@ -24,7 +24,7 @@
 
   <!-- The target that later on will be proxied. Our manager class. -->
   <bean id="exampleManagerTarget" 
-        class="net.bioclipse.springBasedPrototypePlugin.business.ExampleManager">
+        class="net.bioclipse.cdkdebug.business.CDKDebugManager">
   </bean>
   
   <!--+ 
@@ -36,7 +36,7 @@
   	<property name="target" 
   	          ref="exampleManagerTarget" />
   	<property name="proxyInterfaces" 
-  	          value="net.bioclipse.springBasedPrototypePlugin.business.IExampleManager" />
+  	          value="net.bioclipse.cdkdebug.business.ICDKDebugManager" />
   	<property name="interceptorNames"
   	          value="recordingAdvisor" />
   </bean>
@@ -44,5 +44,5 @@
   <!-- publishes the final manager (the proxy) -->
   <osgi:service id="exampleManagerOSGI" 
                 ref="exampleManager"
-                interface="net.bioclipse.springBasedPrototypePlugin.business.IExampleManager" />
+                interface="net.bioclipse.cdkdebug.business.ICDKDebugManager" />
 </beans>

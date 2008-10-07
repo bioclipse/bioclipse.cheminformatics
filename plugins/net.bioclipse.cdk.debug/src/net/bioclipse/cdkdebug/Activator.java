@@ -1,20 +1,25 @@
-package net.bioclipse.springBasedPrototypePlugin;
+/*******************************************************************************
+ * Copyright (c) 2008 The Bioclipse Project and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * www.eclipse.org/epl-v10.html <http://www.eclipse.org/legal/epl-v10.html>
+ * 
+ * Contributors:
+ *     Egon Willighagen <egonw@user.sf.net>
+ ******************************************************************************/
+package net.bioclipse.cdkdebug;
 
-import net.bioclipse.springBasedPrototypePlugin.business.IExampleManager;
+import net.bioclipse.cdkdebug.business.ICDKDebugManager;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
-/**
- * The activator class controls the plug-in life cycle
- * 
- * @author jonalv
- */
 public class Activator extends AbstractUIPlugin {
 
     // The plug-in ID
-    public static final String PLUGIN_ID = "net.bioclipse.springBasedPrototypePlugin";
+    public static final String PLUGIN_ID = "net.bioclipse.cdk.debug";
 
     // The shared instance
     private static Activator plugin;
@@ -37,7 +42,7 @@ public class Activator extends AbstractUIPlugin {
         plugin = this;
         
         finderTracker = new ServiceTracker( context, 
-                                            IExampleManager.class.getName(), 
+                                            ICDKDebugManager.class.getName(), 
                                             null );
         finderTracker.open();
     }
@@ -47,10 +52,10 @@ public class Activator extends AbstractUIPlugin {
      * 
      * @return the exampleManager
      */
-    public IExampleManager getExampleManager() {
-        IExampleManager exampleManager = null;
+    public ICDKDebugManager getManager() {
+        ICDKDebugManager exampleManager = null;
         try {
-            exampleManager = (IExampleManager) finderTracker.waitForService(1000*30);
+            exampleManager = (ICDKDebugManager) finderTracker.waitForService(1000*30);
         } catch (InterruptedException e) {
             throw new IllegalStateException("Could not get example manager", e);
         }
