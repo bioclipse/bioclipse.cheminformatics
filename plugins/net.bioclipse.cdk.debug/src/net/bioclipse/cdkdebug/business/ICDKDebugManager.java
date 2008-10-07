@@ -10,12 +10,22 @@
  ******************************************************************************/
 package net.bioclipse.cdkdebug.business;
 
+import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.business.IBioclipseManager;
 
 public interface ICDKDebugManager extends IBioclipseManager {
 
+    /**
+     * @param mol The molecule to save
+     */
     @Recorded
-    public void diff();
+    public void diff(ICDKMolecule mol, ICDKMolecule mol2);
+    
+    /**
+     * @param mol The molecule to save
+     */
+    @Recorded
+    public void debug(ICDKMolecule mol);
     
 }
