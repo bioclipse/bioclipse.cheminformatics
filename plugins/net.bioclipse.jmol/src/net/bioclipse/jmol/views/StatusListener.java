@@ -11,21 +11,12 @@
 package net.bioclipse.jmol.views;
 
 
-import java.util.List;
+import java.util.Hashtable;
 
-import org.apache.log4j.Logger;
 import net.bioclipse.core.util.LogUtils;
 
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.WorkbenchPart;
 import org.jmol.api.JmolStatusListener;
 
 /**
@@ -230,6 +221,31 @@ public class StatusListener implements JmolStatusListener {
 
     public void createImage(String file, Object type_or_text_or_bytes,
             int quality) {
+    }
+
+    public String createImage( String arg0, String arg1, Object arg2, int arg3 ) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String dialogAsk( String arg0, String arg1 ) {
+        // FIXME: Auto-generated method stub
+        return null;
+    }
+
+    public Hashtable getRegistryInfo() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void notifyCallback( int arg0, Object[] arg1 ) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public boolean notifyEnabled( int arg0 ) {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

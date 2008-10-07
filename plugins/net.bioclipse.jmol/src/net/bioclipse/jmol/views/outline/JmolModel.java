@@ -3,7 +3,7 @@
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * www.eclipse.orgÑepl-v10.html <http://www.eclipse.org/legal/epl-v10.html>
+ * www.eclipse.orgï¿½epl-v10.html <http://www.eclipse.org/legal/epl-v10.html>
  * 
  * Contributors:
  *     Ola Spjuth - initial API and implementation
@@ -12,13 +12,8 @@
 package net.bioclipse.jmol.views.outline;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.IPropertySource;
-import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.jmol.modelset.Chain;
 import org.jmol.modelset.Model;
 
@@ -57,7 +52,7 @@ public class JmolModel extends JmolObject{
 
         ArrayList<IJmolObject> newChildren=new ArrayList<IJmolObject>();
         ArrayList<IJmolObject> newEmptyChildren=new ArrayList<IJmolObject>();
-        for (int i=0; i< model.getChainCount(); i++){
+        for (int i=0; i< model.getChainCount(false); i++){ // do not count water
             Chain chain=model.getChains()[i];
             
             //This will not create Chain if chainID is not available
@@ -101,7 +96,7 @@ public class JmolModel extends JmolObject{
     }
 
     public int getChainCount(){
-    	return model.getChainCount();
+    	return model.getChainCount(false); // do not count water
 
     }
 
