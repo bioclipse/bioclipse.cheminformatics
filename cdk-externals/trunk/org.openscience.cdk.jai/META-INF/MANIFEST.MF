@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CDK plugin
+Bundle-SymbolicName: org.openscience.cdk.jai;singleton:=true
+Bundle-Version: 1.1.0.20080907
+Bundle-Vendor: The Chemistry Development Kit Project
+Bundle-ActivationPolicy: lazy
+Bundle-Classpath: jar/cdk-jai.jar
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: org.openscience.cdk.applications.jchempaint.action
