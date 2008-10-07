@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CDK plugin
+Bundle-SymbolicName: org.openscience.cdk.core;singleton:=true
+Bundle-Version: 1.1.0.20080907
+Bundle-Vendor: The Chemistry Development Kit Project
+Bundle-ActivationPolicy: lazy
+Bundle-Classpath: jar/cdk-core.jar
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.openscience.cdk.interfaces,
+ org.apache.log4j
+Export-Package: org.openscience.cdk.annotations,
+ org.openscience.cdk.config.isotopes,
+ org.openscience.cdk.config,
+ org.openscience.cdk.config.atomtypes,
+ org.openscience.cdk.fingerprint,
+ org.openscience.cdk.atomtype,
+ org.openscience.cdk.tools,
+ org.openscience.cdk.tools.manipulator,
+ org.openscience.cdk.exception,
+ org.openscience.cdk.graph,
+ org.openscience.cdk.graph.matrix,
+ org.openscience.cdk
