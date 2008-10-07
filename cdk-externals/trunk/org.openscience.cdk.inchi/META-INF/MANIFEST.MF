@@ -14,5 +14,5 @@ Require-Bundle: org.openscience.cdk.core,
  org.openscience.cdk.valencycheck,
  javax.vecmath,
  net.bioclipse.xom,
- net.sf.jniinchi,
+ net.sf.jniinchi
 Export-Package: org.openscience.cdk.inchi
