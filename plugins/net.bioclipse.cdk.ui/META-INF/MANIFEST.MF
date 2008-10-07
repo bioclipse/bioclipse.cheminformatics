@@ -7,7 +7,9 @@ Bundle-Activator: net.bioclipse.cdk.ui.Activator
 Bundle-Vendor: The Bioclipse Team
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.openscience.cdk,
+ org.openscience.cdk.interfaces,
+ org.openscience.cdk.core,
+ org.openscience.cdk.data,
  net.bioclipse.ui,
  org.eclipse.ui.editors,
  org.eclipse.core.resources,
