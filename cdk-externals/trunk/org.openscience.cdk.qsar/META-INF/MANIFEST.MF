@@ -15,7 +15,6 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.reaction,
  org.openscience.cdk.charges,
  org.jama,
- org.r
  org.3pq.jgrapht,
  org.omegahat.sjava,
  javax.vecmath,

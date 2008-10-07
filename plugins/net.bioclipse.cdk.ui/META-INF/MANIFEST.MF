@@ -9,7 +9,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.openscience.cdk.interfaces,
  org.openscience.cdk.core,
+ org.openscience.cdk.standard,
+ org.openscience.cdk.render,
  org.openscience.cdk.data,
+ org.openscience.cdk.sdg,
+ org.openscience.cdk.smiles,
  net.bioclipse.ui,
  org.eclipse.ui.editors,
  org.eclipse.core.resources,
@@ -19,7 +23,8 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.core,
  net.bioclipse.cdk.business,
  org.eclipse.ui.forms,
- org.eclipse.core.filesystem;bundle-version="1.2.0"
+ org.eclipse.core.filesystem;bundle-version="1.2.0",
+ javax.vecmath
 Eclipse-LazyStart: true
 Import-Package: org.apache.log4j
 Export-Package: net.bioclipse.cdk.ui.model,
