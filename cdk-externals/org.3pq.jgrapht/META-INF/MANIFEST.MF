@@ -7,4 +7,14 @@ Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Classpath: jar/jgrapht-0.6.0.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org._3pq.jgrapht
+Export-Package: org._3pq.jgrapht,
+ org._3pq.jgrapht.alg,
+ org._3pq.jgrapht.alg.util,
+ org._3pq.jgrapht.demo,
+ org._3pq.jgrapht.edge,
+ org._3pq.jgrapht.event,
+ org._3pq.jgrapht.ext,
+ org._3pq.jgrapht.generate,
+ org._3pq.jgrapht.graph,
+ org._3pq.jgrapht.traverse,
+ org._3pq.jgrapht.util

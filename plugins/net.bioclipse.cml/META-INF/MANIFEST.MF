@@ -32,7 +32,7 @@ Export-Package: net.bioclipse.cml.handlers,
  org.xmlcml.molutil,
  org.xmlcml.util
 Bundle-ClassPath: .,
- jars/jumbo-5.4.2-b1.jar
+ jars/jumbo-with-fix-by-jonalv.jar
 Bundle-Activator: net.bioclipse.cml.managers.Activator
 Eclipse-AutoStart: true
 Bundle-Vendor: The Bioclipse Team
