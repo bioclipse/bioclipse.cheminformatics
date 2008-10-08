@@ -29,6 +29,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
@@ -46,6 +47,7 @@ public class JChemPaintSWTWidget extends Canvas {
     private SWTRenderer renderer;
     private IAtomContainer molecule;
     private Map<IAtom,Point2d> coordinates=new HashMap<IAtom,Point2d>();
+    protected boolean generated = false;
     private final static int compactSize = 200;
     
     /**
@@ -138,7 +140,21 @@ public class JChemPaintSWTWidget extends Canvas {
 //            );
     }
     private void paintControl(PaintEvent event) {
-       
+      if(generated ){
+          String text = "Generated from 3D coordinates";
+          event.gc.setFont( new Font(event.gc.getDevice(),"Arial",34,SWT.NORMAL) );
+          Point p = event.gc.textExtent( text );
+          Point p2 = JChemPaintSWTWidget.this.getSize();
+          int x = p2.x - p.x;
+          int y = p2.y - p.y;
+          x/=2;
+          y/=2;
+          event.gc.setForeground( new org.eclipse.swt.graphics.Color( 
+                                            event.gc.getDevice(),220,220,255) );
+          
+          
+          event.gc.drawText( text,x,y);
+      }          
     	renderer.paintMolecule(molecule,event.gc,new Rectangle2D.Double(0,0,this.getSize().x,this.getSize().y));
     }
 

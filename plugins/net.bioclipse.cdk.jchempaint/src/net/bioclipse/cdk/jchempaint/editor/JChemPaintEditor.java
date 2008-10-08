@@ -120,17 +120,7 @@ public class JChemPaintEditor extends EditorPart{
     }
 
     public void setInput( Object element ) {
-        
-        if(element instanceof IAdaptable) {
-            ICDKMolecule molecule = (ICDKMolecule)((IAdaptable)element)
-                                              .getAdapter( ICDKMolecule.class );
-            if(molecule != null && molecule.getAtomContainer() != null) {
-                // TODO : if null change input to what?
-                widget.setInput(molecule.getAtomContainer());
-                widget.redraw();
-                // FIXME : update / change hubs chemmodel
-            }
-        }
+        widget.setInput( element );
     }
 	
 }

@@ -2,6 +2,8 @@ package net.bioclipse.cdk.domain;
 
 import java.io.IOException;
 
+import net.bioclipse.core.business.BioclipseException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
@@ -75,8 +77,16 @@ public class MoleculesIndexEditorInput implements IFileEditorInput{
     }
 
 
-    public String getData() throws CoreException, IOException {
-        return SDFAdapterFactory.getSDFPart( element );
+    public String getData() throws CoreException, IOException, BioclipseException{
+        if(element.getResource() != null)
+            return SDFAdapterFactory.getSDFPart( element );
+        else {
+            ICDKMolecule mol = (ICDKMolecule)
+                                      element.getAdapter( ICDKMolecule.class );
+            if(mol != null)
+                return mol.getCML();
+        }
+        return null;
     }
     
     

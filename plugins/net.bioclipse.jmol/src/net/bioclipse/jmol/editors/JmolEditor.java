@@ -33,6 +33,7 @@ import net.bioclipse.jmol.views.outline.JmolObject;
 import org.apache.log4j.Logger;
 
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
+import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 
 import org.eclipse.core.resources.IFile;
@@ -251,9 +252,9 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
      * checks that the input is an instance of <code>IFileEditorInput</code>.
      */
     public void init(IEditorSite site, IEditorInput editorInput)
-    throws PartInitException {
-        if (!(editorInput instanceof IFileEditorInput))
-            throw new PartInitException("Invalid Input: Must be IFileEditorInput");
+                                                    throws PartInitException {
+//        if (!(editorInput instanceof IFileEditorInput))
+//            throw new PartInitException("Invalid Input: Must be IFileEditorInput");
         super.init(site, editorInput);
         setPartName(editorInput.getName());
 
@@ -298,7 +299,7 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         if (!(input instanceof IFileEditorInput)) {
             logger.debug("Not FIleEditorInput.");
             //TODO: Close editor?
-            return null;
+            return "";
         }
         IFileEditorInput finput = (IFileEditorInput) input;
 
@@ -306,7 +307,7 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         if (!(file.exists())){
             logger.debug("File does not exist.");
             //TODO: Close editor?
-            return null;
+            return "";
         }
 
 //        return file.getFullPath().toFile();
@@ -335,6 +336,9 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
             // TODO Auto-generated catch block
             LogUtils.debugTrace(logger, e);
         } catch (IOException e) {
+            // TODO Auto-generated catch block
+            LogUtils.debugTrace(logger, e);
+        } catch (BioclipseException e) {
             // TODO Auto-generated catch block
             LogUtils.debugTrace(logger, e);
         }
@@ -635,6 +639,8 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
               logger.debug("Failed to chage JMol input",new RuntimeException(e));
             } catch ( IOException e ) {
               logger.debug("Failed to chage JMol input",new RuntimeException(e));
+            } catch ( BioclipseException e) {
+               logger.debug("Failed to chage JMol input",new RuntimeException(e));
             }
         }
          
