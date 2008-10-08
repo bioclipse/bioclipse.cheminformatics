@@ -14,6 +14,7 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.standard,
  org.openscience.cdk.formula,
  javax.vecmath,
- net.bioclipse.xom
+ net.bioclipse.xom,
+ net.bioclipse.cml
 Export-Package: org.openscience.cdk.libio.cml,
  org.openscience.cdk.io

@@ -7,8 +7,8 @@ Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Classpath: jar/cdk-core.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Require-Bundle: org.openscience.cdk.interfaces,
- org.apache.log4j
+Require-Bundle: org.openscience.cdk.interfaces
+Import-Package: org.apache.log4j
 Export-Package: org.openscience.cdk.annotations,
  org.openscience.cdk.config.isotopes,
  org.openscience.cdk.config,

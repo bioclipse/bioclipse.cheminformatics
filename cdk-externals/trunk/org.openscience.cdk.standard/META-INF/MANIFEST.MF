@@ -10,8 +10,8 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.core,
  javax.vecmath,
- org.apache.log4j,
  org.3pq.jgrapht
+Import-Package: org.apache.log4j
 Export-Package: org.openscience.cdk.aromaticity,
  org.openscience.cdk.qsar,
  org.openscience.cdk.qsar.result,

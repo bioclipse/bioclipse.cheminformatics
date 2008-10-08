@@ -15,10 +15,10 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.valencycheck,
  org.openscience.cdk.isomorphism,
  org.openscience.cdk.dict,
- org.apache.log4j,
  org.3pq.jgrapht,
  javax.vecmath,
  net.bioclipse.xom
+Import-Package: org.apache.log4j
 Export-Package: org.openscience.cdk.tools,
  org.openscience.cdk.reaction.mechanism,
  org.openscience.cdk.reaction,

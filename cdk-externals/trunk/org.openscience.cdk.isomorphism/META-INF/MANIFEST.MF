@@ -11,7 +11,7 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.core,
  org.openscience.cdk.data,
  javax.vecmath,
- org.apache.log4j,
  org.3pq.jgrapht
+Import-Package: org.apache.log4j
 Export-Package: org.openscience.cdk.isomorphism.matchers,
  org.openscience.cdk.isomorphism.matchers.smarts
