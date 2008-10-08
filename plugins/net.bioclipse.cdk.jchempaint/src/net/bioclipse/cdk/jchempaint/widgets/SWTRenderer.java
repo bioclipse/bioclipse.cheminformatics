@@ -1420,6 +1420,7 @@ public class SWTRenderer implements IJava2DRenderer {
 	    double dy = -contextBounds.getY() * scale - 0.5 * (rendererBounds.getHeight() + contextBounds.getHeight() * scale);
 	    //System.out.println("dx: " + dx + " dy:" +dy);						
 	    affinet.translate(dx / scale, dy / scale);
+	    affinet.translate( -rendererBounds.getX(), -rendererBounds.getY() );
 	    
 		return affinet;
 	}

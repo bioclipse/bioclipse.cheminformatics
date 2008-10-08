@@ -140,22 +140,32 @@ public class JChemPaintSWTWidget extends Canvas {
 //            );
     }
     private void paintControl(PaintEvent event) {
+      int x = 0,y = 0;
+      
       if(generated ){
           String text = "Generated from 3D coordinates";
+          // FIXME : dispose font
           event.gc.setFont( new Font(event.gc.getDevice(),"Arial",34,SWT.NORMAL) );
           Point p = event.gc.textExtent( text );
           Point p2 = JChemPaintSWTWidget.this.getSize();
-          int x = p2.x - p.x;
-          int y = p2.y - p.y;
-          x/=2;
-          y/=2;
+          x = p.x;
+          y = p.y;
+//          x = p2.x - p.x;
+//          y = p2.y - p.y;
+//          x/=2;
+//          y/=2;
           event.gc.setForeground( new org.eclipse.swt.graphics.Color( 
                                             event.gc.getDevice(),220,220,255) );
           
           
-          event.gc.drawText( text,x,y);
+          event.gc.drawText( text,0,0);
       }          
-    	renderer.paintMolecule(molecule,event.gc,new Rectangle2D.Double(0,0,this.getSize().x,this.getSize().y));
+    	renderer.paintMolecule(molecule,event.gc,
+    	                       new Rectangle2D.Double(
+    	                                              0,
+    	                                              y,
+    	                                              this.getSize().x,
+    	                                              this.getSize().y-y));
     }
 
 	protected void setCompactedNess(Dimension dimensions) {
