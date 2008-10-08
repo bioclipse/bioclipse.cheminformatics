@@ -9,6 +9,7 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.core,
  net.bioclipse.scripting,
  net.bioclipse.ui,
- org.openscience.cdk;bundle-version="1.1.0",
+ org.openscience.cdk.interfaces,
+ org.openscience.cdk.diff,
  net.bioclipse.cdk.business;bundle-version="2.0.0"
 Eclipse-LazyStart: true

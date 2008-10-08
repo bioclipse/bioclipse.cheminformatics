@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CDK plugin
+Bundle-SymbolicName: org.openscience.cdk.io;singleton:=true
+Bundle-Version: 1.1.0.20080907
+Bundle-Vendor: The Chemistry Development Kit Project
+Bundle-ActivationPolicy: lazy
+Bundle-Classpath: jar/cdk-io.jar
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.openscience.cdk.interfaces,
+ org.openscience.cdk.core,
+ org.openscience.cdk.standard,
+ org.openscience.cdk.atomtype,
+ javax.vecmath,
+ org.xmlpull.xpp3
+Export-Package: org.openscience.cdk.geometry,
+ org.openscience.cdk.io,
+ org.openscience.cdk.io.listener,
+ org.openscience.cdk.io.iterator,
+ org.openscience.cdk.io.iterator.event,
+ org.openscience.cdk.io.program,
+ org.openscience.cdk.io.formats,
+ org.openscience.cdk.io.setting,
+ org.openscience.cdk.io.cml,
+ org.openscience.cdk.io.pubchemxml

@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CDK plugin
+Bundle-SymbolicName: org.openscience.cdk.inchi;singleton:=true
+Bundle-Version: 1.1.0.20080907
+Bundle-Vendor: The Chemistry Development Kit Project
+Bundle-ActivationPolicy: lazy
+Bundle-Classpath: jar/cdk-inchi.jar
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.openscience.cdk.core,
+ org.openscience.cdk.interfaces,
+ org.openscience.cdk.io,
+ org.openscience.cdk.standard,
+ org.openscience.cdk.valencycheck,
+ javax.vecmath,
+ net.bioclipse.xom,
+ net.sf.jniinchi
+Export-Package: org.openscience.cdk.inchi

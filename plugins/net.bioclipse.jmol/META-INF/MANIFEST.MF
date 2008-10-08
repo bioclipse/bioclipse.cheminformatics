@@ -5,7 +5,13 @@ Bundle-SymbolicName: net.bioclipse.jmol;singleton:=true
 Bundle-Version: 2.0.0.A20080903
 Bundle-Activator: net.bioclipse.jmol.Activator
 Bundle-Vendor: The Bioclipse Team
-Require-Bundle: org.openscience.cdk,
+Require-Bundle: org.openscience.cdk.data,
+ org.openscience.cdk.interfaces,
+ org.openscience.cdk.pcore,
+ org.openscience.cdk.core,
+ org.openscience.cdk.standard,
+ org.openscience.cdk.io,
+ org.openscience.cdk.libiocml,
  org.eclipse.ui,
  org.eclipse.core.runtime,
  net.bioclipse.ui,
