@@ -14,6 +14,7 @@ package net.bioclipse.jmol.editors;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -33,9 +34,11 @@ import net.bioclipse.jmol.views.outline.JmolObject;
 import org.apache.log4j.Logger;
 
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
+import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 
+import org.eclipse.core.internal.runtime.ResourceTranslator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -157,7 +160,7 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         content=getContentsFromEditor();
         if (content==null){
             logger.error("Could not get FILE in jmol editor");
-            return;
+            content = "";//return;
         }
 
         jmolPanel.getViewer().openStringInline(content);
@@ -296,41 +299,34 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
     private String getContentsFromEditor(){
 
         IEditorInput input=getEditorInput();
-        if (!(input instanceof IFileEditorInput)) {
-            logger.debug("Not FIleEditorInput.");
-            //TODO: Close editor?
-            return "";
-        }
-        IFileEditorInput finput = (IFileEditorInput) input;
+        ResourcePathTransformer transformer 
+                                    = ResourcePathTransformer.getInstance();
 
-        IFile file=finput.getFile();
-        if (!(file.exists())){
-            logger.debug("File does not exist.");
-            //TODO: Close editor?
-            return "";
-        }
-
-//        return file.getFullPath().toFile();
-
-
-        InputStream instream;
         try {
-            
-            if(finput instanceof MoleculesIndexEditorInput) {
-                return ((MoleculesIndexEditorInput)finput).getData();
+
+            if(input instanceof MoleculesIndexEditorInput) {
+                return ((MoleculesIndexEditorInput)input).getData();
+            }
+            if ((input instanceof IFileEditorInput) && 
+                    ((IFileEditorInput)input).getFile().exists()) {
+                return readFile( ((IFileEditorInput)input)
+                                                     .getFile().getContents());
+            }
+            if ( input instanceof IPathEditorInput) {
+                IFile file = transformer
+                                    .transform( ((IPathEditorInput)input)
+                                    .getPath().toOSString());
+                return readFile( file.getContents() );
+            }
+            if( input instanceof IURIEditorInput) {
+                URI uri = ((IURIEditorInput)input).getURI();
+                IFile file = transformer.transform( uri.toString() );
+                return readFile( file.getContents() );
             }
             
-            instream = file.getContents();
-            StringBuilder builder = new StringBuilder();
-
-            // read bytes until eof
-            for(int i = instream.read(); i != -1; i = instream.read())
-            {
-                builder.append((char)i);
-            }
-            instream.close();
-
-            return builder.toString();
+            logger.debug("Can't read input");
+            //TODO: Close editor?
+            return null;
 
         } catch (CoreException e) {
             // TODO Auto-generated catch block
@@ -344,6 +340,19 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         }
 
         return null;
+    }
+
+    private String readFile(InputStream instream) throws IOException {        
+        StringBuilder builder = new StringBuilder();
+
+        // read bytes until eof
+        for(int i = instream.read(); i != -1; i = instream.read())
+        {
+            builder.append((char)i);
+        }
+        instream.close();
+
+        return builder.toString();
     }
 
     /**
