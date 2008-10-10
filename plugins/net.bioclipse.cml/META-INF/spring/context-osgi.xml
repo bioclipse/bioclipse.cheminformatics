@@ -30,8 +30,11 @@
   	          ref="validateCMLManagerTarget" />
   	<property name="proxyInterfaces" 
   	          value="net.bioclipse.cml.managers.IValidateCMLManager" />
-  	<property name="interceptorNames"
-  	          value="recordingAdvisor" />
+  	<property name="interceptorNames">
+        <list>
+           <value>recordingAdvisor</value>
+           <value>createJobAdvice</value>
+        </list>
+    </property>
   </bean>
-  
 </beans>

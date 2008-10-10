@@ -40,8 +40,12 @@
   	          ref="exampleManagerTarget" />
   	<property name="proxyInterfaces" 
   	          value="net.bioclipse.cdkdebug.business.ICDKDebugManager" />
-  	<property name="interceptorNames"
-  	          value="recordingAdvisor" />
+  	<property name="interceptorNames">
+        <list>
+           <value>recordingAdvisor</value>
+           <value>createJobAdvice</value>
+        </list>
+    </property>
   </bean>
 
   <!-- publishes the final manager (the proxy) -->

@@ -37,6 +37,7 @@
   	    <list>
   	        <value>recordingAdvisor</value>
   	        <value>wrapInProxyAdvice</value>
+            <value>createJobAdvice</value>
   	    </list>
   	</property>
   </bean>
