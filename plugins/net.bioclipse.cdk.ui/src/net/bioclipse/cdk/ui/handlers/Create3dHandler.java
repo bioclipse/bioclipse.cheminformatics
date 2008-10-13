@@ -38,7 +38,7 @@ public class Create3dHandler extends ActionDelegate {
 	 */
 	public void run(IAction action){
 		  ISelection sel=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
-		  if (sel.isEmpty()==false){
+		  if (!sel.isEmpty()){
 		      if (sel instanceof IStructuredSelection) {
 		         IStructuredSelection ssel = (IStructuredSelection) sel;
 		         ICDKMolecule mol;
