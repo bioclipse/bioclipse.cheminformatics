@@ -14,7 +14,9 @@ package net.bioclipse.cdk.ui.handlers;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.core.util.LogUtils;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.IAction;
@@ -32,6 +34,7 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
  */
 public class Create3dHandler extends ActionDelegate {
 
+	private static final Logger logger = Logger.getLogger(Create3dHandler.class);
 	public int answer;
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
@@ -46,7 +49,8 @@ public class Create3dHandler extends ActionDelegate {
 					mol = Activator.getDefault().getCDKManager().loadMolecule((IFile)ssel.getFirstElement());
 					mol = (ICDKMolecule)Activator.getDefault().getCDKManager().generate3dCoordinates(mol);
 				 } catch (Exception e) {
-					throw new RuntimeException(e.getMessage());
+					 LogUtils.handleException(e, logger);
+					 return;
 				 }
 		         MessageBox mb = new MessageBox(new Shell(), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
 		         mb.setText("Change file");
@@ -56,7 +60,7 @@ public class Create3dHandler extends ActionDelegate {
 		        	 try {
 						Activator.getDefault().getCDKManager().saveMolecule(mol, (IFile)ssel.getFirstElement(), ((IFile)ssel.getFirstElement()).getFileExtension());
 					} catch (Exception e) {
-						throw new RuntimeException(e.getMessage());
+						LogUtils.handleException(e, logger);
 					}
 		         }else{
 		        	 SaveAsDialog dialog=new SaveAsDialog(new Shell());

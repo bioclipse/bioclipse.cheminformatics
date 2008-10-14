@@ -39,7 +39,10 @@ import org.openscience.cdk.interfaces.IChemModel;
 public interface ICDKManager extends IBioclipseManager {
 
 	public final static String rxn = "rxn";
+	//These are the same, but since both extensions are common,
+	//they need to be handled
 	public final static String mol = "mol";
+	public final static String mdl = "mdl";
 	public final static String cml = "cml";
 	public final static String smi = "smi";
     public final static String cdk = "cdk";

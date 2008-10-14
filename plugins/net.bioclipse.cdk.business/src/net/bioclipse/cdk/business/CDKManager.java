@@ -352,7 +352,7 @@ public class CDKManager implements ICDKManager {
 			int ticks = 10000;
 			monitor.beginTask("Writing file", ticks);
 			String towrite;
-			if (filetype.equals(mol)) {
+			if (filetype.equals(mol) || filetype.equals(mdl)) {
 				StringWriter writer = new StringWriter();
 				MDLWriter mdlWriter = new MDLWriter(writer);
 				mdlWriter.write(model);
@@ -1029,12 +1029,19 @@ public class CDKManager implements ICDKManager {
             cdkmol = (ICDKMolecule) molecule;
         }else {
             cdkmol=create(molecule);
-        }        
+        }
         ModelBuilder3D mb3d=ModelBuilder3D.getInstance();
-    	addExplicitHydrogens(molecule);
-    	org.openscience.cdk.interfaces.IMolecule ac=(org.openscience.cdk.interfaces.IMolecule)cdkmol.getAtomContainer();
-    	org.openscience.cdk.interfaces.IMolecule mol3d  = mb3d.generate3DCoordinates(ac, false);
-    	return new CDKMolecule(mol3d);
+		IMoleculeSet mols = ConnectivityChecker.partitionIntoMolecules(cdkmol.getAtomContainer());
+		org.openscience.cdk.interfaces.IMolecule newmolecule = cdkmol.getAtomContainer().getBuilder().newMolecule();
+		for(IAtomContainer mol : mols.molecules()){
+	    	addExplicitHydrogens(new CDKMolecule(mol));
+	    	org.openscience.cdk.interfaces.IMolecule ac  = mb3d.generate3DCoordinates((org.openscience.cdk.interfaces.IMolecule)mol, false);
+			for (IAtom a : ac.atoms()) {
+				a.setPoint2d(null);
+			}
+			newmolecule.add(ac);
+		}
+    	return new CDKMolecule(newmolecule);
 	}
 	
     public IMolecule addExplicitHydrogens(IMolecule molecule) throws Exception {

@@ -121,7 +121,7 @@
          <action
            class="net.bioclipse.cdk.ui.handlers.Create3dHandler"
            id="net.bioclipse.cdk.ui.handlers.create3d"
-           label="Rereate 3D coordinates"
+           label="Recreate 3D coordinates"
            menubarPath="additions" 
            icon="icons/molecule3D.png">
          </action>
