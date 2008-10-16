@@ -29,8 +29,6 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
-import com.sun.tools.javac.tree.Tree.Throw;
-
 
 public class JChemPaintEditorWidget extends JChemPaintSWTWidget{
 
