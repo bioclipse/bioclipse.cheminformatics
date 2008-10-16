@@ -22,8 +22,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringBufferInputStream;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -396,11 +396,19 @@ public class CDKManager implements ICDKManager {
 						+ " not supported!");
 			}
 			if (target.exists()) {
-				target.setContents(new StringBufferInputStream(towrite), false,
-						true, monitor);
+				try {
+					target.setContents(new ByteArrayInputStream(towrite.getBytes("US-ASCII")), false,
+							true, monitor);
+				} catch (UnsupportedEncodingException e) {
+					throw new BioclipseException(e.getMessage());
+				}
 			} else {
-				target.create(new StringBufferInputStream(towrite), false,
-						monitor);
+				try {
+					target.create(new ByteArrayInputStream(towrite.getBytes("US-ASCII")), false,
+							monitor);
+				} catch (UnsupportedEncodingException e) {
+					throw new BioclipseException(e.getMessage());
+				}
 			}
 			monitor.worked(ticks);
 		} finally {
