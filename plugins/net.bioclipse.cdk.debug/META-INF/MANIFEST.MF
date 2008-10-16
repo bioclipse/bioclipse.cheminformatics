@@ -4,6 +4,8 @@ Bundle-Name: CDK Debug Plugin
 Bundle-SymbolicName: net.bioclipse.cdk.debug;singleton:=true
 Bundle-Version: 0.1.0
 Bundle-Activator: net.bioclipse.cdkdebug.Activator
+Import-Package: org.apache.log4j,
+ org.eclipse.core.resources
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  net.bioclipse.core,
