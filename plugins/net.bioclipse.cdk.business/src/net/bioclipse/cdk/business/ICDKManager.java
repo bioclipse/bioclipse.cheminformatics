@@ -378,9 +378,11 @@ public interface ICDKManager extends IBioclipseManager {
                                      IProgressMonitor monitor );
     
     @Recorded
+    @PublishedMethod(methodSummary="Create 2D coordinate for the given molecule")
     public IMolecule generate2dCoordinates(IMolecule molecule) throws Exception;
 
     @Recorded
+    @PublishedMethod(methodSummary="Create 3D coordinate for the given molecule")
     public IMolecule generate3dCoordinates(IMolecule molecule) throws Exception;
 
     /**
@@ -466,9 +468,11 @@ public interface ICDKManager extends IBioclipseManager {
 	boolean has3d(IMolecule mol) throws BioclipseException; 
     
     @Recorded
+    @PublishedMethod(methodSummary="Adds explicit hydrogens to this molecule")
     public IMolecule addExplicitHydrogens(IMolecule molecule) throws Exception;
 
     @Recorded
+    @PublishedMethod(methodSummary="Adds implicit hydrogens to this molecule")
    	public IMolecule addImplicitHydrogens(IMolecule molecule) throws BioclipseException, InvocationTargetException;
 
 }
