@@ -1130,4 +1130,48 @@ public class CDKManager implements ICDKManager {
 		return GeometryTools.has3DCoordinates(create(mol).getAtomContainer());
 	}
 
+    public void saveCML(ICDKMolecule cml, String filename) throws InvocationTargetException {
+        File file = new File(filename);
+        FileOutputStream fos;
+        try {
+            fos = new FileOutputStream(file);
+            CMLWriter writer = new CMLWriter(fos);
+            writer.write(cml.getAtomContainer());
+            writer.close();
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Cant find file: " + filename);
+            e.printStackTrace();
+            throw new InvocationTargetException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new InvocationTargetException(e);
+        } catch (CDKException e) {
+            e.printStackTrace();
+            throw new InvocationTargetException(e);
+        }
+    }
+
+    public void saveMDLMolfile(ICDKMolecule mol, String filename) throws InvocationTargetException {
+        File file = new File(filename);
+        FileOutputStream fos;
+        try {
+            fos = new FileOutputStream(file);
+            MDLWriter writer = new MDLWriter(fos);
+            writer.write(mol.getAtomContainer());
+            writer.close();
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Cant find file: " + filename);
+            e.printStackTrace();
+            throw new InvocationTargetException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new InvocationTargetException(e);
+        } catch (CDKException e) {
+            e.printStackTrace();
+            throw new InvocationTargetException(e);
+        }
+    }
+
 }
