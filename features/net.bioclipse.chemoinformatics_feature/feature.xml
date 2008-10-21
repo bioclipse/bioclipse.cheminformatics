@@ -2,7 +2,7 @@
 <feature
       id="net.bioclipse.chemoinformatics_feature"
       label="Bioclipse Chemoinformatics"
-      version="2.0.0.A20080911"
+      version="2.0.0.A20081022"
       provider-name="The Bioclipse Team"
       plugin="net.bioclipse.cdk.ui">
 
@@ -382,7 +382,7 @@ http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="net.bioclipse.cdk.debug"
+         id="net.bioclipse.chemoinformatics"
          download-size="0"
          install-size="0"
          version="0.0.0"
