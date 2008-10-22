@@ -11,7 +11,7 @@
    <extension
          point="org.eclipse.ui.views">
       <category
-            id="net.bioclipse.chemoinformatics..views.category"
+            id="net.bioclipse.chemoinformatics.views.category"
             name="Chemoinformatics">
       </category>
    </extension>
