@@ -49,7 +49,7 @@ public class JChemPaintSWTWidget extends Canvas {
     private Map<IAtom,Point2d> coordinates=new HashMap<IAtom,Point2d>();
     protected boolean generated = false;
     private final static int compactSize = 200;
-    
+    boolean notSet = true;
     /**
      * The constructor.
      */
@@ -123,6 +123,10 @@ public class JChemPaintSWTWidget extends Canvas {
     	setCompactedNess(newDimensions);
     }
     protected void updateOnReize(Dimension newSize){
+        if(newSize.getWidth() == 0 || newSize.getHeight() == 0 ) {
+            notSet = true;
+            return;
+        }  
         GeometryTools.translateAllPositive(molecule);
         GeometryTools.scaleMolecule(molecule, newSize, 0.8);          
         GeometryTools.center(molecule, newSize);
@@ -138,8 +142,11 @@ public class JChemPaintSWTWidget extends Canvas {
 //                (Graphics2D)graphics,
 //                rect
 //            );
+        notSet = false;
     }
     private void paintControl(PaintEvent event) {
+        if(notSet)
+            updateOnReize( new Dimension(this.getSize().x,this.getSize().y) );
       int x = 0,y = 0;
       
       if(generated ){
