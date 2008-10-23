@@ -6,12 +6,14 @@ Bundle-Version: 1.1.0.20081023
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Activator: org.openscience.cdk.io.Activator
 Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.core,
  org.openscience.cdk.standard,
  org.openscience.cdk.atomtype,
  javax.vecmath,
- org.xmlpull.xpp3
+ org.xmlpull.xpp3,
+ org.eclipse.core.runtime
 Export-Package: org.openscience.cdk.geometry,
  org.openscience.cdk.io,
  org.openscience.cdk.io.listener,

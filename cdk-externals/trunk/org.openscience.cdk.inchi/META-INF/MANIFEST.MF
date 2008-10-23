@@ -6,6 +6,7 @@ Bundle-Version: 1.1.0.20081023
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Activator: org.openscience.cdk.inchi.Activator
 Require-Bundle: org.openscience.cdk.core,
  org.openscience.cdk.interfaces,
  org.openscience.cdk.io,
@@ -14,5 +15,6 @@ Require-Bundle: org.openscience.cdk.core,
  javax.vecmath,
  net.bioclipse.xom,
  net.sf.jniinchi,
- net.bioclipse.cml
+ net.bioclipse.cml,
+ org.eclipse.core.runtime
 Export-Package: org.openscience.cdk.inchi

@@ -54,14 +54,6 @@ public class AtomTypeMapper {
 		mappings = reader.readAtomTypeMappings();
 	}
 
-  private AtomTypeMapper(String mappingFile, InputStream stream) {
-      this.mappingFile = mappingFile;
-      OWLAtomTypeMappingReader reader = new OWLAtomTypeMappingReader(
-        new InputStreamReader(stream)
-      );
-      mappings = reader.readAtomTypeMappings();
-    }
-
 	/**
 	 * Instantiates an atom type to atom type mapping, based on the given mapping file.
 	 * For example, the mapping file <code>org.openscience.cdk.config.data.cdk-sybyl-mappings.owl</code>
@@ -78,14 +70,7 @@ public class AtomTypeMapper {
 		return mappers.get(mappingFile);
 	}
 	
-  public static AtomTypeMapper getInstance(InputStream inputStream, String mappingFile) {
-      if (!mappers.containsKey(mappingFile)) {
-        mappers.put(mappingFile, new AtomTypeMapper(mappingFile, inputStream));
-      }
-      return mappers.get(mappingFile);
-    }
-
-  @TestMethod("testMapAtomType_String")
+	@TestMethod("testMapAtomType_String")
 	public String mapAtomType(String type) {
 		return mappings.get(type);
 	}

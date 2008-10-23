@@ -6,9 +6,11 @@ Bundle-Version: 1.1.0.20081023
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Activator: org.openscience.cdk.data.Activator
 Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.core,
- javax.vecmath
+ javax.vecmath,
+ org.eclipse.core.runtime
 Export-Package: org.openscience.cdk,
  org.openscience.cdk.protein.data,
  org.openscience.cdk.event,

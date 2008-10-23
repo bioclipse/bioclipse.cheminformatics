@@ -6,6 +6,7 @@ Bundle-Version: 1.1.0.20081023
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Activator: org.openscience.cdk.qsaratomic.Activator
 Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.data,
  org.openscience.cdk.core,
@@ -23,5 +24,6 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.3pq.jgrapht,
  org.omegahat.sjava,
  javax.vecmath,
- net.bioclipse.xom
+ net.bioclipse.xom,
+ org.eclipse.core.runtime
 Export-Package: org.openscience.cdk.qsar.descriptors.atomic

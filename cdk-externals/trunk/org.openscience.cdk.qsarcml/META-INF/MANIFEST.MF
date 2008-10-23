@@ -6,6 +6,7 @@ Bundle-Version: 1.1.0.20081023
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Activator: org.openscience.cdk.qsarcml.Activator
 Require-Bundle: org.openscience.cdk.core,
  org.openscience.cdk.data,
  org.openscience.cdk.interfaces,
@@ -13,5 +14,6 @@ Require-Bundle: org.openscience.cdk.core,
  org.openscience.cdk.qsar,
  org.openscience.cdk.standard,
  net.bioclipse.xom,
- net.bioclipse.cml
+ net.bioclipse.cml,
+ org.eclipse.core.runtime
 Export-Package: org.openscience.cdk.libio.cml

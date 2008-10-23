@@ -6,6 +6,7 @@ Bundle-Version: 1.1.0.20081023
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Activator: org.openscience.cdk.builder3d.Activator
 Require-Bundle: org.openscience.cdk.core,
  org.openscience.cdk.data,
  org.openscience.cdk.nonotify,
@@ -19,6 +20,7 @@ Require-Bundle: org.openscience.cdk.core,
  org.openscience.cdk.sdg,
  org.openscience.cdk.isomorphism,
  org.jama,
- javax.vecmath
+ javax.vecmath,
+ org.eclipse.core.runtime
 Export-Package: org.openscience.cdk.qsar.descriptors.atomic,
  org.openscience.cdk.modeling.builder3d

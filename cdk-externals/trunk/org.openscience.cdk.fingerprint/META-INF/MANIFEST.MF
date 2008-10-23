@@ -6,6 +6,7 @@ Bundle-Version: 1.1.0.20081023
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Activator: org.openscience.cdk.fingerprint.Activator
 Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.core,
  org.openscience.cdk.standard,
@@ -13,5 +14,6 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.isomorphism,
  org.openscience.cdk.valencycheck,
  org.openscience.cdk.smarts,
- org.openscience.cdk.formula
+ org.openscience.cdk.formula,
+ org.eclipse.core.runtime
 Export-Package: org.openscience.cdk.fingerprint
