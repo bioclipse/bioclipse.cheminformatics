@@ -505,6 +505,20 @@ public class CDKManagerTest {
     }
 
     @Test
+    public void testSybylAtomTypePerceptionFromSMILES() throws FileNotFoundException, IOException, BioclipseException, CoreException, InvocationTargetException{
+
+    	ICDKMolecule mol = cdk.fromSmiles("C1CCCCC1CCOC");
+    	
+    	ICDKMolecule mol2 = cdk.depictSybylAtomTypes(mol);
+    	
+    	for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
+    		IAtom a=mol2.getAtomContainer().getAtom(i);
+    		System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
+    	}
+
+    }
+
+    @Test
     public void testSybylAtomTypePerception() throws FileNotFoundException, IOException, BioclipseException, CoreException, InvocationTargetException{
 
     	String path = getClass().getResource("/testFiles/atp.mol").getPath();
