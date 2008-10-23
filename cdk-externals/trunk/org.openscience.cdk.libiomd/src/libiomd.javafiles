@@ -1,0 +1,5 @@
+org/openscience/cdk/libio/md/ChargeGroup.java
+org/openscience/cdk/libio/md/MDMolecule.java
+org/openscience/cdk/libio/md/Residue.java
+org/openscience/cdk/libio/cml/MDMoleculeCustomizer.java
+org/openscience/cdk/io/cml/MDMoleculeConvention.java

@@ -1,0 +1,4 @@
+org/openscience/cdk/config/atomtypes/OWLAtomTypeMappingHandler.java
+org/openscience/cdk/config/atomtypes/OWLAtomTypeMappingReader.java
+org/openscience/cdk/atomtype/mapper/AtomTypeMapper.java
+org/openscience/cdk/atomtype/SybylAtomTypeMatcher.java

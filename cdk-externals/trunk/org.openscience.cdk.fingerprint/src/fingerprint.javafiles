@@ -1,0 +1,5 @@
+org/openscience/cdk/fingerprint/EStateFingerprinter.java
+org/openscience/cdk/fingerprint/MACCSFingerprinter.java
+org/openscience/cdk/fingerprint/SubstructureFingerprinter.java
+org/openscience/cdk/fingerprint/StandardSubstructureSets.java
+org/openscience/cdk/fingerprint/ExtendedFingerprinter.java

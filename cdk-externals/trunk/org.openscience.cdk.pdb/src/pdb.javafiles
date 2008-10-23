@@ -1,0 +1,4 @@
+org/openscience/cdk/templates/AminoAcids.java
+org/openscience/cdk/tools/ProteinBuilderTool.java
+org/openscience/cdk/io/PDBReader.java
+org/openscience/cdk/protein/data/PDBStrand.java

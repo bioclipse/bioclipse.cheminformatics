@@ -1,0 +1,5 @@
+org/openscience/cdk/qsar/descriptors/atomic/PartialTChargeMMFF94Descriptor.java
+org/openscience/cdk/modeling/builder3d/TemplateHandler3D.java
+org/openscience/cdk/modeling/builder3d/ModelBuilder3D.java
+org/openscience/cdk/modeling/builder3d/AtomTetrahedralLigandPlacer3D.java
+org/openscience/cdk/modeling/builder3d/AtomPlacer3D.java

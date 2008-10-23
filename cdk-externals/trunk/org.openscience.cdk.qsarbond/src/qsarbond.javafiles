@@ -1,0 +1,5 @@
+org/openscience/cdk/qsar/descriptors/bond/BondPartialPiChargeDescriptor.java
+org/openscience/cdk/qsar/descriptors/bond/BondPartialTChargeDescriptor.java
+org/openscience/cdk/qsar/descriptors/bond/MassNumberDifferenceDescriptor.java
+org/openscience/cdk/qsar/descriptors/bond/BondPartialSigmaChargeDescriptor.java
+org/openscience/cdk/qsar/descriptors/bond/BondSigmaElectronegativityDescriptor.java

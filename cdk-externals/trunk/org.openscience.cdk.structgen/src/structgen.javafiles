@@ -1,0 +1,8 @@
+org/openscience/cdk/structgen/VicinitySampler.java
+org/openscience/cdk/structgen/stochastic/PartialFilledStructureMerger.java
+org/openscience/cdk/structgen/stochastic/operator/ChemGraph.java
+org/openscience/cdk/structgen/stochastic/operator/CrossoverMachine.java
+org/openscience/cdk/structgen/SingleStructureRandomGenerator.java
+org/openscience/cdk/structgen/IStructureGenerationListener.java
+org/openscience/cdk/atomtype/StructGenAtomTypeGuesser.java
+org/openscience/cdk/atomtype/StructGenMatcher.java

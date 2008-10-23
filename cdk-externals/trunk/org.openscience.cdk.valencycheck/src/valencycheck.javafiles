@@ -1,0 +1,6 @@
+org/openscience/cdk/tools/SmilesValencyChecker.java
+org/openscience/cdk/tools/SaturationChecker.java
+org/openscience/cdk/tools/IValencyChecker.java
+org/openscience/cdk/tools/CDKValencyChecker.java
+org/openscience/cdk/tools/IDeduceBondOrderTool.java
+org/openscience/cdk/tools/CDKHydrogenAdder.java
