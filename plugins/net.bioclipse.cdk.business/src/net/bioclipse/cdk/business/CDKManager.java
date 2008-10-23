@@ -825,8 +825,8 @@ public class CDKManager implements ICDKManager {
 				.getBuilder());
 		AtomTypeMapper mapper = AtomTypeMapper
 				.getInstance("org/openscience/cdk/dict/data/cdk-sybyl-mappings.owl");
-		AtomTypeFactory factory = AtomTypeFactory.getInstance(
-				"org/openscience/cdk/dict/data/sybyl-atom-types.owl", ac
+		InputStream iStream = org.openscience.cdk.atomtype.Activator.class.getResourceAsStream("/org/openscience/cdk/dict/data/sybyl-atom-types.owl");
+		AtomTypeFactory factory = AtomTypeFactory.getInstance(iStream, "owl", ac
 						.getBuilder());
 		IAtomType[] sybylTypes = new IAtomType[ac.getAtomCount()];
 		int atomCounter = 0;
