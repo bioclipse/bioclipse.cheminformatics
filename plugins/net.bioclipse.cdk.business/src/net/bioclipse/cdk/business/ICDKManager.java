@@ -360,7 +360,7 @@ public interface ICDKManager extends IBioclipseManager {
                       methodSummary = "" )
     public Iterator<ICDKMolecule> createConformerIterator( String path );
 
-    @PublishedMethod ( params = "Imolecule molecule",
+    @PublishedMethod ( params = "IMolecule molecule",
                        methodSummary = "Calculate and return the " +
                                        "molecular weight for the " +
                                        "molecule.")
@@ -472,11 +472,13 @@ public interface ICDKManager extends IBioclipseManager {
 	boolean has3d(IMolecule mol) throws BioclipseException; 
     
     @Recorded
-    @PublishedMethod(methodSummary="Adds explicit hydrogens to this molecule")
+    @PublishedMethod(params = "IMolecule mol", 
+                     methodSummary="Adds explicit hydrogens to this molecule")
     public IMolecule addExplicitHydrogens(IMolecule molecule) throws Exception;
 
     @Recorded
-    @PublishedMethod(methodSummary="Adds implicit hydrogens to this molecule")
+    @PublishedMethod(params = "IMolecule mol", 
+                     methodSummary="Adds implicit hydrogens to this molecule")
    	public IMolecule addImplicitHydrogens(IMolecule molecule) throws BioclipseException, InvocationTargetException;
 
 }
