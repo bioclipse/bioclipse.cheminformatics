@@ -28,7 +28,7 @@ public interface IValidateCMLManager extends IBioclipseManager{
 	    
 	    @Recorded
 	    @PublishedMethod( params = "String filename", 
-                methodSummary = "Checks if the file indicates by filename in workspace is valid  " +
+                methodSummary = "Checks if the file indicated by filename in workspace is valid  " +
                 		          "CML")
 	    public String validate(String filename) throws IOException, BioclipseException;
 
