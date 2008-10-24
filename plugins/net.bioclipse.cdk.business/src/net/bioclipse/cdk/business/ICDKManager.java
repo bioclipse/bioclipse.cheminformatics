@@ -246,6 +246,28 @@ public interface ICDKManager extends IBioclipseManager {
                    throws BioclipseException;
     
     /**
+     * True if the paramater molecule1 and the 
+     * paramater molecule2 are isomorph. 
+     * 
+     * (Performs an isomophism test without checking fingerprints first)
+     * 
+     * @param molecule
+     * @param subStructure
+     * @return
+     */
+    @PublishedMethod (params = "ICDKMolecule molecule1, " +
+    		                       "ICDKMolecule molecule2",
+    		       methodSummary = "Returns true if the paramater named " +
+    		                       "molecule1 and the " +
+    		                       "paramater named molecule2 are isomorph. \n" +
+    		                       "(Performs an isomophism test without " +
+    		                       "checking fingerprints)")
+    @Recorded
+    public boolean structureMatches( ICDKMolecule molecule1,
+                                        ICDKMolecule molecule2 );
+    
+
+    /**
      * True if the paramater substructure is a substructure to the 
      * paramater molecule. 
      * 

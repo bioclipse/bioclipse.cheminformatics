@@ -621,6 +621,16 @@ public class CDKManager implements ICDKManager {
 		}
 	}
 
+	public boolean structureMatches(ICDKMolecule molecule,
+			ICDKMolecule subStructure) {
+		try {
+			return UniversalIsomorphismTester.isIsomorph(molecule
+					.getAtomContainer(), subStructure.getAtomContainer());
+		} catch (CDKException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	/**
 	 * Create an ICDKMolecule from an IMolecule. First tries to create
 	 * ICDKMolecule from CML. If that fails, tries to create from SMILES. If
