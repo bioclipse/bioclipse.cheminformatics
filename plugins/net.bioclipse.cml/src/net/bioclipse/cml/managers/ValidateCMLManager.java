@@ -16,14 +16,20 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.bioclipse.core.business.BioclipseException;
 import nu.xom.Element;
 import nu.xom.Elements;
 import nu.xom.ParsingException;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.osgi.framework.Bundle;
 import org.xmlcml.cml.attribute.DictRefAttribute;
 import org.xmlcml.cml.attribute.MetadataNameAttribute;
@@ -48,11 +54,29 @@ public class ValidateCMLManager implements IValidateCMLManager {
 	private static UnitListMap unitListMap = null;
 	private static DictionaryMap dictListMap = null;
 	CMLElement cmlElement = null;
+	static String result;
 	
 	
-	public String validate(IFile input) throws IOException {
+    public String validate(String filename) throws IOException, BioclipseException {
 		initDicts();
-		return this.validateCMLFile(input);
+		IFile file=ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(filename));
+		if(!file.exists())
+			throw new BioclipseException("File "+filename+" does not exist");
+		return validateCMLFile(file);
+	}
+
+    public void validate(IFile input) throws IOException {
+		initDicts();
+		result=validateCMLFile(input);
+	    Display.getDefault().syncExec(
+			      new Runnable() {
+			        public void run(){
+				        MessageBox mb = new MessageBox(new Shell(), SWT.OK);
+				        mb.setText("CML checked");
+				        mb.setMessage(ValidateCMLManager.result);
+				        mb.open();
+			        }
+			      });
 	}
 
     public String getNamespace() {
@@ -151,7 +175,6 @@ public class ValidateCMLManager implements IValidateCMLManager {
 				e.printStackTrace();
 			}
 		}
-		
 		if (succeeded) {
 			errorList.clear();
 			errorList = new DictRefAttribute().checkAttribute(cmlElement, simpleMap);
@@ -174,7 +197,7 @@ public class ValidateCMLManager implements IValidateCMLManager {
 					returnString.append("warning: " + error);
 				}
 			}
-			return("Input is valid CML. "+returnString.toString());
+	        return("Input is valid CML. "+returnString.toString());
 		}else{
 			return("Input is not valid CML: "+returnString.toString());
 		}
