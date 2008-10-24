@@ -378,11 +378,13 @@ public interface ICDKManager extends IBioclipseManager {
                                      IProgressMonitor monitor );
     
     @Recorded
-    @PublishedMethod(methodSummary="Create 2D coordinate for the given molecule")
+    @PublishedMethod(params = "IMolecule molecule",
+                     methodSummary="Create 2D coordinate for the given molecule")
     public IMolecule generate2dCoordinates(IMolecule molecule) throws Exception;
 
     @Recorded
-    @PublishedMethod(methodSummary="Create 3D coordinate for the given molecule")
+    @PublishedMethod(params = "IMolecule molecule",
+                     methodSummary="Create 3D coordinate for the given molecule")
     public IMolecule generate3dCoordinates(IMolecule molecule) throws Exception;
 
     /**
@@ -399,11 +401,13 @@ public interface ICDKManager extends IBioclipseManager {
 	public void saveMol2(ICDKMolecule mol2, String filename) throws InvocationTargetException;
 
     @Recorded
-    @PublishedMethod(methodSummary = "Saves a molecule in the MDL molfile V2000 format")
+    @PublishedMethod(params = "ICDKMolecule molecule, String filename",
+                     methodSummary = "Saves a molecule in the MDL molfile V2000 format")
     public void saveMDLMolfile(ICDKMolecule mol, String filename) throws InvocationTargetException;
 
     @Recorded
-    @PublishedMethod(methodSummary = "Saves a molecule in the Chemical Markup Language format")
+    @PublishedMethod(params = "ICDKMolecule molecule, String filename",
+                     methodSummary = "Saves a molecule in the Chemical Markup Language format")
     public void saveCML(ICDKMolecule cml, String filename) throws InvocationTargetException;
 
     /**
