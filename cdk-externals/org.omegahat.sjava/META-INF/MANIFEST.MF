@@ -5,6 +5,6 @@ Bundle-SymbolicName: org.omegahat.sjava;singleton:=true
 Bundle-Version: 0.68
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
-Bundle-Classpath: jar/sjava-0.68.jar
+Bundle-ClassPath: jar/sjava-0.68.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.omegahat.R.Java

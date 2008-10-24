@@ -5,6 +5,6 @@ Bundle-SymbolicName: org.xmlpull.xpp3;singleton:=true
 Bundle-Version: 0.4
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
-Bundle-Classpath: jar/xpp3-1.1.4c.jar
+Bundle-ClassPath: jar/xpp3-1.1.4c.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.xmlpull.v1
