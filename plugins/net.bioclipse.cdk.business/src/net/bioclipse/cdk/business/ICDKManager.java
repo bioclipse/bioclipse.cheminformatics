@@ -148,6 +148,9 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
+    @PublishedMethod(params = "IMolecule mol, String filename, String filetype", 
+            methodSummary="saves mol to a file (filename must be a relative to workspace root and "+
+            "folder must exist), filetype must be one of the constants given by getPossibleFiletypes")
     public void saveMolecule(IMolecule mol, String filename, String filetype) 
     	throws BioclipseException, CDKException, CoreException;
 
@@ -412,12 +415,14 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(params = "ICDKMolecule molecule, String filename",
-                     methodSummary = "Saves a molecule in the MDL molfile V2000 format")
+                     methodSummary = "Saves a molecule in the MDL molfile V2000 format (filename must be a relative to workspace root and "+
+    								 "folder must exist)")
     public void saveMDLMolfile(ICDKMolecule mol, String filename) throws InvocationTargetException, BioclipseException, CDKException, CoreException;
 
     @Recorded
     @PublishedMethod(params = "ICDKMolecule molecule, String filename",
-                     methodSummary = "Saves a molecule in the Chemical Markup Language format")
+                     methodSummary = "Saves a molecule in the Chemical Markup Language format (filename must be a relative to workspace root and "+
+    								 "folder must exist)")
     public void saveCML(ICDKMolecule cml, String filename) throws InvocationTargetException, BioclipseException, CDKException, CoreException;
 
     /**
