@@ -138,11 +138,11 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
             updateJCPPage();            
         }
         else if (JMOL_PAGE == newPageIndex) {
-            updateJMolPage();
+            updateJmolPage();
         }
     }
 
-    private void updateJMolPage() {
+    private void updateJmolPage() {
         ISelection selection = moleculesPage.getSelection();
         if(selection instanceof IStructuredSelection) {
            Object element = ((IStructuredSelection)selection).getFirstElement();           
@@ -166,7 +166,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         
             moleculesPage.reactOnSelection( selection );
             if(getActivePage() == JMOL_PAGE)
-                updateJMolPage();
+                updateJmolPage();
             if(getActivePage() == SINGLE_ENTRY_PAGE)
                 updateJCPPage();
         }

@@ -645,11 +645,11 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
                 jmolPanel.getViewer().openStringInline( 
                                   ((MoleculesIndexEditorInput)input).getData());
             } catch ( CoreException e ) {
-              logger.debug("Failed to chage JMol input",new RuntimeException(e));
+              logger.debug("Failed to chage Jmol input",new RuntimeException(e));
             } catch ( IOException e ) {
-              logger.debug("Failed to chage JMol input",new RuntimeException(e));
+              logger.debug("Failed to chage Jmol input",new RuntimeException(e));
             } catch ( BioclipseException e) {
-               logger.debug("Failed to chage JMol input",new RuntimeException(e));
+               logger.debug("Failed to chage Jmol input",new RuntimeException(e));
             }
         }
          
