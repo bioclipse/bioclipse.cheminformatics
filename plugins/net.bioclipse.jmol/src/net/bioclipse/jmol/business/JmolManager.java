@@ -130,4 +130,8 @@ public class JmolManager implements IJmolManager{
     public void spinOn() {
         run( "spin" );
     }
+
+    public void minimize() {
+        run("minimize");
+    }
 }

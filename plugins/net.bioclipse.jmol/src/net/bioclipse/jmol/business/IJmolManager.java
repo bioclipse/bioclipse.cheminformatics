@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IFile;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.business.IBioclipseManager;
+import net.bioclipse.core.jobs.Job;
 
 public interface IJmolManager extends IBioclipseManager{
 
@@ -61,4 +62,9 @@ public interface IJmolManager extends IBioclipseManager{
     @PublishedMethod( methodSummary = "Causes active jmol to stop " +
     		                              "spinning molecule" )
     public void spinOff();
+
+    @Recorded
+    @Job 
+    @PublishedMethod(methodSummary = "Optimizes the geometry of the structure in the active JmolEditor" )
+    public void minimize();
 }

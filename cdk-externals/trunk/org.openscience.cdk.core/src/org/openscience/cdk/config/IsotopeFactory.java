@@ -88,7 +88,7 @@ public class IsotopeFactory
         String errorMessage = "There was a problem getting org.openscience.cdk." +
                               "config.isotopes.xml as a stream";
         try {
-            String configFile = "org/openscience/cdk/config/data/isotopes.xml";
+            String configFile = "/org/openscience/cdk/config/data/isotopes.xml";
             if (debug) logger.debug("Getting stream for ", configFile);
             ins = this.getClass().getClassLoader().getResourceAsStream(configFile);
         } catch (Exception exception) {
