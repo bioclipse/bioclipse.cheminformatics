@@ -97,7 +97,7 @@ public class TestCDKMolecule {
 
         ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
         assertNotNull(mol);
-        String smiles = mol.getSmiles();
+        String smiles = mol.getSMILES();
         assertNotNull(smiles);
         System.out.println("Smiles: " + smiles);
     }
@@ -116,7 +116,7 @@ public class TestCDKMolecule {
         
         ICDKMolecule mol = cdk.fromCml( cutcontent );
         assertNotNull(mol);
-        String smiles = mol.getSmiles();
+        String smiles = mol.getSMILES();
         assertNotNull(smiles);
         System.out.println("Smiles: " + smiles);
     }
@@ -141,11 +141,11 @@ public class TestCDKMolecule {
         
         ICDKMolecule convertedmol=cdk.create( cdk10mol );
         assertNotNull(convertedmol);
-        String smiles=convertedmol.getSmiles();
+        String smiles=convertedmol.getSMILES();
         assertNotNull(smiles);
         System.out.println("Smiles: " + smiles);
         
-        ICDKMolecule cdkmol = cdk.fromSmiles(
+        ICDKMolecule cdkmol = cdk.fromSMILES(
             "CC1CCCC(C#N)N1C(CO[Si](C)(C)C)C2=CC=CC=C2" );
         
         assertTrue( cdk.fingerPrintMatches( cdkmol, convertedmol ));
@@ -292,7 +292,7 @@ public class TestCDKMolecule {
         
         ICDKMolecule convertedmol = cdk.create( cdk10mol );
         assertNotNull(convertedmol);
-        String smiles=convertedmol.getSmiles();
+        String smiles=convertedmol.getSMILES();
         assertNotNull(smiles);
         System.out.println("Smiles: " + smiles);
         

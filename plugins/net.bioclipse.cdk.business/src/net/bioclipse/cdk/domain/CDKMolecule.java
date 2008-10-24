@@ -69,7 +69,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
     }
 
 
-    public String getSmiles() throws BioclipseException {
+    public String getSMILES() throws BioclipseException {
 
         //TODO: wrap in job?
 

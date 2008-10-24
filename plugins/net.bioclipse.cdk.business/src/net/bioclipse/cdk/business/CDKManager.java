@@ -267,7 +267,7 @@ public class CDKManager implements ICDKManager {
 			if (reader == null) {
 
 				// Try SMILES
-				List<ICDKMolecule> moleculesList2 = loadSmilesFile(file);
+				List<ICDKMolecule> moleculesList2 = loadSMILESFile(file);
 				if (moleculesList2 != null && moleculesList2.size() > 0)
 					return moleculesList2;
 
@@ -342,9 +342,9 @@ public class CDKManager implements ICDKManager {
 		return moleculesList;
 	}
 
-	public String calculateSmiles(IMolecule molecule) throws BioclipseException {
+	public String calculateSMILES(IMolecule molecule) throws BioclipseException {
 
-		return molecule.getSmiles();
+		return molecule.getSMILES();
 	}
 
 	public void save(IChemModel model, IFile target, String filetype)
@@ -478,7 +478,7 @@ public class CDKManager implements ICDKManager {
 	 * 
 	 * @throws BioclipseException
 	 */
-	public ICDKMolecule fromSmiles(String smilesDescription)
+	public ICDKMolecule fromSMILES(String smilesDescription)
 			throws BioclipseException {
 
 		SmilesParser parser = new SmilesParser(DefaultChemObjectBuilder
@@ -644,7 +644,7 @@ public class CDKManager implements ICDKManager {
 		}
 
 		// Secondly, try to create from SMILES
-		return fromSmiles(imol.getSmiles());
+		return fromSMILES(imol.getSMILES());
 	}
 
 	public boolean smartsMatches(ICDKMolecule molecule, String smarts)
@@ -911,14 +911,14 @@ public class CDKManager implements ICDKManager {
 
 	}
 
-	public List<ICDKMolecule> loadSmilesFile(String path) throws CoreException,
+	public List<ICDKMolecule> loadSMILESFile(String path) throws CoreException,
 			IOException {
 
-		return loadSmilesFile(ResourcePathTransformer.getInstance().transform(
+		return loadSMILESFile(ResourcePathTransformer.getInstance().transform(
 				path));
 	}
 
-	public List<ICDKMolecule> loadSmilesFile(IFile file) throws CoreException,
+	public List<ICDKMolecule> loadSMILESFile(IFile file) throws CoreException,
 			IOException {
 
 		//Only process files with smiles extension
@@ -981,13 +981,13 @@ public class CDKManager implements ICDKManager {
 
 		ICDKMolecule mol = null;
 		try {
-			mol = fromSmiles(firstKey);
+			mol = fromSMILES(firstKey);
 		} catch (BioclipseException e) {
 		}
 
 		if (mol == null) {
 			try {
-				mol = fromSmiles(firstVal);
+				mol = fromSMILES(firstVal);
 				smilesInFirst = false;
 			} catch (BioclipseException e) {
 			}
@@ -999,14 +999,14 @@ public class CDKManager implements ICDKManager {
 		for (String part1 : entries.keySet()) {
 			if (smilesInFirst) {
 				try {
-					mol = fromSmiles(part1);
+					mol = fromSMILES(part1);
 					mol.setName(entries.get(part1));
 					mols.add(mol);
 				} catch (BioclipseException e) {
 				}
 			} else {
 				try {
-					mol = fromSmiles(entries.get(part1));
+					mol = fromSMILES(entries.get(part1));
 					mol.setName(part1);
 					mols.add(mol);
 				} catch (BioclipseException e) {

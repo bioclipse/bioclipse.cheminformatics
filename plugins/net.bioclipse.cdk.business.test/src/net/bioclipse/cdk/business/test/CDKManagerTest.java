@@ -114,9 +114,9 @@ public class CDKManagerTest {
                                           CoreException {
 
         String path = getClass().getResource("/testFiles/nprods.smi").getPath();
-        List<ICDKMolecule> mol = cdk.loadSmilesFile( new MockIFile(path));
+        List<ICDKMolecule> mol = cdk.loadSMILESFile( new MockIFile(path));
         assertNotNull( mol );
-        System.out.println("Smiles file size: " + mol.size());
+        System.out.println("SMILES file size: " + mol.size());
         assertEquals(30, mol.size());
     }
 
@@ -128,20 +128,20 @@ public class CDKManagerTest {
         String path = getClass().getResource("/testFiles/nprods.smi").getPath();
         List<ICDKMolecule> mols = cdk.loadMolecules( new MockIFile(path));
         
-        System.out.println("Smiles file size: " + mols.size());
+        System.out.println("SMILES file size: " + mols.size());
         assertEquals(30, mols.size());
         
         for (ICDKMolecule mol : mols){
-        	System.out.println("Mol: " + mol.getName() + " Smiles: " + mol.getSmiles());
+        	System.out.println("Mol: " + mol.getName() + " SMILES: " + mol.getSMILES());
         	if (mol.getName().equals("1")){
-                ICDKMolecule smilesMol1 = cdk.fromSmiles("C(=O)N(Cc1ccco1)C(c1cc2ccccc2cc1)C(=O)NCc1ccccc1");
+                ICDKMolecule smilesMol1 = cdk.fromSMILES("C(=O)N(Cc1ccco1)C(c1cc2ccccc2cc1)C(=O)NCc1ccccc1");
                 double expm=cdk.calculateMass(smilesMol1);
                 assertEquals(expm, cdk.calculateMass(mol));
                 assertTrue(cdk.fingerPrintMatches(smilesMol1, mol));
         	}
 
         	if (mol.getName().equals("30")){
-                ICDKMolecule smilesMol1 = cdk.fromSmiles("C(=O)N(Cc1ccc(o1)C)C(c1ccccc1)C(=O)NCS(=O)(=O)c1ccc(cc1)C");
+                ICDKMolecule smilesMol1 = cdk.fromSMILES("C(=O)N(Cc1ccc(o1)C)C(c1ccccc1)C(=O)NCS(=O)(=O)c1ccc(cc1)C");
                 double expm=cdk.calculateMass(smilesMol1);
                 assertEquals(expm, cdk.calculateMass(mol));
                 assertTrue(cdk.fingerPrintMatches(smilesMol1, mol));
@@ -166,12 +166,12 @@ public class CDKManagerTest {
         
         
         try {
-            List<ICDKMolecule> molecules = cdk.loadSmilesFile( file );
+            List<ICDKMolecule> molecules = cdk.loadSMILESFile( file );
             Assert.assertNotNull( molecules );
             List<String> inputList = new ArrayList<String>(Arrays.asList( input ));
             
             for(ICDKMolecule molecule:molecules) {
-                String smiles = molecule.getSmiles();
+                String smiles = molecule.getSMILES();
                 if(inputList.contains( smiles ))
                     inputList.remove( smiles );
             }
@@ -216,7 +216,7 @@ public class CDKManagerTest {
         String path = getClass().getResource("/testFiles/0037.cml").getPath();
         
         ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
-        String smiles = mol.getSmiles();
+        String smiles = mol.getSMILES();
 
         assertEquals("N#CC1CCCC(C)N1C(CO[Si](C)(C)C)C2=CC=CC=C2", smiles);
     }
@@ -224,7 +224,7 @@ public class CDKManagerTest {
     @Test
     public void testCreateMoleculeFromSMILES() throws BioclipseException {
 
-        ICDKMolecule mol=cdk.fromSmiles("C1CCCCC1CCO");
+        ICDKMolecule mol=cdk.fromSMILES("C1CCCCC1CCO");
 
         assertEquals(mol.getAtomContainer().getAtomCount(), 9);
         assertEquals(mol.getAtomContainer().getBondCount(), 9);
@@ -260,8 +260,8 @@ public class CDKManagerTest {
         String pyrroleSmiles = generator
                                .createSMILES( MoleculeFactory
                                               .makePyrrole() );
-        ICDKMolecule indole  = cdk.fromSmiles( indoleSmiles );
-        ICDKMolecule pyrrole = cdk.fromSmiles( pyrroleSmiles );
+        ICDKMolecule indole  = cdk.fromSMILES( indoleSmiles );
+        ICDKMolecule pyrrole = cdk.fromSMILES( pyrroleSmiles );
         
         assertTrue( cdk.fingerPrintMatches(indole, pyrrole) );
     }
@@ -275,8 +275,8 @@ public class CDKManagerTest {
         String pyrroleSmiles = generator
                                .createSMILES( MoleculeFactory.
                                               makePyrrole() );
-        ICDKMolecule indole  = cdk.fromSmiles( indoleSmiles  );
-        ICDKMolecule pyrrole = cdk.fromSmiles( pyrroleSmiles );
+        ICDKMolecule indole  = cdk.fromSMILES( indoleSmiles  );
+        ICDKMolecule pyrrole = cdk.fromSMILES( pyrroleSmiles );
         
         assertTrue( cdk.subStructureMatches( indole, pyrrole ) );
     }
@@ -290,14 +290,14 @@ public class CDKManagerTest {
         IMoleculeManager molecule = new MoleculeManager();
         IMolecule m = molecule.fromSmiles( indoleSmiles );
         ICDKMolecule cdkm = cdk.create( m );
-        assertEquals( cdkm.getSmiles(), m.getSmiles() );
+        assertEquals( cdkm.getSMILES(), m.getSMILES() );
     }
     
     @Test
     public void testSMARTSMatching() throws BioclipseException {
         String propaneSmiles = "CCC"; 
         
-        ICDKMolecule propane  = cdk.fromSmiles( propaneSmiles  );
+        ICDKMolecule propane  = cdk.fromSMILES( propaneSmiles  );
         
         assertTrue( cdk.smartsMatches(propane, propaneSmiles) );
     }
@@ -328,7 +328,7 @@ public class CDKManagerTest {
     public void testSave() throws BioclipseException, CDKException, CoreException, IOException {
         String propaneSmiles = "CCC"; 
         
-        ICDKMolecule propane  = cdk.fromSmiles( propaneSmiles  );
+        ICDKMolecule propane  = cdk.fromSMILES( propaneSmiles  );
         IChemModel chemmodel=propane.getAtomContainer().getBuilder().newChemModel();
         IMoleculeSet setOfMolecules=chemmodel.getBuilder().newMoleculeSet();
         setOfMolecules.addAtomContainer(propane.getAtomContainer());
@@ -345,7 +345,7 @@ public class CDKManagerTest {
     public void testSaveMolecule() throws BioclipseException, CDKException, CoreException, IOException {
         String propaneSmiles = "CCC"; 
         
-        ICDKMolecule propane  = cdk.fromSmiles( propaneSmiles  );
+        ICDKMolecule propane  = cdk.fromSMILES( propaneSmiles  );
         
         IFile target=new MockIFile();
         cdk.saveMolecule(propane, target, ICDKManager.mol);
@@ -376,7 +376,7 @@ public class CDKManagerTest {
         
     	System.out.println("** Reading back created SDFile: ");
         for (ICDKMolecule cdkmol : readmols){
-        	System.out.println("  - SMILES: " + cdk.calculateSmiles(cdkmol));
+        	System.out.println("  - SMILES: " + cdk.calculateSMILES(cdkmol));
         }
         
         System.out.println("*************************");
@@ -389,8 +389,8 @@ public class CDKManagerTest {
         System.out.println("*************************");
         System.out.println("testSaveMoleculesSDFwithProps()");
 
-        ICDKMolecule mol1=cdk.fromSmiles("CCC");
-        ICDKMolecule mol2=cdk.fromSmiles("C1CCCCC1CCO");
+        ICDKMolecule mol1=cdk.fromSMILES("CCC");
+        ICDKMolecule mol2=cdk.fromSMILES("C1CCCCC1CCO");
         
         mol1.getAtomContainer().setProperty("wee", "how");
         mol2.getAtomContainer().setProperty("santa", "claus");
@@ -417,7 +417,7 @@ public class CDKManagerTest {
 
     	System.out.println("** Reading back created SDFile: ");
         for (ICDKMolecule cdkmol : readmols){
-        	System.out.println("  - SMILES: " + cdk.calculateSmiles(cdkmol));
+        	System.out.println("  - SMILES: " + cdk.calculateSMILES(cdkmol));
         	if (cdkmol.getAtomContainer().getAtomCount()==3){
             	assertEquals("how", cdkmol.getAtomContainer().getProperty("wee"));
         	}else{
@@ -452,7 +452,7 @@ public class CDKManagerTest {
 
     	System.out.println("** Reading back created CML file: ");
         for (ICDKMolecule cdkmol : readmols){
-        	System.out.println("  - SMILES: " + cdk.calculateSmiles(cdkmol));
+        	System.out.println("  - SMILES: " + cdk.calculateSMILES(cdkmol));
 //            System.out.println("Generated CML: \n");
 //            System.out.println(cdkmol.getCML());
         }
@@ -466,8 +466,8 @@ public class CDKManagerTest {
         System.out.println("*************************");
         System.out.println("testSaveMoleculesCMLwithProps()");
 
-        ICDKMolecule mol1=cdk.fromSmiles("CCC");
-        ICDKMolecule mol2=cdk.fromSmiles("C1CCCCC1CCO");
+        ICDKMolecule mol1=cdk.fromSMILES("CCC");
+        ICDKMolecule mol2=cdk.fromSMILES("C1CCCCC1CCO");
         
         mol1.getAtomContainer().setProperty("wee", "how");
         mol2.getAtomContainer().setProperty("santa", "claus");
@@ -492,7 +492,7 @@ public class CDKManagerTest {
         List<ICDKMolecule> readmols = cdk.loadMolecules(target);
     	System.out.println("** Reading back created CML File: ");
         for (ICDKMolecule cdkmol : readmols){
-        	System.out.println("  - SMILES: " + cdk.calculateSmiles(cdkmol));
+        	System.out.println("  - SMILES: " + cdk.calculateSMILES(cdkmol));
         	if (cdkmol.getAtomContainer().getAtomCount()==3){
             	assertEquals("how", cdkmol.getAtomContainer().getProperty("wee"));
         	}else{
@@ -507,7 +507,7 @@ public class CDKManagerTest {
     @Test
     public void testSybylAtomTypePerceptionFromSMILES() throws FileNotFoundException, IOException, BioclipseException, CoreException, InvocationTargetException{
 
-    	ICDKMolecule mol = cdk.fromSmiles("C1CCCCC1CCOC");
+    	ICDKMolecule mol = cdk.fromSMILES("C1CCCCC1CCOC");
     	
     	ICDKMolecule mol2 = cdk.depictSybylAtomTypes(mol);
     	
@@ -609,7 +609,7 @@ public class CDKManagerTest {
 
     	String propaneSmiles = "CCC"; 
         
-        ICDKMolecule propane  = cdk.fromSmiles( propaneSmiles  );
+        ICDKMolecule propane  = cdk.fromSMILES( propaneSmiles  );
 
         IFile target=new MockIFile();
         cdk.saveMolecule(propane, target, ICDKManager.mol2);

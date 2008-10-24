@@ -54,10 +54,10 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws BioclipseException
      */
     @Recorded
-    @PublishedMethod( params = "String smiles", 
+    @PublishedMethod( params = "String SMILES", 
                       methodSummary = "Creates a cdk molecule from " +
-                      		          "smiles")
-    public ICDKMolecule fromSmiles(String smiles)
+                      		          "SMILES")
+    public ICDKMolecule fromSMILES(String SMILES)
         throws BioclipseException;
 
     /**
@@ -198,7 +198,7 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod ( params = "IMolecule molecule", 
                        methodSummary = "Returns the SMILES for a " +
                        		           "molecule" )
-    public String calculateSmiles (IMolecule molecule) 
+    public String calculateSMILES (IMolecule molecule) 
                   throws BioclipseException;
 
     /**
@@ -435,12 +435,12 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @Recorded
     @PublishedMethod( params = "String path", 
-                      methodSummary = "Loads molecules from a smiles file at " +
+                      methodSummary = "Loads molecules from a SMILES file at " +
                       		          "a given path into a list of " +
                       		          "molecules")
-	public List<ICDKMolecule> loadSmilesFile(String path) throws CoreException, IOException;
+	public List<ICDKMolecule> loadSMILESFile(String path) throws CoreException, IOException;
     
-	public List<ICDKMolecule> loadSmilesFile(IFile file) throws CoreException, IOException;
+	public List<ICDKMolecule> loadSMILESFile(IFile file) throws CoreException, IOException;
 
 	/**
 	 * Return number of molecules in file

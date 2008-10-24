@@ -59,9 +59,9 @@ public class CreateSmilesAction extends ActionDelegate{
         SmilesGenerator gen=new SmilesGenerator();
         try{
             String smiles=gen.createSMILES(imol);
-            System.out.println("Smiles is: " + smiles);
+            System.out.println("SMILES is: " + smiles);
         }catch (Exception e){
-            System.out.println("General exception when generate smiles, originating in CDK. ");
+            System.out.println("General exception when generate SMILES, originating in CDK. ");
             return;
         }
 
