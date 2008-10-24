@@ -45,9 +45,11 @@ import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ChemModel;
@@ -414,6 +416,12 @@ public class CDKManager implements ICDKManager {
 		} finally {
 			monitor.done();
 		}
+	}
+
+	public void saveMolecule(IMolecule mol_in, String filename, String filetype) throws BioclipseException, CDKException, CoreException{
+		if(filename.indexOf("."+filetype)==-1)
+			filename=filename+"."+filetype;
+		saveMolecule(mol_in, ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(filename)),CDKManager.mol);
 	}
 
 	public void saveMolecule(IMolecule mol_in, IFile target, String filetype)
@@ -1130,48 +1138,12 @@ public class CDKManager implements ICDKManager {
 		return GeometryTools.has3DCoordinates(create(mol).getAtomContainer());
 	}
 
-    public void saveCML(ICDKMolecule cml, String filename) throws InvocationTargetException {
-        File file = new File(filename);
-        FileOutputStream fos;
-        try {
-            fos = new FileOutputStream(file);
-            CMLWriter writer = new CMLWriter(fos);
-            writer.write(cml.getAtomContainer());
-            writer.close();
-
-        } catch (FileNotFoundException e) {
-            System.out.println("Cant find file: " + filename);
-            e.printStackTrace();
-            throw new InvocationTargetException(e);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new InvocationTargetException(e);
-        } catch (CDKException e) {
-            e.printStackTrace();
-            throw new InvocationTargetException(e);
-        }
-    }
-
-    public void saveMDLMolfile(ICDKMolecule mol, String filename) throws InvocationTargetException {
-        File file = new File(filename);
-        FileOutputStream fos;
-        try {
-            fos = new FileOutputStream(file);
-            MDLWriter writer = new MDLWriter(fos);
-            writer.write(mol.getAtomContainer());
-            writer.close();
-
-        } catch (FileNotFoundException e) {
-            System.out.println("Cant find file: " + filename);
-            e.printStackTrace();
-            throw new InvocationTargetException(e);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new InvocationTargetException(e);
-        } catch (CDKException e) {
-            e.printStackTrace();
-            throw new InvocationTargetException(e);
-        }
+	public void saveCML(ICDKMolecule cml,  String filename) throws InvocationTargetException, BioclipseException, CDKException, CoreException {
+		saveMolecule(cml, filename,CDKManager.cml);
+	}
+	
+    public void saveMDLMolfile(ICDKMolecule mol, String filename) throws InvocationTargetException, BioclipseException, CDKException, CoreException {
+		saveMolecule(mol, filename,CDKManager.mol);
     }
 
 }

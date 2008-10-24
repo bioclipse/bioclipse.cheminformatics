@@ -143,6 +143,16 @@ public interface ICDKManager extends IBioclipseManager {
     
     /**
      * @param mol The molecule to save
+     * @param filename Where to save, relative to workspace root
+     * @param filetype Which format to save (for formats, see constants)
+     * @throws IllegalStateException
+     */
+    @Recorded
+    public void saveMolecule(IMolecule mol, String filename, String filetype) 
+    	throws BioclipseException, CDKException, CoreException;
+
+    /**
+     * @param mol The molecule to save
      * @param target Where to save
      * @param filetype Which format to save (for formats, see constants)
      * @throws IllegalStateException
@@ -403,12 +413,12 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(params = "ICDKMolecule molecule, String filename",
                      methodSummary = "Saves a molecule in the MDL molfile V2000 format")
-    public void saveMDLMolfile(ICDKMolecule mol, String filename) throws InvocationTargetException;
+    public void saveMDLMolfile(ICDKMolecule mol, String filename) throws InvocationTargetException, BioclipseException, CDKException, CoreException;
 
     @Recorded
     @PublishedMethod(params = "ICDKMolecule molecule, String filename",
                      methodSummary = "Saves a molecule in the Chemical Markup Language format")
-    public void saveCML(ICDKMolecule cml, String filename) throws InvocationTargetException;
+    public void saveCML(ICDKMolecule cml, String filename) throws InvocationTargetException, BioclipseException, CDKException, CoreException;
 
     /**
      * Loads molecules from a SMILES file.
