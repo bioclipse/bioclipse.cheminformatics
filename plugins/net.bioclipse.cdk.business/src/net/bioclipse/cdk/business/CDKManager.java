@@ -427,6 +427,9 @@ public class CDKManager implements ICDKManager {
 	public void saveMolecule(IMolecule mol_in, IFile target, String filetype)
 			throws BioclipseException, CDKException, CoreException {
 
+		if(target.exists()){
+			throw new BioclipseException("File already exists!");
+		}
 		ICDKMolecule mol=create(mol_in);
 		
 		IChemModel chemModel = mol.getAtomContainer().getBuilder()
