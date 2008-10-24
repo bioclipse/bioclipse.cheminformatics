@@ -897,28 +897,8 @@ public class CDKManager implements ICDKManager {
 	}
 
 	public void saveMol2(ICDKMolecule mol, String filename)
-			throws InvocationTargetException {
-
-		File file = new File(filename);
-		FileOutputStream fos;
-		try {
-			fos = new FileOutputStream(file);
-			Mol2Writer writer = new Mol2Writer(fos);
-			writer.write(mol.getAtomContainer());
-			writer.close();
-
-		} catch (FileNotFoundException e) {
-			System.out.println("Cant find file: " + filename);
-			e.printStackTrace();
-			throw new InvocationTargetException(e);
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new InvocationTargetException(e);
-		} catch (CDKException e) {
-			e.printStackTrace();
-			throw new InvocationTargetException(e);
-		}
-
+			throws InvocationTargetException, BioclipseException, CDKException, CoreException {
+		saveMolecule(mol, filename,CDKManager.mol2);
 	}
 
 	public List<ICDKMolecule> loadSMILESFile(String path) throws CoreException,

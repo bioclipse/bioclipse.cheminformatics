@@ -433,7 +433,7 @@ public interface ICDKManager extends IBioclipseManager {
 			throws InvocationTargetException;
 
     @Recorded
-	public void saveMol2(ICDKMolecule mol2, String filename) throws InvocationTargetException;
+	public void saveMol2(ICDKMolecule mol2, String filename) throws InvocationTargetException, BioclipseException, CDKException, CoreException;
 
     @Recorded
     @PublishedMethod(params = "ICDKMolecule molecule, String filename",
