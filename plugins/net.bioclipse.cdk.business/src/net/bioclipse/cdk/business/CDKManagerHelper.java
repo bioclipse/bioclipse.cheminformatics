@@ -11,6 +11,12 @@
  ******************************************************************************/
 package net.bioclipse.cdk.business;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.util.Properties;
 
 import org.openscience.cdk.ChemFile;
@@ -48,6 +54,35 @@ public class CDKManagerHelper {
         }
     }
     
+    /**
+     * Register all formats known to the CDK.
+     */
+    public static void registerAllFormats(ReaderFactory fac) {
+        try {
+            InputStream iStream = org.openscience.cdk.io.Activator.class.getResourceAsStream("/io-formats.set");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
+            int formatCount = 0;
+            while (reader.ready()) {
+                // load them one by one
+                String formatName = reader.readLine();
+                formatCount++;
+                try {
+                    Class formatClass = org.openscience.cdk.io.Activator.class.getClassLoader().loadClass(formatName);
+                    Method getinstanceMethod = formatClass.getMethod("getInstance", new Class[0]);
+                    IChemFormatMatcher format = (IChemFormatMatcher)getinstanceMethod.invoke(null, new Object[0]);
+                    fac.registerFormat(format);
+                    System.out.println("Loaded IO format: " + format.getClass().getName());
+                } catch (ClassNotFoundException exception) {
+                    System.out.println("Could not find this ChemObjectReader: "+ formatName);
+                } catch (Exception exception) {
+                    System.out.println("Could not load this ChemObjectReader: "+ formatName);
+                }
+            }
+        } catch ( IOException e ) {
+            System.out.println("Error loading all formats");
+        }
+    }
+
     public static void customizeReading(ISimpleChemObjectReader reader, IChemFile chemFile) {
         System.out.println("customingIO, reader found: " + reader.getClass().getName());
         System.out.println("Found # IO settings: " + reader.getIOSettings().length);
