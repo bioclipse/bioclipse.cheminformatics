@@ -31,6 +31,7 @@ import org.openscience.cdk.io.formats.IChemFormatMatcher;
 import org.openscience.cdk.io.formats.IResourceFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
 import org.openscience.cdk.io.formats.MDLV3000Format;
+import org.openscience.cdk.io.formats.PDBFormat;
 import org.openscience.cdk.io.formats.SDFFormat;
 import org.openscience.cdk.io.listener.PropertiesListener;
 import org.openscience.cdk.nonotify.NNChemFile;
@@ -44,6 +45,7 @@ public class CDKManagerHelper {
      */
     public static void registerSupportedFormats(ReaderFactory fac) {
         IResourceFormat[] supportedFormats = {
+            PDBFormat.getInstance(),
             SDFFormat.getInstance(),
             CMLFormat.getInstance(),
             MDLV2000Format.getInstance(),
