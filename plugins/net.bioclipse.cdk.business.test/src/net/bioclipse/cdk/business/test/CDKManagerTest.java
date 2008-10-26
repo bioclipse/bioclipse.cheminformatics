@@ -652,7 +652,7 @@ public class CDKManagerTest {
         MockIFile mf=new MockIFile(path);
         
         ReaderFactory readerFactory=new ReaderFactory();
-        CDKManagerHelper.registerFormats(readerFactory);
+        CDKManagerHelper.registerSupportedFormats(readerFactory);
 
         //Create the reader
         ISimpleChemObjectReader reader 

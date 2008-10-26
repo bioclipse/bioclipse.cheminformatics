@@ -107,7 +107,7 @@ public class CDKManager implements ICDKManager {
 
 	static {
 	    readerFactory = new ReaderFactory();
-	    CDKManagerHelper.registerFormats(readerFactory);
+	    CDKManagerHelper.registerSupportedFormats(readerFactory);
 	}
 
 	public String getNamespace() {

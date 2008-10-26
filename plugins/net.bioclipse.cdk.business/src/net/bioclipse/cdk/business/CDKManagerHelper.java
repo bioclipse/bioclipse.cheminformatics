@@ -36,7 +36,7 @@ public class CDKManagerHelper {
      * 
      * @param fac
      */
-    public static void registerFormats(ReaderFactory fac) {
+    public static void registerSupportedFormats(ReaderFactory fac) {
         IResourceFormat[] supportedFormats = {
             SDFFormat.getInstance(),
             CMLFormat.getInstance(),
