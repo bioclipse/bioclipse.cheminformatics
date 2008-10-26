@@ -9,7 +9,7 @@
  *     Ola Spjuth
  *     Stefan Kuhn
  *     Jonathan Alvarsson
- *
+ *     Egon Willighagen
  ******************************************************************************/
 package net.bioclipse.cdk.business;
 
@@ -106,6 +106,11 @@ public interface ICDKManager extends IBioclipseManager {
     public ICDKMolecule loadMolecule( IFile file )
         throws IOException, BioclipseException, CoreException;
     
+    @Recorded
+    @PublishedMethod( params = "String path",
+                      methodSummary = "Determines the file format if the file, if chemical")
+    public String determineFormat(String path) throws IOException, CoreException;
+
     /**
      * Loads molecules from a file at a given path.
      *

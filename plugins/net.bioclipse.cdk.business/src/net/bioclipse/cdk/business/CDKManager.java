@@ -103,11 +103,16 @@ public class CDKManager implements ICDKManager {
 
 	private static final Logger logger = Logger.getLogger(CDKManager.class);
 
+	// ReaderFactory used to instantiate IChemObjectReaders
 	private static ReaderFactory readerFactory;
+	// ReaderFactory used solely to determine chemical file formats
+	private static ReaderFactory formatsFactory;
 
 	static {
 	    readerFactory = new ReaderFactory();
 	    CDKManagerHelper.registerSupportedFormats(readerFactory);
+      formatsFactory = new ReaderFactory();
+      CDKManagerHelper.registerAllFormats(formatsFactory);
 	}
 
 	public String getNamespace() {
@@ -1129,6 +1134,10 @@ public class CDKManager implements ICDKManager {
 	
     public void saveMDLMolfile(ICDKMolecule mol, String filename) throws InvocationTargetException, BioclipseException, CDKException, CoreException {
 		saveMolecule(mol, filename,CDKManager.mol);
+    }
+
+    public String determineFormat( String path ) throws IOException, CoreException {
+        return formatsFactory.guessFormat(ResourcePathTransformer.getInstance().transform(path).getContents()).getFormatName();
     }
 
 }
