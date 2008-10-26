@@ -16,9 +16,6 @@ package net.bioclipse.cdk.business;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -106,7 +103,12 @@ public class CDKManager implements ICDKManager {
 
 	private static final Logger logger = Logger.getLogger(CDKManager.class);
 
-	ReaderFactory readerFactory;
+	private static ReaderFactory readerFactory;
+
+	static {
+	    readerFactory = new ReaderFactory();
+	    CDKManagerHelper.registerFormats(readerFactory);
+	}
 
 	public String getNamespace() {
 		return "cdk";
@@ -142,12 +144,6 @@ public class CDKManager implements ICDKManager {
 
 		List<ICDKMolecule> moleculesList = new ArrayList<ICDKMolecule>();
 		try {
-
-			if (readerFactory == null) {
-				readerFactory = new ReaderFactory();
-				CDKManagerHelper.registerFormats(readerFactory);
-			}
-
 			// Create the reader
 			ISimpleChemObjectReader reader = readerFactory
 					.createReader(instream);
@@ -250,10 +246,6 @@ public class CDKManager implements ICDKManager {
 		int ticks = 10000;
 		try {
 			monitor.beginTask("Reading file", ticks);
-			if (readerFactory == null) {
-				readerFactory = new ReaderFactory();
-				CDKManagerHelper.registerFormats(readerFactory);
-			}
 
 			System.out.println("no formats supported: "
 					+ readerFactory.getFormats().size());
