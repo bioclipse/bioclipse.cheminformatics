@@ -7,9 +7,8 @@
  * 
  * Contributors:
  *     Ola Spjuth
- *     
+ *     Egon Willighagen
  ******************************************************************************/
-
 package net.bioclipse.cdk.business;
 
 import java.util.Properties;
@@ -23,11 +22,9 @@ import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.cml.MDMoleculeConvention;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormatMatcher;
-import org.openscience.cdk.io.formats.MDLFormat;
+import org.openscience.cdk.io.formats.IResourceFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
 import org.openscience.cdk.io.formats.MDLV3000Format;
-import org.openscience.cdk.io.formats.Mol2Format;
-import org.openscience.cdk.io.formats.PDBFormat;
 import org.openscience.cdk.io.formats.SDFFormat;
 import org.openscience.cdk.io.listener.PropertiesListener;
 import org.openscience.cdk.nonotify.NNChemFile;
@@ -35,27 +32,20 @@ import org.openscience.cdk.nonotify.NNChemFile;
 public class CDKManagerHelper {
 
     /**
-     * Register all formats that we support for reading in Bioclipse
+     * Register all formats that we support for reading in Bioclipse.
+     * 
      * @param fac
      */
     public static void registerFormats(ReaderFactory fac) {
-        if (fac.getFormats().contains(PDBFormat.getInstance())==false){
-            fac.registerFormat((IChemFormatMatcher) PDBFormat.getInstance());
+        IResourceFormat[] supportedFormats = {
+            SDFFormat.getInstance(),
+            CMLFormat.getInstance(),
+            MDLV2000Format.getInstance(),
+            MDLV3000Format.getInstance()
+        };
+        for (IResourceFormat format : supportedFormats) {
+            if (!fac.getFormats().contains(format)) fac.registerFormat((IChemFormatMatcher)format);
         }
-        if (fac.getFormats().contains(SDFFormat.getInstance())==false){
-            fac.registerFormat((IChemFormatMatcher) SDFFormat.getInstance());
-        }
-        if (fac.getFormats().contains(CMLFormat.getInstance())==false){
-            fac.registerFormat((IChemFormatMatcher) CMLFormat.getInstance());
-        }
-        if (fac.getFormats().contains(MDLV2000Format.getInstance())==false){
-            fac.registerFormat((IChemFormatMatcher) MDLV2000Format.getInstance());
-        }
-        if (fac.getFormats().contains(MDLV3000Format.getInstance())==false){
-            fac.registerFormat((IChemFormatMatcher) MDLV3000Format.getInstance());
-        }
-        
-
     }
     
     public static void customizeReading(ISimpleChemObjectReader reader, IChemFile chemFile) {
