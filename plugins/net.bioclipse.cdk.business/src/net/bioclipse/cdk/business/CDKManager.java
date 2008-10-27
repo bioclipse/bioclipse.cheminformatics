@@ -744,13 +744,11 @@ public class CDKManager implements ICDKManager {
 		List<ICDKMolecule> mols = new ArrayList<ICDKMolecule>();
 		while (it.hasNext()) {
 			ICDKMolecule molecule = (ICDKMolecule) it.next();
-			String moleculeName = "Molecule X";
-			// String molName=(String)
-			// molecule.getAtomContainer().getProperty(CDKConstants.TITLE);
-			// if (molName!=null && (!(molName.equals("")))){
-			// moleculeName=molName;
-			// }
-			// molecule.setName(moleculeName);
+			String molName=(String)
+			molecule.getAtomContainer().getProperty(CDKConstants.TITLE);
+			if (molName!=null && (!(molName.equals("")))){
+				molecule.setName(molName);
+			}
 			mols.add(molecule);
 		}
 
@@ -938,7 +936,6 @@ public class CDKManager implements ICDKManager {
 			Scanner smilesScanner = new Scanner(line).useDelimiter("\\s+");
 			String part1 = null;
 			String part2 = null;
-			ICDKMolecule mol = null;
 			if (smilesScanner.hasNext()) {
 				part1 = smilesScanner.next();
 				if (smilesScanner.hasNext()) {
