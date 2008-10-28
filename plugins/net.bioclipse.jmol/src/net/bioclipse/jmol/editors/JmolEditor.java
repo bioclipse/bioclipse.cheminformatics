@@ -33,12 +33,9 @@ import net.bioclipse.jmol.views.outline.JmolObject;
 
 import org.apache.log4j.Logger;
 
-import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.core.ResourcePathTransformer;
-import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 
-import org.eclipse.core.internal.runtime.ResourceTranslator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -304,9 +301,9 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
 
         try {
 
-            if(input instanceof MoleculesIndexEditorInput) {
-                return ((MoleculesIndexEditorInput)input).getData();
-            }
+            String val = (String) input.getAdapter( String.class );
+            if(val != null) return val;
+            
             if ((input instanceof IFileEditorInput) && 
                     ((IFileEditorInput)input).getFile().exists()) {
                 return readFile( ((IFileEditorInput)input)
@@ -332,9 +329,6 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
             // TODO Auto-generated catch block
             LogUtils.debugTrace(logger, e);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            LogUtils.debugTrace(logger, e);
-        } catch (BioclipseException e) {
             // TODO Auto-generated catch block
             LogUtils.debugTrace(logger, e);
         }
@@ -639,20 +633,9 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
     }
     
     public void setDataInput(IEditorInput input){  
-       
-        if(jmolPanel != null && input instanceof MoleculesIndexEditorInput) {
-            try {
-                jmolPanel.getViewer().openStringInline( 
-                                  ((MoleculesIndexEditorInput)input).getData());
-            } catch ( CoreException e ) {
-              logger.debug("Failed to chage Jmol input",new RuntimeException(e));
-            } catch ( IOException e ) {
-              logger.debug("Failed to chage Jmol input",new RuntimeException(e));
-            } catch ( BioclipseException e) {
-               logger.debug("Failed to chage Jmol input",new RuntimeException(e));
-            }
+        String data = (String) input.getAdapter( String.class );
+        if(jmolPanel != null && data != null) {
+            jmolPanel.getViewer().openStringInline( data );
         }
-         
-        
     }
 }

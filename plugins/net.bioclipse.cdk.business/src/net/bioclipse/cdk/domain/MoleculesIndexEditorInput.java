@@ -3,7 +3,9 @@ package net.bioclipse.cdk.domain;
 import java.io.IOException;
 
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.util.LogUtils;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
@@ -18,6 +20,7 @@ import org.eclipse.ui.ide.IDE;
 
 public class MoleculesIndexEditorInput implements IFileEditorInput{
 
+    Logger logger = Logger.getLogger( MoleculesIndexEditorInput.class );
     SDFElement element;
     
     public MoleculesIndexEditorInput(SDFElement element) {
@@ -73,6 +76,16 @@ public class MoleculesIndexEditorInput implements IFileEditorInput{
         if(ICDKMolecule.class.isAssignableFrom( adapter )) {
             return element.getAdapter( adapter );
         }
+        if(String.class.equals( adapter )) {
+            ICDKMolecule mol = (ICDKMolecule) 
+                                       element.getAdapter( ICDKMolecule.class );
+            if(mol!= null)
+                try {
+                    return mol.getCML();
+                } catch ( BioclipseException e ) {
+                    LogUtils.debugTrace( logger, e );
+                }
+        }
         return Platform.getAdapterManager().getAdapter( this, adapter );
     }
 
@@ -88,6 +101,4 @@ public class MoleculesIndexEditorInput implements IFileEditorInput{
         }
         return null;
     }
-    
-    
 }
