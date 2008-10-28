@@ -68,7 +68,8 @@ import java.util.List;
  * </tr>
  * </table>
  * <p/>
- * Returns a single value named <i>nAtomLAC</i>
+ * Returns a single value named <i>nAtomLAC</i>. Note that a chain exists if there
+ * are two or more atoms. Thus single atom molecules will return 0
  *
  * @author chhoppe from EUROSCREEN
  * @cdk.created 2006-1-03
@@ -106,6 +107,7 @@ public class LargestChainDescriptor implements IMolecularDescriptor {
      *
      * @return An object containing the descriptor specification
      */
+    @TestMethod("testGetSpecification")
     public DescriptorSpecification getSpecification() {
         return new DescriptorSpecification(
                 "http://www.blueobelisk.org/ontologies/chemoinformatics-algorithms/#largestChain",
@@ -125,6 +127,7 @@ public class LargestChainDescriptor implements IMolecularDescriptor {
      * @throws CDKException if more than one parameter or a non-Boolean parameter is specified
      * @see #getParameters
      */
+    @TestMethod("testSetParameters_arrayObject")
     public void setParameters(Object[] params) throws CDKException {
         if (params.length > 2) {
             throw new CDKException("LargestChainDescriptor only expects two parameter");
@@ -144,6 +147,7 @@ public class LargestChainDescriptor implements IMolecularDescriptor {
      * @return The parameters value
      * @see #setParameters
      */
+    @TestMethod("testGetParameters")
     public Object[] getParameters() {
         // return the parameters as used for the descriptor calculation
         Object[] params = new Object[2];
@@ -173,11 +177,19 @@ public class LargestChainDescriptor implements IMolecularDescriptor {
      * <p/>
      * <p>Same for checkRingSystem, if true the CDKConstant.ISINRING will be set
      *
-     * @param container The {@link AtomContainer} for which this descriptor is to be calculated
+     * @param atomContainer The {@link AtomContainer} for which this descriptor is to be calculated
      * @return the number of atoms in the largest chain of this AtomContainer
      * @see #setParameters
      */
-    public DescriptorValue calculate(IAtomContainer container) {
+    @TestMethod("testCalculate_IAtomContainer")
+    public DescriptorValue calculate(IAtomContainer atomContainer) {
+        IAtomContainer container;
+        try {
+            container = (IAtomContainer) atomContainer.clone();
+        } catch (CloneNotSupportedException e) {
+            return getDummyDescriptorValue(e);
+        }
+
         //logger.debug("LargestChainDescriptor");
         boolean[] originalFlag4 = new boolean[container.getAtomCount()];
         for (int i=0; i<originalFlag4.length; i++) {
@@ -206,6 +218,8 @@ public class LargestChainDescriptor implements IMolecularDescriptor {
             }
         }
 
+        // get rid of hydrogens in our local copy
+        container = AtomContainerManipulator.removeHydrogens(container);
 
         int largestChainAtomsCount = 0;
         //IAtom[] atoms = container.getAtoms();
@@ -237,11 +251,6 @@ public class LargestChainDescriptor implements IMolecularDescriptor {
                 }
             }
 
-        }
-
-        // restore original flag values
-        for (int i=0; i<originalFlag4.length; i++) {
-            container.getAtom(i).setFlag(4, originalFlag4[i]);
         }
 
         return new DescriptorValue(getSpecification(), getParameterNames(), getParameters(),
@@ -279,7 +288,7 @@ public class LargestChainDescriptor implements IMolecularDescriptor {
      *          Description of the
      *          Exception
      */
-    public void breadthFirstSearch(IAtomContainer container, List<IAtom> sphere, List<IAtom> path) throws org.openscience.cdk.exception.CDKException {
+    private void breadthFirstSearch(IAtomContainer container, List<IAtom> sphere, List<IAtom> path) throws org.openscience.cdk.exception.CDKException {
         IAtom atom;
         IAtom nextAtom;
         List<IAtom> newSphere = new ArrayList<IAtom>();
@@ -314,6 +323,7 @@ public class LargestChainDescriptor implements IMolecularDescriptor {
      *
      * @return The parameterNames value
      */
+    @TestMethod("testGetParameterNames")
     public String[] getParameterNames() {
         String[] params = new String[2];
         params[0] = "checkAromaticity";
@@ -328,6 +338,7 @@ public class LargestChainDescriptor implements IMolecularDescriptor {
      * @param name Description of the Parameter
      * @return An Object of class equal to that of the parameter being requested
      */
+    @TestMethod("testGetParameterType_String")
     public Object getParameterType(String name) {
         return true;
     }

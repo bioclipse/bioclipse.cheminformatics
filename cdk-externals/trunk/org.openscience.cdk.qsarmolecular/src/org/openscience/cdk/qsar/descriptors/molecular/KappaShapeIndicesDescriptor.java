@@ -35,13 +35,14 @@ import org.openscience.cdk.qsar.IMolecularDescriptor;
 import org.openscience.cdk.qsar.result.DoubleArrayResult;
 import org.openscience.cdk.qsar.result.DoubleArrayResultType;
 import org.openscience.cdk.qsar.result.IDescriptorResult;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 import java.util.ArrayList;
 
 /**
  * Kier and Hall kappa molecular shape indices compare the molecular graph with minimal and maximal molecular graphs;
  * a description is given at: http://www.chemcomp.com/Journal_of_CCG/Features/descr.htm#KH :
- * "they are intended to capture different aspects of molecular shape.
+ * "they are intended to capture different aspects of molecular shape.  Note that hydrogens are ignored.
  * In the following description, n denotes the number of atoms in the hydrogen suppressed graph,
  * m is the number of bonds in the hydrogen suppressed graph. Also, let p2 denote the number of paths of length 2
  * and let p3 denote the number of paths of length 3".
@@ -53,19 +54,7 @@ import java.util.ArrayList;
  * <li>Kier3 -  Third kappa (&kappa;) shape index
  * </ol>
  * <p/>
- * <p>This descriptor uses these parameters:
- * <table border="1">
- * <tr>
- * <td>Name</td>
- * <td>Default</td>
- * <td>Description</td>
- * </tr>
- * <tr>
- * <td></td>
- * <td></td>
- * <td>no parameters</td>
- * </tr>
- * </table>
+ * <p>This descriptor does not have any parameters.
  *
  * @author mfe4
  * @cdk.created 2004-11-03
@@ -94,6 +83,7 @@ public class KappaShapeIndicesDescriptor implements IMolecularDescriptor {
      *
      * @return The specification value
      */
+    @TestMethod("testGetSpecification")
     public DescriptorSpecification getSpecification() {
         return new DescriptorSpecification(
                 "http://www.blueobelisk.org/ontologies/chemoinformatics-algorithms/#kierValues",
@@ -110,6 +100,7 @@ public class KappaShapeIndicesDescriptor implements IMolecularDescriptor {
      * @param params The new parameters value
      * @throws CDKException Description of the Exception
      */
+    @TestMethod("testSetParameters_arrayObject")
     public void setParameters(Object[] params) throws CDKException {
         // no parameters for this descriptor
     }
@@ -121,6 +112,7 @@ public class KappaShapeIndicesDescriptor implements IMolecularDescriptor {
      *
      * @return The parameters value
      */
+    @TestMethod("testGetParameters")
     public Object[] getParameters() {
         // no parameters to return
         return (null);
@@ -135,11 +127,24 @@ public class KappaShapeIndicesDescriptor implements IMolecularDescriptor {
     /**
      * calculates the kier shape indices for an atom container
      *
-     * @param atomContainer AtomContainer
+     * @param container AtomContainer
      * @return kier1, kier2 and kier3 are returned as arrayList of doubles
      * @throws CDKException Possible Exceptions
      */
-    public DescriptorValue calculate(IAtomContainer atomContainer) {
+    @TestMethod("testCalculate_IAtomContainer")
+    public DescriptorValue calculate(IAtomContainer container) {
+        IAtomContainer atomContainer;
+        try {
+            atomContainer = (IAtomContainer) container.clone();
+        } catch (CloneNotSupportedException e) {
+            DoubleArrayResult kierValues = new DoubleArrayResult(3);
+            kierValues.add(Double.NaN);
+            kierValues.add(Double.NaN);
+            kierValues.add(Double.NaN);
+            return new DescriptorValue(getSpecification(), getParameterNames(), getParameters(), kierValues,
+                getDescriptorNames());
+        }
+        atomContainer = AtomContainerManipulator.removeHydrogens(atomContainer);
 
         //org.openscience.cdk.interfaces.IAtom[] atoms = atomContainer.getAtoms();
         java.util.List firstAtomNeighboors;
@@ -266,6 +271,7 @@ public class KappaShapeIndicesDescriptor implements IMolecularDescriptor {
      *
      * @return The parameterNames value
      */
+    @TestMethod("testGetParameterNames")
     public String[] getParameterNames() {
         // no param names to return
         return (null);
@@ -279,6 +285,7 @@ public class KappaShapeIndicesDescriptor implements IMolecularDescriptor {
      * @param name Description of the Parameter
      * @return The parameterType value
      */
+    @TestMethod("testGetParameterType_String")
     public Object getParameterType(String name) {
         return (null);
     }
