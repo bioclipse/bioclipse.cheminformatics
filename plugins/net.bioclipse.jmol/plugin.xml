@@ -72,32 +72,12 @@
          </propertySection-->
       </propertySections>
    </extension>
- <extension
-       point="org.eclipse.ui.views">
-    <view
-          allowMultiple="false"
-          class="net.bioclipse.jmol.views.JmolView"
-          icon="icons/molecule3D.png"
-          category="net.bioclipse.cdk.category"
-          id="net.bioclipse.jmol.views.JmolView"
-          name="Jmol">
-    </view>
- </extension>
 
  <extension
        point="org.eclipse.ui.perspectiveExtensions"
        id="jmolPerspectiveExtension">
     <perspectiveExtension
           targetID="net.bioclipse.pcore.PcorePerspective">
-          <view
-                id="net.bioclipse.jmol.views.JmolView"
-                relative="org.eclipse.ui.editorss"
-                relationship="right"
-                ratio="0.70">
-          </view>
-          <viewShortcut
-                id="net.bioclipse.jmol.views.JmolView">
-          </viewShortcut>
     </perspectiveExtension>
  </extension>
 
