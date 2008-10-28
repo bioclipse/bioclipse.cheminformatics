@@ -269,6 +269,12 @@ public class CDKManager implements ICDKManager {
 			// Create the reader
 			ISimpleChemObjectReader reader = readerFactory.createReader(file
 					.getContents());
+			try {
+				reader.setReader(file.getContents());
+			} catch (CDKException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
 			if (reader == null) {
 
