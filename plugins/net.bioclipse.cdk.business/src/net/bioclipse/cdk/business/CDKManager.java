@@ -77,6 +77,8 @@ import org.openscience.cdk.io.MDLWriter;
 import org.openscience.cdk.io.Mol2Writer;
 import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.SMILESWriter;
+import org.openscience.cdk.io.formats.CMLFormat;
+import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.IResourceFormat;
 import org.openscience.cdk.io.formats.SMILESFormat;
 import org.openscience.cdk.io.iterator.IteratingMDLConformerReader;
@@ -137,11 +139,14 @@ public class CDKManager implements ICDKManager {
 
 	public ICDKMolecule loadMolecule(IFile file, IProgressMonitor monitor)
 			throws IOException, BioclipseException, CoreException {
-		return loadMolecule(file.getContents(), monitor);
+	    return loadMolecule(
+	        file.getContents(), monitor,
+	        formatsFactory.guessFormat(file.getContents())
+	    );
 	}
 
 	private ICDKMolecule loadMolecule(InputStream instream,
-			IProgressMonitor monitor) throws BioclipseException, IOException {
+			IProgressMonitor monitor, IChemFormat format) throws BioclipseException, IOException {
 
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
@@ -150,8 +155,12 @@ public class CDKManager implements ICDKManager {
 		List<ICDKMolecule> moleculesList = new ArrayList<ICDKMolecule>();
 		try {
 			// Create the reader
-			ISimpleChemObjectReader reader = readerFactory
-					.createReader(instream);
+			ISimpleChemObjectReader reader = readerFactory.createReader(format);
+			try {
+			    reader.setReader(instream);
+			} catch ( CDKException e1 ) {
+			    throw new RuntimeException("Failed to set the reader's inputstream", e1);
+			}
 
 			if (reader == null) {
 				throw new BioclipseException("Could not create reader in CDK.");
@@ -504,7 +513,7 @@ public class CDKManager implements ICDKManager {
 		ByteArrayInputStream bais = new ByteArrayInputStream(molstring
 				.getBytes());
 
-		return loadMolecule(bais, null);
+		return loadMolecule((InputStream)bais, (IProgressMonitor)null, (IChemFormat)CMLFormat.getInstance());
 	}
 
 	public Iterator<ICDKMolecule> createMoleculeIterator(IFile file,
