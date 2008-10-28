@@ -51,6 +51,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.exception.NoSuchAtomException;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -629,7 +630,7 @@ public class CDKManagerPluginTest {
 
     
     @Test
-    public void testSaveMol2() throws BioclipseException, CDKException, CoreException, IOException {
+    public void testSaveMol2() throws BioclipseException, CDKException, CoreException, IOException, NoSuchAtomException {
 
     	String propaneSmiles = "CCC"; 
         
@@ -637,7 +638,9 @@ public class CDKManagerPluginTest {
 
         IFile target=new MockIFile();
         cdk.saveMolecule(propane, target, ICDKManager.mol2);
-    	
+        
+        ICDKMolecule mol = cdk.loadMolecule(target);
+        assertNotNull(mol);
     }
 
     @Test
