@@ -14,6 +14,7 @@ package net.bioclipse.jmol.views;
 import java.util.Hashtable;
 
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.scripting.ui.Activator;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -39,7 +40,7 @@ public class StatusListener implements JmolStatusListener {
     }
 
     public void notifyAtomPicked(int atomIndex, String strInfo) {
-        logger.debug("Jmol atom picked: " + atomIndex + ". Info: " + strInfo);
+        Activator.getDefault().getJsConsoleManager().print("Jmol atom picked: " + atomIndex + ". Info: " + strInfo);
     
 
         
@@ -139,23 +140,23 @@ public class StatusListener implements JmolStatusListener {
     }
 
     public void notifyFrameChanged(int frameNo) {
-        logger.debug("Jmol frame changed to: " + frameNo);
+        Activator.getDefault().getJsConsoleManager().print("Jmol frame changed to: " + frameNo);
     }
 
     public void notityNewDefaultModeMeasurement(int count, String strInfo) {
-        logger.debug("New default measurement mode: " + count + ". Info: " + strInfo);
+        Activator.getDefault().getJsConsoleManager().print("New default measurement mode: " + count + ". Info: " + strInfo);
     }
 
     public void notifyNewPickingModeMeasurement(int iatom, String strMeasure) {
-        logger.debug("Jmol atom picked: " + iatom + ". Measure: " + strMeasure);
+        Activator.getDefault().getJsConsoleManager().print("Jmol atom picked: " + iatom + ". Measure: " + strMeasure);
     }
 
     public void notifyScriptStart(String statusMessage, String additionalInfo) {
-        logger.debug("JmolScript started. Status: " + statusMessage + ". Info: " + additionalInfo);
+        Activator.getDefault().getJsConsoleManager().print("JmolScript started. Status: " + statusMessage + ". Info: " + additionalInfo);
     }
 
     public void notifyScriptTermination(String statusMessage, int msWalltime) {
-        logger.debug("JmolScript ended. Status: " + statusMessage + ". Time: " + msWalltime + " ms");
+        Activator.getDefault().getJsConsoleManager().print("JmolScript ended. Status: " + statusMessage + ". Time: " + msWalltime + " ms");
     }
 
     public void sendConsoleEcho(String strEcho) {
@@ -170,26 +171,26 @@ public class StatusListener implements JmolStatusListener {
     }
 
     public void showUrl(String url) {
-        logger.debug("Show URL: " + url);
+        Activator.getDefault().getJsConsoleManager().print("Show URL: " + url);
     }
 
     public void showConsole(boolean showConsole) {
     }
 
     public void setStatusMessage(String statusMessage) {
-        logger.debug("Jmol status message: " + statusMessage);
+        Activator.getDefault().getJsConsoleManager().print("Jmol status message: " + statusMessage);
     }
 
     public void scriptEcho(String strEcho) {
-        logger.debug("Jmol ScriptEcho: " + strEcho);
+        Activator.getDefault().getJsConsoleManager().print("Jmol ScriptEcho: " + strEcho);
     }
 
     public void scriptStatus(String strStatus) {
-        logger.debug("Jmol ScriptStatus: " + strStatus);
+        Activator.getDefault().getJsConsoleManager().print("Jmol ScriptStatus: " + strStatus);
     }
 
     public void notifyMeasurementsChanged() {
-        logger.debug("Jmol measurements have changed.");
+        Activator.getDefault().getJsConsoleManager().print("Jmol measurements have changed.");
     }
 
 
