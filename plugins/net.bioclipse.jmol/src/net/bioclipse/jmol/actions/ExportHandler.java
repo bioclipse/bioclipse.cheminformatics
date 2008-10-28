@@ -9,8 +9,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import net.bioclipse.jmol.editors.JmolEditor;
 import net.bioclipse.jmol.views.JmolPanel;
+import net.bioclipse.jmol.editors.JmolEditor;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.AbstractHandler;

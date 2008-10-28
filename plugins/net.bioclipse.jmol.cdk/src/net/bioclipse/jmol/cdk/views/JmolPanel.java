@@ -8,9 +8,7 @@
  * Contributors:
  *     Ola Spjuth - core API and implementation
  *******************************************************************************/
-
-package net.bioclipse.jmol.views;
-
+package net.bioclipse.jmol.cdk.views;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -18,13 +16,17 @@ import java.awt.Rectangle;
 
 import javax.swing.JPanel;
 
+import net.bioclipse.jmol.cdk.adapter.CdkJmolAdapter;
+import net.bioclipse.jmol.views.StatusListener;
+
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.jmol.adapter.smarter.AtomSetCollection;
 import org.jmol.adapter.smarter.SmarterJmolAdapter;
 import org.jmol.api.JmolAdapter;
 import org.jmol.api.JmolViewer;
 import org.jmol.viewer.Viewer;
-import org.apache.log4j.Logger;
+import org.openscience.cdk.interfaces.IChemFile;
 
 /**
  * Extends Jpanel with a JmolViewer
@@ -96,7 +98,13 @@ public class JmolPanel extends JPanel {
 //            set.addAtomContainer(ac);
 //            model.setMoleculeSet(set);
 
-        if (obj instanceof AtomSetCollection) {
+        if (obj instanceof IChemFile) {
+            
+            cdkViewer = createViewer(new CdkJmolAdapter());
+            viewer = (Viewer)cdkViewer;
+            viewer.openClientFile(string, string2, (IChemFile)obj);
+
+        } else if (obj instanceof AtomSetCollection) {
             viewer = (Viewer)jmolViewer;
             viewer.openClientFile(string, string2, obj);
         } else {

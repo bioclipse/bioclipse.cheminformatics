@@ -5,14 +5,7 @@ Bundle-SymbolicName: net.bioclipse.jmol;singleton:=true
 Bundle-Version: 2.0.0.A20081022
 Bundle-Activator: net.bioclipse.jmol.Activator
 Bundle-Vendor: The Bioclipse Team
-Require-Bundle: org.openscience.cdk.data,
- org.openscience.cdk.interfaces,
- org.openscience.cdk.pcore,
- org.openscience.cdk.core,
- org.openscience.cdk.standard,
- org.openscience.cdk.io,
- org.openscience.cdk.libiocml,
- org.eclipse.ui,
+Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  net.bioclipse.ui,
  org.eclipse.ui.editors,
@@ -22,10 +15,14 @@ Require-Bundle: org.openscience.cdk.data,
  org.eclipse.ui.views,
  net.bioclipse.core,
  org.eclipse.ui.views.properties.tabbed,
- net.bioclipse.scripting,
- net.bioclipse.cdk.business
+ net.bioclipse.scripting
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  jars/Jmol.jar
 Import-Package: org.apache.log4j
-Export-Package: net.bioclipse.jmol.editors
+Export-Package: net.bioclipse.jmol.editors,
+ net.bioclipse.jmol.views,
+ net.bioclipse.jmol.views.outline,
+ org.jmol.adapter.smarter,
+ org.jmol.api,
+ org.jmol.viewer

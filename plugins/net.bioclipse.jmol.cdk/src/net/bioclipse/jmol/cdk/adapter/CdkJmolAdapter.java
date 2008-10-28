@@ -9,7 +9,7 @@
  *	  Egon Willighagen
  *    Ola Spjuth
  *******************************************************************************/
-package net.bioclipse.jmol.adapter.cdk;
+package net.bioclipse.jmol.cdk.adapter;
 
 import java.io.BufferedReader;
 import java.io.IOException;

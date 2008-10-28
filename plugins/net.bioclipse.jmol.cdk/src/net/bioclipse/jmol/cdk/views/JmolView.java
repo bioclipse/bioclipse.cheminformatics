@@ -9,7 +9,7 @@
  *     Ola Spjuth - core API and implementation
  *******************************************************************************/
 
-package net.bioclipse.jmol.views;
+package net.bioclipse.jmol.cdk.views;
 
 import java.awt.event.MouseListener;
 import java.io.ByteArrayOutputStream;
@@ -36,7 +36,9 @@ import net.bioclipse.core.domain.IChemicalSelection;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.domain.ModelSelection;
 import net.bioclipse.core.domain.ScriptSelection;
-import net.bioclipse.jmol.adapter.cdk.CdkJmolAdapter;
+import net.bioclipse.jmol.cdk.adapter.CdkJmolAdapter;
+import net.bioclipse.jmol.views.JmolCompMouseListener;
+import net.bioclipse.jmol.views.JmolPolymerSelection;
 import net.bioclipse.jmol.views.outline.JmolModelSet;
 import net.bioclipse.jmol.views.outline.JmolModelString;
 

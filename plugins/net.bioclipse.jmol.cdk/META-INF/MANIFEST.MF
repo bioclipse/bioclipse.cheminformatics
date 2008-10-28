@@ -1,0 +1,32 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Jmol-CDK Integration
+Bundle-SymbolicName: net.bioclipse.jmol.cdk;singleton:=true
+Bundle-Version: 2.0.0.A20081022
+Bundle-Activator: net.bioclipse.jmol.cdk.Activator
+Bundle-Vendor: The Bioclipse Team
+Require-Bundle: org.openscience.cdk.data,
+ org.openscience.cdk.interfaces,
+ org.openscience.cdk.pcore,
+ org.openscience.cdk.core,
+ org.openscience.cdk.standard,
+ org.openscience.cdk.io,
+ org.openscience.cdk.libiocml,
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ net.bioclipse.ui,
+ org.eclipse.ui.editors,
+ org.eclipse.core.resources,
+ org.eclipse.ui.ide,
+ org.eclipse.jface.text,
+ org.eclipse.ui.views,
+ net.bioclipse.core,
+ org.eclipse.ui.views.properties.tabbed,
+ net.bioclipse.scripting,
+ net.bioclipse.cdk.business,
+ javax.vecmath,
+ net.bioclipse.jmol
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Import-Package: org.apache.log4j
+Export-Package: net.bioclipse.jmol.cdk.views

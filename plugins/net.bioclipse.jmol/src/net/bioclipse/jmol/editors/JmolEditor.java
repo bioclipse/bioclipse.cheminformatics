@@ -23,8 +23,8 @@ import java.util.Set;
 
 import javax.swing.JScrollPane;
 
-import net.bioclipse.jmol.views.JmolCompMouseListener;
 import net.bioclipse.jmol.views.JmolPanel;
+import net.bioclipse.jmol.views.JmolCompMouseListener;
 import net.bioclipse.jmol.views.JmolSelection;
 import net.bioclipse.jmol.views.outline.JmolContentOutlinePage;
 import net.bioclipse.jmol.views.outline.JmolModel;

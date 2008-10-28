@@ -3,13 +3,20 @@
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * www.eclipse.orgÑepl-v10.html <http://www.eclipse.org/legal/epl-v10.html>
+ * www.eclipse.orgï¿½epl-v10.html <http://www.eclipse.org/legal/epl-v10.html>
  * 
  * Contributors:
  *     Ola Spjuth - initial API and implementation
  *     
  ******************************************************************************/
 package net.bioclipse.jmol.scripting;
+
+import net.bioclipse.jmol.editors.JmolEditor;
+import net.bioclipse.scripting.INamespaceProvider;
+
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * 
@@ -18,19 +25,6 @@ package net.bioclipse.jmol.scripting;
  * @author ola
  *
  */
-
-import net.bioclipse.jmol.editors.JmolEditor;
-import net.bioclipse.jmol.views.JmolView;
-import net.bioclipse.scripting.INamespaceProvider;
-
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IViewReference;
-import org.eclipse.ui.PlatformUI;
-
 public class JmolScriptingTools implements INamespaceProvider{
     
     /**
@@ -58,14 +52,6 @@ public class JmolScriptingTools implements INamespaceProvider{
         }
         
 		IViewReference[] views=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
-		
-		for (int i=0;i<views.length;i++){
-			if (views[i].getId().equals(JmolView.ID)){
-				JmolView jmv=(JmolView)(views[i].getPart(false));
-				jmv.runScript(command);
-			}
-		}
-
         
     }
     
