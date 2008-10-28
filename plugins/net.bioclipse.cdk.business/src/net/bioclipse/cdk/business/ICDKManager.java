@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.io.formats.IChemFormat;
 
 @PublishedClass( "Contains CDK related methods")
 public interface ICDKManager extends IBioclipseManager {
@@ -146,6 +147,11 @@ public interface ICDKManager extends IBioclipseManager {
     public List<ICDKMolecule> loadMolecules( IFile file )
         throws IOException, BioclipseException, CoreException;
     
+    public List<ICDKMolecule> loadMolecules( IFile file,
+                                             IProgressMonitor monitor,
+                                             IChemFormat format)
+        throws IOException, BioclipseException, CoreException;
+
     /**
      * @param mol The molecule to save
      * @param filename Where to save, relative to workspace root

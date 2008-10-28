@@ -145,7 +145,7 @@ public class CDKManager implements ICDKManager {
 	    );
 	}
 
-	private ICDKMolecule loadMolecule(InputStream instream,
+	public ICDKMolecule loadMolecule(InputStream instream,
 			IProgressMonitor monitor, IChemFormat format) throws BioclipseException, IOException {
 
 		if (monitor == null) {
@@ -251,8 +251,13 @@ public class CDKManager implements ICDKManager {
 	 */
 	public List<ICDKMolecule> loadMolecules(IFile file, IProgressMonitor monitor)
 			throws IOException, BioclipseException, CoreException {
+	    return loadMolecules(file, monitor, null);
+	}
 
-		if (monitor == null) {
+  public List<ICDKMolecule> loadMolecules(IFile file, IProgressMonitor monitor, IChemFormat format)
+      throws IOException, BioclipseException, CoreException {
+
+	  if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}
 
@@ -263,17 +268,18 @@ public class CDKManager implements ICDKManager {
 
 			System.out.println("no formats supported: "
 					+ readerFactory.getFormats().size());
-			// System.out.println("format guess: " +
-			// readerFactory.guessFormat(instream).getFormatName());
 
-			// Create the reader
-			ISimpleChemObjectReader reader = readerFactory.createReader(file
-					.getContents());
+			ISimpleChemObjectReader reader = null;
+			if (format == null) {
+			    // Create the reader
+			    reader = readerFactory.createReader(file.getContents());
+			} else {
+			    reader = readerFactory.createReader(format);
+			}
 			try {
-				reader.setReader(file.getContents());
+			    reader.setReader(file.getContents());
 			} catch (CDKException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			    throw new BioclipseException("Could not set the reader's input.");
 			}
 
 			if (reader == null) {

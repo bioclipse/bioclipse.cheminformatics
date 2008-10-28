@@ -16,7 +16,6 @@ package net.bioclipse.cdk.business.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -55,6 +54,8 @@ import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.ReaderFactory;
+import org.openscience.cdk.io.formats.IChemFormat;
+import org.openscience.cdk.io.formats.SMILESFormat;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.templates.MoleculeFactory;
 import org.openscience.cdk.tools.diff.AtomContainerDiff;
@@ -126,7 +127,7 @@ public class CDKManagerTest {
                                           CoreException {
 
         String path = getClass().getResource("/testFiles/nprods.smi").getPath();
-        List<ICDKMolecule> mols = cdk.loadMolecules( new MockIFile(path));
+        List<ICDKMolecule> mols = cdk.loadMolecules(new MockIFile(path), null, (IChemFormat)SMILESFormat.getInstance());
         
         System.out.println("SMILES file size: " + mols.size());
         assertEquals(30, mols.size());
