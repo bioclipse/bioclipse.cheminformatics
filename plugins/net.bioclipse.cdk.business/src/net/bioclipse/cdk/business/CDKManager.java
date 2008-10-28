@@ -879,9 +879,15 @@ public class CDKManager implements ICDKManager {
 //		}
 
 		try {
+			int a=0;
 			for (IAtom atom : ac.atoms()) {
 				IAtomType type = cdkMatcher.findMatchingAtomType(ac, atom);
-				AtomTypeManipulator.configure(atom, type);
+				if (type==null){
+					logger.debug("AT null for atom: " + atom);
+				}else{
+					AtomTypeManipulator.configure(atom, type);
+				}
+				a++;
 			}
 			System.out.println("Arom: "
 					+ CDKHueckelAromaticityDetector.detectAromaticity(ac));
