@@ -48,8 +48,8 @@ import org.openscience.cdk.interfaces.IChemObjectBuilder;
 @TestClass("org.openscience.cdk.atomtype.SybylAtomTypeMatcherTest")
 public class SybylAtomTypeMatcher implements IAtomTypeMatcher {
 
-    private final static String SYBYL_ATOM_TYPE_LIST = "/org/openscience/cdk/dict/data/sybyl-atom-types.owl";
-    private final static String CDK_TO_SYBYL_MAP = "/org/openscience/cdk/dict/data/cdk-sybyl-mappings.owl";
+    private final static String SYBYL_ATOM_TYPE_LIST = "org/openscience/cdk/dict/data/sybyl-atom-types.owl";
+    private final static String CDK_TO_SYBYL_MAP = "org/openscience/cdk/dict/data/cdk-sybyl-mappings.owl";
     
 	private AtomTypeFactory factory;
 	private CDKAtomTypeMatcher cdkMatcher;
@@ -59,10 +59,10 @@ public class SybylAtomTypeMatcher implements IAtomTypeMatcher {
         factories = new Hashtable<IChemObjectBuilder,SybylAtomTypeMatcher>(1); 
 
     private SybylAtomTypeMatcher(IChemObjectBuilder builder) {
-        InputStream stream = this.getClass().getResourceAsStream(SYBYL_ATOM_TYPE_LIST);
-        factory = AtomTypeFactory.getInstance(stream, SYBYL_ATOM_TYPE_LIST, builder);
+        InputStream stream = this.getClass().getClassLoader().getResourceAsStream(SYBYL_ATOM_TYPE_LIST);
+        factory = AtomTypeFactory.getInstance(stream, "owl", builder);
         cdkMatcher = CDKAtomTypeMatcher.getInstance(builder);
-        InputStream mapStream = this.getClass().getResourceAsStream(CDK_TO_SYBYL_MAP);
+        InputStream mapStream = this.getClass().getClassLoader().getResourceAsStream(CDK_TO_SYBYL_MAP);
         mapper = AtomTypeMapper.getInstance(CDK_TO_SYBYL_MAP, mapStream);
     }
 

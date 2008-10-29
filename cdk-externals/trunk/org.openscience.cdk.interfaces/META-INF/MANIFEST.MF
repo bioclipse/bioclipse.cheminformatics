@@ -6,6 +6,7 @@ Bundle-Version: 1.1.0.20081028
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openscience.cdk.interfaces.Activator
+Bundle-ClassPath: .
 Require-Bundle: javax.vecmath,
  org.eclipse.core.runtime
 Export-Package: org.openscience.cdk.isomorphism.matchers,

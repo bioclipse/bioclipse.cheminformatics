@@ -6,6 +6,7 @@ Bundle-Version: 1.1.0.20081028
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openscience.cdk.qsarmolecular.Activator
+Bundle-ClassPath: .
 Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.data,
  org.openscience.cdk.core,

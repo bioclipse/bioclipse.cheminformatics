@@ -22,6 +22,9 @@ org/openscience/cdk/reaction/type/RearrangementLonePairReaction.java
 org/openscience/cdk/reaction/type/RearrangementCationReaction.java
 org/openscience/cdk/reaction/type/SharingLonePairReaction.java
 org/openscience/cdk/reaction/type/PiBondingMovementReaction.java
+org/openscience/cdk/reaction/type/parameters/ParameterReact.java
+org/openscience/cdk/reaction/type/parameters/SetReactionCenter.java
+org/openscience/cdk/reaction/type/parameters/IParameterReact.java
 org/openscience/cdk/reaction/type/AdductionProtonPBReaction.java
 org/openscience/cdk/reaction/type/RadicalSiteInitiationHReaction.java
 org/openscience/cdk/reaction/type/CarbonylEliminationReaction.java

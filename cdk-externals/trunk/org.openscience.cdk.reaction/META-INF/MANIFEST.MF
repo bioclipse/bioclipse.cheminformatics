@@ -6,6 +6,7 @@ Bundle-Version: 1.1.0.20081028
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openscience.cdk.reaction.Activator
+Bundle-ClassPath: .
 Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.data,
  org.openscience.cdk.core,
@@ -23,4 +24,5 @@ Export-Package: org.openscience.cdk.tools,
  org.openscience.cdk.reaction.mechanism,
  org.openscience.cdk.reaction,
  org.openscience.cdk.reaction.type,
+ org.openscience.cdk.reaction.type.parameters,
  org.openscience.cdk.graph.invariant
