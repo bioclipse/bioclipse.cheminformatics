@@ -210,6 +210,7 @@ public class CDKManager implements ICDKManager {
 
 				CDKMolecule mol = new CDKMolecule(ac);
 				String moleculeName = "Molecule " + i;
+				// FIXME: bad code regarding bug #70 below
 				if (ac instanceof IMolecule) {
 					org.openscience.cdk.interfaces.IMolecule imol = (org.openscience.cdk.interfaces.IMolecule) ac;
 					String molName = (String) imol
