@@ -30,11 +30,14 @@ import net.bioclipse.core.domain.IMolecule;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.openscience.cdk.annotations.TestClass;
+import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.io.formats.IChemFormat;
 
 @PublishedClass( "Contains CDK related methods")
+@TestClass("net.bioclipse.cdk.business.test.CDKManagerTest")
 public interface ICDKManager extends IBioclipseManager {
 
 	public final static String rxn = "rxn";
@@ -58,6 +61,7 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod( params = "String SMILES", 
                       methodSummary = "Creates a cdk molecule from " +
                       		          "SMILES")
+    @TestMethod(value="testLoadMoleculeFromSMILESFile,testCreateMoleculeFromSMILES,testFingerPrintMatch,testSubStructureMatch,testSMARTSMatching,testSave")
     public ICDKMolecule fromSMILES(String SMILES)
         throws BioclipseException;
 
@@ -209,6 +213,7 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod ( params = "IMolecule molecule", 
                        methodSummary = "Returns the SMILES for a " +
                        		           "molecule" )
+    @TestMethod("testSaveMoleculesSDF,testSaveMoleculesCML,testSaveMoleculesCMLwithProps")
     public String calculateSMILES (IMolecule molecule) 
                   throws BioclipseException;
 
@@ -252,6 +257,7 @@ public interface ICDKManager extends IBioclipseManager {
                       		          "subStructure is a subset of the" +
                       		          "fingerprint for the molecule")
     @Recorded
+    @TestMethod("testLoadMoleculeFromSMILESFile,testFingerPrintMatch")
     public boolean fingerPrintMatches( ICDKMolecule molecule, 
                                        ICDKMolecule subStructure ) 
                    throws BioclipseException;
@@ -296,6 +302,7 @@ public interface ICDKManager extends IBioclipseManager {
     		                       "(Performs an isomophism test without " +
     		                       "checking fingerprints)")
     @Recorded
+    @TestMethod("testSubStructureMatch")
     public boolean subStructureMatches( ICDKMolecule molecule,
                                         ICDKMolecule subStructure );
     
@@ -310,6 +317,7 @@ public interface ICDKManager extends IBioclipseManager {
                        methodSummary = "Creates a cdk molecule from a" +
                                        " molecule" )
     @Recorded
+    @TestMethod("testCDKMoleculeFromIMolecule")
     public ICDKMolecule create( IMolecule m ) throws BioclipseException;
 
     /**
@@ -340,6 +348,7 @@ public interface ICDKManager extends IBioclipseManager {
                                        "SMARTS matches the given " +
                                        "molecule" )
     @Recorded
+    @TestMethod("testSMARTSMatching")
     public boolean smartsMatches( ICDKMolecule molecule, String smarts ) 
                    throws BioclipseException;
 
@@ -411,6 +420,7 @@ public interface ICDKManager extends IBioclipseManager {
                                        "molecular weight for the " +
                                        "molecule.")
     @Recorded
+    @TestMethod("testLoadMoleculeFromSMILESFile")
     public double calculateMass( IMolecule molecule ) 
                   throws BioclipseException;
 
