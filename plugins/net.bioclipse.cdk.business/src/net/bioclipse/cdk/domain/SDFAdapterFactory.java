@@ -10,6 +10,7 @@ import java.util.Scanner;
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.core.BioclipseStore;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -76,30 +77,28 @@ public class SDFAdapterFactory implements IAdapterFactory {
 
             file.create( new ByteArrayInputStream( data.getBytes() ), true,
                          new NullProgressMonitor() );
-            List<ICDKMolecule> result =
-                    Activator.getDefault().getCDKManager().loadMolecules( file );
-            assert (result.size() == 1);
-
-            file.delete( true, null );
-            return result.get( 0 );
+            ICDKMolecule result =
+                    Activator.getDefault().getCDKManager().loadMolecule( file );
+ 
+            return result;
         }catch(CoreException e){
-            logger.debug(e);
+            LogUtils.debugTrace( logger,e);
         } catch (UnsupportedEncodingException e) {
             // TODO Auto-generated catch block
-            logger.debug(e);
+            LogUtils.debugTrace( logger,e);
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            logger.debug(e);
+            LogUtils.debugTrace( logger,e);
         } catch (BioclipseException e) {
             // TODO Auto-generated catch block
-            logger.debug(e);
+            LogUtils.debugTrace( logger,e);
         }finally{
             try {                
                 if(file!=null) file.delete(true,null);
                 if(folder!=null) folder.delete(true,null );
             }catch (CoreException e) {
                 // TODO Auto-generated catch block
-               logger.debug(e);
+                LogUtils.debugTrace( logger,e);
             } 
                
         }
