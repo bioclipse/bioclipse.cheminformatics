@@ -14,11 +14,11 @@ import java.lang.reflect.Method;
 
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.core.PublishedMethod;
+import net.bioclipse.core.TestClass;
+import net.bioclipse.core.TestMethods;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openscience.cdk.annotations.TestClass;
-import org.openscience.cdk.annotations.TestMethod;
 
 /**
  * JUnit tests for checking if the tested Manager is properly tested.
@@ -51,13 +51,13 @@ public class CoverageTest {
             for (Method method : iface.getMethods()) {
                 if (method.getAnnotation(PublishedMethod.class) != null) {
                     // every published method should have one or more tests
-                    if (method.getAnnotation(TestMethod.class) == null) {
+                    if (method.getAnnotation(TestMethods.class) == null) {
                         System.out.println("Missing test annotation for: " + method.getName());
                         missingTestMethods++;
                     } else {
                         // now test if the listed test methods really exist
                         Method[] testClassMethods = testClass.getMethods();
-                        TestMethod testMethodAnnotation = method.getAnnotation(TestMethod.class);
+                        TestMethods testMethodAnnotation = method.getAnnotation(TestMethods.class);
                         for (String testMethod : testMethodAnnotation.value().split(",")) {
                             boolean foundTestMethod = false;
                             for (Method testClassMethod : testClassMethods) {
