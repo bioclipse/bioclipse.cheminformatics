@@ -12,6 +12,7 @@
 package net.bioclipse.jmol.business;
 
 import net.bioclipse.core.ResourcePathTransformer;
+import net.bioclipse.core.TestClass;
 import net.bioclipse.jmol.editors.JmolEditor;
 
 import org.eclipse.core.resources.IFile;
@@ -19,6 +20,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 
+@TestClass("net.bioclipse.jmol.test.JmolManagerTest")
 public class JmolManager implements IJmolManager{
 
     private JmolEditor jmolEditor;

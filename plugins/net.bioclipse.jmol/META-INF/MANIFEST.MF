@@ -24,6 +24,7 @@ Import-Package: org.apache.log4j
 Export-Package: net.bioclipse.jmol.editors,
  net.bioclipse.jmol.views,
  net.bioclipse.jmol.views.outline,
+ net.bioclipse.jmol.business,
  org.jmol.adapter.smarter,
  org.jmol.api,
  org.jmol.viewer
