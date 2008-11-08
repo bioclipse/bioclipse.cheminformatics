@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 
-@TestClass("net.bioclipse.jmol.test.JmolManagerTest")
 public class JmolManager implements IJmolManager{
 
     private JmolEditor jmolEditor;

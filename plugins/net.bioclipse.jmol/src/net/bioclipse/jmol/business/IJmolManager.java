@@ -15,9 +15,11 @@ import org.eclipse.core.resources.IFile;
 
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
+import net.bioclipse.core.TestClass;
 import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.jobs.Job;
 
+@TestClass("net.bioclipse.jmol.test.JmolManagerTest")
 public interface IJmolManager extends IBioclipseManager{
 
     /**
