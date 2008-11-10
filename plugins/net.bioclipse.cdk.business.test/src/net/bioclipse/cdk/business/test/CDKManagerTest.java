@@ -719,11 +719,4 @@ public class CDKManagerTest {
         assertNotNull(molecule.getAtomContainer().getAtom(0).getPoint2d());
     }
 
-    @Test public void testDetermineFormat() throws Exception {
-        File tmpFile = File.createTempFile("foo", "cml");
-        String tmpPath = tmpFile.getAbsolutePath();
-        ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
-        cdk.saveCML(molecule, tmpPath);
-    }
-
 }

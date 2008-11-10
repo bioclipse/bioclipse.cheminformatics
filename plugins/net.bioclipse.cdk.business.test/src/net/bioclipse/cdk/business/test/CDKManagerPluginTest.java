@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,6 +62,8 @@ import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.ReaderFactory;
+import org.openscience.cdk.io.formats.CMLFormat;
+import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.templates.MoleculeFactory;
 import org.openscience.cdk.tools.diff.AtomContainerDiff;
@@ -704,6 +707,14 @@ public class CDKManagerPluginTest {
         	e.printStackTrace();
         }
 
+    }
+
+    @Test public void testDetermineFormat() throws Exception {
+        URI uri = getClass().getResource("/testFiles/cs2a.cml").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        String format = cdk.determineFormat(path);
+        assertEquals(CMLFormat.getInstance().getFormatName(), format);
     }
 
 }
