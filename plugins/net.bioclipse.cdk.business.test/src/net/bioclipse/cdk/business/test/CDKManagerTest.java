@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -716,6 +717,13 @@ public class CDKManagerTest {
         assertTrue(molecule.getAtomContainer().getAtom(0).getPoint2d() == null);
         cdk.generate2dCoordinates(molecule);
         assertNotNull(molecule.getAtomContainer().getAtom(0).getPoint2d());
+    }
+
+    @Test public void testDetermineFormat() throws Exception {
+        File tmpFile = File.createTempFile("foo", "cml");
+        String tmpPath = tmpFile.getAbsolutePath();
+        ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
+        cdk.saveCML(molecule, tmpPath);
     }
 
 }

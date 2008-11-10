@@ -114,6 +114,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod( params = "String path",
                       methodSummary = "Determines the file format if the file, if chemical")
+    @TestMethods("testDetermineFormat")
     public String determineFormat(String path) throws IOException, CoreException;
 
     /**
