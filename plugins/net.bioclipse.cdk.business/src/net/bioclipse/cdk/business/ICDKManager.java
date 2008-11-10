@@ -441,6 +441,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(params = "IMolecule molecule",
                      methodSummary="Create 3D coordinate for the given molecule")
+    @TestMethods("testGenerate3DCoordinates")
     public IMolecule generate3dCoordinates(IMolecule molecule) throws Exception;
 
     /**

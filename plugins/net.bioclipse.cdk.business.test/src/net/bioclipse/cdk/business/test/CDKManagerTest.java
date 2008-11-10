@@ -693,4 +693,12 @@ public class CDKManagerTest {
         assertEquals(4, molecule.getAtomContainer().getAtom(0).getHydrogenCount());
     }
 
+    @Test public void testGenerate3DCoordinates() throws Exception {
+        ICDKMolecule molecule = cdk.fromSMILES("CCC");
+        assertEquals(3, molecule.getAtomContainer().getAtomCount());
+        assertTrue(molecule.getAtomContainer().getAtom(0).getPoint3d() == null);
+        cdk.generate3dCoordinates(molecule);
+        assertNotNull(molecule.getAtomContainer().getAtom(0).getPoint3d());
+    }
+
 }
