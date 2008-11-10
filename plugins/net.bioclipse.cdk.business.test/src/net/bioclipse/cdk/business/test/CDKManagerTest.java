@@ -701,4 +701,12 @@ public class CDKManagerTest {
         assertNotNull(molecule.getAtomContainer().getAtom(0).getPoint3d());
     }
 
+    @Test public void testGenerate2DCoordinates() throws Exception {
+        ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
+        assertEquals(4, molecule.getAtomContainer().getAtomCount());
+        assertTrue(molecule.getAtomContainer().getAtom(0).getPoint2d() == null);
+        cdk.generate2dCoordinates(molecule);
+        assertNotNull(molecule.getAtomContainer().getAtom(0).getPoint2d());
+    }
+
 }
