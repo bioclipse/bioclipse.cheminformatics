@@ -532,11 +532,13 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(params = "IMolecule mol", 
                      methodSummary="Adds explicit hydrogens to this molecule")
+    @TestMethods("testAddExplicitHydrogens")
     public IMolecule addExplicitHydrogens(IMolecule molecule) throws Exception;
 
     @Recorded
     @PublishedMethod(params = "IMolecule mol", 
                      methodSummary="Adds implicit hydrogens to this molecule")
+    @TestMethods("testAddImplicitHydrogens")
    	public IMolecule addImplicitHydrogens(IMolecule molecule) throws BioclipseException, InvocationTargetException;
 
 }
