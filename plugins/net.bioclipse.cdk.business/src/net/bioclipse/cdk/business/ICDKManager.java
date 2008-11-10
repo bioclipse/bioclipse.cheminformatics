@@ -23,7 +23,7 @@ import net.bioclipse.cdk.domain.MoleculesInfo;
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
-import net.bioclipse.core.TestClass;
+import net.bioclipse.core.TestClasses;
 import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IBioclipseManager;
@@ -37,7 +37,7 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.io.formats.IChemFormat;
 
 @PublishedClass( "Contains CDK related methods")
-@TestClass("net.bioclipse.cdk.business.test.CDKManagerTest")
+@TestClasses("net.bioclipse.cdk.business.test.CDKManagerTest")
 public interface ICDKManager extends IBioclipseManager {
 
 	public final static String rxn = "rxn";

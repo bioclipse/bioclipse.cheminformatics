@@ -12,7 +12,7 @@
 package net.bioclipse.jmol.business;
 
 import net.bioclipse.core.ResourcePathTransformer;
-import net.bioclipse.core.TestClass;
+import net.bioclipse.core.TestClasses;
 import net.bioclipse.jmol.editors.JmolEditor;
 
 import org.eclipse.core.resources.IFile;
