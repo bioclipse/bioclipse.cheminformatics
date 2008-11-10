@@ -363,6 +363,7 @@ public interface ICDKManager extends IBioclipseManager {
                                        "file path. Returns 0 in case " +
                                        "of problem.")
     @Recorded
+    @TestMethods("testNumberOfEntriesInSDF")
     public int numberOfEntriesInSDF( String filePath );
     
     /**

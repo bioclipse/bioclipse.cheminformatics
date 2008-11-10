@@ -676,6 +676,15 @@ public class CDKManagerTest {
         }
 
     }
+    
+    @Test
+    public void testNumberOfEntriesInSDF() throws FileNotFoundException {
+        String path = getClass().getResource("/testFiles/test.sdf").getPath();
+        MockIFile mf = new MockIFile(path);
+        assertEquals( "There should be two entries in the file",
+                      2,
+                      cdk.numberOfEntriesInSDF( mf ) );
+    }
 
     @Test public void testAddExplicitHydrogens() throws Exception {
         ICDKMolecule molecule = cdk.fromSMILES("C");
