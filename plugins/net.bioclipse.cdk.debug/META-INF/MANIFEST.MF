@@ -15,3 +15,4 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.diff,
  net.bioclipse.cdk.business;bundle-version="2.0.0"
 Eclipse-LazyStart: true
+Export-Package: net.bioclipse.cdkdebug.business
