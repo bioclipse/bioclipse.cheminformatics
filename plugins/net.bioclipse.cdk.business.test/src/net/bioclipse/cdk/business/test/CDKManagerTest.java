@@ -677,4 +677,12 @@ public class CDKManagerTest {
 
     }
 
+    @Test public void testAddExplicitHydrogens() throws Exception {
+        ICDKMolecule molecule = cdk.fromSMILES("C");
+        assertEquals(1, molecule.getAtomContainer().getAtomCount());
+        cdk.addExplicitHydrogens(molecule);
+        assertEquals(5, molecule.getAtomContainer().getAtomCount());
+        assertEquals(0, molecule.getAtomContainer().getAtom(0).getHydrogenCount());
+    }
+
 }
