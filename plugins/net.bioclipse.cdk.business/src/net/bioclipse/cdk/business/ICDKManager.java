@@ -37,7 +37,10 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.io.formats.IChemFormat;
 
 @PublishedClass( "Contains CDK related methods")
-@TestClasses("net.bioclipse.cdk.business.test.CDKManagerTest")
+@TestClasses(
+    "net.bioclipse.cdk.business.test.CDKManagerTest," +
+		"net.bioclipse.cdk.business.test.CDKManagerPluginTest"
+)
 public interface ICDKManager extends IBioclipseManager {
 
 	public final static String rxn = "rxn";
@@ -61,7 +64,9 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod( params = "String SMILES", 
                       methodSummary = "Creates a cdk molecule from " +
                       		          "SMILES")
-    @TestMethods("testLoadMoleculeFromSMILESFile,testCreateMoleculeFromSMILES,testFingerPrintMatch,testSubStructureMatch,testSMARTSMatching,testSave")
+    @TestMethods("testLoadMoleculeFromSMILESFile,testCreateMoleculeFromSMILES," +
+                 "testFingerPrintMatch,testSubStructureMatch,testSMARTSMatching," +
+                 "testSave")
     public ICDKMolecule fromSMILES(String SMILES)
         throws BioclipseException;
 
@@ -81,6 +86,7 @@ public interface ICDKManager extends IBioclipseManager {
                       methodSummary = "Loads a molecule from file. " +
                                       "Returns the first if multiple " +
                       		          "molecules exists in the file ")
+    @TestMethods("testLoadMoleculeFromCMLFile,testLoadCMLFromFile2")
     public ICDKMolecule loadMolecule( String path )
         throws IOException, BioclipseException, CoreException;
 
@@ -227,6 +233,7 @@ public interface ICDKManager extends IBioclipseManager {
                       methodSummary = "Creates and iterator to the " +
                       		          "molecules in the file at the " +
                       		          "path")
+    @TestMethods("testCreatingMoleculeIterator")
     public Iterator<ICDKMolecule> createMoleculeIterator(String path) 
                                   throws CoreException;
     
@@ -377,6 +384,7 @@ public interface ICDKManager extends IBioclipseManager {
                        methodSummary = "Loads the molecules at the " +
                           "path into a list, and take conformers into " +
                           "account. Currently only reads SDFiles.")
+    @TestMethods("testLoadConformers")
     public List<ICDKMolecule> loadConformers( String path );
 
     /**
@@ -485,7 +493,8 @@ public interface ICDKManager extends IBioclipseManager {
                       methodSummary = "Loads molecules from a SMILES file at " +
                       		          "a given path into a list of " +
                       		          "molecules")
-	public List<ICDKMolecule> loadSMILESFile(String path) throws CoreException, IOException;
+    @TestMethods("testLoadMoleculeFromSMILESFileDirectly,testLoadMoleculeFromSMILESFile")
+    public List<ICDKMolecule> loadSMILESFile(String path) throws CoreException, IOException;
     
 	public List<ICDKMolecule> loadSMILESFile(IFile file) throws CoreException, IOException;
 
