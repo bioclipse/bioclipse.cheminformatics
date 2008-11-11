@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,9 +36,11 @@ import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.business.IMoleculeManager;
 import net.bioclipse.core.business.MoleculeManager;
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.tests.AbstractManagerTest;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -61,7 +62,7 @@ import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.templates.MoleculeFactory;
 import org.openscience.cdk.tools.diff.AtomContainerDiff;
 
-public class CDKManagerTest {
+public class CDKManagerTest extends AbstractManagerTest {
 
     //Needed to run these tests on some systems. If it breaks them on 
     //other systems we need to do some sort of checking before 
@@ -81,6 +82,10 @@ public class CDKManagerTest {
     //since we are only testing the implementations of the manager methods
     public CDKManagerTest() {
         cdk = new CDKManager();
+    }
+    
+    public IBioclipseManager getManager() {
+        return cdk;
     }
 
     @Test
