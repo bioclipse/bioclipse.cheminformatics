@@ -462,9 +462,6 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     public int numberOfEntriesInSDF( IFile file );
 
-	ICDKMolecule depictSybylAtomTypes(IMolecule mol)
-			throws InvocationTargetException;
-
     @Recorded
 	public void saveMol2(ICDKMolecule mol2, String filename) throws InvocationTargetException, BioclipseException, CDKException, CoreException;
 

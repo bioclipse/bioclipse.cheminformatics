@@ -10,12 +10,15 @@
  ******************************************************************************/
 package net.bioclipse.cdkdebug.business;
 
+import java.lang.reflect.InvocationTargetException;
+
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.TestClasses;
 import net.bioclipse.core.business.IBioclipseManager;
+import net.bioclipse.core.domain.IMolecule;
 
 @PublishedClass("Contains CDK debug related methods")
 @TestClasses("net.bioclipse.cdk.debug.test.CDKDebugManagerTest")
@@ -40,5 +43,12 @@ public interface ICDKDebugManager extends IBioclipseManager {
          methodSummary = "Returns a string representation of the data structures."
     )
     public void debug(ICDKMolecule mol);
-    
+
+    @Recorded
+    @PublishedMethod(
+         params = "IMolecule mol",
+         methodSummary = "Returns a list of Sybyl atom types."
+    )
+    ICDKMolecule depictSybylAtomTypes(IMolecule mol) throws InvocationTargetException;
+
 }

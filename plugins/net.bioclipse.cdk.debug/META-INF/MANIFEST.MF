@@ -13,6 +13,9 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.ui,
  org.openscience.cdk.interfaces,
  org.openscience.cdk.diff,
+ org.openscience.cdk.core,
+ org.openscience.cdk.standard,
+ org.openscience.cdk.atomtype,
  net.bioclipse.cdk.business;bundle-version="2.0.0"
 Eclipse-LazyStart: true
 Export-Package: net.bioclipse.cdkdebug.business
