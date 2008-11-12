@@ -73,11 +73,11 @@ public class CDKManagerHelper {
                     Method getinstanceMethod = formatClass.getMethod("getInstance", new Class[0]);
                     IChemFormatMatcher format = (IChemFormatMatcher)getinstanceMethod.invoke(null, new Object[0]);
                     fac.registerFormat(format);
-                    System.out.println("Loaded IO format: " + format.getClass().getName());
+//                    System.out.println("Loaded IO format: " + format.getClass().getName());
                 } catch (ClassNotFoundException exception) {
-                    System.out.println("Could not find this ChemObjectReader: "+ formatName);
+//                    System.out.println("Could not find this ChemObjectReader: "+ formatName);
                 } catch (Exception exception) {
-                    System.out.println("Could not load this ChemObjectReader: "+ formatName);
+//                    System.out.println("Could not load this ChemObjectReader: "+ formatName);
                 }
             }
         } catch ( IOException e ) {
