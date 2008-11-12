@@ -139,17 +139,17 @@ public class CDKDebugManager implements ICDKDebugManager {
         IAtomContainer ac = cdkmol.getAtomContainer();
 
         CDKAtomTypeMatcher cdkMatcher = CDKAtomTypeMatcher.getInstance(ac.getBuilder());
-        try {
-            IAtomType[] types = cdkMatcher.findMatchingAtomType(ac);
-            for (int i=0; i<types.length; i++) {
-                Activator.getDefault().CONSOLE.echo(
-                    (i+1) + ": " + types[i].getAtomTypeName() +
-                    "\n" // FIXME: should use NEWLINE here
-                );
-            }
-        } catch ( CDKException e ) {
-            e.printStackTrace();
-            throw new InvocationTargetException(e, "Error while perceiving atom types");
+        int i = 1;
+        for (IAtom atom : ac.atoms()) {
+            IAtomType type = null;
+            try {
+                type = cdkMatcher.findMatchingAtomType(ac, atom);
+            } catch ( CDKException e ) {}
+            Activator.getDefault().CONSOLE.echo(
+                (i) + ": " + (type != null ? type.getAtomTypeName() : "null") +
+                "\n" // FIXME: should use NEWLINE here
+            );
+            i++;
         }
     }
 
