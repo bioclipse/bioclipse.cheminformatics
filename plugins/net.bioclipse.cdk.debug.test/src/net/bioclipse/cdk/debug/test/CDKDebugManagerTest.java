@@ -14,8 +14,10 @@ package net.bioclipse.cdk.debug.test;
 
 import net.bioclipse.cdkdebug.business.CDKDebugManager;
 import net.bioclipse.cdkdebug.business.ICDKDebugManager;
+import net.bioclipse.core.business.IBioclipseManager;
+import net.bioclipse.core.tests.AbstractManagerTest;
 
-public class CDKDebugManagerTest {
+public class CDKDebugManagerTest extends AbstractManagerTest {
 
     ICDKDebugManager cdk;
 
@@ -23,6 +25,10 @@ public class CDKDebugManagerTest {
     //since we are only testing the implementations of the manager methods
     public CDKDebugManagerTest() {
         cdk = new CDKDebugManager();
+    }
+
+    public IBioclipseManager getManager() {
+        return cdk;
     }
 
 }

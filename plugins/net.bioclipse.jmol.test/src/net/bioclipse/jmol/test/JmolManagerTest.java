@@ -12,10 +12,12 @@
  ******************************************************************************/
 package net.bioclipse.jmol.test;
 
+import net.bioclipse.core.business.IBioclipseManager;
+import net.bioclipse.core.tests.AbstractManagerTest;
 import net.bioclipse.jmol.business.IJmolManager;
 import net.bioclipse.jmol.business.JmolManager;
 
-public class JmolManagerTest {
+public class JmolManagerTest extends AbstractManagerTest {
 
     IJmolManager cdk;
 
@@ -23,6 +25,10 @@ public class JmolManagerTest {
     //since we are only testing the implementations of the manager methods
     public JmolManagerTest() {
         cdk = new JmolManager();
+    }
+
+    public IBioclipseManager getManager() {
+        return cdk;
     }
 
 }
