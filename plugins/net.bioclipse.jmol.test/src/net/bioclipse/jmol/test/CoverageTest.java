@@ -23,7 +23,6 @@ public class CoverageTest extends AbstractCoverageTest {
     
     private static JmolManager manager = new JmolManager();
 
-    @Override
     public IBioclipseManager getManager() {
         return manager;
     }
