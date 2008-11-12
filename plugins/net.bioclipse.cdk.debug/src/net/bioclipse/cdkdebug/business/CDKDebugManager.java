@@ -127,4 +127,30 @@ public class CDKDebugManager implements ICDKDebugManager {
         return cdkmol;
     }
 
+    public void depictCDKAtomTypes(IMolecule mol) throws InvocationTargetException {
+
+        ICDKMolecule cdkmol;
+        try {
+            cdkmol = cdk.create(mol);
+        } catch ( BioclipseException e ) {
+            e.printStackTrace();
+            throw new InvocationTargetException(e, "Error while creating a ICDKMolecule");
+        }
+        IAtomContainer ac = cdkmol.getAtomContainer();
+
+        CDKAtomTypeMatcher cdkMatcher = CDKAtomTypeMatcher.getInstance(ac.getBuilder());
+        try {
+            IAtomType[] types = cdkMatcher.findMatchingAtomType(ac);
+            for (int i=0; i<types.length; i++) {
+                Activator.getDefault().CONSOLE.echo(
+                    (i+1) + ": " + types[i].getAtomTypeName() +
+                    "\n" // FIXME: should use NEWLINE here
+                );
+            }
+        } catch ( CDKException e ) {
+            e.printStackTrace();
+            throw new InvocationTargetException(e, "Error while perceiving atom types");
+        }
+    }
+
 }
