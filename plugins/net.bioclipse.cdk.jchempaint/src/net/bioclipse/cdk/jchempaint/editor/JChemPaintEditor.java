@@ -98,10 +98,10 @@ public class JChemPaintEditor extends EditorPart{
 		    atomContainer=model.getAtomContainer();
 		 
 		// setup hub 
-		if(atomContainer != null )
-		   widget.setInput( atomContainer );
+		
+		widget.setAtomContainer( atomContainer );
 			
-			widget.getRendererModel().setHighlightRadiusModel(20);
+//			widget.getRendererModel().setHighlightRadiusModel(20);
 	}
 
     @Override

@@ -12,10 +12,14 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.widgets;
 
-import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+
+import javax.vecmath.Point2d;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.editor.SWTMosueEventRelay;
+import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.swt.SWT;
@@ -27,14 +31,21 @@ import org.openscience.cdk.controller.IViewEventRelay;
 import org.openscience.cdk.controller.IController2DModel.DrawMode;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.layout.StructureDiagramGenerator;
+import org.openscience.cdk.renderer.IJava2DRenderer;
+import org.openscience.cdk.renderer.Renderer2DModel;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 
-public class JChemPaintEditorWidget extends JChemPaintSWTWidget{
+public class JChemPaintEditorWidget extends JChemPaintWidget{
+    private final static StructureDiagramGenerator sdg = new 
+                                                    StructureDiagramGenerator();
 
     Controller2DHub hub;
     Controller2DModel c2dm;
     SWTMosueEventRelay relay;    
+     boolean generated = false;
     
     public JChemPaintEditorWidget(Composite parent, int style) {
         
@@ -42,50 +53,77 @@ public class JChemPaintEditorWidget extends JChemPaintSWTWidget{
     }
 
     private void setupControllerHub( IAtomContainer atomContainer ) {
-        JChemPaintEditorWidget widget = this;
-        hub = new Controller2DHub(
-                            c2dm=new Controller2DModel(), widget.getRenderer(),
-                            ChemModelManipulator.newChemModel(atomContainer),
-                            new IViewEventRelay(){
-                                public void updateView() {
-                                    JChemPaintEditorWidget.this.redraw();
-                                }
-                            } );
-    
+        
+        hub = new Controller2DHub( c2dm = new Controller2DModel(),
+                                   new IJava2DRenderer() {
+
+            public Point2d getCoorFromScreen( int screenX,
+                                              int screenY ) {
+                return JChemPaintEditorWidget.this.getCoorFromScreen( screenX, 
+                                                                      screenY );
+            }
+
+            public Renderer2DModel getRenderer2DModel() {
+
+                return JChemPaintEditorWidget.this.getRenderer2DModel();
+            }
+
+            public void paintMolecule( IAtomContainer atomCon,
+                                       Graphics2D graphics ) {
+
+            }
+
+            public void paintMolecule( IAtomContainer atomCon,
+                                       Graphics2D graphics,
+                                       Rectangle2D bounds ) {
+            }
+
+            public void setRenderer2DModel( Renderer2DModel model ) {
+
+            }
+
+        }
+                                   ,
+                                   ChemModelManipulator
+                                   .newChemModel( atomContainer ),
+                                   new IViewEventRelay() {
+
+            public void updateView() {
+
+                JChemPaintEditorWidget.this.redraw();
+            }
+        } );
+
       if(relay != null) {
-          widget.removeMouseListener( relay );
-          widget.removeMouseMoveListener( relay );
-          widget.removeListener( SWT.MouseEnter, (Listener)relay );
-          widget.removeListener( SWT.MouseExit, (Listener)relay );
+          
+          removeMouseListener( relay );
+          removeMouseMoveListener( relay );
+          removeListener( SWT.MouseEnter, (Listener)relay );
+          removeListener( SWT.MouseExit, (Listener)relay );
       }
     	relay = new SWTMosueEventRelay(hub);
     	c2dm.setDrawMode(DrawMode.MOVE);
     	    	
-    	widget.addMouseListener(relay);
-    	widget.addMouseMoveListener(relay);
-    	widget.addListener(SWT.MouseEnter, relay);
-    	widget.addListener(SWT.MouseExit, relay);
+    	addMouseListener(relay);
+    	addMouseMoveListener(relay);
+    	addListener(SWT.MouseEnter, relay);
+    	addListener(SWT.MouseExit, relay);
     	
     }
-    
-    public void setInput(IAtomContainer atomContainer){
-        assert(atomContainer != null);
-        generated = false;
-        if(!GeometryTools.has2DCoordinates( atomContainer )) {
-            if(!GeometryTools.has3DCoordinates( atomContainer )) {
-                throw new IllegalArgumentException(
-                "The structure has no 2D- or 3D-cooridnates.");
-            }
-            atomContainer = SWTRenderer.generate2Dfrom3D( atomContainer ); 
-            generated = true;
-        }        
-        super.setInput( atomContainer );        
+    @Override
+    public void setAtomContainer( IAtomContainer atomContainer ) {
+
+        if( atomContainer != null) {
+            generated = false;
+            if(!GeometryTools.has2DCoordinates( atomContainer )) {
+                
+                atomContainer = generate2Dfrom3D( atomContainer ); 
+                generated = true;
+            }        
+        }
         setupControllerHub( atomContainer );
-        if(atomContainer != null) {
-            Dimension newSize=new Dimension(this.getSize().x,this.getSize().y);
-            updateOnReize( newSize );
-            setCompactedNess( newSize );
-        }        
+        super.setAtomContainer( atomContainer );        
+                        
     }
     
     public void setInput( Object element ) {
@@ -93,12 +131,30 @@ public class JChemPaintEditorWidget extends JChemPaintSWTWidget{
         if(element instanceof IAdaptable) {
             ICDKMolecule molecule = (ICDKMolecule)((IAdaptable)element)
             .getAdapter( ICDKMolecule.class );
-            if(molecule != null && molecule.getAtomContainer() != null) {
-                // TODO : if null change input to what?
-                this.setInput(molecule.getAtomContainer());
-                this.redraw();
-                // FIXME : update / change hubs chemmodel
+            if(molecule != null ) {
+                setAtomContainer( molecule.getAtomContainer());                
             }
+            else setAtomContainer( null );
         }
     }
+    /*
+     * Utility method for copying 3D x,y to 2D coordinates 
+     */
+    public static IAtomContainer generate2Dfrom3D( IAtomContainer atomContainer ) {
+
+        IAtomContainer container = null;
+        try {
+            sdg.setMolecule( (IMolecule) atomContainer.clone() );
+            sdg.generateCoordinates();
+            // sdg.getMolecule();
+            container = sdg.getMolecule();
+        } catch ( CloneNotSupportedException e ) {
+            return null;
+        } catch ( Exception e ) {
+            return null;
+        }
+        return container;
+
+    }
+
 }

@@ -17,7 +17,9 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.eclipse.ui.ide,
  net.bioclipse.ui,
  net.bioclipse.cdk.business;bundle-version="2.0.0",
- javax.vecmath
+ javax.vecmath,
+ net.bioclipse.cdk.jchempaint.view;bundle-version="0.1.0",
+ org.openscience.cdk.sdg;bundle-version="1.1.0"
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.log4j
 Export-Package: net.bioclipse.cdk.jchempaint.editor;
