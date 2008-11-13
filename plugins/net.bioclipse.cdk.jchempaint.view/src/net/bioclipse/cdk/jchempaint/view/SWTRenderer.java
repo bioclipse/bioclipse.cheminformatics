@@ -1,5 +1,6 @@
 package net.bioclipse.cdk.jchempaint.view;
 
+import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,8 +11,10 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.Region;
 import org.openscience.cdk.renderer.Renderer2DModel;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.IRenderingVisitor;
@@ -19,6 +22,7 @@ import org.openscience.cdk.renderer.elements.LineElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
 import org.openscience.cdk.renderer.elements.RenderingModel;
 import org.openscience.cdk.renderer.elements.TextElement;
+import org.openscience.cdk.renderer.elements.WedgeLineElement;
 
 
 public class SWTRenderer implements IRenderingVisitor{
@@ -84,6 +88,60 @@ public class SWTRenderer implements IRenderingVisitor{
         gc.setBackground( colorOld);
     }
     
+    public void visitWedge( WedgeLineElement element) {
+        Color colorOld = gc.getBackground();
+        gc.setForeground( getForgroundColor() );
+        drawWedge( element);
+        gc.setBackground( colorOld );
+    }
+    
+    private void drawWedge( WedgeLineElement element ) {
+        //Region region = new Region();
+        
+        Rectangle clipRect = gc.getClipping();
+        gc.setBackground( gc.getDevice().getSystemColor( SWT.COLOR_CYAN ) );
+//        gc.fillRectangle(clipRect);
+        int x1 = scaleX( element.getX());
+        int y1 = scaleY( element.getY());
+        int x2 = scaleX( element.getX1());
+        int y2 = scaleY( element.getY1());
+        
+        double lx = x2-x1;
+        double ly = y2-y1;
+        double l = Math.sqrt( lx*lx +ly*ly  );
+        
+        // a + tb
+        lx = lx/l;
+        ly = ly/l;
+        double tmp = lx;
+        lx = -ly;
+        ly = tmp;
+        
+        double t = element.getWidth()*4/2;
+        float x1a = (float) (x1 + lx*t );        
+        float y1a = (float) (y1 + ly*t );
+        float x1b = (float) (x1 + -lx*t );        
+        float y1b = (float) (y1 + -ly*t );
+        Path path = new Path(gc.getDevice());
+        path.moveTo( x2, y2 );
+        path.lineTo( x1a, y1a );
+        path.lineTo( x1b, y1b );        
+        path.close();
+        gc.setLineWidth( 1 );
+        gc.drawPath( path );
+//        gc.setClipping( path );
+        gc.getClipping();
+        gc.setBackground( gc.getDevice().getSystemColor( SWT.COLOR_MAGENTA ) );
+//        gc.fillRectangle( clipRect );
+        gc.setLineWidth( (int) (element.getWidth()*4) );
+        //gc.drawLine( x1, y1, x2, y2 ); 
+        
+        
+//        gc.setClipping( clipRect);
+        gc.setBackground( gc.getDevice().getSystemColor( SWT.COLOR_YELLOW ) );
+//        gc.fillRectangle( clipRect );
+    }
+
     private Color getForgroundColor() {
         return toSWTColor( gc, getModel().getForeColor() );
     }
@@ -98,26 +156,11 @@ public class SWTRenderer implements IRenderingVisitor{
                      scaleX(element.getX1()),
                      scaleY(element.getY1()));
     }
-    private void drawSingleLine( LineElement element) {
-        int width1 = (int) (element.getWidth()*1+element.getGap()*0+.5);
-        gc.setForeground( getForgroundColor() );
-        gc.setLineWidth( width1 );
-        drawLine(element);
-    }
-    private void drawDoubleLine( LineElement element ) {
-        int width1 = (int) (element.getWidth()*2+element.getGap()*1+.5);
-        int width2 = (int) (element.getWidth()*1+element.getGap()*0+.5);
-        gc.setForeground( getForgroundColor() );
-        gc.setLineWidth( width1);
-        drawLine(element);
-        gc.setLineWidth( width2 );
-        gc.setForeground( getBackgroundColor() );
-        drawLine( element );
-    }
-
+    
     private void drawLineX(LineElement element, int val) {
         if(val <= 0) return; // end recursion if less than 1
         int width = (int) (element.getWidth()*val+element.getGap()*(val-1)+.5);
+        // switch foreground and background
         if(gc.getForeground().equals( getForgroundColor() ))
             gc.setForeground( getBackgroundColor() );
         else
@@ -126,20 +169,6 @@ public class SWTRenderer implements IRenderingVisitor{
         drawLine(element);
         
         drawLineX(element, val-1);
-    }
-    private void drawTripleLine( LineElement element ) {        
-        int width1 = (int) (element.getWidth()*3+element.getGap()*2+.5);
-        int width2 = (int) (element.getWidth()*2+element.getGap()*1+.5);
-        int width3 = (int) (element.getWidth()*1+element.getGap()*0+.5);
-        gc.setForeground( getForgroundColor() );
-        gc.setLineWidth(width1 );
-        drawLine(element);
-        gc.setLineWidth( width2 );
-        gc.setForeground( getBackgroundColor() );
-        drawLine( element );
-        gc.setForeground( getForgroundColor() );
-        gc.setLineWidth( width3 );
-        drawLine( element );
     }
     
     public void visitModel( RenderingModel model ) {
