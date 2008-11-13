@@ -31,7 +31,6 @@ import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.RenderingModel;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator;
 import org.openscience.cdk.renderer.generators.BasicGenerator;
-import org.openscience.cdk.renderer.generators.ExtraBondGenerator;
 import org.openscience.cdk.renderer.modules.AbstractModule;
 import org.openscience.cdk.renderer.modules.AtomModule;
 import org.openscience.cdk.renderer.modules.AtomSymbolModule;
@@ -46,6 +45,14 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
     Canvas          canvas;
     private final static StructureDiagramGenerator sdg = new StructureDiagramGenerator();
 
+    
+    public JChemPaintView(Composite parent) {
+
+        createPartControl( parent );
+    }
+    
+    public Canvas getCanvas(){return canvas;}
+    
     @Override
     public void createPartControl( Composite parent ) {
 
@@ -71,7 +78,7 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
                 JChemPaintView.this.paintControl( e );
             }
         } );
-        getViewSite().getPage().addSelectionListener(this);
+       // getViewSite().getPage().addSelectionListener(this);
     }
 
     @Override
@@ -98,12 +105,20 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
                         ac = mol.getAtomContainer();
 //                  //Create 2D-coordinates if not available
                     if (!GeometryTools.has2DCoordinates( ac )){
-                       ac = null; 
-//                        ac     
-//                        sdg.setMolecule((IMolecule)molecule.clone());
-//                        sdg.generateCoordinates();
-//                        sdg.get
-//                        molecule = sdg.getMolecule();
+                       IAtomContainer container = null;   
+                        try {
+                            sdg.setMolecule((IMolecule)ac.clone());
+                            sdg.generateCoordinates();
+                            //sdg.getMolecule();
+                            container = sdg.getMolecule();
+                        } catch ( CloneNotSupportedException e ) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        } catch ( Exception e ) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        ac = container;
                     }
                     }
                     
@@ -175,7 +190,7 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
 //        for ( IBond bond : atomContainer.bonds() ) {
 //            model.add( modules.accept( atomContainer, bond, null ) );
 //        }
-        BasicBondGenerator gen2 = new ExtraBondGenerator(atomContainer,r2DModel);
+        BasicBondGenerator gen2 = new BasicBondGenerator(atomContainer,r2DModel);
         for ( IBond bond: atomContainer.bonds()) {
             IRenderingElement element = gen2.generate(bond);
             if(element != null ) model.add(element);
@@ -196,6 +211,7 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
     public void setAtomContainer( IAtomContainer ac ) {
 
         atomContainer = ac;
+        if(canvas== null) return;
         if(ac == null) {
             canvas.setVisible( false );
         } else {
