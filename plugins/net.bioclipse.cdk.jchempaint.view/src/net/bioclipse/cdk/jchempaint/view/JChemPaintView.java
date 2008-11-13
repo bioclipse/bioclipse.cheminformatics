@@ -29,6 +29,7 @@ import org.openscience.cdk.renderer.Renderer2DModel;
 import org.openscience.cdk.renderer.color.CDK2DAtomColors;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.RenderingModel;
+import org.openscience.cdk.renderer.generators.BasicGenerator;
 import org.openscience.cdk.renderer.modules.AbstractModule;
 import org.openscience.cdk.renderer.modules.AtomModule;
 import org.openscience.cdk.renderer.modules.AtomSymbolModule;
@@ -155,10 +156,10 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
         };
 
         IRenderingModule modules =
-                new AtomSymbolModule(
+               // new AtomSymbolModule(
                     new BondModule(
-                    new AtomModule(
-                    superModule ) ) );
+                    //new AtomModule(
+                    superModule );// ) );
         if ( atomContainer == null )
             return model;
 
@@ -170,8 +171,13 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
         for ( IBond bond : atomContainer.bonds() ) {
             model.add( modules.accept( atomContainer, bond, null ) );
         }
+        
+        BasicGenerator generator = new BasicGenerator(atomContainer,r2DModel);
         for ( IAtom atom : atomContainer.atoms() ) {
-            model.add( modules.accept( atomContainer, atom, null ) );
+            IRenderingElement element = generator.generate( atom );
+            if(element != null)
+                model.add(element);
+           // model.add( modules.accept( atomContainer, atom, null ) );
         }
 
         return model;
