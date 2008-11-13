@@ -19,8 +19,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Region;
 import org.openscience.cdk.renderer.Renderer2DModel;
-import org.openscience.cdk.renderer.elements.BondSymbol;
-import org.openscience.cdk.renderer.elements.HighlightElement;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.IRenderingVisitor;
 import org.openscience.cdk.renderer.elements.LineElement;
@@ -311,15 +309,5 @@ public class SWTRenderer implements IRenderingVisitor{
           cleanUp.clear();
     }
 
-    public void visitHighlight( HighlightElement element ) {
-
-        
-        
-    }
-
-    public void visitBondSymbol( BondSymbol bondSymbol ) {
-
-        // TODO Auto-generated method stub
-        
-    }
+    
 }
