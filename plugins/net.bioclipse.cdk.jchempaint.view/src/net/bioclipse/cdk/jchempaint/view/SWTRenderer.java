@@ -107,59 +107,53 @@ public class SWTRenderer implements IRenderingVisitor{
         Point2d p2 = new Point2d( scaleX(element.getX1()),
                                   scaleY(element.getY1()));
         Vector2d p12 = new Vector2d(p2);p12.sub( p1 );
-        Vector2d p12n = new Vector2d(p12.y,-p12.x); // normal for p12
-        p12n.normalize();
+        Vector2d v12n = new Vector2d(p12.y,-p12.x); // normal for p12
+        v12n.normalize();
         //   wedge thickness is based on line width probably better to be based
         //  on text size
         double l = element.getWidth()*4/2; 
-        Vector2d pa = new Vector2d(p12n);pa.scale( l );
-        Vector2d pb = new Vector2d(p12n);pb.scale(-l);
+        Vector2d pa = new Vector2d(v12n);pa.scale( l );
+        Vector2d pb = new Vector2d(v12n);pb.scale(-l);
+        v12n.scale( l);
+        
+        Point2d p1a = new Point2d();p1a.add( p1, v12n );
+        Point2d p1b = new Point2d();p1b.sub( p1, v12n );
+        
         gc.setLineWidth( (int) element.getWidth() );
         if(element.isDashed())
-            drawDashedWedge( p1, p12, pa, pb, element.getWidth() );
+            drawDashedWedge( p1a, p1b, p2, element.getWidth() );
         else
-            drawFilledWedge( p1, p2, pa, pb );
+            drawFilledWedge( p1a, p1b, p2);
         
     }
-    private void drawFilledWedge( Point2d p1, Point2d p2, 
-                                  Vector2d pa, Vector2d pb) {
+    private void drawFilledWedge( Point2d p1a, Point2d p1b, 
+                                  Point2d p2) {
         Path path = new Path(gc.getDevice());
         path.moveTo( (float)p2.x,(float) p2.y );
-        path.lineTo( (float)(pa.x+p1.x), (float)(pa.y+p1.y) );
-        path.lineTo( (float)(pb.x+p1.x), (float)(pb.y+p1.y) );
+        path.lineTo( (float)(p1a.x), (float)(p1a.y) );
+        path.lineTo( (float)(p1b.x), (float)(p1b.y) );
         path.close();        
         
         gc.fillPath( path );
         
         path.dispose();
     }
-    private void drawDashedWedge( Point2d p1, Vector2d p12, 
-                                  Vector2d pa, Vector2d pb, double w) {
-        Vector2d ac = new Vector2d(p12);ac.sub( pa );
-        Vector2d bc = new Vector2d(p12);bc.sub( pb );
-        ac.normalize();
-        bc.normalize();
-        
-        double s = (w*2);
-        double t = s / p12.length();
-        double t2 = p12.length()/ s;
-        
-        Vector2d x,y;
-        
+    private void drawDashedWedge( Point2d p1a, Point2d p1b, 
+                                  Point2d p2, double d) {
+
+        double s = (d*2);
+        double t = s / p1a.distance( p2 );
+        double t2 = p1a.distance( p2 )/ s;
         Path dashes = new Path(gc.getDevice());
-        for(int i =0 ;i<=t2;i++) {
-            x = new Vector2d();         
-            x.interpolate( p12, t*i );
-            y = new Vector2d(x);     
-            double xs = x.dot(ac);
-            double ys = y.dot( bc );
-            x = new Vector2d(ac);x.scale( xs );
-            y = new Vector2d(bc);y.scale( ys );
-            x.add(p1);
-            y.add( p1 );
-            dashes.moveTo( (float) (x.x+pa.x), (float) (x.y+pa.y) );
-            dashes.lineTo( (float) (y.x+pb.x), (float) (y.y+pb.y) );
+        for(int i=0 ;i<t2;i++) {
+            Point2d w = new Point2d();
+            w.interpolate( p1a, p2, t*i);
+            Point2d u = new Point2d();
+            u.interpolate( p1b,p2, t*i );
+            dashes.moveTo( (float) (w.x), (float) (w.y) );
+            dashes.lineTo( (float) (u.x), (float) (u.y) );
         }
+
         gc.drawPath( dashes );
         dashes.dispose();
     }
