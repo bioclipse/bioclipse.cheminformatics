@@ -6,10 +6,36 @@
       <view
             category="net.bioclipse.cdk.category"
             class="net.bioclipse.cdk.jchempaint.view.JChemPaintView"
-            id="net.bioclipse.cdk.jchempaint.view.view1"
+            id="net.bioclipse.cdk.jchempaint.view.molecule"
             name="JChemPaintView"
             restorable="true">
       </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="toolbar:net.bioclipse.cdk.jchempaint.view.molecule">
+         <command
+               commandId="org.eclipse.ui.edit.text.recenter"
+               icon="icons/center.png"
+               label="Center"
+               mnemonic="C"
+               style="toggle"
+               tooltip="Centers molecule">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="net.bioclipse.cdk.jchempaint.view.CenterMoleculeHandler"
+            description="Centers molecule"
+            id="net.bioclipse.cdk.jchempaint.view.center"
+            name="Center">
+      </command>
    </extension>
 
 </plugin>

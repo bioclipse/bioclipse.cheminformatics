@@ -2,6 +2,7 @@ package net.bioclipse.cdk.jchempaint.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.geom.Point2D;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 
@@ -12,14 +13,18 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Transform;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
+import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.renderer.Renderer2DModel;
 import org.openscience.cdk.renderer.color.CDK2DAtomColors;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
@@ -36,6 +41,7 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
     Renderer2DModel r2DModel;
 
     Canvas          canvas;
+    private final static StructureDiagramGenerator sdg = new StructureDiagramGenerator();
 
     @Override
     public void createPartControl( Composite parent ) {
@@ -70,27 +76,38 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
     }
 
     public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
-        
-        if(part != this) {
+        IAtomContainer ac = null;
+        if(part != this && selection instanceof IStructuredSelection) {
             Object selected = ((IStructuredSelection)selection)
                                             .getFirstElement();
             if(selected instanceof IAdaptable) {
-                IAtomContainer ac = (IAtomContainer) ((IAdaptable)selected)
+                ac = (IAtomContainer) ((IAdaptable)selected)
                                     .getAdapter( IAtomContainer.class );
                 
                 if(ac == null) {
                     ICDKMolecule mol = (ICDKMolecule)
                                         ((IAdaptable)selected).
                                         getAdapter( ICDKMolecule.class );
-                    if(mol != null) ac = mol.getAtomContainer();
+                    
+                    if(mol != null){
+                        ac = mol.getAtomContainer();
+//                  //Create 2D-coordinates if not available
+                    if (!GeometryTools.has2DCoordinates( ac )){
+                       ac = null; 
+//                        ac     
+//                        sdg.setMolecule((IMolecule)molecule.clone());
+//                        sdg.generateCoordinates();
+//                        sdg.get
+//                        molecule = sdg.getMolecule();
+                    }
+                    }
+                    
                 }
-                if(ac != null ) {
-                    setAtomContainer( ac );
-                }
+                
             }
             
         }
-            
+        setAtomContainer( ac );
 
     }
 
@@ -100,12 +117,14 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
             return;
         RenderingModel model = new RenderingModel();
         Point size = canvas.getSize();
-        double[] scalse =
-                model.getDimensions( atomContainer, new Dimension( size.x,
-                                                                   size.y ) );
+        Dimension dimension = new Dimension( size.x, size.y );
+        double[] scalse = model.getDimensions( atomContainer, dimension );
 
         RenderingModel renderingModel = generateRenderingModel( model );
-
+        Transform transform= new Transform(event.gc.getDevice());
+        Point2D center = model.center( atomContainer, dimension );
+        transform.translate((float) center.getX(), (float)center.getY()  );
+        event.gc.setTransform( transform );
         SWTRenderer renderer = new SWTRenderer( event.gc, r2DModel, scalse );
         renderingModel.accept( renderer );
     }
@@ -137,9 +156,9 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
 
         IRenderingModule modules =
                 new AtomSymbolModule(
-                                      new BondModule(
-                                      new AtomModule(
-                                                      superModule ) ) );
+                    new BondModule(
+                    new AtomModule(
+                    superModule ) ) );
         if ( atomContainer == null )
             return model;
 
@@ -161,8 +180,12 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
     public void setAtomContainer( IAtomContainer ac ) {
 
         atomContainer = ac;
-        canvas.setVisible( true );
-        canvas.redraw();
+        if(ac == null) {
+            canvas.setVisible( false );
+        } else {
+            canvas.setVisible( true );
+            canvas.redraw();
+        }
     }
 
 }
