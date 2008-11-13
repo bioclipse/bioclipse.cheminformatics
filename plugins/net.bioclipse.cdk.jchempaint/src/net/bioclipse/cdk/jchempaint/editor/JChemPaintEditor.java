@@ -120,6 +120,7 @@ public class JChemPaintEditor extends EditorPart{
 
     public void setInput( Object element ) {
         widget.setInput( element );
+        widget.redraw();
     }
 	
     public ICDKMolecule getCDKMolecule() {
