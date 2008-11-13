@@ -15,7 +15,6 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -123,4 +122,8 @@ public class JChemPaintEditor extends EditorPart{
         widget.setInput( element );
     }
 	
+    public ICDKMolecule getCDKMolecule() {
+        return model;
+    }
+    
 }
