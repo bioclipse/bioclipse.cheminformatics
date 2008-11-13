@@ -62,6 +62,7 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
         // r2DModel.setIsCompact( true );
         r2DModel.setAtomRadius( 20 );
         r2DModel.setShowAromaticity( true );
+        r2DModel.setShowImplicitHydrogens( true );
         
         canvas.addPaintListener( new PaintListener() {
 
