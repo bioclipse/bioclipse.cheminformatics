@@ -77,14 +77,10 @@ public class SWTRenderer implements IRenderingVisitor{
 
     public void visitLine( LineElement element ) {
         Color colorOld = gc.getBackground();
-            switch(element.type()) {
-                case SINGLE: drawSingleLine( element );break;
-                case DOUBLE: drawDoubleLine( element );break;
-                case TRIPPLE: drawTripleLine( element );break;
-                default:
-                    //TODO:paint silly line text fitted to max line width
-                    
-            }
+        // init recursion with background to get the first draw with foreground
+        gc.setForeground( getBackgroundColor() ); 
+        drawLineX( element, element.type().count() );
+            
         gc.setBackground( colorOld);
     }
     
@@ -103,14 +99,14 @@ public class SWTRenderer implements IRenderingVisitor{
                      scaleY(element.getY1()));
     }
     private void drawSingleLine( LineElement element) {
-        int width1 = (int) (element.getWidth()+.5);
+        int width1 = (int) (element.getWidth()*1+element.getGap()*0+.5);
         gc.setForeground( getForgroundColor() );
         gc.setLineWidth( width1 );
         drawLine(element);
     }
     private void drawDoubleLine( LineElement element ) {
-        int width1 = (int) (element.getWidth()*2+element.getGap()+.5);
-        int width2 = (int) (element.getWidth()+.5);
+        int width1 = (int) (element.getWidth()*2+element.getGap()*1+.5);
+        int width2 = (int) (element.getWidth()*1+element.getGap()*0+.5);
         gc.setForeground( getForgroundColor() );
         gc.setLineWidth( width1);
         drawLine(element);
@@ -119,10 +115,22 @@ public class SWTRenderer implements IRenderingVisitor{
         drawLine( element );
     }
 
+    private void drawLineX(LineElement element, int val) {
+        if(val <= 0) return; // end recursion if less than 1
+        int width = (int) (element.getWidth()*val+element.getGap()*(val-1)+.5);
+        if(gc.getForeground().equals( getForgroundColor() ))
+            gc.setForeground( getBackgroundColor() );
+        else
+            gc.setForeground( getForgroundColor() );
+        gc.setLineWidth( width );
+        drawLine(element);
+        
+        drawLineX(element, val-1);
+    }
     private void drawTripleLine( LineElement element ) {        
         int width1 = (int) (element.getWidth()*3+element.getGap()*2+.5);
-        int width2 = (int) (element.getWidth()*2+element.getGap()+.5);
-        int width3 = (int) (element.getWidth()+.5);
+        int width2 = (int) (element.getWidth()*2+element.getGap()*1+.5);
+        int width3 = (int) (element.getWidth()*1+element.getGap()*0+.5);
         gc.setForeground( getForgroundColor() );
         gc.setLineWidth(width1 );
         drawLine(element);

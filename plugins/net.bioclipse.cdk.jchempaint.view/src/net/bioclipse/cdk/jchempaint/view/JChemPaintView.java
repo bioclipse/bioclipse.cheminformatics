@@ -29,6 +29,7 @@ import org.openscience.cdk.renderer.Renderer2DModel;
 import org.openscience.cdk.renderer.color.CDK2DAtomColors;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.RenderingModel;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator;
 import org.openscience.cdk.renderer.generators.BasicGenerator;
 import org.openscience.cdk.renderer.modules.AbstractModule;
 import org.openscience.cdk.renderer.modules.AtomModule;
@@ -131,46 +132,46 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
     }
 
     private RenderingModel generateRenderingModel( RenderingModel model ) {
-
-        AbstractModule superModule = new AbstractModule() {
-
-            @Override
-            public IRenderingElement accept( IAtomContainer ac, IAtom atom,
-                                             IRenderingElement element ) {
-
-                return element;
-            }
-
-            @Override
-            public IRenderingElement accept( IAtomContainer ac, IBond bond,
-                                             IRenderingElement element ) {
-
-                return element;
-            }
-
-            @Override
-            public Renderer2DModel getModel() {
-
-                return r2DModel;
-            }
-        };
-
-        IRenderingModule modules =
-               // new AtomSymbolModule(
-                    new BondModule(
-                    //new AtomModule(
-                    superModule );// ) );
-        if ( atomContainer == null )
-            return model;
-
-        /*
-         * accept( ..., element) only known in AbstractModule and all that needs
-         * to be known here is accept( IAtomcontainer, atom/bond) superModule
-         * created in AbstractModule in default constructor maybe?
-         */
-        for ( IBond bond : atomContainer.bonds() ) {
-            model.add( modules.accept( atomContainer, bond, null ) );
-        }
+//
+//        AbstractModule superModule = new AbstractModule() {
+//
+//            @Override
+//            public IRenderingElement accept( IAtomContainer ac, IAtom atom,
+//                                             IRenderingElement element ) {
+//
+//                return element;
+//            }
+//
+//            @Override
+//            public IRenderingElement accept( IAtomContainer ac, IBond bond,
+//                                             IRenderingElement element ) {
+//
+//                return element;
+//            }
+//
+//            @Override
+//            public Renderer2DModel getModel() {
+//
+//                return r2DModel;
+//            }
+//        };
+//
+//        IRenderingModule modules =
+//               // new AtomSymbolModule(
+//                    new BondModule(
+//                    //new AtomModule(
+//                    superModule );// ) );
+//        if ( atomContainer == null )
+//            return model;
+//
+//        /*
+//         * accept( ..., element) only known in AbstractModule and all that needs
+//         * to be known here is accept( IAtomcontainer, atom/bond) superModule
+//         * created in AbstractModule in default constructor maybe?
+//         */
+//        for ( IBond bond : atomContainer.bonds() ) {
+//            model.add( modules.accept( atomContainer, bond, null ) );
+//        }
         
         BasicGenerator generator = new BasicGenerator(atomContainer,r2DModel);
         for ( IAtom atom : atomContainer.atoms() ) {
@@ -178,6 +179,11 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
             if(element != null)
                 model.add(element);
            // model.add( modules.accept( atomContainer, atom, null ) );
+        }
+        BasicBondGenerator gen2 = new BasicBondGenerator(atomContainer,r2DModel);
+        for ( IBond bond: atomContainer.bonds()) {
+            IRenderingElement element = gen2.generate(bond);
+            if(element != null ) model.add(element);
         }
 
         return model;
