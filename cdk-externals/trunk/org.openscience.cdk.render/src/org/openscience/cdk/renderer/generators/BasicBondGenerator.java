@@ -30,7 +30,6 @@ import java.awt.Color;
 
 import javax.vecmath.Point2d;
 
-import org.apache.log4j.Logger;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.interfaces.IAtom;
@@ -47,6 +46,7 @@ import org.openscience.cdk.renderer.elements.WedgeLineElement;
 import org.openscience.cdk.renderer.elements.LineElement.LineType;
 import org.openscience.cdk.renderer.elements.WedgeLineElement.Direction;
 import org.openscience.cdk.ringsearch.SSSRFinder;
+import org.openscience.cdk.tools.LoggingTool;
 import org.openscience.cdk.tools.manipulator.RingSetManipulator;
 
 /**
@@ -54,7 +54,7 @@ import org.openscience.cdk.tools.manipulator.RingSetManipulator;
  */
 public class BasicBondGenerator extends AbstractGenerator {
 
-    Logger logger = Logger.getLogger( BasicBondGenerator.class );
+    LoggingTool logger = new LoggingTool(BasicBondGenerator.class );
     IRingSet ringSet;
     double bondWidth;
     double bondLength;

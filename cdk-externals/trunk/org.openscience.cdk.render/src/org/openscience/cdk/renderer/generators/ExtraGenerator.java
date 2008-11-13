@@ -23,19 +23,21 @@ package org.openscience.cdk.renderer.generators;
 import java.awt.Color;
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
 import org.openscience.cdk.config.IsotopeFactory;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.Renderer2DModel;
 import org.openscience.cdk.renderer.elements.AtomMassSymbolElement;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
+import org.openscience.cdk.tools.LoggingTool;
 
 /**
  * @cdk.module  render
  */
 public class ExtraGenerator extends BasicGenerator{
-    Logger logger = Logger.getLogger( ExtraGenerator.class );
+
+    LoggingTool logger = new LoggingTool( ExtraGenerator.class );
+
     public ExtraGenerator(IAtomContainer atomContainer, Renderer2DModel r2dm) {
 
         super( atomContainer, r2dm );
