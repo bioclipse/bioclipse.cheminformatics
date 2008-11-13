@@ -77,8 +77,7 @@ public class Renderer2DModel implements java.io.Serializable, Cloneable {
 	private Color externalHighlightColor = Color.orange;	
 	
 	/**
-	 * @deprecated old way of storing highlightRadius based on screensize, 
-	 *   new one: {@link #highlightRadiusModel}
+	 * @deprecated old way of storing highlightRadius based on screensize, new one: {@link #highlightRadiusModel()}
 	 */
 	@Deprecated private double highlightRadius = 10.0;
 	private double highlightRadiusModel = 0.7;
@@ -543,8 +542,7 @@ public class Renderer2DModel implements java.io.Serializable, Cloneable {
 	 * marked highlighted if a pointer device is placed within this radius.
 	 *
 	 * @param   highlightRadius  the highlight radius of all atoms (in screensize)
-	 * @deprecated old way of getting highlightRadius, 
-	 *             new one: {@link #setHighlightRadiusModel(double)}
+	  * @deprecated old way of getting highlightRadius, new one: {@link #setHighlightRadiusModel()}
 	 */
 	@Deprecated public void setHighlightRadius(double highlightRadius)
 	{

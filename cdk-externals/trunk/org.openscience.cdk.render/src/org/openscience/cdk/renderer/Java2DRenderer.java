@@ -1089,10 +1089,11 @@ public class Java2DRenderer implements IJava2DRenderer {
 	}
 
 	/**
-	 * Really paints the bond. It is triggered by all the other paintbond methods
-	 * to draw a polygon as wide as bond width.
+	 *  Really paints the bond. It is triggered by all the other paintbond methods
+	 *  to draw a polygon as wide as bond width.
 	 *
-	 * @param  bondColor  Color of the bond
+	 *@param  coords
+	 *@param  bondColor  Color of the bond
 	 */
 	public void paintOneBond(final Line2D line, final Color bondColor, final Graphics2D graphics)
 	{
@@ -1134,8 +1135,9 @@ public class Java2DRenderer implements IJava2DRenderer {
 		return affinet;
 	}
 	/**
-	 * Returns model coordinates from screencoordinates provided by the graphics translation.
+	 *  Returns model coordinates from screencoordinates provided by the graphics translation
 	 *
+	 * @param ptSrc the point to convert
 	 * @return Point2D in real world coordinates
 	 */
 	public Point2d getCoorFromScreen(final int screenX, final int screenY) {
@@ -1151,6 +1153,8 @@ public class Java2DRenderer implements IJava2DRenderer {
 		return new Point2d(ptDst.getX(), ptDst.getY());
 	}
 	/**
+	 *
+	 * @param container
 	 * @param ptSrc in real world coordinates (ie not screencoordinates)
 	 */
 	public static void showClosestAtomOrBond(final IAtomContainer container, final Point2d ptSrc) {
