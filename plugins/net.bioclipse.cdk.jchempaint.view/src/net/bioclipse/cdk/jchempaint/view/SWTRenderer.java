@@ -4,6 +4,9 @@ import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.vecmath.Point2d;
+import javax.vecmath.Vector2d;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
@@ -91,59 +94,75 @@ public class SWTRenderer implements IRenderingVisitor{
     public void visitWedge( WedgeLineElement element) {
         Color colorOld = gc.getBackground();
         gc.setForeground( getForgroundColor() );
-        drawWedge( element);
+        gc.setBackground( getForgroundColor() );
+        //drawWedge( element);
+        drawWedge( element );
         gc.setBackground( colorOld );
     }
     
-    private void drawDashedWedge(WedgeLineElement element) {
+    private void drawWedge(WedgeLineElement element) {
+        Point2d p1 = new Point2d( scaleX(element.getX()),
+                                  scaleY(element.getY()));
+        Point2d p2 = new Point2d( scaleX(element.getX1()),
+                                  scaleY(element.getY1()));
+        Vector2d p12 = new Vector2d(p2);p12.sub( p1 );
+        Vector2d p12n = new Vector2d(p12.y,-p12.x); // normal for p12
+        p12n.normalize();
+        //   wedge thickness is based on line width probably better to be based
+        //  on text size
+        double l = element.getWidth()*4/2; 
+        Vector2d pa = new Vector2d(p12n);pa.scale( l );
+        Vector2d pb = new Vector2d(p12n);pb.scale(-l);
+        gc.setLineWidth( (int) element.getWidth() );
+        if(element.isDashed())
+            drawDashedWedge( p1, p12, pa, pb, element.getWidth() );
+        else
+            drawFilledWedge( p1, p2, pa, pb );
         
     }
-    private void drawWedge( WedgeLineElement element ) {
-        //Region region = new Region();
-        
-        Rectangle clipRect = gc.getClipping();
-        gc.setBackground( gc.getDevice().getSystemColor( SWT.COLOR_CYAN ) );
-//        gc.fillRectangle(clipRect);
-        int x1 = scaleX( element.getX());
-        int y1 = scaleY( element.getY());
-        int x2 = scaleX( element.getX1());
-        int y2 = scaleY( element.getY1());
-        
-        double lx = x2-x1;
-        double ly = y2-y1;
-        double l = Math.sqrt( lx*lx +ly*ly  );
-        
-        // a + tb
-        lx = lx/l;
-        ly = ly/l;
-        double tmp = lx;
-        lx = -ly;
-        ly = tmp;
-        
-        double t = element.getWidth()*4/2;
-        float x1a = (float) (x1 + lx*t );        
-        float y1a = (float) (y1 + ly*t );
-        float x1b = (float) (x1 + -lx*t );        
-        float y1b = (float) (y1 + -ly*t );
+    private void drawFilledWedge( Point2d p1, Point2d p2, 
+                                  Vector2d pa, Vector2d pb) {
         Path path = new Path(gc.getDevice());
-        path.moveTo( x2, y2 );
-        path.lineTo( x1a, y1a );
-        path.lineTo( x1b, y1b );        
-        path.close();
-        gc.setLineWidth( 1 );
-        gc.drawPath( path );
-//        gc.setClipping( path );
-        gc.getClipping();
-        gc.setBackground( gc.getDevice().getSystemColor( SWT.COLOR_MAGENTA ) );
-//        gc.fillRectangle( clipRect );
-        gc.setLineWidth( (int) (element.getWidth()*4) );
-        //gc.drawLine( x1, y1, x2, y2 ); 
+        path.moveTo( (float)p2.x,(float) p2.y );
+        path.lineTo( (float)(pa.x+p1.x), (float)(pa.y+p1.y) );
+        path.lineTo( (float)(pb.x+p1.x), (float)(pb.y+p1.y) );
+        path.close();        
         
+        gc.fillPath( path );
         
-//        gc.setClipping( clipRect);
-        gc.setBackground( gc.getDevice().getSystemColor( SWT.COLOR_YELLOW ) );
-//        gc.fillRectangle( clipRect );
+        path.dispose();
     }
+    private void drawDashedWedge( Point2d p1, Vector2d p12, 
+                                  Vector2d pa, Vector2d pb, double w) {
+        Vector2d ac = new Vector2d(p12);ac.sub( pa );
+        Vector2d bc = new Vector2d(p12);bc.sub( pb );
+        ac.normalize();
+        bc.normalize();
+        
+        double s = (w*2);
+        double t = s / p12.length();
+        double t2 = p12.length()/ s;
+        
+        Vector2d x,y;
+        
+        Path dashes = new Path(gc.getDevice());
+        for(int i =0 ;i<=t2;i++) {
+            x = new Vector2d();         
+            x.interpolate( p12, t*i );
+            y = new Vector2d(x);     
+            double xs = x.dot(ac);
+            double ys = y.dot( bc );
+            x = new Vector2d(ac);x.scale( xs );
+            y = new Vector2d(bc);y.scale( ys );
+            x.add(p1);
+            y.add( p1 );
+            dashes.moveTo( (float) (x.x+pa.x), (float) (x.y+pa.y) );
+            dashes.lineTo( (float) (y.x+pb.x), (float) (y.y+pb.y) );
+        }
+        gc.drawPath( dashes );
+        dashes.dispose();
+    }
+    
 
     private Color getForgroundColor() {
         return toSWTColor( gc, getModel().getForeColor() );

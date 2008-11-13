@@ -31,6 +31,7 @@ import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.RenderingModel;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator;
 import org.openscience.cdk.renderer.generators.BasicGenerator;
+import org.openscience.cdk.renderer.generators.ExtraBondGenerator;
 import org.openscience.cdk.renderer.modules.AbstractModule;
 import org.openscience.cdk.renderer.modules.AtomModule;
 import org.openscience.cdk.renderer.modules.AtomSymbolModule;
@@ -60,7 +61,8 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
                                           color.getBlue() ) );
         // r2DModel.setIsCompact( true );
         r2DModel.setAtomRadius( 20 );
-
+        r2DModel.setShowAromaticity( true );
+        
         canvas.addPaintListener( new PaintListener() {
 
             public void paintControl( PaintEvent e ) {
@@ -172,6 +174,11 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
 //        for ( IBond bond : atomContainer.bonds() ) {
 //            model.add( modules.accept( atomContainer, bond, null ) );
 //        }
+        BasicBondGenerator gen2 = new ExtraBondGenerator(atomContainer,r2DModel);
+        for ( IBond bond: atomContainer.bonds()) {
+            IRenderingElement element = gen2.generate(bond);
+            if(element != null ) model.add(element);
+        }
         
         BasicGenerator generator = new BasicGenerator(atomContainer,r2DModel);
         for ( IAtom atom : atomContainer.atoms() ) {
@@ -180,11 +187,7 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
                 model.add(element);
            // model.add( modules.accept( atomContainer, atom, null ) );
         }
-        BasicBondGenerator gen2 = new BasicBondGenerator(atomContainer,r2DModel);
-        for ( IBond bond: atomContainer.bonds()) {
-            IRenderingElement element = gen2.generate(bond);
-            if(element != null ) model.add(element);
-        }
+        
 
         return model;
     }
