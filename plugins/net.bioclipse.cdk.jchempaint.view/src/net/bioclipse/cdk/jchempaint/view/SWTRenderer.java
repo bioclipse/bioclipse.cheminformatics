@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Region;
 import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.elements.HighlightElement;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.IRenderingVisitor;
 import org.openscience.cdk.renderer.elements.LineElement;
@@ -73,8 +74,8 @@ public class SWTRenderer implements IRenderingVisitor{
     public void visitOval( OvalElement element ) {
         Color colorOld = gc.getBackground();
         gc.setBackground( toSWTColor( gc, element.getColor() ) );
-        int radius = (int) (element.getRadius()+.5);
-        int radius_2 = (int) (element.getRadius()/2.0+.5);
+        int radius = (int) (scaleX(element.getRadius())+.5);
+        int radius_2 = (int) (scaleX(element.getRadius())/2.0+.5);
         gc.fillOval( scaleX(element.getX())-radius_2, 
                      scaleY(element.getY())-radius_2, 
                      radius,
@@ -313,5 +314,11 @@ public class SWTRenderer implements IRenderingVisitor{
         for(Color c:cleanUp.values())
             c.dispose();
           cleanUp.clear();
+    }
+
+    public void visitHighlight( HighlightElement element ) {
+
+        
+        
     }
 }
