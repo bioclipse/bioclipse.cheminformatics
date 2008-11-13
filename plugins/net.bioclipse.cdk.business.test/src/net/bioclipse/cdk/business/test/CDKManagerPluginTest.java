@@ -40,6 +40,7 @@ import net.bioclipse.cdk.business.CDKManagerHelper;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdkdebug.business.ICDKDebugManager;
 import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IMoleculeManager;
@@ -83,6 +84,7 @@ public class CDKManagerPluginTest {
     }
     
     ICDKManager cdk;
+    ICDKDebugManager cdkdebug;
 
     //Do not use SPRING OSGI for this manager
     //since we are only testing the implementations of the manager methods
@@ -535,7 +537,7 @@ public class CDKManagerPluginTest {
 
     	ICDKMolecule mol = cdk.fromSMILES("C1CCCCC1CCOC");
     	
-    	ICDKMolecule mol2 = cdk.depictSybylAtomTypes(mol);
+    	ICDKMolecule mol2 = cdkdebug.depictSybylAtomTypes(mol);
     	
     	for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
     		IAtom a=mol2.getAtomContainer().getAtom(i);
@@ -554,7 +556,7 @@ public class CDKManagerPluginTest {
 
     	System.out.println("mol: " + mol.toString());
     	
-    	ICDKMolecule mol2 = cdk.depictSybylAtomTypes(mol);
+    	ICDKMolecule mol2 = cdkdebug.depictSybylAtomTypes(mol);
     	
     	for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
     		IAtom a=mol2.getAtomContainer().getAtom(i);
@@ -573,7 +575,7 @@ public class CDKManagerPluginTest {
 
     	System.out.println("mol: " + mol.toString());
     	
-    	ICDKMolecule mol2 = cdk.depictSybylAtomTypes(mol);
+    	ICDKMolecule mol2 = cdkdebug.depictSybylAtomTypes(mol);
     	
     	for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
     		IAtom a=mol2.getAtomContainer().getAtom(i);
@@ -592,7 +594,7 @@ public class CDKManagerPluginTest {
 
     	System.out.println("mol: " + mol.toString());
     	
-    	ICDKMolecule mol2 = cdk.depictSybylAtomTypes(mol);
+    	ICDKMolecule mol2 = cdkdebug.depictSybylAtomTypes(mol);
     	
     	assertEquals("C.ar", mol2.getAtomContainer().getAtom(1).getAtomTypeName());
     	
@@ -610,7 +612,7 @@ public class CDKManagerPluginTest {
         
         ICDKMolecule mol = new CDKMolecule(ac);
 
-    	ICDKMolecule mol2 = cdk.depictSybylAtomTypes(mol);
+    	ICDKMolecule mol2 = cdkdebug.depictSybylAtomTypes(mol);
     	
     	System.out.println("** BENZENE **");
     	
