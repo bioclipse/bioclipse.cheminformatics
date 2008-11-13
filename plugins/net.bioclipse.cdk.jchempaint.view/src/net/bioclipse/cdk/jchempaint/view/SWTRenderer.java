@@ -95,6 +95,9 @@ public class SWTRenderer implements IRenderingVisitor{
         gc.setBackground( colorOld );
     }
     
+    private void drawDashedWedge(WedgeLineElement element) {
+        
+    }
     private void drawWedge( WedgeLineElement element ) {
         //Region region = new Region();
         
