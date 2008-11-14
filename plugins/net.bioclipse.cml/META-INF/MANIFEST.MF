@@ -16,21 +16,11 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.ui;bundle-version="2.0.0"
 Export-Package: net.bioclipse.cml.handlers,
  net.bioclipse.cml.managers,
- org.xmlcml.cml.apps,
  org.xmlcml.cml.attribute,
  org.xmlcml.cml.base,
  org.xmlcml.cml.element,
- org.xmlcml.cml.graphics,
- org.xmlcml.cml.html,
- org.xmlcml.cml.inchi,
- org.xmlcml.cml.interfacex,
- org.xmlcml.cml.legacy.molecule,
- org.xmlcml.cml.map,
- org.xmlcml.cml.schemagen,
- org.xmlcml.cml.tools,
  org.xmlcml.euclid,
- org.xmlcml.molutil,
- org.xmlcml.util
+ org.xmlcml.molutil
 Bundle-ClassPath: .,
  jars/jumbo-with-fix-by-jonalv.jar
 Bundle-Activator: net.bioclipse.cml.managers.Activator
