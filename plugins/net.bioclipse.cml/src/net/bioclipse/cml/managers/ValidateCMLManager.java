@@ -31,16 +31,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.osgi.framework.Bundle;
-import org.xmlcml.cml.attribute.DictRefAttribute;
-import org.xmlcml.cml.attribute.MetadataNameAttribute;
-import org.xmlcml.cml.attribute.UnitsAttribute;
 import org.xmlcml.cml.base.CMLBuilder;
 import org.xmlcml.cml.base.CMLElement;
-import org.xmlcml.cml.base.CMLRuntimeException;
 import org.xmlcml.cml.base.CMLUtil;
-import org.xmlcml.cml.element.CMLDictionary;
-import org.xmlcml.cml.map.DictionaryMap;
-import org.xmlcml.cml.map.UnitListMap;
 
 
 public class ValidateCMLManager implements IValidateCMLManager {
@@ -50,9 +43,9 @@ public class ValidateCMLManager implements IValidateCMLManager {
 	private static File simpleDir = null;
 	private static File unitsDir = null;
 	private static File dictDir = null;
-	private static DictionaryMap simpleMap = null;
-	private static UnitListMap unitListMap = null;
-	private static DictionaryMap dictListMap = null;
+//	private static DictionaryMap simpleMap = null;
+//	private static UnitListMap unitListMap = null;
+//	private static DictionaryMap dictListMap = null;
 	CMLElement cmlElement = null;
 	static String result;
 	
@@ -106,29 +99,30 @@ public class ValidateCMLManager implements IValidateCMLManager {
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
-	    if (simpleMap  == null) {
-	        try {
-	          simpleMap = new DictionaryMap(simpleURL, new CMLDictionary());
-	        } catch (Exception e) {
-	        	e.printStackTrace();
-	          throw new CMLRuntimeException("dictionaryMap could not be created "+e);
-	        }
-	      }
-	    if (dictListMap == null) {
-	        try {
-	          dictListMap  = new DictionaryMap(dictURL, new CMLDictionary());
-	        } catch (Exception e) {
-	          throw new CMLRuntimeException("dictListMap could not be created "+e);
-	        }
-	      }
+			// FIXME: reinstate the below once we have a Jubmo plugin
+//	    if (simpleMap  == null) {
+//	        try {
+//	          simpleMap = new DictionaryMap(simpleURL, new CMLDictionary());
+//	        } catch (Exception e) {
+//	        	e.printStackTrace();
+//	          throw new CMLRuntimeException("dictionaryMap could not be created "+e);
+//	        }
+//	      }
+//	    if (dictListMap == null) {
+//	        try {
+//	          dictListMap  = new DictionaryMap(dictURL, new CMLDictionary());
+//	        } catch (Exception e) {
+//	          throw new CMLRuntimeException("dictListMap could not be created "+e);
+//	        }
+//	      }
 		}
-		if (unitListMap == null) {
-			try {
-				unitListMap  = new UnitListMap(unitsDir, true);
-			} catch (Exception e) {
-				throw new CMLRuntimeException("unitListMap could not be created "+e);
-			}
-		}
+//		if (unitListMap == null) {
+//			try {
+//				unitListMap  = new UnitListMap(unitsDir, true);
+//			} catch (Exception e) {
+//				throw new CMLRuntimeException("unitListMap could not be created "+e);
+//			}
+//		}
 	}
 
     
@@ -176,27 +170,27 @@ public class ValidateCMLManager implements IValidateCMLManager {
 			}
 		}
 		if (succeeded) {
-			errorList.clear();
-			errorList = new DictRefAttribute().checkAttribute(cmlElement, simpleMap);
-			if (errorList.size() > 0) {
-				for (String error : errorList) {
-					returnString.append("warning: " + error);
-				}
-			}
-			errorList.clear();
-			errorList = new MetadataNameAttribute().checkAttribute(cmlElement, simpleMap);
-			if (errorList.size() > 0) {
-				for (String error : errorList) {
-					returnString.append("warning: " + error);
-				}
-			}
-			errorList.clear();
-			errorList = new UnitsAttribute().checkAttribute(cmlElement, unitListMap);
-			if (errorList.size() > 0) {
-				for (String error : errorList) {
-					returnString.append("warning: " + error);
-				}
-			}
+//			errorList.clear();
+//			errorList = new DictRefAttribute().checkAttribute(cmlElement, simpleMap);
+//			if (errorList.size() > 0) {
+//				for (String error : errorList) {
+//					returnString.append("warning: " + error);
+//				}
+//			}
+//			errorList.clear();
+//			errorList = new MetadataNameAttribute().checkAttribute(cmlElement, simpleMap);
+//			if (errorList.size() > 0) {
+//				for (String error : errorList) {
+//					returnString.append("warning: " + error);
+//				}
+//			}
+//			errorList.clear();
+//			errorList = new UnitsAttribute().checkAttribute(cmlElement, unitListMap);
+//			if (errorList.size() > 0) {
+//				for (String error : errorList) {
+//					returnString.append("warning: " + error);
+//				}
+//			}
 	        return("Input is valid CML. "+returnString.toString());
 		}else{
 			return("Input is not valid CML: "+returnString.toString());
