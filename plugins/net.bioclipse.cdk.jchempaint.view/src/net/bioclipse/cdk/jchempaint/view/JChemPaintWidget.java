@@ -63,7 +63,7 @@ public class JChemPaintWidget extends Canvas {
         RenderingModel model = new RenderingModel();
         Point size = getSize();
         Dimension sizeWithMargin = new Dimension( size.x-MARGIN*2, size.y-MARGIN*2 );
-        Dimension  dim = new Dimension( size.x-MARGIN*2, size.y-MARGIN*2 );
+        Dimension  dim = new Dimension( size.x, size.y );
         double[] scalse = model.getDimensions( atomContainer, sizeWithMargin );
 
         RenderingModel renderingModel = generateRenderingModel( model );
