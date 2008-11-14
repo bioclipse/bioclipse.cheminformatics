@@ -33,7 +33,6 @@ public class JChemPaintEditor extends EditorPart{
     boolean dirty=false;
 	ICDKMolecule model;
 	JChemPaintEditorWidget widget;
-	Controller2DHub hub;
 	IController2DModel c2dm;
 	SWTMosueEventRelay relay;
 	@Override
@@ -111,7 +110,7 @@ public class JChemPaintEditor extends EditorPart{
 	}
 
     public Controller2DHub getControllerHub() {
-        return hub;
+        return widget.getController2DHub();
     }
 
     public IController2DModel getControllerModel() {

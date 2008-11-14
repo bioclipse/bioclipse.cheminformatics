@@ -157,4 +157,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget{
 
     }
 
+    public Controller2DHub getController2DHub() {
+        return hub;
+    }
+
 }
