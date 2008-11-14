@@ -12,6 +12,7 @@ import java.awt.geom.Point2D;
 
 import javax.vecmath.Point2d;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Point;
@@ -40,6 +41,7 @@ public class JChemPaintWidget extends Canvas {
     public JChemPaintWidget(Composite parent, int style) {
 
         super( parent, style );
+        setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
         currentTransform = new Transform(getDisplay());
         renderer2DModel = new Renderer2DModel();
 
