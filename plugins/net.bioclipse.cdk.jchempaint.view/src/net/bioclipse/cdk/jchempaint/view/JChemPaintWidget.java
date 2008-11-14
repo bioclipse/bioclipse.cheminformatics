@@ -33,6 +33,8 @@ import org.openscience.cdk.renderer.generators.BasicGenerator;
  * @author arvid
  */
 public class JChemPaintWidget extends Canvas {
+    
+    public static int MARGIN = 20;
 
     IAtomContainer  atomContainer;
     Renderer2DModel renderer2DModel;
@@ -60,11 +62,13 @@ public class JChemPaintWidget extends Canvas {
             return;
         RenderingModel model = new RenderingModel();
         Point size = getSize();
-        Dimension dimension = new Dimension( size.x, size.y );
-        double[] scalse = model.getDimensions( atomContainer, dimension );
+        Dimension sizeWithMargin = new Dimension( size.x-MARGIN*2, size.y-MARGIN*2 );
+        Dimension  dim = new Dimension( size.x-MARGIN*2, size.y-MARGIN*2 );
+        double[] scalse = model.getDimensions( atomContainer, sizeWithMargin );
 
         RenderingModel renderingModel = generateRenderingModel( model );
-        Point2D center = model.center( atomContainer, dimension );
+        
+        Point2D center = model.center( dim );
         
         
         
