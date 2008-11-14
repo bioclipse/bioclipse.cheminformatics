@@ -21,11 +21,14 @@
 package org.openscience.cdk.renderer.elements;
 
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+
+import javax.swing.plaf.basic.BasicBorders.MarginBorder;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -39,7 +42,7 @@ public class RenderingModel implements IRenderingElement,
     Collection<IRenderingElement> elements = new ArrayList<IRenderingElement>();
     double scalex = 10;
     double scaley = 10;
-    
+    Rectangle2D extent;
     
     public Iterator<IRenderingElement> iterator() {
         return elements.iterator();
@@ -81,7 +84,8 @@ public class RenderingModel implements IRenderingElement,
             ymin = Math.min( ymin, y );
             ymax = Math.max( ymax, y );
         }
-        return new Rectangle2D.Double(xmin,ymin,xmax-xmin,ymax-ymin);
+        extent = new Rectangle2D.Double(xmin,ymin,xmax-xmin,ymax-ymin);
+        return extent;
     }
     
     public void accept( IRenderingVisitor v ) {
@@ -89,16 +93,13 @@ public class RenderingModel implements IRenderingElement,
         v.visitModel( this );
     }
     
-    public Point2D center(IAtomContainer ac, Dimension size) {
-        // translation needed to center ac
+    public Point2D center(Dimension size) {
         
-        double scale = getScale( ac, size );
-        Rectangle2D extent = getExtent( ac );
-        double aWidth = extent.getWidth()*scale;
-        double aHeight = extent.getHeight()*-scale;
+        double aWidth = extent.getWidth()*scalex;
+        double aHeight = extent.getHeight()*-scaley;
         double xDiff = size.getWidth()-aWidth;
         double yDiff = size.getHeight()-aHeight;
-        return new Point2D.Float( (float)(-(extent.getX()*scale)+xDiff/2),
-                                  (float)(-(extent.getY()*-scale)+yDiff/2));
+        return new Point2D.Float( (float)(-(extent.getX()*scalex)+xDiff/2),
+                                  (float)(-(extent.getY()*-scaley)+yDiff/2));
     }
 }
