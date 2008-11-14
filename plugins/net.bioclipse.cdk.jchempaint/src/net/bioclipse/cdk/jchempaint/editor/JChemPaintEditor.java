@@ -117,6 +117,10 @@ public class JChemPaintEditor extends EditorPart{
         return c2dm;
     }
 
+    public void update() {
+        widget.redraw();
+    }
+
     public void setInput( Object element ) {
         widget.setInput( element );
         widget.redraw();
