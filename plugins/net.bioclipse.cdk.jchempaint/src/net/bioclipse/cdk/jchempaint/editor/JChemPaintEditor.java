@@ -81,7 +81,7 @@ public class JChemPaintEditor extends EditorPart{
 
 	@Override
 	public boolean isDirty() {		
-		return false;
+		return dirty;
 	}
 
 	@Override
@@ -121,6 +121,7 @@ public class JChemPaintEditor extends EditorPart{
     public void setInput( Object element ) {
         widget.setInput( element );
         widget.redraw();
+        dirty = true;
     }
 	
     public ICDKMolecule getCDKMolecule() {
