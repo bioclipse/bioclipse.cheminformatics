@@ -13,7 +13,7 @@ Require-Bundle: org.openscience.cdk.core,
  org.openscience.cdk.data,
  org.openscience.cdk.libiocml,
  org.openscience.cdk.io,
- net.bioclipse.cml,
+ org.xmlcml.cmlxom,
  net.bioclipse.xom,
  org.eclipse.core.runtime
 Export-Package: org.openscience.cdk.libio.md,

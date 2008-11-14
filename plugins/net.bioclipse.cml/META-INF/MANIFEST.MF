@@ -13,18 +13,11 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.core,
  net.bioclipse.xom;bundle-version="1.2.0",
  org.eclipse.core.resources;bundle-version="3.4.0",
- net.bioclipse.ui;bundle-version="2.0.0"
-Bundle-ClassPath: .,
- jars/cmlxom-2.5-b1.jar
+ net.bioclipse.ui;bundle-version="2.0.0",
+ org.xmlcml.cmlxom;bundle-version="2.0.0"
+Bundle-ClassPath: .
 Bundle-Activator: net.bioclipse.cml.managers.Activator
 Eclipse-AutoStart: true
 Bundle-Vendor: The Bioclipse Team
 Export-Package: net.bioclipse.cml.handlers,
- net.bioclipse.cml.managers,
- org.xmlcml.cml.attribute,
- org.xmlcml.cml.attribute.main,
- org.xmlcml.cml.base,
- org.xmlcml.cml.element,
- org.xmlcml.cml.interfacex,
- org.xmlcml.euclid,
- org.xmlcml.molutil
+ net.bioclipse.cml.managers
