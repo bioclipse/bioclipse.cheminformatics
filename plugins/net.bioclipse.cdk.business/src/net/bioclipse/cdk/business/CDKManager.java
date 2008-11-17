@@ -233,7 +233,6 @@ public class CDKManager implements ICDKManager {
 	 * 
 	 * @throws CoreException
 	 */
-	@Job
 	public List<ICDKMolecule> loadMolecules(String path) throws IOException,
 			BioclipseException, CoreException {
 
