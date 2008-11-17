@@ -724,4 +724,12 @@ public class CDKManagerPluginTest {
         assertEquals("CCC", mol.getSMILES());
     }
 
+    @Test
+    public void testSaveCML() throws Exception {
+        ICDKMolecule propane  = cdk.fromSMILES("CCC");
+        cdk.saveCML(propane, "/Virtual/testSaveMDLMolfile.cml");
+        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMDLMolfile.cml");
+        assertEquals("CCC", mol.getSMILES());
+    }
+
 }
