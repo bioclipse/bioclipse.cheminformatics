@@ -377,6 +377,17 @@ public class CDKManagerPluginTest {
     }
 
     @Test
+    public void testSaveMolecule_IMolecule_String_String() throws BioclipseException, CDKException, CoreException, IOException {
+        String propaneSmiles = "CCC"; 
+        
+        ICDKMolecule propane  = cdk.fromSMILES( propaneSmiles  );
+        
+        cdk.saveMolecule(propane, "/Virtual/testSaveMolecule.mol", ICDKManager.mol);
+        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMolecule.mol");
+        assertEquals("CCC", mol.getSMILES());
+    }
+    
+    @Test
     public void testSaveMoleculesSDF() throws BioclipseException, CDKException, CoreException, IOException {
 
         System.out.println("*************************");
