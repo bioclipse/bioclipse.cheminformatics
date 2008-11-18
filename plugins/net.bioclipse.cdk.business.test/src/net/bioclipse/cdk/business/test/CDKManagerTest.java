@@ -59,6 +59,7 @@ import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.SMILESFormat;
+import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.templates.MoleculeFactory;
 import org.openscience.cdk.tools.diff.AtomContainerDiff;
@@ -725,5 +726,14 @@ public class CDKManagerTest extends AbstractManagerTest {
         cdk.generate2dCoordinates(molecule);
         assertNotNull(molecule.getAtomContainer().getAtom(0).getPoint2d());
     }
+    
+    @Test
+	public void testStructureMatches() throws BioclipseException {
+        ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
+        ICDKMolecule molecule2 = cdk.fromSMILES("CCCBr");
+        ICDKMolecule molecule3 = cdk.fromSMILES("C1CCBrC1");
+        assertTrue(cdk.structureMatches(molecule, molecule2));
+        Assert.assertFalse(cdk.structureMatches(molecule, molecule3));
+	}
 
 }
