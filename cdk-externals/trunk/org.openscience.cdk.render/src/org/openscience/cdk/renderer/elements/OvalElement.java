@@ -33,6 +33,7 @@ public class OvalElement implements IRenderingElement {
     private final Point2D position;
     private final double radius;
     private final Color color;
+    private final boolean fill;
     
     public OvalElement(Point pos) {
         this(pos.x,pos.y);              
@@ -45,9 +46,13 @@ public class OvalElement implements IRenderingElement {
         this(x, y, radius, defaultColor);
     }
     public OvalElement(double x, double y,double radius,Color color) {
+        this(x,y,radius,color,true);
+    }
+    public OvalElement(double x, double y,double radius,Color color,boolean fill) {
         position = new Point2D.Double(x,y);
         this.radius = radius;
         this.color = color;
+        this.fill = fill;
     }
 
     public double getX() {
@@ -60,6 +65,7 @@ public class OvalElement implements IRenderingElement {
     
     public double getRadius(){ return radius; }
     public Color getColor() { return color; }
+    public boolean isFilled() {return fill;}
     
     public void accept( IRenderingVisitor v ) {
         v.visitOval( this );        

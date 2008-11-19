@@ -36,11 +36,15 @@ public class LineElement implements IRenderingElement {
 
         this(p1.x, p1.y, p2.x, p2.y, type, width, gap);
     }
-    
+    public LineElement(Point2d p1, Point2d p2, LineType type, 
+                       double width,
+                       double gap,Color color) {
+        this(p1.x, p1.y, p2.x, p2.y, type, width, gap,color);
+    }
     public LineElement(double x, double y, double x1, double y1, LineType type,
                        double width,
                        double gap) {
-        this(x,y,x1,y1,type,width,gap,defaultColor);
+        this(x,y,x1,y1,type,width,gap,Color.BLACK);
     }
     public LineElement(double x, double y, double x1, double y1, LineType type,
                        double width,
