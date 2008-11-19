@@ -199,8 +199,10 @@ public class SWTRenderer implements IRenderingVisitor{
         int x = scaleX(element.getPosition().getX());
         int y = scaleY(element.getPosition().getY());
         String text = element.getText();
-        
-        Font font= new Font(gc.getDevice(),"Arial",30,SWT.NORMAL);
+        int fontSize = (int) (scaleX*.4);
+        fontSize = (fontSize<12?12:fontSize);
+        fontSize = (fontSize>100?100:fontSize);
+        Font font= new Font(gc.getDevice(),"Arial",fontSize,SWT.NORMAL);
         gc.setFont(font);
         Point textSize = gc.textExtent( text );
         x = x - textSize.x/2;
@@ -208,8 +210,8 @@ public class SWTRenderer implements IRenderingVisitor{
         gc.setForeground( toSWTColor( gc, element.getColor() ) );
         gc.setBackground(  getBackgroundColor() );
         gc.setAdvanced( true );
-        
-        drawTextUpsideDown( gc, text, x, y, textSize.x, textSize.y );
+        gc.drawText( text, x, y, true );
+        //drawTextUpsideDown( gc, text, x, y, textSize.x, textSize.y );
     }
 
     private ImageData drawText(Device device, String text, Rectangle rect) {
