@@ -44,10 +44,21 @@ public interface IChemModelRelay {
     public abstract IBond getClosestBond(Point2d worldCoord);
     public abstract void updateView();
 
-    /* Editing actions */
+    /* Editing actions for the complete model */
+    public abstract void updateImplicitHydrogenCounts();
+
+    /* Editing actions for atoms */
     public abstract void removeAtom(IAtom atom);
     public abstract void addAtom(String atomType, Point2d worldcoord);
     public abstract void moveTo(IAtom atom, Point2d point);
+    public abstract void setSymbol(IAtom atom, String symbol);
+    public abstract void setCharge(IAtom atom, int charge);
+    public abstract void setMassNumber(IAtom atom, int charge);
+
+    /* Editing actions for bonds */
+    public abstract void addBond(IAtom fromAtom, IAtom toAtom);
     public abstract void moveTo(IBond bond, Point2d point);
+    public abstract void setOrder(IBond bond);
+    public abstract void setWedgeType(IBond bond, int type);
 	
 }
