@@ -297,7 +297,6 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
             Point2d atomCoord = new Point2d( worldCoords );
 
             atom.setPoint2d( atomCoord );
-            updateView();
         }
 
     }
@@ -315,33 +314,27 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
                 atom.setPoint2d( result);
             }
         }
-        updateView();
     }
 
     public void addBond( IAtom fromAtom, IAtom toAtom ) {
         IBond newBond = chemModel.getBuilder().newBond(fromAtom, toAtom);
         chemModel.getMoleculeSet().getAtomContainer(0).addBond(newBond);
-        updateView();
     }
 
     public void setCharge(IAtom atom, int charge) {
         atom.setFormalCharge(charge);
-        updateView();
     }
 
     public void setMassNumber(IAtom atom, int charge) {
         atom.setMassNumber(charge);
-        updateView();
     }
 
     public void setOrder(IBond bond, Order order) {
         bond.setOrder(order);
-        updateView();
     }
 
     public void setSymbol(IAtom atom, String symbol) {
         atom.setSymbol(symbol);
-        updateView();
     }
 
     public void setWedgeType(IBond bond, int type) {
