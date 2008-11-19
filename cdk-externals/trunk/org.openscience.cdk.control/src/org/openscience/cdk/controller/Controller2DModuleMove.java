@@ -32,9 +32,11 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.vecmath.Point2d;
+import javax.vecmath.Vector2d;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.renderer.IJava2DRenderer;
 
@@ -51,75 +53,73 @@ import org.openscience.cdk.renderer.IJava2DRenderer;
  */
 public class Controller2DModuleMove implements IController2DModule {
 
+    enum Type {
+        BOND,ATOM,NONE
+    }
+    
 	private IChemModelRelay chemObjectRelay;
+	IAtom atom;
+	IBond bond;
+	Vector2d offset;
+	Type type;
 	/*private IViewEventRelay eventRelay;
 	public void setEventRelay(IViewEventRelay relay) {
 		this.eventRelay = relay;
 	}*/
 	
 	public void mouseClickedDouble(Point2d worldCoord) {
-		// TODO Auto-generated method stub
-		try {
-			//try to write the image to a file
-			int width = 400, height = 400;
-			
-		  System.out.println("\tstarting..\n");
-	      // TYPE_INT_ARGB specifies the image format: 8-bit RGBA packed into integer pixels
-		  BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-	      System.out.println("bi created\n");
-
-	      Graphics2D ig2 = bi.createGraphics();
-	      System.out.println("ig2 created\n");
-	      
-	      IJava2DRenderer renderer = chemObjectRelay.getIJava2DRenderer();
-
-	      ig2.setColor(renderer.getRenderer2DModel().getBackColor());
-	      ig2.fillRect(0, 0, width, height);
- 
-	      Rectangle2D rectangle = new Rectangle2D.Double();
-	      rectangle.setFrame(0, 0, width, height);
-	      IChemModel chemModel = chemObjectRelay.getIChemModel();
-	      //FIXME: render all AtomContainers in this MoleculeSet
-	      IAtomContainer atomC = chemModel.getMoleculeSet().getAtomContainer(0);
-	      renderer.paintMolecule(atomC, ig2, rectangle);
-	      System.out.println("renderer.paintMolecule done\n");
-
-	      ImageIO.write(bi, "PNG", new File("c:\\tmp\\yourImageName.PNG"));
-	      System.out.println("writing output file to 'c:\\tmp\\yourImageName.PNG' done\n");
-
-	    } catch (IOException ie) {
-	      ie.printStackTrace();
-	    }
+		
 	}
 
 	public void mouseClickedDown(Point2d worldCoord) {
-		// TODO Auto-generated method stub
-		
+	
+		Point2d current=null;
+		if((atom = chemObjectRelay.getClosestAtom( worldCoord ))!=null) {
+		    type = Type.ATOM;
+		    current = atom.getPoint2d();
+		} else if((bond = chemObjectRelay.getClosestBond( worldCoord ))!=null){
+		    
+		    type = Type.BOND;
+		    current = bond.get2DCenter();
+		} else type = Type.NONE;
+		if(current !=null) {
+		offset = new Vector2d();
+		offset.sub( current, worldCoord );
+		}
 	}
 
+	
+	
 	public void mouseClickedUp(Point2d worldCoord) {
-		// TODO Auto-generated method stub
-		
+	    type=Type.NONE;
+	    atom=null;
+	    bond=null;
+	    offset=null;
+	    
 	}
 
 	public void mouseDrag(Point2d worldCoordFrom, Point2d worldCoordTo) {
 		// TODO Auto-generated method stub
-		System.out.println("mousedrag at DumpClosestObject shizzle");
-		System.out.println("From: " + worldCoordFrom.x + "/" + worldCoordFrom.y + " to " +
-				worldCoordTo.x + "/" + worldCoordTo.y);
+//		System.out.println("mousedrag at DumpClosestObject shizzle");
+//		System.out.println("From: " + worldCoordFrom.x + "/" + worldCoordFrom.y + " to " +
+//				worldCoordTo.x + "/" + worldCoordTo.y);
 		
-		if (chemObjectRelay != null) {
-			IAtom atom = chemObjectRelay.getClosestAtom(worldCoordFrom);
-			if (atom != null) {
-				System.out.println("Dragging atom: " + atom);
-				double offsetX = worldCoordFrom.x - atom.getPoint2d().x;
-				double offsetY = worldCoordFrom.y - atom.getPoint2d().y;
-				Point2d atomCoord = new Point2d(worldCoordTo.x - offsetX, worldCoordTo.y - offsetY);
+		if (chemObjectRelay != null && offset!=null) {
+//			IAtom atom = chemObjectRelay.getClosestAtom(worldCoordFrom);
+			
+				//System.out.println("Dragging atom: " + atom);
 				
-				atom.setPoint2d(atomCoord);
+				Point2d atomCoord = new Point2d();
+				atomCoord.add( worldCoordTo, offset );
+				switch(type) {
+				    case ATOM: chemObjectRelay.moveTo( atom, atomCoord );break;
+				    case BOND: chemObjectRelay.moveTo( bond, atomCoord );break;
+				    default: return;
+				}
+				
 				chemObjectRelay.updateView();
 				
-			}
+			
 		} else {
 			System.out.println("chemObjectRelay is NULL!");
 		}
@@ -128,7 +128,7 @@ public class Controller2DModuleMove implements IController2DModule {
 	public void mouseEnter(Point2d worldCoord) {
 		// TODO Auto-generated method stub
 		
-	}
+	} 
 
 	public void mouseExit(Point2d worldCoord) {
 		// TODO Auto-generated method stub

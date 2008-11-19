@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.vecmath.Point2d;
+import javax.vecmath.Vector2d;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -285,6 +286,32 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 		System.out.println("atom added??");
 
 	}
-	
-	
+
+    public void moveTo( IAtom atom, Point2d worldCoords ) {
+
+        if ( atom != null ) {
+
+            Point2d atomCoord = new Point2d( worldCoords );
+
+            atom.setPoint2d( atomCoord );
+            updateView();
+        }
+
+    }
+
+    public void moveTo( IBond bond, Point2d point ) {
+
+        if ( bond != null ) {
+            Point2d center = bond.get2DCenter();
+            for ( IAtom atom : bond.atoms() ) {
+                Vector2d  offset = new Vector2d();
+                offset.sub(  atom.getPoint2d(),center );
+                Point2d result = new Point2d();
+                result.add( point,offset );
+                
+                atom.setPoint2d( result);
+            }
+        }
+        updateView();
+    }
 }

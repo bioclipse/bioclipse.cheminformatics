@@ -50,4 +50,7 @@ public interface IChemModelRelay {
 	public abstract IChemModel getIChemModel();
 	public abstract void addAtom(String atomType, Point2d worldcoord);
 	
+	public abstract void moveTo(IAtom atom, Point2d point);
+	public abstract void moveTo(IBond bond, Point2d point);
+	
 }
