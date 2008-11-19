@@ -49,7 +49,8 @@ public class RenderingModel implements IRenderingElement,
     }
     
     public void add(IRenderingElement element) {
-        elements.add(element);
+        if(element != null)
+            elements.add(element);
     }
 
     public void setScale( double[] scale ) {
