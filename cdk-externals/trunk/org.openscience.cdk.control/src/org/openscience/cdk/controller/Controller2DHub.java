@@ -33,11 +33,14 @@ import java.util.Map;
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IBond.Order;
 import org.openscience.cdk.renderer.IJava2DRenderer;
+import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 /**
@@ -313,5 +316,51 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
             }
         }
         updateView();
+    }
+
+    public void addBond( IAtom fromAtom, IAtom toAtom ) {
+        IBond newBond = chemModel.getBuilder().newBond(fromAtom, toAtom);
+        chemModel.getMoleculeSet().getAtomContainer(0).addBond(newBond);
+        updateView();
+    }
+
+    public void setCharge(IAtom atom, int charge) {
+        atom.setFormalCharge(charge);
+        updateView();
+    }
+
+    public void setMassNumber(IAtom atom, int charge) {
+        atom.setMassNumber(charge);
+        updateView();
+    }
+
+    public void setOrder(IBond bond, Order order) {
+        bond.setOrder(order);
+        updateView();
+    }
+
+    public void setSymbol(IAtom atom, String symbol) {
+        atom.setSymbol(symbol);
+        updateView();
+    }
+
+    public void setWedgeType(IBond bond, int type) {
+        bond.setStereo(type);
+    }
+
+    public void updateImplicitHydrogenCounts() {
+        CDKHydrogenAdder hAdder = CDKHydrogenAdder
+            .getInstance(chemModel.getBuilder());
+        for (IAtomContainer container :
+             ChemModelManipulator.getAllAtomContainers(chemModel)) {
+            for (IAtom atom : container.atoms()) {
+                try {
+                    hAdder.addImplicitHydrogens(container, atom);
+                } catch ( CDKException e ) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

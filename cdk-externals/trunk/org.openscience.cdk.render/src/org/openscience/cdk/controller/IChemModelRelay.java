@@ -58,7 +58,7 @@ public interface IChemModelRelay {
     /* Editing actions for bonds */
     public abstract void addBond(IAtom fromAtom, IAtom toAtom);
     public abstract void moveTo(IBond bond, Point2d point);
-    public abstract void setOrder(IBond bond);
+    public abstract void setOrder(IBond bond, IBond.Order order);
     public abstract void setWedgeType(IBond bond, int type);
 	
 }
