@@ -36,21 +36,18 @@ import org.openscience.cdk.renderer.IJava2DRenderer;
  */
 public interface IChemModelRelay {
 
-	public abstract IAtom getClosestAtom(Point2d worldCoord);
-	
-	public abstract void removeAtom(IAtom atom);
+    /* Interaction*/
+    public abstract IController2DModel getController2DModel();
+    public abstract IJava2DRenderer getIJava2DRenderer();
+    public abstract IChemModel getIChemModel();
+    public abstract IAtom getClosestAtom(Point2d worldCoord);
+    public abstract IBond getClosestBond(Point2d worldCoord);
+    public abstract void updateView();
 
-	public abstract IBond getClosestBond(Point2d worldCoord);
-
-	public abstract void updateView();
-	
-	public abstract IController2DModel getController2DModel();
-
-	public abstract IJava2DRenderer getIJava2DRenderer();
-	public abstract IChemModel getIChemModel();
-	public abstract void addAtom(String atomType, Point2d worldcoord);
-	
-	public abstract void moveTo(IAtom atom, Point2d point);
-	public abstract void moveTo(IBond bond, Point2d point);
+    /* Editing actions */
+    public abstract void removeAtom(IAtom atom);
+    public abstract void addAtom(String atomType, Point2d worldcoord);
+    public abstract void moveTo(IAtom atom, Point2d point);
+    public abstract void moveTo(IBond bond, Point2d point);
 	
 }
