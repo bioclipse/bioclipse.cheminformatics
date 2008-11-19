@@ -40,6 +40,8 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.renderer.IJava2DRenderer;
 
+import sun.security.acl.WorldGroupImpl;
+
 
 /**
  * Demo IController2DModule.
@@ -71,21 +73,37 @@ public class Controller2DModuleMove implements IController2DModule {
 		
 	}
 
+	private Type getClosest(IAtom atom,IBond bond,Point2d worldCoord) {
+	    if(atom == null && bond == null) return Type.NONE;
+	    if(atom!= null && bond != null) {
+	        double atomDist = atom.getPoint2d().distance( worldCoord );
+	        double bondDist = bond.get2DCenter().distance( worldCoord );
+	        if(bondDist >= atomDist)
+	            return Type.ATOM;
+	        else return Type.BOND;
+	    }
+	    if(atom != null) 
+	        return Type.ATOM;
+	    else
+	        return Type.BOND;
+	}
+	
 	public void mouseClickedDown(Point2d worldCoord) {
 	
 		Point2d current=null;
-		if((atom = chemObjectRelay.getClosestAtom( worldCoord ))!=null) {
-		    type = Type.ATOM;
-		    current = atom.getPoint2d();
-		} else if((bond = chemObjectRelay.getClosestBond( worldCoord ))!=null){
-		    
-		    type = Type.BOND;
-		    current = bond.get2DCenter();
-		} else type = Type.NONE;
-		if(current !=null) {
+		atom = chemObjectRelay.getClosestAtom( worldCoord );
+		bond = chemObjectRelay.getClosestBond( worldCoord );
+		
+		type = getClosest( atom, bond, worldCoord );
+		switch(type) {
+		    case ATOM: current = atom.getPoint2d();bond=null;break;
+		    case BOND: current = bond.get2DCenter();atom=null;break;
+		    default : return;		    
+		}
+		
 		offset = new Vector2d();
 		offset.sub( current, worldCoord );
-		}
+		
 	}
 
 	
