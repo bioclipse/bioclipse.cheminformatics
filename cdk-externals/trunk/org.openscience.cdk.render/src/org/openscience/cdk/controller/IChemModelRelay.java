@@ -49,7 +49,8 @@ public interface IChemModelRelay {
 
     /* Editing actions for atoms */
     public abstract void removeAtom(IAtom atom);
-    public abstract void addAtom(String atomType, Point2d worldcoord);
+    public abstract void addAtom(String element, Point2d worldcoord);
+    public abstract void addAtom(String element, IAtom atom);
     public abstract void moveTo(IAtom atom, Point2d point);
     public abstract void setSymbol(IAtom atom, String symbol);
     public abstract void setCharge(IAtom atom, int charge);

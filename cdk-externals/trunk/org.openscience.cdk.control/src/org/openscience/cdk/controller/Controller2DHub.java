@@ -34,11 +34,13 @@ import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IBond.Order;
+import org.openscience.cdk.layout.AtomPlacer;
 import org.openscience.cdk.renderer.IJava2DRenderer;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
@@ -290,6 +292,32 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 
 	}
 
+    public void addAtom(String atomType, IAtom atom) {
+        IAtom newAtom = chemModel.getBuilder().newAtom(atomType);
+        IBond newBond = chemModel.getBuilder().newBond(atom, newAtom);
+        IAtomContainer atomCon = chemModel.getMoleculeSet().getAtomContainer(0);
+        
+        // The AtomPlacer generates coordinates for the new atom
+        AtomPlacer atomPlacer = new AtomPlacer();
+        atomPlacer.setMolecule(chemModel.getBuilder().newMolecule(atomCon));
+        double bondLength = GeometryTools.getBondLengthAverage(atomCon);
+        
+        // determine the atoms which define where the new atom should not be
+        // placed
+        List<IAtom> connectedAtoms = atomCon.getConnectedAtomsList(atom);
+        IAtomContainer placedAtoms = atomCon.getBuilder().newAtomContainer();
+        for (IAtom conAtom : connectedAtoms) placedAtoms.addAtom(conAtom);
+        Point2d center2D = GeometryTools.get2DCenter(placedAtoms);
+        
+        IAtomContainer unplacedAtoms = atomCon.getBuilder().newAtomContainer();
+        unplacedAtoms.addAtom(newAtom);
+        atomPlacer.distributePartners(atom, placedAtoms, center2D,
+                                      unplacedAtoms, bondLength);
+
+        atomCon.addAtom(newAtom);
+        atomCon.addBond(newBond);
+    }
+    
     public void moveTo( IAtom atom, Point2d worldCoords ) {
 
         if ( atom != null ) {
