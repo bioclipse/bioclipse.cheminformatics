@@ -28,6 +28,7 @@ import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.RenderingModel;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator;
 import org.openscience.cdk.renderer.generators.BasicGenerator;
+import org.openscience.cdk.renderer.generators.HighlightGenerator;
 
 /**
  * @author arvid
@@ -46,7 +47,7 @@ public class JChemPaintWidget extends Canvas {
         setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
         currentTransform = new Transform(getDisplay());
         renderer2DModel = new Renderer2DModel();
-
+        renderer2DModel.setAtomRadius( 20 );
         addPaintListener( new PaintListener() {
 
             public void paintControl( PaintEvent event ) {
@@ -97,18 +98,25 @@ public class JChemPaintWidget extends Canvas {
 
         BasicBondGenerator gen2 = new BasicBondGenerator( atomContainer,
                                                           renderer2DModel );
+        HighlightGenerator gen3 = new HighlightGenerator( atomContainer,
+                                                          renderer2DModel);
+        
         for ( IBond bond : atomContainer.bonds() ) {
             IRenderingElement element = gen2.generate( bond );
-            if ( element != null )
-                model.add( element );
+            if ( element != null ) {
+                model.add( element );                
+            }
+            model.add( gen3.generate( bond ));
         }
 
         BasicGenerator generator = new BasicGenerator( atomContainer,
                                                        renderer2DModel );
         for ( IAtom atom : atomContainer.atoms() ) {
             IRenderingElement element = generator.generate( atom );
-            if ( element != null )
+            if ( element != null ) {
                 model.add( element );
+            }
+            model.add( gen3.generate( atom ));
         }
 
         return model;

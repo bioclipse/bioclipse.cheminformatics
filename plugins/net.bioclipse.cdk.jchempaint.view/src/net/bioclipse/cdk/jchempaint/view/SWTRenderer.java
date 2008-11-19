@@ -72,13 +72,25 @@ public class SWTRenderer implements IRenderingVisitor{
 
     public void visitOval( OvalElement element ) {
         Color colorOld = gc.getBackground();
+//        int radius = (int) (scaleX(element.getRadius())+.5);
+//        int radius_2 = (int) (scaleX(element.getRadius())/2.0+.5);
+        int radius = (int) ((element.getRadius())+.5);
+        int radius_2 = (int) ((element.getRadius())/2.0+.5);
+        if(element.isFilled()) {
         gc.setBackground( toSWTColor( gc, element.getColor() ) );
-        int radius = (int) (scaleX(element.getRadius())+.5);
-        int radius_2 = (int) (scaleX(element.getRadius())/2.0+.5);
+        
         gc.fillOval( scaleX(element.getX())-radius_2, 
                      scaleY(element.getY())-radius_2, 
                      radius,
-                     radius );   
+                     radius );
+        } else {
+            gc.setForeground(  toSWTColor( gc, element.getColor() ) );
+            
+            gc.drawOval( scaleX(element.getX())-radius_2, 
+                         scaleY(element.getY())-radius_2, 
+                         radius,
+                         radius );
+        }
         gc.setBackground( colorOld);
     }
 
@@ -177,10 +189,10 @@ public class SWTRenderer implements IRenderingVisitor{
         if(val <= 0) return; // end recursion if less than 1
         int width = (int) (element.getWidth()*val+element.getGap()*(val-1)+.5);
         // switch foreground and background
-        if(gc.getForeground().equals( getForgroundColor() ))
+        if(!gc.getForeground().equals( getBackgroundColor() ))
             gc.setForeground( getBackgroundColor() );
         else
-            gc.setForeground( getForgroundColor() );
+            gc.setForeground( toSWTColor( gc, element.getColor() ) );
         gc.setLineWidth( width );
         drawLine(element);
         
