@@ -384,4 +384,10 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
             }
         }
     }
+    public void zap() {
+        for (IAtomContainer container :
+            ChemModelManipulator.getAllAtomContainers(chemModel)) {
+            container.removeAllElements();
+        }
+    }
 }
