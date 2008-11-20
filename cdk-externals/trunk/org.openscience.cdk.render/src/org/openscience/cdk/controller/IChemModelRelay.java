@@ -48,6 +48,7 @@ public interface IChemModelRelay {
     public abstract void updateImplicitHydrogenCounts();
     public void zap();
     public void addRing(IAtom atom, int size);
+    public void addPhenyl(IAtom atom);
 //    public void addRing(IBond atom, int size);
     public void cleanup();
 //    public abstract void cleanupSelection(Selector sectionIdentifier);

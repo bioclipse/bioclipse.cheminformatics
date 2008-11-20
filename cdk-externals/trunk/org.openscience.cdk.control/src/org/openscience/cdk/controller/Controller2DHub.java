@@ -34,6 +34,7 @@ import java.util.Map;
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
+import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
@@ -438,19 +439,28 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
     }
 
     public void addRing(IAtom atom, int ringSize) {
+        addRing(atom, ringSize, false);
+    }
+
+    public void addPhenyl(IAtom atom) {
+        addRing(atom, 6, true);
+    }
+
+    private void addRing(IAtom atom, int ringSize, boolean makeBenzene) {
+        if (makeBenzene && ringSize != 6) // explode!
+            return;
         IAtomContainer sourceContainer = ChemModelManipulator.getRelevantAtomContainer(chemModel, atom);
         IAtomContainer sharedAtoms = atom.getBuilder().newAtomContainer();
         sharedAtoms.addAtom(atom);
         Point2d sharedAtomsCenter = GeometryTools.get2DCenter(sharedAtoms);
         IRing newRing = createAttachRing(sharedAtoms, ringSize, "C");
-//        if (c2dm.getDrawMode() == Controller2DModel.BENZENERING)
-//        {
-//          // make newRing a benzene ring
-//          newRing.getBond(0).setOrder(2.0);
-//          newRing.getBond(2).setOrder(2.0);
-//          newRing.getBond(4).setOrder(2.0);
-//          makeRingAromatic(newRing);
-//        }
+        if (makeBenzene) {
+            // make newRing a benzene ring
+            newRing.getBond(0).setOrder(IBond.Order.DOUBLE);
+            newRing.getBond(2).setOrder(IBond.Order.DOUBLE);
+            newRing.getBond(4).setOrder(IBond.Order.DOUBLE);
+            makeRingAromatic(newRing);
+        }
         double bondLength = GeometryTools.getBondLengthAverage(sourceContainer);
         Point2d conAtomsCenter = getConnectedAtomsCenter(sharedAtoms, chemModel);
         Vector2d ringCenterVector = new Vector2d(sharedAtomsCenter);
@@ -467,6 +477,12 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
         sourceContainer.add(newRing);
     }
 
+    private void makeRingAromatic(IRing newRing) {
+        for (IAtom atom : newRing.atoms())
+            atom.setFlag(CDKConstants.ISAROMATIC, true);
+        for (IBond bond : newRing.bonds())
+            bond.setFlag(CDKConstants.ISAROMATIC, true);
+    }
     /**
      * Constructs a new Ring of a certain size that contains all the atoms and
      * bonds of the given AtomContainer and is filled up with new Atoms and Bonds.
