@@ -1,6 +1,7 @@
 /* $Revision: 7636 $ $Author: egonw $ $Date: 2007-01-04 18:46:10 +0100 (Thu, 04 Jan 2007) $
  *
- * Copyright (C) 2007  Egon Willighagen <egonw@users.sf.net>
+ * Copyright (C) 2007-2008  Egon Willighagen <egonw@users.sf.net>
+ *               2005       Christoph Steinbeck <steinbeck@users.sf.net>
  *
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -39,8 +40,13 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IBond.Order;
 import org.openscience.cdk.layout.AtomPlacer;
+import org.openscience.cdk.layout.StructureDiagramGenerator;
+import org.openscience.cdk.layout.TemplateHandler;
+import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.renderer.IJava2DRenderer;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
@@ -66,6 +72,8 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 	
 	private List<IController2DModule> generalModules;
 	private Map<Controller2DModel.DrawMode,IController2DModule> drawModeModules;
+	
+	private StructureDiagramGenerator diagramGenerator;
 	
 	public Controller2DHub(IController2DModel controllerModel,
 		                   IJava2DRenderer renderer,
@@ -384,10 +392,46 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
             }
         }
     }
+
     public void zap() {
         for (IAtomContainer container :
             ChemModelManipulator.getAllAtomContainers(chemModel)) {
             container.removeAllElements();
         }
     }
+
+    public void cleanup() {
+        IChemObjectBuilder builder = 
+            NoNotificationChemObjectBuilder.getInstance();
+        if (diagramGenerator == null) {
+            diagramGenerator = new StructureDiagramGenerator();
+            diagramGenerator.setTemplateHandler(
+                new TemplateHandler(builder)
+            );
+        }
+        for (IAtomContainer container :
+            ChemModelManipulator.getAllAtomContainers(chemModel)) {
+            for (IAtom atom : container.atoms()) atom.setPoint2d(null);
+            diagramGenerator.setMolecule(
+                container instanceof IMolecule ? (IMolecule)container :
+                    builder.newMolecule(container)
+            );
+            try {
+                diagramGenerator.generateExperimentalCoordinates(
+                    new Vector2d(0,1)
+                );
+                IMolecule cleanedMol = diagramGenerator.getMolecule();
+                // now copy/paste coordinates
+                for (int i=0; i<cleanedMol.getAtomCount(); i++) {
+                    container.getAtom(i).setPoint2d(
+                         cleanedMol.getAtom(i).getPoint2d()
+                    );
+                }
+            } catch ( Exception e ) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

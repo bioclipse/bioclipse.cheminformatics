@@ -49,7 +49,7 @@ public interface IChemModelRelay {
     public void zap();
 //    public void addRing(IAtom atom, int size);
 //    public void addRing(IBond atom, int size);
-//    public abstract void cleanup();
+    public void cleanup();
 //    public abstract void cleanupSelection(Selector sectionIdentifier);
 
     /* Editing actions for atoms */

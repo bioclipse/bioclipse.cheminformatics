@@ -15,5 +15,6 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.valencycheck,
  org.openscience.cdk.sdg,
  javax.vecmath,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.openscience.cdk.nonotify;bundle-version="1.1.0"
 Export-Package: org.openscience.cdk.controller
