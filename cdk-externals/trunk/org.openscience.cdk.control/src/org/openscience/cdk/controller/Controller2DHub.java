@@ -42,8 +42,10 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.interfaces.IBond.Order;
 import org.openscience.cdk.layout.AtomPlacer;
+import org.openscience.cdk.layout.RingPlacer;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.layout.TemplateHandler;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
@@ -74,6 +76,7 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 	private Map<Controller2DModel.DrawMode,IController2DModule> drawModeModules;
 	
 	private StructureDiagramGenerator diagramGenerator;
+	private final static RingPlacer ringPlacer = new RingPlacer();
 	
 	public Controller2DHub(IController2DModel controllerModel,
 		                   IJava2DRenderer renderer,
@@ -434,4 +437,87 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
         }
     }
 
+    public void addRing(IAtom atom, int ringSize) {
+        IAtomContainer sourceContainer = ChemModelManipulator.getRelevantAtomContainer(chemModel, atom);
+        IAtomContainer sharedAtoms = atom.getBuilder().newAtomContainer();
+        sharedAtoms.addAtom(atom);
+        Point2d sharedAtomsCenter = GeometryTools.get2DCenter(sharedAtoms);
+        IRing newRing = createAttachRing(sharedAtoms, ringSize, "C");
+//        if (c2dm.getDrawMode() == Controller2DModel.BENZENERING)
+//        {
+//          // make newRing a benzene ring
+//          newRing.getBond(0).setOrder(2.0);
+//          newRing.getBond(2).setOrder(2.0);
+//          newRing.getBond(4).setOrder(2.0);
+//          makeRingAromatic(newRing);
+//        }
+        double bondLength = GeometryTools.getBondLengthAverage(sourceContainer);
+        Point2d conAtomsCenter = getConnectedAtomsCenter(sharedAtoms, chemModel);
+        Vector2d ringCenterVector = new Vector2d(sharedAtomsCenter);
+        ringCenterVector.sub(conAtomsCenter);
+        ringPlacer.placeSpiroRing(newRing, sharedAtoms, sharedAtomsCenter, ringCenterVector, bondLength);
+        // removes the highlighted atom from the ring to add only the new placed
+        // atoms to the AtomContainer.
+        try {
+            newRing.removeAtom(atom);
+        } catch (Exception exc) {
+            System.out.println("Could not remove atom from ring");
+            exc.printStackTrace();
+        }
+        sourceContainer.add(newRing);
+    }
+
+    /**
+     * Constructs a new Ring of a certain size that contains all the atoms and
+     * bonds of the given AtomContainer and is filled up with new Atoms and Bonds.
+     *
+     * @param  sharedAtoms  The AtomContainer containing the Atoms and bonds for the
+     *                      new Ring
+     * @param  ringSize     The size (number of Atoms) the Ring will have
+     * @param  symbol       The element symbol the new atoms will have
+     * @return              The constructed Ring
+     */
+    private IRing createAttachRing(IAtomContainer sharedAtoms, int ringSize, String symbol) {
+        IRing newRing = sharedAtoms.getBuilder().newRing(ringSize);
+        IAtom[] ringAtoms = new IAtom[ringSize];
+        for (int i = 0; i < sharedAtoms.getAtomCount(); i++) {
+            ringAtoms[i] = sharedAtoms.getAtom(i);
+        }
+        for (int i = sharedAtoms.getAtomCount(); i < ringSize; i++) {
+            ringAtoms[i] = sharedAtoms.getBuilder().newAtom(symbol);
+        }
+        for (IBond bond : sharedAtoms.bonds()) newRing.addBond(bond);
+        for (int i = sharedAtoms.getBondCount(); i < ringSize - 1; i++) {
+            newRing.addBond(sharedAtoms.getBuilder().newBond(
+                ringAtoms[i], ringAtoms[i + 1], IBond.Order.SINGLE)
+            );
+        }
+        newRing.addBond(sharedAtoms.getBuilder().newBond(
+            ringAtoms[ringSize - 1], ringAtoms[0], IBond.Order.SINGLE)
+        );
+        newRing.setAtoms(ringAtoms);
+        return newRing;
+    }
+
+    /**
+     * Searches all the atoms attached to the Atoms in the given AtomContainer and
+     * calculates the center point of them.
+     *
+     * @param  sharedAtoms  The Atoms the attached partners are searched of
+     * @return              The Center Point of all the atoms found
+     */
+    private Point2d getConnectedAtomsCenter(IAtomContainer sharedAtoms, 
+                                            IChemModel chemModel) {
+        IAtomContainer conAtoms = sharedAtoms.getBuilder().newAtomContainer();
+        for (IAtom sharedAtom : sharedAtoms.atoms()) {
+            conAtoms.addAtom(sharedAtom);
+            IAtomContainer atomCon = 
+                ChemModelManipulator.getRelevantAtomContainer(chemModel, 
+                                                              sharedAtom);
+            for (IAtom atom : atomCon.getConnectedAtomsList(sharedAtom)) {
+                conAtoms.addAtom(atom);
+            }
+        }
+        return GeometryTools.get2DCenter(conAtoms);
+    }
 }
