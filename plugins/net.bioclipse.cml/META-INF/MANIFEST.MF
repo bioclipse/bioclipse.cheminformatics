@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Chemical Markup Language
 Bundle-SymbolicName: net.bioclipse.cml;singleton:=true
-Bundle-Version: 2.0.0.A20081028
+Bundle-Version: 2.0.0.A20081121
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

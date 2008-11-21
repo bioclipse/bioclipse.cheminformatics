@@ -2,7 +2,7 @@
 <feature
       id="net.bioclipse.chemoinformatics_feature"
       label="Bioclipse Chemoinformatics"
-      version="2.0.0.A20081028"
+      version="2.0.0.A20081121"
       provider-name="The Bioclipse Team"
       plugin="net.bioclipse.cdk.ui">
 
@@ -33,8 +33,7 @@ http://www.eclipse.org/legal/epl-v10.html
    </url>
 
    <requires>
-      <import feature="net.bioclipse_feature" version="2.0.0.A20080808" match="greaterOrEqual"/>
-      <import plugin="net.bioclipse.core" version="2.0.0.A20081028" match="greaterOrEqual"/>
+      <import feature="net.bioclipse_feature" version="2.0.0.A20081121" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -46,27 +45,6 @@ http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="net.bioclipse.cdk.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="net.bioclipse.cdk10"
-         download-size="17300"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="net.bioclipse.cdk10.jchempaint"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="net.bioclipse.cdk10.sdfeditor"
          download-size="0"
          install-size="0"
          version="0.0.0"
