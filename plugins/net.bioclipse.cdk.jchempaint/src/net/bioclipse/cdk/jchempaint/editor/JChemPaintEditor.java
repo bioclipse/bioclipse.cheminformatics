@@ -12,6 +12,7 @@
 package net.bioclipse.cdk.jchempaint.editor;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.jchempaint.outline.JCPOutlinePage;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 
 import org.eclipse.core.resources.IFile;
@@ -23,6 +24,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.controller.Controller2DHub;
 import org.openscience.cdk.controller.IController2DModel;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -30,6 +32,9 @@ import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
 import org.openscience.cdk.interfaces.IChemObjectListener;
 
 public class JChemPaintEditor extends EditorPart{
+    
+    private JCPOutlinePage fOutlinePage;
+    
     boolean dirty=false;
 	ICDKMolecule model;
 	JChemPaintEditorWidget widget;
@@ -129,5 +134,15 @@ public class JChemPaintEditor extends EditorPart{
     public ICDKMolecule getCDKMolecule() {
         return model;
     }
-    
+
+    public Object getAdapter(Class adapter) {
+        if (IContentOutlinePage.class.equals(adapter)) {
+            if (fOutlinePage == null) {
+                fOutlinePage= new JCPOutlinePage(getEditorInput(), this);
+            }
+            return fOutlinePage;
+        }
+        return super.getAdapter(adapter);
+    }
+
 }
