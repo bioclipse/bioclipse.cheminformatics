@@ -3,6 +3,7 @@ package net.bioclipse.cdk.jchempaint.view;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Map;
+import static java.lang.Math.round;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
@@ -19,11 +20,11 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Region;
 import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.IRenderingVisitor;
 import org.openscience.cdk.renderer.elements.LineElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
-import org.openscience.cdk.renderer.elements.RenderingModel;
 import org.openscience.cdk.renderer.elements.TextElement;
 import org.openscience.cdk.renderer.elements.WedgeLineElement;
 
@@ -63,7 +64,7 @@ public class SWTRenderer implements IRenderingVisitor{
         return (int)(v*f+.5);
     }
     
-    public void render(RenderingModel renderingModel) {
+    public void render(ElementGroup renderingModel) {
         for(IRenderingElement re:renderingModel ) {
            re.accept( this );
         }
@@ -74,20 +75,20 @@ public class SWTRenderer implements IRenderingVisitor{
         Color colorOld = gc.getBackground();
 //        int radius = (int) (scaleX(element.getRadius())+.5);
 //        int radius_2 = (int) (scaleX(element.getRadius())/2.0+.5);
-        int radius = (int) ((element.getRadius())+.5);
-        int radius_2 = (int) ((element.getRadius())/2.0+.5);
-        if(element.isFilled()) {
-        gc.setBackground( toSWTColor( gc, element.getColor() ) );
+        int radius = (int)round( element.radius);
+        int radius_2 = (int)round( element.radius/2d );
+        if(element.fill) {
+        gc.setBackground( toSWTColor( gc, element.color ) );
         
-        gc.fillOval( scaleX(element.getX())-radius_2, 
-                     scaleY(element.getY())-radius_2, 
+        gc.fillOval( scaleX(element.x)-radius_2, 
+                     scaleY(element.y)-radius_2, 
                      radius,
                      radius );
         } else {
-            gc.setForeground(  toSWTColor( gc, element.getColor() ) );
+            gc.setForeground(  toSWTColor( gc, element.color ) );
             
-            gc.drawOval( scaleX(element.getX())-radius_2, 
-                         scaleY(element.getY())-radius_2, 
+            gc.drawOval( scaleX(element.x)-radius_2, 
+                         scaleY(element.y)-radius_2, 
                          radius,
                          radius );
         }
@@ -98,7 +99,7 @@ public class SWTRenderer implements IRenderingVisitor{
         Color colorOld = gc.getBackground();
         // init recursion with background to get the first draw with foreground
         gc.setForeground( getBackgroundColor() ); 
-        drawLineX( element, element.type().count() );
+        drawLineX( element, element.type.count() );
             
         gc.setBackground( colorOld);
     }
@@ -113,16 +114,17 @@ public class SWTRenderer implements IRenderingVisitor{
     }
     
     private void drawWedge(WedgeLineElement element) {
-        Point2d p1 = new Point2d( scaleX(element.getX()),
-                                  scaleY(element.getY()));
-        Point2d p2 = new Point2d( scaleX(element.getX1()),
-                                  scaleY(element.getY1()));
+        double width = element.width;
+        Point2d p1 = new Point2d( scaleX(element.x1),
+                                  scaleY(element.y2));
+        Point2d p2 = new Point2d( scaleX(element.x2),
+                                  scaleY(element.y2));
         Vector2d p12 = new Vector2d(p2);p12.sub( p1 );
         Vector2d v12n = new Vector2d(p12.y,-p12.x); // normal for p12
         v12n.normalize();
         //   wedge thickness is based on line width probably better to be based
         //  on text size
-        double l = element.getWidth()*4/2; 
+        double l = width*4/2; 
         Vector2d pa = new Vector2d(v12n);pa.scale( l );
         Vector2d pb = new Vector2d(v12n);pb.scale(-l);
         v12n.scale( l);
@@ -130,9 +132,9 @@ public class SWTRenderer implements IRenderingVisitor{
         Point2d p1a = new Point2d();p1a.add( p1, v12n );
         Point2d p1b = new Point2d();p1b.sub( p1, v12n );
         
-        gc.setLineWidth( (int) element.getWidth() );
-        if(element.isDashed())
-            drawDashedWedge( p1a, p1b, p2, element.getWidth() );
+        gc.setLineWidth( (int) width );
+        if(element.isDashed)
+            drawDashedWedge( p1a, p1b, p2, width );
         else
             drawFilledWedge( p1a, p1b, p2);
         
@@ -179,27 +181,27 @@ public class SWTRenderer implements IRenderingVisitor{
     }
 
     private void drawLine(LineElement element) {
-        gc.drawLine( scaleX(element.getX()),
-                     scaleY(element.getY()),
-                     scaleX(element.getX1()),
-                     scaleY(element.getY1()));
+        gc.drawLine( scaleX(element.x1),
+                     scaleY(element.y1),
+                     scaleX(element.x2),
+                     scaleY(element.y2));
     }
     
     private void drawLineX(LineElement element, int val) {
         if(val <= 0) return; // end recursion if less than 1
-        int width = (int) (element.getWidth()*val+element.getGap()*(val-1)+.5);
+        int width = (int) (element.width*val+element.gap*(val-1)+.5);
         // switch foreground and background
         if(!gc.getForeground().equals( getBackgroundColor() ))
             gc.setForeground( getBackgroundColor() );
         else
-            gc.setForeground( toSWTColor( gc, element.getColor() ) );
+            gc.setForeground( toSWTColor( gc, element.color ) );
         gc.setLineWidth( width );
         drawLine(element);
         
         drawLineX(element, val-1);
     }
     
-    public void visitModel( RenderingModel model ) {
+    public void visitModel( ElementGroup model ) {
 
         for(IRenderingElement element:model) {
             element.accept( this );
@@ -208,9 +210,9 @@ public class SWTRenderer implements IRenderingVisitor{
     
     public void visitText( TextElement element ) {
 
-        int x = scaleX(element.getPosition().getX());
-        int y = scaleY(element.getPosition().getY());
-        String text = element.getText();
+        int x = scaleX(element.x);
+        int y = scaleY(element.y);
+        String text = element.text;
         int fontSize = (int) (scaleX*.4);
         fontSize = (fontSize<12?12:fontSize);
         fontSize = (fontSize>100?100:fontSize);
@@ -219,7 +221,7 @@ public class SWTRenderer implements IRenderingVisitor{
         Point textSize = gc.textExtent( text );
         x = x - textSize.x/2;
         y = y - textSize.y/2;
-        gc.setForeground( toSWTColor( gc, element.getColor() ) );
+        gc.setForeground( toSWTColor( gc, element.color ) );
         gc.setBackground(  getBackgroundColor() );
         gc.setAdvanced( true );
         gc.drawText( text, x, y, true );
@@ -304,7 +306,7 @@ public class SWTRenderer implements IRenderingVisitor{
     public  Color toSWTColor(GC graphics,java.awt.Color color) {
         if(cleanUp == null) 
             cleanUp = new HashMap<java.awt.Color,Color>();
-        if(color == null) color = IRenderingElement.defaultColor;
+        if(color == null) return graphics.getDevice().getSystemColor( SWT.COLOR_DARK_MAGENTA );
         assert(color != null);
         Color otherColor=cleanUp.get(color);
         if(otherColor==null){
@@ -323,5 +325,16 @@ public class SWTRenderer implements IRenderingVisitor{
           cleanUp.clear();
     }
 
+    public void visitElementGroup( ElementGroup elementGroup ) {
+
+        for(IRenderingElement element:elementGroup) {
+            element.accept( this );
+        }
+        
+    }
+    public void setScale(double scale) {
+        scaleX = scale;
+        scaleY = scale;
+    }
     
 }
