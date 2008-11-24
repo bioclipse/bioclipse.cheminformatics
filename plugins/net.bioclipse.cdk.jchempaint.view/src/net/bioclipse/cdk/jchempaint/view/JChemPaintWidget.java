@@ -8,7 +8,13 @@
 package net.bioclipse.cdk.jchempaint.view;
 
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.vecmath.Point2d;
 
@@ -23,12 +29,17 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.renderer.IJava2DRenderer;
+import org.openscience.cdk.renderer.Java2DRenderer;
+import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
-import org.openscience.cdk.renderer.elements.RenderingModel;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator;
 import org.openscience.cdk.renderer.generators.BasicGenerator;
 import org.openscience.cdk.renderer.generators.HighlightGenerator;
+import org.openscience.cdk.renderer.generators.IGenerator;
 
 /**
  * @author arvid
@@ -40,6 +51,7 @@ public class JChemPaintWidget extends Canvas {
     IAtomContainer  atomContainer;
     Renderer2DModel renderer2DModel;
     Transform currentTransform;
+    Renderer renderer;
 
     public JChemPaintWidget(Composite parent, int style) {
 
@@ -48,6 +60,14 @@ public class JChemPaintWidget extends Canvas {
         currentTransform = new Transform(getDisplay());
         renderer2DModel = new Renderer2DModel();
         renderer2DModel.setAtomRadius( 20 );
+        
+        Collection<IGenerator> set = new ArrayList<IGenerator>();
+        set.add( new BasicBondGenerator(renderer2DModel) );
+        set.add( new BasicAtomGenerator(renderer2DModel));
+        set.add( new HighlightGenerator(renderer2DModel) );
+        
+        renderer = new Renderer(set);
+        renderer.setRenderer2DModel( renderer2DModel );
         addPaintListener( new PaintListener() {
 
             public void paintControl( PaintEvent event ) {
@@ -61,13 +81,12 @@ public class JChemPaintWidget extends Canvas {
 
         if ( atomContainer == null )
             return;
-        RenderingModel model = new RenderingModel();
+        renderer.setBounds( new Rectangle2D.Double(0,0,this.getSize().x,this.getSize().y ));
+        ElementGroup model  = new ElementGroup();
         Point size = getSize();
         Dimension sizeWithMargin = new Dimension( size.x-MARGIN*2, size.y-MARGIN*2 );
         Dimension  dim = new Dimension( size.x, size.y );
         double[] scalse = model.getDimensions( atomContainer, sizeWithMargin );
-
-        RenderingModel renderingModel = generateRenderingModel( model );
         
         Point2D center = model.center( dim );
         
@@ -81,45 +100,15 @@ public class JChemPaintWidget extends Canvas {
         
         Transform transform = new Transform( event.gc.getDevice() );
         transform.translate( (float) center.getX(), (float) center.getY() );
-        
         event.gc.setTransform( transform );
-        
-        SWTRenderer renderer = new SWTRenderer( event.gc, renderer2DModel, scalse );
-        renderingModel.accept( renderer );
+        SWTRenderer visitor = new SWTRenderer( event.gc, renderer2DModel, scalse );
+        renderer.paintMolecule( atomContainer, visitor );
     }
     
     public Point2d getCoorFromScreen(int screenX, int screenY) {
         float[] pointArray = new float[] {screenX,screenY};
         currentTransform.transform( pointArray );
         return new Point2d(pointArray[0],pointArray[1]);
-    }
-
-    private RenderingModel generateRenderingModel( RenderingModel model ) {
-
-        BasicBondGenerator gen2 = new BasicBondGenerator( atomContainer,
-                                                          renderer2DModel );
-        HighlightGenerator gen3 = new HighlightGenerator( atomContainer,
-                                                          renderer2DModel);
-        
-        for ( IBond bond : atomContainer.bonds() ) {
-            IRenderingElement element = gen2.generate( bond );
-            if ( element != null ) {
-                model.add( element );                
-            }
-            model.add( gen3.generate( bond ));
-        }
-
-        BasicGenerator generator = new BasicGenerator( atomContainer,
-                                                       renderer2DModel );
-        for ( IAtom atom : atomContainer.atoms() ) {
-            IRenderingElement element = generator.generate( atom );
-            if ( element != null ) {
-                model.add( element );
-            }
-            model.add( gen3.generate( atom ));
-        }
-
-        return model;
     }
 
     public void setAtomContainer( IAtomContainer atomContainer ) {
@@ -143,6 +132,42 @@ public class JChemPaintWidget extends Canvas {
         if(isVisible() != show)
             setVisible( show );
         redraw();
+    }
+    
+    public IJava2DRenderer getRenderer() {
+        return new IJava2DRenderer() {
+
+            public Point2d getCoorFromScreen( int screenX, int screenY ) {
+
+                return renderer.getCoorFromScreen( screenX, screenY );
+            }
+
+            public Renderer2DModel getRenderer2DModel() {
+
+                return JChemPaintWidget.this.getRenderer2DModel();
+            }
+
+            public void paintMolecule( IAtomContainer atomCon,
+                                       Graphics2D graphics ) {
+
+                throw new UnsupportedOperationException("paintMolecule not supported from Controller2DHub");
+                
+            }
+
+            public void paintMolecule( IAtomContainer atomCon,
+                                       Graphics2D graphics, Rectangle2D bounds ) {
+
+                throw new UnsupportedOperationException("paintMolecule not supported from Controller2DHub");
+                
+            }
+
+            public void setRenderer2DModel( Renderer2DModel model ) {
+
+                throw new UnsupportedOperationException("setRenderer2DModel not supported from Controller2DHub");
+                
+            }
+            
+        };
     }
     
     @Override
