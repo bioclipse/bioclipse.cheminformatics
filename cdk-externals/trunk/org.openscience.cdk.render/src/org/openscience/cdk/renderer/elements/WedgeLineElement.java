@@ -20,53 +20,38 @@
  */
 package org.openscience.cdk.renderer.elements;
 
-import javax.vecmath.Point2d;
+import java.awt.Color;
 
 /**
- * @cdk.module  render
+ * @cdk.module render
  */
 public class WedgeLineElement extends LineElement {
 
-    boolean dashed;
-    Direction direction;
-    
-    public enum Direction {
-        toFirst,
-        toSecond;
-    }
-    
-    public WedgeLineElement( Point2d p1, 
-                             Point2d p2, 
-                             double width, 
-                             double gap,
-                             boolean dashed,
-                             Direction direction) {
-        super(p1,p2,LineType.SINGLE,width,gap);
-        this.dashed = dashed;
-        this.direction = direction;
-    }
+	public final boolean isDashed;
+	public final Direction direction;
 
-    public WedgeLineElement( LineElement element,
-                             boolean dashed,
-                             Direction direction) {       
-        this( new Point2d( (direction==Direction.toFirst?element.x:element.x1),
-                           (direction==Direction.toFirst?element.y:element.y1)),
-              new Point2d( (direction==Direction.toFirst?element.x1:element.x),
-                           (direction==Direction.toFirst?element.y1:element.y)),
-              
-              element.getWidth(),
-              element.getGap(),
-              dashed,
-              direction);
-    }
-    
-    public boolean isDashed() {
-    
-        return dashed;
-    }
-    
-    @Override
-    public void accept( IRenderingVisitor v ) {
-        v.visitWedge( this );
-    }
+	public enum Direction {
+		toFirst, toSecond;
+	}
+
+	public WedgeLineElement(double x1, double y1, double x2, double y2,
+			double width, double gap, boolean dashed, Direction direction, Color color) {
+		super(x1, y1, x2, y2, LineType.SINGLE, width, gap, color);
+		this.isDashed = dashed;
+		this.direction = direction;
+	}
+
+	public WedgeLineElement(LineElement element, boolean dashed,
+			Direction direction, Color color) {
+		this(direction == Direction.toFirst ? element.x2: element.x1,
+			 direction == Direction.toFirst ? element.y2: element.y1,
+			 direction == Direction.toFirst ? element.x1 : element.x2,
+			 direction == Direction.toFirst ? element.y1 : element.y2,
+		     element.width, element.gap, dashed, direction, color);
+	}
+
+	@Override
+	public void accept(IRenderingVisitor v) {
+		v.visitWedge(this);
+	}
 }

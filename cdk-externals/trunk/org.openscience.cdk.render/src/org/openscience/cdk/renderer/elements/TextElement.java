@@ -21,42 +21,26 @@
 package org.openscience.cdk.renderer.elements;
 
 import java.awt.Color;
-import java.awt.Point;
-import java.awt.geom.Point2D;
-
 
 /**
- * @cdk.module  render
+ * @cdk.module render
  */
 public class TextElement implements IRenderingElement {
 
-    Point2D positon;
-    String text;
-    Color color;
-    
-    public TextElement(Point pos,String text) {
-        this(pos.x,pos.y,text, defaultColor);
-    }
-    
-    public TextElement(double x, double y, String symbol, Color color) {
-        positon = new Point2D.Double(x,y);
-        text = symbol;
-        this.color = color;
-    }
-    public void accept( IRenderingVisitor v ) {
-        
-        v.visitText(this);
-    }
-    public Point2D getPosition() {
-        return new Point2D.Double(positon.getX(),positon.getY());
-    }
-    
-    public String getText() {
-        
-        return text;
-    }
-    
-    public Color getColor() {
-        return color;
-    }
+	public final double x;
+	public final double y;
+	public final String text;
+	public final Color color;
+
+	public TextElement(double x, double y, String text, Color color) {
+		this.x = x;
+		this.y = y;
+		this.text = text;
+		this.color = color;
+	}
+
+	public void accept(IRenderingVisitor v) {
+		v.visitText(this);
+	}
+
 }

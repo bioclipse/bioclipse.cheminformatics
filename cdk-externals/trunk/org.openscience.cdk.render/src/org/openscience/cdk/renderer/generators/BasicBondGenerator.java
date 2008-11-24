@@ -39,8 +39,8 @@ import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.interfaces.IRingSet;
 import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
-import org.openscience.cdk.renderer.elements.IRenderingVisitor;
 import org.openscience.cdk.renderer.elements.LineElement;
 import org.openscience.cdk.renderer.elements.WedgeLineElement;
 import org.openscience.cdk.renderer.elements.LineElement.LineType;
@@ -50,197 +50,187 @@ import org.openscience.cdk.tools.LoggingTool;
 import org.openscience.cdk.tools.manipulator.RingSetManipulator;
 
 /**
- * @cdk.module  render
+ * @cdk.module render
  */
-public class BasicBondGenerator extends AbstractGenerator {
+public class BasicBondGenerator implements IGenerator{
 
-    LoggingTool logger = new LoggingTool(BasicBondGenerator.class );
-    IRingSet ringSet;
-    double bondWidth;
-    double bondLength;
-    double bondDistance;
-    
-    Color bondColor;
-    
-    public BasicBondGenerator(IAtomContainer ac, Renderer2DModel r2dm) {        
-        super(ac,r2dm);
-        ringSet = getRingSet(ac);
-        bondWidth = rm.getBondWidth();
-        bondLength = rm.getBondLength();
-        bondDistance = rm.getBondDistance();
-        bondColor = rm.getForeColor();
-    }
-    
-    protected IRingSet getRingSet( final IAtomContainer atomContainer ) {
+	private Renderer2DModel model; 
+	private LoggingTool logger = new LoggingTool(BasicBondGenerator.class );
+	private IRingSet ringSet;
+	private double bondWidth;
+	private double bondDistance;
 
-        IRingSet ringSet = atomContainer.getBuilder().newRingSet();
-        IMoleculeSet molecules;
-        try {
-            molecules =
-                ConnectivityChecker.partitionIntoMolecules( atomContainer );
-        } catch ( Exception exception ) {
-            logger.warn( "Could not partition molecule: " 
-                           + exception.getMessage() );
-            logger.debug( exception );
-            return ringSet;
-        }
+	public BasicBondGenerator(Renderer2DModel r2dm) {
+		this.model = r2dm;
+		bondWidth = this.model.getBondWidth();
+		bondDistance = this.model.getBondDistance();
+	}
 
-        for ( IAtomContainer mol : molecules.molecules() ) {
-            SSSRFinder sssrf = new SSSRFinder( mol );
-            ringSet.add( sssrf.findSSSR() );
-        }
+	protected IRingSet getRingSet(final IAtomContainer atomContainer) {
 
-        return ringSet;
-    }
+		IRingSet ringSet = atomContainer.getBuilder().newRingSet();
+		try {
+			IMoleculeSet molecules =
+				ConnectivityChecker.partitionIntoMolecules(atomContainer);
+			for (IAtomContainer mol : molecules.molecules()) {
+				SSSRFinder sssrf = new SSSRFinder(mol);
+				ringSet.add(sssrf.findSSSR());
+			}
+			
+			return ringSet;
+		} catch (Exception exception) {
+			logger.warn("Could not partition molecule: "
+					+ exception.getMessage());
+			logger.debug(exception);
+			return ringSet;
+		}
+	}
+	
+	public Color getColorForBond(IBond bond) {
+		return this.model.getColorHash().get(bond);
+	}
 
-    public IRenderingElement generate( IBond currentBond) {
-        Renderer2DModel rendererModel = rm;            
-        IRing ring;
+	public IRenderingElement generate(IAtomContainer ac, Point2d center) {
+		ElementGroup group = new ElementGroup();
+		this.ringSet = this.getRingSet(ac);
+		for (IBond bond : ac.bonds()) {
+			group.add(this.generate(bond, center));
+		}
+		return group;
+	}
 
-        
+	public IRenderingElement generate(IBond currentBond, Point2d center) {
+		IRing ring = RingSetManipulator.getHeaviestRing(ringSet, currentBond);
+		if (ring != null) {
+			return generateRingElements(currentBond, ring, center);
+		} else {
+			return generateBond(currentBond, center);
+		}
+	}
 
-        bondColor = rendererModel.getColorHash().get(currentBond);
-        bondColor = (bondColor !=null?bondColor:rm.getForeColor());
+	public LineElement generateBondElement(IBond bond, LineType type, Point2d c) {
+		// More than 2 atoms per bond not supported by this module
+		if (bond.getAtomCount() > 2)
+			return null;
 
-        ring = RingSetManipulator.getHeaviestRing( ringSet, currentBond );
-        if ( ring != null ) {            
-            return generateRingElements( currentBond, ring );
-        } else {
-            return generateBond( currentBond );
-        }
-    }
+		// is object right? if not replace with a good one
+		Point2d p1 = bond.getAtom(0).getPoint2d();
+		Point2d p2 = bond.getAtom(1).getPoint2d();
 
-    LineElement generateBondElement(IBond bond,LineType type) {
-        // More than 2 atoms per bond not supported by this module
-        if (bond.getAtomCount() > 2)
-            return null;
+		return new LineElement(
+				p1.x - c.x, p1.y - c.y, p2.x - c.x, p2.y - c.y, 
+				type, bondWidth, bondDistance, this.getColorForBond(bond));
+	}
 
-        // is object right? if not replace with a good one
-        Point2d p1 = bond.getAtom( 0 ).getPoint2d();
-        Point2d p2 = bond.getAtom( 1 ).getPoint2d();
+	public IRenderingElement generateRingElements(IBond bond, IRing ring, Point2d center) {
+		if (isSingle(bond) && isStereoBond(bond)) {
+			return generateStereoElement(bond, center);
+		} else if (isDouble(bond)) {
+			ElementGroup pair = new ElementGroup();
+			IRenderingElement e1 = generateBondElement(bond, LineType.SINGLE, center);
+			IRenderingElement e2 = generateInnerElement(bond, ring, center);
+			pair.add(e1);
+			pair.add(e2);
+			return pair;
+		} else {
+			return generateBondElement(bond, getLineType(bond), center);
+		}
+	}
 
-        return new LineElement( p1, p2, type, 
-                                bondWidth,
-                                bondDistance);
-    }
+	private IRenderingElement generateInnerElement(IBond bond, IRing ring, Point2d c) {
+		Point2d center = GeometryTools.get2DCenter(ring);
+		Point2d a = bond.getAtom(0).getPoint2d();
+		Point2d b = bond.getAtom(1).getPoint2d();
 
-    IRenderingElement generateRingElements(IBond bond, IRing ring) {
-        if(isSingle( bond ) && isStereoBond( bond )) {
-            return generateStereoElement( bond );
-        }
-        if(isDouble(bond)) {
-            final IRenderingElement e1=generateBondElement( bond, LineType.SINGLE );
-            final IRenderingElement e2=generateInnerElement(bond, ring);
-            // makes a composite rendering element so you can return two elements
-            return new IRenderingElement() {
-                public void accept( IRenderingVisitor v ) {               
-                    e1.accept( v );
-                    e2.accept( v );                    
-                }
-            };
-        }
-           
-        return generateBondElement( bond, getLineType( bond ) );        
-    }
-    
-    
-    private IRenderingElement generateInnerElement(IBond bond, IRing ring ) {
-    		Point2d center = GeometryTools.get2DCenter(ring);
-    		Point2d a = bond.getAtom(0).getPoint2d();
-    		Point2d b = bond.getAtom(1).getPoint2d();
-    
-    		// the proportion to move in towards the ring center
-    		final double DIST = 0.15;
-    
-    		Point2d w = new Point2d();
-    		w.interpolate(a, center, DIST);
-    		Point2d u = new Point2d();
-    		u.interpolate(b, center, DIST);
-    
-    		// XXX : uncomment to make the bonds slightly shorter
-    		//       double alpha = 0.2;
-    		//       Point2d ww = new Point2d();
-    		//       ww.interpolate(w, u, alpha);
-    		//       Point2d uu = new Point2d();
-    		//       uu.interpolate(u, w, alpha);
-    		//       return new BondSymbol(uu.x, uu.y, ww.x, ww.y);
-    		return new LineElement( u.x, u.y, w.x, w.y,
-                                LineType.SINGLE, 
-                                bondWidth, 
-                                bondDistance);
-    	}
+		// the proportion to move in towards the ring center
+		final double DIST = 0.15;
 
-    private IRenderingElement generateStereoElement( IBond bond ) {
-        
-        int stereo = bond.getStereo();
-        boolean dashed = false;
-        Direction dir = Direction.toSecond;
-//        if(stereo == STEREO_BOND_UP || stereo == STEREO_BOND_UP_INV)
-//            dashed = false;
-        if(stereo == STEREO_BOND_DOWN || stereo == STEREO_BOND_DOWN_INV)
-            dashed = true;
-        if(stereo == STEREO_BOND_DOWN_INV || stereo == STEREO_BOND_UP_INV)
-            dir = Direction.toFirst;
-         
-        return new WedgeLineElement( generateBondElement( bond, getLineType( bond )),
-                                     dashed,
-                                     dir);        
-    }
+		Point2d w = new Point2d();
+		w.interpolate(a, center, DIST);
+		Point2d u = new Point2d();
+		u.interpolate(b, center, DIST);
 
-    boolean isDouble(IBond bond) {
-        return bond.getOrder() == IBond.Order.DOUBLE;
-    }
+		// XXX : uncomment to make the bonds slightly shorter
+		// double alpha = 0.2;
+		// Point2d ww = new Point2d();
+		// ww.interpolate(w, u, alpha);
+		// Point2d uu = new Point2d();
+		// uu.interpolate(u, w, alpha);
+		// return new BondSymbol(uu.x, uu.y, ww.x, ww.y);
+		return new LineElement(
+				u.x - c.x, u.y - c.y, w.x - c.x, w.y - c.y, LineType.SINGLE, bondWidth,
+				bondDistance, this.getColorForBond(bond));
+	}
 
-    boolean isSingle(IBond bond) {
-        return bond.getOrder() == IBond.Order.SINGLE;
-    }
+	private IRenderingElement generateStereoElement(IBond bond, Point2d center) {
 
-    boolean isStereoBond(IBond bond) {
-        return bond.getStereo() != STEREO_BOND_NONE 
-               &&
-               bond.getStereo() != STEREO_BOND_UNDEFINED; 
-    }
+		int stereo = bond.getStereo();
+		boolean dashed = false;
+		Direction dir = Direction.toSecond;
+		// if(stereo == STEREO_BOND_UP || stereo == STEREO_BOND_UP_INV)
+		// dashed = false;
+		if (stereo == STEREO_BOND_DOWN || stereo == STEREO_BOND_DOWN_INV)
+			dashed = true;
+		if (stereo == STEREO_BOND_DOWN_INV || stereo == STEREO_BOND_UP_INV)
+			dir = Direction.toFirst;
 
-    boolean bindsHydrogen(IBond bond) {
-        for ( int i = 0; i < bond.getAtomCount(); i++ ) {
-            IAtom atom = bond.getAtom( i );
-            if( "H".equals( atom.getSymbol() ))
-                return true;
-        }
-        return false;
-    }
+		LineElement base = generateBondElement(bond, getLineType(bond), center); 
+		return new WedgeLineElement(base, dashed, dir, this.getColorForBond(bond));
+	}
 
-    LineType getLineType(IBond bond) {
-        LineType type;
-        switch ( bond.getOrder() ) {
-            case SINGLE:
-                type = LineType.SINGLE;break;
-            case DOUBLE:
-                type = LineType.DOUBLE;break;
-            case TRIPLE:
-                type = LineType.TRIPPLE;break;
-            case QUADRUPLE:
-                type = LineType.QUADRUPLE;break;
-            default:
-                type = LineType.SINGLE;
-        }
-        return type;
-    }
+	public boolean isDouble(IBond bond) {
+		return bond.getOrder() == IBond.Order.DOUBLE;
+	}
 
-    IRenderingElement generateBond(IBond bond) {
-        
-        if(!rm.getShowExplicitHydrogens() && bindsHydrogen( bond ))
-            return null;
-        
-        if(isStereoBond( bond ))
-            return generateStereoElement(bond);
-        else
-            return generateBondElement( bond, getLineType( bond ) );
-    }
+	public boolean isSingle(IBond bond) {
+		return bond.getOrder() == IBond.Order.SINGLE;
+	}
 
-    @Override
-    public IRenderingElement generate( IAtom atom ) {
-    
-        return null;
-    }
+	public boolean isStereoBond(IBond bond) {
+		return bond.getStereo() != STEREO_BOND_NONE
+				&& bond.getStereo() != STEREO_BOND_UNDEFINED;
+	}
+
+	public boolean bindsHydrogen(IBond bond) {
+		for (int i = 0; i < bond.getAtomCount(); i++) {
+			IAtom atom = bond.getAtom(i);
+			if ("H".equals(atom.getSymbol()))
+				return true;
+		}
+		return false;
+	}
+
+	public LineType getLineType(IBond bond) {
+		LineType type;
+		switch (bond.getOrder()) {
+		case SINGLE:
+			type = LineType.SINGLE;
+			break;
+		case DOUBLE:
+			type = LineType.DOUBLE;
+			break;
+		case TRIPLE:
+			type = LineType.TRIPLE;
+			break;
+		case QUADRUPLE:
+			type = LineType.QUADRUPLE;
+			break;
+		default:
+			type = LineType.SINGLE;
+		}
+		return type;
+	}
+
+	public IRenderingElement generateBond(IBond bond, Point2d center) {
+		if (!this.model.getShowExplicitHydrogens() && bindsHydrogen(bond)) {
+			return null;
+		}
+
+		if (isStereoBond(bond)) {
+			return generateStereoElement(bond, center);
+		} else {
+			return generateBondElement(bond, getLineType(bond), center);
+		}
+	}
+	
 }

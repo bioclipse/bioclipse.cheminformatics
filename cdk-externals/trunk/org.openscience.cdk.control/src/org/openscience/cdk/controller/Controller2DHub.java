@@ -93,17 +93,22 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 		
 		//register all 'known' controllers
 		registerDrawModeControllerModule( 
-				IController2DModel.DrawMode.MOVE, new Controller2DModuleMove());
+				IController2DModel.DrawMode.MOVE, 
+				new Controller2DModuleMove(this));
 		registerDrawModeControllerModule( 
-				IController2DModel.DrawMode.ERASER, new Controller2DModuleRemove());
+				IController2DModel.DrawMode.ERASER, 
+				new Controller2DModuleRemove(this));
 		registerDrawModeControllerModule( 
-				IController2DModel.DrawMode.INCCHARGE, new Controller2DModuleChangeFormalC(1));
+				IController2DModel.DrawMode.INCCHARGE,
+				new Controller2DModuleChangeFormalC(this, 1));
 		registerDrawModeControllerModule( 
-				IController2DModel.DrawMode.DECCHARGE, new Controller2DModuleChangeFormalC(-1));
+				IController2DModel.DrawMode.DECCHARGE,
+				new Controller2DModuleChangeFormalC(this, -1));
 		registerDrawModeControllerModule( 
-				IController2DModel.DrawMode.ENTERELEMENT, new Controller2DModuleAddAtom());
+				IController2DModel.DrawMode.ENTERELEMENT, 
+				new Controller2DModuleAddAtom(this));
 		
-		registerGeneralControllerModule( new Controller2DModuleHighlight());
+		registerGeneralControllerModule(new Controller2DModuleHighlight(this));
 	}
 	public IController2DModel getController2DModel() {
 		return controllerModel;
@@ -224,7 +229,6 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 
 	public void mouseMove(int screenCoordX, int screenCoordY) {
 		Point2d worldCoord = renderer.getCoorFromScreen(screenCoordX, screenCoordY);
-	//	System.out.println("Mouse move detected: " + worldCoord);
 		
 		// Relay the mouse event to the general handlers
 		for (IController2DModule module : generalModules) {

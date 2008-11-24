@@ -23,28 +23,16 @@ package org.openscience.cdk.renderer.elements;
 import java.awt.Color;
 
 /**
- * @cdk.module  render
+ * @cdk.module render
  */
 public class AtomMassSymbolElement extends AtomSymbolElement {
-    
-    int atomMassNumber;
-    
-    public AtomMassSymbolElement( double x, double y, 
-                                  String symbol, 
-                                  Color color, 
-                                  Integer formalCharge, 
-                                  Integer hydrogenCount,
-                                  int alignment,
-                                  Integer atomMass) {
-        super(x,y,symbol,color,formalCharge,hydrogenCount,alignment);
-        atomMassNumber = atomMass!=null?atomMass:-1;
-        
-    }
 
-    
-    public int getAtomMassNumber() {
-    
-        return atomMassNumber;
-    }
-    
+	public final int atomMassNumber;
+
+	public AtomMassSymbolElement(double x, double y, String symbol,
+			Integer formalCharge, Integer hydrogenCount, int alignment,
+			Integer atomMass, Color color) {
+		super(x, y, symbol, formalCharge, hydrogenCount, alignment, color);
+		this.atomMassNumber = atomMass != null ? atomMass : -1;
+	}
 }

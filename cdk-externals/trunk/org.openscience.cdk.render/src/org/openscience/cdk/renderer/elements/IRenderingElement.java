@@ -20,12 +20,11 @@
  */
 package org.openscience.cdk.renderer.elements;
 
-import java.awt.Color;
-
 /**
- * @cdk.module  render
+ * @cdk.module render
  */
 public interface IRenderingElement {
-    public final Color defaultColor = new Color(0xFF00FF);
-    public void accept(IRenderingVisitor v);
+	
+	public void accept(IRenderingVisitor v);
+	
 }

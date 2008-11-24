@@ -18,34 +18,18 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package org.openscience.cdk.renderer.elements;
+package org.openscience.cdk.renderer.generators;
 
-import java.awt.Color;
+import javax.vecmath.Point2d;
 
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.renderer.elements.IRenderingElement;
 
 /**
- * @cdk.module render
+ * @cdk.module  render
  */
-public class AtomSymbolElement extends TextElement {
+public interface IGenerator {
 
-	public final int formalCharge;
-	public final int hydrogenCount;
-	public final int alignment;
-
-	public AtomSymbolElement(double x, double y, String symbol,
-			Integer formalCharge, Integer hydrogenCount, int alignment, Color color) {
-		super(x, y, symbol, color);
-		this.formalCharge = formalCharge != null ? formalCharge : -1;
-		this.hydrogenCount = hydrogenCount != null ? hydrogenCount : -1;
-		this.alignment = alignment;
-	}
-
-	@Override
-	public void accept(IRenderingVisitor v) {
-
-		// FIXME: implement AtomSymbolRendering
-		// v.visitAtomSymbol( this );
-		super.accept(v);
-	}
+    public IRenderingElement generate( IAtomContainer ac, Point2d center );
 
 }

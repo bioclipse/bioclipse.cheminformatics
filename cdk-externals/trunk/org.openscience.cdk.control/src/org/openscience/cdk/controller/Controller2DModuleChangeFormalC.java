@@ -33,81 +33,53 @@ import org.openscience.cdk.interfaces.IBond;
 /**
  * Changes (Increases or Decreases) Formal Charge of an atom
  * 
- * @author      Niels Out
- * @cdk.svnrev  $Revision: 9162 $
- * @cdk.module  control
+ * @author Niels Out
+ * @cdk.svnrev $Revision: 9162 $
+ * @cdk.module control
  */
-public class Controller2DModuleChangeFormalC implements IController2DModule {
+public class Controller2DModuleChangeFormalC extends ControllerModuleAdapter {
 
 	private IChemModelRelay chemObjectRelay;
-	/*private IViewEventRelay eventRelay;
-	public void setEventRelay(IViewEventRelay relay) {
-		this.eventRelay = relay;
-	}*/
 	private int change = 0;
-	public Controller2DModuleChangeFormalC(int change) {
+
+	public Controller2DModuleChangeFormalC(IChemModelRelay chemModelRelay, int change) {
+		super(chemModelRelay);
 		this.change = change;
-	}
-	public void mouseClickedDouble(Point2d worldCoord) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void mouseClickedDown(Point2d worldCoord) {
 		// TODO Auto-generated method stub
-		
+
 		IAtom atom = chemObjectRelay.getClosestAtom(worldCoord);
-		double Atomdist = atom.getPoint2d().distance(worldCoord);
-		//System.out.println("closest Atom distance: " + Atomdist + " Atom:" + atom);
-		
-		IBond bond = chemObjectRelay.getClosestBond(worldCoord);
-		
-		Point2d bondCenter = GeometryTools.get2DCenter(bond.atoms());
-		double Bonddist = bondCenter.distance(worldCoord);
-		
+		// double Atomdist = atom.getPoint2d().distance(worldCoord);
+		// System.out.println("closest Atom distance: " + Atomdist + " Atom:" +
+		// atom);
+
+		// IBond bond = chemObjectRelay.getClosestBond(worldCoord);
+
+		// Point2d bondCenter = GeometryTools.get2DCenter(bond.atoms());
+		// double Bonddist = bondCenter.distance(worldCoord);
+
 		if (atom != null) {
-			System.out.println("trying change charge (atm: " + atom.getFormalCharge() + " of: " + atom);
+			System.out.println("trying change charge (atm: "
+					+ atom.getFormalCharge() + " of: " + atom);
 
 			Integer newCharge = new Integer(change);
 			if (atom.getFormalCharge() != null)
 				newCharge += atom.getFormalCharge();
-			
+
 			atom.setFormalCharge(newCharge);
-			System.out.println("change: " + change + " newCharge: " + newCharge + " atom:" + atom);
+			System.out.println("change: " + change + " newCharge: " + newCharge
+					+ " atom:" + atom);
 			chemObjectRelay.updateView();
-		}
-		else {
+		} else {
 			System.out.println("no atom close enough to change Formal Charge");
 		}
-			
-			
-	}
 
-	public void mouseClickedUp(Point2d worldCoord) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void mouseDrag(Point2d worldCoordFrom, Point2d worldCoordTo) {
-	
-	}
-
-	public void mouseEnter(Point2d worldCoord) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void mouseExit(Point2d worldCoord) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void mouseMove(Point2d worldCoord) {
-		
 	}
 
 	public void setChemModelRelay(IChemModelRelay relay) {
 		this.chemObjectRelay = relay;
 	}
-	
+
 }

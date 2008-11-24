@@ -29,78 +29,75 @@ import javax.vecmath.Point2d;
 
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
-import org.openscience.cdk.renderer.elements.IRenderingVisitor;
 import org.openscience.cdk.renderer.elements.OvalElement;
 import org.openscience.cdk.renderer.elements.LineElement.LineType;
+import org.openscience.cdk.tools.LoggingTool;
 
 /**
- * @cdk.module  render
+ * @cdk.module render
  */
 public class RingGenerator extends BasicBondGenerator {
 
-    Collection<IRing> painted_rings;
-    
-    public RingGenerator(IAtomContainer ac, Renderer2DModel r2dm) {
-        super( ac, r2dm );
-        painted_rings = new HashSet<IRing>();        
-    }
-    
-    @Override
-    IRenderingElement generateRingElements( IBond bond, IRing ring ) {
-        if (ringIsAromatic(ring) && rm.getShowAromaticity()) {
-            final IRenderingElement e1=generateBondElement( bond, LineType.SINGLE );
+	private Renderer2DModel model;
+	private LoggingTool logger = new LoggingTool(RingGenerator.class);
+	private Collection<IRing> painted_rings;
 
-            if (!painted_rings.contains(ring)) {
-                final IRenderingElement e2 = generateRingRingElement(bond,ring);
-                painted_rings.add(ring);
-                return new IRenderingElement() {
-                    public void accept( IRenderingVisitor v ) {               
-                        e1.accept( v );
-                        e2.accept( v );                    
-                    }
-                };
-            }
-            return e1;
-        } else {
-            return super.generateRingElements( bond, ring );
-        }
-    }
+	public RingGenerator(Renderer2DModel r2dm) {
+		super(r2dm);
+		this.model = r2dm;
+		painted_rings = new HashSet<IRing>();
+	}
 
-    private IRenderingElement generateRingRingElement(IBond bond, IRing ring) {
-        Point2d center = GeometryTools.get2DCenter(ring);
-        logger.debug(" painting a Ringring now at " + center);
+	@Override
+	public IRenderingElement generateRingElements(IBond bond, IRing ring, Point2d center) {
+		if (ringIsAromatic(ring) && this.model.getShowAromaticity()) {
+			ElementGroup pair = new ElementGroup();
+			pair.add(generateBondElement(bond, LineType.SINGLE, center));
+			if (!painted_rings.contains(ring)) {
+				painted_rings.add(ring);
+				pair.add(generateRingRingElement(bond, ring));
+			}
+			return pair;
+		} else {
+			return super.generateRingElements(bond, ring, center);
+		}
+	}
 
-        double[] minmax = GeometryTools.getMinMax(ring);
-        double width = (minmax[2] - minmax[0]) * 0.7;
-        double height = (minmax[3] - minmax[1]) * 0.7;
+	private IRenderingElement generateRingRingElement(IBond bond, IRing ring) {
+		Point2d center = GeometryTools.get2DCenter(ring);
+		logger.debug(" painting a Ringring now at " + center);
 
-        
-        //offset is the width of the ring
-        double lineWidth = (0.05 * Math.min(width, height));
-        double radius = Math.min( width, height )-lineWidth/2;
+		double[] minmax = GeometryTools.getMinMax(ring);
+		double width = (minmax[2] - minmax[0]) * 0.7;
+		double height = (minmax[3] - minmax[1]) * 0.7;
 
-        return new OvalElement(center.x,center.y,radius,rm.getForeColor());
-    }
-    
-    private boolean ringIsAromatic( final IRing ring ) {
-        boolean isAromatic = true;
-        for(IAtom atom:ring.atoms()) {        
-            if ( !atom.getFlag( ISAROMATIC ) ) {
-                isAromatic = false;break;
-            }
-        }
-        if ( !isAromatic ) {
-            for(IBond b:ring.bonds()) {            
-                if ( !b.getFlag( ISAROMATIC ) ) {
-                    return false;
-                }
-            }
-        }
-        return isAromatic;
-    }
+		// offset is the width of the ring
+		double lineWidth = (0.05 * Math.min(width, height));
+		double radius = Math.min(width, height) - lineWidth / 2;
+
+		return new OvalElement(center.x, center.y, radius, super.getColorForBond(bond));
+	}
+
+	private boolean ringIsAromatic(final IRing ring) {
+		boolean isAromatic = true;
+		for (IAtom atom : ring.atoms()) {
+			if (!atom.getFlag(ISAROMATIC)) {
+				isAromatic = false;
+				break;
+			}
+		}
+		if (!isAromatic) {
+			for (IBond b : ring.bonds()) {
+				if (!b.getFlag(ISAROMATIC)) {
+					return false;
+				}
+			}
+		}
+		return isAromatic;
+	}
 }

@@ -28,18 +28,18 @@ import org.openscience.cdk.renderer.elements.IRenderingElement;
 /**
  * @cdk.module  render
  */
-public class ControllerFeedbackGenerator extends AbstractGenerator{
+public class ControllerFeedbackGenerator {
 
-    
+	private Renderer2DModel model;
+	
     public ControllerFeedbackGenerator(IAtomContainer ac, Renderer2DModel r2dm) {
-        super(ac,r2dm);
+    	this.model = r2dm;
     }
     
-    public IRenderingElement generate(IAtom atom) {
-        
-        if(rm.getHighlightedAtom() == atom)
-            return generateHighlightElement(atom);
-        
+    public IRenderingElement generate(IAtomContainer ac, IAtom atom) {
+        if (this.model.getHighlightedAtom() == atom) {
+			return generateHighlightElement(atom);
+        }
         return null;
     }
 

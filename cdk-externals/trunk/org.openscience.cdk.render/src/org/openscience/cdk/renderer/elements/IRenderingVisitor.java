@@ -25,13 +25,13 @@ package org.openscience.cdk.renderer.elements;
  */
 public interface IRenderingVisitor {
     
-    public void visitModel(RenderingModel element);
+    public void visitElementGroup(ElementGroup elementGroup);
     
-    public void visitOval(OvalElement element);
-    public void visitLine(LineElement element);
+    public void visitOval(OvalElement ovalElement);
+    public void visitLine(LineElement lineElement);
 
-    public void visitText( TextElement element );
+    public void visitText( TextElement textElement );
     
-    public void visitWedge( WedgeLineElement element);
+    public void visitWedge( WedgeLineElement wedgeElement);
     
 }

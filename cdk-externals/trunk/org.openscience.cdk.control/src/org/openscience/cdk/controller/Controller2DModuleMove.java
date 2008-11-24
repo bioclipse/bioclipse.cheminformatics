@@ -39,6 +39,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.renderer.IJava2DRenderer;
+import org.openscience.cdk.tools.LoggingTool;
 
 import sun.security.acl.WorldGroupImpl;
 
@@ -53,21 +54,22 @@ import sun.security.acl.WorldGroupImpl;
  * @cdk.svnrev  $Revision: 9162 $
  * @cdk.module  control
  */
-public class Controller2DModuleMove implements IController2DModule {
+public class Controller2DModuleMove extends ControllerModuleAdapter {
 
     enum Type {
         BOND,ATOM,NONE
     }
     
+    LoggingTool logger = new LoggingTool(Controller2DModuleMove.class);
 	private IChemModelRelay chemObjectRelay;
 	IAtom atom;
 	IBond bond;
 	Vector2d offset;
 	Type type;
-	/*private IViewEventRelay eventRelay;
-	public void setEventRelay(IViewEventRelay relay) {
-		this.eventRelay = relay;
-	}*/
+	
+	public Controller2DModuleMove(IChemModelRelay chemObjectRelay) {
+		super(chemObjectRelay);
+	}
 	
 	public void mouseClickedDouble(Point2d worldCoord) {
 		
@@ -103,7 +105,6 @@ public class Controller2DModuleMove implements IController2DModule {
 		
 		offset = new Vector2d();
 		offset.sub( current, worldCoord );
-		
 	}
 
 	
@@ -117,15 +118,13 @@ public class Controller2DModuleMove implements IController2DModule {
 	}
 
 	public void mouseDrag(Point2d worldCoordFrom, Point2d worldCoordTo) {
-		// TODO Auto-generated method stub
 //		System.out.println("mousedrag at DumpClosestObject shizzle");
 //		System.out.println("From: " + worldCoordFrom.x + "/" + worldCoordFrom.y + " to " +
 //				worldCoordTo.x + "/" + worldCoordTo.y);
 		
 		if (chemObjectRelay != null && offset!=null) {
-//			IAtom atom = chemObjectRelay.getClosestAtom(worldCoordFrom);
 			
-				//System.out.println("Dragging atom: " + atom);
+				System.out.println("Dragging atom: " + atom);
 				
 				Point2d atomCoord = new Point2d();
 				atomCoord.add( worldCoordTo, offset );
@@ -139,7 +138,9 @@ public class Controller2DModuleMove implements IController2DModule {
 				
 			
 		} else {
-			System.out.println("chemObjectRelay is NULL!");
+			if(chemObjectRelay== null) {
+			    logger.debug( "chemObjectRelay is NULL!" );
+			}
 		}
 	}
 

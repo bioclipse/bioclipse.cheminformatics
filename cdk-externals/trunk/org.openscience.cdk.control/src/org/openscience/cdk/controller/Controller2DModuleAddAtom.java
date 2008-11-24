@@ -37,34 +37,21 @@ import org.openscience.cdk.interfaces.IAtom;
  * @cdk.svnrev  $Revision: 9162 $
  * @cdk.module  control
  */
-public class Controller2DModuleAddAtom implements IController2DModule {
+public class Controller2DModuleAddAtom extends ControllerModuleAdapter {
 
-	//private String atomType;
-	
-	private IChemModelRelay chemObjectRelay;
-	/*private IViewEventRelay eventRelay;
-	public void setEventRelay(IViewEventRelay relay) {
-		this.eventRelay = relay;
-	}*/
-/*	public Controller2DModuleAddAtom() {
-		this.atomType = "C";
-	}*/
-/*	public Controller2DModuleAddAtom(String atomType) {
-		this.atomType = atomType;
-	}*/
-	
-	public void mouseClickedDouble(Point2d worldCoord) {
-		// TODO Auto-generated method stub
+	public Controller2DModuleAddAtom(IChemModelRelay chemModelRelay) {
+		super(chemModelRelay);
 	}
 
 	public void mouseClickedDown(Point2d worldCoord) {
 
-		IAtom closestAtom = chemObjectRelay.getClosestAtom(worldCoord);
-		String atomType = chemObjectRelay.getController2DModel().getDrawElement();
+		System.err.println(worldCoord);
+		IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoord);
+		String atomType = chemModelRelay.getController2DModel().getDrawElement();
 		if (closestAtom == null) {
 			//add atom
 			System.out.println("Trying adding atom " + atomType);
-			chemObjectRelay.addAtom(atomType, worldCoord);
+			chemModelRelay.addAtom(atomType, worldCoord);
 		}
 		else {
 			//replace existing atom with new one
@@ -86,35 +73,12 @@ public class Controller2DModuleAddAtom implements IController2DModule {
 			//	updateAtom(container, closestAtom);
 
 		}
-		chemObjectRelay.updateView();
+		chemModelRelay.updateView();
 
-	}
-
-	public void mouseClickedUp(Point2d worldCoord) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void mouseDrag(Point2d worldCoordFrom, Point2d worldCoordTo) {
-		
-	}
-
-	public void mouseEnter(Point2d worldCoord) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void mouseExit(Point2d worldCoord) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void mouseMove(Point2d worldCoord) {
-		
 	}
 
 	public void setChemModelRelay(IChemModelRelay relay) {
-		this.chemObjectRelay = relay;
+		this.chemModelRelay = relay;
 	}
 	
 }

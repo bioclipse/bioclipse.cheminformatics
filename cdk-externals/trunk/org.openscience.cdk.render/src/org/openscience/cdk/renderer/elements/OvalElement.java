@@ -21,53 +21,35 @@
 package org.openscience.cdk.renderer.elements;
 
 import java.awt.Color;
-import java.awt.Point;
-import java.awt.geom.Point2D;
-
 
 /**
- * @cdk.module  render
+ * @cdk.module render
  */
 public class OvalElement implements IRenderingElement {
 
-    private final Point2D position;
-    private final double radius;
-    private final Color color;
-    private final boolean fill;
-    
-    public OvalElement(Point pos) {
-        this(pos.x,pos.y);              
-    }
-    
-    public OvalElement(double x, double y) {
-        this(x,y,10);
-    }
-    public OvalElement(double x, double y,double radius) {
-        this(x, y, radius, defaultColor);
-    }
-    public OvalElement(double x, double y,double radius,Color color) {
-        this(x,y,radius,color,true);
-    }
-    public OvalElement(double x, double y,double radius,Color color,boolean fill) {
-        position = new Point2D.Double(x,y);
-        this.radius = radius;
-        this.color = color;
-        this.fill = fill;
-    }
+	public final double x;
+	public final double y;
+	public final double radius;
+	public final boolean fill;
+	public final Color color;
 
-    public double getX() {
-        return position.getX();
-    }
-    
-    public double getY() {
-        return position.getY();
-    }
-    
-    public double getRadius(){ return radius; }
-    public Color getColor() { return color; }
-    public boolean isFilled() {return fill;}
-    
-    public void accept( IRenderingVisitor v ) {
-        v.visitOval( this );        
-    }
+	public OvalElement(double x, double y, Color color) {
+		this(x, y, 10, color);
+	}
+
+	public OvalElement(double x, double y, double radius, Color color) {
+		this(x, y, radius, true, color);
+	}
+
+	public OvalElement(double x, double y, double radius, boolean fill, Color color) {
+		this.x = x;
+		this.y = y;
+		this.radius = radius;
+		this.fill = fill;
+		this.color = color;
+	}
+
+	public void accept(IRenderingVisitor v) {
+		v.visitOval(this);
+	}
 }

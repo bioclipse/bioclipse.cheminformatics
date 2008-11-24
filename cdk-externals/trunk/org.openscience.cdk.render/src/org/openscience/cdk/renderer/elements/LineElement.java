@@ -17,108 +17,48 @@
 package org.openscience.cdk.renderer.elements;
 
 import java.awt.Color;
-import javax.vecmath.Point2d;
 
 /**
- * @cdk.module  render
+ * @cdk.module render
  */
 public class LineElement implements IRenderingElement {
 
-    double   x, y, x1, y1;
-    LineType type;
-    double width, gap;
-    
-    Color color;
-    
-    public LineElement(Point2d p1, Point2d p2, LineType type, 
-                                               double width,
-                                               double gap) {
+	public final double x1;
+	public final double y1;
+	public final double x2;
+	public final double y2;
+	public final LineType type;
+	public final double width;
+	public final double gap;
+	public final Color color;
 
-        this(p1.x, p1.y, p2.x, p2.y, type, width, gap);
-    }
-    public LineElement(Point2d p1, Point2d p2, LineType type, 
-                       double width,
-                       double gap,Color color) {
-        this(p1.x, p1.y, p2.x, p2.y, type, width, gap,color);
-    }
-    public LineElement(double x, double y, double x1, double y1, LineType type,
-                       double width,
-                       double gap) {
-        this(x,y,x1,y1,type,width,gap,Color.BLACK);
-    }
-    public LineElement(double x, double y, double x1, double y1, LineType type,
-                       double width,
-                       double gap,Color color) {
-        this.x = x;
-        this.y = y;
-        this.x1 = x1;
-        this.y1 = y1;
-        this.type = type;
-        this.width = width;
-        this.gap = gap;
-        this.color = color;
-    }
+	public LineElement(double x, double y, double x1, double y1, LineType type,
+			double width, double gap, Color color) {
+		this.x2 = x;
+		this.y2 = y;
+		this.x1 = x1;
+		this.y1 = y1;
+		this.type = type;
+		this.width = width;
+		this.gap = gap;
+		this.color = color;
+	}
 
-    public double getX() {
+	public void accept(IRenderingVisitor v) {
+		v.visitLine(this);
+	}
 
-        return x;
-    }
+	public enum LineType {
+		SINGLE(1), DOUBLE(2), TRIPLE(3), QUADRUPLE(4);
 
-    public double getX1() {
+		int n;
 
-        return x1;
-    }
+		private LineType(int n) {
+			this.n = n;
+		}
 
-    public double getY() {
-
-        return y;
-    }
-
-    public double getY1() {
-
-        return y1;
-    }
-
-    public LineType type() {
-
-        return type;
-    }
-    
-    
-    public double getWidth() {
-    
-        return width;
-    }
-
-    
-    public double getGap() {
-    
-        return gap;
-    }
-    
-    public Color getColor() {
-    
-        return color;
-    }
-
-    public void accept( IRenderingVisitor v ) {
-
-        v.visitLine( this );
-    }
-
-    public enum LineType {
-        SINGLE(1), DOUBLE(2), TRIPPLE(3), QUADRUPLE(4);
-
-        int n;
-
-        private LineType(int n) {
-
-            this.n = n;
-        }
-
-        public int count() {
-
-            return n;
-        }
-    }
+		public int count() {
+			return n;
+		}
+	}
 }
