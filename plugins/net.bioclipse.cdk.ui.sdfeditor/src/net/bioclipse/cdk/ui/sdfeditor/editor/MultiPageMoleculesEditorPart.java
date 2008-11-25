@@ -64,8 +64,8 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
             setPageText( MOLECULES_PAGE, "Molecules" );
             addPage(SINGLE_ENTRY_PAGE, jcpWidget);
             setPageText( SINGLE_ENTRY_PAGE, "Single 2D" );
-            addPage( jmolPage, getEditorInput() );                 
-            setPageText(JMOL_PAGE, "Single 3D");            
+//            addPage( jmolPage, getEditorInput() );                 
+//            setPageText(JMOL_PAGE, "Single 3D");            
 
         } catch ( PartInitException e ) {
             logger.debug( "Failed to create pages: " + e.getMessage() );

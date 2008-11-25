@@ -12,23 +12,27 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
-import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+import java.util.Iterator;
+
+import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILazyTreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.ui.progress.DeferredTreeContentManager;
-import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 
 public class MoleculesEditorContentProvider  implements
         ILazyTreeContentProvider {
 
     TreeViewer viewer;
     Logger logger = Logger.getLogger(MoleculesEditorContentProvider.class);
-    
-    DeferredTreeContentManager contentManager;
+    IFile file;
+    int numberOfEntries = 30;
+    //DeferredTreeContentManager contentManager;
     
     public MoleculesEditorContentProvider(TreeViewer viewer) {
 
@@ -37,12 +41,11 @@ public class MoleculesEditorContentProvider  implements
     }
 
     public void updateChildCount( Object element, int currentChildCount ) {
-        
-        if(element instanceof IMoleculesEditorModel){
-            int count = ((IMoleculesEditorModel)element).getNumberOfMolecules();
-            if(count != currentChildCount)
-                viewer.setChildCount(element, count );
-        }
+
+        //numberOfEntries = calculateChildCount();
+        if(numberOfEntries != currentChildCount)
+            viewer.setChildCount(element, numberOfEntries );
+
     }
 
     /*
@@ -53,43 +56,51 @@ public class MoleculesEditorContentProvider  implements
     public void updateElement( Object parent, int index ) {
         
         Object element = null;
-        if(parent instanceof IMoleculesEditorModel){
-            element = ((IMoleculesEditorModel)parent).getMoleculeAt(index );          
+        try {
+        Iterator<ICDKMolecule> iter = Activator.getDefault().getCDKManager().createMoleculeIterator( file );
+        ICDKMolecule molecule;
+            int count = 0;
+            while (iter.hasNext()){
+                molecule=iter.next();
+                if(count++ == index) {
+                    element= molecule;
+                    break;
+                }
+                
+            }
+            if(iter.hasNext()) count+=10;
+            setChildCount(count);
+            
+        } catch ( CoreException e ) {
+            // TODO Auto-generated catch block
+            LogUtils.debugTrace( logger, e );
         }
-//        if(element == null && (parent instanceof IDeferredWorkbenchAdapter)){
-//            Object[] objs = contentManager.getChildren( parent );
-//            if(objs.length>0)
-//                viewer.replace( parent, index, objs[0] );
-//            return;
-//        }
+        
+//      
 //        
-          if( element != null)  
+          if( element != null) 
               viewer.replace( parent, index, element );
-//        if(element instanceof IAdaptable){
-//            ICDKMolecule molecule = (ICDKMolecule) ((IAdaptable) element)
-//                                    .getAdapter( ICDKMolecule.class );
-//        if ( molecule != null )
-//            viewer.replace( parent, index, 
-//                                new MoleculeEditorElement(index,molecule) );
-//        }
+//      
     }
    
+    private void setChildCount( int count ) {
+        int old = numberOfEntries;
+        numberOfEntries = count;
+        
+//        if(viewer.getControl().isVisible())
+//            viewer.refresh();
+//            updateChildCount( file, old );
+        
+    }
 
-    /* (non-Javadoc)
-     * @see net.bioclipse.cdk.ui.views.MoleculeContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-     */
-    
     public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {    
-        if( (viewer instanceof TreeViewer) && ( 
-                (contentManager == null) || 
-                (this.viewer != viewer ))){
+        if( (viewer instanceof TreeViewer) && ((this.viewer != viewer ))){
             this.viewer = (TreeViewer)viewer;
-            contentManager = new DeferredTreeContentManager(
-                                                    (AbstractTreeViewer)viewer);            
         }
-        if(oldInput != newInput && newInput instanceof IDeferredWorkbenchAdapter) {
-            Object[] objs = contentManager.getChildren( newInput );
-            this.viewer.add( newInput, objs[0] );
+        if(oldInput != newInput){// && newInput instanceof IDeferredWorkbenchAdapter) {
+            //Object[] objs = contentManager.getChildren( newInput );
+            //this.viewer.add( newInput, objs[0] );
+            file = (IFile) newInput;
         }
 //        super.inputChanged( viewer, oldInput, newInput );
 //        if(newInput instanceof MoleculesFromSDF)

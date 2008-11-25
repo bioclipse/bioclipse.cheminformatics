@@ -25,6 +25,7 @@ import net.bioclipse.cdk.ui.sdfeditor.MoleculesOutlinePage;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
@@ -33,6 +34,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -41,6 +43,8 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IEditorInput;
@@ -68,7 +72,7 @@ public class MoleculesEditor extends EditorPart implements
                                  new LinkedHashSet<ISelectionChangedListener>();
     MoleculesEditorLabelProvider labelProvider;
     public List<String>                          propertyHeaders;
-    TreeViewer viewer;
+    TableViewer viewer;
 
     private MoleculesOutlinePage outlinePage;
     
@@ -123,13 +127,13 @@ public class MoleculesEditor extends EditorPart implements
         
         
         viewer =
-                new TreeViewer( parent, SWT.VIRTUAL | SWT.V_SCROLL
+                new TableViewer( parent, SWT.VIRTUAL | SWT.V_SCROLL
                                         | SWT.H_SCROLL | SWT.MULTI
                                         | SWT.FULL_SELECTION | SWT.BORDER ) {
 
+                    
                     @Override
-                    public void add( Object parentElementOrTreePath,
-                                     Object[] childElements ) {
+                    public void add( Object[] childElements ) {
 
                         if ( propertyHeaders == null
                              && childElements.length > 0 ) {
@@ -142,7 +146,7 @@ public class MoleculesEditor extends EditorPart implements
                                 
                             }
                         }
-                        super.add( parentElementOrTreePath, childElements );
+                        super.add( childElements );
                     }
                     /*
                      * (non-Javadoc)
@@ -151,8 +155,7 @@ public class MoleculesEditor extends EditorPart implements
                      * .Object, int, java.lang.Object)
                      */
                     @Override
-                    public void replace( Object parentElementOrTreePath,
-                                         int index, Object element ) {
+                    public void replace( Object element, int index ) {
 
                         if ( propertyHeaders == null && element != null ) {
                             // TODO make it a job on the GUI thread
@@ -164,19 +167,19 @@ public class MoleculesEditor extends EditorPart implements
 
                             }
                         }
-                        super.replace( parentElementOrTreePath, index, element );
+                        super.replace( element , index );
                     }
                 };
 
-        Tree tree = viewer.getTree();
+        Table tree = viewer.getTable();
         tree.setHeaderVisible( true );
 
-        TreeColumn itemColumn = new TreeColumn( tree, SWT.NONE );
+        TableColumn itemColumn = new TableColumn(tree,SWT.NONE);
         itemColumn.setText( "Index" );
         itemColumn.setResizable( true );
         itemColumn.setWidth( 100 );
 
-        TreeColumn nameColumn = new TreeColumn( tree, SWT.NONE );
+        TableColumn nameColumn = new TableColumn( tree, SWT.NONE );
         nameColumn.setText( "Structure" );
         nameColumn.setResizable( false );
         nameColumn.setWidth( STRUCTURE_COLUMN_WIDTH );
@@ -185,13 +188,13 @@ public class MoleculesEditor extends EditorPart implements
 
         viewer.setColumnProperties( new String[] { "Index", "Name" } );
 
-        viewer.setContentProvider( new MoleculesEditorContentProvider(viewer) );
+        //viewer.setContentProvider( new MoleculesEditorContentProvider(viewer) );
+        viewer.setContentProvider( new MoleculeTableContentProvider() );
         viewer.setLabelProvider( labelProvider = 
                      new MoleculesEditorLabelProvider(STRUCTURE_COLUMN_WIDTH) );
-        
+        viewer.setItemCount( 1 );
         viewer.setUseHashlookup(true );
-        viewer.setInput( 
-                     getEditorInput().getAdapter(IMoleculesEditorModel.class ) );
+        viewer.setInput( getEditorInput() );
        
         
         // See what's currently selected and select it
@@ -200,7 +203,7 @@ public class MoleculesEditor extends EditorPart implements
                         .getSelectionService().getSelection();
         if ( selection instanceof IStructuredSelection ) {
             IStructuredSelection stSelection = (IStructuredSelection) selection;
-            reactOnSelection( stSelection );
+            //reactOnSelection( stSelection );
         }
         
         setupDragSource();
@@ -211,7 +214,7 @@ public class MoleculesEditor extends EditorPart implements
     
     protected void setupDragSource() {
         int operations = DND.DROP_COPY | DND.DROP_MOVE;
-        DragSource dragSource = new DragSource(viewer.getTree(),operations);
+        DragSource dragSource = new DragSource(viewer.getTable(),operations);
         Transfer[] transferTypes = new Transfer[] 
                                         { 
                                           LocalSelectionTransfer.getTransfer()};
@@ -296,7 +299,7 @@ public class MoleculesEditor extends EditorPart implements
     @Override
     public void setFocus() {
 
-       viewer.getTree().setFocus();
+       viewer.getTable().setFocus();
 
     }
 
@@ -331,16 +334,16 @@ public class MoleculesEditor extends EditorPart implements
         Set<Object> propterties = ac.getProperties().keySet();
         propertyHeaders =
                 new ArrayList<String>( new LinkedHashSet( propterties ) );
-        Tree tree = viewer.getTree();
+        Table tree = viewer.getTable();
         int oldCount = tree.getColumnCount();
         // creates missing columns so that column count is
         // proptertyHeaders.size()+2
         for ( int i = propertyHeaders.size() - (oldCount - 2); i > 0; i-- ) {
-            new TreeColumn( tree, SWT.NONE );
+            new TableColumn( tree, SWT.NONE );
         }
         // set property name as column text
         for ( int i = 0; i < (propertyHeaders.size()); i++ ) {
-            TreeColumn tc = tree.getColumn( i + 2 );
+            TableColumn tc = tree.getColumn( i + 2 );
             tc.setText( propertyHeaders.get( i ) );
             tc.setWidth( 100 );
             tc.setResizable( true );
@@ -367,13 +370,13 @@ public class MoleculesEditor extends EditorPart implements
     @Override
     public Object getAdapter( Class adapter ) {
     
-        if(IContentOutlinePage.class.equals( adapter )) {
-            if(outlinePage == null) {
-                outlinePage = new MoleculesOutlinePage();
-                outlinePage.setInput(getEditorInput());
-            }
-            return outlinePage;
-        }
+//        if(IContentOutlinePage.class.equals( adapter )) {
+//            if(outlinePage == null) {
+//                outlinePage = new MoleculesOutlinePage();
+//                outlinePage.setInput(getEditorInput());
+//            }
+//            return outlinePage;
+//        }
         return super.getAdapter( adapter );
     }
     public ISelection getSelection() {
@@ -383,7 +386,7 @@ public class MoleculesEditor extends EditorPart implements
             return StructuredSelection.EMPTY;
     }
     
-    public TreeViewer getViewer() {
+    public TableViewer getViewer() {
         return viewer;
     }
     
