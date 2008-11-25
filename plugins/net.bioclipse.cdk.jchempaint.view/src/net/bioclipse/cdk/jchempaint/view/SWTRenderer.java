@@ -22,11 +22,13 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Region;
 import org.openscience.cdk.renderer.IRenderer;
 import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.elements.AtomSymbolElement;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.IRenderingVisitor;
 import org.openscience.cdk.renderer.elements.LineElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
+import org.openscience.cdk.renderer.elements.RectangleElement;
 import org.openscience.cdk.renderer.elements.TextElement;
 import org.openscience.cdk.renderer.elements.WedgeLineElement;
 
@@ -41,6 +43,7 @@ public class SWTRenderer implements IRenderingVisitor, IRenderer{
     // scale a lite more and translate the differense to center it
     // dosen't handle zoom
     public SWTRenderer(GC graphics, Renderer2DModel model, double[] scale) {
+        transform = new AffineTransform();
         scaleX = Math.min( scale[0], scale[1] );
         scaleY = scaleX;
         this.model = model;
@@ -54,23 +57,23 @@ public class SWTRenderer implements IRenderingVisitor, IRenderer{
         return model;
     }
     
+    private int transformX(double x) {
+        return (int) transform( x, 1 )[0];
+    }
+    private int transformY(double y) {
+        return (int) transform( 1, y )[1];
+    }
+    private double[] transform(double x, double y) {
+        double [] result = new double[2];
+        transform.transform( new double[] {x,y}, 0, result, 0, 1 );
+        return result;
+    }
     private int scaleX(double x) {
-        double[] result = new double[2];
-        transform.transform( new double[]{x,0}, 0, result, 0, 1 );
-        return (int)result[0];
+        return (int) (x*transform.getScaleX());
     }
     
     private int scaleY(double y) {
-        double[] result = new double[2];
-        transform.transform( new double[]{0,y}, 0, result, 0, 1 );
-        return (int)result[1];
-    }
-    
-    private int scale(double v,double f) {
-        double[] result = new double[2];
-        transform.transform( new double[]{v,v}, 0, result, 0, 1 );
-        return (int)result[0];
-        //return (int)(v*f+.5);
+        return (int) (y*transform.getScaleY());
     }
     
     public void render(ElementGroup renderingModel) {
@@ -89,15 +92,15 @@ public class SWTRenderer implements IRenderingVisitor, IRenderer{
         if(element.fill) {
         gc.setBackground( toSWTColor( gc, element.color ) );
         
-        gc.fillOval( scaleX(element.x)-radius_2, 
-                     scaleY(element.y)-radius_2, 
+        gc.fillOval( transformX( element.x)-radius_2, 
+                     transformY(element.y)-radius_2, 
                      radius,
                      radius );
         } else {
             gc.setForeground(  toSWTColor( gc, element.color ) );
             
-            gc.drawOval( scaleX(element.x)-radius_2, 
-                         scaleY(element.y)-radius_2, 
+            gc.drawOval( transformX(element.x)-radius_2, 
+                         transformY(element.y)-radius_2, 
                          radius,
                          radius );
         }
@@ -124,10 +127,10 @@ public class SWTRenderer implements IRenderingVisitor, IRenderer{
     
     private void drawWedge(WedgeLineElement element) {
         double width = element.width;
-        Point2d p1 = new Point2d( scaleX(element.x1),
-                                  scaleY(element.y2));
-        Point2d p2 = new Point2d( scaleX(element.x2),
-                                  scaleY(element.y2));
+        Point2d p1 = new Point2d( transformX(element.x1),
+                                  transformY(element.y1));
+        Point2d p2 = new Point2d( transformX(element.x2),
+                                  transformY(element.y2));
         Vector2d p12 = new Vector2d(p2);p12.sub( p1 );
         Vector2d v12n = new Vector2d(p12.y,-p12.x); // normal for p12
         v12n.normalize();
@@ -190,10 +193,10 @@ public class SWTRenderer implements IRenderingVisitor, IRenderer{
     }
 
     private void drawLine(LineElement element) {
-        gc.drawLine( scaleX(element.x1),
-                     scaleY(element.y1),
-                     scaleX(element.x2),
-                     scaleY(element.y2));
+        gc.drawLine( transformX(element.x1),
+                     transformY(element.y1),
+                     transformX(element.x2),
+                     transformY(element.y2));
     }
     
     private void drawLineX(LineElement element, int val) {
@@ -219,10 +222,10 @@ public class SWTRenderer implements IRenderingVisitor, IRenderer{
     
     public void visitText( TextElement element ) {
 
-        int x = scaleX(element.x);
-        int y = scaleY(element.y);
+        int x = transformX(element.x);
+        int y = transformY(element.y);
         String text = element.text;
-        int fontSize = (int) (scaleX*.4);
+        int fontSize = (int) (scaleX(.4));
         fontSize = (fontSize<12?12:fontSize);
         fontSize = (fontSize>100?100:fontSize);
         Font font= new Font(gc.getDevice(),"Arial",fontSize,SWT.NORMAL);
@@ -352,6 +355,26 @@ public class SWTRenderer implements IRenderingVisitor, IRenderer{
     public void render() {
 
         // TODO Auto-generated method stub
+        
+    }
+
+    public void visit( IRenderingElement element ) {
+
+        throw new UnsupportedOperationException("Element type is not supported: "
+                                                +element.getClass().getName());
+        
+    }
+
+    public void visit( AtomSymbolElement element ) {
+
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void visit( RectangleElement element ) {
+        gc.setForeground( toSWTColor( gc, element.color ) );
+        gc.drawRectangle( transformX(element.x), transformY(element.y), 
+                          scaleX(element.width), scaleY(element.height ));
         
     }
 }
