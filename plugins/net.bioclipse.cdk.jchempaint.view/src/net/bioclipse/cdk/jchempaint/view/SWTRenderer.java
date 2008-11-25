@@ -1,5 +1,6 @@
 package net.bioclipse.cdk.jchempaint.view;
 
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Region;
+import org.openscience.cdk.renderer.IRenderer;
 import org.openscience.cdk.renderer.Renderer2DModel;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
@@ -29,13 +31,13 @@ import org.openscience.cdk.renderer.elements.TextElement;
 import org.openscience.cdk.renderer.elements.WedgeLineElement;
 
 
-public class SWTRenderer implements IRenderingVisitor{
+public class SWTRenderer implements IRenderingVisitor, IRenderer{
 
     GC gc;
     double scaleX = 1;
     double scaleY = 1;
     Renderer2DModel model;
-    
+    public AffineTransform transform;
     // scale a lite more and translate the differense to center it
     // dosen't handle zoom
     public SWTRenderer(GC graphics, Renderer2DModel model, double[] scale) {
@@ -53,15 +55,22 @@ public class SWTRenderer implements IRenderingVisitor{
     }
     
     private int scaleX(double x) {
-        return scale(x, scaleX);
+        double[] result = new double[2];
+        transform.transform( new double[]{x,0}, 0, result, 0, 1 );
+        return (int)result[0];
     }
     
     private int scaleY(double y) {
-        return -scale( y, scaleY );
+        double[] result = new double[2];
+        transform.transform( new double[]{0,y}, 0, result, 0, 1 );
+        return (int)result[1];
     }
     
     private int scale(double v,double f) {
-        return (int)(v*f+.5);
+        double[] result = new double[2];
+        transform.transform( new double[]{v,v}, 0, result, 0, 1 );
+        return (int)result[0];
+        //return (int)(v*f+.5);
     }
     
     public void render(ElementGroup renderingModel) {
@@ -336,5 +345,13 @@ public class SWTRenderer implements IRenderingVisitor{
         scaleX = scale;
         scaleY = scale;
     }
-    
+    public void setTransform(AffineTransform transform) {
+        this.transform = transform;
+    }
+
+    public void render() {
+
+        // TODO Auto-generated method stub
+        
+    }
 }

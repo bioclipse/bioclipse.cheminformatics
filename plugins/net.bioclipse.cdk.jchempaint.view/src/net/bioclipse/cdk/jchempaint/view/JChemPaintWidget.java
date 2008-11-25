@@ -100,7 +100,7 @@ public class JChemPaintWidget extends Canvas {
         
         Transform transform = new Transform( event.gc.getDevice() );
         transform.translate( (float) center.getX(), (float) center.getY() );
-        event.gc.setTransform( transform );
+        //event.gc.setTransform( transform );
         SWTRenderer visitor = new SWTRenderer( event.gc, renderer2DModel, scalse );
         renderer.paintMolecule( atomContainer, visitor );
     }
