@@ -1,10 +1,12 @@
 package net.bioclipse.cdk.jchempaint.view;
 
+import static java.lang.Math.round;
+
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import static java.lang.Math.round;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
@@ -19,10 +21,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.graphics.Region;
-import org.openscience.cdk.renderer.IRenderer;
 import org.openscience.cdk.renderer.Renderer2DModel;
-import org.openscience.cdk.renderer.elements.AtomSymbolElement;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.IRenderingVisitor;
@@ -32,8 +31,7 @@ import org.openscience.cdk.renderer.elements.RectangleElement;
 import org.openscience.cdk.renderer.elements.TextElement;
 import org.openscience.cdk.renderer.elements.WedgeLineElement;
 
-
-public class SWTRenderer implements IRenderingVisitor, IRenderer{
+public class SWTRenderer implements IRenderingVisitor{
 
     GC gc;
     double scaleX = 1;
@@ -83,7 +81,7 @@ public class SWTRenderer implements IRenderingVisitor, IRenderer{
     }
     
 
-    public void visitOval( OvalElement element ) {
+    public void visit( OvalElement element ) {
         Color colorOld = gc.getBackground();
 //        int radius = (int) (scaleX(element.getRadius())+.5);
 //        int radius_2 = (int) (scaleX(element.getRadius())/2.0+.5);
@@ -107,7 +105,7 @@ public class SWTRenderer implements IRenderingVisitor, IRenderer{
         gc.setBackground( colorOld);
     }
 
-    public void visitLine( LineElement element ) {
+    public void visit( LineElement element ) {
         Color colorOld = gc.getBackground();
         // init recursion with background to get the first draw with foreground
         gc.setForeground( getBackgroundColor() ); 
@@ -116,7 +114,7 @@ public class SWTRenderer implements IRenderingVisitor, IRenderer{
         gc.setBackground( colorOld);
     }
     
-    public void visitWedge( WedgeLineElement element) {
+    public void visit( WedgeLineElement element) {
         Color colorOld = gc.getBackground();
         gc.setForeground( getForgroundColor() );
         gc.setBackground( getForgroundColor() );
@@ -213,14 +211,7 @@ public class SWTRenderer implements IRenderingVisitor, IRenderer{
         drawLineX(element, val-1);
     }
     
-    public void visitModel( ElementGroup model ) {
-
-        for(IRenderingElement element:model) {
-            element.accept( this );
-        }
-    }
-    
-    public void visitText( TextElement element ) {
+    public void visit( TextElement element ) {
 
         int x = transformX(element.x);
         int y = transformY(element.y);
@@ -337,7 +328,7 @@ public class SWTRenderer implements IRenderingVisitor, IRenderer{
           cleanUp.clear();
     }
 
-    public void visitElementGroup( ElementGroup elementGroup ) {
+    public void visit( ElementGroup elementGroup ) {
 
         for(IRenderingElement element:elementGroup) {
             element.accept( this );
@@ -358,23 +349,63 @@ public class SWTRenderer implements IRenderingVisitor, IRenderer{
         
     }
 
-    public void visit( IRenderingElement element ) {
-
-        throw new UnsupportedOperationException("Element type is not supported: "
-                                                +element.getClass().getName());
+    public void visitDefault(IRenderingElement element) {
+        throw new RuntimeException( "visitor for "+element.getClass().getName() 
+                                    + " is not implemented yet.");
         
     }
 
-    public void visit( AtomSymbolElement element ) {
-
-        // TODO Auto-generated method stub
-        
-    }
+//    public void visit( AtomSymbolElement element ) {
+//
+//        // TODO Auto-generated method stub
+//        
+//    }
 
     public void visit( RectangleElement element ) {
         gc.setForeground( toSWTColor( gc, element.color ) );
         gc.drawRectangle( transformX(element.x), transformY(element.y), 
                           scaleX(element.width), scaleY(element.height ));
         
+    }
+    public void visit(IRenderingElement element)  {
+
+        Method method = getMethod( element );
+        if(method == null) {
+            visitDefault(element);
+        }
+        else {
+            try {
+                method.invoke( this, new Object[] {element} );
+            } catch ( IllegalArgumentException e ) {
+                visitDefault( element );
+            } catch ( IllegalAccessException e ) {
+                visitDefault( element );
+            } catch ( InvocationTargetException e ) {
+                visitDefault( element );
+            }
+        }
+    }
+    private Method getMethod( IRenderingElement element ) {
+
+        Class<?> cl = element.getClass();
+        while ( !cl.equals( Object.class ) ) {
+            try {
+                return this.getClass().getDeclaredMethod( "visit",
+                                                          new Class[] { cl } );
+
+            } catch ( NoSuchMethodException e ) {
+                cl = cl.getSuperclass();
+            }
+        }
+        Class<?>[] interfaces = element.getClass().getInterfaces();
+        for ( Class<?> c : interfaces ) {
+            try {
+                return this.getClass().getDeclaredMethod( "visit",
+                                                          new Class[] { c } );
+            } catch ( NoSuchMethodException e ) {
+                // try with the next interface
+            }
+        }
+        return null;
     }
 }
