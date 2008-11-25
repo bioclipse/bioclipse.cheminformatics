@@ -35,6 +35,7 @@ import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.Renderer2DModel;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
+import org.openscience.cdk.renderer.generators.AtomContainerBoundsGenerator;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator;
 import org.openscience.cdk.renderer.generators.BasicGenerator;
@@ -62,6 +63,7 @@ public class JChemPaintWidget extends Canvas {
         renderer2DModel.setAtomRadius( 20 );
         
         Collection<IGenerator> set = new ArrayList<IGenerator>();
+        set.add( new AtomContainerBoundsGenerator() );
         set.add( new BasicBondGenerator(renderer2DModel) );
         set.add( new BasicAtomGenerator(renderer2DModel));
         set.add( new HighlightGenerator(renderer2DModel) );
