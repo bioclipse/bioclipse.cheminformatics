@@ -11,17 +11,28 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.editor;
 
+import java.lang.reflect.Method;
+
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.outline.JCPOutlinePage;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -32,14 +43,16 @@ import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
 import org.openscience.cdk.interfaces.IChemObjectListener;
 
 public class JChemPaintEditor extends EditorPart{
-    
+
+    Logger logger = Logger.getLogger( JChemPaintEditor.class );
+
     private JCPOutlinePage fOutlinePage;
-    
+
     boolean dirty=false;
-	ICDKMolecule model;
-	JChemPaintEditorWidget widget;
-	IController2DModel c2dm;
-	SWTMosueEventRelay relay;
+    ICDKMolecule model;
+    JChemPaintEditorWidget widget;
+    IController2DModel c2dm;
+    SWTMosueEventRelay relay;
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		// TODO Auto-generated method stub
@@ -100,12 +113,22 @@ public class JChemPaintEditor extends EditorPart{
 		IAtomContainer atomContainer=null;
 		if(model!=null)
 		    atomContainer=model.getAtomContainer();
-		 
-		// setup hub 
 		
+		
+		MenuManager menuMgr = new MenuManager();
+	  menuMgr.add(
+	new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+	  getSite().registerContextMenu(menuMgr, widget);
+	    
+	  //Control control = lViewer.getControl();
+	  Menu menu = menuMgr.createContextMenu(widget);
+	  widget.setMenu(menu);    
+
+
+		// setup hub 
+		getSite().setSelectionProvider( widget );
 		widget.setAtomContainer( atomContainer );
 			
-//			widget.getRendererModel().setHighlightRadiusModel(20);
 	}
 
     @Override
@@ -145,4 +168,46 @@ public class JChemPaintEditor extends EditorPart{
         return super.getAdapter(adapter);
     }
 
+    protected MenuItem createMenuItem( Menu parent, int style, String text, 
+                                       Image icon, int accel, boolean enabled, 
+                                       String callback) {
+        MenuItem mi = new MenuItem(parent, style);
+        if (text != null) {
+            mi.setText(text);
+        }
+        if (icon != null) {
+            mi.setImage(icon);
+        }
+        if (accel != -1) {
+            mi.setAccelerator(accel);
+        }
+        mi.setEnabled(enabled);
+        if (callback != null) {
+            registerCallback(mi, this, callback);
+        }
+        return mi;
+    }
+
+    protected void registerCallback(final MenuItem mi, 
+                                    final Object handler, 
+                                    final String handlerName) {
+        mi.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                try {
+                    Method m = handler.getClass().getMethod(handlerName, null);
+                    m.invoke(handler, null);
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+    }
+    public void doAddAtom() {
+        
+        logger.debug( "Executing 'Add atom' action" );        
+    }
+    public void doChageAtom() {
+        logger.debug( "Executing 'Chage atom' action" );
+    }
 }
