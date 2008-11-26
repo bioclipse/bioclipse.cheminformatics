@@ -6,7 +6,7 @@
       <editor
             class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
             default="true"
-            icon="icons/triangle.gif"
+            icon="icons/editor/triangle.gif"
             id="net.bioclipse.cdk.ui.editors.jchempaint"
             name="JChemPaintEditor">
          <contentTypeBinding
@@ -57,7 +57,7 @@
              id="net.bioclipse.cdk.ui.jchempaint.toolbar">
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.new_atom_bond"
-                icon="icons/new_atom_bond.gif"
+                icon="icons/editor/new_atom_bond.gif"
                 style="radio">
              <visibleWhen
                    checkEnabled="true">
@@ -71,7 +71,7 @@
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.eraser"
-                icon="icons/eraser.gif"
+                icon="icons/editor/eraser.gif"
                 style="radio">
              <visibleWhen
                    checkEnabled="true">
@@ -85,7 +85,7 @@
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.lasso"
-                icon="icons/lasso.gif"
+                icon="icons/editor/lasso.gif"
                 style="radio">
              <visibleWhen
                    checkEnabled="true">
@@ -99,7 +99,7 @@
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.incharge"
-                icon="icons/charge_plus.gif"
+                icon="icons/editor/charge_plus.gif"
                 style="radio">
              <visibleWhen
                    checkEnabled="true">
@@ -113,7 +113,7 @@
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.deccharge"
-                icon="icons/charge_minus.gif"
+                icon="icons/editor/charge_minus.gif"
                 style="radio">
              <visibleWhen
                    checkEnabled="true">
@@ -127,7 +127,7 @@
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.move"
-                icon="icons/move.gif"
+                icon="icons/editor/move.gif"
                 style="radio">
              <visibleWhen
                    checkEnabled="true">
