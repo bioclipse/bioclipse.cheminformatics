@@ -743,4 +743,15 @@ public class CDKManagerPluginTest {
         assertEquals("CCC", mol.getSMILES());
     }
 
+    @Test
+    public void testNumberOfEntriesInSDF() throws Exception {
+        
+        URI uri = getClass().getResource("/testFiles/test.sdf").toURI();
+        URL url = FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        
+        assertEquals( "There should be two entries in the file",
+                      2,
+                      cdk.numberOfEntriesInSDF( path ) );
+    }
 }

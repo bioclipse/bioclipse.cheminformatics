@@ -698,15 +698,6 @@ public class CDKManagerTest extends AbstractManagerTest {
 
     }
     
-    @Test
-    public void testNumberOfEntriesInSDF() throws FileNotFoundException {
-        String path = getClass().getResource("/testFiles/test.sdf").getPath();
-        MockIFile mf = new MockIFile(path);
-        assertEquals( "There should be two entries in the file",
-                      2,
-                      cdk.numberOfEntriesInSDF( mf ) );
-    }
-
     @Test public void testAddExplicitHydrogens() throws Exception {
         ICDKMolecule molecule = cdk.fromSMILES("C");
         assertEquals(1, molecule.getAtomContainer().getAtomCount());
@@ -747,5 +738,4 @@ public class CDKManagerTest extends AbstractManagerTest {
         assertTrue(cdk.structureMatches(molecule, molecule2));
         Assert.assertFalse(cdk.structureMatches(molecule, molecule3));
 	}
-
 }
