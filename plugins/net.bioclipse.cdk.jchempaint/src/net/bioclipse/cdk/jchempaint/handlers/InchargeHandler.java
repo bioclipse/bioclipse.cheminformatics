@@ -4,40 +4,36 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Arvid Berg
- *     
+ *
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.handlers;
 
-import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
-
 import org.apache.log4j.Logger;
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.handlers.HandlerUtil;
-import org.openscience.cdk.controller.Controller2DHub;
-import org.openscience.cdk.controller.IController2DModel;
-import org.openscience.cdk.controller.IController2DModel.DrawMode;
+import org.openscience.cdk.controller.IChemModelRelay;
+import org.openscience.cdk.interfaces.IAtom;
 
-public class InchargeHandler extends AbstractHandler implements IHandler {
+public class InchargeHandler extends AbstractJChemPaintHandler {
 
     Logger logger = Logger.getLogger(RemoveHandler.class);
     public Object execute(ExecutionEvent event) throws ExecutionException {
-       IEditorPart editor=HandlerUtil.getActiveEditor(event);
-       if(! (editor instanceof net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor)){
-           logger.debug("Not JChemPaintEditor");
-           return null;
-       }
-       
-       Controller2DHub hub=((JChemPaintEditor)editor).getControllerHub();
-       IController2DModel c2dm=hub.getController2DModel();       
-       c2dm.setDrawMode(DrawMode.INCCHARGE);
+
+        IChemModelRelay relay = getChemModelRelay( event );
+        if ( relay != null ) {
+            IAtom selected = getSingleSelectedAtom( event );
+            if ( selected != null ) {
+                int newCharge = 1;
+                if ( selected.getFormalCharge() != null ) {
+                    newCharge = selected.getFormalCharge();
+                    newCharge++;
+                }
+                relay.setCharge( selected, newCharge );
+            }
+        }
         return null;
     }
-
 }
