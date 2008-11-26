@@ -87,7 +87,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
           removeListener( SWT.MouseExit, (Listener)relay );
       }
     	relay = new SWTMosueEventRelay(hub);
-    	hub.setActiveDrawModule( new MoveModule(hub) );
+    	c2dm.setDrawMode(DrawMode.MOVE);
 
     	addMouseListener(relay);
     	addMouseMoveListener(relay);
