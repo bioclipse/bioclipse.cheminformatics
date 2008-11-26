@@ -40,35 +40,34 @@ import org.openscience.cdk.tools.LoggingTool;
  * @cdk.module render
  */
 public class Renderer {
-    
-     LoggingTool logger = new LoggingTool(Renderer.class);
-    
+
+    LoggingTool logger = new LoggingTool(Renderer.class);
+
     Renderer2DModel renderer2DModel;
-   
+
     AffineTransform transform;
     List<IGenerator> generators;
-    
+
     boolean dirty = true;
     Rectangle2D bounds;
-    Point2d center= new Point2d(0,0);
-    
-    
+    Point2d center = new Point2d(0, 0);
+
     public Renderer(Collection<IGenerator> gen) {
         renderer2DModel = new Renderer2DModel();
         generators = new ArrayList<IGenerator>(gen);
         dirty = true;
     }
-    
-    public Point2d getCoorFromScreen( int screenX, int screenY ) {
-        //if(dirty) return null; // what should the behavior when it is dirty
+
+    public Point2d getCoorFromScreen(int screenX, int screenY) {
+        // if(dirty) return null; // what should the behavior when it is dirty
         try {
             double[] points = new double[2];
-        
-            transform.inverseTransform( new double[] { screenX, screenY }, 
-                                        0, points, 0, 1 );
-            return new Point2d( points[0], points[1] );
-        } catch ( NoninvertibleTransformException e ) {
-            logger.debug( "Can not invert transform");
+
+            transform.inverseTransform(new double[] { screenX, screenY }, 0,
+                    points, 0, 1);
+            return new Point2d(points[0], points[1]);
+        } catch (NoninvertibleTransformException e) {
+            logger.debug("Can not invert transform");
         }
         return null;
     }
@@ -78,26 +77,28 @@ public class Renderer {
         return renderer2DModel;
     }
 
-    public void paintMolecule( IAtomContainer atomCon, 
-                                          IRenderingVisitor renderingVisitor ) {
+    public void paintMolecule(IAtomContainer atomCon,
+            IRenderingVisitor renderingVisitor) {
         ElementGroup diagram = new ElementGroup();
-        if(dirty) calculateTransform( atomCon);
-        for(IGenerator generator:generators) {
-            diagram.add( generator.generate( atomCon, center ));
+        if (dirty)
+            calculateTransform(atomCon);
+        renderingVisitor.setTransform( transform );
+        for (IGenerator generator : generators) {
+            diagram.add(generator.generate(atomCon));
         }
         // renderingVisitor.render(diagram);
-        diagram.accept( renderingVisitor );
+        diagram.accept(renderingVisitor);
     }
 
-    public void setRenderer2DModel( Renderer2DModel model ) {
-
+    public void setRenderer2DModel(Renderer2DModel model) {
         renderer2DModel = model;
     }
-    
+
     public void setBounds(Rectangle2D bounds) {
         this.bounds = bounds;
         dirty = true;
     }
+    
     /*
      * Right now we do all the scaling in one transform 
      * Dose this work with generate(..., Point2d) idea?
@@ -109,15 +110,19 @@ public class Renderer {
                                                    minMax[3]-minMax[1]);
         AffineTransform trans = new AffineTransform();
 //        trans.translate(-rect.getWidth()/2,-rect.getHeight()/2 );
-        double xScale = bounds.getWidth()/rect.getWidth();
-        double yScale = bounds.getHeight()/rect.getHeight();
+        double xScale = (bounds.getWidth()-40)/(rect.getWidth());
+        double yScale = (bounds.getHeight()-40)/(rect.getHeight());
         double scale = Math.min( xScale, yScale );
-//        trans.translate( -bounds.getWidth()/2, -bounds.getHeight()/2 );
+//        
+        trans.translate( (bounds.getWidth()-rect.getWidth()*scale)/2,
+                         (bounds.getHeight()-rect.getHeight()*-scale)/2);
         
-        trans.translate( (bounds.getWidth()-rect.getWidth()*scale)/2, 
-                         (bounds.getHeight()-rect.getHeight()*scale)/2 );
+        
+//        trans.translate( -rect.getX()*scale + (bounds.getWidth()-rect.getWidth()*scale)/2, 
+//                         -(rect.getY())*-scale + (bounds.getHeight()-rect.getHeight()*-scale)/2 );
         trans.scale( scale , -scale );
-        trans.translate(-rect.getX(),-rect.getY());
+        trans.translate( -rect.getX(), -rect.getY() );
+
         transform = trans;
         dirty = false;
     }

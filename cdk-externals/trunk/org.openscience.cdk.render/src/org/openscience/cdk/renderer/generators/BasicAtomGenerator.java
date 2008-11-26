@@ -22,8 +22,6 @@ package org.openscience.cdk.renderer.generators;
 
 import java.awt.Color;
 
-import javax.vecmath.Point2d;
-
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -44,10 +42,10 @@ public class BasicAtomGenerator implements IGenerator{
 		this.model = r2dm;
 	}
 
-	public IRenderingElement generate(IAtomContainer ac, Point2d center) {
+	public IRenderingElement generate(IAtomContainer ac) {
 		ElementGroup elementGroup = new ElementGroup();
 		for (IAtom atom : ac.atoms()) {
-			elementGroup.add(this.generate(ac, atom, center));
+			elementGroup.add(this.generate(ac, atom));
 		}
 		return elementGroup;
 	}
@@ -56,7 +54,7 @@ public class BasicAtomGenerator implements IGenerator{
 		return this.model.getAtomColor(atom, Color.BLACK);
 	}
 
-	public IRenderingElement generate(IAtomContainer ac, IAtom atom, Point2d center) {
+	public IRenderingElement generate(IAtomContainer ac, IAtom atom) {
 		// FIXME: pseudoatom from paintAtom
 
 		if (isHydrogen(atom) && !this.model.getShowExplicitHydrogens()) {
@@ -70,13 +68,13 @@ public class BasicAtomGenerator implements IGenerator{
 		}
 		
 		int alignment = GeometryTools.getBestAlignmentForLabelXY(ac, atom);
-		return generateElements(atom, alignment, center);
+		return generateElements(atom, alignment);
 	}
 
-	public IRenderingElement generateElements(IAtom atom, int alignment, Point2d center) {
+	public IRenderingElement generateElements(IAtom atom, int alignment) {
 		return new AtomSymbolElement(
-				atom.getPoint2d().x - center.x,
-				atom.getPoint2d().y - center.y,
+				atom.getPoint2d().x,
+				atom.getPoint2d().y,
 				atom.getSymbol(), 
 				atom.getFormalCharge(),
 				atom.getHydrogenCount(),

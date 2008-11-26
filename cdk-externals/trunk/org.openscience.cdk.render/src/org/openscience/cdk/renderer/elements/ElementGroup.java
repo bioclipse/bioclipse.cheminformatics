@@ -94,7 +94,7 @@ public class ElementGroup implements IRenderingElement,
     }
     
     public void accept( IRenderingVisitor v ) {
-        v.visitElementGroup( this );
+        v.visit( this );
     }
     
     public Point2D center(Dimension size) {

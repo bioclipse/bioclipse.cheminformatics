@@ -40,7 +40,7 @@ public class TextElement implements IRenderingElement {
 	}
 
 	public void accept(IRenderingVisitor v) {
-		v.visitText(this);
+		v.visit(this);
 	}
 
 }

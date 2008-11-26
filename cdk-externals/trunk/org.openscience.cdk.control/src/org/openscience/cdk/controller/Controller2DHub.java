@@ -43,6 +43,7 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.interfaces.IBond.Order;
 import org.openscience.cdk.layout.AtomPlacer;
@@ -94,28 +95,40 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 		//register all 'known' controllers
 		registerDrawModeControllerModule( 
 				IController2DModel.DrawMode.MOVE, 
-				new Controller2DModuleMove(this));
+				new MoveModule(this));
 		registerDrawModeControllerModule( 
 				IController2DModel.DrawMode.ERASER, 
-				new Controller2DModuleRemove(this));
+				new RemoveModule(this));
 		registerDrawModeControllerModule( 
 				IController2DModel.DrawMode.INCCHARGE,
-				new Controller2DModuleChangeFormalC(this, 1));
+				new ChangeFormalChargeModule(this, 1));
 		registerDrawModeControllerModule( 
 				IController2DModel.DrawMode.DECCHARGE,
-				new Controller2DModuleChangeFormalC(this, -1));
+				new ChangeFormalChargeModule(this, -1));
 		registerDrawModeControllerModule( 
-				IController2DModel.DrawMode.ENTERELEMENT, 
-				new Controller2DModuleAddAtom(this));
+				IController2DModel.DrawMode.ADDATOMORCHANGEELEMENT, 
+				new AddAtomModule(this));
+		registerDrawModeControllerModule( 
+				IController2DModel.DrawMode.DRAWBOND, 
+				new AddBondModule(this));
+		registerDrawModeControllerModule( 
+				IController2DModel.DrawMode.RING, 
+				new AddRingModule(this));
+		registerDrawModeControllerModule( 
+				IController2DModel.DrawMode.CYCLESYMBOL, 
+				new CycleSymbolModule(this));
 		
-		registerGeneralControllerModule(new Controller2DModuleHighlight(this));
+		registerGeneralControllerModule(new HighlightModule(this));
 	}
+	
 	public IController2DModel getController2DModel() {
 		return controllerModel;
 	}
+	
 	public IJava2DRenderer getIJava2DRenderer() {
 		return renderer;
 	}
+	
 	public IChemModel getIChemModel() {
 		return chemModel;
 	}
@@ -135,16 +148,14 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 	 * Unregister all general IController2DModules.
 	 */
 	public void unRegisterAllControllerModule() {
-		//module.setEventRelay(eventRelay);
-		
 		generalModules.clear();
 	}
+	
 	/**
 	 * Adds a general IController2DModule which will catch all mouse events.
 	 */
 	public void registerGeneralControllerModule(IController2DModule module) {
 		module.setChemModelRelay(this);
-		//module.setEventRelay(eventRelay);
 		generalModules.add(module);
 	}
 	
@@ -239,12 +250,12 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 		IController2DModule activeModule = getActiveDrawModule();
 		if (activeModule != null) activeModule.mouseMove(worldCoord);
 	}
+	
 	public void updateView() {
 		//call the eventRelay method here to update the view..
-		System.out.println("updateView now in Controller2DHub");	
 		eventRelay.updateView();
-		
 	}
+	
 	private IController2DModule getActiveDrawModule() {
 		return drawModeModules.get(controllerModel.getDrawMode());
 	}
@@ -268,6 +279,7 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 		}
 		return closestAtom;
 	}
+	
 	public IBond getClosestBond(Point2d worldCoord) {
 		IBond closestBond = null;
 		double closestDistance = Double.MAX_VALUE;
@@ -284,28 +296,30 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 					closestDistance = distance;
 				}
 			}
-			//GeometryToolsInternalCoordinates.getClosestBond( worldCoord.x, worldCoord.y, container);
-
 		}
 		return closestBond;
 	}
+	
 	public void removeAtom(IAtom atom) {
-		
 		ChemModelManipulator.removeAtomAndConnectedElectronContainers(chemModel, atom);
 	}
+	
 	public void addAtom(String atomType, Point2d worldCoord) {
-		
-	/*	IAtom newAtom1 = chemModel.getBuilder().newAtom(atomType, worldCoord);
-		IAtomContainer atomCon = ChemModelManipulator.createNewMolecule(chemModel);
-		atomCon.addAtom(newAtom1);
 		//FIXME: update atoms for implicit H's or so
-		//updateAtom(atomCon, newAtom1);
-		chemModel.getMoleculeSet().addAtomContainer(atomCon);*/
 		IAtom newAtom = chemModel.getBuilder().newAtom(atomType, worldCoord);
-		chemModel.getMoleculeSet().getAtomContainer(0).addAtom(newAtom);
 		
-		System.out.println("atom added??");
-
+		//FIXME : there should be an initial hierarchy?
+		IMoleculeSet molSet = chemModel.getMoleculeSet();
+		if (molSet == null) {
+		    molSet = chemModel.getBuilder().newMoleculeSet();
+		    IAtomContainer ac = chemModel.getBuilder().newAtomContainer();
+		    ac.addAtom(newAtom);
+		    molSet.addAtomContainer(ac);
+		    chemModel.setMoleculeSet(molSet);
+		} else {
+		    // FIXME : always add to the first container?
+		    molSet.getAtomContainer(0).addAtom(newAtom);
+		}
 	}
 
     public void addAtom(String atomType, IAtom atom) {
@@ -335,28 +349,23 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
     }
     
     public void moveTo( IAtom atom, Point2d worldCoords ) {
-
         if ( atom != null ) {
-
             Point2d atomCoord = new Point2d( worldCoords );
-
             atom.setPoint2d( atomCoord );
         }
-
     }
 
     public void moveTo( IBond bond, Point2d point ) {
+        if (bond != null) {
+			Point2d center = bond.get2DCenter();
+			for (IAtom atom : bond.atoms()) {
+				Vector2d offset = new Vector2d();
+				offset.sub(atom.getPoint2d(), center);
+				Point2d result = new Point2d();
+				result.add(point, offset);
 
-        if ( bond != null ) {
-            Point2d center = bond.get2DCenter();
-            for ( IAtom atom : bond.atoms() ) {
-                Vector2d  offset = new Vector2d();
-                offset.sub(  atom.getPoint2d(),center );
-                Point2d result = new Point2d();
-                result.add( point,offset );
-                
-                atom.setPoint2d( result);
-            }
+				atom.setPoint2d(result);
+			}
         }
     }
 
@@ -441,6 +450,16 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
             }
         }
     }
+    
+    public void addRing(int ringSize) {
+        IRing ring = chemModel.getBuilder().newRing(ringSize, "C");
+        System.err.println("making ring of size " + ringSize + " actual = " + ring.getAtomCount());
+        double bondLength = 2.5;    // err...
+        ringPlacer.placeRing(ring, new Point2d(0, 0), bondLength);
+        IMoleculeSet set = chemModel.getBuilder().newMoleculeSet();
+        set.addAtomContainer(ring);
+        chemModel.setMoleculeSet(set);
+    }
 
     public void addRing(IAtom atom, int ringSize) {
         addRing(atom, ringSize, false);
@@ -465,6 +484,7 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
             newRing.getBond(4).setOrder(IBond.Order.DOUBLE);
             makeRingAromatic(newRing);
         }
+        
         double bondLength = GeometryTools.getBondLengthAverage(sourceContainer);
         Point2d conAtomsCenter = getConnectedAtomsCenter(sharedAtoms, chemModel);
         Vector2d ringCenterVector = new Vector2d(sharedAtomsCenter);

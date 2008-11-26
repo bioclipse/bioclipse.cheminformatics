@@ -55,7 +55,7 @@ import org.openscience.cdk.tools.manipulator.RingSetManipulator;
 public class BasicBondGenerator implements IGenerator{
 
 	private Renderer2DModel model; 
-	private LoggingTool logger = new LoggingTool(BasicBondGenerator.class );
+	private LoggingTool logger = new LoggingTool(BasicBondGenerator.class);
 	private IRingSet ringSet;
 	private double bondWidth;
 	private double bondDistance;
@@ -87,28 +87,30 @@ public class BasicBondGenerator implements IGenerator{
 	}
 	
 	public Color getColorForBond(IBond bond) {
-		return this.model.getColorHash().get(bond);
+	    Color color = this.model.getColorHash().get(bond);
+	    if(color == null) color = Color.BLACK;
+	    return color; 
 	}
 
-	public IRenderingElement generate(IAtomContainer ac, Point2d center) {
+	public IRenderingElement generate(IAtomContainer ac) {
 		ElementGroup group = new ElementGroup();
 		this.ringSet = this.getRingSet(ac);
 		for (IBond bond : ac.bonds()) {
-			group.add(this.generate(bond, center));
+			group.add(this.generate(bond));
 		}
 		return group;
 	}
 
-	public IRenderingElement generate(IBond currentBond, Point2d center) {
+	public IRenderingElement generate(IBond currentBond) {
 		IRing ring = RingSetManipulator.getHeaviestRing(ringSet, currentBond);
 		if (ring != null) {
-			return generateRingElements(currentBond, ring, center);
+			return generateRingElements(currentBond, ring);
 		} else {
-			return generateBond(currentBond, center);
+			return generateBond(currentBond);
 		}
 	}
 
-	public LineElement generateBondElement(IBond bond, LineType type, Point2d c) {
+	public LineElement generateBondElement(IBond bond, LineType type) {
 		// More than 2 atoms per bond not supported by this module
 		if (bond.getAtomCount() > 2)
 			return null;
@@ -118,26 +120,25 @@ public class BasicBondGenerator implements IGenerator{
 		Point2d p2 = bond.getAtom(1).getPoint2d();
 
 		return new LineElement(
-				p1.x - c.x, p1.y - c.y, p2.x - c.x, p2.y - c.y, 
-				type, bondWidth, bondDistance, this.getColorForBond(bond));
+				p1.x, p1.y, p2.x, p2.y, type, bondWidth, bondDistance, this.getColorForBond(bond));
 	}
 
-	public IRenderingElement generateRingElements(IBond bond, IRing ring, Point2d center) {
+	public IRenderingElement generateRingElements(IBond bond, IRing ring) {
 		if (isSingle(bond) && isStereoBond(bond)) {
-			return generateStereoElement(bond, center);
+			return generateStereoElement(bond);
 		} else if (isDouble(bond)) {
 			ElementGroup pair = new ElementGroup();
-			IRenderingElement e1 = generateBondElement(bond, LineType.SINGLE, center);
-			IRenderingElement e2 = generateInnerElement(bond, ring, center);
+			IRenderingElement e1 = generateBondElement(bond, LineType.SINGLE);
+			IRenderingElement e2 = generateInnerElement(bond, ring);
 			pair.add(e1);
 			pair.add(e2);
 			return pair;
 		} else {
-			return generateBondElement(bond, getLineType(bond), center);
+			return generateBondElement(bond, getLineType(bond));
 		}
 	}
 
-	private IRenderingElement generateInnerElement(IBond bond, IRing ring, Point2d c) {
+	private IRenderingElement generateInnerElement(IBond bond, IRing ring) {
 		Point2d center = GeometryTools.get2DCenter(ring);
 		Point2d a = bond.getAtom(0).getPoint2d();
 		Point2d b = bond.getAtom(1).getPoint2d();
@@ -158,11 +159,11 @@ public class BasicBondGenerator implements IGenerator{
 		// uu.interpolate(u, w, alpha);
 		// return new BondSymbol(uu.x, uu.y, ww.x, ww.y);
 		return new LineElement(
-				u.x - c.x, u.y - c.y, w.x - c.x, w.y - c.y, LineType.SINGLE, bondWidth,
+				u.x, u.y, w.x, w.y, LineType.SINGLE, bondWidth,
 				bondDistance, this.getColorForBond(bond));
 	}
 
-	private IRenderingElement generateStereoElement(IBond bond, Point2d center) {
+	private IRenderingElement generateStereoElement(IBond bond) {
 
 		int stereo = bond.getStereo();
 		boolean dashed = false;
@@ -174,7 +175,7 @@ public class BasicBondGenerator implements IGenerator{
 		if (stereo == STEREO_BOND_DOWN_INV || stereo == STEREO_BOND_UP_INV)
 			dir = Direction.toFirst;
 
-		LineElement base = generateBondElement(bond, getLineType(bond), center); 
+		LineElement base = generateBondElement(bond, getLineType(bond)); 
 		return new WedgeLineElement(base, dashed, dir, this.getColorForBond(bond));
 	}
 
@@ -221,15 +222,15 @@ public class BasicBondGenerator implements IGenerator{
 		return type;
 	}
 
-	public IRenderingElement generateBond(IBond bond, Point2d center) {
+	public IRenderingElement generateBond(IBond bond) {
 		if (!this.model.getShowExplicitHydrogens() && bindsHydrogen(bond)) {
 			return null;
 		}
 
 		if (isStereoBond(bond)) {
-			return generateStereoElement(bond, center);
+			return generateStereoElement(bond);
 		} else {
-			return generateBondElement(bond, getLineType(bond), center);
+			return generateBondElement(bond, getLineType(bond));
 		}
 	}
 	

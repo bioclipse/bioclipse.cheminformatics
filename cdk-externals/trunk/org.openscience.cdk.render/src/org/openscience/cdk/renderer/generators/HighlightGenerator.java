@@ -1,7 +1,6 @@
 package org.openscience.cdk.renderer.generators;
 
 import java.awt.Color;
-import java.awt.geom.Rectangle2D;
 
 import javax.vecmath.Point2d;
 
@@ -18,7 +17,7 @@ import org.openscience.cdk.renderer.elements.LineElement.LineType;
 /**
  * @cdk.module render
  */
-public class HighlightGenerator implements IGenerator{
+public class HighlightGenerator implements IGenerator {
 	
 	private Renderer2DModel model;
 	private Color highlightColor;
@@ -30,28 +29,25 @@ public class HighlightGenerator implements IGenerator{
 	}
 	
 
-	public IRenderingElement generate(IAtomContainer ac, IAtom atom,Point2d c) {
+	public IRenderingElement generate(IAtomContainer ac, IAtom atom) {
 		IAtom highlightedAtom = this.model.getHighlightedAtom(); 
 		if (highlightedAtom != null && highlightedAtom.equals(atom)) {
 			Point2d p = atom.getPoint2d();
-			return new RingElement(p.x-c.x, p.y-c.y, this.model.getAtomRadius(), this.highlightColor);
+			return new RingElement(p.x, p.y, this.model.getAtomRadius(), this.highlightColor);
 		}
 		return null;
 	}
 
 
-	public IRenderingElement generate(IAtomContainer ac,IBond bond,Point2d c) {
+	public IRenderingElement generate(IAtomContainer ac, IBond bond) {
 		IBond highlightedBond = this.model.getHighlightedBond();
 		if (highlightedBond != null && highlightedBond.equals(bond)) {
-			// i would like to create a bond element like it would be crated
-			// and to some stuff with it
 			Point2d p1 = bond.getAtom(0).getPoint2d();
 			Point2d p2 = bond.getAtom(1).getPoint2d();
-			return new LineElement(p1.x - c.x, 
-								   p1.y - c.y,
-								   p2.x - c.x,
-								   p2.y - c.y,
-
+			return new LineElement(p1.x, 
+								   p1.y,
+								   p2.x,
+								   p2.y,
 								   LineType.SINGLE,
 								   this.model.getBondWidth() * 3,
 								   this.model.getBondDistance(),
@@ -60,14 +56,14 @@ public class HighlightGenerator implements IGenerator{
 		return null;
 	}
 
-    public IRenderingElement generate( IAtomContainer ac, Point2d center ) {
+    public IRenderingElement generate(IAtomContainer ac) {
 
         ElementGroup elementGroup = new ElementGroup();
         for (IAtom atom : ac.atoms()) {
-          elementGroup.add(this.generate(ac, atom, center));
+          elementGroup.add(this.generate(ac, atom));
         }
         for (IBond bond: ac.bonds()) {
-            elementGroup.add(this.generate( ac, bond, center ) );
+            elementGroup.add(this.generate(ac, bond));
         }
         return elementGroup;
       }

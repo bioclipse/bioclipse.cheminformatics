@@ -42,10 +42,8 @@ public class AtomSymbolElement extends TextElement {
 
 	@Override
 	public void accept(IRenderingVisitor v) {
-
-		// FIXME: implement AtomSymbolRendering
-		// v.visitAtomSymbol( this );
-		super.accept(v);
+	    
+	    v.visit( this );
 	}
 
 }

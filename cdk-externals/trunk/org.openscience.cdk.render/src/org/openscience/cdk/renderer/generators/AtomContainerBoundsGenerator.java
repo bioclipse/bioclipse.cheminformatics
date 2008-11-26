@@ -20,25 +20,26 @@
  */
 package org.openscience.cdk.renderer.generators;
 
-import org.openscience.cdk.interfaces.IAtom;
+import java.awt.Color;
+
+import javax.vecmath.Point2d;
+
+import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.renderer.Renderer2DModel;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
+import org.openscience.cdk.renderer.elements.RectangleElement;
 
 /**
- * @cdk.module  render
+ * @cdk.module render
  */
-public abstract class AbstractGenerator {
+public class AtomContainerBoundsGenerator implements IGenerator {
 
-    protected IAtomContainer ac;
-    protected Renderer2DModel rm;
-
-    public AbstractGenerator(IAtomContainer ac, Renderer2DModel r2dm) {
-        super();
-        this.ac = ac;
-        this.rm = r2dm;
+    public IRenderingElement generate( IAtomContainer ac) {
+        double[] minMax = GeometryTools.getMinMax( ac );
+        return new RectangleElement( minMax[0], minMax[1],
+                                     minMax[2],minMax[3],
+                                     new Color(.7f,.7f,1.0f));
+        
     }
-    
-    public abstract IRenderingElement generate(IAtom atom);
 
 }

@@ -37,57 +37,67 @@ import org.openscience.cdk.renderer.Renderer2DModel;
  * @cdk.svnrev $Revision: 9162 $
  * @cdk.module control
  */
-public class Controller2DModuleHighlight extends ControllerModuleAdapter {
+public class HighlightModule extends ControllerModuleAdapter {
 
 	private IChemModelRelay chemObjectRelay;
 
-	public Controller2DModuleHighlight(IChemModelRelay chemObjectRelay) {
+	public HighlightModule(IChemModelRelay chemObjectRelay) {
 		super(chemObjectRelay);
 	}
 
-	private IAtom PrevHighlightAtom;
-	private IBond PrevHighlightBond;
+	private IAtom prevHighlightAtom;
+	private IBond prevHighlightBond;
+	
+	private void updateAtom(IAtom atom, Renderer2DModel model) {
+	    if (prevHighlightAtom != atom) {
+            model.setHighlightedAtom(atom);
+            prevHighlightAtom = atom;
+            prevHighlightBond = null;
+            model.setHighlightedBond(null);
+            chemObjectRelay.updateView();
+        }
+	}
+	
+	private void updateBond(IBond bond, Renderer2DModel model) {
+	    if (prevHighlightBond != bond) {
+            model.setHighlightedBond(bond);
+            prevHighlightBond = bond;
+            prevHighlightAtom = null;
+            model.setHighlightedAtom(null);
+            chemObjectRelay.updateView();
+        }
+	}
+	
+	private void unsetHighlights(Renderer2DModel model) {
+        model.setHighlightedAtom(null);
+        model.setHighlightedBond(null);
+        prevHighlightAtom = null;
+        prevHighlightBond = null;
+        chemObjectRelay.updateView();
+	}
 
 	public void mouseMove(Point2d worldCoord) {
 		IAtom atom = chemObjectRelay.getClosestAtom(worldCoord);
 		IBond bond = chemObjectRelay.getClosestBond(worldCoord);
 		Renderer2DModel model = chemObjectRelay.getIJava2DRenderer().getRenderer2DModel();
 		
-		if (atom != null
-				&& (bond == null || bond.get2DCenter().distance(worldCoord) >= atom
-						.getPoint2d().distance(worldCoord))) {
-			if (PrevHighlightAtom != atom) {
-				System.out.println("Hovering over another atom now: " + atom.getSymbol());
-
-				model.setHighlightedAtom(atom);
-				PrevHighlightAtom = atom;
-				chemObjectRelay.updateView();
-			}
-		} else if (PrevHighlightAtom != null) {
-			// 'un'-highlight things here..
-			System.out
-					.println("Time to 'un'-highlight PrevHighlightAtom now..: ");
-			model.setHighlightedAtom(null);
-			PrevHighlightAtom = null;
-			chemObjectRelay.updateView();
-		}
-		if (bond != null
-				&& (atom == null || bond.get2DCenter().distance(worldCoord) < atom
-						.getPoint2d().distance(worldCoord))) {
-			if (PrevHighlightBond != bond) {
-				System.out.println("Hovering over another bond now: " + bond);
-
-				model.setHighlightedBond(bond);
-				PrevHighlightBond = bond;
-				chemObjectRelay.updateView();
-			}
-		} else if (PrevHighlightBond != null) {
-			// 'un'-highlight things here..
-			System.out
-					.println("Time to 'un'-highlight PrevHighlightBond now..: ");
-			model.setHighlightedBond(null);
-			PrevHighlightBond = null;
-			chemObjectRelay.updateView();
+		if (atom == null && bond == null) {
+		    if (prevHighlightAtom == null && prevHighlightBond == null) {
+		        return;
+		    }
+		    unsetHighlights(model);
+		} else if (atom != null && bond == null) {
+		    updateAtom(atom, model);
+		} else if (atom == null && bond != null) {
+		    updateBond(bond, model);
+		} else {
+		    double dA = atom.getPoint2d().distance(worldCoord);
+		    double dB = bond.get2DCenter().distance(worldCoord);
+		    if (dA <= dB) {
+		        updateAtom(atom, model);
+		    } else {
+		       updateBond(bond, model);
+		    }
 		}
 	}
 

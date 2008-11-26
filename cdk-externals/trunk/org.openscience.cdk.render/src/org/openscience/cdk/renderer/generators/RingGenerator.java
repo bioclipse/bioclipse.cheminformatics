@@ -54,17 +54,17 @@ public class RingGenerator extends BasicBondGenerator {
 	}
 
 	@Override
-	public IRenderingElement generateRingElements(IBond bond, IRing ring, Point2d center) {
+	public IRenderingElement generateRingElements(IBond bond, IRing ring) {
 		if (ringIsAromatic(ring) && this.model.getShowAromaticity()) {
 			ElementGroup pair = new ElementGroup();
-			pair.add(generateBondElement(bond, LineType.SINGLE, center));
+			pair.add(generateBondElement(bond, LineType.SINGLE));
 			if (!painted_rings.contains(ring)) {
 				painted_rings.add(ring);
 				pair.add(generateRingRingElement(bond, ring));
 			}
 			return pair;
 		} else {
-			return super.generateRingElements(bond, ring, center);
+			return super.generateRingElements(bond, ring);
 		}
 	}
 

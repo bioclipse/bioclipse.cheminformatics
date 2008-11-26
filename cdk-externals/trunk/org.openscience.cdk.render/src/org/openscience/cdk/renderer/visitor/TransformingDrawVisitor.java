@@ -1,10 +1,33 @@
+/* $Revision$ $Author$ $Date$
+*
+*  Copyright (C) 2008 Gilleain Torrance <gilleain.torrance@gmail.com>
+*
+*  Contact: cdk-devel@list.sourceforge.net
+*
+*  This program is free software; you can redistribute it and/or
+*  modify it under the terms of the GNU Lesser General Public License
+*  as published by the Free Software Foundation; either version 2.1
+*  of the License, or (at your option) any later version.
+*
+*  This program is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU Lesser General Public License for more details.
+*
+*  You should have received a copy of the GNU Lesser General Public License
+*  along with this program; if not, write to the Free Software
+*  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
 package org.openscience.cdk.renderer.visitor;
 
 import java.awt.Graphics;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.util.Iterator;
 
 import org.openscience.cdk.renderer.elements.ElementGroup;
+import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.IRenderingVisitor;
 import org.openscience.cdk.renderer.elements.LineElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
@@ -69,4 +92,22 @@ public class TransformingDrawVisitor implements IRenderingVisitor {
 		
 	}
 
+	public void visit( IRenderingElement element ) {
+      if(element instanceof ElementGroup)
+          visit((ElementGroup) element);
+      else if(element instanceof LineElement)
+          visit((LineElement) element);
+      else if(element instanceof OvalElement)
+          visit((OvalElement) element);
+      else if(element instanceof TextElement)
+          visit((TextElement) element);
+      else
+        System.err.println( "Visitor method for "+element.getClass().getName() 
+                            + " is not implemented");
+    }
+	
+public void setTransform( AffineTransform transform ) {
+
+        // TODO Auto-generated method stub     
+    }
 }

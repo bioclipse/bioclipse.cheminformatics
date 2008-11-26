@@ -52,6 +52,6 @@ public class WedgeLineElement extends LineElement {
 
 	@Override
 	public void accept(IRenderingVisitor v) {
-		v.visitWedge(this);
+		v.visit(this);
 	}
 }

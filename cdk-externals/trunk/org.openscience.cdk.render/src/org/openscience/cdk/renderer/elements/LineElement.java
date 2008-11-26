@@ -45,7 +45,7 @@ public class LineElement implements IRenderingElement {
 	}
 
 	public void accept(IRenderingVisitor v) {
-		v.visitLine(this);
+		v.visit(this);
 	}
 
 	public enum LineType {

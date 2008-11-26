@@ -21,7 +21,10 @@
 
 package org.openscience.cdk.renderer.visitor;
 
+import java.awt.geom.AffineTransform;
+
 import org.openscience.cdk.renderer.elements.ElementGroup;
+import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.IRenderingVisitor;
 import org.openscience.cdk.renderer.elements.LineElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
@@ -63,5 +66,23 @@ public class PrintVisitor implements IRenderingVisitor {
 		System.out.println("wedge");
 	}
 
+	public void visit( IRenderingElement element ) {
+      if(element instanceof ElementGroup)
+          visit((ElementGroup) element);
+      else if(element instanceof LineElement)
+          visit((LineElement) element);
+      else if(element instanceof OvalElement)
+          visit((OvalElement) element);
+      else if(element instanceof TextElement)
+          visit((TextElement) element);
+      else
+        System.err.println( "Visitor method for "+element.getClass().getName() 
+                            + " is not implemented");
+    }
+	
+	public void setTransform( AffineTransform transform ) {
 
+        // TODO Auto-generated method stub
+        
+    }
 }

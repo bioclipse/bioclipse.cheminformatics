@@ -25,31 +25,37 @@ import java.awt.Color;
 /**
  * @cdk.module render
  */
-public class OvalElement implements IRenderingElement {
+public class RectangleElement implements IRenderingElement {
+    
+    public final double x;
+    public final double y;
+    public final double width;
+    public final double height;
+    public final boolean filled;
+    public final Color color;
 
-	public final double x;
-	public final double y;
-	public final double radius;
-	public final boolean fill;
-	public final Color color;
+    
+    public RectangleElement( double x1,double y1, 
+                             double x2,double y2,
+                             Color color) {
+        this(x1,y1,x2-x1,y2-y1,false,color);
+        
+    }
+    public RectangleElement( double x,double y, 
+                             double width, double height,
+                             boolean filled,
+                             Color color) {
+        this.x = x;
+        this.y =y;
+        this.width = width;
+        this.height = height;
+        this.filled = filled;
+        this.color = color;
+    }
+    public void accept( IRenderingVisitor v ) {
 
-	public OvalElement(double x, double y, Color color) {
-		this(x, y, 10, color);
-	}
+        v.visit(this);
 
-	public OvalElement(double x, double y, double radius, Color color) {
-		this(x, y, radius, true, color);
-	}
+    }
 
-	public OvalElement(double x, double y, double radius, boolean fill, Color color) {
-		this.x = x;
-		this.y = y;
-		this.radius = radius;
-		this.fill = fill;
-		this.color = color;
-	}
-
-	public void accept(IRenderingVisitor v) {
-		v.visit(this);
-	}
 }

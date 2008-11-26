@@ -20,8 +20,6 @@
  */
 package org.openscience.cdk.renderer.generators;
 
-import javax.vecmath.Point2d;
-
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 
@@ -30,6 +28,6 @@ import org.openscience.cdk.renderer.elements.IRenderingElement;
  */
 public interface IGenerator {
 
-    public IRenderingElement generate( IAtomContainer ac, Point2d center );
+    public IRenderingElement generate(IAtomContainer ac);
 
 }

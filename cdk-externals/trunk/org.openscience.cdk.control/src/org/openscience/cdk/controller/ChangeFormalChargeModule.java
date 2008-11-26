@@ -26,59 +26,58 @@ package org.openscience.cdk.controller;
 
 import javax.vecmath.Point2d;
 
-import org.openscience.cdk.config.IsotopeFactory;
 import org.openscience.cdk.interfaces.IAtom;
 
-
 /**
- * Adds an atom on the given location on mouseclick
+ * Changes (Increases or Decreases) Formal Charge of an atom
  * 
- * @author      Niels Out
- * @cdk.svnrev  $Revision: 9162 $
- * @cdk.module  control
+ * @author Niels Out
+ * @cdk.svnrev $Revision: 9162 $
+ * @cdk.module control
  */
-public class Controller2DModuleAddAtom extends ControllerModuleAdapter {
+public class ChangeFormalChargeModule extends ControllerModuleAdapter {
 
-	public Controller2DModuleAddAtom(IChemModelRelay chemModelRelay) {
+	private IChemModelRelay chemObjectRelay;
+	private int change = 0;
+
+	public ChangeFormalChargeModule(IChemModelRelay chemModelRelay, int change) {
 		super(chemModelRelay);
+		this.change = change;
 	}
 
 	public void mouseClickedDown(Point2d worldCoord) {
+		// TODO Auto-generated method stub
 
-		System.err.println(worldCoord);
-		IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoord);
-		String atomType = chemModelRelay.getController2DModel().getDrawElement();
-		if (closestAtom == null) {
-			//add atom
-			System.out.println("Trying adding atom " + atomType);
-			chemModelRelay.addAtom(atomType, worldCoord);
+		IAtom atom = chemObjectRelay.getClosestAtom(worldCoord);
+		// double Atomdist = atom.getPoint2d().distance(worldCoord);
+		// System.out.println("closest Atom distance: " + Atomdist + " Atom:" +
+		// atom);
+
+		// IBond bond = chemObjectRelay.getClosestBond(worldCoord);
+
+		// Point2d bondCenter = GeometryTools.get2DCenter(bond.atoms());
+		// double Bonddist = bondCenter.distance(worldCoord);
+
+		if (atom != null) {
+			System.out.println("trying change charge (atm: "
+					+ atom.getFormalCharge() + " of: " + atom);
+
+			Integer newCharge = new Integer(change);
+			if (atom.getFormalCharge() != null)
+				newCharge += atom.getFormalCharge();
+
+			atom.setFormalCharge(newCharge);
+			System.out.println("change: " + change + " newCharge: " + newCharge
+					+ " atom:" + atom);
+			chemObjectRelay.updateView();
+		} else {
+			System.out.println("no atom close enough to change Formal Charge");
 		}
-		else {
-			//replace existing atom with new one
-			String formerSymbol = closestAtom.getSymbol();
-
-			closestAtom.setSymbol(atomType);
-			// configure the atom, so that the atomic number matches the symbol
-			try
-			{
-				IsotopeFactory.getInstance(closestAtom.getBuilder()).configure(closestAtom);
-			} catch (Exception exception)
-			{
-			//	logger.error("Error while configuring atom");
-			//	logger.debug(exception);
-			}
-			// update atom
-		//	IAtomContainer container = ChemModelManipulator.getRelevantAtomContainer(chemObjectRelay.getIChemModel(), closestAtom);
-		//FIXME: make this update the hydrogen count?
-			//	updateAtom(container, closestAtom);
-
-		}
-		chemModelRelay.updateView();
 
 	}
 
 	public void setChemModelRelay(IChemModelRelay relay) {
-		this.chemModelRelay = relay;
+		this.chemObjectRelay = relay;
 	}
-	
+
 }

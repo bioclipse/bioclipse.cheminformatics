@@ -12,7 +12,7 @@ public class RingElement extends OvalElement implements IRenderingElement {
 	}
 
 	public void accept(IRenderingVisitor v) {
-		v.visitOval(this);
+		v.visit(this);
 	}
 
 }

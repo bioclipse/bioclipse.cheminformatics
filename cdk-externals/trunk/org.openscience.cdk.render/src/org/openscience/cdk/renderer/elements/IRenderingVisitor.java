@@ -20,18 +20,15 @@
  */
 package org.openscience.cdk.renderer.elements;
 
+import java.awt.geom.AffineTransform;
+
 /**
  * @cdk.module  render
  */
 public interface IRenderingVisitor {
     
-    public void visitElementGroup(ElementGroup elementGroup);
+    public abstract void visit(IRenderingElement element);
     
-    public void visitOval(OvalElement ovalElement);
-    public void visitLine(LineElement lineElement);
-
-    public void visitText( TextElement textElement );
-    
-    public void visitWedge( WedgeLineElement wedgeElement);
+    public abstract void setTransform(AffineTransform transform);
     
 }

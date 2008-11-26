@@ -36,11 +36,11 @@ import org.openscience.cdk.interfaces.IAtom;
  * @cdk.svnrev  $Revision: 9162 $
  * @cdk.module  control
  */
-public class Controller2DModuleRemove extends ControllerModuleAdapter {
+public class RemoveModule extends ControllerModuleAdapter {
 
 	private IChemModelRelay chemObjectRelay;
 
-	public Controller2DModuleRemove(IChemModelRelay chemObjectRelay) {
+	public RemoveModule(IChemModelRelay chemObjectRelay) {
 		super(chemObjectRelay);
 	}
 	
