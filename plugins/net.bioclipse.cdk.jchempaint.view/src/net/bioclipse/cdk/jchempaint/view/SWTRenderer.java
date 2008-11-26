@@ -22,6 +22,7 @@ import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.elements.AtomSymbolElement;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.IRenderingVisitor;
@@ -211,16 +212,21 @@ public class SWTRenderer implements IRenderingVisitor{
         drawLineX(element, val-1);
     }
     
+    private Font getFont() {
+        int fontSize = (int) (scaleX(.4));
+        fontSize = (fontSize<12?12:fontSize);
+        fontSize = (fontSize>100?100:fontSize);
+        return  new Font(gc.getDevice(),"Arial",fontSize,SWT.NORMAL);
+    }
+    
     public void visit( TextElement element ) {
 
         int x = transformX(element.x);
         int y = transformY(element.y);
         String text = element.text;
-        int fontSize = (int) (scaleX(.4));
-        fontSize = (fontSize<12?12:fontSize);
-        fontSize = (fontSize>100?100:fontSize);
-        Font font= new Font(gc.getDevice(),"Arial",fontSize,SWT.NORMAL);
-        gc.setFont(font);
+        
+        gc.setFont(getFont());
+        
         Point textSize = gc.textExtent( text );
         x = x - textSize.x/2;
         y = y - textSize.y/2;
@@ -228,84 +234,38 @@ public class SWTRenderer implements IRenderingVisitor{
         gc.setBackground(  getBackgroundColor() );
         gc.setAdvanced( true );
         gc.drawText( text, x, y, true );
-        //drawTextUpsideDown( gc, text, x, y, textSize.x, textSize.y );
     }
-
-    private ImageData drawText(Device device, String text, Rectangle rect) {
-    	    Image image = new Image(device,rect);
-    	    
-    	    GC imageGC = new GC(image);
-    	        imageGC.setFont( gc.getFont() );
-    	        imageGC.setForeground( device.getSystemColor( SWT.COLOR_WHITE ) );
-    	        imageGC.setBackground( device.getSystemColor( SWT.COLOR_BLACK ) );
-    	        imageGC.setAdvanced( true );
-    	        imageGC.setInterpolation(SWT.HIGH);
-    	        imageGC.setAntialias( SWT.OFF);
-    	        
-    	        imageGC.fillRectangle( rect);
-//    	        layout.draw( imageGC, 0, 0 );
-    	        imageGC.drawText( text, 0, 0 );
-          imageGC.dispose();
-    	    ImageData imageData = image.getImageData();
-    	    image.dispose();
-//    	    font.dispose();
-    	    return imageData;
-    	}
-
-    private void drawTextUpsideDown( GC graphics, String text, 
-                                     int x, int y,
-                                     int width, int height){
-    	    
-    	    Rectangle bounds = new Rectangle(x,y,width,height);
-    	    Rectangle doubleBounds = new Rectangle(
-                                                   bounds.x,
-                                                   bounds.y,
-                                                   bounds.width,
-                                                   bounds.height);
-    	    if(false) {//rendererModel.getIsCompact()) {
-    	        int size = Math.max( bounds.width, bounds.height );
-    	        graphics.setBackground( graphics.getForeground() );
-    	        graphics.fillOval( x, y, size,size);
-    	    } else {
-    	        ImageData alphaMask =
-                        drawText( graphics.getDevice(), text, doubleBounds );
-                alphaMask = superFlip( alphaMask, true, graphics.getForeground() );
-                graphics.setInterpolation( SWT.HIGH );
-                Image image = new Image( graphics.getDevice(), alphaMask );
-                graphics.drawImage( image, 0, 0, doubleBounds.width,
-                                    doubleBounds.height, x, y, bounds.width,
-                                    bounds.height );
     
-                image.dispose();
-    	    }
-    	}
+    public void visit(AtomSymbolElement element) {
+        int x = transformX( element.x );
+        int y = transformY( element.y);
 
-    static ImageData superFlip(ImageData srcData, boolean vertical,Color color) {
-    
-      ImageData newImageData = (ImageData) srcData.clone();
-    
-      for (int srcY = 0; srcY < srcData.height; srcY++) {
-        for (int srcX = 0; srcX < srcData.width; srcX++) {
-          int destX = 0, destY = 0;
-//          if (vertical) {
-//            destX = srcX;
-//            destY = srcData.height - srcY - 1;
-//          } else {
-//            destX = srcData.width - srcX - 1;
-//            destY = srcY;
-//          }       
-          destX =srcX;
-          destY = srcY;
-          int red = srcData.palette.getRGB( srcData.getPixel( srcX, srcY)).red;
-          newImageData.setAlpha( destX, destY, red );
-          newImageData.setPixel( destX, destY, srcData.palette.getPixel(
-                                                             color.getRGB() ) );          
+        String text = element.text;
+
+        gc.setFont(getFont());
+
+        Point textSize = gc.textExtent( text );
+        x = x - textSize.x/2;
+        y = y - textSize.y/2;
+        gc.setForeground( toSWTColor( gc, element.color ) );
+        gc.setBackground(  getBackgroundColor() );
+        gc.setAdvanced( true );
+        gc.drawText( text, x, y, false );
+        if(element.hydrogenCount >0) {
+            Point secondTextSize = gc.textExtent( "H" );
+            switch(element.alignment) {
+                case -1: x = x -secondTextSize.x;break;
+                case 1:  x = x + textSize.x;break;
+                case -2: y = y + textSize.y;break;
+                case 2:  y = y - secondTextSize.y;break;
+            }
+            gc.drawText( "H", x, y ,false);
+            x = x + secondTextSize.x;
+            y = y + secondTextSize.y/3;
+            if(element.hydrogenCount >1)
+                gc.drawText( Integer.toString( element.hydrogenCount), x, y ,false);
         }
-      }
-    
-      return newImageData;
     }
-    
     public  Color toSWTColor(GC graphics,java.awt.Color color) {
         if(cleanUp == null) 
             cleanUp = new HashMap<java.awt.Color,Color>();

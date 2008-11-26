@@ -46,7 +46,7 @@ import org.openscience.cdk.renderer.generators.IGenerator;
  * @author arvid
  */
 public class JChemPaintWidget extends Canvas {
-    
+
     public static int MARGIN = 20;
 
     IAtomContainer  atomContainer;
@@ -61,13 +61,19 @@ public class JChemPaintWidget extends Canvas {
         currentTransform = new Transform(getDisplay());
         renderer2DModel = new Renderer2DModel();
         renderer2DModel.setAtomRadius( 20 );
-        
+        renderer2DModel.setHighlightRadiusModel( .4 );
+
+        renderer2DModel.setShowImplicitHydrogens( true );
+        renderer2DModel.setShowEndCarbons( true );
+        renderer2DModel.setShowExplicitHydrogens( true );
+
         Collection<IGenerator> set = new ArrayList<IGenerator>();
         set.add( new AtomContainerBoundsGenerator() );
         set.add( new BasicBondGenerator(renderer2DModel) );
         set.add( new BasicAtomGenerator(renderer2DModel));
         set.add( new HighlightGenerator(renderer2DModel) );
         
+
         renderer = new Renderer(set);
         renderer.setRenderer2DModel( renderer2DModel );
         addPaintListener( new PaintListener() {
@@ -89,24 +95,24 @@ public class JChemPaintWidget extends Canvas {
         Dimension sizeWithMargin = new Dimension( size.x-MARGIN*2, size.y-MARGIN*2 );
         Dimension  dim = new Dimension( size.x, size.y );
         double[] scalse = model.getDimensions( atomContainer, sizeWithMargin );
-        
+
         Point2D center = model.center( dim );
-        
-        
-        
-        currentTransform.identity();        
+
+
+
+        currentTransform.identity();
         currentTransform.translate( (float) center.getX(), (float) center.getY() );
         float scale = (float) Math.min( scalse[0], scalse[1] );
         currentTransform.scale( scale, -scale );
         currentTransform.invert();
-        
+
         Transform transform = new Transform( event.gc.getDevice() );
         transform.translate( (float) center.getX(), (float) center.getY() );
         //event.gc.setTransform( transform );
         SWTRenderer visitor = new SWTRenderer( event.gc, renderer2DModel, scalse );
         renderer.paintMolecule( atomContainer, visitor );
     }
-    
+
     public Point2d getCoorFromScreen(int screenX, int screenY) {
         float[] pointArray = new float[] {screenX,screenY};
         currentTransform.transform( pointArray );
@@ -116,16 +122,16 @@ public class JChemPaintWidget extends Canvas {
     public void setAtomContainer( IAtomContainer atomContainer ) {
 
         this.atomContainer = atomContainer;
-        updateView( (atomContainer!=null) 
+        updateView( (atomContainer!=null)
                     && (GeometryTools.has2DCoordinates( atomContainer )) );
     }
 
     public void setRenderer2DModel( Renderer2DModel renderer2DModel ) {
-    
+
         this.renderer2DModel = renderer2DModel;
         updateView( renderer2DModel!=null );
     }
-    
+
     public Renderer2DModel getRenderer2DModel() {
         return renderer2DModel;
     }
@@ -135,7 +141,7 @@ public class JChemPaintWidget extends Canvas {
             setVisible( show );
         redraw();
     }
-    
+
     public IJava2DRenderer getRenderer() {
         return new IJava2DRenderer() {
 
@@ -153,25 +159,25 @@ public class JChemPaintWidget extends Canvas {
                                        Graphics2D graphics ) {
 
                 throw new UnsupportedOperationException("paintMolecule not supported from Controller2DHub");
-                
+
             }
 
             public void paintMolecule( IAtomContainer atomCon,
                                        Graphics2D graphics, Rectangle2D bounds ) {
 
                 throw new UnsupportedOperationException("paintMolecule not supported from Controller2DHub");
-                
+
             }
 
             public void setRenderer2DModel( Renderer2DModel model ) {
 
                 throw new UnsupportedOperationException("setRenderer2DModel not supported from Controller2DHub");
-                
+
             }
-            
+
         };
     }
-    
+
     @Override
     public void dispose() {
         currentTransform.dispose();
