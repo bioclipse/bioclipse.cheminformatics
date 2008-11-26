@@ -288,6 +288,7 @@ public interface ICDKManager extends IBioclipseManager {
     		                       "(Performs an isomophism test without " +
     		                       "checking fingerprints)")
     @Recorded
+    @TestMethods("testStructureMatch")
     public boolean structureMatches( ICDKMolecule molecule1,
                                         ICDKMolecule molecule2 );
     
