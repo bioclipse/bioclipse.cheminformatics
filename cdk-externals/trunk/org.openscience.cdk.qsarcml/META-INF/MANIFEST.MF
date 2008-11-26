@@ -14,6 +14,6 @@ Require-Bundle: org.openscience.cdk.core,
  org.openscience.cdk.qsar,
  org.openscience.cdk.standard,
  net.bioclipse.xom,
- net.bioclipse.cml,
+ org.xmlcml.cmlxom,
  org.eclipse.core.runtime
 Export-Package: org.openscience.cdk.libio.cml
