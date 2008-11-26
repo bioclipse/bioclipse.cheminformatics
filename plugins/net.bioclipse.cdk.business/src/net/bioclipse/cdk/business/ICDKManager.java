@@ -173,6 +173,7 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod(params = "IMolecule mol, String filename, String filetype", 
             methodSummary="saves mol to a file (filename must be a relative to workspace root and "+
             "folder must exist), filetype must be one of the constants given by getPossibleFiletypes")
+    @TestMethods("testSaveMolecule_IMolecule_String_String")
     public void saveMolecule(IMolecule mol, String filename, String filetype) 
     	throws BioclipseException, CDKException, CoreException;
 
