@@ -244,6 +244,8 @@ public class AtomContainerManipulator {
     /**
      * Adds explicit hydrogens (without coordinates) to the IAtomContainer,
      * equaling the number of set implicit hydrogens.
+     *
+     * @cdk.keyword hydrogens, adding
      */
     @TestMethod("testConvertImplicitToExplicitHydrogens_IAtomContainer")
     public static void convertImplicitToExplicitHydrogens(IAtomContainer atomContainer) {
@@ -659,8 +661,10 @@ public class AtomContainerManipulator {
     public static void percieveAtomTypesAndConfigureAtoms(IAtomContainer container) throws CDKException {
 		CDKAtomTypeMatcher matcher = CDKAtomTypeMatcher.getInstance(container.getBuilder());
         for (IAtom atom : container.atoms()) {
-            IAtomType matched = matcher.findMatchingAtomType(container, atom);
-            if (matched != null) AtomTypeManipulator.configure(atom, matched);
+            if (!(atom instanceof IPseudoAtom)) {
+                IAtomType matched = matcher.findMatchingAtomType(container, atom);
+                if (matched != null) AtomTypeManipulator.configure(atom, matched);
+            }
         }
 	}
 

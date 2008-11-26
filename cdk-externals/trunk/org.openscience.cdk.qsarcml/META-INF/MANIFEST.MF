@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDK plugin
 Bundle-SymbolicName: org.openscience.cdk.qsarcml;singleton:=true
-Bundle-Version: 1.1.0.20081028
+Bundle-Version: 1.1.2.20081126
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openscience.cdk.qsarcml.Activator
@@ -14,6 +14,6 @@ Require-Bundle: org.openscience.cdk.core,
  org.openscience.cdk.qsar,
  org.openscience.cdk.standard,
  net.bioclipse.xom,
- org.xmlcml.cmlxom,
+ net.bioclipse.cml,
  org.eclipse.core.runtime
 Export-Package: org.openscience.cdk.libio.cml
