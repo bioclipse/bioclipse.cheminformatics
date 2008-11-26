@@ -27,6 +27,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IEditorInput;
@@ -87,8 +88,13 @@ public class JChemPaintEditor extends EditorPart{
 		   public void stateChanged(IChemObjectChangeEvent event) {
 		       
 		       if(!isDirty()){
-		           dirty=true;		           
-		           firePropertyChange(IEditorPart.PROP_DIRTY);
+		           dirty=true;		   
+		           Display.getDefault().syncExec( new Runnable() {
+		               public void run() {
+		                   firePropertyChange(IEditorPart.PROP_DIRTY);
+		               }		               
+		           });
+		           
 		       }		        
 		    } 
 		});
