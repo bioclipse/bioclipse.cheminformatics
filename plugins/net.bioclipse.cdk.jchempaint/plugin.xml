@@ -141,5 +141,52 @@
           </command>
        </toolbar>
     </menuContribution>
+    <menuContribution
+          locationURI="popup:net.bioclipse.cdk.ui.editors.jchempaint">
+       <command
+             commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.new_atom_bond"
+             label="Add"
+             mode="FORCE_TEXT"
+             style="push">
+       </command>
+       <command
+             commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.eraser"
+             label="Delete"
+             style="push">
+       </command>
+       <command
+             commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.incharge"
+             label="Increase charge"
+             style="push">
+          <visibleWhen
+                checkEnabled="true">
+             <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <instanceof
+                           value="org.openscience.cdk.interfaces.IAtom">
+                     </instanceof>
+                  </iterate>
+               </with>
+
+          </visibleWhen>
+       </command>
+       <command
+             commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.deccharge"
+             label="Decrease charge"
+             style="push">
+          <visibleWhen
+                checkEnabled="true">
+             <with
+                   variable="activeMenuSelection">
+                <iterate>
+                   <instanceof
+                         value="org.openscience.cdk.interfaces.IAtom">
+                   </instanceof>
+                </iterate>
+             </with>
+          </visibleWhen>
+       </command>
+    </menuContribution>
  </extension>
 </plugin>
