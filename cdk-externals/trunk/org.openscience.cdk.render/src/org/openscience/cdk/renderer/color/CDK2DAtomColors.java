@@ -53,8 +53,8 @@ public class CDK2DAtomColors implements IAtomColorer, java.io.Serializable {
     
     public Color getAtomColor(IAtom atom, Color defaultColor) {
         Color color = defaultColor;
-        int atomnumber = atom.getAtomicNumber();
-        if (atomnumber != 0) {
+        Integer atomnumber = atom.getAtomicNumber();
+        if (atomnumber != null && atomnumber != 0) {
             switch (atomnumber) {
                 case 1:    color = CDK2DAtomColors.HYDROGEN; break;
                 case 6:    color = CDK2DAtomColors.CARBON; break;
