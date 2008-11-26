@@ -292,6 +292,18 @@ public class CDKManagerTest extends AbstractManagerTest {
     }
     
     @Test
+    public void testStructureMatch() throws BioclipseException {
+        SmilesGenerator generator = new SmilesGenerator();
+        String indoleSmiles  = generator
+                               .createSMILES( MoleculeFactory
+                                              .makeIndole() );
+        ICDKMolecule mol1  = cdk.fromSMILES( indoleSmiles  );
+        ICDKMolecule mol2  = cdk.fromSMILES( indoleSmiles  );
+        
+        assertTrue( cdk.subStructureMatches( mol1, mol2 ) );
+    }
+    
+    @Test
     public void testCDKMoleculeFromIMolecule() throws BioclipseException {
         SmilesGenerator generator = new SmilesGenerator();
         String indoleSmiles  = generator
