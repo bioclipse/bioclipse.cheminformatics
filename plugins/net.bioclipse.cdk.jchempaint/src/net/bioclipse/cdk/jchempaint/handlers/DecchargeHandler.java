@@ -41,7 +41,9 @@ public class DecchargeHandler extends AbstractHandler implements IHandler {
 
            IAtom selected = getSingleSelectedAtom( event );
            if(selected != null) {
-               relay.setCharge( selected, (int)(selected.getCharge()-1 ));
+               relay.setCharge( selected, (int)(
+                       selected.getCharge()==null?-1:selected.getCharge()-1
+               ));
            }
        }
        return null;
