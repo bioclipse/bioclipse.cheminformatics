@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.openscience.cdk.controller.Controller2DHub;
 import org.openscience.cdk.controller.Controller2DModel;
 import org.openscience.cdk.controller.IViewEventRelay;
+import org.openscience.cdk.controller.MoveModule;
 import org.openscience.cdk.controller.IController2DModel.DrawMode;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
@@ -86,7 +87,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
           removeListener( SWT.MouseExit, (Listener)relay );
       }
     	relay = new SWTMosueEventRelay(hub);
-    	c2dm.setDrawMode(DrawMode.MOVE);
+    	hub.setActiveDrawModule( new MoveModule(hub) );
 
     	addMouseListener(relay);
     	addMouseMoveListener(relay);
