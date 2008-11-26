@@ -292,7 +292,7 @@ public class CDKManagerTest extends AbstractManagerTest {
     }
     
     @Test
-    public void testStructureMatch() throws BioclipseException {
+    public void testStructureMatches() throws BioclipseException {
         SmilesGenerator generator = new SmilesGenerator();
         String indoleSmiles  = generator
                                .createSMILES( MoleculeFactory
@@ -729,13 +729,4 @@ public class CDKManagerTest extends AbstractManagerTest {
         cdk.generate2dCoordinates(molecule);
         assertNotNull(molecule.getAtomContainer().getAtom(0).getPoint2d());
     }
-    
-    @Test
-	public void testStructureMatches() throws BioclipseException {
-        ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
-        ICDKMolecule molecule2 = cdk.fromSMILES("CCCBr");
-        ICDKMolecule molecule3 = cdk.fromSMILES("C1CCBrC1");
-        assertTrue(cdk.structureMatches(molecule, molecule2));
-        Assert.assertFalse(cdk.structureMatches(molecule, molecule3));
-	}
 }
