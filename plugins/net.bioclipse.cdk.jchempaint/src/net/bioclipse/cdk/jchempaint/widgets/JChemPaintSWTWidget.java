@@ -134,7 +134,7 @@ public class JChemPaintSWTWidget extends Canvas {
 //            GeometryTools.scaleMolecule(molecule, oldDimensions, 0.8, coordinates);          
 //            GeometryTools.center(molecule, oldDimensions, coordinates);
 
-        renderer.getRenderer2DModel().setRenderingCoordinates(coordinates);
+        
         renderer.getRenderer2DModel().setBackgroundDimension(newSize);
 //            Rectangle2D.Double rect = new Rectangle2D.Double(0, 0, oldDimensions.getWidth(), oldDimensions.getHeight());
 //            renderer.paintMolecule(
