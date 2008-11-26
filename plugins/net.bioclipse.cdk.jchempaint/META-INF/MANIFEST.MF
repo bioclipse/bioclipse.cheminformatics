@@ -21,10 +21,12 @@ Require-Bundle: org.openscience.cdk.interfaces,
  net.bioclipse.cdk.jchempaint.view;bundle-version="0.1.0",
  org.openscience.cdk.sdg;bundle-version="1.1.0",
  org.eclipse.ui.views;bundle-version="3.3.0",
- org.eclipse.core.expressions;bundle-version="3.4.0"
+ org.eclipse.core.expressions;bundle-version="3.4.0",
+ net.bioclipse.scripting.ui;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.log4j
-Export-Package: net.bioclipse.cdk.jchempaint.editor;
+Export-Package: net.bioclipse.cdk.jchempaint.business,
+ net.bioclipse.cdk.jchempaint.editor;
   uses:="org.eclipse.ui.part,
    org.eclipse.swt.events,
    org.openscience.cdk.controller,
