@@ -35,16 +35,13 @@ import org.openscience.cdk.renderer.elements.WedgeLineElement;
 public class SWTRenderer implements IRenderingVisitor{
 
     GC gc;
-    double scaleX = 1;
-    double scaleY = 1;
     Renderer2DModel model;
     public AffineTransform transform;
     // scale a lite more and translate the differense to center it
     // dosen't handle zoom
-    public SWTRenderer(GC graphics, Renderer2DModel model, double[] scale) {
+    public SWTRenderer(GC graphics, Renderer2DModel model) {
         transform = new AffineTransform();
-        scaleX = Math.min( scale[0], scale[1] );
-        scaleY = scaleX;
+        
         this.model = model;
         gc = graphics;
         
@@ -295,10 +292,7 @@ public class SWTRenderer implements IRenderingVisitor{
         }
         
     }
-    public void setScale(double scale) {
-        scaleX = scale;
-        scaleY = scale;
-    }
+    
     public void setTransform(AffineTransform transform) {
         this.transform = transform;
     }

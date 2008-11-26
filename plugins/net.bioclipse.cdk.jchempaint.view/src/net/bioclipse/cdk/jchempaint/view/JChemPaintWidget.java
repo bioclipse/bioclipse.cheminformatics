@@ -90,26 +90,8 @@ public class JChemPaintWidget extends Canvas {
         if ( atomContainer == null )
             return;
         renderer.setBounds( new Rectangle2D.Double(0,0,this.getSize().x,this.getSize().y ));
-        ElementGroup model  = new ElementGroup();
-        Point size = getSize();
-        Dimension sizeWithMargin = new Dimension( size.x-MARGIN*2, size.y-MARGIN*2 );
-        Dimension  dim = new Dimension( size.x, size.y );
-        double[] scalse = model.getDimensions( atomContainer, sizeWithMargin );
-
-        Point2D center = model.center( dim );
-
-
-
-        currentTransform.identity();
-        currentTransform.translate( (float) center.getX(), (float) center.getY() );
-        float scale = (float) Math.min( scalse[0], scalse[1] );
-        currentTransform.scale( scale, -scale );
-        currentTransform.invert();
-
-        Transform transform = new Transform( event.gc.getDevice() );
-        transform.translate( (float) center.getX(), (float) center.getY() );
-        //event.gc.setTransform( transform );
-        SWTRenderer visitor = new SWTRenderer( event.gc, renderer2DModel, scalse );
+        
+        SWTRenderer visitor = new SWTRenderer( event.gc, renderer2DModel);
         renderer.paintMolecule( atomContainer, visitor );
     }
 
