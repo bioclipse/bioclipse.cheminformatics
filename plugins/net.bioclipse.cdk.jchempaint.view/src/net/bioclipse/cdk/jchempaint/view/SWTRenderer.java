@@ -309,7 +309,7 @@ public class SWTRenderer implements IRenderingVisitor{
     public  Color toSWTColor(GC graphics,java.awt.Color color) {
         if(cleanUp == null) 
             cleanUp = new HashMap<java.awt.Color,Color>();
-        if(color == null) return graphics.getDevice().getSystemColor( SWT.COLOR_DARK_MAGENTA );
+        if(color == null) return graphics.getDevice().getSystemColor( SWT.COLOR_MAGENTA );
         assert(color != null);
         Color otherColor=cleanUp.get(color);
         if(otherColor==null){
