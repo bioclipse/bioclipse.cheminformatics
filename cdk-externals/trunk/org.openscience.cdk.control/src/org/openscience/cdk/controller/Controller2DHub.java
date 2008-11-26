@@ -35,15 +35,18 @@ import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
 import org.openscience.cdk.CDKConstants;
+import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IMoleculeSet;
+import org.openscience.cdk.interfaces.IPseudoAtom;
 import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.interfaces.IBond.Order;
 import org.openscience.cdk.layout.AtomPlacer;
@@ -52,7 +55,6 @@ import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.layout.TemplateHandler;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.renderer.IJava2DRenderer;
-import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 /**
@@ -395,16 +397,27 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
     }
 
     public void updateImplicitHydrogenCounts() {
-        CDKHydrogenAdder hAdder = CDKHydrogenAdder
+        CDKAtomTypeMatcher matcher = CDKAtomTypeMatcher
             .getInstance(chemModel.getBuilder());
         for (IAtomContainer container :
              ChemModelManipulator.getAllAtomContainers(chemModel)) {
             for (IAtom atom : container.atoms()) {
-                try {
-                    hAdder.addImplicitHydrogens(container, atom);
-                } catch ( CDKException e ) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                if (!(atom instanceof IPseudoAtom)) {
+                    try {
+                        IAtomType type = matcher.findMatchingAtomType(
+                            container, atom
+                        );
+                        if (type != null &&
+                            type.getFormalNeighbourCount() != null) {
+                            atom.setHydrogenCount(
+                                type.getFormalNeighbourCount() -
+                                container.getConnectedAtomsCount(atom)
+                            );
+                        }
+                    } catch ( CDKException e ) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
             }
         }
