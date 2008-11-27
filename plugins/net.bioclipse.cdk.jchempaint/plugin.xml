@@ -217,6 +217,45 @@
                 </parameter>
              </command>
           </menu>
+          <menu
+                label="Halogens">
+             <command
+                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   label="F"
+                   style="push">
+                <parameter
+                      name="atomType"
+                      value="F">
+                </parameter>
+             </command>
+             <command
+                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   label="Cl"
+                   style="push">
+                <parameter
+                      name="atomType"
+                      value="Cl">
+                </parameter>
+             </command>
+             <command
+                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   label="Br"
+                   style="push">
+                <parameter
+                      name="atomType"
+                      value="Br">
+                </parameter>
+             </command>
+             <command
+                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   label="I"
+                   style="push">
+                <parameter
+                      name="atomType"
+                      value="I">
+                </parameter>
+             </command>
+          </menu>
           <visibleWhen
                 checkEnabled="true">
              <with
@@ -229,26 +268,9 @@
              </with>
           </visibleWhen>
        </menu>
-       <command
-             commandId="net.bioclipse.cdk.jchempaint.manager.action"
-             label="Clear"
-             style="push">
-          <parameter
-                name="jcp.manager.method"
-                value="zap">
-          </parameter>
-       </command>
-       <command
-             commandId="net.bioclipse.cdk.jchempaint.manager.action"
-             label="Update Implicit Hydrogens"
-             style="push">
-          <parameter
-                name="jcp.manager.method"
-                value="updateImplicitHydrogenCounts">
-          </parameter>
-       </command>
        <separator
-             name="net.bioclipse.cdk.jchempaint.separator1">
+             name="net.bioclipse.cdk.jchempaint.separator1"
+             visible="true">
        </separator>
        <command
              commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.incharge"
@@ -257,14 +279,13 @@
           <visibleWhen
                 checkEnabled="true">
              <with
-                     variable="activeMenuSelection">
-                  <iterate>
-                     <instanceof
-                           value="org.openscience.cdk.interfaces.IAtom">
-                     </instanceof>
-                  </iterate>
-               </with>
-
+                   variable="activeMenuSelection">
+                <iterate>
+                   <instanceof
+                         value="org.openscience.cdk.interfaces.IAtom">
+                   </instanceof>
+                </iterate>
+             </with>
           </visibleWhen>
        </command>
        <command
@@ -283,6 +304,31 @@
              </with>
           </visibleWhen>
        </command>
+       <separator
+             name="net.bioclipse.cdk.jchempaint.separator3">
+       </separator>
+       <command
+             commandId="net.bioclipse.cdk.jchempaint.manager.action"
+             label="Update Implicit Hydrogens"
+             style="push">
+          <parameter
+                name="jcp.manager.method"
+                value="updateImplicitHydrogenCounts">
+          </parameter>
+       </command>
+       <command
+             commandId="net.bioclipse.cdk.jchempaint.manager.action"
+             label="Recalculate"
+             style="push">
+          <parameter
+                name="jcp.manager.method"
+                value="cleanup">
+          </parameter>
+       </command>
+       <separator
+             name="net.bioclipse.cdk.jchempaint.separator2"
+             visible="true">
+       </separator>
        <command
              commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.eraser"
              label="Delete"
@@ -298,6 +344,15 @@
                 </iterate>
              </with>
           </visibleWhen>
+       </command>
+       <command
+             commandId="net.bioclipse.cdk.jchempaint.manager.action"
+             label="Clear"
+             style="push">
+          <parameter
+                name="jcp.manager.method"
+                value="zap">
+          </parameter>
        </command>
     </menuContribution>
  </extension>
