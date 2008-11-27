@@ -696,7 +696,9 @@ public class CDKManager implements ICDKManager {
 
 		int num = 0;
 		try {
-			InputStream counterStream = file.getContents();
+			BufferedInputStream counterStream = new BufferedInputStream(
+			    file.getContents()
+			);
 			int c = 0;
 			while (c != -1) {
 				c = counterStream.read();
