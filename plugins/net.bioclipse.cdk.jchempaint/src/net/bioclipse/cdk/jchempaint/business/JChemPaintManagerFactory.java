@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
-import net.bioclipse.cdk.jchempaint.business.Activator;
+import net.bioclipse.cdk.jchempaint.Activator;
 
 /**
  * Factory for the exampleManager 
