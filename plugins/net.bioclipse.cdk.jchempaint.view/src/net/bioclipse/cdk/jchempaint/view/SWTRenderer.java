@@ -106,8 +106,9 @@ public class SWTRenderer implements IRenderingVisitor{
     public void visit( LineElement element ) {
         Color colorOld = gc.getBackground();
         // init recursion with background to get the first draw with foreground
-        gc.setForeground( getBackgroundColor() ); 
-        drawLineX( element, element.type.count() );
+        gc.setForeground( toSWTColor( gc, element.color )); 
+        gc.setLineWidth( (int)element.width );
+        drawLine( element );
             
         gc.setBackground( colorOld);
     }
@@ -197,7 +198,7 @@ public class SWTRenderer implements IRenderingVisitor{
     
     private void drawLineX(LineElement element, int val) {
         if(val <= 0) return; // end recursion if less than 1
-        int width = (int) (element.width*val+element.gap*(val-1)+.5);
+        int width = (int) (element.width*val+element.width*(val-1)+.5);
         // switch foreground and background
         if(!gc.getForeground().equals( getBackgroundColor() ))
             gc.setForeground( getBackgroundColor() );
@@ -260,7 +261,7 @@ public class SWTRenderer implements IRenderingVisitor{
             x = x + secondTextSize.x;
             y = y + secondTextSize.y/3;
             if(element.hydrogenCount >1)
-                gc.drawText( Integer.toString( element.hydrogenCount), x, y ,false);
+                gc.drawText( Integer.toString( element.hydrogenCount), x, y ,true);
         }
     }
     public  Color toSWTColor(GC graphics,java.awt.Color color) {
