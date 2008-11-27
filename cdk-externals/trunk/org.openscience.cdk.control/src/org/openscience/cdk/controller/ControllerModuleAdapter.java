@@ -3,12 +3,12 @@ package org.openscience.cdk.controller;
 import javax.vecmath.Point2d;
 
 import org.openscience.cdk.controller.IChemModelRelay;
-import org.openscience.cdk.controller.IController2DModule;
+import org.openscience.cdk.controller.IControllerModule;
 
 /**
  * @cdk.module control
  */
-public abstract class ControllerModuleAdapter implements IController2DModule {
+public abstract class ControllerModuleAdapter implements IControllerModule {
 
 	protected IChemModelRelay chemModelRelay;
 

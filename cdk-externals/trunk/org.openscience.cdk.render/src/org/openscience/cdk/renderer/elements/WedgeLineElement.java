@@ -35,8 +35,8 @@ public class WedgeLineElement extends LineElement {
 	}
 
 	public WedgeLineElement(double x1, double y1, double x2, double y2,
-			double width, double gap, boolean dashed, Direction direction, Color color) {
-		super(x1, y1, x2, y2, LineType.SINGLE, width, gap, color);
+			double width, boolean dashed, Direction direction, Color color) {
+		super(x1, y1, x2, y2, width, color);
 		this.isDashed = dashed;
 		this.direction = direction;
 	}
@@ -47,7 +47,7 @@ public class WedgeLineElement extends LineElement {
 			 direction == Direction.toFirst ? element.y2: element.y1,
 			 direction == Direction.toFirst ? element.x1 : element.x2,
 			 direction == Direction.toFirst ? element.y1 : element.y2,
-		     element.width, element.gap, dashed, direction, color);
+		     element.width, dashed, direction, color);
 	}
 
 	@Override

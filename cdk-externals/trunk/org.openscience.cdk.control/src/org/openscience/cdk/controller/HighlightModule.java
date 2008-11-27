@@ -105,4 +105,8 @@ public class HighlightModule extends ControllerModuleAdapter {
 		this.chemObjectRelay = relay;
 	}
 
+	public String getDrawModeString() {
+		return "Highlighting";
+	}
+
 }

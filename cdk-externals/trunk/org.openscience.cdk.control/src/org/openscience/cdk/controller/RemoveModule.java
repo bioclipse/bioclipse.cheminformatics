@@ -38,25 +38,23 @@ import org.openscience.cdk.interfaces.IAtom;
  */
 public class RemoveModule extends ControllerModuleAdapter {
 
-	private IChemModelRelay chemObjectRelay;
-
 	public RemoveModule(IChemModelRelay chemObjectRelay) {
 		super(chemObjectRelay);
 	}
 	
 	public void mouseClickedDown(Point2d worldCoord) {
 		// TODO Auto-generated method stub
-		IAtom atom = chemObjectRelay.getClosestAtom(worldCoord);
+		IAtom atom = chemModelRelay.getClosestAtom(worldCoord);
 		System.out.println("trying to remove: " + atom);
 		if (atom != null) {
-			chemObjectRelay.removeAtom(atom);
-			chemObjectRelay.updateView();
+			chemModelRelay.removeAtom(atom);
+			chemModelRelay.updateView();
 		}
 			
 	}
 
-	public void setChemModelRelay(IChemModelRelay relay) {
-		this.chemObjectRelay = relay;
+	public String getDrawModeString() {
+		return IControllerModel.DrawMode.ERASER.getName();
 	}
 	
 }

@@ -160,8 +160,6 @@ public class Renderer2DModel implements java.io.Serializable, Cloneable {
 	private double[] rotateCenter=null;
 	private double rotateRadius=0;
 	
-	private Map<IAtom,Point2d> renderingCoordinates = new HashMap<IAtom,Point2d>();
-	
 	private boolean notification = true;
 	
 	/**
@@ -169,18 +167,6 @@ public class Renderer2DModel implements java.io.Serializable, Cloneable {
 	 */
 	private double margin = 0.05;
 	
-	public void setRenderingCoordinate(IAtom atom, Point2d point){
-		this.renderingCoordinates.put(atom,point);
-	}
-	
-	public Point2d getRenderingCoordinate(IAtom atom){
-		return (Point2d)this.renderingCoordinates.get(atom);
-	}
-	
-	public Map<IAtom,Point2d> getRenderingCoordinates(){
-		return this.renderingCoordinates;
-	}
-    
     /**
      * @return null if no custom font set
      */
@@ -1104,10 +1090,6 @@ public class Renderer2DModel implements java.io.Serializable, Cloneable {
 
 	public void setShowAtomTypeNames(boolean showAtomTypeNames) {
 		this.showAtomTypeNames = showAtomTypeNames;
-	}
-
-	public void setRenderingCoordinates(Map<IAtom,Point2d> renderingCoordinates) {
-		this.renderingCoordinates = renderingCoordinates;
 	}
 
 	public double getMargin() {

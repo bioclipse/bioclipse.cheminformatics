@@ -27,6 +27,7 @@ package org.openscience.cdk.controller;
 import javax.vecmath.Point2d;
 
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IBond;
 
 /**
  * Adds an atom on the given location on mouseclick
@@ -36,24 +37,60 @@ import org.openscience.cdk.interfaces.IAtom;
  */
 public class AddRingModule extends ControllerModuleAdapter {
 
-	public AddRingModule(IChemModelRelay chemModelRelay) {
-		super(chemModelRelay);
-	}
+    private int ringSize;
+    private boolean benzene = false;
 
-	public void mouseClickedDown(Point2d worldCoord) {
+    public AddRingModule(IChemModelRelay chemModelRelay, int ringSize, boolean benzene) {
+        super(chemModelRelay);
+        this.ringSize = ringSize;
+        this.benzene = benzene;
+    }
+    
+    private void addRingToEmptyCanvas() {
+        if (this.benzene) {
+            Point2d randomPoint = new Point2d(0,0);
+            chemModelRelay.addAtom("C", randomPoint);
+            IAtom closestAtom = chemModelRelay.getClosestAtom(randomPoint);
+            chemModelRelay.addPhenyl(closestAtom);
+        } else {
+            chemModelRelay.addRing(ringSize, new Point2d(0,0));
+        }
+    }
+    
+    private void addRingToAtom(IAtom closestAtom) {
+        if (benzene) {
+            chemModelRelay.addPhenyl(closestAtom);
+        } else {
+            chemModelRelay.addRing(closestAtom, ringSize);
+        }
+    }
+    
+    private void addRingToBond(IBond bond) {
+        // TODO
+    }
 
-		IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoord);
-		int ringSize = chemModelRelay.getController2DModel().getRingSize();
-		if (closestAtom == null) {
-		    chemModelRelay.addRing(ringSize);
-		} else {
-			chemModelRelay.addRing(closestAtom, ringSize);
-		}
-		chemModelRelay.updateView();
-	}
+    public void mouseClickedDown(Point2d worldCoord) {
+        IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoord);
+        IBond closestBond = chemModelRelay.getClosestBond(worldCoord);
+        
+        if (closestAtom == null && closestBond == null) {
+            this.addRingToEmptyCanvas();
+        } else if (closestAtom != null && closestBond == null) {
+            this.addRingToAtom(closestAtom);
+        } else if (closestAtom == null && closestBond != null) {
+            this.addRingToBond(closestBond);
+        } else {
+            this.addRingToAtom(closestAtom);
+        }
+        chemModelRelay.updateView();
+    }
 
-	public void setChemModelRelay(IChemModelRelay relay) {
-		this.chemModelRelay = relay;
-	}
+    public void setChemModelRelay(IChemModelRelay relay) {
+        this.chemModelRelay = relay;
+    }
+
+    public String getDrawModeString() {
+        return IControllerModel.DrawMode.RING.getName() + " " + ringSize;
+    }
 
 }

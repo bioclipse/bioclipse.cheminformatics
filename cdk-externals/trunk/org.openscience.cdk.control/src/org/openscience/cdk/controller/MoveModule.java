@@ -46,7 +46,6 @@ public class MoveModule extends ControllerModuleAdapter {
     }
 
     private LoggingTool logger = new LoggingTool(MoveModule.class);
-    private IChemModelRelay chemObjectRelay;
     private IAtom atom;
     private IBond bond;
     private Vector2d offset;
@@ -76,8 +75,8 @@ public class MoveModule extends ControllerModuleAdapter {
     public void mouseClickedDown(Point2d worldCoord) {
 
         Point2d current = null;
-        atom = chemObjectRelay.getClosestAtom(worldCoord);
-        bond = chemObjectRelay.getClosestBond(worldCoord);
+        atom = chemModelRelay.getClosestAtom(worldCoord);
+        bond = chemModelRelay.getClosestBond(worldCoord);
 
         type = getClosest(atom, bond, worldCoord);
         switch (type) {
@@ -105,32 +104,36 @@ public class MoveModule extends ControllerModuleAdapter {
     }
 
     public void mouseDrag(Point2d worldCoordFrom, Point2d worldCoordTo) {
-        if (chemObjectRelay != null && offset != null) {
+        if (chemModelRelay != null && offset != null) {
 
             Point2d atomCoord = new Point2d();
             atomCoord.add(worldCoordTo, offset);
             switch (type) {
                 case ATOM:
-                    chemObjectRelay.moveTo(atom, atomCoord);
+                	chemModelRelay.moveTo(atom, atomCoord);
                     break;
                 case BOND:
-                    chemObjectRelay.moveTo(bond, atomCoord);
+                	chemModelRelay.moveTo(bond, atomCoord);
                     break;
                 default:
                     return;
             }
 
-            chemObjectRelay.updateView();
+            chemModelRelay.updateView();
 
         } else {
-            if (chemObjectRelay == null) {
+            if (chemModelRelay == null) {
                 logger.debug("chemObjectRelay is NULL!");
             }
         }
     }
 
     public void setChemModelRelay(IChemModelRelay relay) {
-        this.chemObjectRelay = relay;
+        this.chemModelRelay = relay;
     }
+
+	public String getDrawModeString() {
+		return IControllerModel.DrawMode.MOVE.getName();
+	}
 
 }

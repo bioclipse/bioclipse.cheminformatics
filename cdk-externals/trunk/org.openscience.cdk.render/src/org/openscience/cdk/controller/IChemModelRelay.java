@@ -37,7 +37,7 @@ import org.openscience.cdk.renderer.IJava2DRenderer;
 public interface IChemModelRelay {
 
     /* Interaction*/
-    public abstract IController2DModel getController2DModel();
+    public abstract IControllerModel getController2DModel();
     public abstract IJava2DRenderer getIJava2DRenderer();
     public abstract IChemModel getIChemModel();
     public abstract IAtom getClosestAtom(Point2d worldCoord);
@@ -47,9 +47,10 @@ public interface IChemModelRelay {
     /* Editing actions for the complete model */
     public abstract void updateImplicitHydrogenCounts();
     public void zap();
-    public void addRing(int size);
+    public void addRing(int size, Point2d worldcoord);
     public void addRing(IAtom atom, int size);
     public void addPhenyl(IAtom atom);
+    public void addPhenyl(Point2d worldcoord);
 //    public void addRing(IBond atom, int size);
     public void cleanup();
 //    public abstract void cleanupSelection(Selector sectionIdentifier);

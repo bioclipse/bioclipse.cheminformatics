@@ -67,4 +67,8 @@ public class AddAtomModule extends ControllerModuleAdapter {
 		this.chemModelRelay = relay;
 	}
 
+	public String getDrawModeString() {
+		return IControllerModel.DrawMode.ADDATOMORCHANGEELEMENT.getName();
+	}
+
 }

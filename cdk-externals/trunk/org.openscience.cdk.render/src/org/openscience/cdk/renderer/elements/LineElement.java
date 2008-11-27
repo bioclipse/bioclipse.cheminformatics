@@ -27,20 +27,15 @@ public class LineElement implements IRenderingElement {
 	public final double y1;
 	public final double x2;
 	public final double y2;
-	public final LineType type;
 	public final double width;
-	public final double gap;
 	public final Color color;
 
-	public LineElement(double x, double y, double x1, double y1, LineType type,
-			double width, double gap, Color color) {
+	public LineElement(double x, double y, double x1, double y1, double width, Color color) {
 		this.x2 = x;
 		this.y2 = y;
 		this.x1 = x1;
 		this.y1 = y1;
-		this.type = type;
 		this.width = width;
-		this.gap = gap;
 		this.color = color;
 	}
 

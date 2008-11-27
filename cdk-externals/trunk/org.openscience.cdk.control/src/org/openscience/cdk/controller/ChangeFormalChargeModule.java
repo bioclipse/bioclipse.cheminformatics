@@ -37,7 +37,6 @@ import org.openscience.cdk.interfaces.IAtom;
  */
 public class ChangeFormalChargeModule extends ControllerModuleAdapter {
 
-	private IChemModelRelay chemObjectRelay;
 	private int change = 0;
 
 	public ChangeFormalChargeModule(IChemModelRelay chemModelRelay, int change) {
@@ -48,7 +47,7 @@ public class ChangeFormalChargeModule extends ControllerModuleAdapter {
 	public void mouseClickedDown(Point2d worldCoord) {
 		// TODO Auto-generated method stub
 
-		IAtom atom = chemObjectRelay.getClosestAtom(worldCoord);
+		IAtom atom = chemModelRelay.getClosestAtom(worldCoord);
 		// double Atomdist = atom.getPoint2d().distance(worldCoord);
 		// System.out.println("closest Atom distance: " + Atomdist + " Atom:" +
 		// atom);
@@ -69,7 +68,7 @@ public class ChangeFormalChargeModule extends ControllerModuleAdapter {
 			atom.setFormalCharge(newCharge);
 			System.out.println("change: " + change + " newCharge: " + newCharge
 					+ " atom:" + atom);
-			chemObjectRelay.updateView();
+			chemModelRelay.updateView();
 		} else {
 			System.out.println("no atom close enough to change Formal Charge");
 		}
@@ -77,7 +76,14 @@ public class ChangeFormalChargeModule extends ControllerModuleAdapter {
 	}
 
 	public void setChemModelRelay(IChemModelRelay relay) {
-		this.chemObjectRelay = relay;
+		this.chemModelRelay = relay;
+	}
+
+	public String getDrawModeString() {
+		if(change<0)
+			return IControllerModel.DrawMode.DECCHARGE.getName();
+		else
+			return IControllerModel.DrawMode.INCCHARGE.getName();
 	}
 
 }

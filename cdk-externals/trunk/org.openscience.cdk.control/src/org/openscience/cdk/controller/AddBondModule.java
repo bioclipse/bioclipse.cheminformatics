@@ -70,6 +70,8 @@ public class AddBondModule extends ControllerModuleAdapter {
 			return;
 		} else if (closestAtom == null && closestBond != null) {
 		    this.cycleBondValence(closestBond);
+		} else if (closestAtom != null && closestBond == null) {
+		    this.addBondToAtom(closestAtom);
 		} else {
 		    double dA = closestAtom.getPoint2d().distance(worldCoordinate);
 		    double dB = closestBond.get2DCenter().distance(worldCoordinate);
@@ -80,6 +82,10 @@ public class AddBondModule extends ControllerModuleAdapter {
 		    }
 		}
 		
+	}
+
+	public String getDrawModeString() {
+		return IControllerModel.DrawMode.DRAWBOND.getName();
 	}
 
 }

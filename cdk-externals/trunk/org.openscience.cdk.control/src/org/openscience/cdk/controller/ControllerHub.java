@@ -26,10 +26,8 @@
 package org.openscience.cdk.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
@@ -68,21 +66,22 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
  * @author      Niels Out
  * @author      egonw
  */
-public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
+public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	
 	private IChemModel chemModel;
 	
-	private IController2DModel controllerModel; 
+	private IControllerModel controllerModel; 
 	private IJava2DRenderer renderer;
 	private IViewEventRelay eventRelay;
 	
-	private List<IController2DModule> generalModules;
-	private Map<Controller2DModel.DrawMode,IController2DModule> drawModeModules;
+	private List<IControllerModule> generalModules;
 	
 	private StructureDiagramGenerator diagramGenerator;
+
+	private IControllerModule activeDrawModule;
 	private final static RingPlacer ringPlacer = new RingPlacer();
 	
-	public Controller2DHub(IController2DModel controllerModel,
+	public ControllerHub(IControllerModel controllerModel,
 		                   IJava2DRenderer renderer,
 		                   IChemModel chemModel,
 		                   IViewEventRelay eventRelay) {
@@ -91,39 +90,12 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 		this.chemModel = chemModel;
 		this.eventRelay = eventRelay;
 		
-		drawModeModules = new HashMap<Controller2DModel.DrawMode,IController2DModule>();
-		generalModules = new ArrayList<IController2DModule>();
-		
-		//register all 'known' controllers
-		registerDrawModeControllerModule( 
-				IController2DModel.DrawMode.MOVE, 
-				new MoveModule(this));
-		registerDrawModeControllerModule( 
-				IController2DModel.DrawMode.ERASER, 
-				new RemoveModule(this));
-		registerDrawModeControllerModule( 
-				IController2DModel.DrawMode.INCCHARGE,
-				new ChangeFormalChargeModule(this, 1));
-		registerDrawModeControllerModule( 
-				IController2DModel.DrawMode.DECCHARGE,
-				new ChangeFormalChargeModule(this, -1));
-		registerDrawModeControllerModule( 
-				IController2DModel.DrawMode.ADDATOMORCHANGEELEMENT, 
-				new AddAtomModule(this));
-		registerDrawModeControllerModule( 
-				IController2DModel.DrawMode.DRAWBOND, 
-				new AddBondModule(this));
-		registerDrawModeControllerModule( 
-				IController2DModel.DrawMode.RING, 
-				new AddRingModule(this));
-		registerDrawModeControllerModule( 
-				IController2DModel.DrawMode.CYCLESYMBOL, 
-				new CycleSymbolModule(this));
+		generalModules = new ArrayList<IControllerModule>();
 		
 		registerGeneralControllerModule(new HighlightModule(this));
 	}
 	
-	public IController2DModel getController2DModel() {
+	public IControllerModel getController2DModel() {
 		return controllerModel;
 	}
 	
@@ -134,17 +106,7 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 	public IChemModel getIChemModel() {
 		return chemModel;
 	}
-	/**
-	 * Register a draw mode that you want to have active for this Controller2DHub.
-	 * 
-	 * @param drawMode
-	 * @param module
-	 */
-	public void registerDrawModeControllerModule(
-		Controller2DModel.DrawMode drawMode, IController2DModule module) {
-		module.setChemModelRelay(this);
-		drawModeModules.put(drawMode, module);
-	}
+
 	
 	/**
 	 * Unregister all general IController2DModules.
@@ -156,7 +118,7 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 	/**
 	 * Adds a general IController2DModule which will catch all mouse events.
 	 */
-	public void registerGeneralControllerModule(IController2DModule module) {
+	public void registerGeneralControllerModule(IControllerModule module) {
 		module.setChemModelRelay(this);
 		generalModules.add(module);
 	}
@@ -165,12 +127,12 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 		Point2d worldCoord = renderer.getCoorFromScreen(screenCoordX, screenCoordY);
 			
 		// Relay the mouse event to the general handlers
-		for (IController2DModule module : generalModules) {
+		for (IControllerModule module : generalModules) {
 			module.mouseClickedDouble(worldCoord);
 		}
 
 		// Relay the mouse event to the active 
-		IController2DModule activeModule = getActiveDrawModule();
+		IControllerModule activeModule = getActiveDrawModule();
 		if (activeModule != null) activeModule.mouseClickedDouble(worldCoord);
 	}
 
@@ -178,12 +140,12 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 		Point2d worldCoord = renderer.getCoorFromScreen(screenCoordX, screenCoordY);
 		
 		// Relay the mouse event to the general handlers
-		for (IController2DModule module : generalModules) {
+		for (IControllerModule module : generalModules) {
 			module.mouseClickedDown(worldCoord);
 		}
 
 		// Relay the mouse event to the active 
-		IController2DModule activeModule = getActiveDrawModule();
+		IControllerModule activeModule = getActiveDrawModule();
 		if (activeModule != null) activeModule.mouseClickedDown(worldCoord);
 	}
 
@@ -191,12 +153,12 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 		Point2d worldCoord = renderer.getCoorFromScreen(screenCoordX, screenCoordY);
 		
 		// Relay the mouse event to the general handlers
-		for (IController2DModule module : generalModules) {
+		for (IControllerModule module : generalModules) {
 			module.mouseClickedUp(worldCoord);
 		}
 
 		// Relay the mouse event to the active 
-		IController2DModule activeModule = getActiveDrawModule();
+		IControllerModule activeModule = getActiveDrawModule();
 		if (activeModule != null) activeModule.mouseClickedUp(worldCoord);
 	}
 
@@ -205,12 +167,12 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 		Point2d worldCoordTo = renderer.getCoorFromScreen(screenCoordXTo, screenCoordYTo);
 			
 		// Relay the mouse event to the general handlers
-		for (IController2DModule module : generalModules) {
+		for (IControllerModule module : generalModules) {
 			module.mouseDrag(worldCoordFrom, worldCoordTo);
 		}
 
 		// Relay the mouse event to the active 
-		IController2DModule activeModule = getActiveDrawModule();
+		IControllerModule activeModule = getActiveDrawModule();
 		if (activeModule != null) activeModule.mouseDrag(worldCoordFrom, worldCoordTo);
 	}
 
@@ -218,12 +180,12 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 		Point2d worldCoord = renderer.getCoorFromScreen(screenCoordX, screenCoordY);
 		
 		// Relay the mouse event to the general handlers
-		for (IController2DModule module : generalModules) {
+		for (IControllerModule module : generalModules) {
 			module.mouseEnter(worldCoord);
 		}
 
 		// Relay the mouse event to the active 
-		IController2DModule activeModule = getActiveDrawModule();
+		IControllerModule activeModule = getActiveDrawModule();
 		if (activeModule != null) activeModule.mouseEnter(worldCoord);
 	}
 
@@ -231,12 +193,12 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 		Point2d worldCoord = renderer.getCoorFromScreen(screenCoordX, screenCoordY);
 		
 		// Relay the mouse event to the general handlers
-		for (IController2DModule module : generalModules) {
+		for (IControllerModule module : generalModules) {
 			module.mouseExit(worldCoord);
 		}
 
 		// Relay the mouse event to the active 
-		IController2DModule activeModule = getActiveDrawModule();
+		IControllerModule activeModule = getActiveDrawModule();
 		if (activeModule != null) activeModule.mouseExit(worldCoord);
 	}
 
@@ -244,12 +206,12 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 		Point2d worldCoord = renderer.getCoorFromScreen(screenCoordX, screenCoordY);
 		
 		// Relay the mouse event to the general handlers
-		for (IController2DModule module : generalModules) {
+		for (IControllerModule module : generalModules) {
 			module.mouseMove(worldCoord);
 		}
 
 		// Relay the mouse event to the active 
-		IController2DModule activeModule = getActiveDrawModule();
+		IControllerModule activeModule = getActiveDrawModule();
 		if (activeModule != null) activeModule.mouseMove(worldCoord);
 	}
 	
@@ -258,8 +220,12 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
 		eventRelay.updateView();
 	}
 	
-	private IController2DModule getActiveDrawModule() {
-		return drawModeModules.get(controllerModel.getDrawMode());
+	public IControllerModule getActiveDrawModule() {
+		return activeDrawModule;
+	}
+	
+	public void setActiveDrawModule(IControllerModule activeDrawModule){
+		this.activeDrawModule=activeDrawModule;
 	}
 
 	public IAtom getClosestAtom(Point2d worldCoord) {
@@ -334,17 +300,29 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
         atomPlacer.setMolecule(chemModel.getBuilder().newMolecule(atomCon));
         double bondLength = GeometryTools.getBondLengthAverage(atomCon);
         
-        // determine the atoms which define where the new atom should not be
-        // placed
+        // determine the atoms which define where the 
+        // new atom should not be placed
         List<IAtom> connectedAtoms = atomCon.getConnectedAtomsList(atom);
-        IAtomContainer placedAtoms = atomCon.getBuilder().newAtomContainer();
-        for (IAtom conAtom : connectedAtoms) placedAtoms.addAtom(conAtom);
-        Point2d center2D = GeometryTools.get2DCenter(placedAtoms);
-        
-        IAtomContainer unplacedAtoms = atomCon.getBuilder().newAtomContainer();
-        unplacedAtoms.addAtom(newAtom);
-        atomPlacer.distributePartners(atom, placedAtoms, center2D,
-                                      unplacedAtoms, bondLength);
+
+        if (connectedAtoms.size() == 1) {
+            IAtomContainer ac = atomCon.getBuilder().newAtomContainer();
+            ac.addAtom(atom);
+            ac.addAtom(newAtom);
+            Point2d distanceMeasure = new Point2d(0,0); // XXX not sure about this?
+            IAtom connectedAtom = connectedAtoms.get(0);
+            Vector2d v = atomPlacer.getNextBondVector(atom, connectedAtom, distanceMeasure, true);
+            atomPlacer.placeLinearChain(ac, v, bondLength);
+        } else {
+            IAtomContainer placedAtoms = atomCon.getBuilder().newAtomContainer();
+            for (IAtom conAtom : connectedAtoms) placedAtoms.addAtom(conAtom);
+            Point2d center2D = GeometryTools.get2DCenter(placedAtoms);
+            
+            IAtomContainer unplacedAtoms = atomCon.getBuilder().newAtomContainer();
+            unplacedAtoms.addAtom(newAtom);
+            
+            atomPlacer.distributePartners(
+                    atom, placedAtoms, center2D, unplacedAtoms, bondLength);
+        }
 
         atomCon.addAtom(newAtom);
         atomCon.addBond(newBond);
@@ -464,54 +442,62 @@ public class Controller2DHub implements IMouseEventRelay, IChemModelRelay {
         }
     }
     
-    public void addRing(int ringSize) {
+    public void addRing(int ringSize, Point2d worldcoord) {
         IRing ring = chemModel.getBuilder().newRing(ringSize, "C");
         System.err.println("making ring of size " + ringSize + " actual = " + ring.getAtomCount());
         double bondLength = 2.5;    // err...
-        ringPlacer.placeRing(ring, new Point2d(0, 0), bondLength);
+        ringPlacer.placeRing(ring, worldcoord, bondLength);
         IMoleculeSet set = chemModel.getBuilder().newMoleculeSet();
         set.addAtomContainer(ring);
         chemModel.setMoleculeSet(set);
     }
 
+    public void addPhenyl(Point2d worldcoord) {
+        addAtom("C", worldcoord);
+        addPhenyl(getClosestAtom(worldcoord));
+    }
+
     public void addRing(IAtom atom, int ringSize) {
-        addRing(atom, ringSize, false);
-    }
-
-    public void addPhenyl(IAtom atom) {
-        addRing(atom, 6, true);
-    }
-
-    private void addRing(IAtom atom, int ringSize, boolean makeBenzene) {
-        if (makeBenzene && ringSize != 6) // explode!
-            return;
         IAtomContainer sourceContainer = ChemModelManipulator.getRelevantAtomContainer(chemModel, atom);
         IAtomContainer sharedAtoms = atom.getBuilder().newAtomContainer();
         sharedAtoms.addAtom(atom);
         Point2d sharedAtomsCenter = GeometryTools.get2DCenter(sharedAtoms);
         IRing newRing = createAttachRing(sharedAtoms, ringSize, "C");
-        if (makeBenzene) {
-            // make newRing a benzene ring
-            newRing.getBond(0).setOrder(IBond.Order.DOUBLE);
-            newRing.getBond(2).setOrder(IBond.Order.DOUBLE);
-            newRing.getBond(4).setOrder(IBond.Order.DOUBLE);
-            makeRingAromatic(newRing);
-        }
-        
         double bondLength = GeometryTools.getBondLengthAverage(sourceContainer);
         Point2d conAtomsCenter = getConnectedAtomsCenter(sharedAtoms, chemModel);
         Vector2d ringCenterVector = new Vector2d(sharedAtomsCenter);
         ringCenterVector.sub(conAtomsCenter);
         ringPlacer.placeSpiroRing(newRing, sharedAtoms, sharedAtomsCenter, ringCenterVector, bondLength);
-        // removes the highlighted atom from the ring to add only the new placed
-        // atoms to the AtomContainer.
-        try {
-            newRing.removeAtom(atom);
-        } catch (Exception exc) {
-            System.out.println("Could not remove atom from ring");
-            exc.printStackTrace();
+        for (IAtom ringAtom : newRing.atoms()) {
+            if (ringAtom != atom) sourceContainer.addAtom(ringAtom);
         }
-        sourceContainer.add(newRing);
+        for (IBond ringBond : newRing.bonds()) {
+            sourceContainer.addBond(ringBond);
+        }
+    }
+
+    public void addPhenyl(IAtom atom) {
+        IAtomContainer sourceContainer = ChemModelManipulator.getRelevantAtomContainer(chemModel, atom);
+        IAtomContainer sharedAtoms = atom.getBuilder().newAtomContainer();
+        sharedAtoms.addAtom(atom);
+        Point2d sharedAtomsCenter = GeometryTools.get2DCenter(sharedAtoms);
+        IRing newRing = createAttachRing(sharedAtoms, 6, "C");
+        // make newRing a benzene ring
+        newRing.getBond(0).setOrder(IBond.Order.DOUBLE);
+        newRing.getBond(2).setOrder(IBond.Order.DOUBLE);
+        newRing.getBond(4).setOrder(IBond.Order.DOUBLE);
+        makeRingAromatic(newRing);
+        double bondLength = GeometryTools.getBondLengthAverage(sourceContainer);
+        Point2d conAtomsCenter = getConnectedAtomsCenter(sharedAtoms, chemModel);
+        Vector2d ringCenterVector = new Vector2d(sharedAtomsCenter);
+        ringCenterVector.sub(conAtomsCenter);
+        ringPlacer.placeSpiroRing(newRing, sharedAtoms, sharedAtomsCenter, ringCenterVector, bondLength);
+        for (IAtom ringAtom : newRing.atoms()) {
+            if (ringAtom != atom) sourceContainer.addAtom(ringAtom);
+        }
+        for (IBond ringBond : newRing.bonds()) {
+            sourceContainer.addBond(ringBond);
+        }
     }
 
     private void makeRingAromatic(IRing newRing) {

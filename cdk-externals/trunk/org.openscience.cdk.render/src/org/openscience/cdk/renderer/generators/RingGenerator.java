@@ -35,7 +35,6 @@ import org.openscience.cdk.renderer.Renderer2DModel;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
-import org.openscience.cdk.renderer.elements.LineElement.LineType;
 import org.openscience.cdk.tools.LoggingTool;
 
 /**
@@ -57,7 +56,7 @@ public class RingGenerator extends BasicBondGenerator {
 	public IRenderingElement generateRingElements(IBond bond, IRing ring) {
 		if (ringIsAromatic(ring) && this.model.getShowAromaticity()) {
 			ElementGroup pair = new ElementGroup();
-			pair.add(generateBondElement(bond, LineType.SINGLE));
+			pair.add(generateBondElement(bond));
 			if (!painted_rings.contains(ring)) {
 				painted_rings.add(ring);
 				pair.add(generateRingRingElement(bond, ring));

@@ -35,9 +35,9 @@ import javax.vecmath.Point2d;
  * @cdk.svnrev  $Revision: 9162 $
  * @cdk.module  control
  *
- * @see    Controller2DModel
+ * @see    ControllerModel
  */
-public interface IController2DModule {
+public interface IControllerModule {
 
 	public abstract void setChemModelRelay(IChemModelRelay relay);
 	//public abstract void setEventRelay(IViewEventRelay relay);
@@ -77,4 +77,8 @@ public interface IController2DModule {
 	 */
 	public abstract void mouseDrag(Point2d worldCoordFrom, Point2d worldCoordTo);
 
+	/**
+	 * @return A string describing this module e. g. for the status bar
+	 */
+	public abstract String getDrawModeString();
 }

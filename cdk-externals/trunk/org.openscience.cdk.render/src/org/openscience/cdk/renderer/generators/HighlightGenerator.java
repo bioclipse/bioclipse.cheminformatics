@@ -12,7 +12,6 @@ import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.LineElement;
 import org.openscience.cdk.renderer.elements.RingElement;
-import org.openscience.cdk.renderer.elements.LineElement.LineType;
 
 /**
  * @cdk.module render
@@ -22,12 +21,10 @@ public class HighlightGenerator implements IGenerator {
 	private Renderer2DModel model;
 	private Color highlightColor;
 
-
-	public HighlightGenerator( Renderer2DModel r2dm) {
+	public HighlightGenerator(Renderer2DModel r2dm) {
 		this.model= r2dm;
 		this.highlightColor = Color.GRAY;
 	}
-	
 
 	public IRenderingElement generate(IAtomContainer ac, IAtom atom) {
 		IAtom highlightedAtom = this.model.getHighlightedAtom(); 
@@ -38,20 +35,13 @@ public class HighlightGenerator implements IGenerator {
 		return null;
 	}
 
-
 	public IRenderingElement generate(IAtomContainer ac, IBond bond) {
 		IBond highlightedBond = this.model.getHighlightedBond();
 		if (highlightedBond != null && highlightedBond.equals(bond)) {
 			Point2d p1 = bond.getAtom(0).getPoint2d();
 			Point2d p2 = bond.getAtom(1).getPoint2d();
-			return new LineElement(p1.x, 
-								   p1.y,
-								   p2.x,
-								   p2.y,
-								   LineType.SINGLE,
-								   this.model.getBondWidth() * 3,
-								   this.model.getBondDistance(),
-								   this.highlightColor);
+			double w = this.model.getBondWidth() * 3;
+			return new LineElement(p1.x, p1.y, p2.x, p2.y, w, this.highlightColor);
 		}
 		return null;
 	}

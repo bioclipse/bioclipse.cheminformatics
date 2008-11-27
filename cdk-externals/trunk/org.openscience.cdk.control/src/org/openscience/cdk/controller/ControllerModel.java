@@ -36,14 +36,11 @@ import javax.swing.undo.UndoableEditSupport;
  * @cdk.module  control
  * @cdk.svnrev  $Revision$
  */
-public class Controller2DModel implements java.io.Serializable, Cloneable, IController2DModel
+public class ControllerModel implements java.io.Serializable, Cloneable, IControllerModel
 {
 	
     private static final long serialVersionUID = 9007159812273128989L;
-    
-	private DrawMode drawMode = DrawMode.DRAWBOND;
-	private int ringSize = 6;
-	
+    	
 	private boolean snapToGridAngle = true;
 	private int snapAngle = 15;
 	
@@ -63,35 +60,12 @@ public class Controller2DModel implements java.io.Serializable, Cloneable, ICont
 	//for controlling, if the structure or substructural parts might be moved
 	private boolean isMovingAllowed = true;
     
-    public Controller2DModel() {
+    public ControllerModel() {
         undoManager = new UndoManager();
         undoManager.setLimit(100);
         undoSupport = new UndoableEditSupport();
         undoSupport.addUndoableEditListener(new UndoAdapter(undoManager));
     }
- 	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#getDrawMode()
-     */
-	public DrawMode getDrawMode()
-	{
-		return this.drawMode;
-	}
-
-	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#getDrawModeString()
-     */
-	public String getDrawModeString() {
-		return this.drawMode.getName();
-	}
-
-	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#setDrawMode(org.openscience.cdk.controller.Controller2DModel.DrawMode)
-     */
-	public void setDrawMode(DrawMode drawMode)
-	{
-		this.drawMode = drawMode;
-	}
-
 
 	/* (non-Javadoc)
      * @see org.openscience.cdk.controller.IController2DModel#getSnapToGridAngle()
@@ -182,23 +156,6 @@ public class Controller2DModel implements java.io.Serializable, Cloneable, ICont
 	}
 
     
-	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#getRingSize()
-     */
-	public int getRingSize()
-	{
-		return this.ringSize;
-	}
-
-
-	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#setRingSize(int)
-     */
-	public void setRingSize(int ringSize)
-	{
-		this.ringSize = ringSize;
-	}
-
 	/* (non-Javadoc)
      * @see org.openscience.cdk.controller.IController2DModel#getDefaultElementSymbol()
      */

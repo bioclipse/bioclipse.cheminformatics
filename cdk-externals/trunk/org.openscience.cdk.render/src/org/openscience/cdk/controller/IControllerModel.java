@@ -30,7 +30,7 @@ import javax.swing.undo.UndoableEditSupport;
 /**
  * @cdk.module render
  */
-public interface IController2DModel {
+public interface IControllerModel {
 
     public enum DrawMode {
     	DRAWBOND("Draw"), 
@@ -65,27 +65,6 @@ public interface IController2DModel {
     		return this.name;
     	}
     }
-
-	/**
-	 * Returns the draw mode.
-	 *
-	 * @return   The draw mode
-	 */
-	public abstract DrawMode getDrawMode();
-
-	/**
-	 * Returns the String representation of the draw mode.
-	 *
-	 * @return   A String
-	 */
-	public abstract String getDrawModeString();
-
-	/**
-	 * Sets the draw mode 
-	 *
-	 * @param   drawMode  
-	 */
-	public abstract void setDrawMode(DrawMode drawMode);
 
 	/**
 	 * Returns the snapToGridAngle mode
@@ -154,20 +133,6 @@ public interface IController2DModel {
 	 * @param   snapCartesian  
 	 */
 	public abstract void setSnapCartesian(int snapCartesian);
-
-	/**
-	 * Returns the ring size
-	 *
-	 * @return the ring size
-	 */
-	public abstract int getRingSize();
-
-	/**
-	 * Sets the ring size
-	 *
-	 * @param   ringSize  
-	 */
-	public abstract void setRingSize(int ringSize);
 
 	public abstract String getDefaultElementSymbol();
 
