@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.ControllerModel;
 import org.openscience.cdk.controller.IViewEventRelay;
-import org.openscience.cdk.controller.IControllerModel.DrawMode;
+import org.openscience.cdk.controller.MoveModule;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
