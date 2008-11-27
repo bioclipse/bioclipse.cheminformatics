@@ -327,4 +327,14 @@ public class JChemPaintManager implements IJChemPaintManager {
         updateView();
     }
 
+    public void addPhenyl(IBond bond) {
+        JChemPaintEditor editor = findActiveEditor();
+        if (editor != null) {
+            IChemModelRelay relay = editor.getControllerHub();
+            relay.addPhenyl(bond);
+        } else {
+            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+        }
+        updateView();
+    }
 }

@@ -624,4 +624,75 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         }
     }
 
+    public void addPhenyl(IBond bond) {
+        IAtomContainer sharedAtoms = bond.getBuilder().newAtomContainer();
+        IAtom firstAtom = bond.getAtom(0); // Assumes two-atom bonds only
+        IAtom secondAtom = bond.getAtom(1);
+        sharedAtoms.addAtom(firstAtom);
+        sharedAtoms.addAtom(secondAtom);
+        sharedAtoms.addBond(bond);
+        IAtomContainer sourceContainer = ChemModelManipulator
+            .getRelevantAtomContainer(chemModel, firstAtom);
+
+        Point2d sharedAtomsCenter = GeometryTools.get2DCenter(sharedAtoms);
+
+        // calculate two points that are perpendicular to the highlighted bond
+        // and have a certain distance from the bond center
+        Point2d firstPoint = firstAtom.getPoint2d();
+        Point2d secondPoint = secondAtom.getPoint2d();
+        Vector2d diff = new Vector2d(secondPoint);
+        diff.sub(firstPoint);
+        double bondLength = firstPoint.distance(secondPoint);
+        double angle = GeometryTools.getAngle(diff.x, diff.y);
+        Point2d newPoint1 = new Point2d( // FIXME: what is this point??
+            (Math.cos(angle + (Math.PI/2))*bondLength/4) + sharedAtomsCenter.x,
+            (Math.sin(angle + (Math.PI/2))*bondLength/4) + sharedAtomsCenter.y
+        );
+        Point2d newPoint2 = new Point2d( // FIXME: what is this point??
+            (Math.cos(angle - (Math.PI/2))*bondLength/4) + sharedAtomsCenter.x,
+            (Math.sin(angle - (Math.PI/2))*bondLength/4) + sharedAtomsCenter.y
+        );
+
+        // decide on which side to draw the ring??
+        IAtomContainer connectedAtoms = bond.getBuilder().newAtomContainer();
+        for (IAtom atom : sourceContainer.getConnectedAtomsList(firstAtom)) {
+            if (atom != secondAtom) connectedAtoms.addAtom(atom);
+        }
+        for (IAtom atom : sourceContainer.getConnectedAtomsList(secondAtom)) {
+            if (atom != firstAtom) connectedAtoms.addAtom(atom);
+        }
+        Point2d conAtomsCenter = GeometryTools.get2DCenter(connectedAtoms);
+        double distance1 = newPoint1.distance(conAtomsCenter);
+        double distance2 = newPoint2.distance(conAtomsCenter);
+        Vector2d ringCenterVector = new Vector2d(sharedAtomsCenter);
+        if (distance1 < distance2) {
+            ringCenterVector.sub(newPoint1);
+        } else { // distance2 <= distance1
+            ringCenterVector.sub(newPoint2);
+        }
+
+        // construct a new Ring that contains the highlighted bond an its two atoms
+        IRing newRing = createAttachRing(sharedAtoms, 6, "C");
+        ringPlacer.placeFusedRing(newRing, sharedAtoms, sharedAtomsCenter,
+                                  ringCenterVector, bondLength);
+        if (bond.getOrder() == IBond.Order.SINGLE) {
+            newRing.getBond(1).setOrder(IBond.Order.DOUBLE);
+            newRing.getBond(3).setOrder(IBond.Order.DOUBLE);
+            newRing.getBond(5).setOrder(IBond.Order.DOUBLE);
+        } else { // assume Order.DOUBLE, so only need to add 2 double bonds
+            newRing.getBond(2).setOrder(IBond.Order.DOUBLE);
+            newRing.getBond(4).setOrder(IBond.Order.DOUBLE);
+        }
+        // add the new atoms and bonds
+        for (IAtom ringAtom : newRing.atoms()) {
+            if (ringAtom != firstAtom && ringAtom != secondAtom) {
+                sourceContainer.addAtom(ringAtom);
+            }
+        }
+        for (IBond ringBond : newRing.bonds()) {
+            if (ringBond != bond) {
+                sourceContainer.addBond(ringBond);
+            }
+        }
+    }
 }

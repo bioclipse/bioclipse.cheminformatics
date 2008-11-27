@@ -52,6 +52,7 @@ public interface IChemModelRelay {
     public void addPhenyl(IAtom atom);
     public void addPhenyl(Point2d worldcoord);
     public void addRing(IBond bond, int size);
+    public void addPhenyl(IBond bond);
     public void cleanup();
 //    public abstract void cleanupSelection(Selector sectionIdentifier);
 
