@@ -190,10 +190,13 @@ public class SWTRenderer implements IRenderingVisitor{
     }
 
     private void drawLine(LineElement element) {
-        gc.drawLine( transformX(element.x1),
-                     transformY(element.y1),
-                     transformX(element.x2),
-                     transformY(element.y2));
+        Path path = new Path(gc.getDevice());
+        double[] p1=transform( element.x1, element.y1 );
+        double[] p2=transform( element.x2, element.y2);
+        path.moveTo( (float)p1[0], (float)p1[1] );
+        path.lineTo( (float)p2[0], (float)p2[1] );
+       gc.drawPath( path ); 
+       path.dispose();
     }
     
     private void drawLineX(LineElement element, int val) {
