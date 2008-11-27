@@ -36,14 +36,17 @@ public class SWTRenderer implements IRenderingVisitor{
 
     GC gc;
     Renderer2DModel model;
-    public AffineTransform transform;
+    AffineTransform transform;
+    
+    SWTFontManager fontManager;
+    
     // scale a lite more and translate the differense to center it
     // dosen't handle zoom
-    public SWTRenderer(GC graphics, Renderer2DModel model) {
-        transform = new AffineTransform();
-        
+    public SWTRenderer(GC graphics, SWTFontManager fontManager, Renderer2DModel model) {
+        this.transform = new AffineTransform();        
         this.model = model;
-        gc = graphics;
+        this.gc = graphics;
+        this.fontManager = fontManager;
         
     }
     
@@ -214,12 +217,15 @@ public class SWTRenderer implements IRenderingVisitor{
     }
     
     private Font getFont() {
-        int fontSize = (int) (scaleX(.4));
-        fontSize = (fontSize<12?12:fontSize);
-        fontSize = (fontSize>100?100:fontSize);
-        return  new Font(gc.getDevice(),"Arial",fontSize,SWT.NORMAL);
+        return fontManager.getFont();
+//        int fontSize = (int) (scaleX(.4));
+//        fontSize = (fontSize<12?12:fontSize);
+//        fontSize = (fontSize>100?100:fontSize);
+//        return  new Font(gc.getDevice(),"Arial",fontSize,SWT.NORMAL);
     }
-    
+    private Font getSmallFont() {
+        return fontManager.getSmallFont();
+    }
     public void visit( TextElement element ) {
 
         int x = transformX(element.x);
@@ -252,19 +258,41 @@ public class SWTRenderer implements IRenderingVisitor{
         gc.setBackground(  getBackgroundColor() );
         gc.setAdvanced( true );
         gc.drawText( text, x, y, false );
+        
+        Point secondTextSize = gc.textExtent( "H" );
+        gc.setFont( getSmallFont() );
+        Point cp = new Point(0,0);
+        if(element.formalCharge!=0) {
+            String fc = Integer.toString( element.formalCharge);
+            fc = (element.formalCharge==1?"+":fc);
+            fc = (element.formalCharge>1?"+"+fc:fc);
+            fc = (element.formalCharge==-1?"-":fc);            
+            cp = gc.textExtent( fc );
+            int fcX = x+textSize.x;
+            int fcY = y-cp.y/2;
+            gc.drawText( fc, fcX, fcY, true );
+        }
+        
         if(element.hydrogenCount >0) {
-            Point secondTextSize = gc.textExtent( "H" );
-            switch(element.alignment) {
-                case -1: x = x -secondTextSize.x;break;
-                case 1:  x = x + textSize.x;break;
-                case -2: y = y + textSize.y;break;
-                case 2:  y = y - secondTextSize.y;break;
+            
+            Point hc = new Point(0,0);
+            if(element.hydrogenCount >1) {
+                hc = gc.textExtent( Integer.toString( element.hydrogenCount ));
             }
+            switch(element.alignment) {
+                case -1: x = x -secondTextSize.x - hc.x;break;
+                case 1:  x = x + textSize.x+cp.x;break;
+                case -2: y = y + textSize.y;break;
+                case 2:  y = y+cp.y/2 - Math.max( secondTextSize.y,secondTextSize.y/2 - hc.y);break;
+            }
+            if(element.hydrogenCount >1) {
+                gc.drawText( Integer.toString( element.hydrogenCount), 
+                             x + secondTextSize.x, y + secondTextSize.y/2 
+                             ,true);
+            }
+            gc.setFont(getFont());
             gc.drawText( "H", x, y ,false);
-            x = x + secondTextSize.x;
-            y = y + secondTextSize.y/3;
-            if(element.hydrogenCount >1)
-                gc.drawText( Integer.toString( element.hydrogenCount), x, y ,true);
+            
         }
     }
     public  Color toSWTColor(GC graphics,java.awt.Color color) {
@@ -299,6 +327,7 @@ public class SWTRenderer implements IRenderingVisitor{
     
     public void setTransform(AffineTransform transform) {
         this.transform = transform;
+        fontManager.setFontForScale( transform.getScaleX() );
     }
 
     public void render() {

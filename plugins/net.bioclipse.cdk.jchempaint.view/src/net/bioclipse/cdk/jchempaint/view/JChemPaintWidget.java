@@ -42,11 +42,13 @@ public class JChemPaintWidget extends Canvas {
     Renderer2DModel renderer2DModel;
     Transform currentTransform;
     Renderer renderer;
+    SWTFontManager fontManager;
 
     public JChemPaintWidget(Composite parent, int style) {
 
         super( parent, style );
         setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
+        fontManager = new SWTFontManager(this.getDisplay());
         currentTransform = new Transform(getDisplay());
         renderer2DModel = new Renderer2DModel();
         renderer2DModel.setAtomRadius( 20 );
@@ -81,7 +83,7 @@ public class JChemPaintWidget extends Canvas {
             return;
         renderer.setBounds( new Rectangle2D.Double(0,0,this.getSize().x,this.getSize().y ));
         
-        SWTRenderer visitor = new SWTRenderer( event.gc, renderer2DModel);
+        SWTRenderer visitor = new SWTRenderer( event.gc,fontManager, renderer2DModel);
         renderer.paintMolecule( atomContainer, visitor );
     }
 
@@ -153,6 +155,7 @@ public class JChemPaintWidget extends Canvas {
     @Override
     public void dispose() {
         currentTransform.dispose();
+        fontManager.dispose();
         super.dispose();
     }
 }
