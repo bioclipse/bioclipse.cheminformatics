@@ -53,6 +53,16 @@
           id="net.bioclipse.cdk.ui.editors.jchempaint.command.move"
           name="Move">
     </command>
+    <command
+          defaultHandler="net.bioclipse.cdk.jchempaint.handlers.ManagerHandler"
+          id="net.bioclipse.cdk.jchempaint.manager.action"
+          name="Manager action">
+       <commandParameter
+             id="jcp.manager.method"
+             name="managerMethod"
+             optional="false">
+       </commandParameter>
+    </command>
  </extension>
  <extension
        point="org.eclipse.ui.menus">
@@ -220,21 +230,26 @@
           </visibleWhen>
        </menu>
        <command
-             commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.eraser"
-             label="Delete"
+             commandId="net.bioclipse.cdk.jchempaint.manager.action"
+             label="Clear"
              style="push">
-          <visibleWhen
-                checkEnabled="true">
-             <with
-                   variable="activeMenuSelection">
-                <iterate>
-                   <instanceof
-                         value="org.openscience.cdk.interfaces.IAtom">
-                   </instanceof>
-                </iterate>
-             </with>
-          </visibleWhen>
+          <parameter
+                name="jcp.manager.method"
+                value="zap">
+          </parameter>
        </command>
+       <command
+             commandId="net.bioclipse.cdk.jchempaint.manager.action"
+             label="Update Implicit Hydrogens"
+             style="push">
+          <parameter
+                name="jcp.manager.method"
+                value="updateImplicitHydrogenCounts">
+          </parameter>
+       </command>
+       <separator
+             name="net.bioclipse.cdk.jchempaint.separator1">
+       </separator>
        <command
              commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.incharge"
              label="Increase charge"
@@ -255,6 +270,22 @@
        <command
              commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.deccharge"
              label="Decrease charge"
+             style="push">
+          <visibleWhen
+                checkEnabled="true">
+             <with
+                   variable="activeMenuSelection">
+                <iterate>
+                   <instanceof
+                         value="org.openscience.cdk.interfaces.IAtom">
+                   </instanceof>
+                </iterate>
+             </with>
+          </visibleWhen>
+       </command>
+       <command
+             commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.eraser"
+             label="Delete"
              style="push">
           <visibleWhen
                 checkEnabled="true">
