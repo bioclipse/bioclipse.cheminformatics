@@ -304,8 +304,8 @@ public class SWTRenderer implements IRenderingVisitor{
     }
 
     public void visitDefault(IRenderingElement element) {
-        throw new RuntimeException( "visitor for "+element.getClass().getName() 
-                                    + " is not implemented yet.");
+//        throw new RuntimeException( "visitor for "+element.getClass().getName() 
+//                                    + " is not implemented yet.");
         
     }
 
