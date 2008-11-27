@@ -20,8 +20,13 @@
        point="org.eclipse.ui.commands">
     <command
           defaultHandler="net.bioclipse.cdk.jchempaint.handlers.AddHandler"
-          id="net.bioclipse.cdk.ui.editors.jchempaint.command.new_atom_bond"
+          id="net.bioclipse.cdk.jchempaint.command.add.element"
           name="Add">
+       <commandParameter
+             id="atomType"
+             name="symbol"
+             optional="true">
+       </commandParameter>
     </command>
     <command
           defaultHandler="net.bioclipse.cdk.jchempaint.handlers.RemoveHandler"
@@ -56,7 +61,7 @@
        <toolbar
              id="net.bioclipse.cdk.ui.jchempaint.toolbar">
           <command
-                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.new_atom_bond"
+                commandId="net.bioclipse.cdk.jchempaint.command.add.element"
                 icon="icons/editor/new_atom_bond.gif"
                 style="radio">
              <visibleWhen
@@ -143,16 +148,92 @@
     </menuContribution>
     <menuContribution
           locationURI="popup:net.bioclipse.cdk.ui.editors.jchempaint">
-       <command
-             commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.new_atom_bond"
-             label="Add"
-             mode="FORCE_TEXT"
-             style="push">
-       </command>
+       <menu
+             label="Add Element">
+          <menu
+                label="Common Elements">
+             <command
+                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   label="C"
+                   style="push">
+                <parameter
+                      name="atomType"
+                      value="C">
+                </parameter>
+             </command>
+             <command
+                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   label="O"
+                   style="push">
+                <parameter
+                      name="atomType"
+                      value="O">
+                </parameter>
+             </command>
+             <command
+                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   label="N"
+                   style="push">
+                <parameter
+                      name="atomType"
+                      value="N">
+                </parameter>
+             </command>
+             <command
+                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   label="H"
+                   style="push">
+                <parameter
+                      name="atomType"
+                      value="H">
+                </parameter>
+             </command>
+             <command
+                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   label="P"
+                   style="push">
+                <parameter
+                      name="atomType"
+                      value="P">
+                </parameter>
+             </command>
+             <command
+                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   label="S"
+                   style="push">
+                <parameter
+                      name="atomType"
+                      value="S">
+                </parameter>
+             </command>
+          </menu>
+          <visibleWhen
+                checkEnabled="true">
+             <with
+                   variable="activeMenuSelection">
+                <iterate>
+                   <instanceof
+                         value="org.openscience.cdk.interfaces.IAtom">
+                   </instanceof>
+                </iterate>
+             </with>
+          </visibleWhen>
+       </menu>
        <command
              commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.eraser"
              label="Delete"
              style="push">
+          <visibleWhen
+                checkEnabled="true">
+             <with
+                   variable="activeMenuSelection">
+                <iterate>
+                   <instanceof
+                         value="org.openscience.cdk.interfaces.IAtom">
+                   </instanceof>
+                </iterate>
+             </with>
+          </visibleWhen>
        </command>
        <command
              commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.incharge"

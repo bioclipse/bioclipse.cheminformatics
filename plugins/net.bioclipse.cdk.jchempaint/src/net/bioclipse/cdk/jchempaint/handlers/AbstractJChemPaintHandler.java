@@ -11,6 +11,8 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.handlers;
 
+import net.bioclipse.cdk.jchempaint.Activator;
+import net.bioclipse.cdk.jchempaint.business.IJChemPaintManager;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -21,6 +23,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IBond;
 
 public abstract class AbstractJChemPaintHandler extends AbstractHandler {
 
@@ -29,6 +32,10 @@ public abstract class AbstractJChemPaintHandler extends AbstractHandler {
         super();
     }
 
+    protected IJChemPaintManager getManager() {
+            return Activator.getDefault().getExampleManager();
+    }
+    
     protected IAtom getSingleSelectedAtom( ExecutionEvent event ) {
         ISelection selection = HandlerUtil.getCurrentSelection( event );
         if(selection instanceof IStructuredSelection ) {
@@ -40,6 +47,17 @@ public abstract class AbstractJChemPaintHandler extends AbstractHandler {
         return null;
     }
 
+    protected IBond getSingleSelectedBond( ExecutionEvent event ) {
+        ISelection selection = HandlerUtil.getCurrentSelection( event );
+        if(selection instanceof IStructuredSelection ) {
+            Object element = ((IStructuredSelection)selection).getFirstElement();
+            if(element instanceof IBond) {
+                return (IBond)element;
+            }
+        }
+        return null;
+    }
+    
     protected IChemModelRelay getChemModelRelay( ExecutionEvent event ) {
 
         IEditorPart editor = HandlerUtil.getActiveEditor( event );

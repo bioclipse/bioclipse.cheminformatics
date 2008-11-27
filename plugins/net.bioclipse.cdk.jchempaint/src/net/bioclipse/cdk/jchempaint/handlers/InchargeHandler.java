@@ -31,7 +31,7 @@ public class InchargeHandler extends AbstractJChemPaintHandler {
                     newCharge = selected.getFormalCharge();
                     newCharge++;
                 }
-                relay.setCharge( selected, newCharge );
+                getManager().setCharge( selected, newCharge );
             }
         }
         return null;
