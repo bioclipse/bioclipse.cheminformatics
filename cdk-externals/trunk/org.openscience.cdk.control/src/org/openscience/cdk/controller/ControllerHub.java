@@ -566,6 +566,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         IAtom secondAtom = bond.getAtom(1);
         sharedAtoms.addAtom(firstAtom);
         sharedAtoms.addAtom(secondAtom);
+        sharedAtoms.addBond(bond);
         IAtomContainer sourceContainer = ChemModelManipulator
             .getRelevantAtomContainer(chemModel, firstAtom);
 
