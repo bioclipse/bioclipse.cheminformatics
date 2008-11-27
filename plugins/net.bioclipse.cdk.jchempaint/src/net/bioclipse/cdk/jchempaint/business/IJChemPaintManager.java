@@ -173,6 +173,14 @@ public interface IJChemPaintManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
+         params = "IBond bond to add the ring to, int ring size",
+         methodSummary = "Adds a carbon ring of the given size fused with " +
+                         "the given bond."
+    )
+    public void addRing(IBond bond, int size);
+
+    @Recorded
+    @PublishedMethod(
          params = "IAtom atom to add the phenyl ring to",
          methodSummary = "Adds a phenyl ring to the given atom."
     )

@@ -316,4 +316,15 @@ public class JChemPaintManager implements IJChemPaintManager {
         updateView();
     }
 
+    public void addRing(IBond bond, int size) {
+        JChemPaintEditor editor = findActiveEditor();
+        if (editor != null) {
+            IChemModelRelay relay = editor.getControllerHub();
+            relay.addRing(bond, size);
+        } else {
+            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+        }
+        updateView();
+    }
+
 }
