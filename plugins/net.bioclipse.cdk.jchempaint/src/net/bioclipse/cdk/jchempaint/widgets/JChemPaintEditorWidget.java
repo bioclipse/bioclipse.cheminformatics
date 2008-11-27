@@ -30,11 +30,10 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Listener;
-import org.openscience.cdk.controller.Controller2DHub;
-import org.openscience.cdk.controller.Controller2DModel;
+import org.openscience.cdk.controller.ControllerHub;
+import org.openscience.cdk.controller.ControllerModel;
 import org.openscience.cdk.controller.IViewEventRelay;
-import org.openscience.cdk.controller.MoveModule;
-import org.openscience.cdk.controller.IController2DModel.DrawMode;
+import org.openscience.cdk.controller.IControllerModel.DrawMode;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -54,8 +53,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
     IAtom prevHighlightedAtom;
     IBond prevHighlightedBond;
 
-    Controller2DHub hub;
-    Controller2DModel c2dm;
+    ControllerHub hub;
+    ControllerModel c2dm;
     SWTMosueEventRelay relay;
      boolean generated = false;
 
@@ -67,7 +66,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
 
     private void setupControllerHub( IAtomContainer atomContainer ) {
 
-        hub = new Controller2DHub( c2dm = new Controller2DModel(),
+        hub = new ControllerHub( c2dm = new ControllerModel(),
                                   getRenderer(),
                                    ChemModelManipulator
                                    .newChemModel( atomContainer ),
@@ -87,7 +86,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
           removeListener( SWT.MouseExit, (Listener)relay );
       }
     	relay = new SWTMosueEventRelay(hub);
-    	c2dm.setDrawMode(DrawMode.MOVE);
+    	// Arvid, please FIXME
+//    	c2dm.setDrawMode(DrawMode.MOVE); 
 
     	addMouseListener(relay);
     	addMouseMoveListener(relay);
@@ -142,7 +142,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
 
     }
 
-    public Controller2DHub getController2DHub() {
+    public ControllerHub getControllerHub() {
         return hub;
     }
 

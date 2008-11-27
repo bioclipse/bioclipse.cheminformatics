@@ -37,8 +37,8 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.openscience.cdk.controller.Controller2DHub;
-import org.openscience.cdk.controller.IController2DModel;
+import org.openscience.cdk.controller.ControllerHub;
+import org.openscience.cdk.controller.IControllerModel;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
 import org.openscience.cdk.interfaces.IChemObjectListener;
@@ -52,7 +52,7 @@ public class JChemPaintEditor extends EditorPart{
     boolean dirty=false;
     ICDKMolecule model;
     JChemPaintEditorWidget widget;
-    IController2DModel c2dm;
+    IControllerModel c2dm;
     SWTMosueEventRelay relay;
 	@Override
 	public void doSave(IProgressMonitor monitor) {
@@ -143,11 +143,11 @@ public class JChemPaintEditor extends EditorPart{
 
 	}
 
-    public Controller2DHub getControllerHub() {
-        return widget.getController2DHub();
+    public ControllerHub getControllerHub() {
+        return widget.getControllerHub();
     }
 
-    public IController2DModel getControllerModel() {
+    public IControllerModel getControllerModel() {
         return c2dm;
     }
 
