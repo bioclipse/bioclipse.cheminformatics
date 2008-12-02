@@ -115,8 +115,6 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
 
             // renderer.getRenderer2DModel().setRenderingCoordinates(
             // coordinates);
-            renderer.getRenderer2DModel()
-                    .setBackgroundDimension( screenSize );
             
             renderer.getRenderer2DModel()
                     .setShowExplicitHydrogens( false );

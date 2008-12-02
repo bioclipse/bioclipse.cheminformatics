@@ -60,7 +60,7 @@ public class JChemPaintSWTWidget extends Canvas {
         
         renderer = new SWTRenderer(new Renderer2DModel());
         Dimension screenSize = new Dimension(this.getSize().x, this.getSize().y);
-        renderer.getRenderer2DModel().setBackgroundDimension(screenSize);
+
         renderer.getRenderer2DModel().setDrawNumbers(true);
         renderer.getRenderer2DModel().setBondDistance( 2 );
         setCompactedNess(screenSize);
@@ -135,7 +135,7 @@ public class JChemPaintSWTWidget extends Canvas {
 //            GeometryTools.center(molecule, oldDimensions, coordinates);
 
         
-        renderer.getRenderer2DModel().setBackgroundDimension(newSize);
+        //renderer.getRenderer2DModel().setBackgroundDimension(newSize);
 //            Rectangle2D.Double rect = new Rectangle2D.Double(0, 0, oldDimensions.getWidth(), oldDimensions.getHeight());
 //            renderer.paintMolecule(
 //                molecule, 

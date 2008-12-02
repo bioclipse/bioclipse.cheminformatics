@@ -162,7 +162,7 @@ public class SWTRenderer implements IJava2DRenderer {
 		
 		//Color bondColor=new Color(graphics.getDevice(),0,0,0);
 		//graphics.setForeground(bondColor);
-		graphics.setLineAttributes(new LineAttributes((float) (rendererModel.getBondWidth()/rendererModel.getBondLength()),
+		graphics.setLineAttributes(new LineAttributes((float) (rendererModel.getBondWidth()),
 				SWT.CAP_ROUND, SWT.JOIN_ROUND));
 //		graphics.setStroke(new BasicStroke(
 //			(float) (rendererModel.getBondWidth()/rendererModel.getBondLength()),
@@ -443,7 +443,7 @@ public class SWTRenderer implements IJava2DRenderer {
 		
 		//btest has to be substracted to get the text on the exact right position
 		//FIXME: get right value from graphics object? (width of line? or so)
-		float btest = (float) (rendererModel.getBondWidth()/rendererModel.getBondLength());
+		float btest = (float) (rendererModel.getBondWidth());
 		double atomSymbolX = atom.getPoint2d().x - boundsAtom.getWidth()/2 - 0.5 * btest; 
 		double atomSymbolY = atom.getPoint2d().y - boundsAtom.getHeight() /2 - boundsAtom.getY();
 		double atomSymbolW = boundsAtom.getWidth();
@@ -1392,7 +1392,7 @@ public class SWTRenderer implements IJava2DRenderer {
 	{
 		// draw the shapes
 //		graphics.setForeground(bondColor);
-		graphics.setLineAttributes(new LineAttributes((float)(rendererModel.getBondWidth()/rendererModel.getBondLength()), 
+		graphics.setLineAttributes(new LineAttributes((float)(rendererModel.getBondWidth()), 
 				SWT.CAP_ROUND, SWT.JOIN_ROUND));
 		
 //		graphics.setStroke(new BasicStroke(
