@@ -4,11 +4,11 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * <http://www.eclipse.org/legal/epl-v10.html>.
- * 
+ *
  * Contributors:
- *      Arvid Berg 
- *     
- *     
+ *      Arvid Berg
+ *
+ *
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
@@ -18,35 +18,37 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
+import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.ui.sdfeditor.MoleculesOutlinePage;
-import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableColorProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.nebula.widgets.compositetable.AbstractSelectableRow;
+import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
+import org.eclipse.swt.nebula.widgets.compositetable.GridRowLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.ISelectionListener;
@@ -56,30 +58,30 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorInputTransfer;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.EditorInputTransfer.EditorInputData;
-import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.eclipse.ui.progress.WorkbenchJob;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 import org.openscience.cdk.interfaces.IAtomContainer;
 
-public class MoleculesEditor extends EditorPart implements 
+public class MoleculesEditor extends EditorPart implements
         //ISelectionProvider,
         ISelectionListener {
 
-    public final static int STRUCTURE_COLUMN_WIDTH = 100;  
-    
+    public final static int STRUCTURE_COLUMN_WIDTH = 100;
+
     Logger logger = Logger.getLogger( MoleculesEditor.class );
-                        
-    Collection<ISelectionChangedListener> selectionListeners = 
+
+    Collection<ISelectionChangedListener> selectionListeners =
                                  new LinkedHashSet<ISelectionChangedListener>();
     MoleculesEditorLabelProvider labelProvider;
     public List<String>                          propertyHeaders;
-    TableViewer viewer;
+    CompositeTable viewer;
 
     private MoleculesOutlinePage outlinePage;
-    
-    
+
+
     public MoleculesEditor() {
     }
-    
+
     @Override
     public void doSave( IProgressMonitor monitor ) {
 
@@ -119,84 +121,86 @@ public class MoleculesEditor extends EditorPart implements
         // TODO Auto-generated method stub
         return false;
     }
+    public static class Header extends Composite {
+        
+        public Header(Composite parent, int style) {
+            super(parent,style);
+            setLayout( new GridRowLayout( new int[] {40,STRUCTURE_COLUMN_WIDTH},false) );
+            new Label(this,SWT.NULL).setText( "Index" );
+            new Label(this,SWT.NULL).setText( "2D-Structure" );
+        }
+    }
+    public static class Row extends AbstractSelectableRow {
+        public Row(Composite parent, int style) {
+            super(parent,style);
+            setLayout( new GridRowLayout( new int[] {40,STRUCTURE_COLUMN_WIDTH},false)  );
+            //super.setColumnCount( 2 );
+            index = new Text(this,SWT.NULL);
+            index.setEnabled( false );
+            structure = new JChemPaintWidget(this,SWT.NULL);
+            structure.getRenderer2DModel().setShowExplicitHydrogens( false );
 
-    
+        }
+        public final Text index;
+        public final JChemPaintWidget structure;
+    }
 
     @Override
     public void createPartControl( Composite parent ) {
+
+        labelProvider = new MoleculesEditorLabelProvider(STRUCTURE_COLUMN_WIDTH);
+        final MoleculeTableContentProvider contentProvider= new MoleculeTableContentProvider();
+        contentProvider.inputChanged( null, null, getEditorInput() );
+        
+        CompositeTable cTable = new CompositeTable(parent, SWT.NULL);
+        viewer = cTable;
+        // get First element from list to determin Properties
+        // use a iterator go get the first element and pass the property list to
+        // header and row constructor
+        new Header(cTable, SWT.NULL);
+        new Row(cTable,SWT.NULL);
+        cTable.setRunTime( true );
+        cTable.setNumRowsInCollection( contentProvider.numberOfEntries( 500 ) );
+        cTable.addRowContentProvider( contentProvider );
+        
+        if(contentProvider.getFile() !=null) { 
+            Job job = new Job("Indexing SD-file") {
+                protected IStatus run(IProgressMonitor monitor) {
+                    Activator.getDefault().getCDKManager()
+                    .createSDFileIndex( contentProvider.getFile(),monitor  );
+                    final int result = contentProvider.init();
+                    WorkbenchJob updateJob = new WorkbenchJob(
+                    "Updating SD editor") {
+                        /*
+                         * (non-Javadoc)
+                         * 
+                         * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
+                         */
+                        public IStatus runInUIThread(IProgressMonitor updateMonitor) {
+                            // Cancel the job if the tree viewer got closed
+
+                            contentProvider.ready();
+                            int firstVisibleRow = viewer.getTopRow();
+                            viewer.setNumRowsInCollection( result );
+                            viewer.setTopRow( firstVisibleRow );
+                            return Status.OK_STATUS;
+                        }
+                    };
+                    updateJob.setSystem(true);
+                    updateJob.schedule();
+                    monitor.done();
+                    return Status.OK_STATUS;
+                }
+            };
+            job.setPriority(Job.SHORT);
+            job.schedule(); // start as soon as possible
+
+        }
         
         
-        viewer =
-                new TableViewer( parent, SWT.VIRTUAL | SWT.V_SCROLL
-                                        | SWT.H_SCROLL | SWT.MULTI
-                                        | SWT.FULL_SELECTION | SWT.BORDER ) {
-
-                    
-                    @Override
-                    public void add( Object[] childElements ) {
-
-                        if ( propertyHeaders == null
-                             && childElements.length > 0 ) {
-                            // TODO make it a job on the GUI thread
-                            if ( childElements[0] instanceof IAdaptable ){
-                                if( ((IAdaptable) childElements[0]).getAdapter( ICDKMolecule.class )!= null)
-                                labelProvider.setPropertyHeaders(
-                                               createHeaderFromSelection( 
-                                               (IAdaptable) childElements[0] ));
-                                
-                            }
-                        }
-                        super.add( childElements );
-                    }
-                    /*
-                     * (non-Javadoc)
-                     * @see
-                     * org.eclipse.jface.viewers.TreeViewer#replace(java.lang
-                     * .Object, int, java.lang.Object)
-                     */
-                    @Override
-                    public void replace( Object element, int index ) {
-
-                        if ( propertyHeaders == null && element != null ) {
-                            // TODO make it a job on the GUI thread
-                            if ( element instanceof IAdaptable ) {
-                                if ( ((IAdaptable) element)
-                                        .getAdapter( ICDKMolecule.class ) != null )
-                                    labelProvider
-                                            .setPropertyHeaders( createHeaderFromSelection( (IAdaptable) element ) );
-
-                            }
-                        }
-                        super.replace( element , index );
-                    }
-                };
-
-        Table tree = viewer.getTable();
-        tree.setHeaderVisible( true );
-
-        TableColumn itemColumn = new TableColumn(tree,SWT.NONE);
-        itemColumn.setText( "Index" );
-        itemColumn.setResizable( true );
-        itemColumn.setWidth( 100 );
-
-        TableColumn nameColumn = new TableColumn( tree, SWT.NONE );
-        nameColumn.setText( "Structure" );
-        nameColumn.setResizable( false );
-        nameColumn.setWidth( STRUCTURE_COLUMN_WIDTH );
-
-        viewer.setComparer( new SDFElementComparer() );        
-
-        viewer.setColumnProperties( new String[] { "Index", "Name" } );
-
-        //viewer.setContentProvider( new MoleculesEditorContentProvider(viewer) );
-        viewer.setContentProvider( new MoleculeTableContentProvider() );
-        viewer.setLabelProvider( labelProvider = 
-                     new MoleculesEditorLabelProvider(STRUCTURE_COLUMN_WIDTH) );
-        viewer.setItemCount( 1 );
-        viewer.setUseHashlookup(true );
-        viewer.setInput( getEditorInput() );
        
-        
+
+
         // See what's currently selected and select it
         ISelection selection =
                 PlatformUI.getWorkbench().getActiveWorkbenchWindow()
@@ -205,32 +209,31 @@ public class MoleculesEditor extends EditorPart implements
             IStructuredSelection stSelection = (IStructuredSelection) selection;
             //reactOnSelection( stSelection );
         }
-        
+
         setupDragSource();
         //getEditorSite().getPage().addSelectionListener( this );
         //getSite().setSelectionProvider(viewer);
-        
+
     }
-    
+
     protected void setupDragSource() {
         int operations = DND.DROP_COPY | DND.DROP_MOVE;
-        DragSource dragSource = new DragSource(viewer.getTable(),operations);
-        Transfer[] transferTypes = new Transfer[] 
-                                        { 
+        DragSource dragSource = new DragSource(viewer,operations);
+        Transfer[] transferTypes = new Transfer[]
+                                        {
                                           LocalSelectionTransfer.getTransfer()};
         dragSource.setTransfer( transferTypes );
-        
+
         dragSource.addDragListener(  new DragSourceListener() {
 
-            
-            public void dragStart( DragSourceEvent event ) {       
-               if(!viewer.getSelection().isEmpty()) {
+
+            public void dragStart( DragSourceEvent event ) {
+               if(!getSelectedRows().isEmpty()) {
                    LocalSelectionTransfer.getTransfer()
-                           .setSelection( viewer.getSelection() );
-                   event.image = ((ITableLabelProvider)viewer
-                           .getLabelProvider())
-                           .getColumnImage( 
-                                            ((IStructuredSelection)viewer.getSelection())
+                           .setSelection( getSelectedRows() );
+                   event.image = labelProvider
+                           .getColumnImage(
+                                            ((IStructuredSelection)getSelectedRows())
                                             .getFirstElement(), 1 );
                    event.doit = true;
                } else
@@ -240,37 +243,37 @@ public class MoleculesEditor extends EditorPart implements
                 ISelection selection = LocalSelectionTransfer
                                             .getTransfer()
                                             .getSelection();
-                
+
                 if ( LocalSelectionTransfer
                                         .getTransfer()
                                         .isSupportedType( event.dataType )) {
-                    
+
                     event.data = selection;
-                    
-                    
+
+
                 } else {
-                IStructuredSelection selection1 = 
-                                  (IStructuredSelection) viewer.getSelection();
+                IStructuredSelection selection1 =
+                                  (IStructuredSelection) getSelectedRows();
                 List<EditorInputData> data = new ArrayList<EditorInputData>();
                 for(Object o : selection1.toList()) {
-                    MoleculesIndexEditorInput input = 
+                    MoleculesIndexEditorInput input =
                                   new MoleculesIndexEditorInput((SDFElement)o);
                     data.add( EditorInputTransfer
-                              .createEditorInputData( 
-                                      "net.bioclipse.cdk.ui.editors.jchempaint", 
+                              .createEditorInputData(
+                                      "net.bioclipse.cdk.ui.editors.jchempaint",
                                       input ));
                 }
                 event.data = data.toArray( new EditorInputData[0] );
                 }
-                
+
             }
 
             public void dragFinished( DragSourceEvent event ) {
             }
-            
+
         });
     }
-    
+
     private List<String> createHeaderFromSelection( IAdaptable element ) {
 
         ICDKMolecule molecule = null;
@@ -286,20 +289,20 @@ public class MoleculesEditor extends EditorPart implements
 
     void reactOnSelection( ISelection selection ) {
 
-        
+
         //if ( element instanceof ICDKMolecule )
 //            if (((IStructuredSelection)viewer.getSelection()).toList()
 //                                            .containsAll( selection.toList() ))
 //                return;
 //            else
         if(viewer != null)
-                viewer.setSelection(selection ,true);
+                setSelectedRows(selection);
     }
 
     @Override
     public void setFocus() {
 
-       viewer.getTable().setFocus();
+       viewer.setFocus();
 
     }
 
@@ -312,7 +315,7 @@ public class MoleculesEditor extends EditorPart implements
 //    public ISelection getSelection() {
 //
 //        return viewer.getSelection();
-//        
+//
 //    }
 //
 //    public void removeSelectionChangedListener( ISelectionChangedListener listener ) {
@@ -334,7 +337,7 @@ public class MoleculesEditor extends EditorPart implements
         Set<Object> propterties = ac.getProperties().keySet();
         propertyHeaders =
                 new ArrayList<String>( new LinkedHashSet( propterties ) );
-        Table tree = viewer.getTable();
+        Table tree = null;//viewer.getTable();
         int oldCount = tree.getColumnCount();
         // creates missing columns so that column count is
         // proptertyHeaders.size()+2
@@ -355,21 +358,21 @@ public class MoleculesEditor extends EditorPart implements
         logger.debug( "Selection has chaged" + this.getClass().getName() );
         logger.debug( part.toString() + this.getSite().getPart().toString());
         if(part != null && part.equals( this )) return;
-            viewer.setSelection( selection );
+            setSelectedRows( selection );
 //        if( part != null && part.equals( this )) return;
 //        if( selection == null || selection.isEmpty() ) {
 //            if(!viewer.getSelection().isEmpty())
 //                viewer.setSelection( selection );
 //            return;
-//        }           
+//        }
 //        if(selection instanceof IStructuredSelection)
 //            reactOnSelection( (IStructuredSelection) selection );
         //viewer.setSelection( selection );
     }
-    
+
     @Override
     public Object getAdapter( Class adapter ) {
-    
+
 //        if(IContentOutlinePage.class.equals( adapter )) {
 //            if(outlinePage == null) {
 //                outlinePage = new MoleculesOutlinePage();
@@ -381,13 +384,21 @@ public class MoleculesEditor extends EditorPart implements
     }
     public ISelection getSelection() {
         if(viewer != null)
-            return viewer.getSelection();
+            return getSelectedRows();
         else
             return StructuredSelection.EMPTY;
     }
-    
-    public TableViewer getViewer() {
-        return viewer;
+
+
+    private ISelection getSelectedRows() {
+        viewer.getSelection();
+        viewer.getTopRow();
+        
+        return StructuredSelection.EMPTY;
+        
     }
-    
+    private void setSelectedRows(ISelection selection) {
+        // mapping between selections and index
+        //viewer.setSelection(  );
+    }
 }

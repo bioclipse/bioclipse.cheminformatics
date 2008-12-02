@@ -13,31 +13,42 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Iterator;
-import java.util.Scanner;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
+import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor.Row;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
+import org.eclipse.swt.nebula.widgets.compositetable.IRowContentProvider;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
+import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IChemObject;
+import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.io.random.RandomAccessSDFReader;
 
 
 /**
  * @author arvid
  *
  */
-public class MoleculeTableContentProvider implements ILazyContentProvider {
+public class MoleculeTableContentProvider implements IRowContentProvider{
 
     Logger logger = Logger.getLogger( MoleculeTableContentProvider.class );
 
@@ -45,56 +56,37 @@ public class MoleculeTableContentProvider implements ILazyContentProvider {
     IFile file = null;
     IMoleculesEditorModel model = null;
     int childCount;
+    boolean readerReady = false;
+    RandomAccessSDFReader reader;
+
+
+    public void ready() {
+        readerReady = true;
+    }
+
     /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.ILazyContentProvider#updateElement(int)
      */
-    public void updateElement( int index ) {
-        if(model != null) {
-            viewer.replace( model.getMoleculeAt( index ), index );
-            int count = model.getNumberOfMolecules();
-            if( count > childCount) {
-                viewer.setItemCount( count );
-                childCount = count;
-            }
-            return;
-        }
-        Object element = null;
+
+    public ICDKMolecule getMoleculeAt(int index) {
+        Iterator<ICDKMolecule> iter;
         try {
-            Iterator<ICDKMolecule> iter = Activator.getDefault()
-            .getCDKManager().createMoleculeIterator( file );
+            iter = Activator.getDefault().getCDKManager()
+                   .createMoleculeIterator( file );
+
             ICDKMolecule molecule;
             int count = 0;
             while ( iter.hasNext() ) {
                 molecule = iter.next();
                 if ( count++ == index ) {
-                    element = molecule;
-                    break;
+                    return molecule;
                 }
             }
-            for(int i=0;i<10 &&iter.hasNext();i++,count++) {
-                iter.next();
-            }
-//            if ( iter.hasNext() ) {
-//                count += 1;
-//            }
-            if ( element != null )
-                viewer.replace( element, index );
-
-            if ( count > childCount ) {
-                viewer.setItemCount( count );
-                childCount = count;
-//                Display.getCurrent().asyncExec( new Runnable() {
-//                    public void run() {
-//                        viewer.refresh();
-//                    }
-//                });
-
-            }
-
         } catch ( CoreException e ) {
             // TODO Auto-generated catch block
-            LogUtils.debugTrace( logger, e );
+            e.printStackTrace();
         }
+        return null;
     }
 
     /* (non-Javadoc)
@@ -128,8 +120,10 @@ public class MoleculeTableContentProvider implements ILazyContentProvider {
         }
     }
 
-    private int calculateChildCount() {
-
+    public int numberOfEntries(int max) {
+        if(model != null) {
+            return model.getNumberOfMolecules();
+        }
         try {
             int count = 0;
             BufferedReader reader = new BufferedReader(
@@ -138,7 +132,10 @@ public class MoleculeTableContentProvider implements ILazyContentProvider {
             while ( (line = reader.readLine()) != null ) {
                 if ( line.contains( "$$$$" ) )
                     count++;
+                if(count >= max)
+                    break;
             }
+            reader.close();
             return count;
 
         } catch ( CoreException e ) {
@@ -151,34 +148,82 @@ public class MoleculeTableContentProvider implements ILazyContentProvider {
         return -1;
     }
 
-    public String getSDFPart( IFile file, int index ) throws CoreException,
-                                                             IOException {
+    public IFile getFile() {
+        return file;
+    }
+    public int init() {
+        if(file != null) {
+            IPath location = file.getLocation();
+            if (location != null) {
+               java.io.File file = location.toFile();
 
-        InputStream is = null;
-        try {
-            IFile sourceFile = file;
-            int count = 0;
-            is = sourceFile.getContents();
-            Scanner sc = new Scanner( is );
-            sc.useDelimiter( "\\${4}" );
-            String data;
-            while ( sc.hasNext() ) {
-                data = sc.next();
-                if ( count == index ) {
-                    if ( sc.hasNext() )
-                        childCount = count + 2;
-                    else
-                        childCount = count + 1;
-                    return data;
-                }
-                count++;
+               IChemObjectBuilder builder = DefaultChemObjectBuilder.getInstance();
+
+               try {
+
+                reader = new RandomAccessSDFReader(file,builder);
+                return reader.size();
+            } catch ( IOException e ) {
+                // TODO Auto-generated catch block
+                LogUtils.debugTrace( logger, e );
             }
-            childCount = count + 1;
 
-        } finally {
-            is.close();
+            }
         }
-        return null;
+        return -1;
+    }
+
+    public void refresh( CompositeTable sender,
+                         int currentObjectOffset,
+                         Control rowControl ) {
+
+        Row row = (Row) rowControl;
+        Control[] columns = row.getChildren();
+        Text index = (Text)columns[0];
+        JChemPaintWidget structure = (JChemPaintWidget) columns[1];
+        
+        index.setText( Integer.toString( currentObjectOffset+1));
+        IAtomContainer mol=null;
+        try {
+            if(model != null) {
+                Object o =model.getMoleculeAt( currentObjectOffset );
+                if(o instanceof IAdaptable) {
+                    mol = ((ICDKMolecule) ((IAdaptable)o).getAdapter( 
+                                       ICDKMolecule.class  )).getAtomContainer();
+                }
+            } else if(readerReady) {
+                IChemObject chemObject =reader.readRecord( currentObjectOffset );
+//                List<IAtomContainer> containers =                     ChemFileManipulator.getAllAtomContainers((IChemFile)chemObject);
+                IMolecule ret = (IMolecule) chemObject;
+                mol = ret;
+//                if (containers.size() > 1) {
+//                    IAtomContainer newContainer = chemObject.getBuilder()
+//                   .newAtomContainer();
+//                for (IAtomContainer container : containers) {
+//                    newContainer.add( container );
+//                }
+//                    mol = newContainer;
+//                }else {
+//                    if(containers.size() == 1) {
+//                        mol = containers.get( 0 );
+//                    }
+//                }
+                // TODO get a ICDKMolecules and assing it to mol
+                
+                
+            } else {
+                mol = this.getMoleculeAt( currentObjectOffset ).getAtomContainer();
+            }
+            
+            structure.setAtomContainer( mol );
+        } catch ( CoreException e ) {
+            // TODO Auto-generated catch block
+            LogUtils.debugTrace( logger, e );
+        } catch ( Exception e ) {
+            // TODO Auto-generated catch block
+            LogUtils.debugTrace( logger, e );
+        }
+
     }
 
 }
