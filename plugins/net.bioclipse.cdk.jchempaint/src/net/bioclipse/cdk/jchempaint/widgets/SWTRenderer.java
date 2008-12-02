@@ -1438,7 +1438,7 @@ public class SWTRenderer implements IJava2DRenderer {
 		}
 		catch (Exception exception) {
 			//System.out.println("Unable to reverse affine transformation");
-			System.exit(0);
+			
 		}
 		return new Point2d(ptDst.getX(), ptDst.getY());
 	}
