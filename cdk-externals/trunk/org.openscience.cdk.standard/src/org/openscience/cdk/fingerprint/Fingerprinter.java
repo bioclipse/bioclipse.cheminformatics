@@ -140,10 +140,10 @@ public class Fingerprinter implements IFingerprinter {
 		long after = System.currentTimeMillis();
 		logger.debug("time for aromaticity calculation: " + (after - before) + " milliseconds");
 		logger.debug("Finished Aromaticity Detection");
-		Map<String,String> paths = findPathes(container, searchDepth);
+		Set<String> paths = findPathes(container, searchDepth);
 		BitSet bitSet = new BitSet(size);
 
-        for (String path : paths.values()) {
+        for (String path : paths) {
             position = new java.util.Random(path.hashCode()).nextInt(size);
             logger.debug("Setting bit " + position + " for " + path);
             bitSet.set(position);
@@ -173,11 +173,8 @@ public class Fingerprinter implements IFingerprinter {
      * @param searchDepth The maximum path length desired
      * @return A Map of path strings, keyed on themselves
      */
-    protected Map<String,String> findPathes(IAtomContainer container, int searchDepth) {
-        Map<String,String> paths = new HashMap<String,String>();
-
-        List<StringBuffer> allPaths = new ArrayList<StringBuffer>();
-
+    protected Set<String> findPathes(IAtomContainer container, int searchDepth) {
+        Set<String> paths = new HashSet<String>();
         for (IAtom startAtom : container.atoms()) {
             for (int pathLength = 0; pathLength <= searchDepth; pathLength++) {
                 List<List<IAtom>> p = PathTools.getPathsOfLength(container, startAtom, pathLength);
@@ -198,18 +195,11 @@ public class Fingerprinter implements IFingerprinter {
                     StringBuffer revForm = new StringBuffer(sb);
                     revForm.reverse();
                     if (sb.toString().compareTo(revForm.toString()) <= 0)
-                        allPaths.add(sb);
-                    else allPaths.add(revForm);
+                        paths.add(sb.toString());
+                    else paths.add(revForm.toString());
                 }
             }
         }
-        // now lets clean stuff up
-        Set<String> cleanPath = new HashSet<String>();
-        for (StringBuffer s : allPaths) {
-            if (cleanPath.contains(s.toString()) || cleanPath.contains(s.reverse().toString())) continue;
-            else cleanPath.add(s.toString());
-        }
-        for (String s : cleanPath) paths.put(s, s);
         return paths;
     }
 
