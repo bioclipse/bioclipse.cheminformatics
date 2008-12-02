@@ -673,6 +673,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
         // construct a new Ring that contains the highlighted bond an its two atoms
         IRing newRing = createAttachRing(sharedAtoms, 6, "C");
+        makeRingAromatic(newRing);
         ringPlacer.placeFusedRing(newRing, sharedAtoms, sharedAtomsCenter,
                                   ringCenterVector, bondLength);
         if (bond.getOrder() == IBond.Order.SINGLE) {
