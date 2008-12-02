@@ -377,6 +377,14 @@ public interface ICDKManager extends IBioclipseManager {
     public int numberOfEntriesInSDF( String filePath );
     
     /**
+     * @param filePath
+     */
+    @PublishedMethod ( params = "String filePath",
+                       methodSummary = "Creates a index file for the SD-file." )
+    public void createSDFileIndex( String filePath);
+    
+    public void createSDFileIndex(IFile file, IProgressMonitor monitor);
+    /**
      * Reads files and extracts conformers if available.
      * @param path the full path to the file
      * @return a list of molecules that may have multiple conformers

@@ -16,15 +16,18 @@ package net.bioclipse.cdk.business;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -41,6 +44,7 @@ import net.bioclipse.core.jobs.Job;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -80,6 +84,7 @@ import org.openscience.cdk.io.formats.IResourceFormat;
 import org.openscience.cdk.io.formats.SMILESFormat;
 import org.openscience.cdk.io.iterator.IteratingMDLConformerReader;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
+import org.openscience.cdk.io.random.RandomAccessReader;
 import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
@@ -693,12 +698,11 @@ public class CDKManager implements ICDKManager {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}
-
+		long tStart = System.nanoTime();
 		int num = 0;
 		try {
 			BufferedInputStream counterStream = new BufferedInputStream(
-			    file.getContents()
-			);
+			    file.getContents());
 			int c = 0;
 			while (c != -1) {
 				c = counterStream.read();
@@ -723,9 +727,93 @@ public class CDKManager implements ICDKManager {
 					"Could not determine the number of molecules to read, because: "
 							+ exception.getMessage(), exception);
 		}
+		logger.debug( "numberOfEntriesInSDF took "+(int)((System.nanoTime()-tStart)/1e6)+" to complete");
 		return num;
 	}
 
+
+	private static class Record {
+      public Record(int s, int l) {
+          start =s;
+          length = l;
+      }
+      int start;
+      int length;
+  }
+	
+	public void createSDFileIndex( String path ) {
+
+        createSDFileIndex( ResourcePathTransformer.getInstance()
+                .transform( path ),null );
+    }
+
+    public void createSDFileIndex( IFile file , IProgressMonitor monitor) {
+        if (monitor == null) {
+            monitor = new NullProgressMonitor();
+          }
+
+        if ( file.getLocation() != null ) {
+            try {
+                long tStart = System.nanoTime();
+                File indexFile = RandomAccessReader.getIndexFile( file
+                                 .getLocation().toOSString() );
+                if ( indexFile.exists() )
+                    return;
+                
+                long size = EFS.getStore( file.getLocationURI() ).fetchInfo()
+                .getLength();
+                monitor.beginTask( "Creating SD-file index", (int)size );
+ 
+                List<Record> indexList = new LinkedList<Record>();
+
+                BufferedInputStream cs = new BufferedInputStream( file
+                        .getContents(), 8192 );
+
+                int num = 0;
+                int pos = 0;
+                int start = 0;
+                int c = 0;
+                int dollars = 0;
+                while ( (c = cs.read()) != -1 ) {
+                    pos++;                    
+                    if ( c == '$' ) {
+                        dollars++;
+                        if ( dollars == 4 ) {
+                            indexList.add( new Record( start, pos - start ) );
+                            
+                            monitor.worked( pos-start );
+                            dollars = 0;
+                            start = pos + 1;
+                            num++;
+                        }
+                    } else
+                        dollars = 0;
+
+                }
+                cs.close();
+                PrintStream os = new PrintStream( indexFile );
+                os.println( "1" );
+                os.println( file.getLocation().toOSString() );
+                os.println( pos );
+                os.println( num );
+                for ( Record rec : indexList ) {
+                    os.printf( "%d\t%d\t%d\n", rec.start, rec.length, -1 );
+                }
+                os.println( num );
+                os.println( file.getLocation().toOSString() );
+                os.flush();
+                os.close();
+                logger.debug( "Created Index in "
+                              + (int) ((System.nanoTime() - tStart) / 1e6)
+                              + "ms" );
+            } catch ( IOException e ) {
+                LogUtils.debugTrace( logger, e );
+            } catch ( CoreException e ) {
+                LogUtils.debugTrace( logger, e );
+            }
+        }
+    }
+	
 	@Job
 	public int numberOfEntriesInSDF(String filePath) {
 		return numberOfEntriesInSDF(ResourcePathTransformer.getInstance()
