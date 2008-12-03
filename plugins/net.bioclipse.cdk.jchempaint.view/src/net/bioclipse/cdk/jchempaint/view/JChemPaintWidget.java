@@ -15,6 +15,8 @@ import java.util.Collection;
 import javax.vecmath.Point2d;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Transform;
@@ -36,7 +38,7 @@ import org.openscience.cdk.renderer.generators.IGenerator;
  */
 public class JChemPaintWidget extends Canvas {
 
-    public static int MARGIN = 20;
+    int margin = 20;
 
     IAtomContainer  atomContainer;
     Renderer2DModel renderer2DModel;
@@ -47,6 +49,11 @@ public class JChemPaintWidget extends Canvas {
     public JChemPaintWidget(Composite parent, int style) {
 
         super( parent, style );
+        parent.addDisposeListener( new DisposeListener() {
+            public void widgetDisposed( DisposeEvent e ) {
+                disposeView();
+            }
+        });
         setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
         fontManager = new SWTFontManager(this.getDisplay());
         currentTransform = new Transform(getDisplay());
@@ -81,7 +88,7 @@ public class JChemPaintWidget extends Canvas {
 
         if ( atomContainer == null )
             return;
-        renderer.setBounds( new Rectangle2D.Double(0,0,this.getSize().x,this.getSize().y ));
+        renderer.setBounds( new Rectangle2D.Double(margin,margin,this.getSize().x-margin*2,this.getSize().y-margin*2 ));
         
         SWTRenderer visitor = new SWTRenderer( event.gc,fontManager, renderer2DModel);
         renderer.paintMolecule( atomContainer, visitor );
@@ -152,10 +159,21 @@ public class JChemPaintWidget extends Canvas {
         };
     }
 
-    @Override
-    public void dispose() {
+    private void disposeView() {
         currentTransform.dispose();
         fontManager.dispose();
-        super.dispose();
     }
+
+    
+    public int getMargin() {
+    
+        return margin;
+    }
+
+    
+    public void setMargin( int margin ) {
+    
+        this.margin = margin;
+    }
+    
 }
