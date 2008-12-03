@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
@@ -60,6 +61,16 @@ public abstract class AbstractJChemPaintHandler extends AbstractHandler {
     
     protected IChemModelRelay getChemModelRelay( ExecutionEvent event ) {
 
+        IEditorPart editor = HandlerUtil.getActiveEditor( event );
+
+        if ( (editor instanceof JChemPaintEditor) ) {
+            return ((JChemPaintEditor) editor).getControllerHub();
+        } else {
+            return null;
+        }
+    }
+    
+    protected ControllerHub getControllerHub(ExecutionEvent event) {
         IEditorPart editor = HandlerUtil.getActiveEditor( event );
 
         if ( (editor instanceof JChemPaintEditor) ) {
