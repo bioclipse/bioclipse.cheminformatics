@@ -41,6 +41,7 @@ public interface IChemModelRelay {
     public abstract IControllerModel getController2DModel();
     public abstract IJava2DRenderer getIJava2DRenderer();
     public abstract IChemModel getIChemModel();
+    public void setChemModel(IChemModel model);
     public abstract IAtom getClosestAtom(Point2d worldCoord);
     public abstract IBond getClosestBond(Point2d worldCoord);
     public abstract void updateView();

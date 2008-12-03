@@ -110,7 +110,10 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		return chemModel;
 	}
 
-	
+  public void setChemModel(IChemModel model) {
+      this.chemModel = model;
+    }
+
 	/**
 	 * Unregister all general IController2DModules.
 	 */
