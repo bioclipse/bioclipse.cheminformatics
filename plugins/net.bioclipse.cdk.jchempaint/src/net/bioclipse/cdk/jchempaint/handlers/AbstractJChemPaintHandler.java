@@ -39,7 +39,7 @@ public abstract class AbstractJChemPaintHandler extends AbstractHandler {
     protected IAtom getSingleSelectedAtom( ExecutionEvent event ) {
         ISelection selection = HandlerUtil.getCurrentSelection( event );
         if(selection instanceof IStructuredSelection ) {
-            Object element = ((IStructuredSelection)selection).getFirstElement();
+            Object element = ((IStructuredSelection)selection).toArray()[1];
             if(element instanceof IAtom) {
                 return (IAtom)element;
             }

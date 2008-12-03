@@ -122,9 +122,9 @@ public class JChemPaintEditor extends EditorPart{
 		
 		
 		MenuManager menuMgr = new MenuManager();
-	  menuMgr.add(
-	new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-	  getSite().registerContextMenu(menuMgr, widget);
+	  menuMgr.add( new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+	  getSite().registerContextMenu( "net.bioclipse.cdk.ui.editors.jchempaint.menu",
+	                                 menuMgr, widget);
 	    
 	  //Control control = lViewer.getControl();
 	  Menu menu = menuMgr.createContextMenu(widget);

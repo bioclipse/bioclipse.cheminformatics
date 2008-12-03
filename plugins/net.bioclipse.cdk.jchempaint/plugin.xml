@@ -5,10 +5,30 @@
          point="org.eclipse.ui.editors">
       <editor
             class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
-            default="true"
+            default="false"
             icon="icons/editor/triangle.gif"
             id="net.bioclipse.cdk.ui.editors.jchempaint"
             name="JChemPaintEditor">
+         <contentTypeBinding
+               contentTypeId="net.bioclipse.contenttypes.cml.singleMolecule2d">
+         </contentTypeBinding>
+      </editor>
+      <editor
+            class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
+            default="true"
+            icon="icons/doc_mol_2d.png"
+            id="net.bioclipse.cdk.ui.editors.jchempaint.MDLMolfileEditor"
+            name="MDLMolfileEditor 1.2">
+         <contentTypeBinding
+               contentTypeId="net.bioclipse.contenttypes.mdlMolFile2D">
+         </contentTypeBinding>
+      </editor>
+      <editor
+            class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
+            default="true"
+            icon="icons/doc_mol_2d.png"
+            id="net.bioclipse.cdk.ui.editors.jchempaint.CMLfileEditor"
+            name="CMLfileEditor 1.2">
          <contentTypeBinding
                contentTypeId="net.bioclipse.contenttypes.cml.singleMolecule2d">
          </contentTypeBinding>
@@ -261,15 +281,20 @@
              <with
                    variable="activeMenuSelection">
                 <iterate>
-                   <instanceof
-                         value="org.openscience.cdk.interfaces.IAtom">
-                   </instanceof>
+                   <or>
+                      <instanceof
+                            value="org.openscience.cdk.interfaces.IAtom">
+                      </instanceof>
+                      <instanceof
+                            value="org.openscience.cdk.interfaces.IAtomContainer">
+                      </instanceof>
+                   </or>
                 </iterate>
              </with>
           </visibleWhen>
        </menu>
        <separator
-             name="net.bioclipse.cdk.jchempaint.separator1"
+             name="net.bioclipse.cdk.jchempaint.atomspecific"
              visible="true">
        </separator>
        <command
@@ -281,9 +306,14 @@
              <with
                    variable="activeMenuSelection">
                 <iterate>
-                   <instanceof
-                         value="org.openscience.cdk.interfaces.IAtom">
-                   </instanceof>
+                   <or>
+                      <instanceof
+                            value="org.openscience.cdk.interfaces.IAtom">
+                      </instanceof>
+                      <instanceof
+                            value="org.openscience.cdk.interfaces.IAtomContainer">
+                      </instanceof>
+                   </or>
                 </iterate>
              </with>
           </visibleWhen>
@@ -297,15 +327,20 @@
              <with
                    variable="activeMenuSelection">
                 <iterate>
-                   <instanceof
-                         value="org.openscience.cdk.interfaces.IAtom">
-                   </instanceof>
+                   <or>
+                      <instanceof
+                            value="org.openscience.cdk.interfaces.IAtom">
+                      </instanceof>
+                      <instanceof
+                            value="org.openscience.cdk.interfaces.IAtomContainer">
+                      </instanceof>
+                   </or>
                 </iterate>
              </with>
           </visibleWhen>
        </command>
        <separator
-             name="net.bioclipse.cdk.jchempaint.separator3">
+             name="net.bioclipse.cdk.jchempaint.managerActions">
        </separator>
        <command
              commandId="net.bioclipse.cdk.jchempaint.manager.action"
@@ -338,9 +373,14 @@
              <with
                    variable="activeMenuSelection">
                 <iterate>
-                   <instanceof
-                         value="org.openscience.cdk.interfaces.IAtom">
-                   </instanceof>
+                   <or>
+                      <instanceof
+                            value="org.openscience.cdk.interfaces.IAtom">
+                      </instanceof>
+                      <instanceof
+                            value="org.openscience.cdk.interfaces.IAtomContainer">
+                      </instanceof>
+                   </or>
                 </iterate>
              </with>
           </visibleWhen>
@@ -362,6 +402,9 @@
       id="net.bioclipse.cdk.jchempaint.business.JChemPaintManager"
       service="net.bioclipse.cdk.jchempaint.business.JChemPaintManagerFactory">
     </scriptContribution>
+  </extension>
+  <extension
+        point="org.eclipse.ui.menus">
   </extension>
  
 </plugin>

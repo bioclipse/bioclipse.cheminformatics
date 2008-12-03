@@ -52,6 +52,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
     ISelection theSelection = StructuredSelection.EMPTY;
     IAtom prevHighlightedAtom;
     IBond prevHighlightedBond;
+    
+    ICDKMolecule model;
 
     ControllerHub hub;
     ControllerModel c2dm;
@@ -117,6 +119,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
             ICDKMolecule molecule = (ICDKMolecule)((IAdaptable)element)
             .getAdapter( ICDKMolecule.class );
             if(molecule != null ) {
+                model = molecule;
                 setAtomContainer( molecule.getAtomContainer());
             }
             else setAtomContainer( null );
@@ -163,9 +166,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
         if(atom != null)
             element = atom;
         if(element == null)
-            return StructuredSelection.EMPTY;
+            return new StructuredSelection(atomContainer);
         else
-            return new StructuredSelection(element);
+            return new StructuredSelection(new Object[] {atomContainer,element});
     }
 
     public void removeSelectionChangedListener(

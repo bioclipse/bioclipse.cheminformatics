@@ -40,7 +40,7 @@ public class JChemPaintWidget extends Canvas {
 
     int margin = 20;
 
-    IAtomContainer  atomContainer;
+    protected IAtomContainer  atomContainer;
     Renderer2DModel renderer2DModel;
     Transform currentTransform;
     Renderer renderer;
