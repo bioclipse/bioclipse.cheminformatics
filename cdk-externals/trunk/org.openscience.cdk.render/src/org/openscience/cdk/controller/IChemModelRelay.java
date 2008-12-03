@@ -27,6 +27,7 @@ package org.openscience.cdk.controller;
 import javax.vecmath.Point2d;
 
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.renderer.IJava2DRenderer;
@@ -43,6 +44,31 @@ public interface IChemModelRelay {
     public abstract IAtom getClosestAtom(Point2d worldCoord);
     public abstract IBond getClosestBond(Point2d worldCoord);
     public abstract void updateView();
+    
+    /**
+     * Adds an temporary atom which might be cleared later, when the final
+     * atom is added. Controllers can use this to draw temporary atoms, for
+     * example while drawing new bonds.
+     *  
+     * @param atom atom to add as phantom
+     */
+    public void addPhantomAtom(IAtom atom);
+    /**
+     * Adds an temporary bond which might be cleared later, when the final
+     * bond is added. Controllers can use this to draw temporary bonds, for
+     * example while drawing new bonds.
+     *  
+     * @param bond bond to add as phantom
+     */
+    public void addPhantomBond(IBond bond);
+    /**
+     * Returns an IAtomContainer containing all phantom atoms and bonds.
+     */
+    public IAtomContainer getPhantoms();
+    /**
+     * Deletes all temporary atoms.
+     */
+    public void clearPhantoms();
 
     /* Editing actions for the complete model */
     public abstract void updateImplicitHydrogenCounts();

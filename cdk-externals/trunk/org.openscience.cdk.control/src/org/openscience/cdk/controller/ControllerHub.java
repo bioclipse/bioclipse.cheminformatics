@@ -81,6 +81,8 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	private IControllerModule activeDrawModule;
 	private final static RingPlacer ringPlacer = new RingPlacer();
 	
+	private IAtomContainer phantoms;
+	
 	public ControllerHub(IControllerModel controllerModel,
 		                   IJava2DRenderer renderer,
 		                   IChemModel chemModel,
@@ -89,6 +91,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		this.renderer = renderer;
 		this.chemModel = chemModel;
 		this.eventRelay = eventRelay;
+		this.phantoms = chemModel.getBuilder().newAtomContainer();
 		
 		generalModules = new ArrayList<IControllerModule>();
 		
@@ -701,5 +704,21 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         IAtomContainer sourceContainer = ChemModelManipulator
             .getRelevantAtomContainer(chemModel, bond);
         sourceContainer.removeBond(bond);
+    }
+
+    public void addPhantomAtom( IAtom atom ) {
+        this.phantoms.addAtom(atom);
+    }
+
+    public void addPhantomBond( IBond bond ) {
+        this.phantoms.addBond(bond);
+    }
+
+    public void clearPhantoms() {
+        this.phantoms.removeAllElements();
+    }
+
+    public IAtomContainer getPhantoms() {
+        return this.phantoms;
     }
 }
