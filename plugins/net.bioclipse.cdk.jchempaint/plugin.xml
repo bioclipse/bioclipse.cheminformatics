@@ -83,6 +83,16 @@
              optional="false">
        </commandParameter>
     </command>
+    <command
+          defaultHandler="net.bioclipse.cdk.jchempaint.handlers.ChangeModuleHandler"
+          id="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
+          name="ChangeModule">
+       <commandParameter
+             id="jcp.controller.module"
+             name="Controller Module"
+             optional="false">
+       </commandParameter>
+    </command>
  </extension>
  <extension
        point="org.eclipse.ui.menus">
@@ -91,8 +101,8 @@
        <toolbar
              id="net.bioclipse.cdk.ui.jchempaint.toolbar">
           <command
-                commandId="net.bioclipse.cdk.jchempaint.command.add.element"
-                icon="icons/editor/new_atom_bond.gif"
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
+                icon="icons/atom_unknown.png"
                 style="radio">
              <visibleWhen
                    checkEnabled="true">
@@ -103,10 +113,14 @@
                    </equals>
                 </with>
              </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="AddAtomModule">
+             </parameter>
           </command>
           <command
-                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.eraser"
-                icon="icons/editor/eraser.gif"
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
+                icon="icons/editor/new_atom_bond.gif"
                 style="radio">
              <visibleWhen
                    checkEnabled="true">
@@ -117,6 +131,10 @@
                    </equals>
                 </with>
              </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="DrawBondModule">
+             </parameter>
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.lasso"
@@ -133,7 +151,7 @@
              </visibleWhen>
           </command>
           <command
-                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.incharge"
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
                 icon="icons/editor/charge_plus.gif"
                 style="radio">
              <visibleWhen
@@ -145,6 +163,10 @@
                    </equals>
                 </with>
              </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="ChangeFormalChargeModule">
+             </parameter>
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.deccharge"
@@ -161,7 +183,7 @@
              </visibleWhen>
           </command>
           <command
-                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.move"
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
                 icon="icons/editor/move.gif"
                 style="radio">
              <visibleWhen
@@ -173,11 +195,15 @@
                    </equals>
                 </with>
              </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="MoveModule">
+             </parameter>
           </command>
        </toolbar>
     </menuContribution>
     <menuContribution
-          locationURI="popup:net.bioclipse.cdk.ui.editors.jchempaint">
+          locationURI="popup:net.bioclipse.cdk.ui.editors.jchempaint.menu">
        <menu
              label="Add Element">
           <menu
