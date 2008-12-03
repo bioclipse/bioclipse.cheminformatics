@@ -11,6 +11,7 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.editor;
 
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -20,6 +21,9 @@ import org.eclipse.swt.widgets.Listener;
 import org.openscience.cdk.controller.IMouseEventRelay;
 
 public class SWTMosueEventRelay implements MouseListener,MouseMoveListener,Listener{
+    
+    Logger logger = Logger.getLogger( SWTMosueEventRelay.class );
+    
 	private int dragFromX = 0;
 	private int dragFromY = 0;
 	private boolean isDraging=false;
@@ -32,10 +36,7 @@ public class SWTMosueEventRelay implements MouseListener,MouseMoveListener,Liste
 	public void handleEvent(Event event) {
         switch (event.type) {
         case SWT.MouseDown:
-        	relay.mouseClickedDown(event.x, event.y);
-        	dragFromX=event.x;
-        	dragFromY=event.y;
-        	isDraging=false;
+        	logger.debug( "SWT.MouseDown, should not get here" );
           break;
         case SWT.MouseMove:
         	if(isDraging){
@@ -67,9 +68,11 @@ public class SWTMosueEventRelay implements MouseListener,MouseMoveListener,Liste
 
 	public void mouseDown(MouseEvent event) {
 		relay.mouseClickedDown(event.x, event.y);
-    	dragFromX=event.x;
-    	dragFromY=event.y;
-    	isDraging=true;
+		if( ((MouseEvent)event).button == 1) {
+        dragFromX=event.x;
+        dragFromY=event.y;
+        isDraging=true;
+    }
 	}
 
 	public void mouseUp(MouseEvent event) {
