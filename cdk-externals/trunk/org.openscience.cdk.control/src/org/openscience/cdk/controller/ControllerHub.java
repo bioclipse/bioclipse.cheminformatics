@@ -696,4 +696,10 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
             }
         }
     }
+
+    public void removeBond(IBond bond) {
+        IAtomContainer sourceContainer = ChemModelManipulator
+            .getRelevantAtomContainer(chemModel, bond);
+        sourceContainer.removeBond(bond);
+    }
 }
