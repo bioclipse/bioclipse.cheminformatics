@@ -11,27 +11,21 @@
  *     Ola Spjuth                      - minor fixes
  *     Egon Willighagen                - adapted for the new renderer from CDK
  *******************************************************************************/
-package net.bioclipse.cdk.ui.views;
+package net.bioclipse.cdk.jchempaint.view;
 
 
 
-import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.ui.Activator;
-import net.bioclipse.cdk.ui.widgets.JChemPaintWidget;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.AtomIndexSelection;
 import net.bioclipse.core.domain.IChemicalSelection;
-import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISelectionListener;
@@ -41,13 +35,11 @@ import org.eclipse.ui.part.ViewPart;
 import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.Molecule;
-import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
-import org.openscience.cdk.smiles.SmilesParser;
 
 /**
  * 2D Rendering widget using the new Java2D based JChemPaint renderer.
@@ -110,8 +102,11 @@ public class Java2DRendererView extends ViewPart
             
             Object obj = ssel.getFirstElement();
             
+            if( obj instanceof IAtomContainer) {
+                setAtomContainer( (IAtomContainer) obj );
+            }
             //If we have an ICDKMolecule, just get the AC
-            if (obj instanceof CDKMolecule) {
+            else if (obj instanceof ICDKMolecule) {
                 CDKMolecule mol = (CDKMolecule) obj;
                 if (mol.getAtomContainer()==null){
                     logger.debug("CDKMolecule but can't get AtomContainer.");
@@ -191,7 +186,7 @@ public class Java2DRendererView extends ViewPart
                             selectedMols.addAtom( molecule.getAtom( selindices[i] ));
 //                            System.out.println(i);
                         }
-                        canvasView.getRendererModel().setExternalSelectedPart( selectedMols );
+                        canvasView.getRenderer2DModel().setExternalSelectedPart( selectedMols );
                         canvasView.redraw();
                     }
                     
