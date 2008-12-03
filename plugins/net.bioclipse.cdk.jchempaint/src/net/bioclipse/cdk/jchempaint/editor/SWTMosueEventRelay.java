@@ -26,7 +26,7 @@ public class SWTMosueEventRelay implements MouseListener,MouseMoveListener,Liste
     
 	private int dragFromX = 0;
 	private int dragFromY = 0;
-	private boolean isDraging=false;
+	private boolean isDragging = false;
 	private IMouseEventRelay relay;
 	
 	public SWTMosueEventRelay(IMouseEventRelay relay) {
@@ -39,7 +39,7 @@ public class SWTMosueEventRelay implements MouseListener,MouseMoveListener,Liste
         	logger.debug( "SWT.MouseDown, should not get here" );
           break;
         case SWT.MouseMove:
-        	if(isDraging){
+        	if(isDragging){
         		relay.mouseDrag(dragFromX,dragFromY, event.x, event.y);
         		dragFromX=event.x;
         		dragFromY=event.y;
@@ -48,7 +48,7 @@ public class SWTMosueEventRelay implements MouseListener,MouseMoveListener,Liste
         	break;
         case SWT.MouseUp:
         	relay.mouseClickedUp(event.x, event.y);
-        	isDraging=false;
+        	isDragging=false;
           break;
         case SWT.MouseDoubleClick:
         	relay.mouseClickedDouble(event.x, event.y);
@@ -71,17 +71,17 @@ public class SWTMosueEventRelay implements MouseListener,MouseMoveListener,Liste
 		if( ((MouseEvent)event).button == 1) {
         dragFromX=event.x;
         dragFromY=event.y;
-        isDraging=true;
+        isDragging=true;
     }
 	}
 
 	public void mouseUp(MouseEvent event) {
 		relay.mouseClickedUp(event.x, event.y);
-    	isDraging=false;
+    	isDragging=false;
 	}
 
 	public void mouseMove(MouseEvent event) {
-		if(isDraging){
+		if(isDragging){
     		relay.mouseDrag(dragFromX,dragFromY, event.x, event.y);
     		dragFromX=event.x;
     		dragFromY=event.y;
