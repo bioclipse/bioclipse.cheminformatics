@@ -22,13 +22,16 @@ package org.openscience.cdk.renderer.generators;
 
 import java.awt.Color;
 
+import javax.vecmath.Point2d;
+
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.AtomSymbolElement;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
+import org.openscience.cdk.renderer.elements.RectangleElement;
 import org.openscience.cdk.validate.ProblemMarker;
 
 /**
@@ -36,9 +39,9 @@ import org.openscience.cdk.validate.ProblemMarker;
  */
 public class BasicAtomGenerator implements IGenerator{
 
-	protected Renderer2DModel model; 
+	protected RendererModel model;
 	
-	public BasicAtomGenerator(Renderer2DModel r2dm) {
+	public BasicAtomGenerator(RendererModel r2dm) {
 		this.model = r2dm;
 	}
 
@@ -56,19 +59,33 @@ public class BasicAtomGenerator implements IGenerator{
 
 	public IRenderingElement generate(IAtomContainer ac, IAtom atom) {
 		// FIXME: pseudoatom from paintAtom
-
+	    if (atom == null || atom.getPoint2d() == null)
+	      return null;
+	    
 		if (isHydrogen(atom) && !this.model.getShowExplicitHydrogens()) {
-			return null;// don't draw hydrogen
+		    // don't draw hydrogen
+			return null; 
 		}
 		
-		if (isCarbon(atom)) {
-			if (!showCarbon(atom, ac)) {
-				return null;// draw carbon
-			}
+		if (isCarbon(atom) && !showCarbon(atom, ac)) {
+		    // don't draw carbon
+		    return null;
+		}
+		
+		if (this.model.getIsCompact()) {
+		    return this.generateCompactElement(atom);
 		}
 		
 		int alignment = GeometryTools.getBestAlignmentForLabelXY(ac, atom);
 		return generateElements(atom, alignment);
+	}
+	
+	public IRenderingElement generateCompactElement(IAtom atom) {
+	    Point2d p = atom.getPoint2d();
+	    double r = 0.1;
+	    double d = 2 * r;
+	    return new RectangleElement(
+	            p.x - r, p.y - r, d, d, true, this.getColorForAtom(atom));
 	}
 
 	public IRenderingElement generateElements(IAtom atom, int alignment) {

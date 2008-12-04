@@ -28,247 +28,326 @@
  */
 package org.openscience.cdk.controller;
 
+import java.io.Serializable;
+import java.util.HashMap;
+
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
 
+import org.openscience.cdk.interfaces.IBond;
 
 /**
- * @cdk.module  control
- * @cdk.svnrev  $Revision$
+ * @cdk.module control
+ * @cdk.svnrev $Revision$
  */
-public class ControllerModel implements java.io.Serializable, Cloneable, IControllerModel
-{
-	
+public class ControllerModel implements Serializable, Cloneable, IControllerModel {
+
     private static final long serialVersionUID = 9007159812273128989L;
-    	
-	private boolean snapToGridAngle = true;
-	private int snapAngle = 15;
-	
-	private boolean snapToGridCartesian = true;
-	private int snapCartesian = 10;	
-	
-	private String defaultElementSymbol = "C";
-	private String drawElement = "C";
-    private String[] commonElements = { "C", "O", "N", "H", "P", "S" };
 
-	private double bondPointerLength = 20;
-	private double ringPointerLength = 20;
+    private ControllerParameters parameters;
 
-    private boolean autoUpdateImplicitHydrogens = false;
-	private UndoManager undoManager;
-	private UndoableEditSupport undoSupport;
-	//for controlling, if the structure or substructural parts might be moved
-	private boolean isMovingAllowed = true;
+    private UndoManager undoManager;
+    
+    private UndoableEditSupport undoSupport;
+    
+    private HashMap<Object, Object> merge = new HashMap<Object, Object>();
     
     public ControllerModel() {
+        this.parameters = new ControllerParameters();
         undoManager = new UndoManager();
         undoManager.setLimit(100);
         undoSupport = new UndoableEditSupport();
         undoSupport.addUndoableEditListener(new UndoAdapter(undoManager));
     }
-
-	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#getSnapToGridAngle()
+    
+    /**
+     * This is the central facility for handling "merges" of atoms. A merge
+     * occures if during moving atoms an atom is in Range of another atom. These
+     * atoms are then put into the merge map as a key-value pair. During the
+     * move, the atoms are then marked by a circle and on releasing the mouse
+     * they get actually merged, meaning one atom is removed and bonds pointing
+     * to this atom are made to point to the atom it has been marged with.
+     * 
+     * @return Returns the merge.map
+     * 
+     *         FIXME: this belongs in the controller model... this is not about
+     *         rendering, it's about editing (aka controlling)
      */
-	public boolean getSnapToGridAngle()
-	{
-		return this.snapToGridAngle;
-	}
+    public HashMap<Object, Object> getMerge() {
+        return merge;
+    }
+    
+    
+    public IBond.Order getMaxOrder() {
+        return this.parameters.getMaxOrder();
+    }
+    
+    public void setMaxOrder(IBond.Order maxOrder) {
+        this.parameters.setMaxOrder(maxOrder);
+    }
 
-    /* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#getAutoUpdateImplicitHydrogens()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.openscience.cdk.controller.IController2DModel#getSnapToGridAngle()
+     */
+    public boolean getSnapToGridAngle() {
+        return this.parameters.isSnapToGridAngle();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @seeorg.openscience.cdk.controller.IController2DModel#
+     * getAutoUpdateImplicitHydrogens()
      */
     public boolean getAutoUpdateImplicitHydrogens() {
-        return this.autoUpdateImplicitHydrogens;
+        return this.parameters.isAutoUpdateImplicitHydrogens();
     }
-    
-    /* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#setAutoUpdateImplicitHydrogens(boolean)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @seeorg.openscience.cdk.controller.IController2DModel#
+     * setAutoUpdateImplicitHydrogens(boolean)
      */
     public void setAutoUpdateImplicitHydrogens(boolean update) {
-        this.autoUpdateImplicitHydrogens = update;
+        this.parameters.setAutoUpdateImplicitHydrogens(update);
     }
 
-
-	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#setSnapToGridAngle(boolean)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.openscience.cdk.controller.IController2DModel#setSnapToGridAngle(
+     * boolean)
      */
-	public void setSnapToGridAngle(boolean snapToGridAngle)
-	{
-		this.snapToGridAngle = snapToGridAngle;
-	}
+    public void setSnapToGridAngle(boolean snapToGridAngle) {
+        this.parameters.setSnapToGridAngle(snapToGridAngle);
+    }
 
-	
-
-	/* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.openscience.cdk.controller.IController2DModel#getSnapAngle()
      */
-	public int getSnapAngle()
-	{
-		return this.snapAngle;
-	}
+    public int getSnapAngle() {
+        return this.parameters.getSnapAngle();
+    }
 
-
-	/* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.openscience.cdk.controller.IController2DModel#setSnapAngle(int)
      */
-	public void setSnapAngle(int snapAngle)
-	{
-		this.snapAngle = snapAngle;
-	}
+    public void setSnapAngle(int snapAngle) {
+        this.parameters.setSnapAngle(snapAngle);
+    }
 
-	
-
-	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#getSnapToGridCartesian()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.openscience.cdk.controller.IController2DModel#getSnapToGridCartesian
+     * ()
      */
-	public boolean getSnapToGridCartesian()
-	{
-		return this.snapToGridCartesian;
-	}
+    public boolean getSnapToGridCartesian() {
+        return this.parameters.isSnapToGridCartesian();
+    }
 
-
-	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#setSnapToGridCartesian(boolean)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.openscience.cdk.controller.IController2DModel#setSnapToGridCartesian
+     * (boolean)
      */
-	public void setSnapToGridCartesian(boolean snapToGridCartesian)
-	{
-		this.snapToGridCartesian = snapToGridCartesian;
-	}
+    public void setSnapToGridCartesian(boolean snapToGridCartesian) {
+        this.parameters.setSnapToGridCartesian(snapToGridCartesian);
+    }
 
-	
-
-	/* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.openscience.cdk.controller.IController2DModel#getSnapCartesian()
      */
-	public int getSnapCartesian()
-	{
-		return this.snapCartesian;
-	}
+    public int getSnapCartesian() {
+        return this.parameters.getSnapCartesian();
+    }
 
-
-	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#setSnapCartesian(int)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.openscience.cdk.controller.IController2DModel#setSnapCartesian(int)
      */
-	public void setSnapCartesian(int snapCartesian)
-	{
-		this.snapCartesian = snapCartesian;
-	}
+    public void setSnapCartesian(int snapCartesian) {
+        this.parameters.setSnapCartesian(snapCartesian);
+    }
 
-    
-	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#getDefaultElementSymbol()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.openscience.cdk.controller.IController2DModel#getDefaultElementSymbol
+     * ()
      */
-	public String getDefaultElementSymbol() {
-		return this.defaultElementSymbol;
-	}
+    public String getDefaultElementSymbol() {
+        return this.parameters.getDefaultElementSymbol();
+    }
 
-
-	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#setDefaultElementSymbol(java.lang.String)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.openscience.cdk.controller.IController2DModel#setDefaultElementSymbol
+     * (java.lang.String)
      */
-	public void setDefaultElementSymbol(String defaultElementSymbol)
-	{
-		this.defaultElementSymbol = defaultElementSymbol;
-	}
+    public void setDefaultElementSymbol(String defaultElementSymbol) {
+        this.parameters.setDefaultElementSymbol(defaultElementSymbol);
+    }
 
-	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#getBondPointerLength()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.openscience.cdk.controller.IController2DModel#getBondPointerLength()
      */
-	public double getBondPointerLength()
-	{
-		return this.bondPointerLength;
-	}
+    public double getBondPointerLength() {
+        return this.parameters.getBondPointerLength();
+    }
 
-
-	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#setBondPointerLength(double)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.openscience.cdk.controller.IController2DModel#setBondPointerLength
+     * (double)
      */
-	public void setBondPointerLength(double bondPointerLength)
-	{
-		this.bondPointerLength = bondPointerLength;
-	}
+    public void setBondPointerLength(double bondPointerLength) {
+        this.parameters.setBondPointerLength(bondPointerLength);
+    }
 
-
-	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#getRingPointerLength()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.openscience.cdk.controller.IController2DModel#getRingPointerLength()
      */
-	public double getRingPointerLength()
-	{
-		return this.ringPointerLength;
-	}
+    public double getRingPointerLength() {
+        return this.parameters.getRingPointerLength();
+    }
 
-	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#setRingPointerLength(double)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.openscience.cdk.controller.IController2DModel#setRingPointerLength
+     * (double)
      */
-	public void setRingPointerLength(double ringPointerLength)
-	{
-		this.ringPointerLength = ringPointerLength;
-	}
+    public void setRingPointerLength(double ringPointerLength) {
+        this.parameters.setRingPointerLength(ringPointerLength);
+    }
 
-    /* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#setCommonElements(java.lang.String[])
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.openscience.cdk.controller.IController2DModel#setCommonElements(java
+     * .lang.String[])
      */
     public void setCommonElements(String[] elements) {
-        this.commonElements = elements;
+        this.parameters.setCommonElements(elements);
     }
 
-    /* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#getCommonElements()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.openscience.cdk.controller.IController2DModel#getCommonElements()
      */
     public String[] getCommonElements() {
-        return this.commonElements;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#setDrawElement(java.lang.String)
-     */
-    public void setDrawElement(String element) {
-        this.drawElement = element;
+        return this.parameters.getCommonElements();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.openscience.cdk.controller.IController2DModel#setDrawElement(java
+     * .lang.String)
+     */
+    public void setDrawElement(String element) {
+        this.parameters.setDrawElement(element);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.openscience.cdk.controller.IController2DModel#getDrawElement()
      */
     public String getDrawElement() {
-        return this.drawElement;
+        return this.parameters.getDrawElement();
     }
-	/* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.openscience.cdk.controller.IController2DModel#getUndoSupport()
      */
-	public UndoableEditSupport getUndoSupport() {
-		return undoSupport;
-	}
-	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#setUndoSupport(javax.swing.undo.UndoableEditSupport)
+    public UndoableEditSupport getUndoSupport() {
+        return undoSupport;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.openscience.cdk.controller.IController2DModel#setUndoSupport(javax
+     * .swing.undo.UndoableEditSupport)
      */
-	public void setUndoSupport(UndoableEditSupport undoSupport) {
-		this.undoSupport = undoSupport;
-	}
-	/* (non-Javadoc)
+    public void setUndoSupport(UndoableEditSupport undoSupport) {
+        this.undoSupport = undoSupport;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.openscience.cdk.controller.IController2DModel#getUndoManager()
      */
-	public UndoManager getUndoManager() {
-		return undoManager;
-	}
-	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#setUndoManager(javax.swing.undo.UndoManager)
-     */
-	public void setUndoManager(UndoManager undoManager) {
-		this.undoManager = undoManager;
-	}
+    public UndoManager getUndoManager() {
+        return undoManager;
+    }
 
-	/* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.openscience.cdk.controller.IController2DModel#setUndoManager(javax
+     * .swing.undo.UndoManager)
+     */
+    public void setUndoManager(UndoManager undoManager) {
+        this.undoManager = undoManager;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.openscience.cdk.controller.IController2DModel#isMovingAllowed()
      */
-	public boolean isMovingAllowed() {
-		return isMovingAllowed;
-	}
+    public boolean isMovingAllowed() {
+        return this.parameters.isMovingAllowed();
+    }
 
-	/* (non-Javadoc)
-     * @see org.openscience.cdk.controller.IController2DModel#setMovingAllowed(boolean)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.openscience.cdk.controller.IController2DModel#setMovingAllowed(boolean
+     * )
      */
-	public void setMovingAllowed(boolean isMovingAllowed) {
-		this.isMovingAllowed = isMovingAllowed;
-	}
+    public void setMovingAllowed(boolean isMovingAllowed) {
+        this.parameters.setMovingAllowed(isMovingAllowed);
+    }
 }

@@ -27,6 +27,8 @@ package org.openscience.cdk.controller;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
 
+import org.openscience.cdk.interfaces.IBond;
+
 /**
  * @cdk.module render
  */
@@ -65,6 +67,11 @@ public interface IControllerModel {
     		return this.name;
     	}
     }
+    
+    public abstract IBond.Order getMaxOrder();
+    
+    public abstract void setMaxOrder(IBond.Order maxOrder);
+    
 
 	/**
 	 * Returns the snapToGridAngle mode

@@ -29,6 +29,7 @@ import static org.openscience.cdk.CDKConstants.STEREO_BOND_UP_INV;
 import java.awt.Color;
 
 import javax.vecmath.Point2d;
+import javax.vecmath.Vector2d;
 
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.graph.ConnectivityChecker;
@@ -38,7 +39,7 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.interfaces.IRingSet;
-import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.LineElement;
@@ -53,18 +54,16 @@ import org.openscience.cdk.tools.manipulator.RingSetManipulator;
  */
 public class BasicBondGenerator implements IGenerator{
 
-	private Renderer2DModel model; 
+	private RendererModel model;
 	private LoggingTool logger = new LoggingTool(BasicBondGenerator.class);
 	private IRingSet ringSet;
 	private double bondWidth;
 	private double bondDistance;
 
-	public BasicBondGenerator(Renderer2DModel r2dm) {
+	public BasicBondGenerator(RendererModel r2dm) {
 		this.model = r2dm;
 		bondWidth = this.model.getBondWidth();
-//		bondDistance = this.model.getBondDistance();
-		// the original bonddistance was in screen space, not model space...
-		bondDistance = 0.2;
+		bondDistance = this.model.getBondDistance();
 	}
 
 	protected IRingSet getRingSet(final IAtomContainer atomContainer) {
@@ -77,7 +76,7 @@ public class BasicBondGenerator implements IGenerator{
 				SSSRFinder sssrf = new SSSRFinder(mol);
 				ringSet.add(sssrf.findSSSR());
 			}
-			
+
 			return ringSet;
 		} catch (Exception exception) {
 			logger.warn("Could not partition molecule: "
@@ -86,11 +85,11 @@ public class BasicBondGenerator implements IGenerator{
 			return ringSet;
 		}
 	}
-	
+
 	public Color getColorForBond(IBond bond) {
 	    Color color = this.model.getColorHash().get(bond);
-	    if(color == null) color = Color.BLACK;
-	    return color; 
+	    if (color == null) color = Color.BLACK;
+	    return color;
 	}
 
 	public IRenderingElement generate(IAtomContainer ac) {
@@ -110,7 +109,7 @@ public class BasicBondGenerator implements IGenerator{
 			return generateBond(currentBond);
 		}
 	}
-	
+
 	public IRenderingElement generateBondElement(IBond bond) {
 	    return this.generateBondElement(bond, bond.getOrder());
 	}
@@ -118,8 +117,8 @@ public class BasicBondGenerator implements IGenerator{
 	/**
 	 * Generate a LineElement or an ElementGroup of LineElements for this bond.
 	 * This version should be used if you want to override the type - for
-	 * example, for ring double bonds. 
-	 * 
+	 * example, for ring double bonds.
+	 *
 	 * @param bond the bond to generate for
 	 * @param type the type of the bond - single, double, etc
 	 * @return
@@ -136,36 +135,56 @@ public class BasicBondGenerator implements IGenerator{
 		if (type == IBond.Order.SINGLE) {
 		    return new LineElement(p1.x, p1.y, p2.x, p2.y, bondWidth, color);
 		} else {
-    		    double[] in = new double[] { p1.x, p1.y, p2.x, p2.y };
-    		    double[] out = GeometryTools.distanceCalculator(in, bondDistance);
     		    ElementGroup group = new ElementGroup();
     		    switch (type) {
     		        case DOUBLE:
-    		            LineElement l1 = 
-    		                new LineElement(out[0], out[1], out[6], out[7], bondWidth, color);
-    		            LineElement l2 = 
-    		                new LineElement(out[2], out[3], out[4], out[5], bondWidth, color);
-    		            group.add(l1);
-    		            group.add(l2);
+    		            this.createLines(p1, p2, bondDistance, color, group);
     		            break;
     		        case TRIPLE:
-    		            LineElement l11 = 
-    		                new LineElement(out[0], out[1], out[6], out[7], bondWidth, color);
-    		            LineElement l22 = 
-    		                new LineElement(out[2], out[3], out[4], out[5], bondWidth, color);
-    		            group.add(l11);
-    		            group.add(l22);
+    		            this.createLines(p1, p2, bondDistance * 2, color, group);
     		            group.add(new LineElement(p1.x, p1.y, p2.x, p2.y, bondWidth, color));
     		            break;
     		        case QUADRUPLE:
-    		            double[] out2 = GeometryTools.distanceCalculator(in, bondDistance * 2); 
-    		            // TODO
+    		            this.createLines(p1, p2, bondDistance, color, group);
+    		            this.createLines(p1, p2, bondDistance * 4, color, group);
     		        default:
     		            break;
     		    }
     		    return group;
 		}
 
+	}
+	
+	private void createLines(Point2d p1, Point2d p2, double dist, Color c, ElementGroup group) {
+	    double[] out = generateDistanceData(p1, p2, dist);
+	    LineElement l1 =
+            new LineElement(out[0], out[1], out[4], out[5], bondWidth, c);
+        LineElement l2 =
+            new LineElement(out[2], out[3], out[6], out[7], bondWidth, c);
+	    group.add(l1);
+	    group.add(l2);
+	}
+
+	private double[] generateDistanceData(Point2d p1, Point2d p2, double dist) {
+	    Vector2d normal = new Vector2d();
+        normal.sub(p2, p1);
+        normal = new Vector2d(-normal.y, normal.x);
+        normal.normalize();
+        normal.scale(dist);
+
+        Point2d line1p1 = new Point2d();
+        Point2d line1p2 = new Point2d();
+        line1p1.add(p1, normal);
+        line1p2.add(p2, normal);
+
+        normal.negate();
+        Point2d line2p1 = new Point2d();
+        Point2d line2p2 = new Point2d();
+        line2p1.add(p1, normal);
+        line2p2.add(p2, normal);
+
+        return new double[] { line1p1.x, line1p1.y, line2p1.x, line2p1.y,
+                line1p2.x, line1p2.y, line2p2.x, line2p2.y };
 	}
 
 	public IRenderingElement generateRingElements(IBond bond, IRing ring) {
@@ -211,15 +230,12 @@ public class BasicBondGenerator implements IGenerator{
 		int stereo = bond.getStereo();
 		boolean dashed = false;
 		Direction dir = Direction.toSecond;
-		// if(stereo == STEREO_BOND_UP || stereo == STEREO_BOND_UP_INV)
-		// dashed = false;
 		if (stereo == STEREO_BOND_DOWN || stereo == STEREO_BOND_DOWN_INV)
 			dashed = true;
 		if (stereo == STEREO_BOND_DOWN_INV || stereo == STEREO_BOND_UP_INV)
 			dir = Direction.toFirst;
 
 		IRenderingElement base = generateBondElement(bond, IBond.Order.SINGLE);
-		// XXX
 		return new WedgeLineElement((LineElement)base, dashed, dir, this.getColorForBond(bond));
 	}
 
@@ -256,5 +272,5 @@ public class BasicBondGenerator implements IGenerator{
 			return generateBondElement(bond);
 		}
 	}
-	
+
 }

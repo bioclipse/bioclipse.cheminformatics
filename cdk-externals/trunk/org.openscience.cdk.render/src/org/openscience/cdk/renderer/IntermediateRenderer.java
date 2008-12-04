@@ -1,5 +1,3 @@
-package org.openscience.cdk.renderer;
-
 /* $Revision$ $Author$ $Date$
 *
 *  Copyright (C) 2008 Gilleain Torrance <gilleain.torrance@gmail.com>
@@ -20,136 +18,321 @@ package org.openscience.cdk.renderer;
 *  along with this program; if not, write to the Free Software
 *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 */
+package org.openscience.cdk.renderer;
+
 
 import java.awt.BasicStroke;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 
 import javax.vecmath.Point2d;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
-import org.openscience.cdk.renderer.elements.IRenderingVisitor;
-import org.openscience.cdk.renderer.elements.LineElement;
-import org.openscience.cdk.renderer.elements.OvalElement;
-import org.openscience.cdk.renderer.elements.TextElement;
-import org.openscience.cdk.renderer.elements.WedgeLineElement;
-import org.openscience.cdk.renderer.generators.BasicGenerator;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightGenerator;
+import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.RingGenerator;
+import org.openscience.cdk.renderer.generators.SelectionGenerator;
+import org.openscience.cdk.renderer.visitor.TransformingDrawVisitor;
 
 /**
  * @cdk.module render
  */
-public class IntermediateRenderer implements IJava2DRenderer, IRenderingVisitor {
+public class IntermediateRenderer implements IJava2DRenderer {
 	
 	private AWTFontManager fontManager;
-	private Renderer2DModel rendererModel;
-	private BasicGenerator generator;
 	
-	private transient Graphics2D g;
+	private RendererModel rendererModel;
+	
+	private ArrayList<IGenerator> generators;
 	
 	private Stroke stroke;
+	
 	private AffineTransform transform;
+	
+	private Point2d modelCenter;
+	
+	private Point2d drawCenter;
+	
+	private double theta = 0.0;    // the rotation
 	
 	public static final double NATURAL_SCALE = 30.0;
 	
-	private double scale;
+	private double scale = NATURAL_SCALE;
+	
+	/**
+	 * If true, the renderer will calculate a scale that will fit
+	 * the molecule into the drawBounds, as well as centring it there.
+	 */
+	private boolean fitToScreen = false;
 	
 	public IntermediateRenderer() {
-		this.rendererModel = new Renderer2DModel();
+		this.rendererModel = new RendererModel();
 		this.rendererModel.setHighlightRadiusModel(3.5);
-		this.generator = new BasicGenerator(this.rendererModel);
+		this.rendererModel.setBondDistance(0.15);
+		this.rendererModel.setMargin(0.25);
+		
+		this.generators = new ArrayList<IGenerator>();
+		this.generators.add(new RingGenerator(this.rendererModel));
+		this.generators.add(new BasicAtomGenerator(this.rendererModel));
+		this.generators.add(new HighlightGenerator(this.rendererModel));
+		this.generators.add(new SelectionGenerator(this.rendererModel));
 		this.stroke = new BasicStroke(2);
 		this.fontManager = new AWTFontManager();
 		this.transform = new AffineTransform();
 	}
+	
+	public void setFitToScreen(boolean fitToScreen) {
+	    this.fitToScreen = fitToScreen;
+	}
 
-	public Renderer2DModel getRenderer2DModel() {
+	public RendererModel getRenderer2DModel() {
 		return this.rendererModel;
-	}
-
-	public void paintMolecule(IAtomContainer atomCon, Graphics2D g) {
-	    // don't think that this method should be used... 
-	}
-
-	public void paintMolecule(IAtomContainer atomCon, Graphics2D g, Rectangle2D bounds) {
-		if (atomCon.getAtomCount() == 0) return;	// XXX
-		Rectangle2D atomicBounds = this.calculateBounds(atomCon);
-		
-		IRenderingElement diagram = this.generator.generate(atomCon);
-		IRenderingElement highlights 
-			= new HighlightGenerator(this.rendererModel).generate(atomCon);
-		((ElementGroup) diagram).add(highlights);
-		
-		// FIXME
-		double toFitScale = this.calculateScale(atomicBounds, bounds); 
-		if (toFitScale > IntermediateRenderer.NATURAL_SCALE) {
-		    this.scale = IntermediateRenderer.NATURAL_SCALE;
-		} else {
-    		this.scale = toFitScale; 
-    		this.scale *= 0.8;	// provide a border
-		}
-		
-		this.transform = new AffineTransform();
-		this.transform.translate(bounds.getCenterX(), bounds.getCenterY());
-		this.transform.scale(scale, scale);
-		this.transform.translate(-atomicBounds.getCenterX(), -atomicBounds.getCenterY());
-
-		
-		double h = bounds.getHeight();
-		double fractionalScale = (1 - h / (h * this.scale));
-		this.fontManager.setFontForScale(fractionalScale);
-		
-		g.setStroke(this.stroke);
-		this.g = g;
-//		diagram.accept(new org.openscience.cdk.renderer.visitor.PrintVisitor());
-		diagram.accept(this);
 	}
 	
 	/**
-	 * Calculates the multiplication factor that will fit the model completely within
-	 * the display bounds (not accounting for a border).
+	 * Set the rotation for drawing - should be unset by calling <code>setRotation(0)</code>.
 	 * 
-	 * @param modelBounds
-	 * @param displayBounds
-	 * @return
+	 * @param degrees the angle to rotate by in degrees.
 	 */
-	private double calculateScale(Rectangle2D modelBounds, Rectangle2D displayBounds) {
-		double widthRatio = displayBounds.getWidth() / modelBounds.getWidth();
-		double heightRatio = displayBounds.getHeight() / modelBounds.getHeight();
+	public void setRotation(double degrees) {
+	    this.theta = Math.toRadians(degrees);
+	}
+	
+	public void setModelCenter(double x, double y) {
+//	    System.err.println("setting model center to " + x + " " + y);
+	    this.modelCenter = new Point2d(x, y);
+	}
+	
+	public void setDrawCenter(double x, double y) {
+//	    System.err.println("setting draw center to " + x + " " + y);
+        this.drawCenter = new Point2d(x, y);
+    }
+	
+	private IRenderingElement generateDiagram(IMoleculeSet moleculeSet) {
+	    ElementGroup diagram = new ElementGroup();
+        for (int i = 0; i < moleculeSet.getAtomContainerCount(); i++) {
+            IAtomContainer ac = moleculeSet.getAtomContainer(i);
+            for (IGenerator generator : this.generators) {
+                diagram.add(generator.generate(ac));
+            }
+        }
+        return diagram;
+	}
+	
+	private IRenderingElement generateDiagram(IAtomContainer ac) {
+	    ElementGroup diagram = new ElementGroup();
+        for (IGenerator generator : this.generators) {
+            diagram.add(generator.generate(ac));
+        }
+        return diagram;
+	}
+	
+	private Rectangle2D calculateBounds(IMoleculeSet moleculeSet) {
+	    Rectangle2D totalBounds = new Rectangle2D.Double();
+        for (int i = 0; i < moleculeSet.getAtomContainerCount(); i++) {
+            IAtomContainer ac = moleculeSet.getAtomContainer(i);
+            Rectangle2D acBounds = this.calculateBounds(ac);
+            if (totalBounds.isEmpty()) {
+                totalBounds = acBounds;
+            } else {
+                Rectangle2D.union(totalBounds, acBounds, totalBounds);
+            }
+        }
+        return totalBounds;
+	}
+	
+	/**
+	 * Paint an entire ChemModel.
+	 * 
+	 * @param chemModel
+	 * @param g
+	 * @param bounds the bounds of the area to paint on.
+	 * @param resetCenter if true, set the modelCenter to the center of the ChemModel's bounds. 
+	 */
+	public void paintChemModel(IChemModel chemModel, Graphics2D g, Rectangle2D bounds, 
+	        boolean resetCenter) {
+	    if (chemModel.getMoleculeSet() == null) return;
+	    
+	    // calculate the total bounding box
+	    IMoleculeSet moleculeSet = chemModel.getMoleculeSet(); 
+	    Rectangle2D modelBounds = this.calculateBounds(moleculeSet);
+	    
+	    // generate the elements
+	    IRenderingElement diagram = this.generateDiagram(moleculeSet);
+	    
+	    // setup the scale and translation for the transform
+	    this.setupDrawArea(bounds, modelBounds);
+	    if (resetCenter) {
+	        this.setModelCenter(modelBounds.getCenterX(), modelBounds.getCenterY());
+	    }
+	    
+	    // finally, paint it
+	    this.paint(g, diagram);
+	}
 
-		// the area is contained completely within the target
-		if (widthRatio > 1 && heightRatio > 1) {
-			return Math.min(widthRatio, heightRatio);
+	/**
+	 * Paint an atom container at the natural scale, with 
+	 * its upper left corner at the origin.
+	 * 
+	 * @param ac the atom container
+	 * @param g the graphics context
+	 */
+	public void paintMolecule(IAtomContainer ac, Graphics2D g) {
+	    this.paintMolecule(ac, g, null, true);
+	}
+
+	public void paintMolecule(IAtomContainer atomCon, Graphics2D graphics,
+            Rectangle2D bounds) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void paintMolecule(IAtomContainer ac, Graphics2D g, Rectangle2D bounds,
+	        boolean resetCenter) {
+		if (ac.getAtomCount() == 0) return;	// XXX
+		
+		Rectangle2D modelBounds = this.calculateBounds(ac);
+		IRenderingElement diagram = this.generateDiagram(ac);
+		
+		this.setupDrawArea(bounds, modelBounds);
+		if (resetCenter) {
+		    this.setModelCenter(modelBounds.getCenterX(), modelBounds.getCenterY());
 		}
+		this.paint(g, diagram);
+	}
+    
+    public Rectangle calculateScreenBounds(IChemModel model) {
+        Rectangle screenBounds = new Rectangle();
+        
+        IMoleculeSet moleculeSet = model.getMoleculeSet();
+        if (moleculeSet == null) return screenBounds;
+        
+        Rectangle2D modelBounds = this.calculateBounds(moleculeSet);
+        double margin = this.rendererModel.getMargin();
+        screenBounds.setSize(
+                             (int) ((modelBounds.getWidth() + 2 * margin) * scale),
+                             (int) ((modelBounds.getHeight() + 2 * margin )* scale));
+        return screenBounds;
+    }
+    
+    private void setupDrawArea(Rectangle2D drawBounds, Rectangle2D modelBounds) {
+        if (drawBounds == null) {
+            this.scale = IntermediateRenderer.NATURAL_SCALE;
+            double scaledWidth  = modelBounds.getWidth() * this.scale;
+            double scaledHeight = modelBounds.getHeight() * this.scale;
+            this.setDrawCenter(scaledWidth / 2, scaledHeight / 2);
+        } else {
+            this.setDrawCenter(drawBounds.getCenterX(), drawBounds.getCenterY());
+            this.setScale(drawBounds, modelBounds);
+        }
+    }
+	
+	private void setScale(Rectangle2D bounds, Rectangle2D atomicBounds) {
+        // alter the width slightly to allow for atom symol text
+        double w = bounds.getWidth() * 0.9;
+        double h = bounds.getHeight() * 0.9;
+        double toFitScale = this.calculateScale(atomicBounds, w, h); 
+        if (!fitToScreen || toFitScale > IntermediateRenderer.NATURAL_SCALE) {
+            this.scale = IntermediateRenderer.NATURAL_SCALE;
+        } else {
+            this.scale = toFitScale; 
+        }
+        double fractionalScale = (1 - h / (h * this.scale));
+        this.fontManager.setFontForScale(fractionalScale);
+    }
 
-		// the area is wider than the target, but fits the height
-		if (widthRatio < 1 && heightRatio > 1) {
-			return widthRatio;
-		}
+    /**
+     * Calculates the multiplication factor that will fit the model completely within
+     * the dimensions w * h (not accounting for a border).
+     * 
+     * @param modelBounds
+     * @param displayBounds
+     * @return
+     */
+    private double calculateScale(Rectangle2D modelBounds, double w, double h) {
+    	double widthRatio = w / modelBounds.getWidth();
+    	double heightRatio = h / modelBounds.getHeight();
+    
+    	// the area is contained completely within the target
+    	if (widthRatio > 1 && heightRatio > 1) {
+    		return Math.min(widthRatio, heightRatio);
+    	}
+    
+    	// the area is wider than the target, but fits the height
+    	if (widthRatio < 1 && heightRatio > 1) {
+    		return widthRatio;
+    	}
+    
+    	// the area is taller than the target, but fits the width
+    	if (widthRatio > 1 && heightRatio < 1) {
+    		return heightRatio;
+    	}
+    
+    	// the target is completely contained by the area
+    	if (widthRatio > 1 && heightRatio > 1) {
+    		return heightRatio;
+    	}
+    
+    	// the bounds are equal
+    	return widthRatio;	// could return either...
+    }
 
-		// the area is taller than the target, but fits the width
-		if (widthRatio > 1 && heightRatio < 1) {
-			return heightRatio;
-		}
+    private void paint(Graphics2D g, IRenderingElement diagram) {
 
-		// the target is completely contained by the area
-		if (widthRatio > 1 && heightRatio > 1) {
-			return heightRatio;
-		}
-
-		// the bounds are equal
-		return widthRatio;	// could return either...
+	    try {
+            this.setTransform(this.drawCenter.x,
+                              this.drawCenter.y, 
+                              this.scale,
+                              this.theta,
+                              this.modelCenter.x,
+                              this.modelCenter.y);
+	    } catch (NullPointerException npe) {
+	        // one of the drawCenter or modelCenter points have not been set!
+	        System.err.println(String.format(
+	                "problem in transform %s %s %s %s",
+	                this.drawCenter,
+                    this.scale,
+                    this.theta,
+                    this.modelCenter));
+	    }
+        
+        g.setStroke(this.stroke);
+        
+//      diagram.accept(new org.openscience.cdk.renderer.visitor.PrintVisitor());
+        diagram.accept(
+                new TransformingDrawVisitor(g, transform, fontManager, rendererModel));
+	}
+	
+	private void setTransform(double dx, double dy, double scale, double theta, 
+	        double cx, double cy) {
+	    this.transform = new AffineTransform();
+        this.transform.translate(dx, dy);
+        this.transform.scale(scale, scale);
+        this.transform.rotate(theta);
+        this.transform.translate(-cx, -cy);
 	}
 	
 	private Rectangle2D calculateBounds(IAtomContainer ac) {
+	    // this is essential, otherwise a rectangle 
+	    // of (+INF, -INF, +INF, -INF) is returned!  
+	    if (ac.getAtomCount() == 0) {
+	        return new Rectangle2D.Double();
+	    } else if (ac.getAtomCount() == 1) {
+	        Point2d p = ac.getAtom(0).getPoint2d();
+	        return new Rectangle2D.Double(p.x, p.y, 0, 0);
+	    }
+	    
 		double xmin = Double.POSITIVE_INFINITY;
 		double xmax = Double.NEGATIVE_INFINITY;
 		double ymin = Double.POSITIVE_INFINITY;
@@ -167,7 +350,7 @@ public class IntermediateRenderer implements IJava2DRenderer, IRenderingVisitor 
 		return new Rectangle2D.Double(xmin, ymin, w, h);
 	}
 
-	public void setRenderer2DModel(Renderer2DModel model) {
+	public void setRenderer2DModel(RendererModel model) {
 		this.rendererModel = model;
 	}
 
@@ -182,89 +365,11 @@ public class IntermediateRenderer implements IJava2DRenderer, IRenderingVisitor 
 	    }
 	}
 
-	private int[] transformPoint(double x, double y) {
-	    double[] src = new double[] {x, y};
+	public Point2d toScreenCoordinates(double modelX, double modelY) {
 	    double[] dest = new double[2];
-	    this.transform.transform(src, 0, dest, 0, 1);
-	    return new int[] { (int) dest[0], (int) dest[1] };
+	    transform.transform(new double[] { modelX, modelY }, 0, dest, 0, 1);
+	    return new Point2d(dest[0], dest[1]);
 	}
-
-	public void visit(ElementGroup elementGroup) {
-		elementGroup.visitChildren(this);
-	}
-
-	public void visit(LineElement line) {
-		this.g.setColor(line.color);
-		int[] a = this.transformPoint(line.x1, line.y1);
-		int[] b = this.transformPoint(line.x2, line.y2);
-		this.g.drawLine(a[0], a[1], b[0], b[1]);
-	}
-
-	public void visit(OvalElement oval) {
-		int r = (int) oval.radius;
-		int d = 2 * r;
-		this.g.setColor(oval.color);
-		int[] p = this.transformPoint(oval.x, oval.y);
-		this.g.drawOval(p[0] - r, p[1] - r, d, d);
-	}
-	
-	private Rectangle2D getTextBounds(TextElement text, Graphics2D g) {
-		FontMetrics fm = g.getFontMetrics();
-		Rectangle2D bounds = fm.getStringBounds(text.text, g);
-		
-		double widthPad = 3;
-		double heightPad = 1;
-		
-		double w = bounds.getWidth() + widthPad;
-		double h = bounds.getHeight() + heightPad;
-		int[] p = this.transformPoint(text.x, text.y);
-		return new Rectangle2D.Double(p[0] - w / 2, p[1] - h / 2, w, h);
-	}
-	
-	private Point getTextBasePoint(TextElement textElement, Graphics2D g) {
-		FontMetrics fm = g.getFontMetrics();
-		Rectangle2D stringBounds = fm.getStringBounds(textElement.text, g);
-		int[] p = this.transformPoint(textElement.x, textElement.y);
-		int baseX = (int) (p[0] - (stringBounds.getWidth() / 2));
-		
-		// correct the baseline by the ascent
-		int baseY = (int) (p[1] + (fm.getAscent() - stringBounds.getHeight() / 2));
-		return new Point(baseX, baseY);
-	}
-
-	public void visit(TextElement textElement) {
-		this.g.setFont(this.fontManager.getFont());
-		Point p = this.getTextBasePoint(textElement, g);
-		Rectangle2D textBounds = this.getTextBounds(textElement, g);
-		
-		this.g.setColor(this.rendererModel.getBackColor());
-		this.g.fill(textBounds);
-		this.g.setColor(textElement.color);
-		this.g.drawString(textElement.text, p.x, p.y);
-	}
-
-	public void visit(WedgeLineElement wedge) {
-	    // TODO : FIXME
-	    int[] a = this.transformPoint(wedge.x1, wedge.y1);
-        int[] b = this.transformPoint(wedge.x2, wedge.y2);
-        this.g.drawLine(a[0], a[1], b[0], b[1]);
-	}
-
-	public void visit(IRenderingElement element) {
-	    if (element instanceof ElementGroup)
-            visit((ElementGroup) element);
-        else if (element instanceof LineElement)
-            visit((LineElement) element);
-        else if (element instanceof OvalElement)
-            visit((OvalElement) element);
-        else if (element instanceof TextElement)
-            visit((TextElement) element);
-        else if (element instanceof WedgeLineElement)
-            visit((WedgeLineElement) element);
-        else
-            System.err.println("Visitor method for "
-                    + element.getClass().getName() + " is not implemented");
-    }
 	
 	public void setTransform(AffineTransform transform) {
 	    this.transform = transform;

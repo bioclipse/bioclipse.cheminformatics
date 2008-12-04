@@ -1,6 +1,6 @@
-/* $Revision: 7636 $ $Author: nielsout $ $Date: 2007-01-04 18:46:10 +0100 (Thu, 04 Jan 2007) $
+/* $Revision$ $Author$ $Date$
  *
- * Copyright (C) 2007  Niels Out <nielsout@users.sf.net>
+ * Copyright (C) 2008  Gilleain Torrance <gilleain.torrance@gmail.com>
  *
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -26,45 +26,46 @@ package org.openscience.cdk.controller;
 
 import javax.vecmath.Point2d;
 
-import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.renderer.ISelection;
+import org.openscience.cdk.renderer.selection.ShapeSelection;
 
 /**
- * Changes (Increases or Decreases) Formal Charge of an atom
- * 
- * @author Niels Out
- * @cdk.svnrev $Revision: 9162 $
  * @cdk.module control
  */
-public class ChangeFormalChargeModule extends ControllerModuleAdapter {
+public class RotateModule extends ControllerModuleAdapter {
 
-	private int change = 0;
+    private double rotationAngle;
+    private Point2d startPoint;
+   
+    public RotateModule(IChemModelRelay chemModelRelay) {
+        super(chemModelRelay);
+    }
 
-	public ChangeFormalChargeModule(IChemModelRelay chemModelRelay, int change) {
-		super(chemModelRelay);
-		this.change = change;
-	}
+    public void mouseClickedDown(Point2d worldCoord) {
+        ISelection selection = super.chemModelRelay
+                                        .getIJava2DRenderer()
+                                        .getRenderer2DModel()
+                                        .getSelection();
+        if (!selection.isFilled()) {
+            return;
+        } else {
+            rotationAngle = 0.0;
+            startPoint = worldCoord;
+        }
+    }
 
-	public void mouseClickedDown(Point2d worldCoord) {
-		IAtom atom = chemModelRelay.getClosestAtom(worldCoord);
-		if (atom != null) {
-			Integer newCharge = new Integer(change);
-			if (atom.getFormalCharge() != null)
-				newCharge += atom.getFormalCharge();
+    public void mouseClickedUp(Point2d worldCoord) {
+    }
 
-			atom.setFormalCharge(newCharge);
-			chemModelRelay.updateView();
-		} 
-	}
+    public void mouseDrag(Point2d worldCoordFrom, Point2d worldCoordTo) {
+    }
 
-	public void setChemModelRelay(IChemModelRelay relay) {
-		this.chemModelRelay = relay;
-	}
+    public void setChemModelRelay(IChemModelRelay relay) {
+        this.chemModelRelay = relay;
+    }
 
 	public String getDrawModeString() {
-		if (change < 0)
-            return IControllerModel.DrawMode.DECCHARGE.getName();
-        else
-            return IControllerModel.DrawMode.INCCHARGE.getName();
+		return IControllerModel.DrawMode.ROTATION.getName();
 	}
 
 }

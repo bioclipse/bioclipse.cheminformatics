@@ -31,7 +31,7 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IRing;
-import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
@@ -42,11 +42,11 @@ import org.openscience.cdk.tools.LoggingTool;
  */
 public class RingGenerator extends BasicBondGenerator {
 
-	private Renderer2DModel model;
+	private RendererModel model;
 	private LoggingTool logger = new LoggingTool(RingGenerator.class);
 	private Collection<IRing> painted_rings;
 
-	public RingGenerator(Renderer2DModel r2dm) {
+	public RingGenerator(RendererModel r2dm) {
 		super(r2dm);
 		this.model = r2dm;
 		painted_rings = new HashSet<IRing>();
@@ -56,7 +56,7 @@ public class RingGenerator extends BasicBondGenerator {
 	public IRenderingElement generateRingElements(IBond bond, IRing ring) {
 		if (ringIsAromatic(ring) && this.model.getShowAromaticity()) {
 			ElementGroup pair = new ElementGroup();
-			pair.add(generateBondElement(bond));
+			pair.add(super.generateBondElement(bond, IBond.Order.SINGLE));
 			if (!painted_rings.contains(ring)) {
 				painted_rings.add(ring);
 				pair.add(generateRingRingElement(bond, ring));
@@ -69,15 +69,12 @@ public class RingGenerator extends BasicBondGenerator {
 
 	private IRenderingElement generateRingRingElement(IBond bond, IRing ring) {
 		Point2d center = GeometryTools.get2DCenter(ring);
-		logger.debug(" painting a Ringring now at " + center);
+		logger.debug("painting a Ringring now at " + center);
 
 		double[] minmax = GeometryTools.getMinMax(ring);
-		double width = (minmax[2] - minmax[0]) * 0.7;
-		double height = (minmax[3] - minmax[1]) * 0.7;
-
-		// offset is the width of the ring
-		double lineWidth = (0.05 * Math.min(width, height));
-		double radius = Math.min(width, height) - lineWidth / 2;
+		double width  = minmax[2] - minmax[0];
+		double height = minmax[3] - minmax[1];
+		double radius = Math.min(width, height) * 0.35;
 
 		return new OvalElement(center.x, center.y, radius, super.getColorForBond(bond));
 	}

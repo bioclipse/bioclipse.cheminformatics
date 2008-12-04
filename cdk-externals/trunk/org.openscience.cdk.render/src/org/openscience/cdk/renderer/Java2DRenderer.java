@@ -53,13 +53,13 @@ import java.util.List;
  */
 public class Java2DRenderer implements IJava2DRenderer {
 
-	private Renderer2DModel rendererModel;
+	private RendererModel rendererModel;
 	private AffineTransform affine;
 
 	protected LoggingTool logger;
 	IsotopeFactory isotopeFactory;
 
-	public Java2DRenderer(final Renderer2DModel model) {
+	public Java2DRenderer(final RendererModel model) {
 		this.rendererModel = model;
 		logger = new LoggingTool(this);
 	}
@@ -106,10 +106,10 @@ public class Java2DRenderer implements IJava2DRenderer {
 		}
 		// set basic shape form for bonds
 		graphics.setColor(Color.BLACK);
-		graphics.setStroke(new BasicStroke(
-			(float) (rendererModel.getBondWidth()/rendererModel.getBondLength()),
-			BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)
-		);
+//		graphics.setStroke(new BasicStroke(
+//			(float) (rendererModel.getBondWidth()/rendererModel.getBondLength()),
+//			BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)
+//		);
 
 		IRingSet ringSet = getRingSet(atomCon);
 
@@ -298,7 +298,8 @@ public class Java2DRenderer implements IJava2DRenderer {
 
 		//btest has to be substracted to get the text on the exact right position
 		//FIXME: get right value from graphics object? (width of line? or so)
-		float btest = (float) (rendererModel.getBondWidth()/rendererModel.getBondLength());
+//		float btest = (float) (rendererModel.getBondWidth()/rendererModel.getBondLength());
+		float btest = 1; 
 		double atomSymbolX = atom.getPoint2d().x - boundsAtom.getWidth()/2 - 0.5 * btest;
 		double atomSymbolY = atom.getPoint2d().y - boundsAtom.getHeight() /2 - boundsAtom.getY();
 		double atomSymbolW = boundsAtom.getWidth();
@@ -322,7 +323,8 @@ public class Java2DRenderer implements IJava2DRenderer {
 		Color atomColor = rendererModel.getAtomColor(atom, Color.BLACK);
 		Color otherColor = rendererModel.getForeColor();
 		Color bgColor;
-		if (atom == rendererModel.getHighlightedAtom()) {
+//		if (atom == rendererModel.getHighlightedAtom()) {
+		if (false) {
             bgColor = rendererModel.getHoverOverColor();
         } else if (rendererModel.getBackColor() != null) {
             bgColor = rendererModel.getBackColor();
@@ -689,16 +691,16 @@ public class Java2DRenderer implements IJava2DRenderer {
 			{
 				bondColor = rendererModel.getForeColor();
 			}
-			if (currentBond == rendererModel.getHighlightedBond() &&
-					(rendererModel.getSelectedPart()==null || !rendererModel.getSelectedPart().contains(currentBond)))
-			{
-				bondColor = rendererModel.getHoverOverColor();
-				for (int j = 0; j < currentBond.getAtomCount(); j++)
-				{
-					paintColouredAtomBackground(currentBond.getAtom(j), bondColor, graphics);
-
-				}
-			}
+//			if (currentBond == rendererModel.getHighlightedBond() &&
+//					(rendererModel.getSelectedPart()==null || !rendererModel.getSelectedPart().contains(currentBond)))
+//			{
+//				bondColor = rendererModel.getHoverOverColor();
+//				for (int j = 0; j < currentBond.getAtomCount(); j++)
+//				{
+//					paintColouredAtomBackground(currentBond.getAtom(j), bondColor, graphics);
+//
+//				}
+//			}
 			ring = RingSetManipulator.getHeaviestRing(ringSet, currentBond);
 			if (ring != null)
 			{
@@ -1099,10 +1101,10 @@ public class Java2DRenderer implements IJava2DRenderer {
 	{
 		// draw the shapes
 		graphics.setColor(bondColor);
-		graphics.setStroke(new BasicStroke(
-				(float) (rendererModel.getBondWidth()/rendererModel.getBondLength()),
-				BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)
-		);
+//		graphics.setStroke(new BasicStroke(
+//				(float) (rendererModel.getBondWidth()/rendererModel.getBondLength()),
+//				BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)
+//		);
 		graphics.setColor(bondColor);
 		graphics.draw(line);
 	}
@@ -1220,11 +1222,11 @@ public class Java2DRenderer implements IJava2DRenderer {
         }
 	}
 
-	public Renderer2DModel getRenderer2DModel() {
+	public RendererModel getRenderer2DModel() {
 		return this.rendererModel;
 	}
 
-	public void setRenderer2DModel(final Renderer2DModel model) {
+	public void setRenderer2DModel(final RendererModel model) {
 		this.rendererModel = model;
 	}
 }

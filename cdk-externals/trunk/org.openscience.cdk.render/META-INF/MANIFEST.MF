@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDK plugin
 Bundle-SymbolicName: org.openscience.cdk.render;singleton:=true
-Bundle-Version: 1.1.2.20081126
+Bundle-Version: 1.1.2.20081204
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openscience.cdk.render.Activator
@@ -14,6 +14,7 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.eclipse.core.runtime
 Export-Package: org.openscience.cdk.renderer,
  org.openscience.cdk.renderer.visitor,
+ org.openscience.cdk.renderer.selection,
  org.openscience.cdk.renderer.generators,
  org.openscience.cdk.renderer.elements,
  org.openscience.cdk.renderer.color,

@@ -28,7 +28,7 @@ import javax.vecmath.Point2d;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.RendererModel;
 
 /**
  * This should highlight the atom/bond when moving over with the mouse
@@ -48,7 +48,7 @@ public class HighlightModule extends ControllerModuleAdapter {
 	private IAtom prevHighlightAtom;
 	private IBond prevHighlightBond;
 	
-	private void updateAtom(IAtom atom, Renderer2DModel model) {
+	private void updateAtom(IAtom atom, RendererModel model) {
 	    if (prevHighlightAtom != atom) {
             model.setHighlightedAtom(atom);
             prevHighlightAtom = atom;
@@ -58,7 +58,7 @@ public class HighlightModule extends ControllerModuleAdapter {
         }
 	}
 	
-	private void updateBond(IBond bond, Renderer2DModel model) {
+	private void updateBond(IBond bond, RendererModel model) {
 	    if (prevHighlightBond != bond) {
             model.setHighlightedBond(bond);
             prevHighlightBond = bond;
@@ -68,7 +68,7 @@ public class HighlightModule extends ControllerModuleAdapter {
         }
 	}
 	
-	private void unsetHighlights(Renderer2DModel model) {
+	private void unsetHighlights(RendererModel model) {
         model.setHighlightedAtom(null);
         model.setHighlightedBond(null);
         prevHighlightAtom = null;
@@ -79,7 +79,7 @@ public class HighlightModule extends ControllerModuleAdapter {
 	public void mouseMove(Point2d worldCoord) {
 		IAtom atom = chemObjectRelay.getClosestAtom(worldCoord);
 		IBond bond = chemObjectRelay.getClosestBond(worldCoord);
-		Renderer2DModel model = chemObjectRelay.getIJava2DRenderer().getRenderer2DModel();
+		RendererModel model = chemObjectRelay.getIJava2DRenderer().getRenderer2DModel();
 		
 		if (atom == null && bond == null) {
 		    if (prevHighlightAtom == null && prevHighlightBond == null) {

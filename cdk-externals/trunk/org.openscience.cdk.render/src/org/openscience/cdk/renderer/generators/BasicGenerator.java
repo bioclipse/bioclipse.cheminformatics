@@ -22,7 +22,7 @@
 package org.openscience.cdk.renderer.generators;
 
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 
@@ -34,7 +34,7 @@ public class BasicGenerator {
 	private BasicAtomGenerator atomGenerator;
 	private BasicBondGenerator bondGenerator;
 	
-	public BasicGenerator(Renderer2DModel model) {
+	public BasicGenerator(RendererModel model) {
 		this.atomGenerator = new BasicAtomGenerator(model);
 		this.bondGenerator = new BasicBondGenerator(model);
 	}

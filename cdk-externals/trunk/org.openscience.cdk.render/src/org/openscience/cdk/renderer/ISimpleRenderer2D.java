@@ -65,13 +65,13 @@ public interface ISimpleRenderer2D {
 	 * 
 	 * @param model Model with rendering settings
 	 */
-	public abstract void setRenderer2DModel(Renderer2DModel model);
+	public abstract void setRenderer2DModel(RendererModel model);
 
 	/**
 	 * The current rendering settings.
 	 * 
 	 * @return Model with rendering settings
 	 */
-	public abstract Renderer2DModel getRenderer2DModel();
+	public abstract RendererModel getRenderer2DModel();
 	
 }

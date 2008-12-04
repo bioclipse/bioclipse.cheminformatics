@@ -38,16 +38,16 @@ import org.openscience.cdk.interfaces.IBond;
 public class AddRingModule extends ControllerModuleAdapter {
 
     private int ringSize;
-    private boolean benzene = false;
+    private boolean addingBenzene = false;
 
-    public AddRingModule(IChemModelRelay chemModelRelay, int ringSize, boolean benzene) {
+    public AddRingModule(IChemModelRelay chemModelRelay, int ringSize, boolean addingBenzene) {
         super(chemModelRelay);
         this.ringSize = ringSize;
-        this.benzene = benzene;
+        this.addingBenzene = addingBenzene;
     }
     
     private void addRingToEmptyCanvas() {
-        if (this.benzene) {
+        if (this.addingBenzene) {
             Point2d randomPoint = new Point2d(0,0);
             chemModelRelay.addAtom("C", randomPoint);
             IAtom closestAtom = chemModelRelay.getClosestAtom(randomPoint);
@@ -58,7 +58,7 @@ public class AddRingModule extends ControllerModuleAdapter {
     }
     
     private void addRingToAtom(IAtom closestAtom) {
-        if (benzene) {
+        if (addingBenzene) {
             chemModelRelay.addPhenyl(closestAtom);
         } else {
             chemModelRelay.addRing(closestAtom, ringSize);
@@ -66,7 +66,11 @@ public class AddRingModule extends ControllerModuleAdapter {
     }
     
     private void addRingToBond(IBond bond) {
-        // TODO
+        if (addingBenzene) {
+            chemModelRelay.addPhenyl(bond);
+        } else {
+            chemModelRelay.addRing(bond, ringSize);
+        }
     }
 
     public void mouseClickedDown(Point2d worldCoord) {
@@ -80,7 +84,13 @@ public class AddRingModule extends ControllerModuleAdapter {
         } else if (closestAtom == null && closestBond != null) {
             this.addRingToBond(closestBond);
         } else {
-            this.addRingToAtom(closestAtom);
+            double dA = closestAtom.getPoint2d().distance(worldCoord);
+            double dB = closestBond.get2DCenter().distance(worldCoord);
+            if (dA <= dB) {
+                this.addRingToAtom(closestAtom);
+            } else {
+                this.addRingToBond(closestBond);
+            }
         }
         chemModelRelay.updateView();
     }

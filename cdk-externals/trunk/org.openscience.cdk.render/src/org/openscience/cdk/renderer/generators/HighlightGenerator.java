@@ -7,37 +7,38 @@ import javax.vecmath.Point2d;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.LineElement;
-import org.openscience.cdk.renderer.elements.RingElement;
+import org.openscience.cdk.renderer.elements.OvalElement;
 
 /**
  * @cdk.module render
  */
 public class HighlightGenerator implements IGenerator {
 	
-	private Renderer2DModel model;
+	private RendererModel model;
 	private Color highlightColor;
+	private double r = 0.35;        // the highlight ring radius
 
-	public HighlightGenerator(Renderer2DModel r2dm) {
+	public HighlightGenerator(RendererModel r2dm) {
 		this.model= r2dm;
 		this.highlightColor = Color.GRAY;
 	}
 
 	public IRenderingElement generate(IAtomContainer ac, IAtom atom) {
-		IAtom highlightedAtom = this.model.getHighlightedAtom(); 
-		if (highlightedAtom != null && highlightedAtom.equals(atom)) {
+		IAtom highlightedAtom = atom;
+		if (highlightedAtom != null) {
 			Point2d p = atom.getPoint2d();
-			return new RingElement(p.x, p.y, this.model.getAtomRadius(), this.highlightColor);
+			return new OvalElement(p.x, p.y, r, this.highlightColor);
 		}
 		return null;
 	}
 
 	public IRenderingElement generate(IAtomContainer ac, IBond bond) {
-		IBond highlightedBond = this.model.getHighlightedBond();
-		if (highlightedBond != null && highlightedBond.equals(bond)) {
+		IBond highlightedBond = bond;
+		if (highlightedBond != null ) {
 			Point2d p1 = bond.getAtom(0).getPoint2d();
 			Point2d p2 = bond.getAtom(1).getPoint2d();
 			double w = this.model.getBondWidth() * 3;
@@ -49,12 +50,11 @@ public class HighlightGenerator implements IGenerator {
     public IRenderingElement generate(IAtomContainer ac) {
 
         ElementGroup elementGroup = new ElementGroup();
-        for (IAtom atom : ac.atoms()) {
-          elementGroup.add(this.generate(ac, atom));
-        }
-        for (IBond bond: ac.bonds()) {
-            elementGroup.add(this.generate(ac, bond));
-        }
+        
+        elementGroup.add( this.generate( ac, this.model.getHighlightedAtom() ));
+
+        elementGroup.add( this.generate( ac, this.model.getHighlightedBond() ));
+
         return elementGroup;
       }
         

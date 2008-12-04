@@ -304,13 +304,22 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         // The AtomPlacer generates coordinates for the new atom
         AtomPlacer atomPlacer = new AtomPlacer();
         atomPlacer.setMolecule(chemModel.getBuilder().newMolecule(atomCon));
-        double bondLength = GeometryTools.getBondLengthAverage(atomCon);
+        double bondLength;
+        if (atomCon.getBondCount() >= 1) {
+            bondLength = GeometryTools.getBondLengthAverage(atomCon);
+        } else {
+            bondLength = 1.4;       // XXX Or some sensible default?
+        }
         
         // determine the atoms which define where the 
         // new atom should not be placed
         List<IAtom> connectedAtoms = atomCon.getConnectedAtomsList(atom);
 
-        if (connectedAtoms.size() == 1) {
+        if (connectedAtoms.size() == 0) {
+            Point2d newAtomPoint = new Point2d(atom.getPoint2d());
+            newAtomPoint.x += bondLength;
+            newAtom.setPoint2d(newAtomPoint);
+        } else if (connectedAtoms.size() == 1) {
             IAtomContainer ac = atomCon.getBuilder().newAtomContainer();
             ac.addAtom(atom);
             ac.addAtom(newAtom);

@@ -25,7 +25,7 @@ import java.io.IOException;
 import org.openscience.cdk.config.IsotopeFactory;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.AtomMassSymbolElement;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.tools.LoggingTool;
@@ -37,7 +37,7 @@ public class AtomMassGenerator extends BasicAtomGenerator {
 
     private LoggingTool logger = new LoggingTool(AtomMassGenerator.class);
 
-	public AtomMassGenerator(Renderer2DModel r2dm) {
+	public AtomMassGenerator(RendererModel r2dm) {
 		super(r2dm);
 	}
 

@@ -43,7 +43,7 @@ public class Renderer {
 
     LoggingTool logger = new LoggingTool(Renderer.class);
 
-    Renderer2DModel renderer2DModel;
+    RendererModel renderer2DModel;
 
     AffineTransform transform;
     List<IGenerator> generators;
@@ -53,7 +53,7 @@ public class Renderer {
     Point2d center = new Point2d(0, 0);
 
     public Renderer(Collection<IGenerator> gen) {
-        renderer2DModel = new Renderer2DModel();
+        renderer2DModel = new RendererModel();
         generators = new ArrayList<IGenerator>(gen);
         dirty = true;
     }
@@ -72,7 +72,7 @@ public class Renderer {
         return null;
     }
 
-    public Renderer2DModel getRenderer2DModel() {
+    public RendererModel getRenderer2DModel() {
 
         return renderer2DModel;
     }
@@ -90,7 +90,7 @@ public class Renderer {
         diagram.accept(renderingVisitor);
     }
 
-    public void setRenderer2DModel(Renderer2DModel model) {
+    public void setRenderer2DModel(RendererModel model) {
         renderer2DModel = model;
     }
 
@@ -110,12 +110,12 @@ public class Renderer {
                                                    minMax[3]-minMax[1]);
         AffineTransform trans = new AffineTransform();
 //        trans.translate(-rect.getWidth()/2,-rect.getHeight()/2 );
-        double xScale = (bounds.getWidth()-40)/(rect.getWidth());
-        double yScale = (bounds.getHeight()-40)/(rect.getHeight());
+        double xScale = (bounds.getWidth())/(rect.getWidth());
+        double yScale = (bounds.getHeight())/(rect.getHeight());
         double scale = Math.min( xScale, yScale );
 //        
-        trans.translate( (bounds.getWidth()-rect.getWidth()*scale)/2,
-                         (bounds.getHeight()-rect.getHeight()*-scale)/2);
+        trans.translate( (bounds.getX() + bounds.getWidth()-rect.getWidth()*scale)/2,
+                         (bounds.getY()+  bounds.getHeight()-rect.getHeight()*-scale)/2);
         
         
 //        trans.translate( -rect.getX()*scale + (bounds.getWidth()-rect.getWidth()*scale)/2, 

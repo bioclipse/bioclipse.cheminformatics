@@ -25,6 +25,8 @@
 
 package org.openscience.cdk.controller;
 
+import static org.openscience.cdk.CDKConstants.STEREO_BOND_NONE;
+
 import javax.vecmath.Point2d;
 
 import org.openscience.cdk.interfaces.IAtom;
@@ -32,18 +34,26 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.tools.manipulator.BondManipulator;
 
 /**
+ * Adds a bond on clicking an atom, or cycles the order of clicked bonds. 
+ * 
  * @cdk.module control
  */
 public class AddBondModule extends ControllerModuleAdapter {
-	
+
 	public AddBondModule(IChemModelRelay relay) {
 		super(relay);
 	}
 	
 	private void cycleBondValence(IBond bond) {
+	    // special case : reset stereo bonds
+	    if (bond.getStereo() != STEREO_BOND_NONE) {
+	        bond.setStereo(STEREO_BOND_NONE);
+	        chemModelRelay.updateView();
+	        return;
+	    }
+	    
         // cycle the bond order up to maxOrder
-//      IBond.Order maxOrder = IBond.Order.TRIPLE;
-        IBond.Order maxOrder = IBond.Order.QUADRUPLE; //testing
+	    IBond.Order maxOrder = super.chemModelRelay.getController2DModel().getMaxOrder();
         if (BondManipulator.isLowerOrder(bond.getOrder(), maxOrder)) {
             BondManipulator.increaseBondOrder(bond);
         } else {
@@ -54,25 +64,29 @@ public class AddBondModule extends ControllerModuleAdapter {
 	
 	private void addBondToAtom(IAtom atom) {
 	       String atomType = chemModelRelay.getController2DModel().getDrawElement();
-           try {
-               chemModelRelay.addAtom(atomType, atom);
-               chemModelRelay.updateView();
-           } catch (Exception e) {
-               e.printStackTrace();
-           }    
+	       chemModelRelay.addAtom(atomType, atom);
+	       chemModelRelay.updateView();
+	}
+	
+	private void addNewBond(Point2d worldCoordinate) {
+	    String atomType = chemModelRelay.getController2DModel().getDrawElement();
+	    chemModelRelay.addAtom(atomType, worldCoordinate);
+	    IAtom justCreatedAtom = chemModelRelay.getClosestAtom(worldCoordinate);
+	    chemModelRelay.addAtom(atomType, justCreatedAtom);
+	    chemModelRelay.updateView();
 	}
 	
 	public void mouseClickedDown(Point2d worldCoordinate) {
 		IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoordinate);
 		IBond closestBond = chemModelRelay.getClosestBond(worldCoordinate);
 		
-		if (closestAtom == null && closestBond == null) {
-			return;
-		} else if (closestAtom == null && closestBond != null) {
-		    this.cycleBondValence(closestBond);
-		} else if (closestAtom != null && closestBond == null) {
-		    this.addBondToAtom(closestAtom);
-		} else {
+		if (noSelection(closestAtom, closestBond)) {
+            addNewBond(worldCoordinate);
+        } else if (isBondClosest(closestAtom, closestBond)) {
+            this.cycleBondValence(closestBond);
+        } else if (isAtomClosest(closestAtom, closestBond)) {
+            this.addBondToAtom(closestAtom);
+        } else {
 		    double dA = closestAtom.getPoint2d().distance(worldCoordinate);
 		    double dB = closestBond.get2DCenter().distance(worldCoordinate);
 		    if (dA <= dB) {
@@ -84,6 +98,18 @@ public class AddBondModule extends ControllerModuleAdapter {
 		
 	}
 
+	private boolean isBondClosest(IAtom atom, IBond bond) {
+        return atom == null && bond != null;
+    }
+
+    private boolean isAtomClosest(IAtom atom, IBond bond) {
+        return atom != null && bond == null;
+    }
+
+    private boolean noSelection(IAtom atom, IBond bond) {
+        return atom == null && bond == null;
+    }
+	
 	public String getDrawModeString() {
 		return IControllerModel.DrawMode.DRAWBOND.getName();
 	}

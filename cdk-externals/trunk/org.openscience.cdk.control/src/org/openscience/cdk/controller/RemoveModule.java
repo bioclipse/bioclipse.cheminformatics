@@ -27,10 +27,11 @@ package org.openscience.cdk.controller;
 import javax.vecmath.Point2d;
 
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IBond;
 
 
 /**
- * deletes closest atom on click
+ * Deletes closest atom on click
  * 
  * @author Niels Out
  * @cdk.svnrev  $Revision: 9162 $
@@ -42,16 +43,42 @@ public class RemoveModule extends ControllerModuleAdapter {
 		super(chemObjectRelay);
 	}
 	
-	public void mouseClickedDown(Point2d worldCoord) {
-		// TODO Auto-generated method stub
-		IAtom atom = chemModelRelay.getClosestAtom(worldCoord);
-		System.out.println("trying to remove: " + atom);
-		if (atom != null) {
-			chemModelRelay.removeAtom(atom);
-			chemModelRelay.updateView();
+	public void mouseClickedDown(Point2d worldCoordinate) {
+	    IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoordinate);
+		IBond closestBond = chemModelRelay.getClosestBond(worldCoordinate);
+		if (isAtomClosest(closestAtom, closestBond)) {
+		    removeAtom(closestAtom);
+		} else if (isBondClosest(closestAtom, closestBond)) {
+		    removeBond(closestBond);
+		} else {
+		    double dA = closestAtom.getPoint2d().distance(worldCoordinate);
+            double dB = closestBond.get2DCenter().distance(worldCoordinate);
+            if (dA <= dB) {
+                removeAtom(closestAtom);               
+            } else {
+                removeBond(closestBond);
+            }
 		}
 			
 	}
+	
+	private void removeAtom(IAtom atom) {
+        chemModelRelay.removeAtom(atom);
+        chemModelRelay.updateView();
+	}
+	
+	private void removeBond(IBond bond) {
+        chemModelRelay.removeBond(bond);
+        chemModelRelay.updateView();
+	}
+	
+	private boolean isBondClosest(IAtom atom, IBond bond) {
+        return atom == null && bond != null;
+    }
+
+    private boolean isAtomClosest(IAtom atom, IBond bond) {
+        return atom != null && bond == null;
+    }
 
 	public String getDrawModeString() {
 		return IControllerModel.DrawMode.ERASER.getName();

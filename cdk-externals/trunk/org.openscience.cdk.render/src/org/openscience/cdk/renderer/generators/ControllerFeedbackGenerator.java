@@ -22,7 +22,7 @@ package org.openscience.cdk.renderer.generators;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 
 /**
@@ -30,9 +30,9 @@ import org.openscience.cdk.renderer.elements.IRenderingElement;
  */
 public class ControllerFeedbackGenerator {
 
-	private Renderer2DModel model;
+	private RendererModel model;
 	
-    public ControllerFeedbackGenerator(IAtomContainer ac, Renderer2DModel r2dm) {
+    public ControllerFeedbackGenerator(IAtomContainer ac, RendererModel r2dm) {
     	this.model = r2dm;
     }
     
