@@ -278,7 +278,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		ChemModelManipulator.removeAtomAndConnectedElectronContainers(chemModel, atom);
 	}
 	
-	public void addAtom(String atomType, Point2d worldCoord) {
+	public IAtom addAtom(String atomType, Point2d worldCoord) {
 		//FIXME: update atoms for implicit H's or so
 		IAtom newAtom = chemModel.getBuilder().newAtom(atomType, worldCoord);
 		
@@ -294,9 +294,10 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		    // FIXME : always add to the first container?
 		    molSet.getAtomContainer(0).addAtom(newAtom);
 		}
+		return newAtom;
 	}
 
-    public void addAtom(String atomType, IAtom atom) {
+    public IAtom addAtom(String atomType, IAtom atom) {
         IAtom newAtom = chemModel.getBuilder().newAtom(atomType);
         IBond newBond = chemModel.getBuilder().newBond(atom, newAtom);
         IAtomContainer atomCon = chemModel.getMoleculeSet().getAtomContainer(0);
@@ -341,6 +342,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
         atomCon.addAtom(newAtom);
         atomCon.addBond(newBond);
+        return newAtom;
     }
     
     public void moveTo( IAtom atom, Point2d worldCoords ) {
@@ -364,9 +366,10 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         }
     }
 
-    public void addBond( IAtom fromAtom, IAtom toAtom ) {
+    public IBond addBond( IAtom fromAtom, IAtom toAtom ) {
         IBond newBond = chemModel.getBuilder().newBond(fromAtom, toAtom);
         chemModel.getMoleculeSet().getAtomContainer(0).addBond(newBond);
+        return newBond;
     }
 
     public void setCharge(IAtom atom, int charge) {
@@ -457,22 +460,24 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         }
     }
     
-    public void addRing(int ringSize, Point2d worldcoord) {
+    public IRing addRing(int ringSize, Point2d worldcoord) {
         IRing ring = chemModel.getBuilder().newRing(ringSize, "C");
         System.err.println("making ring of size " + ringSize + " actual = " + ring.getAtomCount());
         double bondLength = 2.5;    // err...
         ringPlacer.placeRing(ring, worldcoord, bondLength);
+        // FIXME: the below is rather dangerous code!!!
         IMoleculeSet set = chemModel.getBuilder().newMoleculeSet();
         set.addAtomContainer(ring);
         chemModel.setMoleculeSet(set);
+        return ring;
     }
 
-    public void addPhenyl(Point2d worldcoord) {
+    public IRing addPhenyl(Point2d worldcoord) {
         addAtom("C", worldcoord);
-        addPhenyl(getClosestAtom(worldcoord));
+        return addPhenyl(getClosestAtom(worldcoord));
     }
 
-    public void addRing(IAtom atom, int ringSize) {
+    public IRing addRing(IAtom atom, int ringSize) {
         IAtomContainer sourceContainer = ChemModelManipulator.getRelevantAtomContainer(chemModel, atom);
         IAtomContainer sharedAtoms = atom.getBuilder().newAtomContainer();
         sharedAtoms.addAtom(atom);
@@ -489,9 +494,10 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         for (IBond ringBond : newRing.bonds()) {
             sourceContainer.addBond(ringBond);
         }
+        return newRing;
     }
 
-    public void addPhenyl(IAtom atom) {
+    public IRing addPhenyl(IAtom atom) {
         IAtomContainer sourceContainer = ChemModelManipulator.getRelevantAtomContainer(chemModel, atom);
         IAtomContainer sharedAtoms = atom.getBuilder().newAtomContainer();
         sharedAtoms.addAtom(atom);
@@ -513,6 +519,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         for (IBond ringBond : newRing.bonds()) {
             sourceContainer.addBond(ringBond);
         }
+        return newRing;
     }
 
     private void makeRingAromatic(IRing newRing) {
@@ -575,7 +582,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         return GeometryTools.get2DCenter(conAtoms);
     }
 
-    public void addRing(IBond bond, int size) {
+    public IRing addRing(IBond bond, int size) {
         IAtomContainer sharedAtoms = bond.getBuilder().newAtomContainer();
         IAtom firstAtom = bond.getAtom(0); // Assumes two-atom bonds only
         IAtom secondAtom = bond.getAtom(1);
@@ -637,9 +644,10 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
                 sourceContainer.addBond(ringBond);
             }
         }
+        return newRing;
     }
 
-    public void addPhenyl(IBond bond) {
+    public IRing addPhenyl(IBond bond) {
         IAtomContainer sharedAtoms = bond.getBuilder().newAtomContainer();
         IAtom firstAtom = bond.getAtom(0); // Assumes two-atom bonds only
         IAtom secondAtom = bond.getAtom(1);
@@ -710,6 +718,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
                 sourceContainer.addBond(ringBond);
             }
         }
+        return newRing;
     }
 
     public void removeBond(IBond bond) {

@@ -30,6 +30,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.renderer.IJava2DRenderer;
 
 /**
@@ -74,26 +75,26 @@ public interface IChemModelRelay {
     /* Editing actions for the complete model */
     public abstract void updateImplicitHydrogenCounts();
     public void zap();
-    public void addRing(int size, Point2d worldcoord);
-    public void addRing(IAtom atom, int size);
-    public void addPhenyl(IAtom atom);
-    public void addPhenyl(Point2d worldcoord);
-    public void addRing(IBond bond, int size);
-    public void addPhenyl(IBond bond);
+    public IRing addRing(int size, Point2d worldcoord);
+    public IRing addRing(IAtom atom, int size);
+    public IRing addPhenyl(IAtom atom);
+    public IRing addPhenyl(Point2d worldcoord);
+    public IRing addRing(IBond bond, int size);
+    public IRing addPhenyl(IBond bond);
     public void cleanup();
 //    public abstract void cleanupSelection(Selector sectionIdentifier);
 
     /* Editing actions for atoms */
     public abstract void removeAtom(IAtom atom);
-    public abstract void addAtom(String element, Point2d worldcoord);
-    public abstract void addAtom(String element, IAtom atom);
+    public abstract IAtom addAtom(String element, Point2d worldcoord);
+    public abstract IAtom addAtom(String element, IAtom atom);
     public abstract void moveTo(IAtom atom, Point2d point);
     public abstract void setSymbol(IAtom atom, String symbol);
     public abstract void setCharge(IAtom atom, int charge);
     public abstract void setMassNumber(IAtom atom, int charge);
 
     /* Editing actions for bonds */
-    public abstract void addBond(IAtom fromAtom, IAtom toAtom);
+    public abstract IBond addBond(IAtom fromAtom, IAtom toAtom);
     public abstract void removeBond(IBond bond);
     public abstract void moveTo(IBond bond, Point2d point);
     public abstract void setOrder(IBond bond, IBond.Order order);
