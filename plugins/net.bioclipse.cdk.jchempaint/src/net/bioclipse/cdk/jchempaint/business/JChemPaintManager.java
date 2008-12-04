@@ -125,6 +125,17 @@ public class JChemPaintManager implements IJChemPaintManager {
         updateView();
     }
 
+    public void removeBond( IBond bond ) throws BioclipseException {
+        JChemPaintEditor editor = findActiveEditor();
+        if (editor != null) {
+            IChemModelRelay relay = editor.getControllerHub();
+            relay.removeBond( bond );
+        } else {
+            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+        }
+        updateView();
+    }
+    
     public void updateView() {
         PlatformUI.getWorkbench().getDisplay().syncExec( new Runnable() {
             public void run() {

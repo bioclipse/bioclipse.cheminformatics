@@ -49,6 +49,11 @@ public interface IJChemPaintManager extends IBioclipseManager {
     @PublishedMethod ( params = "IAtom atom to remove",
                        methodSummary = "Removes an IAtom from the data model." )
     public void removeAtom(IAtom atom) throws BioclipseException;
+    
+    @Recorded
+    @PublishedMethod ( params = "IBond bond to remove",
+                       methodSummary = "Removes a IBond from the data model." )
+    public void removeBond(IBond bond) throws BioclipseException;
 
     @Recorded
     @PublishedMethod ( params = "Point2d worldCoordinate",
