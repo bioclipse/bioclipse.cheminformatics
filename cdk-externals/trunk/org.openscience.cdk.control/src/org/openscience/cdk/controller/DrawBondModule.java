@@ -70,8 +70,7 @@ public class DrawBondModule extends ControllerModuleAdapter {
         newAtom = null;
         if (noSelection(closestAtom, closestBond)) {
             atomToBondFrom = null;
-            addAtomTo(worldCoordinate);
-            newAtom = chemModelRelay.getClosestAtom(worldCoordinate);
+            newAtom = addAtomTo(worldCoordinate);
         } else if (isBondSelected(closestAtom, closestBond)) {
             this.cycleBondValence(closestBond);
         } else if (isAtomSelected(closestAtom, closestBond)) {
@@ -144,15 +143,12 @@ public class DrawBondModule extends ControllerModuleAdapter {
         chemModelRelay.updateView();
     }
 
-    private void addAtomTo(Point2d to) {
+    private IAtom addAtomTo(Point2d to) {
         String atomType = chemModelRelay.getController2DModel()
                 .getDrawElement();
-        try {
-            chemModelRelay.addAtom(atomType, to);
-            chemModelRelay.updateView();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        IAtom newAtom = chemModelRelay.addAtom(atomType, to);
+        chemModelRelay.updateView();
+        return newAtom;
     }
 
     public String getDrawModeString() {
