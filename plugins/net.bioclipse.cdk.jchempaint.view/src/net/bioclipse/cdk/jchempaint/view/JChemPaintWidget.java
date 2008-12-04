@@ -11,6 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.vecmath.Point2d;
 
@@ -41,7 +42,7 @@ public class JChemPaintWidget extends Canvas {
     int margin = 20;
 
     protected IAtomContainer  atomContainer;
-    RendererModel renderer2DModel;
+    protected RendererModel renderer2DModel;
     Transform currentTransform;
     Renderer renderer;
     SWTFontManager fontManager;
@@ -66,11 +67,7 @@ public class JChemPaintWidget extends Canvas {
         renderer2DModel.setShowEndCarbons( true );
         renderer2DModel.setShowExplicitHydrogens( true );
 
-        Collection<IGenerator> set = new ArrayList<IGenerator>();
-        set.add( new AtomContainerBoundsGenerator() );
-        set.add( new BasicBondGenerator(renderer2DModel) );
-        set.add( new BasicAtomGenerator(renderer2DModel));
-        set.add( new HighlightGenerator(renderer2DModel) );
+        Collection<IGenerator> set =createGenerators();
         
 
         renderer = new Renderer(set);
@@ -84,6 +81,16 @@ public class JChemPaintWidget extends Canvas {
         } );
     }
 
+    protected List<IGenerator> createGenerators() {
+        List<IGenerator> generatorList = new ArrayList<IGenerator>();
+        generatorList.add( new AtomContainerBoundsGenerator() );
+        generatorList.add( new HighlightGenerator(renderer2DModel) );
+        generatorList.add( new BasicBondGenerator(renderer2DModel) );
+        generatorList.add( new BasicAtomGenerator(renderer2DModel));
+        
+        return generatorList;
+    }
+    
     private void paintControl( PaintEvent event ) {
 
         if ( atomContainer == null )

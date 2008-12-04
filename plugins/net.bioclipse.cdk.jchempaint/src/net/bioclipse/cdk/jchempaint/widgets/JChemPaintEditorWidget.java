@@ -14,6 +14,7 @@ package net.bioclipse.cdk.jchempaint.widgets;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.editor.SWTMosueEventRelay;
@@ -40,6 +41,8 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
+import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.SelectionGenerator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 
@@ -97,6 +100,15 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
     	addListener(SWT.MouseExit, relay);
 
     }
+    
+    @Override
+    protected List<IGenerator> createGenerators() {
+        List<IGenerator> generatorList = new ArrayList<IGenerator>();
+        generatorList.addAll( super.createGenerators() );
+        generatorList.add(new SelectionGenerator(renderer2DModel));
+        return generatorList;
+    }
+    
     @Override
     public void setAtomContainer( IAtomContainer atomContainer ) {
 
