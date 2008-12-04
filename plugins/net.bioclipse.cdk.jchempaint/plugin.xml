@@ -92,6 +92,16 @@
              name="Controller Module"
              optional="false">
        </commandParameter>
+       <commandParameter
+             id="jcp.controller.param.int"
+             name="Integer"
+             optional="true">
+       </commandParameter>
+       <commandParameter
+             id="jcp.controller.param.boolean"
+             name="Boolean"
+             optional="true">
+       </commandParameter>
     </command>
  </extension>
  <extension
@@ -137,7 +147,7 @@
              </parameter>
           </command>
           <command
-                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.lasso"
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
                 icon="icons/editor/lasso.gif"
                 style="radio">
              <visibleWhen
@@ -149,6 +159,10 @@
                    </equals>
                 </with>
              </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="SelectModule">
+             </parameter>
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
@@ -167,9 +181,13 @@
                    name="jcp.controller.module"
                    value="ChangeFormalChargeModule">
              </parameter>
+             <parameter
+                   name="jcp.controller.param.int"
+                   value="1">
+             </parameter>
           </command>
           <command
-                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.deccharge"
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
                 icon="icons/editor/charge_minus.gif"
                 style="radio">
              <visibleWhen
@@ -181,6 +199,14 @@
                    </equals>
                 </with>
              </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="ChangeFormalChargeModule">
+             </parameter>
+             <parameter
+                   name="jcp.controller.param.int"
+                   value="-1">
+             </parameter>
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
@@ -198,6 +224,27 @@
              <parameter
                    name="jcp.controller.module"
                    value="MoveModule">
+             </parameter>
+          </command>
+          <separator
+                name="Rings"
+                visible="true">
+          </separator>
+          <command
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
+                icon="icons/editor/benzene.gif"
+                style="radio">
+             <parameter
+                   name="jcp.controller.module"
+                   value="AddRingModule">
+             </parameter>
+             <parameter
+                   name="jcp.controller.param.int"
+                   value="6">
+             </parameter>
+             <parameter
+                   name="jcp.controller.param.boolean"
+                   value="true">
              </parameter>
           </command>
        </toolbar>
@@ -394,22 +441,6 @@
              commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.eraser"
              label="Delete"
              style="push">
-          <visibleWhen
-                checkEnabled="true">
-             <with
-                   variable="activeMenuSelection">
-                <iterate>
-                   <or>
-                      <instanceof
-                            value="org.openscience.cdk.interfaces.IAtom">
-                      </instanceof>
-                      <instanceof
-                            value="org.openscience.cdk.interfaces.IAtomContainer">
-                      </instanceof>
-                   </or>
-                </iterate>
-             </with>
-          </visibleWhen>
        </command>
        <command
              commandId="net.bioclipse.cdk.jchempaint.manager.action"

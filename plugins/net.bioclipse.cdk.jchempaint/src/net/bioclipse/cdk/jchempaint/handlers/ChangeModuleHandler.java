@@ -31,6 +31,15 @@ import org.openscience.cdk.controller.IControllerModule;
  */
 public class ChangeModuleHandler extends AbstractJChemPaintHandler {
     Logger logger = Logger.getLogger( ChangeModuleHandler.class );
+    
+    
+    protected IControllerModule newInstance(Constructor<?> ct, Object[] arglist) 
+                  throws IllegalArgumentException, 
+                  InstantiationException, 
+                  IllegalAccessException, 
+                  InvocationTargetException {
+        return (IControllerModule)ct.newInstance(arglist);
+    }
     /* (non-Javadoc)
      * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
      */
@@ -39,17 +48,39 @@ public class ChangeModuleHandler extends AbstractJChemPaintHandler {
         ControllerHub hub = getControllerHub( event );
         
         String module = event.getParameter( "jcp.controller.module"  );
+        String intString = event.getParameter( "jcp.controller.param.int");
+        
+        Integer value = (intString != null ? new Integer(intString):null);
+        String boolString = event.getParameter( "jcp.controller.param.boolean" );
+        Boolean bool = boolString != null ?new Boolean(boolString):null;
         Class<IJChemPaintManager> cl = IJChemPaintManager.class;
         try {
             
             Class<?> cls = Class.forName( "org.openscience.cdk.controller."
                                           +module);
-            Class<?> partypes[] =new Class<?>[]{ IChemModelRelay.class };
-            Constructor<?> ct    = cls.getConstructor(partypes);
-            Object arglist[] = new Object[] {hub};
+            
+            Constructor<?> ct;
+            try {
+                ct = cls.getConstructor(new Class<?>[]{ IChemModelRelay.class });
+                hub.setActiveDrawModule( newInstance( ct, new Object[] {hub} ) );
+            } catch(NoSuchMethodException x) {
+                try {
+                    
+                    ct = cls.getConstructor(new Class<?>[]{ IChemModelRelay.class
+                                                            ,int.class});
+                    hub.setActiveDrawModule( newInstance( ct, 
+                              new Object[] {hub,value} ) );
+                }catch (NoSuchMethodException y) {
+                   ct = cls.getConstructor(new Class<?>[]{ IChemModelRelay.class
+                                                           ,int.class
+                                                           ,boolean.class});
+                    hub.setActiveDrawModule( newInstance( ct, 
+                                         new Object[] {hub,value,bool} ) );
 
-            IControllerModule retobj = (IControllerModule)ct.newInstance(arglist);
-            hub.setActiveDrawModule( retobj );
+                }
+            }
+                        
+            
 
         } catch ( NoSuchMethodException e ) {
             // TODO Auto-generated catch block
