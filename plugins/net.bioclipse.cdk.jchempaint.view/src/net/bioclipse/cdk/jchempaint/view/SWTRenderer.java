@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
@@ -28,11 +29,14 @@ import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.IRenderingVisitor;
 import org.openscience.cdk.renderer.elements.LineElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
+import org.openscience.cdk.renderer.elements.PathElement;
 import org.openscience.cdk.renderer.elements.RectangleElement;
 import org.openscience.cdk.renderer.elements.TextElement;
 import org.openscience.cdk.renderer.elements.WedgeLineElement;
 
 public class SWTRenderer implements IRenderingVisitor{
+    
+    Logger logger = Logger.getLogger( SWTRenderer.class );
 
     GC gc;
     RendererModel model;
@@ -86,8 +90,8 @@ public class SWTRenderer implements IRenderingVisitor{
         Color colorOld = gc.getBackground();
 //        int radius = (int) (scaleX(element.getRadius())+.5);
 //        int radius_2 = (int) (scaleX(element.getRadius())/2.0+.5);
-        int radius = (int)round( element.radius);
-        int radius_2 = (int)round( element.radius/2d );
+        int radius = (int)round( scaleX( element.radius));
+        int radius_2 = (int)round( scaleX(element.radius/2d ));
         if(element.fill) {
         gc.setBackground( toSWTColor( gc, element.color ) );
         
@@ -339,6 +343,7 @@ public class SWTRenderer implements IRenderingVisitor{
     public void visitDefault(IRenderingElement element) {
 //        throw new RuntimeException( "visitor for "+element.getClass().getName() 
 //                                    + " is not implemented yet.");
+        logger.debug( "No visitor method implemented for : "+element.getClass() );
         
     }
 
@@ -354,6 +359,25 @@ public class SWTRenderer implements IRenderingVisitor{
                           scaleX(element.width), scaleY(element.height ));
         
     }
+    
+    public void visit( PathElement element) {
+        gc.setForeground( toSWTColor( gc,element.color) );
+        Path path = new Path(gc.getDevice());
+        boolean first = true;
+        for(Point2d p: element.points) {
+            double[] tp = transform( p.x, p.y );
+            
+            if(first) {
+                path.moveTo( (float)tp[0], (float)tp[1]);
+                first = false;
+            } else {
+                path.lineTo( (float)tp[0], (float)tp[1]);
+            }
+        }
+        gc.drawPath( path );
+        path.dispose();        
+    }
+    
     public void visit(IRenderingElement element)  {
 
         Method method = getMethod( element );
@@ -384,15 +408,15 @@ public class SWTRenderer implements IRenderingVisitor{
                 cl = cl.getSuperclass();
             }
         }
-        Class<?>[] interfaces = element.getClass().getInterfaces();
-        for ( Class<?> c : interfaces ) {
-            try {
-                return this.getClass().getDeclaredMethod( "visit",
-                                                          new Class[] { c } );
-            } catch ( NoSuchMethodException e ) {
-                // try with the next interface
-            }
-        }
+//        Class<?>[] interfaces = element.getClass().getInterfaces();
+//        for ( Class<?> c : interfaces ) {
+//            try {
+//                return this.getClass().getDeclaredMethod( "visit",
+//                                                          new Class[] { c } );
+//            } catch ( NoSuchMethodException e ) {
+//                // try with the next interface
+//            }
+//        }
         return null;
     }
 }
