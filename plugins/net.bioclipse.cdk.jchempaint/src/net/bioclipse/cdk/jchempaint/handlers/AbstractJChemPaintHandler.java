@@ -11,6 +11,9 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.handlers;
 
+import java.util.Collection;
+import java.util.List;
+
 import net.bioclipse.cdk.jchempaint.Activator;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintManager;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
@@ -25,6 +28,7 @@ import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemObject;
 
 public abstract class AbstractJChemPaintHandler extends AbstractHandler {
 
@@ -51,10 +55,19 @@ public abstract class AbstractJChemPaintHandler extends AbstractHandler {
     protected IBond getSingleSelectedBond( ExecutionEvent event ) {
         ISelection selection = HandlerUtil.getCurrentSelection( event );
         if(selection instanceof IStructuredSelection ) {
-            Object element = ((IStructuredSelection)selection).getFirstElement();
+            Object element = ((IStructuredSelection)selection).toArray()[1];
             if(element instanceof IBond) {
                 return (IBond)element;
             }
+        }
+        return null;
+    }
+    
+    protected Collection<?> getSelection(ExecutionEvent event) {
+        ISelection selection = HandlerUtil.getCurrentSelection( event );
+        if(selection instanceof IStructuredSelection) {
+            List<?> elements = ((IStructuredSelection)selection).toList();
+            return elements; 
         }
         return null;
     }
