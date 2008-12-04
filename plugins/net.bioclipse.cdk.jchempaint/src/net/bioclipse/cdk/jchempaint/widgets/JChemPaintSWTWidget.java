@@ -37,7 +37,7 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.IJava2DRenderer;
-import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.RendererModel;
 
 /**
  * SWT widget that views molecules using CDK's JChemPaint viewing engine.
@@ -58,7 +58,7 @@ public class JChemPaintSWTWidget extends Canvas {
         
         this.setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
         
-        renderer = new SWTRenderer(new Renderer2DModel());
+        renderer = new SWTRenderer(new RendererModel());
         Dimension screenSize = new Dimension(this.getSize().x, this.getSize().y);
 
         renderer.getRenderer2DModel().setDrawNumbers(true);
@@ -95,7 +95,7 @@ public class JChemPaintSWTWidget extends Canvas {
         this.molecule = molecule;
     }
     
-    public Renderer2DModel getRendererModel() {
+    public RendererModel getRendererModel() {
         return renderer.getRenderer2DModel();
     }
     

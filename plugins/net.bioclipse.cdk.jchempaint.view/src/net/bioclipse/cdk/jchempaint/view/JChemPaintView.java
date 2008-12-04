@@ -17,13 +17,13 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
-import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.color.CDK2DAtomColors;
 
 public class JChemPaintView extends ViewPart implements ISelectionListener {
 
     
-    Renderer2DModel r2DModel;
+    RendererModel r2DModel;
 
     JChemPaintWidget jcpWidget;
    
@@ -37,7 +37,7 @@ public class JChemPaintView extends ViewPart implements ISelectionListener {
         jcpWidget = new JChemPaintWidget( parent, SWT.NONE );
         jcpWidget.setSize( 200, 200 );
         
-        r2DModel = new Renderer2DModel();
+        r2DModel = new RendererModel();
         r2DModel.setBondWidth( 4 );
         r2DModel.setBondDistance( 4 );
         r2DModel.setForeColor( Color.BLACK );

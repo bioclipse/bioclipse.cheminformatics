@@ -21,7 +21,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.AtomSymbolElement;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
@@ -35,14 +35,14 @@ import org.openscience.cdk.renderer.elements.WedgeLineElement;
 public class SWTRenderer implements IRenderingVisitor{
 
     GC gc;
-    Renderer2DModel model;
+    RendererModel model;
     AffineTransform transform;
     
     SWTFontManager fontManager;
     
     // scale a lite more and translate the differense to center it
     // dosen't handle zoom
-    public SWTRenderer(GC graphics, SWTFontManager fontManager, Renderer2DModel model) {
+    public SWTRenderer(GC graphics, SWTFontManager fontManager, RendererModel model) {
         this.transform = new AffineTransform();        
         this.model = model;
         this.gc = graphics;
@@ -52,7 +52,7 @@ public class SWTRenderer implements IRenderingVisitor{
     
     private Map<java.awt.Color, Color> cleanUp;
     
-    public Renderer2DModel getModel() {
+    public RendererModel getModel() {
         return model;
     }
     

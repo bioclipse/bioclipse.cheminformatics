@@ -69,7 +69,7 @@ import org.openscience.cdk.interfaces.IReactionSet;
 import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.interfaces.IRingSet;
 import org.openscience.cdk.renderer.IJava2DRenderer;
-import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.ringsearch.SSSRFinder;
 import org.openscience.cdk.tools.LoggingTool;
 import org.openscience.cdk.tools.manipulator.RingSetManipulator;
@@ -84,7 +84,7 @@ import org.openscience.cdk.validate.ProblemMarker;
  */
 public class SWTRenderer implements IJava2DRenderer {
 
-	private Renderer2DModel rendererModel;
+	private RendererModel rendererModel;
 	private AffineTransform affine;
 
 	protected LoggingTool logger;
@@ -93,12 +93,12 @@ public class SWTRenderer implements IJava2DRenderer {
 	
 	Map<java.awt.Color,Color> cleanUp= new HashMap<java.awt.Color,Color>();
 
-	public SWTRenderer(Renderer2DModel model) {
+	public SWTRenderer(RendererModel model) {
 		this.rendererModel = model;
 		logger = new LoggingTool(this);
 	}
 	
-	public SWTRenderer(Renderer2DModel model, float fscale){
+	public SWTRenderer(RendererModel model, float fscale){
 	    this(model);
 	    this.fscale = fscale;
 	}
@@ -1485,11 +1485,11 @@ public class SWTRenderer implements IJava2DRenderer {
 		return result;
 	}
 	
-	public Renderer2DModel getRenderer2DModel() {
+	public RendererModel getRenderer2DModel() {
 		return this.rendererModel;
 	}
 
-	public void setRenderer2DModel(Renderer2DModel model) {
+	public void setRenderer2DModel(RendererModel model) {
 		this.rendererModel = model;
 	}
 	public void paintMolecule(IAtomContainer atomCon, Graphics2D graphics) {

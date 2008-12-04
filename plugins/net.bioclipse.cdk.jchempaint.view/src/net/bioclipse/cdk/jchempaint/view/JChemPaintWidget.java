@@ -26,7 +26,7 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.IJava2DRenderer;
 import org.openscience.cdk.renderer.Renderer;
-import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.AtomContainerBoundsGenerator;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator;
@@ -41,7 +41,7 @@ public class JChemPaintWidget extends Canvas {
     int margin = 20;
 
     protected IAtomContainer  atomContainer;
-    Renderer2DModel renderer2DModel;
+    RendererModel renderer2DModel;
     Transform currentTransform;
     Renderer renderer;
     SWTFontManager fontManager;
@@ -57,7 +57,7 @@ public class JChemPaintWidget extends Canvas {
         setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
         fontManager = new SWTFontManager(this.getDisplay());
         currentTransform = new Transform(getDisplay());
-        renderer2DModel = new Renderer2DModel();
+        renderer2DModel = new RendererModel();
         renderer2DModel.setAtomRadius( 20 );
         renderer2DModel.setHighlightRadiusModel( .4 );
         renderer2DModel.setBondDistance( .05 );
@@ -107,13 +107,13 @@ public class JChemPaintWidget extends Canvas {
                     && (GeometryTools.has2DCoordinates( atomContainer )) );
     }
 
-    public void setRenderer2DModel( Renderer2DModel renderer2DModel ) {
+    public void setRenderer2DModel( RendererModel renderer2DModel ) {
 
         this.renderer2DModel = renderer2DModel;
         updateView( renderer2DModel!=null );
     }
 
-    public Renderer2DModel getRenderer2DModel() {
+    public RendererModel getRenderer2DModel() {
         return renderer2DModel;
     }
 
@@ -131,7 +131,7 @@ public class JChemPaintWidget extends Canvas {
                 return renderer.getCoorFromScreen( screenX, screenY );
             }
 
-            public Renderer2DModel getRenderer2DModel() {
+            public RendererModel getRenderer2DModel() {
 
                 return JChemPaintWidget.this.getRenderer2DModel();
             }
@@ -150,7 +150,7 @@ public class JChemPaintWidget extends Canvas {
 
             }
 
-            public void setRenderer2DModel( Renderer2DModel model ) {
+            public void setRenderer2DModel( RendererModel model ) {
 
                 throw new UnsupportedOperationException("setRenderer2DModel not supported from Controller2DHub");
 

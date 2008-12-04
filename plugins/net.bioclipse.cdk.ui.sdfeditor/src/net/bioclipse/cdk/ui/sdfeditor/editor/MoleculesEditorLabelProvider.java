@@ -36,7 +36,7 @@ import org.eclipse.ui.progress.PendingUpdateAdapter;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.IJava2DRenderer;
-import org.openscience.cdk.renderer.Renderer2DModel;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 public class MoleculesEditorLabelProvider implements ITableLabelProvider{
@@ -60,7 +60,7 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
     }
     private void setupRenderer() {
         
-        renderer = new SWTRenderer( new Renderer2DModel() , imageWidth/16f);
+        renderer = new SWTRenderer( new RendererModel() , imageWidth/16f);
                                     //10f);// 7f old value
         
         renderer.getRenderer2DModel().setDrawNumbers( false );
