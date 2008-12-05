@@ -41,7 +41,6 @@ import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.nebula.widgets.compositetable.AbstractSelectableRow;
 import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
 import org.eclipse.swt.nebula.widgets.compositetable.GridRowLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -122,7 +121,7 @@ public class MoleculesEditor extends EditorPart implements
         return false;
     }
     public static class Header extends Composite {
-        
+
         public Header(Composite parent, int style) {
             super(parent,style);
             setLayout( new GridRowLayout( new int[] {40,STRUCTURE_COLUMN_WIDTH},false) );
@@ -139,7 +138,9 @@ public class MoleculesEditor extends EditorPart implements
             index.setEnabled( false );
             structure = new JChemPaintWidget(this,SWT.NULL);
             structure.getRenderer2DModel().setShowExplicitHydrogens( false );
-
+            this.add( index );
+            this.add( structure);
+            initialize();
         }
         public final Text index;
         public final JChemPaintWidget structure;
@@ -151,7 +152,7 @@ public class MoleculesEditor extends EditorPart implements
         labelProvider = new MoleculesEditorLabelProvider(STRUCTURE_COLUMN_WIDTH);
         final MoleculeTableContentProvider contentProvider= new MoleculeTableContentProvider();
         contentProvider.inputChanged( null, null, getEditorInput() );
-        
+
         CompositeTable cTable = new CompositeTable(parent, SWT.NULL);
         viewer = cTable;
         // get First element from list to determin Properties
@@ -162,8 +163,8 @@ public class MoleculesEditor extends EditorPart implements
         cTable.setRunTime( true );
         cTable.setNumRowsInCollection( contentProvider.numberOfEntries( 500 ) );
         cTable.addRowContentProvider( contentProvider );
-        
-        if(contentProvider.getFile() !=null) { 
+
+        if(contentProvider.getFile() !=null) {
             Job job = new Job("Indexing SD-file") {
                 protected IStatus run(IProgressMonitor monitor) {
                     Activator.getDefault().getCDKManager()
@@ -173,7 +174,7 @@ public class MoleculesEditor extends EditorPart implements
                     "Updating SD editor") {
                         /*
                          * (non-Javadoc)
-                         * 
+                         *
                          * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
                          */
                         public IStatus runInUIThread(IProgressMonitor updateMonitor) {
@@ -196,9 +197,9 @@ public class MoleculesEditor extends EditorPart implements
             job.schedule(); // start as soon as possible
 
         }
-        
-        
-       
+
+
+
 
 
         // See what's currently selected and select it
@@ -393,9 +394,9 @@ public class MoleculesEditor extends EditorPart implements
     private ISelection getSelectedRows() {
         viewer.getSelection();
         viewer.getTopRow();
-        
+
         return StructuredSelection.EMPTY;
-        
+
     }
     private void setSelectedRows(ISelection selection) {
         // mapping between selections and index
