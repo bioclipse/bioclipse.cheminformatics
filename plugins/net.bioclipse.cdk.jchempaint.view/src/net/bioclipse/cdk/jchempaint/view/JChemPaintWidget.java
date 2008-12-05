@@ -20,6 +20,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Transform;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
@@ -68,7 +69,7 @@ public class JChemPaintWidget extends Canvas {
         renderer2DModel.setShowExplicitHydrogens( true );
 
         Collection<IGenerator> set =createGenerators();
-        
+
 
         renderer = new Renderer(set);
         renderer.setRenderer2DModel( renderer2DModel );
@@ -87,16 +88,16 @@ public class JChemPaintWidget extends Canvas {
         generatorList.add( new HighlightGenerator(renderer2DModel) );
         generatorList.add( new BasicBondGenerator(renderer2DModel) );
         generatorList.add( new BasicAtomGenerator(renderer2DModel));
-        
+
         return generatorList;
     }
-    
-    private void paintControl( PaintEvent event ) {
 
+    private void paintControl( PaintEvent event ) {
+        drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
         if ( atomContainer == null )
             return;
         renderer.setBounds( new Rectangle2D.Double(margin,margin,this.getSize().x-margin*2,this.getSize().y-margin*2 ));
-        
+
         SWTRenderer visitor = new SWTRenderer( event.gc,fontManager, renderer2DModel);
         renderer.paintMolecule( atomContainer, visitor );
     }
@@ -171,16 +172,16 @@ public class JChemPaintWidget extends Canvas {
         fontManager.dispose();
     }
 
-    
+
     public int getMargin() {
-    
+
         return margin;
     }
 
-    
+
     public void setMargin( int margin ) {
-    
+
         this.margin = margin;
     }
-    
+
 }
