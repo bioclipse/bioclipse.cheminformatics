@@ -35,29 +35,25 @@ public class SWTMosueEventRelay implements MouseListener,MouseMoveListener,Liste
 	
 	public void handleEvent(Event event) {
         switch (event.type) {
-        case SWT.MouseDown:
-        	logger.debug( "SWT.MouseDown, should not get here" );
-          break;
-        case SWT.MouseMove:
-        	if(isDragging){
-        		relay.mouseDrag(dragFromX,dragFromY, event.x, event.y);
-        		dragFromX=event.x;
-        		dragFromY=event.y;
-        	}else
-        		relay.mouseMove(event.x, event.y);
-        	break;
-        case SWT.MouseUp:
-        	relay.mouseClickedUp(event.x, event.y);
-        	isDragging=false;
-          break;
-        case SWT.MouseDoubleClick:
-        	relay.mouseClickedDouble(event.x, event.y);
-        	break;
+        
         case SWT.MouseEnter:
         	relay.mouseEnter(event.x, event.y);
         	break;
         case SWT.MouseExit:
+          isDragging = false;
         	relay.mouseExit(event.x, event.y);
+        	break;
+        	case SWT.MouseDown:
+        	logger.debug( "SWT.MouseDown, should not get here" );
+          break;
+        case SWT.MouseMove:
+            logger.debug( "SWT.MouseMove, should not get here" );
+        	break;
+        case SWT.MouseUp:
+            logger.debug( "SWT.MouseUp, should not get here" );
+          break;
+        case SWT.MouseDoubleClick:
+            logger.debug( "SWT.MouseDoubleClick, should not get here" );
         	break;
         }
       }
