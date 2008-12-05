@@ -28,7 +28,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
@@ -181,14 +180,14 @@ public class MoleculeTableContentProvider implements IRowContentProvider{
         Control[] columns = row.getChildren();
         Text index = (Text)columns[0];
         JChemPaintWidget structure = (JChemPaintWidget) columns[1];
-        
+
         index.setText( Integer.toString( currentObjectOffset+1));
         IAtomContainer mol=null;
         try {
             if(model != null) {
                 Object o =model.getMoleculeAt( currentObjectOffset );
                 if(o instanceof IAdaptable) {
-                    mol = ((ICDKMolecule) ((IAdaptable)o).getAdapter( 
+                    mol = ((ICDKMolecule) ((IAdaptable)o).getAdapter(
                                        ICDKMolecule.class  )).getAtomContainer();
                 }
             } else if(readerReady) {
@@ -209,12 +208,12 @@ public class MoleculeTableContentProvider implements IRowContentProvider{
 //                    }
 //                }
                 // TODO get a ICDKMolecules and assing it to mol
-                
-                
+
+
             } else {
                 mol = this.getMoleculeAt( currentObjectOffset ).getAtomContainer();
             }
-            
+
             structure.setAtomContainer( mol );
         } catch ( CoreException e ) {
             // TODO Auto-generated catch block
