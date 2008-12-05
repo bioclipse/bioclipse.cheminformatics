@@ -62,10 +62,13 @@ public class Renderer {
         // if(dirty) return null; // what should the behavior when it is dirty
         try {
             double[] points = new double[2];
-
-            transform.inverseTransform(new double[] { screenX, screenY }, 0,
-                    points, 0, 1);
-            return new Point2d(points[0], points[1]);
+            if (transform != null) {
+                transform.inverseTransform(new double[] { screenX, screenY }, 0,
+                                           points, 0, 1);
+                return new Point2d(points[0], points[1]);
+            } else {
+                return new Point2d(0,0);
+            }
         } catch (NoninvertibleTransformException e) {
             logger.debug("Can not invert transform");
         }
