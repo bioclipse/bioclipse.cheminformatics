@@ -226,10 +226,6 @@
                    value="MoveModule">
              </parameter>
           </command>
-          <separator
-                name="Rings"
-                visible="true">
-          </separator>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
                 icon="icons/editor/benzene.gif"
@@ -256,7 +252,7 @@
           <menu
                 label="Common Elements">
              <command
-                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   commandId="net.bioclipse.cdk.jchempaint.command.change.element"
                    label="C"
                    style="push">
                 <parameter
@@ -265,7 +261,7 @@
                 </parameter>
              </command>
              <command
-                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   commandId="net.bioclipse.cdk.jchempaint.command.change.element"
                    label="O"
                    style="push">
                 <parameter
@@ -274,7 +270,7 @@
                 </parameter>
              </command>
              <command
-                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   commandId="net.bioclipse.cdk.jchempaint.command.change.element"
                    label="N"
                    style="push">
                 <parameter
@@ -283,7 +279,7 @@
                 </parameter>
              </command>
              <command
-                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   commandId="net.bioclipse.cdk.jchempaint.command.change.element"
                    label="H"
                    style="push">
                 <parameter
@@ -292,7 +288,7 @@
                 </parameter>
              </command>
              <command
-                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   commandId="net.bioclipse.cdk.jchempaint.command.change.element"
                    label="P"
                    style="push">
                 <parameter
@@ -301,7 +297,7 @@
                 </parameter>
              </command>
              <command
-                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   commandId="net.bioclipse.cdk.jchempaint.command.change.element"
                    label="S"
                    style="push">
                 <parameter
@@ -313,7 +309,7 @@
           <menu
                 label="Halogens">
              <command
-                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   commandId="net.bioclipse.cdk.jchempaint.command.change.element"
                    label="F"
                    style="push">
                 <parameter
@@ -322,7 +318,7 @@
                 </parameter>
              </command>
              <command
-                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   commandId="net.bioclipse.cdk.jchempaint.command.change.element"
                    label="Cl"
                    style="push">
                 <parameter
@@ -331,7 +327,7 @@
                 </parameter>
              </command>
              <command
-                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   commandId="net.bioclipse.cdk.jchempaint.command.change.element"
                    label="Br"
                    style="push">
                 <parameter
@@ -340,7 +336,7 @@
                 </parameter>
              </command>
              <command
-                   commandId="net.bioclipse.cdk.jchempaint.command.add.element"
+                   commandId="net.bioclipse.cdk.jchempaint.command.change.element"
                    label="I"
                    style="push">
                 <parameter

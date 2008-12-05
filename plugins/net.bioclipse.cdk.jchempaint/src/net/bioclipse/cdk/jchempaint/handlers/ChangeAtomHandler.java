@@ -24,7 +24,7 @@ public class ChangeAtomHandler extends AbstractJChemPaintHandler {
        if( o == null) o= "C";
        IAtom atom = getSingleSelectedAtom( event );
        if(atom != null) {
-           getManager().addAtom( o, atom );
+           getManager().setSymbol( atom, o );
        }
        return null;
     }
