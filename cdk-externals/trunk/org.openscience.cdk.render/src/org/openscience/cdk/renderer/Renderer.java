@@ -71,8 +71,8 @@ public class Renderer {
             }
         } catch (NoninvertibleTransformException e) {
             logger.debug("Can not invert transform");
+            return new Point2d(0,0);
         }
-        return null;
     }
 
     public RendererModel getRenderer2DModel() {
