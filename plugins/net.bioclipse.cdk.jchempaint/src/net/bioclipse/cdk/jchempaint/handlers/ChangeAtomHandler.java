@@ -16,10 +16,10 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.openscience.cdk.interfaces.IAtom;
 
-public class AddHandler extends AbstractJChemPaintHandler {
+public class ChangeAtomHandler extends AbstractJChemPaintHandler {
 
-    Logger logger = Logger.getLogger(AddHandler.class);
-    public Object execute(ExecutionEvent event) throws ExecutionException {       
+    Logger logger = Logger.getLogger(ChangeAtomHandler.class);
+    public Object execute(ExecutionEvent event) throws ExecutionException {
        String o = event.getParameter( "atomType" );
        if( o == null) o= "C";
        IAtom atom = getSingleSelectedAtom( event );

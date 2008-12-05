@@ -39,9 +39,9 @@
        name="JChemPaintToolbarCommands"
        point="org.eclipse.ui.commands">
     <command
-          defaultHandler="net.bioclipse.cdk.jchempaint.handlers.AddHandler"
-          id="net.bioclipse.cdk.jchempaint.command.add.element"
-          name="Add">
+          defaultHandler="net.bioclipse.cdk.jchempaint.handlers.ChangeAtomHandler"
+          id="net.bioclipse.cdk.jchempaint.command.change.element"
+          name="Change element">
        <commandParameter
              id="atomType"
              name="symbol"
@@ -252,7 +252,7 @@
     <menuContribution
           locationURI="popup:net.bioclipse.cdk.ui.editors.jchempaint.menu">
        <menu
-             label="Add Element">
+             label="Change Element">
           <menu
                 label="Common Elements">
              <command
