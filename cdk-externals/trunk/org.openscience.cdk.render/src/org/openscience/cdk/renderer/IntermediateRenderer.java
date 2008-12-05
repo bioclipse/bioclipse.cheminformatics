@@ -70,6 +70,8 @@ public class IntermediateRenderer implements IJava2DRenderer {
 	
 	private double scale = NATURAL_SCALE;
 	
+	private IRenderingElement cachedDiagram;
+	
 	/**
 	 * If true, the renderer will calculate a scale that will fit
 	 * the molecule into the drawBounds, as well as centring it there.
@@ -78,7 +80,7 @@ public class IntermediateRenderer implements IJava2DRenderer {
 	
 	public IntermediateRenderer() {
 		this.rendererModel = new RendererModel();
-		this.rendererModel.setHighlightRadiusModel(3.5);
+		this.rendererModel.setHighlightRadiusModel(2.5);
 		this.rendererModel.setBondDistance(0.15);
 		this.rendererModel.setMargin(0.25);
 		
@@ -92,7 +94,34 @@ public class IntermediateRenderer implements IJava2DRenderer {
 		this.transform = new AffineTransform();
 	}
 	
-	public void setFitToScreen(boolean fitToScreen) {
+	/**
+	 * Given a chem model, calculates the bounding rectangle in screen space.
+	 * 
+	 * @param model the model to draw.
+	 * @return a rectangle in screen space.
+	 */
+	public Rectangle calculateScreenBounds(IChemModel model) {
+        IMoleculeSet moleculeSet = model.getMoleculeSet();
+        if (moleculeSet == null || this.drawCenter == null) {
+            return new Rectangle();
+        }
+        
+        Rectangle2D modelBounds = this.calculateBounds(moleculeSet);
+        double margin = this.rendererModel.getMargin();
+        
+        // this is the center on the screen where the model will be drawn
+        Point2d modelScreenCenter 
+                = this.toScreenCoordinates(modelBounds.getCenterX(),
+                                           modelBounds.getCenterY());
+        double w = scale * (modelBounds.getWidth() + 2 * margin);
+        double h = scale * (modelBounds.getHeight() + 2 * margin); 
+        return new Rectangle((int) (modelScreenCenter.x - w / 2), 
+                             (int) (modelScreenCenter.y - h / 2),
+                             (int) w,
+                             (int) h);
+    }
+
+    public void setFitToScreen(boolean fitToScreen) {
 	    this.fitToScreen = fitToScreen;
 	}
 
@@ -171,6 +200,9 @@ public class IntermediateRenderer implements IJava2DRenderer {
 	    // generate the elements
 	    IRenderingElement diagram = this.generateDiagram(moleculeSet);
 	    
+	    // cache the diagram for quick-redraw
+	    this.cachedDiagram = diagram;
+	    
 	    // setup the scale and translation for the transform
 	    this.setupDrawArea(bounds, modelBounds);
 	    if (resetCenter) {
@@ -179,6 +211,15 @@ public class IntermediateRenderer implements IJava2DRenderer {
 	    
 	    // finally, paint it
 	    this.paint(g, diagram);
+	}
+	
+	/**
+	 * Repaint using the cached diagram
+	 * 
+	 * @param g a Graphics2D object to paint with
+	 */
+	public void repaint(Graphics2D g) {
+	    this.paint(g, cachedDiagram);
 	}
 
 	/**
@@ -211,20 +252,6 @@ public class IntermediateRenderer implements IJava2DRenderer {
 		}
 		this.paint(g, diagram);
 	}
-    
-    public Rectangle calculateScreenBounds(IChemModel model) {
-        Rectangle screenBounds = new Rectangle();
-        
-        IMoleculeSet moleculeSet = model.getMoleculeSet();
-        if (moleculeSet == null) return screenBounds;
-        
-        Rectangle2D modelBounds = this.calculateBounds(moleculeSet);
-        double margin = this.rendererModel.getMargin();
-        screenBounds.setSize(
-                             (int) ((modelBounds.getWidth() + 2 * margin) * scale),
-                             (int) ((modelBounds.getHeight() + 2 * margin )* scale));
-        return screenBounds;
-    }
     
     private void setupDrawArea(Rectangle2D drawBounds, Rectangle2D modelBounds) {
         if (drawBounds == null) {

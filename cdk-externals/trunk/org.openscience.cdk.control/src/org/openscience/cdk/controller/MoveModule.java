@@ -1,6 +1,7 @@
 /* $Revision: 7636 $ $Author: nielsout $ $Date: 2007-01-04 18:46:10 +0100 (Thu, 04 Jan 2007) $
  *
  * Copyright (C) 2007  Niels Out <nielsout@users.sf.net>
+ * Copyright (C) 2008  Arvid Berg <goglepox@users.sf.net>
  *
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -34,7 +35,7 @@ import org.openscience.cdk.tools.LoggingTool;
 /**
  * Demo IController2DModule. -write picture to file on doubleclick -show atom
  * name on hove-over -drags atoms around (click near atom and move mouse)
- * 
+ *
  * @author Niels Out
  * @cdk.svnrev $Revision: 9162 $
  * @cdk.module control
@@ -49,7 +50,7 @@ public class MoveModule extends ControllerModuleAdapter {
     private IAtom atom;
     private IBond bond;
     private Vector2d offset;
-    private Type type;
+    private Type type = Type.NONE;
 
     public MoveModule(IChemModelRelay chemObjectRelay) {
         super(chemObjectRelay);
@@ -78,8 +79,7 @@ public class MoveModule extends ControllerModuleAdapter {
         atom = chemModelRelay.getClosestAtom(worldCoord);
         bond = chemModelRelay.getClosestBond(worldCoord);
 
-        type = getClosest(atom, bond, worldCoord);
-        switch (type) {
+        switch (type = getClosest(atom, bond, worldCoord)) {
             case ATOM:
                 current = atom.getPoint2d();
                 bond = null;

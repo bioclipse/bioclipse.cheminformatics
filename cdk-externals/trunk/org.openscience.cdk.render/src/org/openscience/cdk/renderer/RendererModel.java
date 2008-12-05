@@ -184,7 +184,7 @@ public class RendererModel implements Serializable, Cloneable {
      * @return the thickness of a bond line
      */
     public double getBondWidth() {
-        return this.parameters.getBondDistance();
+        return this.parameters.getBondWidth();
     }
 
     /**

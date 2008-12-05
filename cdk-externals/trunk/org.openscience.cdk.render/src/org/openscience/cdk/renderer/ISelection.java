@@ -27,8 +27,8 @@ public interface ISelection {
     public void clear();
     
     /**
-     * If any of the selected bonds are connected to atoms not in the
-     * selection, return those too.
+     * Make an IAtomContainer where all the bonds
+     * only have atoms that are in the selection.
      * 
      * @return a well defined atom container.
      */

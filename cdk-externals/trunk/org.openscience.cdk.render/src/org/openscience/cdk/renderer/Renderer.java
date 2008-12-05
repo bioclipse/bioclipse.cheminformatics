@@ -30,6 +30,7 @@ import java.util.List;
 import javax.vecmath.Point2d;
 
 import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingVisitor;
@@ -59,7 +60,10 @@ public class Renderer {
     }
 
     public Point2d getCoorFromScreen(int screenX, int screenY) {
-        // if(dirty) return null; // what should the behavior when it is dirty
+//         if(dirty) {
+//             
+//             return null; // what should the behavior when it is dirty
+//         }
         try {
             double[] points = new double[2];
             if (transform != null) {
@@ -101,32 +105,67 @@ public class Renderer {
         this.bounds = bounds;
         dirty = true;
     }
-    
+
     /*
-     * Right now we do all the scaling in one transform 
+     * Right now we do all the scaling in one transform
      * Dose this work with generate(..., Point2d) idea?
      */
     protected void calculateTransform(IAtomContainer atomCon) {
-        double[] minMax = GeometryTools.getMinMax( atomCon );
-        Rectangle2D rect = new Rectangle2D.Double( minMax[0], minMax[1],
-                                                   minMax[2]-minMax[0], 
-                                                   minMax[3]-minMax[1]);
+
+        Rectangle2D rect = getBounds( atomCon );
+
+        if( Double.isInfinite( rect.getX())
+                || Double.isNaN( rect.getX() )) {
+            rect.setFrame(-1, rect.getY(), rect.getWidth(), rect.getHeight());
+        }
+        if( Double.isInfinite( rect.getY())
+                || Double.isNaN( rect.getY() )) {
+            rect.setFrame(rect.getX(), -1, rect.getWidth(), rect.getHeight());
+        }
+        if( Double.isInfinite( rect.getWidth())
+                || Double.isNaN( rect.getWidth() )) {
+            rect.setFrame(rect.getX(), rect.getY(), 2, rect.getHeight());
+        }
+        if( Double.isInfinite( rect.getHeight())
+                || Double.isNaN( rect.getHeight() )) {
+            rect.setFrame(rect.getX(), rect.getY(), rect.getWidth(), 2 );
+        }
         AffineTransform trans = new AffineTransform();
 //        trans.translate(-rect.getWidth()/2,-rect.getHeight()/2 );
         double xScale = (bounds.getWidth())/(rect.getWidth());
         double yScale = (bounds.getHeight())/(rect.getHeight());
         double scale = Math.min( xScale, yScale );
-//        
+//
         trans.translate( (bounds.getX() + bounds.getWidth()-rect.getWidth()*scale)/2,
                          (bounds.getY()+  bounds.getHeight()-rect.getHeight()*-scale)/2);
-        
-        
-//        trans.translate( -rect.getX()*scale + (bounds.getWidth()-rect.getWidth()*scale)/2, 
+
+
+//        trans.translate( -rect.getX()*scale + (bounds.getWidth()-rect.getWidth()*scale)/2,
 //                         -(rect.getY())*-scale + (bounds.getHeight()-rect.getHeight()*-scale)/2 );
         trans.scale( scale , -scale );
         trans.translate( -rect.getX(), -rect.getY() );
 
         transform = trans;
         dirty = false;
+    }
+
+    Rectangle2D getBounds(IAtomContainer ac) {
+        double xmin = Double.POSITIVE_INFINITY, xmax = Double.NEGATIVE_INFINITY, ymin =
+                Double.POSITIVE_INFINITY , ymax = Double.NEGATIVE_INFINITY;
+
+        for ( IAtom atom : ac.atoms() ) {
+            if(atom.getPoint2d() == null) {
+                logger.warn( "Atom has no 2D-coordianates" );
+                logger.debug( atom );
+            } else {
+                double x = atom.getPoint2d().x;
+                double y = atom.getPoint2d().y;
+                xmin = Math.min( xmin, x );
+                xmax = Math.max( xmax, x );
+                ymin = Math.min( ymin, y );
+                ymax = Math.max( ymax, y );
+            }
+        }
+        return  new Rectangle2D.Double(xmin,ymin,xmax-xmin,ymax-ymin);
     }
 }

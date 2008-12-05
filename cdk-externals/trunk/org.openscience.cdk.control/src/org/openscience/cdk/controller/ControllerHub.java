@@ -462,13 +462,16 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     
     public IRing addRing(int ringSize, Point2d worldcoord) {
         IRing ring = chemModel.getBuilder().newRing(ringSize, "C");
-        System.err.println("making ring of size " + ringSize + " actual = " + ring.getAtomCount());
-        double bondLength = 2.5;    // err...
+        double bondLength = 1.4;
         ringPlacer.placeRing(ring, worldcoord, bondLength);
-        // FIXME: the below is rather dangerous code!!!
-        IMoleculeSet set = chemModel.getBuilder().newMoleculeSet();
+        IMoleculeSet set = chemModel.getMoleculeSet();
+        
+        // the molecule set should not be null, but just in case...
+        if (set == null) {
+            set = chemModel.getBuilder().newMoleculeSet();
+            chemModel.setMoleculeSet(set);
+        }
         set.addAtomContainer(ring);
-        chemModel.setMoleculeSet(set);
         return ring;
     }
 

@@ -76,8 +76,8 @@ public abstract class ShapeSelection implements ISelection {
     }
     
     /* 
-     * Get an IAtomContainer that has the same number of atoms in the
-     * bonds as in the atoms.
+     * Get an IAtomContainer where all the bonds have atoms in 
+     * the AtomContainer (no dangling bonds).
      * 
      * (non-Javadoc)
      * @see org.openscience.cdk.renderer.ISelection#getConnectedAtomContainer()
@@ -92,9 +92,13 @@ public abstract class ShapeSelection implements ISelection {
         }
         
         for (IBond bond : this.bonds) {
-            ac.addBond(bond);
+            boolean addBond = true;
             for (IAtom atom : bond.atoms()) {
-                if (!ac.contains(atom)) ac.addAtom(atom);
+                if (!ac.contains(atom)) addBond = false;
+            }
+            
+            if (addBond) {
+                ac.addBond(bond);
             }
         }
         
