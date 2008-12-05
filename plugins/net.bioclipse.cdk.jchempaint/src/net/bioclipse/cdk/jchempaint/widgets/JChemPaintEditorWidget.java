@@ -14,6 +14,7 @@ package net.bioclipse.cdk.jchempaint.widgets;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -26,6 +27,7 @@ import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
@@ -39,6 +41,7 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
@@ -55,7 +58,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
     ISelection theSelection = StructuredSelection.EMPTY;
     IAtom prevHighlightedAtom;
     IBond prevHighlightedBond;
-    
+
     ICDKMolecule model;
 
     ControllerHub hub;
@@ -100,7 +103,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
     	addListener(SWT.MouseExit, relay);
 
     }
-    
+
     @Override
     protected List<IGenerator> createGenerators() {
         List<IGenerator> generatorList = new ArrayList<IGenerator>();
@@ -108,7 +111,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
         generatorList.add(new SelectionGenerator(renderer2DModel));
         return generatorList;
     }
-    
+
     @Override
     public void setAtomContainer( IAtomContainer atomContainer ) {
 
@@ -170,17 +173,27 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
     public ISelection getSelection() {
         if(this.getRenderer2DModel()== null)
             return StructuredSelection.EMPTY;
-        Object element = null;
-        Object atom = this.getRenderer2DModel().getHighlightedAtom();
-        Object bond = this.getRenderer2DModel().getHighlightedBond();
-        if(bond != null)
-            element = bond;
-        if(atom != null)
-            element = atom;
-        if(element == null)
-            return new StructuredSelection(atomContainer);
-        else
-            return new StructuredSelection(new Object[] {atomContainer,element});
+        List<IChemObject> selection = new LinkedList<IChemObject>();
+
+        selection.add( atomContainer );
+
+        IAtom highlightedAtom = this.getRenderer2DModel().getHighlightedAtom();
+        IBond highlightedBond = this.getRenderer2DModel().getHighlightedBond();
+        if(highlightedBond != null)
+            selection.add(highlightedBond);
+        if(highlightedAtom != null)
+            selection.add( highlightedAtom );
+
+        IAtomContainer modelSelection = getRenderer2DModel().getSelectedPart();
+        if(modelSelection != null) {
+            for(IAtom atom:modelSelection.atoms()) {
+                selection.add(atom);
+            }
+            for(IBond bond:modelSelection.bonds()) {
+                selection.add(bond);
+            }
+        }
+        return new StructuredSelection(selection);
     }
 
     public void removeSelectionChangedListener(
@@ -214,7 +227,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
             getRenderer2DModel().getHighlightedBond() != prevHighlightedBond) {
             prevHighlightedAtom = getRenderer2DModel().getHighlightedAtom();
             prevHighlightedBond = getRenderer2DModel().getHighlightedBond();
-            setSelection( getSelection() );
         }
 
     }
