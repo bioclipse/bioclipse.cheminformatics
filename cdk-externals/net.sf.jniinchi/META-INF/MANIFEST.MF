@@ -5,6 +5,6 @@ Bundle-SymbolicName: net.sf.jniinchi;singleton:=true
 Bundle-Version: 0.4
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: jar/jniinchi-0.4.jar
+Bundle-ClassPath: jar/jniinchi-0.5.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: net.sf.jniinchi
