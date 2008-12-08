@@ -8,9 +8,9 @@
  *
  * Contact: Bioclipse Project <http://www.bioclipse.net>
  ******************************************************************************/
-package net.bioclipse.cdk.debug.test;
+package net.bioclipse.inchi.business.test;
 
-import net.bioclipse.cdkdebug.business.CDKDebugManager;
+import net.bioclipse.inchi.business.InChIManager;
 import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.tests.coverage.AbstractCoverageTest;
 
@@ -21,7 +21,7 @@ import net.bioclipse.core.tests.coverage.AbstractCoverageTest;
  */
 public class CoverageTest extends AbstractCoverageTest {
     
-    private static CDKDebugManager manager = new CDKDebugManager();
+    private static InChIManager manager = new InChIManager();
 
     @Override
     public IBioclipseManager getManager() {

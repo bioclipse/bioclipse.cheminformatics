@@ -10,25 +10,25 @@
  *     Jonathan Alvarsson
  *
  ******************************************************************************/
-package net.bioclipse.cdk.debug.test;
+package net.bioclipse.inchi.business.test;
 
-import net.bioclipse.cdkdebug.business.CDKDebugManager;
-import net.bioclipse.cdkdebug.business.ICDKDebugManager;
 import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.tests.AbstractManagerTest;
+import net.bioclipse.inchi.business.IInChIManager;
+import net.bioclipse.inchi.business.InChIManager;
 
-public class CDKDebugManagerTest extends AbstractManagerTest {
+public class InChIManagerTest extends AbstractManagerTest {
 
-    ICDKDebugManager cdk;
+    IInChIManager inchi;
 
     //Do not use SPRING OSGI for this manager
     //since we are only testing the implementations of the manager methods
-    public CDKDebugManagerTest() {
-        cdk = new CDKDebugManager();
+    public InChIManagerTest() {
+        inchi = new InChIManager();
     }
 
     public IBioclipseManager getManager() {
-        return cdk;
+        return inchi;
     }
 
 }

@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: CDK Debug Test Plug-in
-Bundle-SymbolicName: net.bioclipse.cdk.debug.test
+Bundle-Name: InChI Manager Test Plug-in
+Bundle-SymbolicName: net.bioclipse.inchi.business.test
 Bundle-Version: 1.3.1
-Bundle-Activator: net.bioclipse.cdk.debug.test.Activator
+Bundle-Activator: net.bioclipse.inchi.business.test.Activator
 Bundle-Vendor: The Bioclipse Team
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -11,6 +11,6 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.core,
  org.eclipse.core.resources,
  net.bioclipse.core.tests;bundle-version="0.1.0",
- net.bioclipse.cdk.debug
+ net.bioclipse.inchi.business
 Bundle-ActivationPolicy: lazy
-Export-Package: net.bioclipse.cdk.debug.test
+Export-Package: net.bioclipse.inchi.business.test

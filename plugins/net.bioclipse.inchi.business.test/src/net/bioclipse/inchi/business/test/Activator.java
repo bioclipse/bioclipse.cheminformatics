@@ -6,7 +6,7 @@
  *http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package net.bioclipse.cdk.debug.test;
+package net.bioclipse.inchi.business.test;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
