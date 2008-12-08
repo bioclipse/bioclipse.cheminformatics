@@ -17,6 +17,7 @@ import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.TestClasses;
+import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.domain.IMolecule;
 
@@ -32,6 +33,7 @@ public interface ICDKDebugManager extends IBioclipseManager {
          params = "ICDKMolecule mol, ICDKMolecule mol2",
          methodSummary = "Returns the differences between the two molecules"
     )
+    @TestMethods("testDiff")
     public void diff(ICDKMolecule mol, ICDKMolecule mol2);
     
     /**
@@ -42,6 +44,7 @@ public interface ICDKDebugManager extends IBioclipseManager {
          params = "ICDKMolecule mol",
          methodSummary = "Returns a string representation of the data structures."
     )
+    @TestMethods("testDebug")
     public void debug(ICDKMolecule mol);
 
     @Recorded
@@ -49,6 +52,7 @@ public interface ICDKDebugManager extends IBioclipseManager {
          params = "IMolecule mol",
          methodSummary = "Returns a list of Sybyl atom types."
     )
+    @TestMethods("testDepictSybylAtomTypes")
     public ICDKMolecule depictSybylAtomTypes(IMolecule mol) throws InvocationTargetException;
 
     @Recorded
@@ -56,6 +60,7 @@ public interface ICDKDebugManager extends IBioclipseManager {
          params = "IMolecule mol",
          methodSummary = "Returns a list of CDK atom types."
     )
+    @TestMethods("testDepictCDKAtomTypes")
     public void depictCDKAtomTypes(IMolecule mol) throws InvocationTargetException;
 
 }

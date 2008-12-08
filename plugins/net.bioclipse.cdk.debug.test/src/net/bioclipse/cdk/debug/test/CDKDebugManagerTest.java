@@ -19,16 +19,14 @@ import net.bioclipse.core.tests.AbstractManagerTest;
 
 public class CDKDebugManagerTest extends AbstractManagerTest {
 
-    ICDKDebugManager cdk;
+    ICDKDebugManager debug;
 
-    //Do not use SPRING OSGI for this manager
-    //since we are only testing the implementations of the manager methods
     public CDKDebugManagerTest() {
-        cdk = new CDKDebugManager();
+        debug = new CDKDebugManager();
     }
 
     public IBioclipseManager getManager() {
-        return cdk;
+        return debug;
     }
 
 }
