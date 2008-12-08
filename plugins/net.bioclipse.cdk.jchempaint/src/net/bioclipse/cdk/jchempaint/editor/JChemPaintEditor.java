@@ -53,7 +53,7 @@ public class JChemPaintEditor extends EditorPart{
     ICDKMolecule model;
     JChemPaintEditorWidget widget;
     IControllerModel c2dm;
-    SWTMosueEventRelay relay;
+    SWTMouseEventRelay relay;
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		// TODO Auto-generated method stub

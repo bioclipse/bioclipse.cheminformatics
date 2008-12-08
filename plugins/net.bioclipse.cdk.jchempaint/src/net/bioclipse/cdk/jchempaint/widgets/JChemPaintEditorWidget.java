@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.jchempaint.editor.SWTMosueEventRelay;
+import net.bioclipse.cdk.jchempaint.editor.SWTMouseEventRelay;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 
 import org.eclipse.core.runtime.IAdaptable;
@@ -63,7 +63,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
 
     ControllerHub hub;
     ControllerModel c2dm;
-    SWTMosueEventRelay relay;
+    SWTMouseEventRelay relay;
      boolean generated = false;
 
     public JChemPaintEditorWidget(Composite parent, int style) {
@@ -93,7 +93,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
           removeListener( SWT.MouseEnter, (Listener)relay );
           removeListener( SWT.MouseExit, (Listener)relay );
       }
-    	relay = new SWTMosueEventRelay(hub);
+    	relay = new SWTMouseEventRelay(hub);
     	hub.setActiveDrawModule( new MoveModule(hub) );
 
 

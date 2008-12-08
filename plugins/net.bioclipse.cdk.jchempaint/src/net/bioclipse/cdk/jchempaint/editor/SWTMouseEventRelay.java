@@ -20,16 +20,16 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.openscience.cdk.controller.IMouseEventRelay;
 
-public class SWTMosueEventRelay implements MouseListener,MouseMoveListener,Listener{
+public class SWTMouseEventRelay implements MouseListener,MouseMoveListener,Listener{
     
-    Logger logger = Logger.getLogger( SWTMosueEventRelay.class );
+    Logger logger = Logger.getLogger( SWTMouseEventRelay.class );
     
 	private int dragFromX = 0;
 	private int dragFromY = 0;
 	private boolean isDragging = false;
 	private IMouseEventRelay relay;
 	
-	public SWTMosueEventRelay(IMouseEventRelay relay) {
+	public SWTMouseEventRelay(IMouseEventRelay relay) {
 		this.relay=relay;
 	}
 	
