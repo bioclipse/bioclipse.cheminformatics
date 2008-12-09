@@ -27,7 +27,6 @@ import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
@@ -35,6 +34,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Listener;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.ControllerModel;
+import org.openscience.cdk.controller.IControllerModule;
 import org.openscience.cdk.controller.IViewEventRelay;
 import org.openscience.cdk.controller.MoveModule;
 import org.openscience.cdk.geometry.GeometryTools;
@@ -44,6 +44,7 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
+import org.openscience.cdk.renderer.generators.ExternalHighlightGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.SelectionGenerator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
@@ -109,6 +110,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
         List<IGenerator> generatorList = new ArrayList<IGenerator>();
         generatorList.addAll( super.createGenerators() );
         generatorList.add(new SelectionGenerator(renderer2DModel));
+		generatorList.add(new ExternalHighlightGenerator(renderer2DModel));
         return generatorList;
     }
 
@@ -230,4 +232,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
         }
 
     }
+    
+	public void setActiveDrawModule(IControllerModule activeDrawModule){
+		hub.setActiveDrawModule(activeDrawModule);
+	}
 }
