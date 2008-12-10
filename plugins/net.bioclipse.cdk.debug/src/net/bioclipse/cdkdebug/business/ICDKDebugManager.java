@@ -53,7 +53,7 @@ public interface ICDKDebugManager extends IBioclipseManager {
          methodSummary = "Returns a list of Sybyl atom types."
     )
     @TestMethods("testDepictSybylAtomTypes")
-    public ICDKMolecule depictSybylAtomTypes(IMolecule mol) throws InvocationTargetException;
+    public ICDKMolecule perceiveSybylAtomTypes(IMolecule mol) throws InvocationTargetException;
 
     @Recorded
     @PublishedMethod(
@@ -61,6 +61,6 @@ public interface ICDKDebugManager extends IBioclipseManager {
          methodSummary = "Returns a list of CDK atom types."
     )
     @TestMethods("testDepictCDKAtomTypes")
-    public void depictCDKAtomTypes(IMolecule mol) throws InvocationTargetException;
+    public void perceiveCDKAtomTypes(IMolecule mol) throws InvocationTargetException;
 
 }

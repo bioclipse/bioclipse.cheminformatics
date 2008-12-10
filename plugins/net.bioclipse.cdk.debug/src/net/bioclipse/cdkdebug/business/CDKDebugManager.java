@@ -53,7 +53,7 @@ public class CDKDebugManager implements ICDKDebugManager {
         return "cdkdebug";
     }
 
-    public ICDKMolecule depictSybylAtomTypes(IMolecule mol)
+    public ICDKMolecule perceiveSybylAtomTypes(IMolecule mol)
     throws InvocationTargetException {
 
         ICDKMolecule cdkmol;
@@ -127,7 +127,7 @@ public class CDKDebugManager implements ICDKDebugManager {
         return cdkmol;
     }
 
-    public void depictCDKAtomTypes(IMolecule mol) throws InvocationTargetException {
+    public void perceiveCDKAtomTypes(IMolecule mol) throws InvocationTargetException {
 
         ICDKMolecule cdkmol;
         try {
