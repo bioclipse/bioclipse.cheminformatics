@@ -116,12 +116,9 @@
                 style="radio">
              <visibleWhen
                    checkEnabled="true">
-                <with
-                      variable="activeEditorId">    
-               <equals
-                         value="net.bioclipse.cdk.ui.editors.jchempaint">
-                   </equals>
-                </with>
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
              </visibleWhen>
              <parameter
                    name="jcp.controller.module"
@@ -134,12 +131,9 @@
                 style="radio">
              <visibleWhen
                    checkEnabled="true">
-                <with
-                      variable="activeEditorId">
-                   <equals
-                         value="net.bioclipse.cdk.ui.editors.jchempaint">
-                   </equals>
-                </with>
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
              </visibleWhen>
              <parameter
                    name="jcp.controller.module"
@@ -152,12 +146,9 @@
                 style="radio">
              <visibleWhen
                    checkEnabled="true">
-                <with
-                      variable="activeEditorId">
-                   <equals
-                         value="net.bioclipse.cdk.ui.editors.jchempaint">
-                   </equals>
-                </with>
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
              </visibleWhen>
              <parameter
                    name="jcp.controller.module"
@@ -170,12 +161,9 @@
                 style="radio">
              <visibleWhen
                    checkEnabled="true">
-                <with
-                      variable="activeEditorId">
-                   <equals
-                         value="net.bioclipse.cdk.ui.editors.jchempaint">
-                   </equals>
-                </with>
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
              </visibleWhen>
              <parameter
                    name="jcp.controller.module"
@@ -192,12 +180,9 @@
                 style="radio">
              <visibleWhen
                    checkEnabled="true">
-                <with
-                      variable="activeEditorId">
-                   <equals
-                         value="net.bioclipse.cdk.ui.editors.jchempaint">
-                   </equals>
-                </with>
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
              </visibleWhen>
              <parameter
                    name="jcp.controller.module"
@@ -214,12 +199,9 @@
                 style="radio">
              <visibleWhen
                    checkEnabled="true">
-                <with
-                      variable="activeEditorId">
-                   <equals
-                         value="net.bioclipse.cdk.ui.editors.jchempaint">
-                   </equals>
-                </with>
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
              </visibleWhen>
              <parameter
                    name="jcp.controller.module"
@@ -244,12 +226,9 @@
              </parameter>
              <visibleWhen
                    checkEnabled="true">
-                <with
-                      variable="activeEditorId">
-                   <equals
-                         value="net.bioclipse.cdk.ui.editors.jchempaint">
-                   </equals>
-                </with>
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
              </visibleWhen>
           </command>
        </toolbar>
@@ -467,6 +446,26 @@
   </extension>
   <extension
         point="org.eclipse.ui.menus">
+  </extension>
+  <extension
+        point="org.eclipse.core.expressions.definitions">
+     <definition
+           id="net.bioclipse.cdk.jchempaint.editor.type">
+        <with
+              variable="activeEditorId">
+           <or>
+              <equals
+                    value="net.bioclipse.cdk.ui.editors.jchempaint.MDLMolfileEditor">
+              </equals>
+              <equals
+                    value="net.bioclipse.contenttypes.cml.singleMolecule2d">
+              </equals>
+              <equals
+                    value="net.bioclipse.cdk.ui.editors.jchempaint">
+              </equals>
+           </or>
+        </with>
+     </definition>
   </extension>
  
 </plugin>
