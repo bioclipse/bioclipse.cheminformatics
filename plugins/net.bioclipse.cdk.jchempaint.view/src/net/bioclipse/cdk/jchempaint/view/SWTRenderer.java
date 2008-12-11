@@ -35,31 +35,31 @@ import org.openscience.cdk.renderer.elements.TextElement;
 import org.openscience.cdk.renderer.elements.WedgeLineElement;
 
 public class SWTRenderer implements IRenderingVisitor{
-    
+
     Logger logger = Logger.getLogger( SWTRenderer.class );
 
     GC gc;
     RendererModel model;
     AffineTransform transform;
-    
+
     SWTFontManager fontManager;
-    
+
     // scale a lite more and translate the differense to center it
     // dosen't handle zoom
     public SWTRenderer(GC graphics, SWTFontManager fontManager, RendererModel model) {
-        this.transform = new AffineTransform();        
+        this.transform = new AffineTransform();
         this.model = model;
         this.gc = graphics;
         this.fontManager = fontManager;
-        
+
     }
-    
+
     private Map<java.awt.Color, Color> cleanUp;
-    
+
     public RendererModel getModel() {
         return model;
     }
-    
+
     private int transformX(double x) {
         return (int) transform( x, 1 )[0];
     }
@@ -74,17 +74,17 @@ public class SWTRenderer implements IRenderingVisitor{
     private int scaleX(double x) {
         return (int) (x*transform.getScaleX());
     }
-    
+
     private int scaleY(double y) {
         return (int) (y*transform.getScaleY());
     }
-    
+
     public void render(ElementGroup renderingModel) {
         for(IRenderingElement re:renderingModel ) {
            re.accept( this );
         }
     }
-    
+
 
     public void visit( OvalElement element ) {
         Color colorOld = gc.getBackground();
@@ -94,16 +94,16 @@ public class SWTRenderer implements IRenderingVisitor{
         int radius_2 = (int)round( scaleX(element.radius/2d ));
         if(element.fill) {
         gc.setBackground( toSWTColor( gc, element.color ) );
-        
-        gc.fillOval( transformX( element.x)-radius_2, 
-                     transformY(element.y)-radius_2, 
+
+        gc.fillOval( transformX( element.x)-radius_2,
+                     transformY(element.y)-radius_2,
                      radius,
                      radius );
         } else {
             gc.setForeground(  toSWTColor( gc, element.color ) );
-            
-            gc.drawOval( transformX(element.x)-radius_2, 
-                         transformY(element.y)-radius_2, 
+
+            gc.drawOval( transformX(element.x)-radius_2,
+                         transformY(element.y)-radius_2,
                          radius,
                          radius );
         }
@@ -113,13 +113,13 @@ public class SWTRenderer implements IRenderingVisitor{
     public void visit( LineElement element ) {
         Color colorOld = gc.getBackground();
         // init recursion with background to get the first draw with foreground
-        gc.setForeground( toSWTColor( gc, element.color )); 
+        gc.setForeground( toSWTColor( gc, element.color ));
         gc.setLineWidth( (int)element.width );
         drawLine( element );
-            
+
         gc.setBackground( colorOld);
     }
-    
+
     public void visit( WedgeLineElement element) {
         Color colorOld = gc.getBackground();
         gc.setForeground( getForgroundColor() );
@@ -128,7 +128,7 @@ public class SWTRenderer implements IRenderingVisitor{
         drawWedge( element );
         gc.setBackground( colorOld );
     }
-    
+
     private void drawWedge(WedgeLineElement element) {
         double width = element.width;
         Point2d p1 = new Point2d( transformX(element.x1),
@@ -140,34 +140,34 @@ public class SWTRenderer implements IRenderingVisitor{
         v12n.normalize();
         //   wedge thickness is based on line width probably better to be based
         //  on text size
-        double l = width*4/2; 
+        double l = width*4/2;
         Vector2d pa = new Vector2d(v12n);pa.scale( l );
         Vector2d pb = new Vector2d(v12n);pb.scale(-l);
         v12n.scale( l);
-        
+
         Point2d p1a = new Point2d();p1a.add( p1, v12n );
         Point2d p1b = new Point2d();p1b.sub( p1, v12n );
-        
+
         gc.setLineWidth( (int) width );
         if(element.isDashed)
             drawDashedWedge( p1a, p1b, p2, width );
         else
             drawFilledWedge( p1a, p1b, p2);
-        
+
     }
-    private void drawFilledWedge( Point2d p1a, Point2d p1b, 
+    private void drawFilledWedge( Point2d p1a, Point2d p1b,
                                   Point2d p2) {
         Path path = new Path(gc.getDevice());
         path.moveTo( (float)p2.x,(float) p2.y );
         path.lineTo( (float)(p1a.x), (float)(p1a.y) );
         path.lineTo( (float)(p1b.x), (float)(p1b.y) );
-        path.close();        
-        
+        path.close();
+
         gc.fillPath( path );
-        
+
         path.dispose();
     }
-    private void drawDashedWedge( Point2d p1a, Point2d p1b, 
+    private void drawDashedWedge( Point2d p1a, Point2d p1b,
                                   Point2d p2, double d) {
 
         double s = (d*2);
@@ -186,12 +186,12 @@ public class SWTRenderer implements IRenderingVisitor{
         gc.drawPath( dashes );
         dashes.dispose();
     }
-    
+
 
     private Color getForgroundColor() {
         return toSWTColor( gc, getModel().getForeColor() );
     }
-    
+
     private Color getBackgroundColor() {
         return toSWTColor( gc, getModel().getBackColor() );
     }
@@ -202,10 +202,10 @@ public class SWTRenderer implements IRenderingVisitor{
         double[] p2=transform( element.x2, element.y2);
         path.moveTo( (float)p1[0], (float)p1[1] );
         path.lineTo( (float)p2[0], (float)p2[1] );
-       gc.drawPath( path ); 
+       gc.drawPath( path );
        path.dispose();
     }
-    
+
     private void drawLineX(LineElement element, int val) {
         if(val <= 0) return; // end recursion if less than 1
         int width = (int) (element.width*val+element.width*(val-1)+.5);
@@ -216,10 +216,10 @@ public class SWTRenderer implements IRenderingVisitor{
             gc.setForeground( toSWTColor( gc, element.color ) );
         gc.setLineWidth( width );
         drawLine(element);
-        
+
         drawLineX(element, val-1);
     }
-    
+
     private Font getFont() {
         return fontManager.getFont();
 //        int fontSize = (int) (scaleX(.4));
@@ -235,9 +235,9 @@ public class SWTRenderer implements IRenderingVisitor{
         int x = transformX(element.x);
         int y = transformY(element.y);
         String text = element.text;
-        
+
         gc.setFont(getFont());
-        
+
         Point textSize = gc.textExtent( text );
         x = x - textSize.x/2;
         y = y - textSize.y/2;
@@ -246,7 +246,7 @@ public class SWTRenderer implements IRenderingVisitor{
         gc.setAdvanced( true );
         gc.drawText( text, x, y, true );
     }
-    
+
     public void visit(AtomSymbolElement element) {
         int x = transformX( element.x );
         int y = transformY( element.y);
@@ -262,7 +262,7 @@ public class SWTRenderer implements IRenderingVisitor{
         gc.setBackground(  getBackgroundColor() );
         gc.setAdvanced( true );
         gc.drawText( text, x, y, false );
-        
+
         Point secondTextSize = gc.textExtent( "H" );
         gc.setFont( getSmallFont() );
         Point cp = new Point(0,0);
@@ -270,15 +270,15 @@ public class SWTRenderer implements IRenderingVisitor{
             String fc = Integer.toString( element.formalCharge);
             fc = (element.formalCharge==1?"+":fc);
             fc = (element.formalCharge>1?"+"+fc:fc);
-            fc = (element.formalCharge==-1?"-":fc);            
+            fc = (element.formalCharge==-1?"-":fc);
             cp = gc.textExtent( fc );
             int fcX = x+textSize.x;
             int fcY = y-cp.y/2;
             gc.drawText( fc, fcX, fcY, true );
         }
-        
+
         if(element.hydrogenCount >0) {
-            
+
             Point hc = new Point(0,0);
             if(element.hydrogenCount >1) {
                 hc = gc.textExtent( Integer.toString( element.hydrogenCount ));
@@ -290,17 +290,17 @@ public class SWTRenderer implements IRenderingVisitor{
                 case 2:  y = y+cp.y/2 - Math.max( secondTextSize.y,secondTextSize.y/2 - hc.y);break;
             }
             if(element.hydrogenCount >1) {
-                gc.drawText( Integer.toString( element.hydrogenCount), 
-                             x + secondTextSize.x, y + secondTextSize.y/2 
+                gc.drawText( Integer.toString( element.hydrogenCount),
+                             x + secondTextSize.x, y + secondTextSize.y/2
                              ,true);
             }
             gc.setFont(getFont());
             gc.drawText( "H", x, y ,false);
-            
+
         }
     }
     public  Color toSWTColor(GC graphics,java.awt.Color color) {
-        if(cleanUp == null) 
+        if(cleanUp == null)
             cleanUp = new HashMap<java.awt.Color,Color>();
         if(color == null) return graphics.getDevice().getSystemColor( SWT.COLOR_MAGENTA );
         assert(color != null);
@@ -314,7 +314,7 @@ public class SWTRenderer implements IRenderingVisitor{
         }
         return otherColor;
     }
-    
+
     public void dispose() {
         for(Color c:cleanUp.values())
             c.dispose();
@@ -326,9 +326,9 @@ public class SWTRenderer implements IRenderingVisitor{
         for(IRenderingElement element:elementGroup) {
             element.accept( this );
         }
-        
+
     }
-    
+
     public void setTransform(AffineTransform transform) {
         this.transform = transform;
         fontManager.setFontForScale( transform.getScaleX() );
@@ -337,36 +337,41 @@ public class SWTRenderer implements IRenderingVisitor{
     public void render() {
 
         // TODO Auto-generated method stub
-        
+
     }
 
     public void visitDefault(IRenderingElement element) {
-//        throw new RuntimeException( "visitor for "+element.getClass().getName() 
+//        throw new RuntimeException( "visitor for "+element.getClass().getName()
 //                                    + " is not implemented yet.");
         logger.debug( "No visitor method implemented for : "+element.getClass() );
-        
+
     }
 
 //    public void visit( AtomSymbolElement element ) {
 //
 //        // TODO Auto-generated method stub
-//        
+//
 //    }
 
     public void visit( RectangleElement element ) {
-        gc.setForeground( toSWTColor( gc, element.color ) );
-        gc.drawRectangle( transformX(element.x), transformY(element.y), 
-                          scaleX(element.width), scaleY(element.height ));
-        
+        if(element.filled) {
+            gc.setBackground( toSWTColor( gc, element.color ) );
+            gc.fillRectangle( transformX(element.x), transformY(element.y),
+                              scaleX(element.width), scaleY(element.height ));
+        } else {
+            gc.setForeground( toSWTColor( gc, element.color ) );
+            gc.drawRectangle( transformX(element.x), transformY(element.y),
+                              scaleX(element.width), scaleY(element.height ));
+        }
     }
-    
+
     public void visit( PathElement element) {
         gc.setForeground( toSWTColor( gc,element.color) );
         Path path = new Path(gc.getDevice());
         boolean first = true;
         for(Point2d p: element.points) {
             double[] tp = transform( p.x, p.y );
-            
+
             if(first) {
                 path.moveTo( (float)tp[0], (float)tp[1]);
                 first = false;
@@ -375,9 +380,9 @@ public class SWTRenderer implements IRenderingVisitor{
             }
         }
         gc.drawPath( path );
-        path.dispose();        
+        path.dispose();
     }
-    
+
     public void visit(IRenderingElement element)  {
 
         Method method = getMethod( element );
