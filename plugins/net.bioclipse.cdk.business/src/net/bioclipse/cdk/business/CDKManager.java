@@ -212,8 +212,11 @@ public class CDKManager implements ICDKManager {
 
 				CDKMolecule mol = new CDKMolecule(ac);
 				String moleculeName = "Molecule " + i;
-				// FIXME: bad code regarding bug #70 below
-				if (ac instanceof IMolecule) {
+
+				// FIXME: Egon, please verify this.
+				// Why must it be an org.openscience.cdk.interfaces.IMolecule in order to have a title?
+				// Can an AC not have a title?
+				if (ac instanceof org.openscience.cdk.interfaces.IMolecule) {
 					org.openscience.cdk.interfaces.IMolecule imol = (org.openscience.cdk.interfaces.IMolecule) ac;
 					String molName = (String) imol
 							.getProperty(CDKConstants.TITLE);
