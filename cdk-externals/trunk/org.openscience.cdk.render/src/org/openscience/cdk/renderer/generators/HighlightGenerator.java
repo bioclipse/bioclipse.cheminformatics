@@ -20,18 +20,19 @@ public class HighlightGenerator implements IGenerator {
 	
 	private RendererModel model;
 	private Color highlightColor;
-	private double r = 0.35;        // the highlight ring radius
+	private double highlightRadius;  
 
-	public HighlightGenerator(RendererModel r2dm) {
-		this.model= r2dm;
-		this.highlightColor = Color.GRAY;
+	public HighlightGenerator(RendererModel model) {
+		this.model = model;
+		this.highlightRadius = model.getHighlightRadiusModel();
+		this.highlightColor = model.getHoverOverColor();
 	}
 
 	public IRenderingElement generate(IAtomContainer ac, IAtom atom) {
 		IAtom highlightedAtom = atom;
 		if (highlightedAtom != null) {
 			Point2d p = atom.getPoint2d();
-			return new OvalElement(p.x, p.y, r, this.highlightColor);
+			return new OvalElement(p.x, p.y, highlightRadius, highlightColor);
 		}
 		return null;
 	}
@@ -42,21 +43,15 @@ public class HighlightGenerator implements IGenerator {
 			Point2d p1 = bond.getAtom(0).getPoint2d();
 			Point2d p2 = bond.getAtom(1).getPoint2d();
 			double w = this.model.getBondWidth() * 3;
-			return new LineElement(p1.x, p1.y, p2.x, p2.y, w, this.highlightColor);
+			return new LineElement(p1.x, p1.y, p2.x, p2.y, w, highlightColor);
 		}
 		return null;
 	}
 
     public IRenderingElement generate(IAtomContainer ac) {
-
         ElementGroup elementGroup = new ElementGroup();
-        
-        elementGroup.add( this.generate( ac, this.model.getHighlightedAtom() ));
-
-        elementGroup.add( this.generate( ac, this.model.getHighlightedBond() ));
-
+        elementGroup.add(this.generate(ac, this.model.getHighlightedAtom()));
+        elementGroup.add(this.generate(ac, this.model.getHighlightedBond()));
         return elementGroup;
-      }
-        
-    
+    }
 }

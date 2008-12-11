@@ -46,14 +46,11 @@ public class AddRingModule extends ControllerModuleAdapter {
         this.addingBenzene = addingBenzene;
     }
     
-    private void addRingToEmptyCanvas() {
+    private void addRingToEmptyCanvas(Point2d p) {
         if (this.addingBenzene) {
-            Point2d randomPoint = new Point2d(0,0);
-            chemModelRelay.addAtom("C", randomPoint);
-            IAtom closestAtom = chemModelRelay.getClosestAtom(randomPoint);
-            chemModelRelay.addPhenyl(closestAtom);
+            chemModelRelay.addPhenyl(p);
         } else {
-            chemModelRelay.addRing(ringSize, new Point2d(0,0));
+            chemModelRelay.addRing(ringSize, p);
         }
     }
     
@@ -78,7 +75,7 @@ public class AddRingModule extends ControllerModuleAdapter {
         IBond closestBond = chemModelRelay.getClosestBond(worldCoord);
         
         if (closestAtom == null && closestBond == null) {
-            this.addRingToEmptyCanvas();
+            this.addRingToEmptyCanvas(worldCoord);
         } else if (closestAtom != null && closestBond == null) {
             this.addRingToAtom(closestAtom);
         } else if (closestAtom == null && closestBond != null) {

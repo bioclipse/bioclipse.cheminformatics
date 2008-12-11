@@ -52,6 +52,7 @@ public class ExternalHighlightGenerator implements IGenerator {
     public IRenderingElement generate( IAtomContainer ac ) {
         ElementGroup group = new ElementGroup();
         ac = model.getExternalSelectedPart();
+        if(ac == null) return group;
         for(IAtom atom: ac.atoms()) {
             group.add(generate( atom ));
         }

@@ -54,6 +54,16 @@ public interface IControllerModule {
 	/**
 	 * @param Point2d worldCoord
 	 */
+	public abstract void mouseClickedUpRight(Point2d worldCoord);
+
+	/**
+	 * @param Point2d worldCoord
+	 */
+	public abstract void mouseClickedDownRight(Point2d worldCoord);
+
+	/**
+	 * @param Point2d worldCoord
+	 */
 	public abstract void mouseClickedDouble(Point2d worldCoord);
 
 	/**

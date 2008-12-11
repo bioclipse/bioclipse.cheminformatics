@@ -142,6 +142,33 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		if (activeModule != null) activeModule.mouseClickedDouble(worldCoord);
 	}
 
+
+	public void mouseClickedDownRight(int screenCoordX, int screenCoordY) {
+		Point2d worldCoord = renderer.getCoorFromScreen(screenCoordX, screenCoordY);
+		
+		// Relay the mouse event to the general handlers
+		for (IControllerModule module : generalModules) {
+			module.mouseClickedDownRight(worldCoord);
+		}
+
+		// Relay the mouse event to the active 
+		IControllerModule activeModule = getActiveDrawModule();
+		if (activeModule != null) activeModule.mouseClickedDownRight(worldCoord);
+	}
+
+	public void mouseClickedUpRight(int screenCoordX, int screenCoordY) {
+		Point2d worldCoord = renderer.getCoorFromScreen(screenCoordX, screenCoordY);
+		
+		// Relay the mouse event to the general handlers
+		for (IControllerModule module : generalModules) {
+			module.mouseClickedUpRight(worldCoord);
+		}
+
+		// Relay the mouse event to the active 
+		IControllerModule activeModule = getActiveDrawModule();
+		if (activeModule != null) activeModule.mouseClickedUpRight(worldCoord);
+	}
+	
 	public void mouseClickedDown(int screenCoordX, int screenCoordY) {
 		Point2d worldCoord = renderer.getCoorFromScreen(screenCoordX, screenCoordY);
 		
@@ -366,7 +393,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         }
     }
 
-    public IBond addBond( IAtom fromAtom, IAtom toAtom ) {
+    public IBond addBond(IAtom fromAtom, IAtom toAtom) {
         IBond newBond = chemModel.getBuilder().newBond(fromAtom, toAtom);
         chemModel.getMoleculeSet().getAtomContainer(0).addBond(newBond);
         return newBond;
@@ -476,24 +503,29 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     }
 
     public IRing addPhenyl(Point2d worldcoord) {
-        addAtom("C", worldcoord);
-        return addPhenyl(getClosestAtom(worldcoord));
+        return addPhenyl(addAtom("C", worldcoord));
     }
 
     public IRing addRing(IAtom atom, int ringSize) {
-        IAtomContainer sourceContainer = ChemModelManipulator.getRelevantAtomContainer(chemModel, atom);
+        IAtomContainer sourceContainer 
+            = ChemModelManipulator.getRelevantAtomContainer(chemModel, atom);
         IAtomContainer sharedAtoms = atom.getBuilder().newAtomContainer();
         sharedAtoms.addAtom(atom);
-        Point2d sharedAtomsCenter = GeometryTools.get2DCenter(sharedAtoms);
+        
         IRing newRing = createAttachRing(sharedAtoms, ringSize, "C");
         double bondLength = GeometryTools.getBondLengthAverage(sourceContainer);
         Point2d conAtomsCenter = getConnectedAtomsCenter(sharedAtoms, chemModel);
+        
+        Point2d sharedAtomsCenter = atom.getPoint2d();
         Vector2d ringCenterVector = new Vector2d(sharedAtomsCenter);
         ringCenterVector.sub(conAtomsCenter);
-        ringPlacer.placeSpiroRing(newRing, sharedAtoms, sharedAtomsCenter, ringCenterVector, bondLength);
+        ringPlacer.placeSpiroRing(
+                newRing, sharedAtoms, sharedAtomsCenter, ringCenterVector, bondLength);
+        
         for (IAtom ringAtom : newRing.atoms()) {
             if (ringAtom != atom) sourceContainer.addAtom(ringAtom);
         }
+        
         for (IBond ringBond : newRing.bonds()) {
             sourceContainer.addBond(ringBond);
         }
@@ -501,24 +533,46 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     }
 
     public IRing addPhenyl(IAtom atom) {
-        IAtomContainer sourceContainer = ChemModelManipulator.getRelevantAtomContainer(chemModel, atom);
+        IAtomContainer sourceContainer 
+            = ChemModelManipulator.getRelevantAtomContainer(chemModel, atom);
         IAtomContainer sharedAtoms = atom.getBuilder().newAtomContainer();
         sharedAtoms.addAtom(atom);
-        Point2d sharedAtomsCenter = GeometryTools.get2DCenter(sharedAtoms);
+        
+        // make a benzene ring
         IRing newRing = createAttachRing(sharedAtoms, 6, "C");
-        // make newRing a benzene ring
         newRing.getBond(0).setOrder(IBond.Order.DOUBLE);
         newRing.getBond(2).setOrder(IBond.Order.DOUBLE);
         newRing.getBond(4).setOrder(IBond.Order.DOUBLE);
         makeRingAromatic(newRing);
-        double bondLength = GeometryTools.getBondLengthAverage(sourceContainer);
-        Point2d conAtomsCenter = getConnectedAtomsCenter(sharedAtoms, chemModel);
-        Vector2d ringCenterVector = new Vector2d(sharedAtomsCenter);
-        ringCenterVector.sub(conAtomsCenter);
-        ringPlacer.placeSpiroRing(newRing, sharedAtoms, sharedAtomsCenter, ringCenterVector, bondLength);
+        
+        double bondLength;
+        if (sourceContainer.getBondCount() == 0) {
+            /*
+             * Special case of adding a ring to a single, unconnected atom
+             * - places the ring centered on the place where the atom was.
+             */
+            bondLength = 1.4;
+            Point2d ringCenter = new Point2d(atom.getPoint2d());
+            ringPlacer.placeRing(newRing, ringCenter, bondLength);
+        } else {
+            bondLength = GeometryTools.getBondLengthAverage(sourceContainer);
+            Point2d conAtomsCenter = getConnectedAtomsCenter(sharedAtoms, chemModel);
+            
+            Point2d sharedAtomsCenter = atom.getPoint2d();
+            Vector2d ringCenterVector = new Vector2d(sharedAtomsCenter);
+            ringCenterVector.sub(conAtomsCenter);
+            ringPlacer.placeSpiroRing(newRing,
+                                      sharedAtoms,
+                                      sharedAtomsCenter,
+                                      ringCenterVector,
+                                      bondLength);
+        }
+        
+        // add the ring to the source container
         for (IAtom ringAtom : newRing.atoms()) {
             if (ringAtom != atom) sourceContainer.addAtom(ringAtom);
         }
+        
         for (IBond ringBond : newRing.bonds()) {
             sourceContainer.addBond(ringBond);
         }
@@ -531,6 +585,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         for (IBond bond : newRing.bonds())
             bond.setFlag(CDKConstants.ISAROMATIC, true);
     }
+    
     /**
      * Constructs a new Ring of a certain size that contains all the atoms and
      * bonds of the given AtomContainer and is filled up with new Atoms and Bonds.

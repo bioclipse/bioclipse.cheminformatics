@@ -78,16 +78,20 @@ public class SwingMouseEventRelay
 }
 
 	public void mousePressed(MouseEvent event) {
-		// TODO Auto-generated method stub
-		relay.mouseClickedDown(event.getX(), event.getY());
+		if(event.isPopupTrigger())
+			relay.mouseClickedDownRight(event.getX(), event.getY());
+		else
+			relay.mouseClickedDown(event.getX(), event.getY());
 		System.out.println("mousePressed at: " + event.getX() + "/" + event.getY());
 		dragFromX = event.getX();
 		dragFromY = event.getY();
 	}
 
 	public void mouseReleased(MouseEvent event) {
-		// TODO Auto-generated method stub
-		relay.mouseClickedUp(event.getX(), event.getY());
+		if(event.isPopupTrigger())
+			relay.mouseClickedUpRight(event.getX(), event.getY());
+		else
+			relay.mouseClickedUp(event.getX(), event.getY());
 	}
 	
 	

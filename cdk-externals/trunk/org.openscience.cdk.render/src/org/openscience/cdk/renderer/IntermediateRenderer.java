@@ -80,7 +80,7 @@ public class IntermediateRenderer implements IJava2DRenderer {
 	
 	public IntermediateRenderer() {
 		this.rendererModel = new RendererModel();
-		this.rendererModel.setHighlightRadiusModel(2.5);
+		this.rendererModel.setHighlightRadiusModel(0.4);
 		this.rendererModel.setBondDistance(0.15);
 		this.rendererModel.setMargin(0.25);
 		

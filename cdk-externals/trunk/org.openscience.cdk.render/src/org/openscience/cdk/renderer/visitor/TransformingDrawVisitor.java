@@ -98,70 +98,56 @@ public class TransformingDrawVisitor extends AbstractAWTRenderingVisitor {
     }
     
     public void visit(WedgeLineElement wedge) {
+        // make the vector normal to the wedge axis
+        Vector2d normal = new Vector2d(wedge.y1 - wedge.y2, wedge.x2 - wedge.x1);
+        normal.normalize();
+        normal.scale(0.2);  // XXX
+        
+        // make the triangle corners
+        Point2d vertexA = new Point2d(wedge.x1, wedge.y1);
+        Point2d vertexB = new Point2d(wedge.x2, wedge.y2);
+        Point2d vertexC = new Point2d(vertexB);
+        vertexB.add(normal);
+        vertexC.sub(normal);
+        this.g.setColor(wedge.color);
         if (wedge.isDashed) {
-            this.drawDashedWedge(wedge);
+            this.drawDashedWedge(vertexA, vertexB, vertexC);
         } else {
-            this.drawFilledWedge(wedge);
+            this.drawFilledWedge(vertexA, vertexB, vertexC);
         }
     }
     
-    private void drawFilledWedge(WedgeLineElement wedge) {
-        Vector2d normal = new Vector2d(wedge.y1 - wedge.y2, wedge.x2 - wedge.x1);
-        normal.normalize();
-        normal.scale(0.2);
+    private void drawFilledWedge(Point2d vertexA, Point2d vertexB, Point2d vertexC) {
+        int[] pB = this.transformPoint(vertexB.x, vertexB.y);
+        int[] pC = this.transformPoint(vertexC.x, vertexC.y);
+        int[] pA = this.transformPoint(vertexA.x, vertexA.y);
         
-        Point2d c;
-        Point2d e;
-        e = new Point2d(wedge.x1, wedge.y1);
-        c = new Point2d(wedge.x2, wedge.y2);
-        
-        Point2d d = new Point2d(c);
-        c.add(normal);
-        d.sub(normal);    
-        
-        int[] pc = this.transformPoint(c.x, c.y);
-        int[] pd = this.transformPoint(d.x, d.y);
-        int[] pe = this.transformPoint(e.x, e.y);
-        
-        this.g.setColor(wedge.color);
-        int[] xs = new int[] { pc[0], pd[0], pe[0] };
-        int[] ys = new int[] { pc[1], pd[1], pe[1] };
+        int[] xs = new int[] { pB[0], pC[0], pA[0] };
+        int[] ys = new int[] { pB[1], pC[1], pA[1] };
         this.g.fillPolygon(xs, ys, 3);
     }
     
-    private void drawDashedWedge(WedgeLineElement wedge) {
-        Point2d apex = new Point2d(wedge.x1, wedge.y1);
-        Point2d centerBase = new Point2d(wedge.x2, wedge.y2);
-        Vector2d normal = new Vector2d(wedge.y1 - wedge.y2, wedge.x2 - wedge.x1);
-        normal.normalize();
+    private void drawDashedWedge(Point2d vertexA, Point2d vertexB, Point2d vertexC) {
+        // store the current stroke
         Stroke storedStroke = this.g.getStroke();
         this.g.setStroke(new BasicStroke(1));
-        double distance = centerBase.distance(apex);
+        
+        // calculate the distances between lines
+        double distance = vertexB.distance(vertexA);
         double gapFactor = 0.1;
         double gap = distance * gapFactor;
         double numberOfDashes = distance / gap;
-        
-        double shorteningFactor = 0.02;
-        double currentShortening = 0.25;
-        
         double d = 0;
+        
+        // draw by interpolating along the edges of the triangle
         for (int i = 0; i < numberOfDashes; i++) {
-            Point2d c = new Point2d(centerBase);
-            c.interpolate(centerBase, apex, d);
-            Point2d p1 = new Point2d(c);
-            Point2d p2 = new Point2d(c);
-            Vector2d n = new Vector2d(normal);
-            n.scale(currentShortening);
-            p1.add(n);
-            p2.sub(n);
+            Point2d p1 = new Point2d();
+            p1.interpolate(vertexA, vertexB, d);
+            Point2d p2 = new Point2d();
+            p2.interpolate(vertexA, vertexC, d);
             int[] p1T = this.transformPoint(p1.x, p1.y);
             int[] p2T = this.transformPoint(p2.x, p2.y);
             this.g.drawLine(p1T[0], p1T[1], p2T[0], p2T[1]);
-            if (currentShortening - shorteningFactor < 0) {
-                continue;
-            } else {
-                currentShortening -= shorteningFactor;
-            }
             if (distance * (d + gapFactor) >= distance) {
                 break;
             } else {

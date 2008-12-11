@@ -79,8 +79,6 @@ public class RendererModel implements Serializable, Cloneable {
     
     private IBond highlightedBond = null;
     
-    private IAtomContainer selectedPart = null;
-    
     private IAtomContainer externalSelectedPart = null;
     
     private IAtomContainer clipboardContent = null;
@@ -564,36 +562,6 @@ public class RendererModel implements Serializable, Cloneable {
      */
     public void setClipboardContent(IAtomContainer content) {
         this.clipboardContent = content;
-    }
-
-    /**
-     * Get selected atoms. These are atoms selected internally in e. g. JCP with
-     * the lasso, painted in selectedPartColor
-     * 
-     * @return an atomcontainer with the selected atoms
-     */
-    public IAtomContainer getSelectedPart() {
-        return this.selectedPart;
-    }
-
-    /**
-     * Sets the selected atoms. These are atoms selected internally in e. g. JCP
-     * with the lasso, painted in selectedPartColor
-     * 
-     * @param selectedPart
-     */
-    public void setSelectedPart(IAtomContainer selectedPart) {
-        this.selectedPart = selectedPart;
-        getColorHash().clear();
-        for (int i = 0; i < selectedPart.getAtomCount(); i++) {
-            getColorHash().put(selectedPart.getAtom(i),
-                    this.getSelectedPartColor());
-        }
-        Iterator<IBond> bonds = selectedPart.bonds().iterator();
-        while (bonds.hasNext()) {
-            getColorHash().put(bonds.next(), getSelectedPartColor());
-        }
-        fireChange();
     }
 
     /**

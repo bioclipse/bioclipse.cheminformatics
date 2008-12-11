@@ -46,6 +46,18 @@ public interface IMouseEventRelay {
 	 * @param screenCoordX
 	 * @param screenCoordY
 	 */
+	public abstract void mouseClickedUpRight(int screenCoordX, int screenCoordY);
+	/**
+	 * 
+	 * @param screenCoordX
+	 * @param screenCoordY
+	 */
+	public abstract void mouseClickedDownRight(int screenCoordX, int screenCoordY);
+	/**
+	 * 
+	 * @param screenCoordX
+	 * @param screenCoordY
+	 */
 	public abstract void mouseClickedDouble(int screenCoordX, int screenCoordY);
 	/**
 	 * 

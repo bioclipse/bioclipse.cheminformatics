@@ -22,8 +22,6 @@ package org.openscience.cdk.renderer.generators;
 
 import java.awt.Color;
 
-import javax.vecmath.Point2d;
-
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
