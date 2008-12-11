@@ -242,6 +242,15 @@
                    name="jcp.controller.param.boolean"
                    value="true">
              </parameter>
+             <visibleWhen
+                   checkEnabled="true">
+                <with
+                      variable="activeEditorId">
+                   <equals
+                         value="net.bioclipse.cdk.ui.editors.jchempaint">
+                   </equals>
+                </with>
+             </visibleWhen>
           </command>
        </toolbar>
     </menuContribution>
