@@ -1,9 +1,9 @@
 /* $Revision: 7636 $ $Author: nielsout $ $Date: 2007-09-02 11:46:10 +0100 (su, 02 sep 2007) $
- * 
+ *
  * Copyright (C) 2007  Niels Out <nielsout@users.sf.net>
- * 
+ *
  * Contact: cdk-devel@lists.sourceforge.net
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation; either version 2.1
@@ -12,12 +12,12 @@
  * - but is not limited to - adding the above copyright notice to the beginning
  * of your source code files, and to any copyright notice that you may distribute
  * with programs based on this work.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
@@ -77,7 +77,7 @@ import org.openscience.cdk.validate.ProblemMarker;
 
 /**
  * A Java2D based 2D renderer for IChemObjects.
- * 
+ *
  * @author      nielsout, Arvid Berg
  * @cdk.svnrev  $Revision: 9162 $
  * @cdk.module  render
@@ -90,19 +90,19 @@ public class SWTRenderer implements IJava2DRenderer {
 	protected LoggingTool logger;
 	IsotopeFactory isotopeFactory;
 	float fscale = 16;
-	
+
 	Map<java.awt.Color,Color> cleanUp= new HashMap<java.awt.Color,Color>();
 
 	public SWTRenderer(RendererModel model) {
 		this.rendererModel = model;
 		logger = new LoggingTool(this);
 	}
-	
+
 	public SWTRenderer(RendererModel model, float fscale){
 	    this(model);
 	    this.fscale = fscale;
 	}
-	
+
 	public void paintChemModel(IChemModel model, GC graphics) {
 		// TODO Auto-generated method stub
 
@@ -124,18 +124,18 @@ public class SWTRenderer implements IJava2DRenderer {
 	}
 	/**
 	 * Paint the given Molecule on the graphics object at location specified by bounds.
-	 * 
+	 *
 	 *@param  atomCon The molecule to be drawn
 	 *@param  graphics GC to draw on
 	 *@param  bounds
 	 */
 	public void paintMolecule(IAtomContainer atomCon, GC graphics) {
-		
-		
+
+
 		if (affine == null) {
 			//System.out.println("paintMolecule should be called first time with the bounds of the graphical object..");
 			logger.warn("Cannot paintMolecule without transform Matrix");
-			return;			
+			return;
 		}
 		double[] m=new double[6];
 		affine.getMatrix(m);
@@ -147,7 +147,7 @@ public class SWTRenderer implements IJava2DRenderer {
 		graphics.setTransform(tf);
 		createFont(graphics,.4f,true );
 //		System.out.println("transform matrix:" + graphics.getTransform());
-		
+
 		if (rendererModel.getUseAntiAliasing()) {
 		    graphics.setAdvanced( true );
 		    graphics.setAntialias(SWT.ON );
@@ -159,7 +159,7 @@ public class SWTRenderer implements IJava2DRenderer {
 		    graphics.setAntialias( SWT.OFF );
 		}
 		// set basic shape form for bonds
-		
+
 		//Color bondColor=new Color(graphics.getDevice(),0,0,0);
 		//graphics.setForeground(bondColor);
 		graphics.setLineAttributes(new LineAttributes((float) (rendererModel.getBondWidth()),
@@ -170,18 +170,18 @@ public class SWTRenderer implements IJava2DRenderer {
 //		);
 
 		IRingSet ringSet = getRingSet(atomCon);
-	
+
 		// draw bonds
 		paintBonds(atomCon, ringSet, graphics);
 
 		// draw atom symbols
 		paintAtoms(atomCon, graphics);
 //		System.out.println("transform matrix:" + graphics.getTransform());
-		
+
 	}
 	/**
 	 * Paint the given Molecule on the graphics object at location specified by bounds.
-	 * 
+	 *
 	 *@param  atomCon The molecule to be drawn
 	 *@param  graphics GC to draw on
 	 *@param  bounds
@@ -189,9 +189,9 @@ public class SWTRenderer implements IJava2DRenderer {
 	public void paintMolecule(IAtomContainer atomCon, GC graphics,
 			Rectangle2D bounds) {
 		//rendererModel.setShowAromaticity(true);
-		
+
 		// calculate the molecule boundaries via the atomContainer
-		Rectangle2D molBounds = createRectangle2D(atomCon); 
+		Rectangle2D molBounds = createRectangle2D(atomCon);
 		if (molBounds == null || molBounds.isEmpty()) {
 			logger.debug("empty atomCon? -> no molBounds -> no drawing ");
 			//System.out.println("empty atomCon? -> no molBounds -> no drawing ");
@@ -199,9 +199,9 @@ public class SWTRenderer implements IJava2DRenderer {
 		}
 		AffineTransform transformMatrix = createScaleTransform(molBounds,bounds);
 		affine = transformMatrix;
-		
+
 		paintMolecule(atomCon, graphics);
-		
+
 	}
 	protected IRingSet getRingSet(IAtomContainer atomContainer)
 	{
@@ -245,7 +245,7 @@ public class SWTRenderer implements IJava2DRenderer {
 	 *  triggers the
 	 *  paintColouredAtoms method if the atom has got a certain color and triggers
 	 *  the paintAtomSymbol method if the symbol of the atom is not C
-	 *  
+	 *
 	 * @param container
 	 * @param atom
 	 * @param graphics
@@ -253,8 +253,8 @@ public class SWTRenderer implements IJava2DRenderer {
 	public void paintAtom(IAtomContainer container, IAtom atom, GC graphics)
 	{
 		//System.out.println("paintAtom Symbol:" + atom.getSymbol() + " atom:" + atom);
-				
-	
+
+
 
 		boolean drawSymbol = false; //paint all Atoms for the time being
 		boolean isRadical = (container.getConnectedSingleElectronsCount(atom) > 0);
@@ -308,7 +308,7 @@ public class SWTRenderer implements IJava2DRenderer {
                 logger.debug("Could not get an instance of IsotopeFactory");
             }
 
-		} else if (isRadical) 
+		} else if (isRadical)
 			drawSymbol = true;
 
 		if (drawSymbol == true) {
@@ -317,9 +317,9 @@ public class SWTRenderer implements IJava2DRenderer {
 			paintAtomSymbol(atom, graphics, alignment, isRadical);
 		}
 	}
-	
+
 	private void drawTextUpsideDown(GC graphics, TextLayout layout, int x, int y){
-	    
+
 	    Rectangle bounds = layout.getBounds();
 	    Rectangle doubleBounds = new Rectangle(
                                                bounds.x,
@@ -343,7 +343,7 @@ public class SWTRenderer implements IJava2DRenderer {
             image.dispose();
 	    }
 	}
-	
+
 	private ImageData drawText(Device device, TextLayout layout, Rectangle rect) {
 	    Image image = new Image(device,rect);
 	    if(layout.getFont() == getFont( FontSize.NORMAL ))
@@ -356,7 +356,7 @@ public class SWTRenderer implements IJava2DRenderer {
 	        imageGC.setAdvanced( true );
 	        imageGC.setInterpolation(SWT.HIGH);
 	        imageGC.setAntialias( SWT.OFF);
-	        
+
 	        imageGC.fillRectangle( rect);
 	        layout.draw( imageGC, 0, 0 );
       imageGC.dispose();
@@ -364,11 +364,11 @@ public class SWTRenderer implements IJava2DRenderer {
 	    image.dispose();
 	    return imageData;
 	}
-	
+
 	static ImageData superFlip(ImageData srcData, boolean vertical,Color color) {
-	    
+
       ImageData newImageData = (ImageData) srcData.clone();
-      
+
       for (int srcY = 0; srcY < srcData.height; srcY++) {
         for (int srcX = 0; srcX < srcData.width; srcX++) {
           int destX = 0, destY = 0;
@@ -378,17 +378,17 @@ public class SWTRenderer implements IJava2DRenderer {
           } else {
             destX = srcData.width - srcX - 1;
             destY = srcY;
-          }          
+          }
           int red = srcData.palette.getRGB( srcData.getPixel( srcX, srcY)).red;
           newImageData.setAlpha( destX, destY, red );
           newImageData.setPixel( destX, destY, srcData.palette.getPixel(
-                                                             color.getRGB() ) );          
+                                                             color.getRGB() ) );
         }
       }
 
       return newImageData;
     }
-	
+
   static ImageData flip(ImageData srcData, boolean vertical) {
       int bytesPerPixel = srcData.bytesPerLine / srcData.width;
       int destBytesPerLine = srcData.width * bytesPerPixel;
@@ -417,7 +417,7 @@ public class SWTRenderer implements IJava2DRenderer {
           srcData.palette, destBytesPerLine, newData);
     }
 
-	
+
 	public void paintAtomSymbol(IAtom atom, GC graphics, int alignment, boolean isRadical)
 	{
 		Color saveColor = graphics.getForeground();
@@ -426,13 +426,13 @@ public class SWTRenderer implements IJava2DRenderer {
 		if (atom.getSymbol() != null) {
 			symbol = atom.getSymbol();
 		}
-		//symbol = "Mg"; //to test if a certain symbol is spaced out right 
-		
+		//symbol = "Mg"; //to test if a certain symbol is spaced out right
+
 		createFont(graphics,.4f,false);
 		Font fontAtom=getFont(FontSize.NORMAL);
 
-		Font fontSmall =getFont(FontSize.SMALL); 
-		
+		Font fontSmall =getFont(FontSize.SMALL);
+
 		graphics.setFont(fontAtom);
 
 //		FontRenderContext frc = graphics.getFontRenderContext();
@@ -440,11 +440,11 @@ public class SWTRenderer implements IJava2DRenderer {
 		layoutAtom.setText(symbol);
 		layoutAtom.setFont(fontAtom);//, frc);
 		Rectangle2D boundsAtom = toJava2DRect(layoutAtom.getBounds());
-		
+
 		//btest has to be substracted to get the text on the exact right position
 		//FIXME: get right value from graphics object? (width of line? or so)
 		float btest = (float) (rendererModel.getBondWidth());
-		double atomSymbolX = atom.getPoint2d().x - boundsAtom.getWidth()/2 - 0.5 * btest; 
+		double atomSymbolX = atom.getPoint2d().x - boundsAtom.getWidth()/2 - 0.5 * btest;
 		double atomSymbolY = atom.getPoint2d().y - boundsAtom.getHeight() /2 - boundsAtom.getY();
 		double atomSymbolW = boundsAtom.getWidth();
 		double atomSymbolH = boundsAtom.getHeight() - boundsAtom.getY();
@@ -452,8 +452,8 @@ public class SWTRenderer implements IJava2DRenderer {
 		double marginc = (atomSymbolDNext - atomSymbolW)/2;//margin used in calculations
 		double margind = marginc * 1.4;//slightly larger margin for drawing
 		double atomSymbolHOffset = boundsAtom.getY();
-		
-		
+
+
 	//	System.out.println("the marginc is now: " + marginc + " margind: " + margind);
 
 		//bounds around Atom Symbol
@@ -461,37 +461,37 @@ public class SWTRenderer implements IJava2DRenderer {
 				boundsAtom.getY() + atomSymbolY - margind,
 				boundsAtom.getWidth() + 2 * margind,
 				boundsAtom.getHeight() + 2 * margind);
-		
-			
+
+
 		Color atomColor = toSWTColor(graphics, getRenderer2DModel().getAtomColor(atom, java.awt.Color.BLACK));
 		Color otherColor = toSWTColor(graphics,getRenderer2DModel().getForeColor());
-		
+
 		Color bgColor = toSWTColor(graphics,getRenderer2DModel().getBackColor());
 		paintColouredAtomBackground( atom, bgColor, graphics );
 		if (atom == getRenderer2DModel().getHighlightedAtom()){
 			bgColor = toSWTColor(graphics,getRenderer2DModel().getHoverOverColor());
 		  paintColouredAtomBackground( atom, bgColor, graphics );
 		}
-		
-		
-		
+
+
+
 //		graphics.fill(boundsAtom);// draw atom symbol background
-		
+
 //		graphics.fillRectangle(	(int)boundsAtom.getX(), (int)boundsAtom.getY(),
 //				(int)boundsAtom.getWidth(),(int) boundsAtom.getHeight());
-	
+
 		double massnumberW = 0;
 		//double formalChargW = 0;
 		double hydroGenW = 0;
 		double hydroGenCountW = 0;
 		double hydroGenCountH = 0;
 		double hydroGenH = 0;;
-		
+
 		if (atom.getMassNumber() != null && isotopeFactory != null) {
 			IIsotope majorIsotope = isotopeFactory.getMajorIsotope(atom.getSymbol());
 			if (majorIsotope != null && atom.getMassNumber() != majorIsotope.getMassNumber())
 			{
-			
+
 				graphics.setFont(fontSmall);
 				String textMass = Integer.toString(atom.getMassNumber());
 //				FontRenderContext frcMass = graphics.getFontRenderContext();
@@ -499,7 +499,7 @@ public class SWTRenderer implements IJava2DRenderer {
 				layoutMass.setFont(fontSmall);
 				layoutMass.setText(textMass);
 //						textMass, fontSmall, frcMass);
-				
+
 				Rectangle2D boundsMass = new Rectangle2D.Double(
 						layoutMass.getBounds().x,
 						layoutMass.getBounds().y,
@@ -533,7 +533,7 @@ public class SWTRenderer implements IJava2DRenderer {
 				layoutMass.dispose();
 			}
 		}
-		
+
 		if (atom.getHydrogenCount() != null && atom.getHydrogenCount() > 0) {
 			graphics.setFont(fontAtom);
 			String hChar = "H";
@@ -543,10 +543,10 @@ public class SWTRenderer implements IJava2DRenderer {
 			layoutH.setFont(fontAtom);
 //			hChar, fontAtom, frcMass);
 			Rectangle2D boundsHydro = toJava2DRect(layoutH.getBounds());
-			
+
 			hydroGenW = layoutH.getWidth();
 
-			hydroGenH = boundsHydro.getHeight();	
+			hydroGenH = boundsHydro.getHeight();
 			graphics.setFont(fontSmall);
 			String hCount = atom.getHydrogenCount().toString();
 //			frcMass = graphics.getFontRenderContext();
@@ -554,36 +554,36 @@ public class SWTRenderer implements IJava2DRenderer {
 					layoutHC.setText(hCount);
 					layoutHC.setFont(fontSmall);//, frcMass);
 			Rectangle2D boundsHydroC = toJava2DRect(layoutHC.getBounds());
-			
+
 			hydroGenCountW = layoutHC.getWidth();
 			hydroGenCountH = boundsHydroC.getHeight();
 
 			double hydroGenX = atomSymbolX;
 			double hydroGenY = atomSymbolY;//'H' at same height as atom Symbol
 			//TODO: add margins
-			
-//			System.out.println("test layoutAtom.getLeading(): " + layoutAtom.getLeading() + " layoutatom.getAscent(): " + layoutAtom.getAscent() + 
+
+//			System.out.println("test layoutAtom.getLeading(): " + layoutAtom.getLeading() + " layoutatom.getAscent(): " + layoutAtom.getAscent() +
 //					" layoutH.getAscent(): " + layoutH.getAscent() + " layoutH.getBaseline()" + layoutH.getBaseline() + " layoutAtom.getBaseline()" + layoutAtom.getBaseline());
-			
+
 			switch (alignment) {
 				case -2: //H below atomSymbol
 					hydroGenY = hydroGenY - hydroGenH + atomSymbolHOffset - 2 * marginc; break;
-				case -1: //left alignment 
+				case -1: //left alignment
 					hydroGenX -= (hydroGenW + Math.max(hydroGenCountW, massnumberW)); break;
 				case 2: //H above atomSymbol != correct
-					hydroGenY += atomSymbolH + marginc + atomSymbolHOffset + 0.5 * boundsHydroC.getHeight() - boundsHydroC.getX(); 
+					hydroGenY += atomSymbolH + marginc + atomSymbolHOffset + 0.5 * boundsHydroC.getHeight() - boundsHydroC.getX();
 					//FIXME: add height of formalCharge to this
 					break;
-				default: //right alignment = correct		
-					hydroGenX += atomSymbolDNext; break;	
+				default: //right alignment = correct
+					hydroGenX += atomSymbolDNext; break;
 
 			}
-				
+
 			boundsHydro.setRect(boundsHydro.getX() + hydroGenX - margind,
 					boundsHydro.getY() + hydroGenY - margind,
 					boundsHydro.getWidth() + 2 * margind,
 					boundsHydro.getHeight() + 2 * margind);
-		
+
 			double hydroGenCX = hydroGenX + hydroGenW;
 			double hydroGenCY = hydroGenY - 0.5 * boundsHydroC.getHeight();//1,2,3,etc. 'subscript'
 
@@ -591,9 +591,9 @@ public class SWTRenderer implements IJava2DRenderer {
 					boundsHydroC.getY() + hydroGenCY - margind,
 					boundsHydroC.getWidth() + 2 * margind,
 					boundsHydroC.getHeight() + 2 * margind);
-			
+
 			graphics.setForeground(bgColor);
-			
+
 //			graphics.fill(boundsHydro);// draw 'H' background
 //			graphics.fill(boundsHydroC);// draw '1/2/3' hydrogen Count background
 //			fill(graphics,boundsHydro);
@@ -609,10 +609,10 @@ public class SWTRenderer implements IJava2DRenderer {
 			drawTextUpsideDown( graphics, layoutHC, (int)hydroGenCX, (int)hydroGenCY);
 //			layoutH.dispose();
 //			layoutHC.dispose();
-			
-			
+
+
 		}
-			
+
 		if (atom.getFormalCharge() != null && atom.getFormalCharge() != 0) {
 
 			graphics.setFont(fontSmall);
@@ -620,17 +620,17 @@ public class SWTRenderer implements IJava2DRenderer {
 			double marginRight = 0;//margin on the right (=to hide part of bonds)
 			if (atom.getFormalCharge() != 1 && atom.getFormalCharge() != -1)
 				textFormal += Integer.toString(Math.abs(atom.getFormalCharge()));
-			
+
 			if (atom.getFormalCharge() > 0) {
 				textFormal += "+";
 				marginRight = margind;
 			}
 //			FontRenderContext frcFormal = graphics.getFontRenderContext();
-			
+
 			double formalChargeX = atomSymbolX + atomSymbolDNext;
 			double formalChargeY = atomSymbolY;
 			double formalChargeH = 0;
-			
+
 			//System.out.println("alignment: " + alignment);
 
 			if (alignment == 1) //right alignment
@@ -648,22 +648,22 @@ public class SWTRenderer implements IJava2DRenderer {
 						layoutFormalC.setFont(fontSmall);//, frcFormal);
 				//TextLayout layoutBase = new TextLayout(baseString, fontSmall, frcFormal);
 				Rectangle2D boundsFormalC = toJava2DRect(layoutFormalC.getBounds());
-		
+
 				formalChargeH = boundsFormalC.getHeight();
-				 
+
 				formalChargeY += boundsAtom.getHeight() - boundsFormalC.getHeight() / 2;
-			
+
 				boundsFormalC.setRect(boundsFormalC.getX() + formalChargeX - margind,
 					boundsFormalC.getY() + formalChargeY - margind,
 					boundsFormalC.getWidth() + 2 * margind + marginRight,
 					boundsFormalC.getHeight() + 2 * margind);
-		
+
 				graphics.setForeground(bgColor);
 				fill(graphics,boundsFormalC);// draw Formal Charge background
 //				graphics.setFont(fontSmall);
 				graphics.setForeground(otherColor);
 				formalChargeW = layoutFormalC.getWidth();
-			} 
+			}
 			if (atom.getFormalCharge() < 0) { //draw the 'minus' symbol
 				double formalChargeX2 = formalChargeX + formalChargeW + marginc;
 				String textFormal2 = "_";
@@ -673,7 +673,7 @@ public class SWTRenderer implements IJava2DRenderer {
 				Rectangle2D boundsFormalC = toJava2DRect(layoutFormal.getBounds());
 				double posiY = Math.max(boundsFormalC.getHeight(), formalChargeH) + boundsFormalC.getY();
 				formalChargeY2 += boundsAtom.getHeight() + posiY / 2;//
-			
+
 				boundsFormalC.setRect(boundsFormalC.getX() + formalChargeX2 - margind,
 					boundsFormalC.getY() + formalChargeY2 - 5 * margind,
 					boundsFormalC.getWidth() + 2 * margind,
@@ -696,36 +696,36 @@ public class SWTRenderer implements IJava2DRenderer {
 //			layoutFormalC.dispose();
 		}
 
-		
+
 		graphics.setFont(fontAtom);
 		graphics.setForeground(atomColor);
-		
+
 		// FIXME : draw text
 		//layoutAtom.draw(graphics, (int)atomSymbolX, (int)atomSymbolY);// draw atom symbol 4
 		drawTextUpsideDown(graphics, layoutAtom, (int)atomSymbolX, (int)atomSymbolY);
-		
+
 	/*	String test = "MgH";
 		frc = graphics.getFontRenderContext();
 		TextLayout layoutTest = new TextLayout(test, fontAtom, frc);
 		double CHwidth = layoutTest.getAdvance();
 		double tempv = CHwidth - atomSymbolW - hydroGenW;
-		
-		layoutTest.draw(graphics, (float)atomSymbolX, (float)atomSymbolY);// draw CH test		
+
+		layoutTest.draw(graphics, (float)atomSymbolX, (float)atomSymbolY);// draw CH test
 		System.out.println("symbol width: " + atomSymbolW + " hydroGenW: " + hydroGenW +
 				" total: " + (atomSymbolW + hydroGenW) + " CHwidth: " + CHwidth);
 		System.out.println("difference: " + tempv + " dif2: " + (hydroGenW - atomSymbolW) + " dif3: " + ((hydroGenW - atomSymbolW) - tempv));
 		*/
-		
+
 		graphics.setForeground(saveColor);
-		
+
 //		fontAtom.dispose();
 //		fontSmall.dispose();
 //		layoutAtom.dispose();
-		
+
 	}
-	
-	
-	
+
+
+
 	public  Color toSWTColor(GC graphics,java.awt.Color color) {
 	    if(color==null) color=java.awt.Color.BLACK;
 		Color otherColor=cleanUp.get(color);
@@ -751,7 +751,7 @@ public class SWTRenderer implements IJava2DRenderer {
 	}
 	Font normalAtomFont, smallAtomFont;
 	Font smallAtomFontD,normalAtomFontD;
-	
+
 	private Font getFont(FontSize fontSize){
 	    switch (fontSize) {
         case NORMAL:
@@ -767,12 +767,12 @@ public class SWTRenderer implements IJava2DRenderer {
         }
 	}
 	private void createFont(GC graphics,float smallFontFactor,boolean force){
-	    
+
 	    if (force || normalAtomFont == null || smallAtomFont==null) {
           if(normalAtomFont!=null) normalAtomFont.dispose();
           if(smallAtomFont != null) smallAtomFont.dispose();
-          
-          
+
+
 //        float[] transmatrix = { 1f / fscale, 0f, 0f, -1f / fscale};
 //        AffineTransform trans = new AffineTransform(transmatrix);
 //          double scale=trans.getScaleY();
@@ -785,7 +785,7 @@ public class SWTRenderer implements IJava2DRenderer {
             // from world coordinates
             // to screencoordinates, so transform the characters back to show
             // them 'up-side-up'.
-                        
+
             // fontAtom = fontAtom.deriveFont(trans);
 
             // FIXME: add this 0.4 in the RendererModel
@@ -800,7 +800,7 @@ public class SWTRenderer implements IJava2DRenderer {
             smallAtomFontD = new Font(graphics.getDevice(), "Arial",
                                             (int)(fontSize*smallFontFactor*4+.5),
                                             SWT.NORMAL);
-            }         
+            }
 	}
 	public void dispose(){
 		for(Color c:cleanUp.values())
@@ -813,19 +813,19 @@ public class SWTRenderer implements IJava2DRenderer {
 		return new Rectangle2D.Double(rect.x,rect.y,rect.width,rect.height);
 	}
 	public static void fill(GC graphics,Rectangle2D rect){
-		graphics.fillRectangle((int)rect.getX(), 
+		graphics.fillRectangle((int)rect.getX(),
 				(int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight());
-	}	
+	}
 	public static void draw(GC graphics,Rectangle2D rect){
-		graphics.drawRectangle((int)rect.getX(), 
+		graphics.drawRectangle((int)rect.getX(),
 				(int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight());
 	}
 	public static void fill(GC graphics,Ellipse2D rect){
-	    graphics.fillOval((int)rect.getX(), 
+	    graphics.fillOval((int)rect.getX(),
 	        (int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight());
-	  } 
+	  }
 	  public static void draw(GC graphics,Ellipse2D rect){
-	    graphics.drawOval((int)rect.getX(), 
+	    graphics.drawOval((int)rect.getX(),
 	        (int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight());
 	  }
 	/**
@@ -844,8 +844,8 @@ public class SWTRenderer implements IJava2DRenderer {
 		double atomRadius = rendererModel.getHighlightRadiusModel();
 		graphics.setForeground(color);
 		graphics.setBackground( color );
-	
-		Rectangle2D shape = new Rectangle2D.Double(); 
+
+		Rectangle2D shape = new Rectangle2D.Double();
 		shape.setFrame(x - (atomRadius / 2), y - (atomRadius / 2), atomRadius, atomRadius);
 		Ellipse2D shape2 = new Ellipse2D.Double(  );
 		shape2.setFrameFromCenter( x, y, x - (atomRadius / 2), y - (atomRadius / 2) );
@@ -861,12 +861,12 @@ public class SWTRenderer implements IJava2DRenderer {
 	 */
 	public boolean ringIsAromatic(IRing ring)
 	{
-		boolean isAromatic = true;		
+		boolean isAromatic = true;
 		for (int i = 0; i < ring.getAtomCount() && isAromatic; i++)
 		{
 			if (!ring.getAtom(i).getFlag(CDKConstants.ISAROMATIC))
 			{
-				isAromatic = false;			
+				isAromatic = false;
 			}
 		}
 		if (!isAromatic)
@@ -879,7 +879,7 @@ public class SWTRenderer implements IJava2DRenderer {
 		}
 		return isAromatic;
 	}
-	
+
 	public static double distance2points(Point2d a, Point2d b) {
 		return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 	}
@@ -909,7 +909,7 @@ public class SWTRenderer implements IJava2DRenderer {
 		graphics.draw(line2);*/
 		Point2d a = bond.getAtom(0).getPoint2d();
 		Point2d b = bond.getAtom(1).getPoint2d();
-	
+
 		//TODO: put distanceconstant in the renderermodel
 		double distanceconstant = 0.15; //distance between inner and outerbond (in world coordinates)
 
@@ -918,7 +918,7 @@ public class SWTRenderer implements IJava2DRenderer {
 		double px = a.x + u*(b.x - a.x);
 		double py = a.y + u*(b.y - a.y);
 		//System.out.println("distancea and b: " + distance + " u: " + u + " px: " + px + " py " + py);
-		
+
 		Point2d z = new Point2d(px, py);
 
 	/*	graphics.setColor(Color.pink);
@@ -932,18 +932,18 @@ public class SWTRenderer implements IJava2DRenderer {
 
 		double ae = distance2points(a ,z) / distance2points(center, z) * distanceconstant;
 		double af = Math.sqrt(Math.pow(ae,2) + Math.pow(distanceconstant,2));
-		
+
 		double pfx = a.x + af*(center.x - a.x);
 		double pfy = a.y + af*(center.y - a.y);
-		
+
 		double bh = distance2points(b, z) / distance2points(center, z) * distanceconstant;
 		double bi = Math.sqrt(Math.pow(bh, 2) + Math.pow(distanceconstant,2));
-		
+
 		double pix = b.x + bi*(center.x - b.x);
 		double piy = b.y + bi*(center.y - b.y);
 
 		graphics.setForeground(bondColor);
-		
+
 		graphics.drawLine((int)pfx,(int)pfy,(int)pix,(int)piy);
 	}
 
@@ -959,22 +959,23 @@ public class SWTRenderer implements IJava2DRenderer {
 		IRing ring;
 		Iterator<IBond> bonds = atomCon.bonds().iterator();
 		List<IRing> painted_rings = new ArrayList<IRing>();
-	
+
 		logger.debug("Painting bonds...");
 		//System.out.println("--doing paintBonds now");
 		while (bonds.hasNext())
 		{
 			IBond currentBond = bonds.next();
-			
-			
-			if (currentBond == rendererModel.getHighlightedBond() && 
-					(rendererModel.getSelectedPart()==null || !rendererModel.getSelectedPart().contains(currentBond)))
+
+
+			if (currentBond == rendererModel.getHighlightedBond() &&
+			    (rendererModel.getSelection().getConnectedAtomContainer() != null ||
+			     rendererModel.getSelection().getConnectedAtomContainer().contains( currentBond ) ))
 			{
 				bondColor = toSWTColor(graphics,rendererModel.getHoverOverColor());
 				for (int j = 0; j < currentBond.getAtomCount(); j++)
 				{
 					paintColouredAtomBackground(currentBond.getAtom(j), bondColor, graphics);
-					
+
 				}
 			}
 			bondColor = toSWTColor(graphics, rendererModel.getColorHash().get(currentBond));
@@ -1045,7 +1046,7 @@ public class SWTRenderer implements IJava2DRenderer {
 			}
 		} else if (bond.getOrder() == IBond.Order.DOUBLE)
 		{
-			
+
 			paintSingleBond(bond, bondColor, graphics);
 			paintInnerBond(bond, ring, bondColor, graphics);
 		} else if (bond.getOrder() == IBond.Order.TRIPLE)
@@ -1071,12 +1072,12 @@ public class SWTRenderer implements IJava2DRenderer {
 		double wedgeWidth = rendererModel.getBondWidth() /10;
 		//perhaps introduce a new setting instead of using getBondWidth here
 		//System.out.println(" wedgeWidth: " + wedgeWidth);
-		
+
 		double x0, x1, y0, y1;
 
 		if (bond.getStereo() == CDKConstants.STEREO_BOND_UP)
-		{ //FIXME: check if this is correct, I think the difference between STEREO_BOND_UP and the 
-			//other is which is the 'startpoint', please tell me (Nout) if this is correct. 
+		{ //FIXME: check if this is correct, I think the difference between STEREO_BOND_UP and the
+			//other is which is the 'startpoint', please tell me (Nout) if this is correct.
 			x0 = bond.getAtom(0).getPoint2d().x;
 			x1 = bond.getAtom(1).getPoint2d().x;
 			y0 = bond.getAtom(0).getPoint2d().y;
@@ -1096,10 +1097,10 @@ public class SWTRenderer implements IJava2DRenderer {
 		}
 		float newxup = (float)(x1 - Math.sin(angle) * wedgeWidth);
 		float newyup = (float)(y1 + Math.cos(angle) * wedgeWidth);
-		
+
 		float newxdown = (float)(x1 + Math.sin(angle) * wedgeWidth);
 		float newydown = (float)(y1 - Math.cos(angle) * wedgeWidth);
-		
+
 //		GeneralPath p = new GeneralPath(); //create a triangle with GenaralPath
 		Path pp=new Path(graphics.getDevice());
 //		p.moveTo((float)x0, (float)y0);
@@ -1129,8 +1130,8 @@ public class SWTRenderer implements IJava2DRenderer {
 		double x0, x1, y0, y1;
 
 		if (bond.getStereo() == CDKConstants.STEREO_BOND_DOWN)
-		{ //FIXME: check if this is correct, I think the difference between STEREO_BOND_UP and the 
-			//other is which is the 'startpoint', please tell me (Nout) if this is correct. 
+		{ //FIXME: check if this is correct, I think the difference between STEREO_BOND_UP and the
+			//other is which is the 'startpoint', please tell me (Nout) if this is correct.
 			x0 = bond.getAtom(0).getPoint2d().x;
 			x1 = bond.getAtom(1).getPoint2d().x;
 			y0 = bond.getAtom(0).getPoint2d().y;
@@ -1150,17 +1151,17 @@ public class SWTRenderer implements IJava2DRenderer {
 		}
 		float newxup = (float)(x1 - Math.sin(angle) * wedgeWidth);
 		float newyup = (float)(y1 + Math.cos(angle) * wedgeWidth);
-		
+
 		float newxdown = (float)(x1 + Math.sin(angle) * wedgeWidth);
 		float newydown = (float)(y1 - Math.cos(angle) * wedgeWidth);
-		
+
 		double bondLength = distance2points(bond.getAtom(0).getPoint2d(), bond.getAtom(1).getPoint2d());
 		int numberOfLines = (int) (bondLength / bondWidth / 3);
 
 		//System.out.println("lines: " + numberOfLines);
-		
+
 		graphics.setForeground(bondColor);
-		
+
 		double xl, xr, yl, yr;
 		Line2D.Double line = new Line2D.Double();
 		for (int i = 0; i < numberOfLines - 2; i++) { //do not show last line because atom symbol will be drawn on that place
@@ -1183,17 +1184,17 @@ public class SWTRenderer implements IJava2DRenderer {
 	{
 		Point2d center = GeometryTools.get2DCenter(ring);
 		//System.out.println(" painting a Ringring now at " + center);
-		
+
 		double[] minmax = GeometryTools.getMinMax(ring);
 		double width = (minmax[2] - minmax[0]) * 0.7;
 		double height = (minmax[3] - minmax[1]) * 0.7;
-		
+
 		//make a circle
 		if (width > height)
 			width = height;
 		else if (height > width)
 			height = width;
-		
+
 		double[] coords = { (center.x - (width / 2.0)), (center.y - (height / 2.0)) };
 		//offset is the width of the ring
 		double offset = (0.05 * Math.max(width, height));
@@ -1201,15 +1202,15 @@ public class SWTRenderer implements IJava2DRenderer {
 
 		// Fill outer oval.
 		graphics.setForeground(bondColor);
-		
+
 		graphics.fillOval((int)coords[0],(int)coords[1],(int)width,(int)height);
-		
+
 		// Erase inner oval.
 		graphics.setForeground(toSWTColor(graphics,rendererModel.getBackColor()));
-		
-		graphics.fillOval((int)(coords[0] + offset),(int)( coords[1] + offset), 
+
+		graphics.fillOval((int)(coords[0] + offset),(int)( coords[1] + offset),
 				(int)(width - offsetX2), (int)(height - offsetX2));
-		
+
 		// Reset drawing colour.
 		graphics.setForeground(bondColor);
 	}
@@ -1223,11 +1224,11 @@ public class SWTRenderer implements IJava2DRenderer {
 
 		//System.out.println("      paintBond, getstereo: " + bond.getStereo() + " getorder: " + bond.getOrder() + " x,y: " + bond.getAtom(0).getPoint2d().x + "," +
 //				bond.getAtom(0).getPoint2d().y);
-		
+
 		if (!GeometryTools.has2DCoordinates(bond)) {
 			return;
 		}
-		
+
 		if (!rendererModel.getShowExplicitHydrogens()) {
 			if (bond.getAtom(0).getSymbol().equals("H")) return;
 			if (bond.getAtom(1).getSymbol().equals("H")) return;
@@ -1260,7 +1261,7 @@ public class SWTRenderer implements IJava2DRenderer {
 //				paintAnyBond(bond, bondColor, graphics);
 			} else
 			{
-				
+
 				//System.out.println("       painting single bond because order = " + bond.getOrder());
 				// paint all other bonds as single bonds
 				paintSingleBond(bond, bondColor, graphics);
@@ -1275,7 +1276,7 @@ public class SWTRenderer implements IJava2DRenderer {
 	public void paintAnyBond(org.openscience.cdk.interfaces.IBond bond, Color bondColor, GC graphics)
 	{
 		//TODO: rewrite this old code:
-		
+
 		/*if (GeometryTools.has2DCoordinates(bond))
 		{
 			int[] screencoords=getScreenCoordinates(GeometryTools.getBondCoordinates(bond, r2dm.getRenderingCoordinates()));
@@ -1314,9 +1315,9 @@ public class SWTRenderer implements IJava2DRenderer {
 		{
 			double[] tempc = new double[] { bond.getAtom(0).getPoint2d().x, bond.getAtom(0).getPoint2d().y,
 					bond.getAtom(1).getPoint2d().x, bond.getAtom(1).getPoint2d().y};
-			
+
 			double[] coords = GeometryTools.distanceCalculator(tempc, rendererModel.getBondDistance());
-		
+
 			Line2D line = new Line2D.Double(
 					coords[0], coords[1], coords[6], coords[7]
 				);
@@ -1326,7 +1327,7 @@ public class SWTRenderer implements IJava2DRenderer {
 					coords[2], coords[3], coords[4], coords[5]
 				);
 			paintOneBond(line2, bondColor, graphics);
-			
+
 		}
 	}
 	/**
@@ -1341,8 +1342,8 @@ public class SWTRenderer implements IJava2DRenderer {
 		paintSingleBond(bond, bondColor, graphics);
 		double[] tempc = new double[] { bond.getAtom(0).getPoint2d().x, bond.getAtom(0).getPoint2d().y,
 				bond.getAtom(1).getPoint2d().x, bond.getAtom(1).getPoint2d().y};
-		
-		double[] coords = GeometryTools.distanceCalculator(tempc, 
+
+		double[] coords = GeometryTools.distanceCalculator(tempc,
                                                rendererModel.getBondDistance());
 
 		Line2D line = new Line2D.Double(
@@ -1354,7 +1355,7 @@ public class SWTRenderer implements IJava2DRenderer {
 				coords[2], coords[3], coords[4], coords[5]
 			);
 		paintOneBond(line2, bondColor, graphics);
-		
+
 		//TODO: rewrite this old code:
 
 	/*	int[] coords = GeometryTools.distanceCalculator(GeometryTools.getBondCoordinates(bond,r2dm.getRenderingCoordinates()), (r2dm.getBondWidth() / 2 + r2dm.getBondDistance()));
@@ -1380,7 +1381,7 @@ public class SWTRenderer implements IJava2DRenderer {
 			paintOneBond(line, bondColor, graphics);
 		}
 	}
-	
+
 	/**
 	 *  Really paints the bond. It is triggered by all the other paintbond methods
 	 *  to draw a polygon as wide as bond width.
@@ -1392,41 +1393,41 @@ public class SWTRenderer implements IJava2DRenderer {
 	{
 		// draw the shapes
 //		graphics.setForeground(bondColor);
-		graphics.setLineAttributes(new LineAttributes((float)(rendererModel.getBondWidth()), 
+		graphics.setLineAttributes(new LineAttributes((float)(rendererModel.getBondWidth()),
 				SWT.CAP_ROUND, SWT.JOIN_ROUND));
-		
+
 //		graphics.setStroke(new BasicStroke(
-//				(float) (rendererModel.getBondWidth()/rendererModel.getBondLength()), 
+//				(float) (rendererModel.getBondWidth()/rendererModel.getBondLength()),
 //				BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)
 //		);
 		graphics.setForeground(bondColor);
 		graphics.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
 	}
-	
+
 	private AffineTransform createScaleTransform(Rectangle2D contextBounds, Rectangle2D rendererBounds) {
 		AffineTransform affinet = new AffineTransform();
-		
+
 		//scale
 		double factor = rendererModel.getZoomFactor() * (1.0 - rendererModel.getMargin() * 2.0);
 	    double scaleX = factor * rendererBounds.getWidth() / contextBounds.getWidth();
 	    double scaleY = factor * rendererBounds.getHeight() / contextBounds.getHeight();
 
 	    double scale = Math.min( scaleX, scaleY );
-	    affinet.scale( scale, -scale );	    
+	    affinet.scale( scale, -scale );
 	    //translate
-	    
+
 		//System.out.println("scale: " + scale);
 	    double dx = -contextBounds.getX() * scale + 0.5 * (rendererBounds.getWidth() - contextBounds.getWidth() * scale);
 	    double dy = -contextBounds.getY() * scale - 0.5 * (rendererBounds.getHeight() + contextBounds.getHeight() * scale);
-	    //System.out.println("dx: " + dx + " dy:" +dy);						
+	    //System.out.println("dx: " + dx + " dy:" +dy);
 	    affinet.translate(dx / scale, dy / scale);
 	    affinet.translate( -rendererBounds.getX(), -rendererBounds.getY() );
-	    
+
 		return affinet;
 	}
 	/**
 	 *  Returns model coordinates from screencoordinates provided by the graphics translation
-	 *   
+	 *
 	 * @param ptSrc the point to convert
 	 * @return Point2D in real world coordinates
 	 */
@@ -1438,12 +1439,12 @@ public class SWTRenderer implements IJava2DRenderer {
 		}
 		catch (Exception exception) {
 			//System.out.println("Unable to reverse affine transformation");
-			
+
 		}
 		return new Point2d(ptDst.getX(), ptDst.getY());
 	}
 	/**
-	 * 
+	 *
 	 * @param container
 	 * @param ptSrc in real world coordinates (ie not screencoordinates)
 	 */
@@ -1451,17 +1452,17 @@ public class SWTRenderer implements IJava2DRenderer {
 		IAtom atom = GeometryTools.getClosestAtom( ptSrc.x, ptSrc.y, container);
 		double Atomdist = atom.getPoint2d().distance(ptSrc);
 		//System.out.println("closest Atom distance: " + Atomdist + " Atom:" + atom);
-		
+
 		IBond bond = GeometryTools.getClosestBond( ptSrc.x, ptSrc.y, container);
 		Point2d bondCenter = GeometryTools.get2DCenter(bond.atoms());
 		double Bonddist = bondCenter.distance(ptSrc);
 		//System.out.println("closest Bond distance: " + Bonddist + " Bond: " + bond);
 	}
-	
+
 	public Rectangle2D createRectangle2D(IAtomContainer atomCon) {
 		if (atomCon == null || atomCon.getAtomCount() == 0)
 			return null;
-		
+
 		float xmin, xmax = (float)atomCon.getAtom(0).getPoint2d().x;
 		xmin = xmax;
 		float ymin, ymax = (float)atomCon.getAtom(0).getPoint2d().y;
@@ -1479,12 +1480,12 @@ public class SWTRenderer implements IJava2DRenderer {
 			else if (y > ymax)
 				ymax = y;
 		}
-    	float margin = 1; //1 is ~enough margin to make symbols + text appear on screen	
+    	float margin = 1; //1 is ~enough margin to make symbols + text appear on screen
 		Rectangle2D result = new Rectangle2D.Float();
 		result.setRect(xmin - margin, ymin - margin, (xmax - xmin) + 2 * margin, (ymax - ymin) + 2 * margin);
 		return result;
 	}
-	
+
 	public RendererModel getRenderer2DModel() {
 		return this.rendererModel;
 	}
@@ -1500,10 +1501,10 @@ public class SWTRenderer implements IJava2DRenderer {
 			Rectangle2D bounds) {
 		// TODO Auto-generated method stub
 		logger.fatal("Not a java2D renderer");
-		
+
 	}
 	/*
-	 * Utility method for copying 3D x,y to 2D coordinates 
+	 * Utility method for copying 3D x,y to 2D coordinates
 	 */
 	public static IAtomContainer generate2Dfrom3D( IAtomContainer atomContainer ) {
 
@@ -1526,5 +1527,5 @@ public class SWTRenderer implements IJava2DRenderer {
 	    return atomContainer;
 	}
 
-	
+
 }

@@ -186,7 +186,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
         if(highlightedAtom != null)
             selection.add( highlightedAtom );
 
-        IAtomContainer modelSelection = getRenderer2DModel().getSelectedPart();
+        org.openscience.cdk.renderer.ISelection sel = getRenderer2DModel().getSelection();
+        IAtomContainer modelSelection = sel.getConnectedAtomContainer();
         if(modelSelection != null) {
             for(IAtom atom:modelSelection.atoms()) {
                 selection.add(atom);
@@ -232,7 +233,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
         }
 
     }
-    
+
 	public void setActiveDrawModule(IControllerModule activeDrawModule){
 		hub.setActiveDrawModule(activeDrawModule);
 	}
