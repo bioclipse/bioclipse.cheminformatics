@@ -50,7 +50,7 @@ public class CDKDebugManager implements ICDKDebugManager {
     }
 
     public String getNamespace() {
-        return "cdkdebug";
+        return "cdx";
     }
 
     public ICDKMolecule perceiveSybylAtomTypes(IMolecule mol)
