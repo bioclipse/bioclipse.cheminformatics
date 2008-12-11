@@ -50,7 +50,7 @@ public class CDKDebugManagerPluginTest {
     @Test public void testDepictSybylAtomTypes() throws Exception {
         CDKManager cdk = new CDKManager();
         ICDKMolecule mol = (ICDKMolecule)cdk.fromSMILES("CNCO");
-        debug.depictSybylAtomTypes(mol);
+        debug.perceiveSybylAtomTypes(mol);
         // would like to test more, but the method does not return anything
     }
 }

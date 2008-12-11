@@ -528,7 +528,7 @@ public class CDKManagerTest extends AbstractManagerTest {
 
     	ICDKMolecule mol = cdk.fromSMILES("C1CCCCC1CCOC");
     	
-    	ICDKMolecule mol2 = cdkdebug.depictSybylAtomTypes(mol);
+    	ICDKMolecule mol2 = cdkdebug.perceiveSybylAtomTypes(mol);
     	
     	for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
     		IAtom a=mol2.getAtomContainer().getAtom(i);
@@ -545,7 +545,7 @@ public class CDKManagerTest extends AbstractManagerTest {
 
     	System.out.println("mol: " + mol.toString());
     	
-    	ICDKMolecule mol2 = cdkdebug.depictSybylAtomTypes(mol);
+    	ICDKMolecule mol2 = cdkdebug.perceiveSybylAtomTypes(mol);
     	
     	for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
     		IAtom a=mol2.getAtomContainer().getAtom(i);
@@ -564,7 +564,7 @@ public class CDKManagerTest extends AbstractManagerTest {
 
     	System.out.println("mol: " + mol.toString());
     	
-    	ICDKMolecule mol2 = cdkdebug.depictSybylAtomTypes(mol);
+    	ICDKMolecule mol2 = cdkdebug.perceiveSybylAtomTypes(mol);
     	
     	for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
     		IAtom a=mol2.getAtomContainer().getAtom(i);
@@ -583,7 +583,7 @@ public class CDKManagerTest extends AbstractManagerTest {
 
     	System.out.println("mol: " + mol.toString());
     	
-    	ICDKMolecule mol2 = cdkdebug.depictSybylAtomTypes(mol);
+    	ICDKMolecule mol2 = cdkdebug.perceiveSybylAtomTypes(mol);
     	
     	assertEquals("C.ar", mol2.getAtomContainer().getAtom(1).getAtomTypeName());
     	
@@ -601,7 +601,7 @@ public class CDKManagerTest extends AbstractManagerTest {
         
         ICDKMolecule mol = new CDKMolecule(ac);
 
-    	ICDKMolecule mol2 = cdkdebug.depictSybylAtomTypes(mol);
+    	ICDKMolecule mol2 = cdkdebug.perceiveSybylAtomTypes(mol);
     	
     	System.out.println("** BENZENE **");
     	
