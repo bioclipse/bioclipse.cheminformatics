@@ -44,7 +44,8 @@ public abstract class AbstractJChemPaintHandler extends AbstractHandler {
     protected IAtom getSingleSelectedAtom( ExecutionEvent event ) {
         ISelection selection = HandlerUtil.getCurrentSelection( event );
         if(selection instanceof IStructuredSelection ) {
-            Object element = ((IStructuredSelection)selection).toArray()[1];
+            //Object element = ((IStructuredSelection)selection).toArray()[1];
+            Object element = ((IStructuredSelection)selection).getFirstElement();
             if(element instanceof IAtom) {
                 return (IAtom)element;
             }
@@ -55,7 +56,8 @@ public abstract class AbstractJChemPaintHandler extends AbstractHandler {
     protected IBond getSingleSelectedBond( ExecutionEvent event ) {
         ISelection selection = HandlerUtil.getCurrentSelection( event );
         if(selection instanceof IStructuredSelection ) {
-            Object element = ((IStructuredSelection)selection).toArray()[1];
+            //Object element = ((IStructuredSelection)selection).toArray()[1];
+            Object element = ((IStructuredSelection)selection).getFirstElement();
             if(element instanceof IBond) {
                 return (IBond)element;
             }

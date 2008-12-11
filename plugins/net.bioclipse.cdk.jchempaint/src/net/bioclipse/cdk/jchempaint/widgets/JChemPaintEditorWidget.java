@@ -177,7 +177,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
             return StructuredSelection.EMPTY;
         List<IChemObject> selection = new LinkedList<IChemObject>();
 
-        selection.add( atomContainer );
+        //selection.add( atomContainer );
 
         IAtom highlightedAtom = this.getRenderer2DModel().getHighlightedAtom();
         IBond highlightedBond = this.getRenderer2DModel().getHighlightedBond();
