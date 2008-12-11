@@ -138,6 +138,8 @@ public class MoleculesEditor extends EditorPart implements
             index.setEnabled( false );
             structure = new JChemPaintWidget(this,SWT.NULL);
             structure.getRenderer2DModel().setShowExplicitHydrogens( false );
+            structure.setMargin( 3 );
+            structure.getRenderer2DModel().setIsCompact( true );
             this.add( index );
             this.add( structure);
             initialize();
