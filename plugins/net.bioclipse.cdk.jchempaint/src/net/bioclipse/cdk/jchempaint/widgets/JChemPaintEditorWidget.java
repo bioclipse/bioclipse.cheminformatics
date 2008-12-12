@@ -108,9 +108,10 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
     @Override
     protected List<IGenerator> createGenerators() {
         List<IGenerator> generatorList = new ArrayList<IGenerator>();
+        generatorList.add(new ExternalHighlightGenerator(renderer2DModel));
         generatorList.addAll( super.createGenerators() );
         generatorList.add(new SelectionGenerator(renderer2DModel));
-		generatorList.add(new ExternalHighlightGenerator(renderer2DModel));
+
         return generatorList;
     }
 
