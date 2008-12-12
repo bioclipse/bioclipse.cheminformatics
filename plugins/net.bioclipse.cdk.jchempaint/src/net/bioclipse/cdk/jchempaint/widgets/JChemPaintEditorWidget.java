@@ -231,6 +231,12 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
             getRenderer2DModel().getHighlightedBond() != prevHighlightedBond) {
             prevHighlightedAtom = getRenderer2DModel().getHighlightedAtom();
             prevHighlightedBond = getRenderer2DModel().getHighlightedBond();
+            if(prevHighlightedAtom!=null) {
+                setToolTipText( renderer2DModel.getToolTipText( prevHighlightedAtom ) );
+            } else {
+                setToolTipText( "" );
+            }
+            setSelection( getSelection() );
         }
 
     }
