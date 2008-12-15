@@ -44,6 +44,7 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
+import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.renderer.generators.ExternalHighlightGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.SelectionGenerator;
@@ -120,11 +121,14 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
 
         if( atomContainer != null) {
             generated = false;
-            if(!GeometryTools.has2DCoordinates( atomContainer )) {
-
+            if(atomContainer.getAtomCount() > 0 &&
+               !GeometryTools.has2DCoordinates( atomContainer )) {
                 atomContainer = generate2Dfrom3D( atomContainer );
                 generated = true;
             }
+        } else {
+        	atomContainer = NoNotificationChemObjectBuilder.getInstance()
+        	    .newAtomContainer();
         }
         setupControllerHub( atomContainer );
         super.setAtomContainer( atomContainer );
@@ -155,10 +159,12 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
             // sdg.getMolecule();
             container = sdg.getMolecule();
         } catch ( CloneNotSupportedException e ) {
-            return null;
-        } catch ( Exception e ) {
-            return null;
-        }
+        	System.out.println("Could not create 3D coordinates: " + e.getMessage());
+            return atomContainer;
+        } catch (Exception e) {
+        	System.out.println("Could not create 3D coordinates: " + e.getMessage());
+            return atomContainer;
+		}
         return container;
 
     }
