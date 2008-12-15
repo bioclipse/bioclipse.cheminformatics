@@ -1175,7 +1175,6 @@ public class CDKManager implements ICDKManager {
         return formatsFactory.guessFormat(ResourcePathTransformer.getInstance().transform(path).getContents()).getFormatName();
     }
 
-	@Override
 	public void createSDFile(IFile file, IMolecule[] entries)
 			throws BioclipseException, InvocationTargetException {
 		if(file.exists())
