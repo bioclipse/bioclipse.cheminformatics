@@ -270,6 +270,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 			Iterator<IAtom> atoms = containers.next().atoms().iterator();
 			while (atoms.hasNext()) {
 				IAtom nextAtom = atoms.next();
+				if (nextAtom.getPoint2d() == null) continue;
 				double distance = nextAtom.getPoint2d().distance(worldCoord);
 				if (distance <= renderer.getRenderer2DModel().getHighlightRadiusModel() &&
 					distance < closestDistance) {
