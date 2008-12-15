@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.io.StringBufferInputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
@@ -52,6 +53,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ChemModel;
 import org.openscience.cdk.ConformerContainer;
@@ -71,6 +73,7 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CDKSourceCodeWriter;
+import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.MDLRXNWriter;
@@ -1171,5 +1174,34 @@ public class CDKManager implements ICDKManager {
     public String determineFormat( String path ) throws IOException, CoreException {
         return formatsFactory.guessFormat(ResourcePathTransformer.getInstance().transform(path).getContents()).getFormatName();
     }
+
+	@Override
+	public void createSDFile(IFile file, IMolecule[] entries)
+			throws BioclipseException, InvocationTargetException {
+		if(file.exists())
+			throw new BioclipseException("File "+file.getName()+" already exists");
+        IProgressMonitor monitor = new NullProgressMonitor();
+        int ticks = 10000;
+        try{
+	        monitor.beginTask( "Writing file", ticks );
+	        StringBuffer sb=new StringBuffer();
+	        for(int i=0;i<entries.length;i++){
+	        	CMLReader reader=new CMLReader(new StringBufferInputStream(entries[i].getCML()));
+	        	IAtomContainer ac=((IChemFile)reader.read(DefaultChemObjectBuilder.getInstance().newChemFile())).getChemSequence(0).getChemModel(0).getMoleculeSet().getAtomContainer(0);
+	        	StringWriter writer = new StringWriter();
+	        	MDLWriter mdlwriter=new MDLWriter(writer);
+	        	mdlwriter.write(ac);
+	        	sb.append(writer.toString());
+	        	sb.append("$$$$"+System.getProperty("line.separator"));
+	        }
+			file.create(new StringBufferInputStream(sb.toString()), false, monitor);
+			monitor.worked(ticks);
+        } catch (Exception e) {
+        	e.printStackTrace();
+			throw new BioclipseException(e.getMessage());
+		}finally {
+            monitor.done();
+        }
+	}
 
 }

@@ -563,4 +563,9 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testAddImplicitHydrogens")
    	public IMolecule addImplicitHydrogens(IMolecule molecule) throws BioclipseException, InvocationTargetException;
 
+    @Recorded
+    @PublishedMethod(params = "IFile file, IMolecule[] entries", 
+                     methodSummary="Creates an sd file from a number of molecules")
+    @TestMethods("testCreateSDFile")
+   	public void createSDFile(IFile file, IMolecule[] entries) throws BioclipseException, InvocationTargetException;
 }
