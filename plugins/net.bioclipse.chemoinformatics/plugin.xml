@@ -22,5 +22,29 @@
             name="Chemoinformatics">
       </category>
    </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="net.bioclipse.chemoinformatics.newwizards.category"
+            name="Chemoinformatics">
+      </category>
+      <wizard
+            class="net.bioclipse.chemoinformatics.wizards.NewMDLMolfileWizard"
+            id="net.bioclipse.chemoinformatics.wizards.NewMDLMolfileWizard"
+            name="New MDL Molfile">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="net.bioclipse.chemoinformatics.newwizards.category"
+            name="Chemoinformatics">
+      </category>
+      <wizard
+            class="net.bioclipse.chemoinformatics.wizards.NewCMLFileWizard"
+            id="net.bioclipse.chemoinformatics.wizards.NewCMLFileWizard"
+            name="New CML File">
+      </wizard>
+   </extension>
 
 </plugin>
