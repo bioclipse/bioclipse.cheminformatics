@@ -21,6 +21,7 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Transform;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
@@ -184,4 +185,14 @@ public class JChemPaintWidget extends Canvas {
         this.margin = margin;
     }
 
+    public Point computeSize(int wHint, int hHint, boolean changed) {
+
+        int width = 0, height = 0;
+
+        height = Math.max(100,wHint);
+        width = height;
+
+        return new Point(width + 2, height + 2);
+
+     }
 }
