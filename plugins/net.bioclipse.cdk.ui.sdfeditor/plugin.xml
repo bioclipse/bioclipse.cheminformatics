@@ -133,4 +133,23 @@
       </definition>
    </extension>
 
+      <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="net.bioclipse.cdk.ChemistryFiles"
+            name="Chemistry Files"/>
+      <wizard
+            canFinishEarly="false"
+            category="net.bioclipse.cdk.ChemistryFiles"
+            class="net.bioclipse.cdk.ui.wizards.NewSdfWizard"
+            hasPages="true"
+            icon="icons/many_molecules.png"
+            id="net.bioclipse.cdk.ui.wizards.NewSdfWizard"
+            name="New SD File"
+            project="true">
+         <description>
+         Create a new SD file.
+         </description>
+      </wizard>
+   </extension>
 </plugin>
