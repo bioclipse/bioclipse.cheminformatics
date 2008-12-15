@@ -61,12 +61,12 @@
     <command
           defaultHandler="net.bioclipse.cdk.jchempaint.handlers.InchargeHandler"
           id="net.bioclipse.cdk.ui.editors.jchempaint.command.incharge"
-          name="Increas Charge">
+          name="Increase Charge">
     </command>
     <command
           defaultHandler="net.bioclipse.cdk.jchempaint.handlers.DecchargeHandler"
           id="net.bioclipse.cdk.ui.editors.jchempaint.command.deccharge"
-          name="Decreas Charge">
+          name="Decrease Charge">
     </command>
     <command
           defaultHandler="net.bioclipse.cdk.jchempaint.handlers.MoveHandler"
@@ -437,7 +437,7 @@
        </command>
     </menuContribution>
  </extension>
- 
+
   <extension point="net.bioclipse.scripting.contribution">
     <scriptContribution
       id="net.bioclipse.cdk.jchempaint.business.JChemPaintManager"
@@ -467,5 +467,5 @@
         </with>
      </definition>
   </extension>
- 
+
 </plugin>
