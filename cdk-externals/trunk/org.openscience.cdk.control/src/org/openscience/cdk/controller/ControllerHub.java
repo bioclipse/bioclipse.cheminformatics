@@ -54,6 +54,7 @@ import org.openscience.cdk.layout.TemplateHandler;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.renderer.IJava2DRenderer;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
+import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
 
 /**
  * Class that will central interaction point between a mouse event throwing
@@ -801,4 +802,28 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     public IAtomContainer getPhantoms() {
         return this.phantoms;
     }
+
+	public int getAtomCount() {
+		return ChemModelManipulator.getAtomCount(chemModel);
+	}
+
+	public int getBondCount() {
+		return ChemModelManipulator.getBondCount(chemModel);
+	}
+
+	public String getChemicalFormula() {
+		StringBuffer formula = new StringBuffer();
+		List<IAtomContainer> containers =
+			ChemModelManipulator.getAllAtomContainers(chemModel);
+		for (int i=0;i<containers.size(); i++) {
+			IAtomContainer container = containers.get(i);
+			formula.append(
+			    MolecularFormulaManipulator.getMolecularFormula(
+			    	container
+			    )
+			);
+			if ((i+1)<containers.size()) formula.append('.');
+		}
+		return formula.toString();
+	}
 }

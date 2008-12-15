@@ -100,4 +100,8 @@ public interface IChemModelRelay {
     public abstract void setOrder(IBond bond, IBond.Order order);
     public abstract void setWedgeType(IBond bond, int type);
 	
+    public String getChemicalFormula();
+    public int getAtomCount();
+    public int getBondCount();
+    
 }
