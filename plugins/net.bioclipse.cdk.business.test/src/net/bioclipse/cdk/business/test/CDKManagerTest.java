@@ -726,4 +726,21 @@ public class CDKManagerTest extends AbstractManagerTest {
         cdk.generate2dCoordinates(molecule);
         assertNotNull(molecule.getAtomContainer().getAtom(0).getPoint2d());
     }
+    
+    @Test public void testCreateSDFile() throws Exception{
+    	IMolecule[] mol=new IMolecule[2];
+    	mol[0] = cdk.fromSMILES("CCCBr");
+    	mol[1] = cdk.fromSMILES("CCCCl");
+    	IFile file=new MockIFile();
+    	cdk.createSDFile(file, mol);
+    	byte[] bytes=new byte[1000];
+    	file.getContents().read(bytes);
+    	StringBuffer sb=new StringBuffer();
+        for(int i=0;i<bytes.length;i++){
+        	sb.append((char)bytes[i]);
+        }
+        assertTrue(sb.toString().contains("$$$$"));
+        assertTrue(sb.toString().contains("Cl"));
+        assertTrue(sb.toString().contains("Br"));
+    }
 }
