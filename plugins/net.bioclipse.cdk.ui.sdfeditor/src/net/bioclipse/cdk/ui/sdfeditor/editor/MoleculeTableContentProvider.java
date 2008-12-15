@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
+import java.util.Map;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -33,6 +34,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
 import org.eclipse.swt.nebula.widgets.compositetable.IRowContentProvider;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.openscience.cdk.DefaultChemObjectBuilder;
@@ -215,6 +218,8 @@ public class MoleculeTableContentProvider implements IRowContentProvider{
             }
 
             structure.setAtomContainer( mol );
+            setProperties( row.properties, mol );
+
         } catch ( CoreException e ) {
             // TODO Auto-generated catch block
             LogUtils.debugTrace( logger, e );
@@ -224,5 +229,20 @@ public class MoleculeTableContentProvider implements IRowContentProvider{
         }
 
     }
+    private void setProperties(Label properties,IAtomContainer ac) {
+        StringBuilder b = new StringBuilder();
+        int count =0;
+        Map<Object,Object> proper= ac.getProperties();
+        for(Object o:proper.keySet()) {
+//            b = new StringBuilder();
+           String key = o.toString();
+           String value = proper.get( o ).toString();
+           b.append( key ).append( ": " ).append( value ).append( ", \n" );
+//           properties.add( b.toString() );
+           // FIXME dirty hack to make it look good
+           if(count++>=5) break;
 
+        }
+        properties.setText( b.toString());
+    }
 }

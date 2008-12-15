@@ -65,7 +65,7 @@ public class MoleculesEditor extends EditorPart implements
         //ISelectionProvider,
         ISelectionListener {
 
-    public final static int STRUCTURE_COLUMN_WIDTH = 100;
+    public final static int STRUCTURE_COLUMN_WIDTH = 200;
 
     Logger logger = Logger.getLogger( MoleculesEditor.class );
 
@@ -124,28 +124,37 @@ public class MoleculesEditor extends EditorPart implements
 
         public Header(Composite parent, int style) {
             super(parent,style);
-            setLayout( new GridRowLayout( new int[] {40,STRUCTURE_COLUMN_WIDTH},false) );
+            setLayout( new GridRowLayout( new int[] {20,STRUCTURE_COLUMN_WIDTH,100},false) );
             new Label(this,SWT.NULL).setText( "Index" );
             new Label(this,SWT.NULL).setText( "2D-Structure" );
+            new Label(this,SWT.NULL).setText( "Properties" );
         }
     }
     public static class Row extends AbstractSelectableRow {
         public Row(Composite parent, int style) {
             super(parent,style);
-            setLayout( new GridRowLayout( new int[] {40,STRUCTURE_COLUMN_WIDTH},false)  );
+            setLayout( new GridRowLayout( new int[] {20,STRUCTURE_COLUMN_WIDTH,100},false)  );
             //super.setColumnCount( 2 );
             index = new Text(this,SWT.NULL);
-            index.setEnabled( false );
+            index.setEditable( false );
             structure = new JChemPaintWidget(this,SWT.NULL);
             structure.getRenderer2DModel().setShowExplicitHydrogens( false );
             structure.setMargin( 3 );
             structure.getRenderer2DModel().setIsCompact( true );
+
+            properties = new Label(this,SWT.NULL);
+//            properties.setEditable( false );
+            //properties = new org.eclipse.swt.widgets.List(this,SWT.SINGLE);
+
+
             this.add( index );
             this.add( structure);
+            this.add( properties );
             initialize();
         }
         public final Text index;
         public final JChemPaintWidget structure;
+        public final Label properties;
     }
 
     @Override
