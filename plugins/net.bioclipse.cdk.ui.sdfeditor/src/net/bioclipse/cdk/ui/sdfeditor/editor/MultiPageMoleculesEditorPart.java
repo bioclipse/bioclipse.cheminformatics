@@ -40,7 +40,10 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
 
     Logger logger = Logger.getLogger( MultiPageMoleculesEditorPart.class );
     private MoleculesEditor moleculesPage;
-    private JChemPaintEditor jcpEditor;
+    public MoleculesEditor getMoleculesPage() {
+		return moleculesPage;
+	}
+	private JChemPaintEditor jcpEditor;
     private JChemPaintEditorWidget jcpWidget;
     private JmolEditor jmolPage;
 
