@@ -25,6 +25,13 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: org.apache.log4j;version="1.2.15"
 Export-Package: net.bioclipse.cdk.ui.sdfeditor,
- net.bioclipse.cdk.ui.sdfeditor.editor
+ net.bioclipse.cdk.ui.sdfeditor.editor,
+ org.eclipse.swt.nebula.widgets.compositetable,
+ org.eclipse.swt.nebula.widgets.compositetable.day,
+ org.eclipse.swt.nebula.widgets.compositetable.day.internal,
+ org.eclipse.swt.nebula.widgets.compositetable.internal,
+ org.eclipse.swt.nebula.widgets.compositetable.month,
+ org.eclipse.swt.nebula.widgets.compositetable.month.internal,
+ org.eclipse.swt.nebula.widgets.compositetable.timeeditor
 Bundle-ClassPath: nebula_compositetable.jar,
  .
