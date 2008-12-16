@@ -77,8 +77,19 @@ public class MoleculesEditor extends EditorPart implements
 
     private MoleculesOutlinePage outlinePage;
 
+    private CompositeTable cTable;
+	public CompositeTable getCTable() {
+		return cTable;
+	}
 
-    public MoleculesEditor() {
+	private MoleculeTableContentProvider contentProvider;
+
+
+    public MoleculeTableContentProvider getContentProvider() {
+		return contentProvider;
+	}
+
+	public MoleculesEditor() {
     }
 
     @Override
@@ -161,10 +172,10 @@ public class MoleculesEditor extends EditorPart implements
     public void createPartControl( Composite parent ) {
 
         labelProvider = new MoleculesEditorLabelProvider(STRUCTURE_COLUMN_WIDTH);
-        final MoleculeTableContentProvider contentProvider= new MoleculeTableContentProvider();
+        contentProvider= new MoleculeTableContentProvider();
         contentProvider.inputChanged( null, null, getEditorInput() );
 
-        CompositeTable cTable = new CompositeTable(parent, SWT.NULL);
+        cTable = new CompositeTable(parent, SWT.NULL);
         viewer = cTable;
         // get First element from list to determin Properties
         // use a iterator go get the first element and pass the property list to
