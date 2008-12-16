@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor.Row;
@@ -44,6 +45,8 @@ import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.random.RandomAccessSDFReader;
+import org.openscience.cdk.renderer.color.CPKAtomColors;
+import org.openscience.cdk.renderer.color.IAtomColorer;
 
 
 /**
@@ -61,8 +64,19 @@ public class MoleculeTableContentProvider implements IRowContentProvider{
     boolean readerReady = false;
     RandomAccessSDFReader reader;
 
+//    IAtomColorer atomColorer;
+    IRenderer2DConfigurator renderer2DConfigurator;
 
-    public void ready() {
+	public IRenderer2DConfigurator getRenderer2DConfigurator() {
+		return renderer2DConfigurator;
+	}
+
+	public void setRenderer2DConfigurator(
+			IRenderer2DConfigurator renderer2DConfigurator) {
+		this.renderer2DConfigurator = renderer2DConfigurator;
+	}
+
+	public void ready() {
         readerReady = true;
     }
 
@@ -183,21 +197,21 @@ public class MoleculeTableContentProvider implements IRowContentProvider{
         Control[] columns = row.getChildren();
         Text index = (Text)columns[0];
         JChemPaintWidget structure = (JChemPaintWidget) columns[1];
-
+        
         index.setText( Integer.toString( currentObjectOffset+1));
-        IAtomContainer mol=null;
+        IAtomContainer ac=null;
         try {
             if(model != null) {
                 Object o =model.getMoleculeAt( currentObjectOffset );
                 if(o instanceof IAdaptable) {
-                    mol = ((ICDKMolecule) ((IAdaptable)o).getAdapter(
+                    ac = ((ICDKMolecule) ((IAdaptable)o).getAdapter(
                                        ICDKMolecule.class  )).getAtomContainer();
                 }
             } else if(readerReady) {
                 IChemObject chemObject =reader.readRecord( currentObjectOffset );
 //                List<IAtomContainer> containers =                     ChemFileManipulator.getAllAtomContainers((IChemFile)chemObject);
                 IMolecule ret = (IMolecule) chemObject;
-                mol = ret;
+                ac = ret;
 //                if (containers.size() > 1) {
 //                    IAtomContainer newContainer = chemObject.getBuilder()
 //                   .newAtomContainer();
@@ -214,12 +228,18 @@ public class MoleculeTableContentProvider implements IRowContentProvider{
 
 
             } else {
-                mol = this.getMoleculeAt( currentObjectOffset ).getAtomContainer();
+                ac = this.getMoleculeAt( currentObjectOffset ).getAtomContainer();
             }
 
-            structure.setAtomContainer( mol );
-            setProperties( row.properties, mol );
+            structure.setAtomContainer( ac );
+            setProperties( row.properties, ac );
+            ICDKMolecule cdkmol=new CDKMolecule(ac);
 
+            //Allows for external actions to register a renderer2dconfigurator
+            //to customize rendering
+            if (renderer2DConfigurator!=null) renderer2DConfigurator.configure(
+            		structure.getRenderer2DModel(), cdkmol);
+            
         } catch ( CoreException e ) {
             // TODO Auto-generated catch block
             LogUtils.debugTrace( logger, e );
