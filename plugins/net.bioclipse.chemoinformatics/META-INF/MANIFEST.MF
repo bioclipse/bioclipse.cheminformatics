@@ -8,6 +8,10 @@ Bundle-Vendor: The Bioclipse Team
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.ide,
- org.eclipse.core.resources
+ org.eclipse.core.resources,
+ net.bioclipse.cdk.business,
+ net.bioclipse.core
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
+Import-Package: org.apache.log4j;version="1.2.15"
+Export-Package: net.bioclipse.chemoinformatics.contentlabelproviders
