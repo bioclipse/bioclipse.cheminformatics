@@ -12,6 +12,9 @@
 
 package net.bioclipse.cdk.ui.wizards;
 
+import net.bioclipse.ui.contentlabelproviders.FolderContentProvider;
+import net.bioclipse.ui.contentlabelproviders.FolderLabelProvider;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;

@@ -11,6 +11,9 @@
  */
 package net.bioclipse.cdk.ui.wizards;
 
+import net.bioclipse.chemoinformatics.contentlabelproviders.MoleculeFileContentProvider;
+import net.bioclipse.ui.contentlabelproviders.FolderLabelProvider;
+
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
