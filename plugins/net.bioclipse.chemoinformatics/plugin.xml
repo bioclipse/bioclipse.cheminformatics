@@ -25,24 +25,21 @@
    <extension
          point="org.eclipse.ui.newWizards">
       <category
-            id="net.bioclipse.chemoinformatics.newwizards.category"
-            name="Chemoinformatics">
-      </category>
+            id="net.bioclipse.cdk.ChemistryFiles"
+            name="Chemistry Files"/>
       <wizard
             class="net.bioclipse.chemoinformatics.wizards.NewMDLMolfileWizard"
             id="net.bioclipse.chemoinformatics.wizards.NewMDLMolfileWizard"
+            category="net.bioclipse.cdk.ChemistryFiles"
             name="New MDL Molfile">
       </wizard>
    </extension>
    <extension
          point="org.eclipse.ui.newWizards">
-      <category
-            id="net.bioclipse.chemoinformatics.newwizards.category"
-            name="Chemoinformatics">
-      </category>
       <wizard
             class="net.bioclipse.chemoinformatics.wizards.NewCMLFileWizard"
             id="net.bioclipse.chemoinformatics.wizards.NewCMLFileWizard"
+            category="net.bioclipse.cdk.ChemistryFiles"
             name="New CML File">
       </wizard>
    </extension>
