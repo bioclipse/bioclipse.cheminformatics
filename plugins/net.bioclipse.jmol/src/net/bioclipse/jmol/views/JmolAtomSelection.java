@@ -10,22 +10,15 @@
  *     
  ******************************************************************************/
 package net.bioclipse.jmol.views;
-
 import java.util.HashSet;
-
 /**
  * A selection of atoms in Jmol that can be propagated to the workbench
  * @author ola
  *
  */
 public class JmolAtomSelection extends JmolSelection {
-
-    
     public JmolAtomSelection(String atomIndex) {
-
         selectionSet=new HashSet<String>();
         selectionSet.add("atomno="+atomIndex);
     }
-
-
 }

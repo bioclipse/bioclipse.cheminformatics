@@ -10,7 +10,6 @@
  *     
  ******************************************************************************/
 package net.bioclipse.jmol.editors;
-
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IActionBars;
@@ -23,7 +22,6 @@ import org.eclipse.ui.ide.IDEActionFactory;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
-
 /**
  * Manages the installation/deinstallation of global actions for multi-page editors.
  * Responsible for the redirection of global actions to the active editor.
@@ -49,18 +47,13 @@ public class JmolEditorContributor extends MultiPageEditorActionBarContributor {
     /* (non-JavaDoc)
      * Method declared in AbstractMultiPageEditorActionBarContributor.
      */
-
     public void setActivePage(IEditorPart part) {
         if (activeEditorPart == part)
             return;
-
         activeEditorPart = part;
-
         IActionBars actionBars = getActionBars();
         if (actionBars != null) {
-
             ITextEditor editor = (part instanceof ITextEditor) ? (ITextEditor) part : null;
-
             actionBars.setGlobalActionHandler(
                 ActionFactory.DELETE.getId(),
                 getAction(editor, ITextEditorActionConstants.DELETE));

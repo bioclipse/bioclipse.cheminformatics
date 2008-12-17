@@ -10,36 +10,27 @@
  *     
  ******************************************************************************/
 package net.bioclipse.cdk.business;
-
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
-
 import org.apache.log4j.Logger;
 import net.bioclipse.core.util.LogUtils;
-
 /**
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractUIPlugin {
-
     private static final Logger logger = Logger.getLogger(Activator.class);
-    
     // The plug-in ID
     public static final String PLUGIN_ID = "net.bioclipse.cdk.business";
-
     // The shared instance
     private static Activator plugin;
-
     //For Spring
     private ServiceTracker finderTracker;
-
     /**
      * The constructor
      */
     public Activator() {
     }
-
     /*
      * (non-Javadoc)
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
@@ -50,10 +41,8 @@ public class Activator extends AbstractUIPlugin {
         finderTracker = new ServiceTracker( context, 
                 ICDKManager.class.getName(), 
                 null );
-        
         finderTracker.open();
     }
-
     /*
      * (non-Javadoc)
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
@@ -62,7 +51,6 @@ public class Activator extends AbstractUIPlugin {
         plugin = null;
         super.stop(context);
     }
-
     /**
      * Returns the shared instance
      *
@@ -71,7 +59,6 @@ public class Activator extends AbstractUIPlugin {
     public static Activator getDefault() {
         return plugin;
     }
-
     public ICDKManager getCDKManager() {
         ICDKManager manager = null;
         try {
@@ -84,5 +71,4 @@ public class Activator extends AbstractUIPlugin {
         }
         return manager;
     }
-
 }

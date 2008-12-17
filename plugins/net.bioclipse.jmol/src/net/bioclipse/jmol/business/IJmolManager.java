@@ -10,18 +10,14 @@
  *     
  ******************************************************************************/
 package net.bioclipse.jmol.business;
-
 import org.eclipse.core.resources.IFile;
-
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.TestClasses;
 import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.jobs.Job;
-
 @TestClasses("net.bioclipse.jmol.test.JmolManagerTest")
 public interface IJmolManager extends IBioclipseManager{
-
     /**
      * Execute a script in Jmol. If editor active, run script there. 
      * In the future, if JmolView active, there too.
@@ -32,8 +28,6 @@ public interface IJmolManager extends IBioclipseManager{
                       params = "String script" )
     @Recorded
     public void run(String script);
-
-    
     /**
      * Load jmoo with a file
      * @param path Path to file, relative workspace
@@ -42,13 +36,10 @@ public interface IJmolManager extends IBioclipseManager{
                       params = "Path to file" )
     @Recorded
     public void load(String path);
-
     /**
      * @param file
      */
     public void load(IFile file);
-    
-    
     /**
      * Runs "spin on" in jmol
      */
@@ -56,7 +47,6 @@ public interface IJmolManager extends IBioclipseManager{
     @PublishedMethod( methodSummary = "Causes active jmol to " +
     		                              "spin molecule")
     public void spinOn();
-    
     /**
      * Runs "spin off" in jmol
      */
@@ -64,7 +54,6 @@ public interface IJmolManager extends IBioclipseManager{
     @PublishedMethod( methodSummary = "Causes active jmol to stop " +
     		                              "spinning molecule" )
     public void spinOff();
-
     @Recorded
     @Job 
     @PublishedMethod(methodSummary = "Optimizes the geometry of the structure in the active JmolEditor" )

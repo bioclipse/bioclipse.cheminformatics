@@ -9,13 +9,10 @@
  *     Ola Spjuth
  *******************************************************************************/
 package net.bioclipse.cdk.jchempaint.outline;
-
 import net.bioclipse.core.domain.BioObject;
 import net.bioclipse.core.domain.IBioObject;
-
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.openscience.cdk.interfaces.IChemObject;
-
 /**
  * Wraps an IChemObject as GUI object
  * 
@@ -24,52 +21,41 @@ import org.openscience.cdk.interfaces.IChemObject;
  *
  */
 public class CDKChemObject extends BioObject implements IBioObject{
-
     private IChemObject chemobj;
 //    private ChemObjectPropertySource propSource;
     private String name;
-
     private IPropertySource propSource;
-    
     /**
      * Used to look up e.g. the molecule of an Atom
      */
     private IChemObject parentChemobj;
-
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
     public CDKChemObject(String name, IChemObject chemobj) {
         this.name=name;
         this.chemobj = chemobj;
     }
-
     //Set name=ID from chemobj
     public CDKChemObject(IChemObject chemobj) {
         this.chemobj = chemobj;
         name=chemobj.toString();
     }
-
     public IChemObject getChemobj() {
         return chemobj;
     }
     public void setChemobj(IChemObject chemobj) {
         this.chemobj = chemobj;
     }
-
     public IChemObject getParentChemobj() {
         return parentChemobj;
     }
-
     public void setParentChemobj(IChemObject parentChemobj) {
         this.parentChemobj = parentChemobj;
     }
-
     public Object getAdapter(Class adapter) {
         if (adapter ==IPropertySource.class){
             if (propSource ==null){
@@ -79,5 +65,4 @@ public class CDKChemObject extends BioObject implements IBioObject{
         }
         return super.getAdapter(adapter);
     }
-
 }

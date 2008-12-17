@@ -9,7 +9,5 @@
  * Contact: http://www.bioclipse.net/
  ******************************************************************************/
 package net.bioclipse.inchi.business.test;
-
 public class InChIManagerPluginTest extends InChIManagerTest {
-
 }

@@ -10,21 +10,16 @@
  *     
  ******************************************************************************/
 package net.bioclipse.jmol.views.outline;
-
 import java.util.ArrayList;
-
 import org.jmol.modelset.Chain;
 import org.jmol.modelset.Model;
 import org.jmol.modelset.ModelSet;
-
 /**
  * A class wrapping a ModelSet in JmolContentOutline
  * @author ola
  */
 public class JmolModelSet extends JmolObject{
-
     private ModelSet modelSet;
-
     /**
      * Construct a JmolModelSet from a ModelSet.
      * @param modelSet
@@ -32,17 +27,14 @@ public class JmolModelSet extends JmolObject{
     public JmolModelSet(ModelSet modelSet) {
         this.modelSet=modelSet;
     }
-    
     public Object getObject() {
         return modelSet;
     }
-
     public void setObject(Object object) {
         if (object instanceof Model) {
             modelSet=(ModelSet)object;
         }
     }
-
     /**
      * For e.g. properties view
      */
@@ -50,12 +42,10 @@ public class JmolModelSet extends JmolObject{
         // TODO Auto-generated method stub
         return super.getAdapter(adapter);
     }
-
     /**
      * Create the children as all Chains of this Model
      */
     public void createChildren() {
-        
         ArrayList<IJmolObject> newChildren=new ArrayList<IJmolObject>();
         for (int i=0; i< modelSet.getModelCount(); i++){
             Model model=modelSet.getModels()[i];
@@ -64,12 +54,10 @@ public class JmolModelSet extends JmolObject{
         }
         setChildren(newChildren);
     }
-
     /**
      * ModelSet is not shown and therefore returns null as selectString
      */
     public String getSelectString() {
         return null;
     }
-
 }

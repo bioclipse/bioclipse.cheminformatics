@@ -10,21 +10,17 @@
  *     
  ******************************************************************************/
 package net.bioclipse.jmol.views.outline;
-
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.jmol.modelsetbio.Monomer;
 import org.jmol.modelsetbio.ProteinStructure;
 import org.jmol.viewer.JmolConstants;
-
 /**
  * A class wrapping a Monomer in JmolContentOutline
  * @author ola
  */
 public class JmolMonomer extends JmolObject{
-
     Monomer monomer;
-	private MonomerPropertySource monomerPropSrc;
-    
+        private MonomerPropertySource monomerPropSrc;
     /**
      * Construct a JmolChain for a Chain. Set name to ChainID
      * @param chain
@@ -36,16 +32,12 @@ public class JmolMonomer extends JmolObject{
         }
 //        monomer.getGroup3(monomer.getGroupID());
     }
-
-    
     public Object getObject() {
         return monomer;
     }
-
     public void setObject(Object object) {
         monomer=(Monomer)object;
     }
-
     public Object getAdapter(Class adapter) {
         if (adapter == IPropertySource.class) {
             if (monomerPropSrc == null) {
@@ -56,13 +48,10 @@ public class JmolMonomer extends JmolObject{
         }
         return super.getAdapter(adapter);
     }
-
     @Override
     public void createChildren() {
         //No children yet
     }
-
-
     /**
      * Return monomerNo + ":" + chainID to select only this monomer 
      * or monomerNo if no chainID exists
@@ -73,8 +62,6 @@ public class JmolMonomer extends JmolObject{
         String ret=monomer.getSeqcodeString() + ":" + monomer.getChainID();
         return ret;
     }
-
-    
     public String getProteinStructure() {
     	if (monomer.getProteinStructureType()>0){
     		String str=JmolConstants.getProteinStructureName(
@@ -82,17 +69,11 @@ public class JmolMonomer extends JmolObject{
     		if (str!=null)
     			return "" + str;
     	}
-
     	return "N/A";
-    	
     }
-
     public String getAtomCount() {
     	int s=monomer.getFirstAtomIndex();
     	int e= monomer.getLastAtomIndex();
-    	
     	return "" + (e-s);
     }
-    
-    
 }

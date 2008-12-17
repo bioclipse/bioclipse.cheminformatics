@@ -10,16 +10,13 @@
  *     
  ******************************************************************************/
 package net.bioclipse.jmol.views.outline;
-
 import java.util.List;
 import java.util.Set;
-
 import net.bioclipse.jmol.Activator;
 import net.bioclipse.jmol.editors.JmolEditor;
 import net.bioclipse.jmol.views.JmolAtomSelection;
 import net.bioclipse.jmol.views.JmolPolymerSelection;
 import net.bioclipse.jmol.views.JmolSelection;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
@@ -53,37 +50,28 @@ import org.jmol.modelset.Model;
 import org.jmol.modelset.ModelSet;
 import org.jmol.modelsetbio.BioPolymer;
 import org.jmol.modelsetbio.Monomer;
-
 /**
  * An Outline Page for a Jmol model.
  * @author ola
  *
  */
 public class JmolContentOutlinePage
-
     extends ContentOutlinePage
-    
     implements ISelectionListener,
                IAdaptable,
                ITabbedPropertySheetPageContributor {
-
     private final String CONTRIBUTOR_ID
         = "net.bioclipse.jmol.views.outline.JmolContentOutlinePage";
-
     private static final Logger logger
         = Logger.getLogger(JmolContentOutlinePage.class);
-
     private org.jmol.viewer.Viewer jmolViewer;
     private IEditorPart part;
     private TreeViewer treeViewer;
-
     class JmolOutlineContentProvider implements IStructuredContentProvider, 
     ITreeContentProvider {
-
         ModelSet modelset;    //The root object
         boolean isInitialized;
         Set<String> chains;    //Set of PDBchains
-
         public void inputChanged(Viewer v, Object oldInput, Object newInput) {
         }
         public void dispose() {
@@ -91,18 +79,14 @@ public class JmolContentOutlinePage
         public Object[] getElements(Object parent) {
             return getChildren(parent);
         }
-
         public Object getParent(Object child) {
-
             if (child instanceof JmolObject) {
                 JmolObject obj = (JmolObject) child;
                 return obj.getParent();
             }
-
             return null;
         }
         public Object [] getChildren(Object parent) {
-
             if (parent instanceof JmolObject) {
                 JmolObject o = (JmolObject) parent;
                 if (o.getChildren()!=null){
@@ -118,15 +102,12 @@ public class JmolContentOutlinePage
             return getChildren(parent).length>0;
         }
     }
-
     class JmolOutlineLabelProvider extends LabelProvider {
-
         public String getText(Object obj) {
             if (obj instanceof JmolObject) {
                 JmolObject o = (JmolObject) obj;
                 return o.getName();
             }
-
             if (obj instanceof Model) {
                 Model model = (Model) obj;
                 return "Model " + model.getModelIndex();
@@ -136,32 +117,25 @@ public class JmolContentOutlinePage
                 int[] ix=polymer.getLeadAtomIndices();
                 return "BioPolymer " + ix[0] + "-" + ix[ix.length-1];
             }
-
             return obj.toString();
         }
-        
         public Image getImage(Object obj) {
-
             String type = obj instanceof JmolAtom    ? "atom"
                         : obj instanceof JmolChain   ? "chain"
                         : obj instanceof JmolMonomer ? "peptide"
                         : null;
-            
             if (type != null) {
                 return Activator.getImageDescriptor(
                            "icons/" + type + ".png"
                        ).createImage();
             }
-
             return PlatformUI.getWorkbench()
                              .getSharedImages()
                              .getImage(ISharedImages.IMG_OBJ_ELEMENT);
         }
     }
-
     class NameSorter extends ViewerSorter {
     }
-
     /**
      * Our constructor
      * @param editorInput
@@ -169,79 +143,59 @@ public class JmolContentOutlinePage
      */
     public JmolContentOutlinePage(IEditorInput editorInput, JmolEditor jmolEditor) {
         super();
-
         this.part=jmolEditor;
         jmolViewer=jmolEditor.getJmolPanel().getViewer();
     }
-
-
     /**
      * Set up the treeviewer for the outline with Providers for Jmol
      */
     public void createControl(Composite parent) {
-
         super.createControl(parent);
-
         if (jmolViewer.getModelSet()==null)
             return;
         if (jmolViewer.getModelSet().getModels()==null)
             return;
         if (jmolViewer.getModelSet().getModels().length<1)
             return;
-
         treeViewer= getTreeViewer();
         treeViewer.setContentProvider(new JmolOutlineContentProvider());
         treeViewer.setLabelProvider(new JmolOutlineLabelProvider());
         //        viewer.setSorter(new NameSorter());
         treeViewer.addSelectionChangedListener(this);
-
         JmolModelSet ms=new JmolModelSet(jmolViewer.getModelSet());
         treeViewer.setInput(ms);
         treeViewer.expandToLevel(2);
-
         //This is needed to set focus to outline when clicked on an element in 
         //the treeviewer. Else no selection posted.
         treeViewer.getTree().addFocusListener(new FocusListener(){
-
             public void focusGained(FocusEvent e) {
-
                 System.out.println("tree gain");
                 IViewPart outline
                   = part.getSite().getPage().findView( IPageLayout.ID_OUTLINE );
                 part.getSite().getPage().activate(outline);
             }
-
             public void focusLost(FocusEvent e) {
                 // Not interested in this
             }
         });
-
         getSite().getPage().addSelectionListener(this);
     }
-
-
     /**
      * Update selected items if selected in Jmol
      */
     public void selectionChanged(IWorkbenchPart selectedPart,
                                  ISelection selection) {
-
         //Only react on selections in the corresponding editor
         if (part!=selectedPart) return;
-
         if (selection instanceof JmolSelection) {
             JmolSelection jmolSelection = (JmolSelection) selection;
             System.out.println("** jmol selection caught in outline: " 
                                + jmolSelection.getFirstElement().toString());
-
             //Look up in tree and select it
             JmolModelSet ms=(JmolModelSet) treeViewer.getInput();
-
             JmolObject obj=findInModelSet(jmolSelection, ms);
-
             //If none found, just don't select anything
             if (obj==null) return;
-
             logger.debug("Found obj: " + obj.getName());
             IStructuredSelection sel=new StructuredSelection(obj);
             treeViewer.setSelection(sel);
@@ -249,8 +203,6 @@ public class JmolContentOutlinePage
             fireSelectionChanged(sel);
         }
     }
-
-
     /**
      * Look up a Jmol monomer in Outline based on JmolSelection
      * @param jmolSelection
@@ -259,18 +211,14 @@ public class JmolContentOutlinePage
      */
     private JmolObject findInModelSet(JmolSelection jmolSelection,
                                       JmolModelSet ms) {
-
         //Still only one element at a time...
         String str=(String)jmolSelection.getFirstElement();
-
         if (jmolSelection instanceof JmolPolymerSelection) {
             JmolPolymerSelection polymerSelection
                 = (JmolPolymerSelection) jmolSelection;
-
             String monomerStr=polymerSelection.getMonomer();
             String chainStr=polymerSelection.getChain();
             if (chainStr==null) chainStr="";
-
             //Locate chain in modelset via model
             JmolChain chain=null;
             for (IJmolObject jobj : ms.getChildren()){
@@ -287,7 +235,6 @@ public class JmolContentOutlinePage
                     }
                 }
             }
-
             //If chain found, search for monomers in the chain
             if (chain!=null){
                 JmolMonomer monomer=null;
@@ -300,7 +247,6 @@ public class JmolContentOutlinePage
                             monomer=mobj;
                     }
                 }
-
                 //If we have a monomer, return it
                 if (monomer!=null){
                     return monomer;
@@ -309,9 +255,7 @@ public class JmolContentOutlinePage
         }
         else if (jmolSelection instanceof JmolAtomSelection) {
             String[] parts=str.split("=");
-
             String atomno=parts[1];
-
             for (IJmolObject jobj : ms.getChildren()){
                 JmolModel jmobj=(JmolModel)jobj;
                 for (IJmolObject jmobjChild : jmobj.getChildren()){
@@ -334,17 +278,14 @@ public class JmolContentOutlinePage
                 }
             }
         }
-
         return null;
     }
-
     /**
      * This is our ID for the TabbedPropertiesContributor
      */
     public String getContributorId() {
         return CONTRIBUTOR_ID;
     }
-
     /**
      * Provide adapter for TabbedPropertyPage
      */

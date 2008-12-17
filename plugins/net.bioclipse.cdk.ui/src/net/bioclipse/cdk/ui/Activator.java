@@ -10,11 +10,8 @@
  *     
  ******************************************************************************/
 package net.bioclipse.cdk.ui;
-
 import net.bioclipse.ui.BioclipseActivator;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-
 /**
  * The activator class controls the plug-in life cycle
  * 
@@ -22,11 +19,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
  *
  */
 public class Activator extends BioclipseActivator {
-
     // The plug-in ID
     public static final String PLUGIN_ID = "net.bioclipse.cdk.ui";
-
-    
     /**
      * Returns an image descriptor for the image file at the given
      * plug-in relative path

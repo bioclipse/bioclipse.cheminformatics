@@ -10,18 +10,14 @@
  *     
  ******************************************************************************/
 package net.bioclipse.jmol.views.outline;
-
 import org.jmol.modelset.Atom;
 import org.jmol.modelsetbio.Monomer;
-
 /**
  * A class wrapping a Monomer in JmolContentOutline
  * @author ola
  */
 public class JmolAtom extends JmolObject{
-
-	Atom atom;
-    
+        Atom atom;
     /**
      * Construct a JmolChain for a Chain. Set name to ChainID
      * @param chain
@@ -30,25 +26,18 @@ public class JmolAtom extends JmolObject{
         this.atom=atom;
         setName(atom.getElementSymbol() + atom.getAtomNumber());
     }
-
-    
     public Object getObject() {
         return atom;
     }
-
     public void setObject(Object object) {
         atom=(Atom)object;
     }
-
     public Object getAdapter(Class adapter) {
         return super.getAdapter(adapter);
     }
-
     @Override
     public void createChildren() {
     }
-
-
     /**
      * Return monomerNo + ":" + chainID to select only this monomer 
      * or monomerNo if no chainID exists
@@ -58,5 +47,4 @@ public class JmolAtom extends JmolObject{
         String ret="atomno=" + (atom.getAtomIndex()+1);
         return ret;
     }
-
 }

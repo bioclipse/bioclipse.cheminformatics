@@ -10,18 +10,14 @@
  *     
  ******************************************************************************/
 package net.bioclipse.jmol.views.properties;
-
 import net.bioclipse.jmol.views.outline.IJmolObject;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 /**
  * An abstract section for TabbedProperties
  * @author ola
@@ -29,10 +25,7 @@ import java.beans.PropertyChangeListener;
  */
 public abstract class AbstractSection
     extends AbstractPropertySection implements PropertyChangeListener {
-
     private IJmolObject jmolObject;
-
-
     /**
      * @see org.eclipse.ui.views.properties.tabbed.ITabbedPropertySection#setInput(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
      */
@@ -43,32 +36,27 @@ public abstract class AbstractSection
         Assert.isTrue(input instanceof IJmolObject);
         this.jmolObject = (IJmolObject) input;
     }
-
     /**
      * @see org.eclipse.ui.views.properties.tabbed.view.ITabbedPropertySection#aboutToBeShown()
      */
     public void aboutToBeShown() {
 //        getJmolObject().addPropertyChangeListener(this);
     }
-
     /**
      * @see org.eclipse.ui.views.properties.tabbed.view.ITabbedPropertySection#aboutToBeHidden()
      */
     public void aboutToBeHidden() {
 //        getElement().removePropertyChangeListener(this);
     }
-
     /**
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
     public void propertyChange(PropertyChangeEvent evt) {
         refresh();
     }
-
     public IJmolObject getJmolObject() {
         return jmolObject;
     }
-
     public void setJmolObject(IJmolObject jmolObject) {
         this.jmolObject = jmolObject;
     }

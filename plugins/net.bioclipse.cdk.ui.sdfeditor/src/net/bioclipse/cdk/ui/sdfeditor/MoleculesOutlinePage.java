@@ -10,7 +10,6 @@
  *     
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor;
-
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeEditorElement;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor;
@@ -18,7 +17,6 @@ import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditorContentProvider;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditorLabelProvider;
 import net.bioclipse.cdk.ui.sdfeditor.editor.SDFElementComparer;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
@@ -49,8 +47,6 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-
-
 /**
  * @author arvid
  *
@@ -63,54 +59,38 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
     Logger logger = Logger.getLogger( MoleculesOutlinePage.class );
     private ListenerList listeners = new ListenerList();
     private TreeViewer viewer;
-    
     Image image2d;
-    
-    
     private IEditorInput input;
-    
-    
     public MoleculesOutlinePage() {
         super();
     }
-    
     private TreeViewer getTreeViewer() {
-        
            return viewer;
     }
-    
     @Override
     public void createControl( Composite parent ) {    
-        
         viewer = new TreeViewer(parent, SWT.MULTI |
                                         SWT.H_SCROLL |
                                         SWT.V_SCROLL |
                                         SWT.FULL_SELECTION |
                                         SWT.VIRTUAL
                                         );
-        
 //        viewer.addSelectionChangedListener( this );
         TreeColumn itemColumn = new TreeColumn( viewer.getTree(), SWT.NONE );
         itemColumn.setText( "Index" );
         itemColumn.setResizable( true );
         itemColumn.setWidth( 60 );
-
         TreeColumn nameColumn = new TreeColumn( viewer.getTree(), SWT.NONE );
         nameColumn.setText( "Structure" );
         nameColumn.setResizable( false );
         nameColumn.setWidth( STRUCTURE_WITH );
-        
         getTreeViewer().setComparer( new SDFElementComparer() );
         getTreeViewer().setContentProvider( 
                            new MoleculesEditorContentProvider(getTreeViewer()));
-        
         /*getTreeViewer().setLabelProvider( new ILabelProvider() {
-
             public Image getImage( Object element ) {
-
                 return MoleculesOutlinePage.this.getImage();
             }
-
             public String getText( Object element ) {
                 String text = "-X-";
                 if(element instanceof IAdaptable){
@@ -134,44 +114,33 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
                 }
                 return text;
             }
-
             public void addListener( ILabelProviderListener listener ) {
-
             }
-
             public void dispose() {
                if( MoleculesOutlinePage.this.image2d != null)
                    MoleculesOutlinePage.this.image2d.dispose();
             }
-
             public boolean isLabelProperty( Object element, String property ) {
                 return false;
             }
-
             public void removeListener( ILabelProviderListener listener ) { 
-                
             }
-            
         });
         */
-        
         getTreeViewer().setLabelProvider( new MoleculesEditorLabelProvider(
                                                                STRUCTURE_WITH));
        getTreeViewer().setInput( input
                                  .getAdapter( IMoleculesEditorModel.class ) );
-       
        // TreeViewer provides selections and this listens to them
        getTreeViewer().addSelectionChangedListener( this );
        getSite().setSelectionProvider( viewer );
        getSite().getPage().addSelectionListener( this );
-        
     }
     /* (non-Javadoc)
      * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
      */
     public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
             //viewer.setSelection( selection );
-        
         if(part instanceof ContentOutline || part.getSite() == this.getSite()) {
 //                logger.debug( "site == site quit ");
                 return;
@@ -179,14 +148,11 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
         if(part != this && selection instanceof IStructuredSelection) {
 //            logger.debug( "Selection has chaged " + this.getClass().getName() );
             viewer.setSelection( selection, true );
-            
-            
             }        
     }
     public void setInput( IEditorInput editorInput ) {
         this.input = editorInput;
     }
-
     private Image getImage(){
         if(image2d == null) {
             ImageDescriptor imageDescriptor 
@@ -194,14 +160,11 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
                                     //net.bioclipse.ui.Activator.PLUGIN_ID,
                                     "net.bioclipse.ui",
                          "icons/chemistry/mol_2d.png" );
-                                                                   
             if(imageDescriptor !=null) 
                 image2d = imageDescriptor.createImage();
-            
         }
         return image2d;
     }
-    
     private String buildNameString(ICDKMolecule molecule) {        
         StringBuilder builder = new StringBuilder();
         builder.append( "[" );
@@ -216,12 +179,10 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
         builder.append( "]" );
         return builder.toString();
     }
-    
     @Override
     public Control getControl() {
         return (viewer == null ? null: viewer.getControl());
     }
-    
     @Override
     public void setFocus() {
         viewer.getControl().setFocus();
@@ -231,7 +192,6 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
      * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
      */
     public void addSelectionChangedListener( ISelectionChangedListener listener ) {
-
         listeners.add( listener );
         //getTreeViewer().addSelectionChangedListener( listener );
     }
@@ -251,10 +211,8 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
      */
     public void removeSelectionChangedListener(
                                           ISelectionChangedListener listener ) {
-
         listeners.remove( listener );
 //        getTreeViewer().removeSelectionChangedListener( listener );
-        
     }
     /*
      * (non-Javadoc)
@@ -265,14 +223,10 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
             viewer.setSelection( selection );
         }       
     }
-    
     public void selectionChanged( SelectionChangedEvent event ) {
-
         fireSelectionChanged(event.getSelection());        
     }
-
     private void fireSelectionChanged( ISelection selection ) {
-
         final SelectionChangedEvent event = new SelectionChangedEvent(
                                                                     this,
                                                                     selection);
@@ -284,6 +238,5 @@ public class MoleculesOutlinePage extends Page implements IContentOutlinePage,
                 }
             });
         }
-        
     }    
 }

@@ -1,33 +1,25 @@
 package net.bioclipse.cdk.jchempaint;
-
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintManager;
-
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
-
 /**
  * The activator class controls the plug-in life cycle
  * 
  * @author jonalv
  */
 public class Activator extends AbstractUIPlugin {
-
     // The plug-in ID
     public static final String PLUGIN_ID = "net.bioclipse.cdk.jchempaint";
-
     // The shared instance
     private static Activator plugin;
-    
     // tracks the example manager
     private ServiceTracker finderTracker;
-    
     /**
      * The constructor
      */
     public Activator() {
     }
-
     /*
      * (non-Javadoc)
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
@@ -35,13 +27,11 @@ public class Activator extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
-        
         finderTracker = new ServiceTracker( context, 
                                             IJChemPaintManager.class.getName(), 
                                             null );
         finderTracker.open();
     }
-
     /**
      * Returns a reference to the example manager object
      * 
@@ -59,7 +49,6 @@ public class Activator extends AbstractUIPlugin {
         }
         return exampleManager;
     }
-
     /*
      * (non-Javadoc)
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
@@ -68,7 +57,6 @@ public class Activator extends AbstractUIPlugin {
         plugin = null;
         super.stop(context);
     }
-
     /**
      * Returns the shared instance
      *

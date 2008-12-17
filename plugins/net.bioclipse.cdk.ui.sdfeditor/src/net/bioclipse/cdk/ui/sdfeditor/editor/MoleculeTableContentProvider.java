@@ -10,13 +10,11 @@
  *
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.Map;
-
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -24,7 +22,6 @@ import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor.Row;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.util.LogUtils;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -47,49 +44,38 @@ import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.random.RandomAccessSDFReader;
 import org.openscience.cdk.renderer.color.CPKAtomColors;
 import org.openscience.cdk.renderer.color.IAtomColorer;
-
-
 /**
  * @author arvid
  *
  */
 public class MoleculeTableContentProvider implements IRowContentProvider{
-
     Logger logger = Logger.getLogger( MoleculeTableContentProvider.class );
-
     TableViewer viewer;
     IFile file = null;
     IMoleculesEditorModel model = null;
     int childCount;
     boolean readerReady = false;
     RandomAccessSDFReader reader;
-
 //    IAtomColorer atomColorer;
     IRenderer2DConfigurator renderer2DConfigurator;
-
-	public IRenderer2DConfigurator getRenderer2DConfigurator() {
-		return renderer2DConfigurator;
-	}
-
-	public void setRenderer2DConfigurator(
-			IRenderer2DConfigurator renderer2DConfigurator) {
-		this.renderer2DConfigurator = renderer2DConfigurator;
-	}
-
-	public void ready() {
+        public IRenderer2DConfigurator getRenderer2DConfigurator() {
+                return renderer2DConfigurator;
+        }
+        public void setRenderer2DConfigurator(
+                        IRenderer2DConfigurator renderer2DConfigurator) {
+                this.renderer2DConfigurator = renderer2DConfigurator;
+        }
+        public void ready() {
         readerReady = true;
     }
-
     /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.ILazyContentProvider#updateElement(int)
      */
-
     public ICDKMolecule getMoleculeAt(int index) {
         Iterator<ICDKMolecule> iter;
         try {
             iter = Activator.getDefault().getCDKManager()
                    .createMoleculeIterator( file );
-
             ICDKMolecule molecule;
             int count = 0;
             while ( iter.hasNext() ) {
@@ -104,21 +90,16 @@ public class MoleculeTableContentProvider implements IRowContentProvider{
         }
         return null;
     }
-
     /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.IContentProvider#dispose()
      */
     public void dispose() {
-
         // TODO Auto-generated method stub
-
     }
-
     /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
      */
     public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {
-
         if(viewer != this.viewer)
             this.viewer = (TableViewer)viewer;
         if ( newInput != oldInput ) {
@@ -129,13 +110,11 @@ public class MoleculeTableContentProvider implements IRowContentProvider{
                     model = null;
                     return;
                 }
-
                  model = (IMoleculesEditorModel)
                                 input.getAdapter( IMoleculesEditorModel.class );
             }
         }
     }
-
     public int numberOfEntries(int max) {
         if(model != null) {
             return model.getNumberOfMolecules();
@@ -153,7 +132,6 @@ public class MoleculeTableContentProvider implements IRowContentProvider{
             }
             reader.close();
             return count;
-
         } catch ( CoreException e ) {
             // TODO Auto-generated catch block
             LogUtils.debugTrace( logger, e );
@@ -163,7 +141,6 @@ public class MoleculeTableContentProvider implements IRowContentProvider{
         }
         return -1;
     }
-
     public IFile getFile() {
         return file;
     }
@@ -172,32 +149,25 @@ public class MoleculeTableContentProvider implements IRowContentProvider{
             IPath location = file.getLocation();
             if (location != null) {
                java.io.File file = location.toFile();
-
                IChemObjectBuilder builder = DefaultChemObjectBuilder.getInstance();
-
                try {
-
                 reader = new RandomAccessSDFReader(file,builder);
                 return reader.size();
             } catch ( IOException e ) {
                 // TODO Auto-generated catch block
                 LogUtils.debugTrace( logger, e );
             }
-
             }
         }
         return -1;
     }
-
     public void refresh( CompositeTable sender,
                          int currentObjectOffset,
                          Control rowControl ) {
-
         Row row = (Row) rowControl;
         Control[] columns = row.getChildren();
         Text index = (Text)columns[0];
         JChemPaintWidget structure = (JChemPaintWidget) columns[1];
-        
         index.setText( Integer.toString( currentObjectOffset+1));
         IAtomContainer ac=null;
         try {
@@ -225,21 +195,16 @@ public class MoleculeTableContentProvider implements IRowContentProvider{
 //                    }
 //                }
                 // TODO get a ICDKMolecules and assing it to mol
-
-
             } else {
                 ac = this.getMoleculeAt( currentObjectOffset ).getAtomContainer();
             }
-
             structure.setAtomContainer( ac );
             setProperties( row.properties, ac );
             ICDKMolecule cdkmol=new CDKMolecule(ac);
-
             //Allows for external actions to register a renderer2dconfigurator
             //to customize rendering
             if (renderer2DConfigurator!=null) renderer2DConfigurator.configure(
             		structure.getRenderer2DModel(), cdkmol);
-            
         } catch ( CoreException e ) {
             // TODO Auto-generated catch block
             LogUtils.debugTrace( logger, e );
@@ -247,7 +212,6 @@ public class MoleculeTableContentProvider implements IRowContentProvider{
             // TODO Auto-generated catch block
             LogUtils.debugTrace( logger, e );
         }
-
     }
     private void setProperties(Label properties,IAtomContainer ac) {
         StringBuilder b = new StringBuilder();
@@ -261,7 +225,6 @@ public class MoleculeTableContentProvider implements IRowContentProvider{
 //           properties.add( b.toString() );
            // FIXME dirty hack to make it look good
            if(count++>=5) break;
-
         }
         properties.setText( b.toString());
     }

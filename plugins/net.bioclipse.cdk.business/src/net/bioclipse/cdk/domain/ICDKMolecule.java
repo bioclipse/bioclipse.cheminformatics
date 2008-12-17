@@ -10,21 +10,16 @@
  *     
  ******************************************************************************/
 package net.bioclipse.cdk.domain;
-
 import java.util.BitSet;
-
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
-
 import org.openscience.cdk.interfaces.IAtomContainer;
-
 /**
  * An intertace for CDKMolecule
  * @author ola
  *
  */
 public interface ICDKMolecule extends IMolecule{
-
     /**
      * Calculate CDK fingerprint and cache the result.
      * @param force if true, do not use cache but force calculation
@@ -32,15 +27,11 @@ public interface ICDKMolecule extends IMolecule{
      * @throws BioclipseException
      */
     public BitSet getFingerprint(boolean force) throws BioclipseException;
-
     /**
      * AtomContainer is the CDK model for a molecule
      * @return
      */
     public IAtomContainer getAtomContainer();
-
     String getName();
-
     void setName( String name );
-
 }

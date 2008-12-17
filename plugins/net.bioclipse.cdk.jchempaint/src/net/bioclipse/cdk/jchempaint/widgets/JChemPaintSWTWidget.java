@@ -13,15 +13,12 @@
  *     Arvid Berg                      - rewrite of rendering
  *******************************************************************************/
 package net.bioclipse.cdk.jchempaint.widgets;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.vecmath.Point2d;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -38,12 +35,10 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.IJava2DRenderer;
 import org.openscience.cdk.renderer.RendererModel;
-
 /**
  * SWT widget that views molecules using CDK's JChemPaint viewing engine.
  */
 public class JChemPaintSWTWidget extends Canvas {
-    
     private SWTRenderer renderer;
     private IAtomContainer molecule;
     private Map<IAtom,Point2d> coordinates=new HashMap<IAtom,Point2d>();
@@ -55,12 +50,9 @@ public class JChemPaintSWTWidget extends Canvas {
      */
     public JChemPaintSWTWidget(Composite parent, int style) {
         super(parent, style);
-        
         this.setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
-        
         renderer = new SWTRenderer(new RendererModel());
         Dimension screenSize = new Dimension(this.getSize().x, this.getSize().y);
-
         renderer.getRenderer2DModel().setDrawNumbers(true);
         renderer.getRenderer2DModel().setBondDistance( 2 );
         setCompactedNess(screenSize);
@@ -68,8 +60,6 @@ public class JChemPaintSWTWidget extends Canvas {
         renderer.getRenderer2DModel().setForeColor(Color.BLACK);
         renderer.getRenderer2DModel().setBackColor( Color.WHITE );
         renderer.getRenderer2DModel().setHoverOverColor( Color.LIGHT_GRAY );
-        
-        
         addDisposeListener(new DisposeListener() {
             public void widgetDisposed(DisposeEvent event) {
                 JChemPaintSWTWidget.this.widgetDisposed(event);
@@ -86,7 +76,6 @@ public class JChemPaintSWTWidget extends Canvas {
             }
         });
     }
-
     public void setInput(IAtomContainer molecule) throws IllegalArgumentException {
         if (!GeometryTools.has2DCoordinates(molecule)) {
             //throw new IllegalArgumentException("The AtomContainer does not contain 2D coordinates.");
@@ -94,26 +83,21 @@ public class JChemPaintSWTWidget extends Canvas {
         }
         this.molecule = molecule;
     }
-    
     public RendererModel getRendererModel() {
         return renderer.getRenderer2DModel();
     }
-    
     public IJava2DRenderer getRenderer(){
     	return renderer;
     }
-    
     @Override
     public Point computeSize(int wHint, int hHint, boolean changed) {
         return new Point(200, 200);
     }
-    
     private void widgetDisposed(DisposeEvent event) {
         renderer.dispose();
         molecule = null;
         renderer = null;
     }
-    
     private void controlResized(ControlEvent event) {
     	int xsize = this.getSize().x;
         int ysize = this.getSize().y;
@@ -133,8 +117,6 @@ public class JChemPaintSWTWidget extends Canvas {
 //            GeometryTools.translateAllPositive(molecule, coordinates);
 //            GeometryTools.scaleMolecule(molecule, oldDimensions, 0.8, coordinates);          
 //            GeometryTools.center(molecule, oldDimensions, coordinates);
-
-        
         //renderer.getRenderer2DModel().setBackgroundDimension(newSize);
 //            Rectangle2D.Double rect = new Rectangle2D.Double(0, 0, oldDimensions.getWidth(), oldDimensions.getHeight());
 //            renderer.paintMolecule(
@@ -148,7 +130,6 @@ public class JChemPaintSWTWidget extends Canvas {
         if(notSet)
             updateOnReize( new Dimension(this.getSize().x,this.getSize().y) );
       int x = 0,y = 0;
-      
       if(generated ){
           String text = "Generated from 3D coordinates";
           // FIXME : dispose font
@@ -163,8 +144,6 @@ public class JChemPaintSWTWidget extends Canvas {
 //          y/=2;
           event.gc.setForeground( new org.eclipse.swt.graphics.Color( 
                                             event.gc.getDevice(),220,220,255) );
-          
-          
           event.gc.drawText( text,0,0);
       }          
     	renderer.paintMolecule(molecule,event.gc,
@@ -174,13 +153,12 @@ public class JChemPaintSWTWidget extends Canvas {
     	                                              this.getSize().x,
     	                                              this.getSize().y-y));
     }
-
-	protected void setCompactedNess(Dimension dimensions) {
+        protected void setCompactedNess(Dimension dimensions) {
         if (dimensions.height < compactSize ||
             dimensions.width < compactSize) {
             renderer.getRenderer2DModel().setIsCompact(true);
         } else {
             renderer.getRenderer2DModel().setIsCompact(false);
         }
-	}
+        }
 }

@@ -9,16 +9,13 @@
  *     Egon Willighagen <egonw@user.sf.net>
  ******************************************************************************/
 package net.bioclipse.cdkdebug.business;
-
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.ui.Activator;
-
 import org.apache.log4j.Logger;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
@@ -31,31 +28,24 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.tools.diff.AtomContainerDiff;
 import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
-
 public class CDKDebugManager implements ICDKDebugManager {
-
     private static final Logger logger = Logger.getLogger(CDKManager.class);
     private static final CDKManager cdk = new CDKManager();
-
     public void diff(ICDKMolecule mol, ICDKMolecule mol2) {
         Activator.getDefault().CONSOLE.echo(
             AtomContainerDiff.diff(mol.getAtomContainer(), mol2.getAtomContainer())
         ); 
     }
-
     public void debug(ICDKMolecule mol) {
         Activator.getDefault().CONSOLE.echo(
             mol.getAtomContainer().toString()
         ); 
     }
-
     public String getNamespace() {
         return "cdx";
     }
-
     public ICDKMolecule perceiveSybylAtomTypes(IMolecule mol)
     throws InvocationTargetException {
-
         ICDKMolecule cdkmol;
         try {
             cdkmol = cdk.create(mol);
@@ -64,9 +54,7 @@ public class CDKDebugManager implements ICDKDebugManager {
             e.printStackTrace();
             throw new InvocationTargetException(e);
         }
-
         IAtomContainer ac = cdkmol.getAtomContainer();
-
         CDKAtomTypeMatcher cdkMatcher = CDKAtomTypeMatcher.getInstance(ac
                                                                        .getBuilder());
         AtomTypeMapper mapper = AtomTypeMapper
@@ -76,7 +64,6 @@ public class CDKDebugManager implements ICDKDebugManager {
                                                               .getBuilder());
         IAtomType[] sybylTypes = new IAtomType[ac.getAtomCount()];
         int atomCounter = 0;
-
         //  try {
         //    System.out.println("smiles: " + mol.getSmiles());
         //    System.out.println("cml: " + mol.getCML());
@@ -86,7 +73,6 @@ public class CDKDebugManager implements ICDKDebugManager {
         //    // TODO Auto-generated catch block
         //    e1.printStackTrace();
         //  }
-
         try {
             int a=0;
             for (IAtom atom : ac.atoms()) {
@@ -113,7 +99,6 @@ public class CDKDebugManager implements ICDKDebugManager {
                 ; // yes, setting null's here is important
                 atomCounter++;
             }
-
             // now that full perception is finished, we can set atom type names:
             for (int i = 0; i < sybylTypes.length; i++) {
                 ac.getAtom(i).setAtomTypeName(sybylTypes[i].getAtomTypeName());
@@ -123,12 +108,9 @@ public class CDKDebugManager implements ICDKDebugManager {
                                                 "Error while perceiving atom types: "
                                                 + exception.getMessage());
         }
-
         return cdkmol;
     }
-
     public void perceiveCDKAtomTypes(IMolecule mol) throws InvocationTargetException {
-
         ICDKMolecule cdkmol;
         try {
             cdkmol = cdk.create(mol);
@@ -137,7 +119,6 @@ public class CDKDebugManager implements ICDKDebugManager {
             throw new InvocationTargetException(e, "Error while creating a ICDKMolecule");
         }
         IAtomContainer ac = cdkmol.getAtomContainer();
-
         CDKAtomTypeMatcher cdkMatcher = CDKAtomTypeMatcher.getInstance(ac.getBuilder());
         int i = 1;
         for (IAtom atom : ac.atoms()) {
@@ -152,5 +133,4 @@ public class CDKDebugManager implements ICDKDebugManager {
             i++;
         }
     }
-
 }

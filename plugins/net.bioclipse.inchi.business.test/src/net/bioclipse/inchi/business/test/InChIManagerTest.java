@@ -9,7 +9,6 @@
  * Contact: http://www.bioclipse.net/
  ******************************************************************************/
 package net.bioclipse.inchi.business.test;
-
 import junit.framework.Assert;
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.core.business.IBioclipseManager;
@@ -17,23 +16,17 @@ import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.tests.AbstractManagerTest;
 import net.bioclipse.inchi.business.IInChIManager;
 import net.bioclipse.inchi.business.InChIManager;
-
 import org.junit.Test;
-
 public class InChIManagerTest extends AbstractManagerTest {
-
     IInChIManager inchi;
-
     //Do not use SPRING OSGI for this manager
     //since we are only testing the implementations of the manager methods
     public InChIManagerTest() {
         inchi = new InChIManager();
     }
-
     public IBioclipseManager getManager() {
         return inchi;
     }
-
     @Test public void testGenerate() throws Exception {
         CDKManager cdk = new CDKManager();
         IMolecule mol = cdk.fromSMILES("C");
@@ -42,7 +35,6 @@ public class InChIManagerTest extends AbstractManagerTest {
         Assert.assertNotNull(inchiStr);
         Assert.assertEquals("InChI=1/CH4/h1H4", inchiStr);
     }
-
     @Test public void testGenerateKey() throws Exception {
         CDKManager cdk = new CDKManager();
         IMolecule mol = cdk.fromSMILES("C");
@@ -51,5 +43,4 @@ public class InChIManagerTest extends AbstractManagerTest {
         Assert.assertNotNull(key);
         Assert.assertEquals("VNWKTOKETHGBQD-UHFFFAOYAM", key);
     }
-
 }

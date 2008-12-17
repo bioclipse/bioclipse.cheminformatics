@@ -10,15 +10,11 @@
  *     
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.outline;
-
 import java.util.ArrayList;
-
 public class Container {
-
     String name;
     ArrayList<CDKChemObject> children;
     ArrayList<Container> subfolders;
-
     public Container(String name) {
         this.name=name;
         children=new ArrayList<CDKChemObject>();
@@ -41,7 +37,6 @@ public class Container {
     public void setSubfolders(ArrayList<Container> subfolders) {
         this.subfolders = subfolders;
     }
-
     //Convenience methods for children
     public void addChild(CDKChemObject co){
         children.add(co);
@@ -49,7 +44,6 @@ public class Container {
     public void removeChild(CDKChemObject co){
         children.remove(co);
     }
-    
     //Convenience methods for subfolders
     public void addSubFolder(Container co){
         subfolders.add(co);
@@ -57,11 +51,8 @@ public class Container {
     public void removeSubFolder(Container co){
         subfolders.remove(co);
     }
-
-
     public void clear(){
         children.clear();
         subfolders.clear();
     }
-    
 }

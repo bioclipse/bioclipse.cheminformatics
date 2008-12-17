@@ -10,43 +10,32 @@
  *     
  ******************************************************************************/
 package net.bioclipse.jmol.views.outline;
-
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
-
 /**
  * Properties for the JmolChain view object
  * @author ola
  *
  */
 public class ModelPropertySource implements IPropertySource {
-
     private static final String PROPERTY_NAME = "jmol.model.name";     
     private static final String PROPERTY_BPOL_COUNT = "jmol.model.bpols";    
     private static final String PROPERTY_CHAIN_COUNT = "jmol.model.chainss";    
-
     private JmolModel jmolModel;                        //The model
-
     private IPropertyDescriptor[] propertyDescriptors;    //Cached descriptors
-
     public ModelPropertySource(JmolModel jmolModel) {
         this.jmolModel=jmolModel;
     }
-
     public IPropertyDescriptor[] getPropertyDescriptors() {
         if (propertyDescriptors == null) {
             // Create a descriptor and set a category
             PropertyDescriptor nameDescriptor = new PropertyDescriptor(PROPERTY_NAME, "name");
             nameDescriptor.setCategory("Jmol");
-
             PropertyDescriptor bpolDescriptor = new PropertyDescriptor(PROPERTY_BPOL_COUNT, "Biopolymers");
             bpolDescriptor.setCategory("Jmol");
-
             PropertyDescriptor chainDescriptor = new PropertyDescriptor(PROPERTY_CHAIN_COUNT, "Chains");
             chainDescriptor.setCategory("Jmol");
-
-
             propertyDescriptors = new IPropertyDescriptor[] {
                     nameDescriptor,   // Read-only (instance of PropertyDescriptor)
                     bpolDescriptor,   // Read-only (instance of PropertyDescriptor)
@@ -55,12 +44,9 @@ public class ModelPropertySource implements IPropertySource {
         }
         return propertyDescriptors;
     }
-
-
     public Object getEditableValue() {
         return null;
     }
-
     public Object getPropertyValue(Object id) {
         if (id.equals(PROPERTY_NAME))
             return jmolModel.getName();
@@ -72,15 +58,11 @@ public class ModelPropertySource implements IPropertySource {
         }
         return null;
     }
-
     public boolean isPropertySet(Object id) {
         return false;
     }
-
     public void resetPropertyValue(Object id) {
     }
-
     public void setPropertyValue(Object id, Object value) {
     }
-
 }

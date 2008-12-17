@@ -10,28 +10,19 @@
  *     
  ******************************************************************************/
 package net.bioclipse.cdk.ui.model;
-
 import java.io.IOException;
 import java.io.InputStream;
-
 import net.bioclipse.cdk.domain.Node;
 import net.bioclipse.cdk.domain.SDFElement;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-
-
 public class BuilderThread extends Thread {
-
     private Logger logger = Logger.getLogger( this.getClass() );
-
     private Node node;
     private IFile file;
     IProgressMonitor monitor;
-    
-    
     /**
      * @param sdfFile
      * @param first
@@ -45,10 +36,8 @@ public class BuilderThread extends Thread {
         this.file    = sdfFile;
         this.monitor = monitor;
     }
-    
     @Override
     public void run() {
-   
         InputStream input = null;
         try {
             input = file.getContents();
@@ -56,7 +45,6 @@ public class BuilderThread extends Thread {
         catch ( CoreException e ) {
             logger.error( "Could not open file", e );
         }
-        
         try {
             int moleculeNumber = 1;
             int c = 0;
@@ -65,7 +53,6 @@ public class BuilderThread extends Thread {
             boolean readingName = false;
             boolean readinLineAfterDollar = false;
             int newlinesFoundWhileReadingName = 0;
-            
             StringBuffer name = new StringBuffer();
             long moleculeStartsAt = 0;
             boolean readingFirstName = true;
@@ -99,7 +86,6 @@ public class BuilderThread extends Thread {
                                             name.toString(), 
                                             0,
                                             moleculeNumber++ ) ));
-                        
                         readingFirstName = false;
                         newlinesFoundWhileReadingName = 0;
                         name = new StringBuffer();
@@ -126,7 +112,6 @@ public class BuilderThread extends Thread {
                                             name.substring(1), 
                                             moleculeStartsAt,
                                             moleculeNumber++ ) ));
-                       
                         readingName = false;
                         newlinesFoundWhileReadingName = 0;
                         name = new StringBuffer();
@@ -138,7 +123,6 @@ public class BuilderThread extends Thread {
                     }
                 }
             }
-            
         } 
         catch ( IOException e ) {
             logger.error( "Could not read from file", e );

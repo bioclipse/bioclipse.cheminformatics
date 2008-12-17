@@ -10,13 +10,11 @@
  *     
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.business;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
 import net.bioclipse.cdk.jchempaint.Activator;
-
 /**
  * Factory for the exampleManager 
  * 
@@ -25,16 +23,12 @@ import net.bioclipse.cdk.jchempaint.Activator;
  */
 public class JChemPaintManagerFactory implements IExecutableExtension, 
                                               IExecutableExtensionFactory {
-
     private Object exampleManager;
-    
     public void setInitializationData( IConfigurationElement config,
                                        String propertyName, 
                                        Object data) throws CoreException {
-    
         exampleManager = Activator.getDefault().getExampleManager();
     }
-    
     public Object create() throws CoreException {
         return exampleManager;
     }

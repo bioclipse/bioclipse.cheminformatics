@@ -11,24 +11,18 @@
  *
  ******************************************************************************/
 package net.bioclipse.cml.tests;
-
 import net.bioclipse.cml.managers.IValidateCMLManager;
 import net.bioclipse.cml.managers.ValidateCMLManager;
 import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.tests.AbstractManagerTest;
-
 public class ValidateCMLManagerTest extends AbstractManagerTest {
-
     IValidateCMLManager cml;
-
     //Do not use SPRING OSGI for this manager
     //since we are only testing the implementations of the manager methods
     public ValidateCMLManagerTest() {
         cml = new ValidateCMLManager();
     }
-
     public IBioclipseManager getManager() {
         return cml;
     }
-
 }

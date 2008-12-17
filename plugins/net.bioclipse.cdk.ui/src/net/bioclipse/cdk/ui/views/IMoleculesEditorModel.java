@@ -10,17 +10,12 @@
  *     
  ******************************************************************************/
 package net.bioclipse.cdk.ui.views;
-
-
 /**
  * @author arvid
  *
  */
 public interface IMoleculesEditorModel {
-    
     public Object getMoleculeAt(int index);
-    
     public int getNumberOfMolecules();
-    
     public void save();
 }
