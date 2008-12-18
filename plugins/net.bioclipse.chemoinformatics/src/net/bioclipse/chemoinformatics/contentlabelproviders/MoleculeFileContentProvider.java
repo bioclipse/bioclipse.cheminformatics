@@ -7,15 +7,22 @@
  *
  *****************************************************************************/
 package net.bioclipse.chemoinformatics.contentlabelproviders;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.core.util.LogUtils;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 /** 
@@ -45,13 +52,20 @@ public class MoleculeFileContentProvider implements ITreeContentProvider {
                 for ( int i=0 ; i < container.members().length ; i++ ) {
                     IResource resource = container.members()[i];
                     if ( resource instanceof IFile  ) {
-                        String fileExtension 
-                            = ( (IFile)resource ).getFileExtension();
-                        if ( fileExtension != null 
-                             && ( fileExtension.equals(ICDKManager.mol) 
-                               || fileExtension.equals(ICDKManager.cml) ) ) {
+                        
+                        IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
+                        InputStream stream = ((IFile)resource).getContents();
+                        IContentType contentType = contentTypeManager.findContentTypeFor(stream, ((IFile)resource).getName());
+                        stream.close();
+                        if(contentType!=null 
+                                && (contentType.getId().equals( "net.bioclipse.contenttypes.mdlMolFile2D" )
+                                || contentType.getId().equals( "net.bioclipse.contenttypes.mdlMolFile3D" )
+                                || contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleMolecule2d" )
+                                || contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleMolecule3d" )
+                                || contentType.getId().equals( "net.bioclipse.contenttypes.pdb" ))
+                        ){
                                childElements.add(resource);
-                           }
+                        }
                     }
                     if ( resource instanceof IContainer 
                          && resource.isAccessible() ) {
@@ -61,6 +75,9 @@ public class MoleculeFileContentProvider implements ITreeContentProvider {
             } 
             catch (CoreException e) {
                 LogUtils.handleException(e,logger);
+            } catch ( IOException e ) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
         return childElements.toArray();
