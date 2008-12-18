@@ -29,10 +29,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 public class SelectFilesWizardPage extends WizardPage {
+        private boolean withCheckbox;
         private IStructuredSelection selectedFiles = null;
         private Button includeRecursivlyButton;
-        protected SelectFilesWizardPage() {
+        protected SelectFilesWizardPage(boolean withCheckbox) {
                 super("New SD File");
+                this.withCheckbox=withCheckbox;
                 setTitle("Select files to include");
                 setDescription("All structures you select will be added to the sd file.");
         }
@@ -69,10 +71,11 @@ public class SelectFilesWizardPage extends WizardPage {
                         }
                 });
                 treeViewer.setSelection(new StructuredSelection(ResourcesPlugin.getWorkspace().getRoot().findMember(".")));
-                // add possibility to add an empty molecule
-                includeRecursivlyButton = new Button(container, SWT.CHECK);
-                Label includeRecursivlyLabel = new Label(container, SWT.NULL);
-                includeRecursivlyLabel.setText("Include directories recursivly");
+                if(withCheckbox){
+                    includeRecursivlyButton = new Button(container, SWT.CHECK);
+                    Label includeRecursivlyLabel = new Label(container, SWT.NULL);
+                    includeRecursivlyLabel.setText("Include directories recursivly");
+                }
                 setPageComplete(false);
                 setControl(container);
         }

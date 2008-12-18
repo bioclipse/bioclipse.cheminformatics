@@ -13,19 +13,23 @@ package net.bioclipse.cdk.ui.wizards;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PlatformUI;
 /**
  * A wizard to create a new sd file from existing structure files.
  *
@@ -43,7 +47,14 @@ public class NewSdfWizard extends Wizard implements INewWizard {
          */
         public void addPages() {
                 newsdPage = new NewSDFileWizardPage();
-                specPage = new SelectFilesWizardPage();
+                ISelection sel=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
+                if (sel instanceof IStructuredSelection) {
+                  Object element = ((IStructuredSelection) sel).getFirstElement();
+                  if (element instanceof IContainer) {
+                      newsdPage.setSelectedFolder( (IContainer)element);
+                  }
+                }
+                specPage = new SelectFilesWizardPage(true);
                 addPage(newsdPage);
                 addPage(specPage);
         }

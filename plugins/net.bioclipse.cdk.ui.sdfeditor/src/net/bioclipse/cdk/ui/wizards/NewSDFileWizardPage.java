@@ -12,6 +12,8 @@
 package net.bioclipse.cdk.ui.wizards;
 import net.bioclipse.ui.contentlabelproviders.FolderContentProvider;
 import net.bioclipse.ui.contentlabelproviders.FolderLabelProvider;
+
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -66,6 +68,8 @@ public class NewSDFileWizardPage extends WizardPage {
                 dirText = new Text(container, SWT.BORDER | SWT.SINGLE);
                 GridData gd = new GridData(GridData.FILL_HORIZONTAL);
                 dirText.setLayoutData(gd);
+                if(selectedFolder!=null)
+                    dirText.setText( selectedFolder.getFullPath().toOSString() );
                 gd.horizontalSpan = 3;
                 dirText.addModifyListener(new ModifyListener() {
                         public void modifyText(ModifyEvent e) {
@@ -155,5 +159,8 @@ public class NewSDFileWizardPage extends WizardPage {
         }
         public IResource getSelectedFolder() {
                 return selectedFolder;
+        }
+        public void setSelectedFolder(IContainer path){
+            selectedFolder=path;
         }
 }
