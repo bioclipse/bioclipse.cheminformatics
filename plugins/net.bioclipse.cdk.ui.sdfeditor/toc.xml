@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="SDF Editor plugin">
+	<topic label="About SDF Editor plugin"  href="html/maintopic.html"> 
+		<topic label="The New SDF Wizard" href="html/newwizard.html"/> 
+	</topic>
+</toc>
