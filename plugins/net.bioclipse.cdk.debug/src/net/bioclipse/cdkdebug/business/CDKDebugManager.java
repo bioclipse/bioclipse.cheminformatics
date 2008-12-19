@@ -23,6 +23,7 @@ import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.atomtype.mapper.AtomTypeMapper;
 import org.openscience.cdk.config.AtomTypeFactory;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.exception.NoSuchAtomTypeException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
@@ -64,49 +65,51 @@ public class CDKDebugManager implements ICDKDebugManager {
                                                               .getBuilder());
         IAtomType[] sybylTypes = new IAtomType[ac.getAtomCount()];
         int atomCounter = 0;
-        //  try {
-        //    System.out.println("smiles: " + mol.getSmiles());
-        //    System.out.println("cml: " + mol.getCML());
-        //    System.out.println("Arom: "
-        //        + CDKHueckelAromaticityDetector.detectAromaticity(ac));
-        //  } catch (Exception e1) {
-        //    // TODO Auto-generated catch block
-        //    e1.printStackTrace();
-        //  }
+        int a=0;
+        for (IAtom atom : ac.atoms()) {
+        	IAtomType type;
+			try {
+				type = cdkMatcher.findMatchingAtomType(ac, atom);
+			} catch (CDKException e) {
+				type = null;
+			}
+        	if (type==null){
+        		logger.debug("AT null for atom: " + atom);
+        		type = atom.getBuilder().newAtomType(atom.getSymbol());
+        		type.setAtomTypeName("X");
+        	}
+        	AtomTypeManipulator.configure(atom, type);
+        	a++;
+        }
         try {
-            int a=0;
-            for (IAtom atom : ac.atoms()) {
-                IAtomType type = cdkMatcher.findMatchingAtomType(ac, atom);
-                if (type==null){
-                    logger.debug("AT null for atom: " + atom);
-                }else{
-                    AtomTypeManipulator.configure(atom, type);
-                }
-                a++;
-            }
-            System.out.println("Arom: "
-                               + CDKHueckelAromaticityDetector.detectAromaticity(ac));
-            for (IAtom atom : ac.atoms()) {
-                String mappedType = mapper.mapAtomType(atom.getAtomTypeName());
-                if ("C.2".equals(mappedType)
-                        && atom.getFlag(CDKConstants.ISAROMATIC)) {
-                    mappedType = "C.ar";
-                } else if ("N.pl3".equals(mappedType)
-                        && atom.getFlag(CDKConstants.ISAROMATIC)) {
-                    mappedType = "N.ar";
-                }
-                sybylTypes[atomCounter] = factory.getAtomType(mappedType);
-                ; // yes, setting null's here is important
-                atomCounter++;
-            }
-            // now that full perception is finished, we can set atom type names:
-            for (int i = 0; i < sybylTypes.length; i++) {
-                ac.getAtom(i).setAtomTypeName(sybylTypes[i].getAtomTypeName());
-            }
-        } catch (CDKException exception) {
-            throw new InvocationTargetException(exception,
-                                                "Error while perceiving atom types: "
-                                                + exception.getMessage());
+			System.out.println("Arom: "
+					+ CDKHueckelAromaticityDetector.detectAromaticity(ac));
+		} catch (CDKException e) {
+			logger.debug("Failed to perceive aromaticity: " + e.getMessage());
+		}
+        for (IAtom atom : ac.atoms()) {
+        	String mappedType = mapper.mapAtomType(atom.getAtomTypeName());
+        	if ("C.2".equals(mappedType)
+        			&& atom.getFlag(CDKConstants.ISAROMATIC)) {
+        		mappedType = "C.ar";
+        	} else if ("N.pl3".equals(mappedType)
+        			&& atom.getFlag(CDKConstants.ISAROMATIC)) {
+        		mappedType = "N.ar";
+        	}
+        	try {
+				sybylTypes[atomCounter] = factory.getAtomType(mappedType);
+			} catch (NoSuchAtomTypeException e) {
+				sybylTypes[atomCounter] = null; // yes, setting null's here is important
+			}
+        	atomCounter++;
+        }
+        // now that full perception is finished, we can set atom type names:
+        for (int i = 0; i < sybylTypes.length; i++) {
+        	if (sybylTypes[i] != null) {
+        		ac.getAtom(i).setAtomTypeName(sybylTypes[i].getAtomTypeName());
+        	} else {
+        		ac.getAtom(i).setAtomTypeName("X");
+        	}
         }
         return cdkmol;
     }
