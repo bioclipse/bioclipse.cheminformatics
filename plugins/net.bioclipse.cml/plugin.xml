@@ -34,7 +34,12 @@
          </action>
     </objectContribution>
    </extension>
-	
+    <extension
+          point="org.eclipse.wst.xml.core.catalogContributions">
+       <catalogContribution>
+          <uri name="http://www.xml-cml.org/schema" uri="schema24/schema.xsd"/>
+       </catalogContribution>
+    </extension>
 
 	<!--extension
        	point="net.bioclipse.childResourceExtractor">
