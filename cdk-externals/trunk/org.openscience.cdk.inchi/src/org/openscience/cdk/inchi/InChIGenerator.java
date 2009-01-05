@@ -1,6 +1,7 @@
 /* $Revision$ $Author$ $Date$
  *
  * Copyright (C) 2006-2007  Sam Adams <sea36@users.sf.net>
+ *               2008       Egon Willighagen <egonw@users.sf.net>
  *
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -375,6 +376,26 @@ public class InChIGenerator {
         return(output.getInchi());
     }
     
+    /**
+     * Gets generated InChIKey string.
+     */
+    @TestMethod("testGetInchiFromEthane")
+    public String getInchiKey() throws CDKException {
+        JniInchiOutputKey key;
+        try {
+            key = JniInchiWrapper.getInChIKey(output.getInchi());
+            if (key.getReturnStatus() == INCHI_KEY.OK) {
+                return key.getKey();
+            } else {
+                throw new CDKException("Error while creating InChIKey: " +
+                                       key.getReturnStatus());
+            }
+        } catch (JniInchiException exception) {
+            throw new CDKException("Error while creating InChIKey: " +
+                                   exception.getMessage(), exception);
+        }
+    }
+
     /**
      * Gets auxillary information.
      */
