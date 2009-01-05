@@ -1,8 +1,8 @@
+org/openscience/cdk/dict/DictionaryHandler.java
 org/openscience/cdk/dict/OWLFile.java
+org/openscience/cdk/dict/Dictionary.java
+org/openscience/cdk/dict/DictionaryDatabase.java
 org/openscience/cdk/dict/Entry.java
 org/openscience/cdk/dict/OWLReact.java
-org/openscience/cdk/dict/DictionaryDatabase.java
-org/openscience/cdk/dict/EntryReact.java
 org/openscience/cdk/dict/CDKDictionaryReferences.java
-org/openscience/cdk/dict/Dictionary.java
-org/openscience/cdk/dict/DictionaryHandler.java
+org/openscience/cdk/dict/EntryReact.java

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDK plugin
 Bundle-SymbolicName: org.openscience.cdk.qsarprotein;singleton:=true
-Bundle-Version: 1.1.2.20081126
+Bundle-Version: 1.1.4.20090105
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openscience.cdk.qsarprotein.Activator
@@ -16,6 +16,7 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.charges,
  org.openscience.cdk.qsar,
  org.openscience.cdk.pdb,
+ org.openscience.cdk.diff,
  org.jama,
  org.rosuda.jri,
  org.3pq.jgrapht,
@@ -23,5 +24,5 @@ Require-Bundle: org.openscience.cdk.interfaces,
  javax.vecmath,
  net.bioclipse.xom,
  org.eclipse.core.runtime
-Export-Package: org.openscience.cdk.qsar.descriptors.molecular,
- org.openscience.cdk.qsar.descriptors.protein
+Export-Package: org.openscience.cdk.qsar.descriptors.protein,
+ org.openscience.cdk.qsar.descriptors.molecular

@@ -1,8 +1,8 @@
-org/openscience/cdk/pharmacophore/PharmacophoreMatcher.java
-org/openscience/cdk/pharmacophore/PharmacophoreAngleBond.java
-org/openscience/cdk/pharmacophore/PharmacophoreAtom.java
-org/openscience/cdk/pharmacophore/PharmacophoreUtils.java
-org/openscience/cdk/pharmacophore/PharmacophoreBond.java
 org/openscience/cdk/pharmacophore/PharmacophoreQueryAtom.java
-org/openscience/cdk/pharmacophore/PharmacophoreQueryBond.java
+org/openscience/cdk/pharmacophore/PharmacophoreBond.java
+org/openscience/cdk/pharmacophore/PharmacophoreUtils.java
+org/openscience/cdk/pharmacophore/PharmacophoreMatcher.java
+org/openscience/cdk/pharmacophore/PharmacophoreAtom.java
+org/openscience/cdk/pharmacophore/PharmacophoreAngleBond.java
 org/openscience/cdk/pharmacophore/PharmacophoreQueryAngleBond.java
+org/openscience/cdk/pharmacophore/PharmacophoreQueryBond.java

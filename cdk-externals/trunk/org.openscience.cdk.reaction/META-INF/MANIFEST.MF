@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDK plugin
 Bundle-SymbolicName: org.openscience.cdk.reaction;singleton:=true
-Bundle-Version: 1.1.2.20081126
+Bundle-Version: 1.1.4.20090105
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openscience.cdk.reaction.Activator
@@ -20,9 +20,9 @@ Require-Bundle: org.openscience.cdk.interfaces,
  net.bioclipse.xom,
  org.eclipse.core.runtime
 Import-Package: org.apache.log4j
-Export-Package: org.openscience.cdk.tools,
- org.openscience.cdk.reaction.mechanism,
+Export-Package: org.openscience.cdk.graph.invariant,
+ org.openscience.cdk.tools,
  org.openscience.cdk.reaction,
+ org.openscience.cdk.reaction.mechanism,
  org.openscience.cdk.reaction.type,
- org.openscience.cdk.reaction.type.parameters,
- org.openscience.cdk.graph.invariant
+ org.openscience.cdk.reaction.type.parameters

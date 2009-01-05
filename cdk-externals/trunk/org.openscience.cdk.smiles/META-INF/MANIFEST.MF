@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDK plugin
 Bundle-SymbolicName: org.openscience.cdk.smiles;singleton:=true
-Bundle-Version: 1.1.2.20081126
+Bundle-Version: 1.1.4.20090105
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openscience.cdk.smiles.Activator
@@ -15,7 +15,7 @@ Require-Bundle: org.openscience.cdk.data,
  org.openscience.cdk.valencycheck,
  javax.vecmath,
  org.eclipse.core.runtime
-Export-Package: org.openscience.cdk.smiles,
- org.openscience.cdk.tools,
+Export-Package: org.openscience.cdk.tools,
  org.openscience.cdk.io,
- org.openscience.cdk.io.iterator
+ org.openscience.cdk.io.iterator,
+ org.openscience.cdk.smiles

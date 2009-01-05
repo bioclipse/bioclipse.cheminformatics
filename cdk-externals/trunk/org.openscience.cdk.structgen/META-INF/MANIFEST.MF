@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDK plugin
 Bundle-SymbolicName: org.openscience.cdk.structgen;singleton:=true
-Bundle-Version: 1.1.2.20081126
+Bundle-Version: 1.1.4.20090105
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openscience.cdk.structgen.Activator
@@ -13,7 +13,7 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.formula,
  org.openscience.cdk.valencycheck,
  org.eclipse.core.runtime
-Export-Package: org.openscience.cdk.structgen,
- org.openscience.cdk.structgen.stochastic,
+Export-Package: org.openscience.cdk.atomtype,
  org.openscience.cdk.structgen.stochastic.operator,
- org.openscience.cdk.atomtype
+ org.openscience.cdk.structgen.stochastic,
+ org.openscience.cdk.structgen

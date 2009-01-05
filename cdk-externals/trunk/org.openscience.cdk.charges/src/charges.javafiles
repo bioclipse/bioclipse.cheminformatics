@@ -1,10 +1,10 @@
-org/openscience/cdk/charges/IChargeCalculator.java
-org/openscience/cdk/charges/GasteigerMarsiliPartialCharges.java
-org/openscience/cdk/charges/Electronegativity.java
-org/openscience/cdk/charges/GasteigerPEPEPartialCharges.java
-org/openscience/cdk/charges/StabilizationCharges.java
-org/openscience/cdk/charges/IElectronicPropertyCalculator.java
 org/openscience/cdk/charges/InductivePartialCharges.java
 org/openscience/cdk/charges/PiElectronegativity.java
-org/openscience/cdk/charges/AtomTypeCharges.java
+org/openscience/cdk/charges/IChargeCalculator.java
+org/openscience/cdk/charges/GasteigerMarsiliPartialCharges.java
+org/openscience/cdk/charges/GasteigerPEPEPartialCharges.java
+org/openscience/cdk/charges/Electronegativity.java
 org/openscience/cdk/charges/Polarizability.java
+org/openscience/cdk/charges/StabilizationCharges.java
+org/openscience/cdk/charges/AtomTypeCharges.java
+org/openscience/cdk/charges/IElectronicPropertyCalculator.java

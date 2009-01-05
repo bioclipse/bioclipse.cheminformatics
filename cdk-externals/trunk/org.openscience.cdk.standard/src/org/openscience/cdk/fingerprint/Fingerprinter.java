@@ -44,7 +44,7 @@ import java.util.*;
  *  one-dimensional bit arrays, where bits are set according to a the occurrence
  *  of a particular structural feature (See for example the Daylight inc. theory
  *  manual for more information). Fingerprints allow for a fast screening step to
- *  excluded candidates for a substructure search in a database. They are also a
+ *  exclude candidates for a substructure search in a database. They are also a
  *  means for determining the similarity of chemical structures. <p>
  *
  *  A fingerprint is generated for an AtomContainer with this code: <pre>
@@ -93,9 +93,6 @@ public class Fingerprinter implements IFingerprinter {
 	static int debugCounter = 0;
 
 	private static LoggingTool logger = new LoggingTool(Fingerprinter.class);
-	
-	private String[] query = {"Cl", "Br", "Si", "As", "Li", "Se", "Na", "Ca", "Al"};
-    private String[] replace = {"X", "Z", "Y",  "D",  "L",  "E",  "G",  "J",  "A" };
 
     /**
 	 * Creates a fingerprint generator of length <code>DEFAULT_SIZE</code>
@@ -143,10 +140,10 @@ public class Fingerprinter implements IFingerprinter {
 		long after = System.currentTimeMillis();
 		logger.debug("time for aromaticity calculation: " + (after - before) + " milliseconds");
 		logger.debug("Finished Aromaticity Detection");
-		Set<String> paths = findPathes(container, searchDepth);
+		Map<String,String> paths = findPathes(container, searchDepth);
 		BitSet bitSet = new BitSet(size);
 
-        for (String path : paths) {
+        for (String path : paths.values()) {
             position = new java.util.Random(path.hashCode()).nextInt(size);
             logger.debug("Setting bit " + position + " for " + path);
             bitSet.set(position);
@@ -176,11 +173,11 @@ public class Fingerprinter implements IFingerprinter {
      * @param searchDepth The maximum path length desired
      * @return A Map of path strings, keyed on themselves
      */
-    protected Set<String> findPathes(IAtomContainer container, int searchDepth) {
-        
-        Map<IAtom,Map<IAtom, IBond>> cache = new HashMap<IAtom, Map<IAtom,IBond>>();
-        
-        Set<String> paths = new HashSet<String>();
+    protected Map<String,String> findPathes(IAtomContainer container, int searchDepth) {
+        Map<String,String> paths = new HashMap<String,String>();
+
+        List<StringBuffer> allPaths = new ArrayList<StringBuffer>();
+
         for (IAtom startAtom : container.atoms()) {
             for (int pathLength = 0; pathLength <= searchDepth; pathLength++) {
                 List<List<IAtom>> p = PathTools.getPathsOfLength(container, startAtom, pathLength);
@@ -190,16 +187,10 @@ public class Fingerprinter implements IFingerprinter {
                     sb.append(convertSymbol(x.getSymbol()));
 
                     for (int i = 1; i < path.size(); i++) {
-                        final IAtom[] y = {path.get(i)};
-                        Map<IAtom, IBond> m = cache.get( x );
-                        final IBond[] b = { m != null ? m.get( y[0] ) : null };
-                        if ( b[0] == null ) {
-                            b[0] = container.getBond(x, y[0]);
-                            cache.put( x, new HashMap<IAtom, IBond>(){{put(y[0], b[0]); }} );
-                        }
-                        sb.append(getBondSymbol(b[0]));
-                        sb.append(convertSymbol(y[0].getSymbol()));
-                        x = y[0];
+                        IAtom y = path.get(i);
+                        sb.append(getBondSymbol(container.getBond(x, y)));
+                        sb.append(convertSymbol(y.getSymbol()));
+                        x = y;
                     }
 
                     // we store the lexicographically lower one of the
@@ -207,15 +198,25 @@ public class Fingerprinter implements IFingerprinter {
                     StringBuffer revForm = new StringBuffer(sb);
                     revForm.reverse();
                     if (sb.toString().compareTo(revForm.toString()) <= 0)
-                        paths.add(sb.toString());
-                    else paths.add(revForm.toString());
+                        allPaths.add(sb);
+                    else allPaths.add(revForm);
                 }
             }
         }
+        // now lets clean stuff up
+        List<String> cleanPath = new ArrayList<String>();
+        for (StringBuffer s : allPaths) {
+            if (cleanPath.contains(s.toString()) || cleanPath.contains(s.reverse().toString())) continue;
+            else cleanPath.add(s.toString());
+        }
+        for (String s : cleanPath) paths.put(s, s);
         return paths;
     }
 
     private String convertSymbol(String symbol) {
+
+        String[] query = {"Cl", "Br", "Si", "As", "Li", "Se", "Na", "Ca", "Al"};
+        String[] replace = {"X", "Z", "Y",  "D",  "L",  "E",  "G",  "J",  "A" };
 
         String returnSymbol = symbol;
         for (int i = 0; i < query.length; i++) {

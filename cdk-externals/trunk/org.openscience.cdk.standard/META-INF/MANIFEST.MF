@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDK plugin
 Bundle-SymbolicName: org.openscience.cdk.standard;singleton:=true
-Bundle-Version: 1.1.2.20081126
+Bundle-Version: 1.1.4.20090105
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openscience.cdk.standard.Activator
@@ -13,30 +13,30 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.3pq.jgrapht,
  org.eclipse.core.runtime
 Import-Package: org.apache.log4j
-Export-Package: org.openscience.cdk.aromaticity,
- org.openscience.cdk.qsar,
- org.openscience.cdk.qsar.result,
- org.openscience.cdk.dict,
- org.openscience.cdk.renderer.color,
- org.openscience.cdk.libio.cml,
- org.openscience.cdk.config,
- org.openscience.cdk.config.fragments,
- org.openscience.cdk.smiles,
- org.openscience.cdk.fingerprint,
- org.openscience.cdk.geometry,
- org.openscience.cdk.atomtype,
- org.openscience.cdk.math,
- org.openscience.cdk.tools,
- org.openscience.cdk.tools.manipulator,
- org.openscience.cdk.exception,
+Export-Package: org.openscience.cdk.graph,
+ org.openscience.cdk.graph.rebond,
+ org.openscience.cdk.graph.matrix,
+ org.openscience.cdk.graph.invariant,
  org.openscience.cdk.ringsearch,
  org.openscience.cdk.ringsearch.cyclebasis,
  org.openscience.cdk.event,
+ org.openscience.cdk.geometry,
+ org.openscience.cdk.tools,
+ org.openscience.cdk.tools.manipulator,
+ org.openscience.cdk,
+ org.openscience.cdk.math,
+ org.openscience.cdk.fingerprint,
+ org.openscience.cdk.renderer.color,
+ org.openscience.cdk.aromaticity,
  org.openscience.cdk.isomorphism.mcss,
  org.openscience.cdk.isomorphism,
- org.openscience.cdk.graph,
- org.openscience.cdk.graph.rebond,
- org.openscience.cdk.graph.invariant,
- org.openscience.cdk.graph.matrix,
+ org.openscience.cdk.dict,
+ org.openscience.cdk.smiles,
+ org.openscience.cdk.config,
+ org.openscience.cdk.config.fragments,
+ org.openscience.cdk.atomtype,
  org.openscience.cdk.validate,
- org.openscience.cdk
+ org.openscience.cdk.exception,
+ org.openscience.cdk.qsar,
+ org.openscience.cdk.qsar.result,
+ org.openscience.cdk.libio.cml

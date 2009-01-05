@@ -24,14 +24,14 @@
  */
 package org.openscience.cdk.fingerprint;
 
-import java.util.BitSet;
-import java.util.Random;
-import java.util.Set;
-
 import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+
+import java.util.BitSet;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Specialized version of the {@link Fingerprinter} which does not take bond orders
@@ -78,9 +78,9 @@ public class GraphOnlyFingerprinter extends Fingerprinter {
 
     @TestMethod("testFingerPrint,testFingerprint")
     public BitSet getFingerprint(IAtomContainer container, int size) throws Exception {
-		Set<String> paths = findPathes(container, super.getSearchDepth());
+		Map<String, String> paths = findPathes(container, super.getSearchDepth());
 		BitSet bitSet = new BitSet(size);
-        for (String s : paths) {
+        for (String s : paths.values()) {
             bitSet.set(new Random(s.hashCode()).nextInt(size));
         }
 		return bitSet;

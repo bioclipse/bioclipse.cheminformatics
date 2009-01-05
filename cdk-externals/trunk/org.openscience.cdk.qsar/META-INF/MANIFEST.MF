@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDK plugin
 Bundle-SymbolicName: org.openscience.cdk.qsar;singleton:=true
-Bundle-Version: 1.1.2.20081126
+Bundle-Version: 1.1.4.20090105
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openscience.cdk.qsar.Activator
@@ -21,9 +21,9 @@ Require-Bundle: org.openscience.cdk.interfaces,
  javax.vecmath,
  net.bioclipse.xom,
  org.eclipse.core.runtime
-Export-Package: org.openscience.cdk.qsar,
- org.openscience.cdk.qsar.descriptors.atompair,
- org.openscience.cdk.qsar.model.R2,
- org.openscience.cdk.qsar.model.R,
+Export-Package: org.openscience.cdk.tools,
  org.openscience.cdk.qsar.model,
- org.openscience.cdk.tools
+ org.openscience.cdk.qsar.model.R,
+ org.openscience.cdk.qsar.model.R2,
+ org.openscience.cdk.qsar,
+ org.openscience.cdk.qsar.descriptors.atompair

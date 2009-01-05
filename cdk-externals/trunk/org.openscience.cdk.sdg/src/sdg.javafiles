@@ -1,6 +1,6 @@
 org/openscience/cdk/layout/AtomPlacer.java
-org/openscience/cdk/layout/OverlapResolver.java
-org/openscience/cdk/layout/TemplateHandler.java
-org/openscience/cdk/layout/RingPlacer.java
-org/openscience/cdk/layout/HydrogenPlacer.java
 org/openscience/cdk/layout/StructureDiagramGenerator.java
+org/openscience/cdk/layout/TemplateHandler.java
+org/openscience/cdk/layout/OverlapResolver.java
+org/openscience/cdk/layout/HydrogenPlacer.java
+org/openscience/cdk/layout/RingPlacer.java

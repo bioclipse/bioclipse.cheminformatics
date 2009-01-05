@@ -1,4 +1,4 @@
-/* $Revision: 11555 $ $Author: egonw $ $Date: 2008-07-12 20:31:17 +0200 (Sat, 12 Jul 2008) $
+/* $Revision$ $Author$ $Date$
  *
  * Copyright (C) 2008  Egon Willighagen <egonw@users.sf.net>
  *
@@ -42,14 +42,14 @@ import org.openscience.cdk.interfaces.IChemObjectBuilder;
  * @author         egonw
  * @cdk.created    2008-07-13
  * @cdk.module     atomtype
- * @cdk.svnrev     $Revision: 11555 $
+ * @cdk.svnrev     $Revision$
  * @cdk.keyword    atom types, Sybyl
  */
 @TestClass("org.openscience.cdk.atomtype.SybylAtomTypeMatcherTest")
 public class SybylAtomTypeMatcher implements IAtomTypeMatcher {
 
-    private final static String SYBYL_ATOM_TYPE_LIST = "/org/openscience/cdk/dict/data/sybyl-atom-types.owl";
-    private final static String CDK_TO_SYBYL_MAP = "/org/openscience/cdk/dict/data/cdk-sybyl-mappings.owl";
+    private final static String SYBYL_ATOM_TYPE_LIST = "org/openscience/cdk/dict/data/sybyl-atom-types.owl";
+    private final static String CDK_TO_SYBYL_MAP = "org/openscience/cdk/dict/data/cdk-sybyl-mappings.owl";
     
 	private AtomTypeFactory factory;
 	private CDKAtomTypeMatcher cdkMatcher;

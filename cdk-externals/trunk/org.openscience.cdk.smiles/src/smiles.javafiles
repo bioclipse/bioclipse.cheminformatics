@@ -1,7 +1,7 @@
-org/openscience/cdk/smiles/DeduceBondSystemTool.java
+org/openscience/cdk/tools/Normalizer.java
+org/openscience/cdk/io/SMILESWriter.java
+org/openscience/cdk/io/iterator/IteratingSMILESReader.java
+org/openscience/cdk/io/SMILESReader.java
 org/openscience/cdk/smiles/SmilesGenerator.java
 org/openscience/cdk/smiles/SmilesParser.java
-org/openscience/cdk/tools/Normalizer.java
-org/openscience/cdk/io/SMILESReader.java
-org/openscience/cdk/io/iterator/IteratingSMILESReader.java
-org/openscience/cdk/io/SMILESWriter.java
+org/openscience/cdk/smiles/DeduceBondSystemTool.java
