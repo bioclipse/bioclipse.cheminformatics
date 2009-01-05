@@ -320,7 +320,7 @@ public abstract class RandomAccessReader extends DefaultIteratingChemObjectReade
      * @param filename
      * @throws Exception
      */
-	public static File getIndexFile(String filename) throws Exception {
+	public static File getIndexFile(String filename) throws IOException {
 		String tmpDir = System.getProperty("java.io.tmpdir");
         File f = new File(filename);
         File indexFile = new File(tmpDir,f.getName()+"_cdk.index");
