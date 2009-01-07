@@ -10,29 +10,39 @@
  *     
  ******************************************************************************/
 package net.bioclipse.jmol.views.outline;
+
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+
 /**
  * Properties for the JmolChain view object
  * @author ola
  *
  */
 public class ChainPropertySource implements IPropertySource {
+
     private static final String PROPERTY_NAME = "jmol.chain.name";     
     private static final String PROPERTY_SEQUENCE = "jmol.chain.sequence";    
+
     private JmolChain jmolChain;                        //The model
+
     private IPropertyDescriptor[] propertyDescriptors;    //Cached descriptors
+
     public ChainPropertySource(JmolChain jmolChain) {
         this.jmolChain=jmolChain;
     }
+
     public IPropertyDescriptor[] getPropertyDescriptors() {
         if (propertyDescriptors == null) {
             // Create a descriptor and set a category
             PropertyDescriptor nameDescriptor = new PropertyDescriptor(PROPERTY_NAME, "name");
             nameDescriptor.setCategory("Jmol");
+
             PropertyDescriptor sequenceDescriptor = new PropertyDescriptor(PROPERTY_SEQUENCE, "Sequence");
             sequenceDescriptor.setCategory("Jmol");
+
+
             propertyDescriptors = new IPropertyDescriptor[] {
                     nameDescriptor,   // Read-only (instance of PropertyDescriptor)
                     sequenceDescriptor   // Read-only (instance of PropertyDescriptor)
@@ -40,9 +50,12 @@ public class ChainPropertySource implements IPropertySource {
         }
         return propertyDescriptors;
     }
+
+
     public Object getEditableValue() {
         return null;
     }
+
     public Object getPropertyValue(Object id) {
         if (id.equals(PROPERTY_NAME))
             return jmolChain.getName();
@@ -51,11 +64,15 @@ public class ChainPropertySource implements IPropertySource {
         }
         return null;
     }
+
     public boolean isPropertySet(Object id) {
         return false;
     }
+
     public void resetPropertyValue(Object id) {
     }
+
     public void setPropertyValue(Object id, Object value) {
     }
+
 }

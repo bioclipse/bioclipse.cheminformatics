@@ -10,17 +10,22 @@
  *
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.handlers;
+
 import java.util.Collection;
+
 import net.bioclipse.core.business.BioclipseException;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
+
 public class RemoveHandler extends AbstractJChemPaintHandler {
     Logger logger = Logger.getLogger(RemoveHandler.class);
     public Object execute(ExecutionEvent event) throws ExecutionException {
+
         IChemModelRelay relay = getChemModelRelay( event );
         if ( relay != null ) {
             Collection<?> selection = getSelection( event );

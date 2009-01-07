@@ -10,9 +10,11 @@
  *     
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.outline;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -23,11 +25,15 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IMoleculeSet;
+
 @SuppressWarnings("serial")
 public class StructureContentProvider implements ITreeContentProvider {
+
     //Use logging
     private static final Logger logger = Logger.getLogger(StructureContentProvider.class);
+
     public StructureContentProvider() {}
+
     private static final String[][] symbolsAndNames = {
         { "H",  "Hydrogen"  },
         { "C",  "Carbon"    },
@@ -48,6 +54,7 @@ public class StructureContentProvider implements ITreeContentProvider {
             for (String[] symbolAndName : symbolsAndNames)
                 put(symbolAndName[0], symbolAndName[1]);
         }};
+    
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof Container) {
             Container container=(Container)parentElement;
@@ -58,11 +65,14 @@ public class StructureContentProvider implements ITreeContentProvider {
                 return new Object[0];
         }
         else if (parentElement instanceof CDKChemObject) {
+            
             CDKChemObject chemobj=(CDKChemObject)parentElement;
+            
             if (!(chemobj.getChemobj() instanceof IAtomContainer)) {
                 return new Object[0];
             }
             IAtomContainer ac = (IAtomContainer) chemobj.getChemobj();
+            
             Container atoms=new Container("Atoms");
             for (int i=0; i<ac.getAtomCount(); i++){
                 IAtom atom = ac.getAtom(i);
@@ -98,45 +108,61 @@ public class StructureContentProvider implements ITreeContentProvider {
                 CDKChemObject co=new CDKChemObject(sb.toString(), bond);
                 bonds.addChild(co);
             }
+            
             Object[] retobj=new Object[2];
             retobj[0]=atoms;
             retobj[1]=bonds;
+            
             return retobj;
         }
+        
         return new Object[0];
     }
+
     public Object getParent(Object element) {
         // TODO Auto-generated method stub
         return null;
     }
+
     public boolean hasChildren(Object element) {
         return (getChildren(element).length > 0);
     }
+
     public Object[] getElements(Object inputElement) {
+        
         if (inputElement instanceof IChemModel) {
             IChemModel model = (IChemModel) inputElement;
+            
             IMoleculeSet ms=model.getMoleculeSet();
             if (ms==null || ms.getAtomContainerCount()<=0)
             {
                 logger.debug("No AtomContainers in ChemModel.");
                 return new Object[0];
             }
+
             CDKChemObject[] acs=new CDKChemObject[ms.getAtomContainerCount()];
             for (int i=0; i<ms.getAtomContainerCount(); i++){
                 acs[i]=new CDKChemObject("AC_" + i, ms.getAtomContainer(i));
             }
+            
             if (acs.length>1)
                 return acs;
             else if (acs.length==1){
                 return getChildren(acs[0]);
             }
+                
         }
+        
         return new IChemObject[0];
     }
+
     public void dispose() {
         // TODO Auto-generated method stub
+
     }
+
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         // do nothing
     }
+    
 }

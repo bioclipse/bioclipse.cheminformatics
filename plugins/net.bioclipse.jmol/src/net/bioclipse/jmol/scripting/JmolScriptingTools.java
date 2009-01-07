@@ -10,11 +10,14 @@
  *     
  ******************************************************************************/
 package net.bioclipse.jmol.scripting;
+
 import net.bioclipse.jmol.editors.JmolEditor;
 import net.bioclipse.scripting.INamespaceProvider;
+
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PlatformUI;
+
 /**
  * 
  * Tools for simplified Jmol scripting
@@ -23,25 +26,33 @@ import org.eclipse.ui.PlatformUI;
  *
  */
 public class JmolScriptingTools implements INamespaceProvider{
+    
     /**
      * Constructor
      */
     public JmolScriptingTools() {
     }
+    
     /**
      * Pipe the argument as string to Jmol as a script command
      * @param command
      */
     public void run(String command){
+
         //Basic checks
         if (command==null) return;
         else if ("".equals(command)) return;
+        
         //Find active editor
         IEditorPart part=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        
         if (part instanceof JmolEditor) {
             JmolEditor jedit = (JmolEditor) part;
             jedit.runScript(command);
         }
-                IViewReference[] views=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
+        
+		IViewReference[] views=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
+        
     }
+    
 }

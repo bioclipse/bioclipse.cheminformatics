@@ -10,25 +10,35 @@
  *     
  ******************************************************************************/
 package net.bioclipse.jmol;
+
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jmol.business.IJmolManager;
+
 import org.apache.log4j.Logger;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
+
+
 /**
  * 
  * @author ola
  *
  */
 public class Activator extends AbstractUIPlugin {
+
     // The plug-in ID
     public static final String PLUGIN_ID = "net.bioclipse.jmol";
+
     private static final Logger logger = Logger.getLogger(Activator.class);
+
     private ServiceTracker finderTracker;
+    
     // The shared instance
     private static Activator plugin;
+
+
     /**
      * Returns an image descriptor for the image file at the given
      * plug-in relative path
@@ -39,19 +49,24 @@ public class Activator extends AbstractUIPlugin {
     public static ImageDescriptor getImageDescriptor(String path) {
         return imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
+
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
+
         finderTracker = new ServiceTracker( context, 
                 IJmolManager.class.getName(), 
                 null );
         finderTracker.open();
+
     }
+    
     public void stop(BundleContext context) throws Exception {
         plugin = null;
         super.stop(context);
     }
+    
     /**
      * Returns the shared instance
      *
@@ -60,6 +75,7 @@ public class Activator extends AbstractUIPlugin {
     public static Activator getDefault() {
         return plugin;
     }
+
     public IJmolManager getJmolManager() {
         IJmolManager manager = null;
         try {

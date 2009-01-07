@@ -11,17 +11,20 @@
  *
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.ui.sdfeditor.MoleculesOutlinePage;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -57,55 +60,79 @@ import org.eclipse.ui.part.EditorInputTransfer.EditorInputData;
 import org.eclipse.ui.progress.WorkbenchJob;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 import org.openscience.cdk.interfaces.IAtomContainer;
+
 public class MoleculesEditor extends EditorPart implements
         //ISelectionProvider,
         ISelectionListener {
+
     public final static int STRUCTURE_COLUMN_WIDTH = 200;
+
     Logger logger = Logger.getLogger( MoleculesEditor.class );
+
     Collection<ISelectionChangedListener> selectionListeners =
                                  new LinkedHashSet<ISelectionChangedListener>();
     MoleculesEditorLabelProvider labelProvider;
     public List<String>                          propertyHeaders;
     CompositeTable viewer;
+
     private MoleculesOutlinePage outlinePage;
+
     private CompositeTable cTable;
-        public CompositeTable getCTable() {
-                return cTable;
-        }
-        private MoleculeTableContentProvider contentProvider;
+	public CompositeTable getCTable() {
+		return cTable;
+	}
+
+	private MoleculeTableContentProvider contentProvider;
+
+
     public MoleculeTableContentProvider getContentProvider() {
-                return contentProvider;
-        }
-        public MoleculesEditor() {
+		return contentProvider;
+	}
+
+	public MoleculesEditor() {
     }
+
     @Override
     public void doSave( IProgressMonitor monitor ) {
+
         // TODO Auto-generated method stub
+
     }
+
     @Override
     public void doSaveAs() {
+
         // TODO Auto-generated method stub
+
     }
+
     @Override
     public void init( IEditorSite site, IEditorInput input )
                                                       throws PartInitException {
+
         super.setSite( site );
         super.setInput( input );
         setPartName(input.getName() );
         // TODO listen to selections check and focus on selected element from
         // common navigator, load it and get columns
+
     }
+
     @Override
     public boolean isDirty() {
+
         // TODO Auto-generated method stub
         return false;
     }
+
     @Override
     public boolean isSaveAsAllowed() {
+
         // TODO Auto-generated method stub
         return false;
     }
     public static class Header extends Composite {
+
         public Header(Composite parent, int style) {
             super(parent,style);
             setLayout( new GridRowLayout( new int[] {20,STRUCTURE_COLUMN_WIDTH,100},false) );
@@ -125,9 +152,12 @@ public class MoleculesEditor extends EditorPart implements
             structure.getRenderer2DModel().setShowExplicitHydrogens( false );
             structure.setMargin( 3 );
             structure.getRenderer2DModel().setIsCompact( true );
+
             properties = new Label(this,SWT.NULL);
 //            properties.setEditable( false );
             //properties = new org.eclipse.swt.widgets.List(this,SWT.SINGLE);
+
+
             this.add( index );
             this.add( structure);
             this.add( properties );
@@ -137,11 +167,14 @@ public class MoleculesEditor extends EditorPart implements
         public final JChemPaintWidget structure;
         public final Label properties;
     }
+
     @Override
     public void createPartControl( Composite parent ) {
+
         labelProvider = new MoleculesEditorLabelProvider(STRUCTURE_COLUMN_WIDTH);
         contentProvider= new MoleculeTableContentProvider();
         contentProvider.inputChanged( null, null, getEditorInput() );
+
         cTable = new CompositeTable(parent, SWT.NULL);
         viewer = cTable;
         // get First element from list to determin Properties
@@ -152,6 +185,7 @@ public class MoleculesEditor extends EditorPart implements
         cTable.setRunTime( true );
         cTable.setNumRowsInCollection( contentProvider.numberOfEntries( 500 ) );
         cTable.addRowContentProvider( contentProvider );
+
         if(contentProvider.getFile() !=null) {
             Job job = new Job("Indexing SD-file") {
                 protected IStatus run(IProgressMonitor monitor) {
@@ -167,6 +201,7 @@ public class MoleculesEditor extends EditorPart implements
                          */
                         public IStatus runInUIThread(IProgressMonitor updateMonitor) {
                             // Cancel the job if the tree viewer got closed
+
                             contentProvider.ready();
                             int firstVisibleRow = viewer.getTopRow();
                             viewer.setNumRowsInCollection( result );
@@ -182,7 +217,13 @@ public class MoleculesEditor extends EditorPart implements
             };
             job.setPriority(Job.SHORT);
             job.schedule(); // start as soon as possible
+
         }
+
+
+
+
+
         // See what's currently selected and select it
         ISelection selection =
                 PlatformUI.getWorkbench().getActiveWorkbenchWindow()
@@ -191,10 +232,13 @@ public class MoleculesEditor extends EditorPart implements
             IStructuredSelection stSelection = (IStructuredSelection) selection;
             //reactOnSelection( stSelection );
         }
+
         setupDragSource();
         //getEditorSite().getPage().addSelectionListener( this );
         //getSite().setSelectionProvider(viewer);
+
     }
+
     protected void setupDragSource() {
         int operations = DND.DROP_COPY | DND.DROP_MOVE;
         DragSource dragSource = new DragSource(viewer,operations);
@@ -202,7 +246,10 @@ public class MoleculesEditor extends EditorPart implements
                                         {
                                           LocalSelectionTransfer.getTransfer()};
         dragSource.setTransfer( transferTypes );
+
         dragSource.addDragListener(  new DragSourceListener() {
+
+
             public void dragStart( DragSourceEvent event ) {
                if(!getSelectedRows().isEmpty()) {
                    LocalSelectionTransfer.getTransfer()
@@ -219,10 +266,14 @@ public class MoleculesEditor extends EditorPart implements
                 ISelection selection = LocalSelectionTransfer
                                             .getTransfer()
                                             .getSelection();
+
                 if ( LocalSelectionTransfer
                                         .getTransfer()
                                         .isSupportedType( event.dataType )) {
+
                     event.data = selection;
+
+
                 } else {
                 IStructuredSelection selection1 =
                                   (IStructuredSelection) getSelectedRows();
@@ -237,13 +288,19 @@ public class MoleculesEditor extends EditorPart implements
                 }
                 event.data = data.toArray( new EditorInputData[0] );
                 }
+
             }
+
             public void dragFinished( DragSourceEvent event ) {
             }
+
         });
     }
+
     private List<String> createHeaderFromSelection( IAdaptable element ) {
+
         ICDKMolecule molecule = null;
+
         // try and get molecule
         if ( element != null ) {
             molecule = (ICDKMolecule) element.getAdapter( ICDKMolecule.class );
@@ -252,7 +309,10 @@ public class MoleculesEditor extends EditorPart implements
         }
         return propertyHeaders;
     }
+
     void reactOnSelection( ISelection selection ) {
+
+
         //if ( element instanceof ICDKMolecule )
 //            if (((IStructuredSelection)viewer.getSelection()).toList()
 //                                            .containsAll( selection.toList() ))
@@ -261,10 +321,14 @@ public class MoleculesEditor extends EditorPart implements
         if(viewer != null)
                 setSelectedRows(selection);
     }
+
     @Override
     public void setFocus() {
+
        viewer.setFocus();
+
     }
+
 //    public void addSelectionChangedListener( ISelectionChangedListener listener ) {
 //
 //        selectionListeners.add(listener );
@@ -288,8 +352,10 @@ public class MoleculesEditor extends EditorPart implements
 //        viewer.setSelection( selection );
 //
 //    }
+
     @SuppressWarnings("unchecked")
     private List<String> createPropertyHeaders( IAtomContainer ac ) {
+
         // property keys not Strings but i assume they are
         Set<Object> propterties = ac.getProperties().keySet();
         propertyHeaders =
@@ -310,6 +376,7 @@ public class MoleculesEditor extends EditorPart implements
         }
         return propertyHeaders;
     }
+
     public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
         logger.debug( "Selection has chaged" + this.getClass().getName() );
         logger.debug( part.toString() + this.getSite().getPart().toString());
@@ -325,8 +392,10 @@ public class MoleculesEditor extends EditorPart implements
 //            reactOnSelection( (IStructuredSelection) selection );
         //viewer.setSelection( selection );
     }
+
     @Override
     public Object getAdapter( Class adapter ) {
+
 //        if(IContentOutlinePage.class.equals( adapter )) {
 //            if(outlinePage == null) {
 //                outlinePage = new MoleculesOutlinePage();
@@ -342,10 +411,14 @@ public class MoleculesEditor extends EditorPart implements
         else
             return StructuredSelection.EMPTY;
     }
+
+
     private ISelection getSelectedRows() {
         viewer.getSelection();
         viewer.getTopRow();
+
         return StructuredSelection.EMPTY;
+
     }
     private void setSelectedRows(ISelection selection) {
         // mapping between selections and index

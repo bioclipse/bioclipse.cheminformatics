@@ -10,28 +10,36 @@
  *     
  ******************************************************************************/
 package net.bioclipse.jmol.views;
+
 import java.util.HashSet;
+
 /**
  * A selection of polymers in Jmol that can be propagated to the workbench
  * @author ola
  *
  */
 public class JmolPolymerSelection extends JmolSelection {
-        String monomer;
-        String chain;
+
+	String monomer;
+	String chain;
+	
     public String getMonomer() {
-                return monomer;
-        }
-        public void setMonomer(String monomer) {
-                this.monomer = monomer;
-        }
-        public String getChain() {
-                return chain;
-        }
-        public void setChain(String chain) {
-                this.chain = chain;
-        }
-        public JmolPolymerSelection(String monomer, String chain) {
+		return monomer;
+	}
+
+	public void setMonomer(String monomer) {
+		this.monomer = monomer;
+	}
+
+	public String getChain() {
+		return chain;
+	}
+
+	public void setChain(String chain) {
+		this.chain = chain;
+	}
+
+	public JmolPolymerSelection(String monomer, String chain) {
     	this.monomer=monomer;
     	this.chain=chain;
         selectionSet=new HashSet<String>();

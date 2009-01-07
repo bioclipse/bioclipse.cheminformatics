@@ -10,14 +10,17 @@
  *     
  ******************************************************************************/
 package net.bioclipse.cdk.ui.model;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import net.bioclipse.cdk.domain.Node;
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.BioclipseStore;
 import net.bioclipse.core.util.LogUtils;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
@@ -28,17 +31,23 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
+
+
 public class MoleculesFromSDF implements IMoleculesFromFile{
+
     private List<SDFElement> children = Collections.synchronizedList( 
                                            new ArrayList<SDFElement>() );
     private IFile sdfFile;
     private Logger logger = Logger.getLogger( this.getClass() );
+    
     public MoleculesFromSDF( IFile sdfFile ) {
         this.sdfFile = sdfFile;
     }
+    
     public void fetchDeferredChildren( Object object,
                                        IElementCollector collector,
                                        IProgressMonitor monitor ) {
+
         int ticks = IProgressMonitor.UNKNOWN;
         try {
             long fileSize = EFS.getStore( sdfFile.getLocationURI() )
@@ -56,6 +65,7 @@ public class MoleculesFromSDF implements IMoleculesFromFile{
         //Node first = (Node) sdfFile.getAdapter( Node.class );
         Node first;
         synchronized ( BioclipseStore.instance ) {          
+        
             first = (Node) BioclipseStore.get( sdfFile, Node.class );
             if ( first == null ) {
                 first = new Node(null);
@@ -69,7 +79,9 @@ public class MoleculesFromSDF implements IMoleculesFromFile{
         }
             readSDFElementsFromList( first, collector, monitor );
             monitor.done();
+            
     }
+    
     private void readSDFElementsFromList( Node first,
                                           IElementCollector collector,
                                           IProgressMonitor monitor ) {
@@ -85,27 +97,36 @@ public class MoleculesFromSDF implements IMoleculesFromFile{
             if (monitor.isCanceled())
                 throw new OperationCanceledException();
         }
+            
     }
+    
     public ISchedulingRule getRule( Object object ) {
+
         // TODO Auto-generated method stub
         return null;
     }
+
     public boolean isContainer() {
         return true;
     }
+
     public Object[] getChildren( Object o ) {
         return children.toArray();
     }
+
     public ImageDescriptor getImageDescriptor( Object object ) {
         // TODO Auto-generated method stub
         return null;
     }
+
     public String getLabel( Object o ) {
         return "Molecules";
     }
+
     public Object getParent( Object o ) {
         return sdfFile;
     }
+
     /* (non-Javadoc)
      * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#getMoleculeAt(int)
      */
@@ -117,12 +138,15 @@ public class MoleculesFromSDF implements IMoleculesFromFile{
         } else
             return children.get(index );        
     }
+
     /* (non-Javadoc)
      * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#getNumberOfMolecules()
      */
     public int getNumberOfMolecules() {
+        
         return children.size();
     }
+
     /* (non-Javadoc)
      * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#save()
      */
@@ -130,5 +154,6 @@ public class MoleculesFromSDF implements IMoleculesFromFile{
         throw new UnsupportedOperationException(this.getClass().getName()+
                                         " does not support this operation yet");
         // TODO Auto-generated method stub
+        
     }
 }

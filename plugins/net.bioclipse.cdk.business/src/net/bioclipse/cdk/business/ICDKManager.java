@@ -12,10 +12,12 @@
  *     Egon Willighagen
  ******************************************************************************/
 package net.bioclipse.cdk.business;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.List;
+
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesInfo;
 import net.bioclipse.core.PublishedClass;
@@ -26,28 +28,32 @@ import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.domain.IMolecule;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.io.formats.IChemFormat;
+
 @PublishedClass( "Contains CDK related methods")
 @TestClasses(
     "net.bioclipse.cdk.business.test.CDKManagerTest," +
-                "net.bioclipse.cdk.business.test.CDKManagerPluginTest"
+		"net.bioclipse.cdk.business.test.CDKManagerPluginTest"
 )
 public interface ICDKManager extends IBioclipseManager {
-        public final static String rxn = "rxn";
-        //These are the same, but since both extensions are common,
-        //they need to be handled
-        public final static String mol = "mol";
-        public final static String mdl = "mdl";
-        public final static String cml = "cml";
-        public final static String smi = "smi";
+
+	public final static String rxn = "rxn";
+	//These are the same, but since both extensions are common,
+	//they need to be handled
+	public final static String mol = "mol";
+	public final static String mdl = "mdl";
+	public final static String cml = "cml";
+	public final static String smi = "smi";
     public final static String cdk = "cdk";
-        public final static String mol2 = "mol2";
-        public final static String sdf = "sdf";
+	public final static String mol2 = "mol2";
+	public final static String sdf = "sdf";
+
     /**
      * Create a CDKMolecule from SMILES
      * @param SMILES
@@ -63,6 +69,7 @@ public interface ICDKManager extends IBioclipseManager {
                  "testSave")
     public ICDKMolecule fromSMILES(String SMILES)
         throws BioclipseException;
+
     /**
      * Loads a molecule from file using CDK.
      * If many molecules, just return first.
@@ -82,6 +89,7 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testLoadMoleculeFromCMLFile,testLoadCMLFromFile2")
     public ICDKMolecule loadMolecule( String path )
         throws IOException, BioclipseException, CoreException;
+
     /**
      * Load molecule from an <code>IFile</code> using CDK.
      * If many molecules, just return first.
@@ -97,6 +105,7 @@ public interface ICDKManager extends IBioclipseManager {
     public ICDKMolecule loadMolecule( IFile file, 
                                       IProgressMonitor monitor )
         throws IOException, BioclipseException, CoreException;
+
     /**
      * @param file
      * @return
@@ -107,11 +116,13 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     public ICDKMolecule loadMolecule( IFile file )
         throws IOException, BioclipseException, CoreException;
+    
     @Recorded
     @PublishedMethod( params = "String path",
                       methodSummary = "Determines the file format if the file, if chemical")
     @TestMethods("testDetermineFormat")
     public String determineFormat(String path) throws IOException, CoreException;
+
     /**
      * Loads molecules from a file at a given path.
      *
@@ -128,6 +139,7 @@ public interface ICDKManager extends IBioclipseManager {
                       		          "molecules")
     public List<ICDKMolecule> loadMolecules(String path)
         throws IOException, BioclipseException, CoreException;
+
     /**
      * Loads molecules from an IFile.
      * 
@@ -141,9 +153,11 @@ public interface ICDKManager extends IBioclipseManager {
     public List<ICDKMolecule> loadMolecules( IFile file,
                                              IProgressMonitor monitor )
         throws IOException, BioclipseException, CoreException;
+
     @Recorded
     public List<ICDKMolecule> loadMolecules( IFile file )
         throws IOException, BioclipseException, CoreException;
+    
     public List<ICDKMolecule> loadMolecules( IFile file,
                                              IProgressMonitor monitor,
                                              IChemFormat format)
@@ -288,6 +302,8 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     public void saveMolecules(List<? extends IMolecule> molecules, IFile target, String filetype)
     	throws BioclipseException, CDKException, CoreException;
+
+
     /**
      * @param model The ChemModel to save
      * @param target Where to save
@@ -297,6 +313,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     public void save(IChemModel model, IFile target, String filetype) 
     	throws BioclipseException, CDKException, CoreException;
+
     /**
      * Calculate SMILES string for an IMolecule
      * @param molecule
@@ -310,6 +327,7 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testSaveMoleculesSDF,testSaveMoleculesCML,testSaveMoleculesCMLwithProps")
     public String calculateSMILES (IMolecule molecule) 
                   throws BioclipseException;
+
     /**
      * @param path
      * @return
@@ -322,6 +340,7 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testCreatingMoleculeIterator")
     public Iterator<ICDKMolecule> createMoleculeIterator(String path) 
                                   throws CoreException;
+    
     /**
      * @param file
      * @return
@@ -330,8 +349,10 @@ public interface ICDKManager extends IBioclipseManager {
     public Iterator<ICDKMolecule> createMoleculeIterator( 
         IFile file,
         IProgressMonitor monitor ) throws CoreException;
+    
     public Iterator<ICDKMolecule> createMoleculeIterator(IFile file) 
                                   throws CoreException;
+    
     /**
      * True if the fingerprint of the subStructure is a subset of the 
      * fingerprint for the molecule
@@ -352,6 +373,7 @@ public interface ICDKManager extends IBioclipseManager {
     public boolean fingerPrintMatches( ICDKMolecule molecule, 
                                        ICDKMolecule subStructure ) 
                    throws BioclipseException;
+    
     /**
      * True if the paramater molecule1 and the 
      * paramater molecule2 are isomorph. 
@@ -373,6 +395,8 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testStructureMatches")
     public boolean structureMatches( ICDKMolecule molecule1,
                                         ICDKMolecule molecule2 );
+    
+
     /**
      * True if the paramater substructure is a substructure to the 
      * paramater molecule. 
@@ -394,6 +418,7 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testSubStructureMatch")
     public boolean subStructureMatches( ICDKMolecule molecule,
                                         ICDKMolecule subStructure );
+    
     /**
      * Creates a cdk molecule from an IMolecule
      * 
@@ -407,6 +432,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @TestMethods("testCDKMoleculeFromIMolecule")
     public ICDKMolecule create( IMolecule m ) throws BioclipseException;
+
     /**
      * Creates a cdk molecule from a CML String
      * 
@@ -421,6 +447,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     public ICDKMolecule fromCml( String cml ) 
                         throws BioclipseException, IOException;
+
     /**
      * Returns true if the given molecule matches the given SMARTS
      * 
@@ -437,6 +464,7 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testSMARTSMatching")
     public boolean smartsMatches( ICDKMolecule molecule, String smarts ) 
                    throws BioclipseException;
+
     /**
      * @param filePath
      * @return the number of entries in the sdf file at the given path or
@@ -450,12 +478,14 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @TestMethods("testNumberOfEntriesInSDF")
     public int numberOfEntriesInSDF( String filePath );
+    
     /**
      * @param filePath
      */
     @PublishedMethod ( params = "String filePath",
                        methodSummary = "Creates a index file for the SD-file." )
     public void createSDFileIndex( String filePath);
+    
     public void createSDFileIndex(IFile file, IProgressMonitor monitor);
     /**
      * Reads files and extracts conformers if available.
@@ -469,6 +499,7 @@ public interface ICDKManager extends IBioclipseManager {
                           "account. Currently only reads SDFiles.")
     @TestMethods("testLoadConformers")
     public List<ICDKMolecule> loadConformers( String path );
+
     /**
      * Reads files and extracts conformers if available.
      * @param file
@@ -477,11 +508,13 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     public List<ICDKMolecule> loadConformers( IFile file, 
                                               IProgressMonitor monitor );
+    
     /**
      * @param file
      * @return
      */
     public List<ICDKMolecule> loadConformers( IFile file);
+
     /**
      * Returns an iterator to the molecules in an IFile that might
      * contain conformers.
@@ -492,16 +525,19 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     public Iterator<ICDKMolecule> creatConformerIterator( 
         IFile file, IProgressMonitor monitor );
+    
     /**
      * @param file
      * @return
      */
     @Recorded
     public Iterator<ICDKMolecule> creatConformerIterator(IFile file);
+    
     @Recorded
     @PublishedMethod( params = "String path",
                       methodSummary = "" )
     public Iterator<ICDKMolecule> createConformerIterator( String path );
+
     @PublishedMethod ( params = "IMolecule molecule",
                        methodSummary = "Calculate and return the " +
                                        "molecular weight for the " +
@@ -510,6 +546,7 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testLoadMoleculeFromSMILESFile")
     public double calculateMass( IMolecule molecule ) 
                   throws BioclipseException;
+
     /**
      * @param file
      * @param subProgressMonitor
@@ -518,36 +555,43 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     public int numberOfEntriesInSDF( IFile file,
                                      IProgressMonitor monitor );
+    
     @Recorded
     @PublishedMethod(params = "IMolecule molecule",
                      methodSummary="Create 2D coordinate for the given molecule")
     @TestMethods("testGenerate2DCoordinates")
     public IMolecule generate2dCoordinates(IMolecule molecule) throws Exception;
+
     @Recorded
     @PublishedMethod(params = "IMolecule molecule",
                      methodSummary="Create 3D coordinate for the given molecule")
     @TestMethods("testGenerate3DCoordinates")
     public IMolecule generate3dCoordinates(IMolecule molecule) throws Exception;
+
     /**
      * @param file
      * @return
      */
     @Recorded
     public int numberOfEntriesInSDF( IFile file );
+
     @Recorded
-        public void saveMol2(ICDKMolecule mol2, String filename) throws InvocationTargetException, BioclipseException, CDKException, CoreException;
+	public void saveMol2(ICDKMolecule mol2, String filename) throws InvocationTargetException, BioclipseException, CDKException, CoreException;
+
     @Recorded
     @PublishedMethod(params = "ICDKMolecule molecule, String filename",
                      methodSummary = "Saves a molecule in the MDL molfile V2000 format (filename must be a relative to workspace root and "+
     								 "folder must exist)")
     @TestMethods("testSaveMDLMolfile")
     public void saveMDLMolfile(ICDKMolecule mol, String filename) throws InvocationTargetException, BioclipseException, CDKException, CoreException;
+
     @Recorded
     @PublishedMethod(params = "ICDKMolecule molecule, String filename",
                      methodSummary = "Saves a molecule in the Chemical Markup Language format (filename must be a relative to workspace root and "+
     								 "folder must exist)")
     @TestMethods("testSaveCML")
     public void saveCML(ICDKMolecule cml, String filename) throws InvocationTargetException, BioclipseException, CDKException, CoreException;
+
     /**
      * Loads molecules from a SMILES file.
      *
@@ -563,25 +607,29 @@ public interface ICDKManager extends IBioclipseManager {
                       		          "molecules")
     @TestMethods("testLoadMoleculeFromSMILESFileDirectly,testLoadMoleculeFromSMILESFile")
     public List<ICDKMolecule> loadSMILESFile(String path) throws CoreException, IOException;
-        public List<ICDKMolecule> loadSMILESFile(IFile file) throws CoreException, IOException;
-        /**
-         * Return number of molecules in file
-         * @param file
-         * @return
-         */
+    
+	public List<ICDKMolecule> loadSMILESFile(IFile file) throws CoreException, IOException;
+
+	/**
+	 * Return number of molecules in file
+	 * @param file
+	 * @return
+	 */
     @Recorded
     @PublishedMethod( params = "String path", 
                       methodSummary = "Returns number of molecules in file.")
-        public int getNoMolecules(String path); 
-        /**
-         * Return number of molecules in file
-         * @param file
-         * @return
-         */
+	public int getNoMolecules(String path); 
+    
+	/**
+	 * Return number of molecules in file
+	 * @param file
+	 * @return
+	 */
     @Recorded
     @PublishedMethod( params = "String path", 
                       methodSummary = "Returns number of molecules in file.")
-        public MoleculesInfo getInfo(String path);
+	public MoleculesInfo getInfo(String path);
+
     /**
      * Depict if molecule has 2D coordinates available.
      * @param mol IMolecule to depict 2D for
@@ -592,7 +640,8 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod( params = "IMolecule mol", 
                       methodSummary = "Returns true if molecule has 2D coordinates, " +
                       		"false otherwise.")
-        boolean has2d(IMolecule mol) throws BioclipseException; 
+	boolean has2d(IMolecule mol) throws BioclipseException; 
+
     /**
      * Depict if molecule has 3D coordinates available.
      * @param mol IMolecule to depict 3D for
@@ -603,17 +652,20 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod( params = "IMolecule mol", 
                       methodSummary = "Returns true if molecule has 3D coordinates, " +
                       		"false otherwise.")
-        boolean has3d(IMolecule mol) throws BioclipseException; 
+	boolean has3d(IMolecule mol) throws BioclipseException; 
+    
     @Recorded
     @PublishedMethod(params = "IMolecule mol", 
                      methodSummary="Adds explicit hydrogens to this molecule")
     @TestMethods("testAddExplicitHydrogens")
     public IMolecule addExplicitHydrogens(IMolecule molecule) throws Exception;
+
     @Recorded
     @PublishedMethod(params = "IMolecule mol", 
                      methodSummary="Adds implicit hydrogens to this molecule")
     @TestMethods("testAddImplicitHydrogens")
    	public IMolecule addImplicitHydrogens(IMolecule molecule) throws BioclipseException, InvocationTargetException;
+
     @Recorded
     @PublishedMethod(params = "IFile file, IMolecule[] entries", 
                      methodSummary="Creates an sd file from a number of molecules")

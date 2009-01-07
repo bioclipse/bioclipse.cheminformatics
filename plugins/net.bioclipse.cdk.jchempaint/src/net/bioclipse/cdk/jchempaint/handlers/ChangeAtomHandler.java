@@ -10,11 +10,14 @@
  *
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.handlers;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.openscience.cdk.interfaces.IAtom;
+
 public class ChangeAtomHandler extends AbstractJChemPaintHandler {
+
     Logger logger = Logger.getLogger(ChangeAtomHandler.class);
     public Object execute(ExecutionEvent event) throws ExecutionException {
        String o = event.getParameter( "atomType" );

@@ -9,25 +9,32 @@
  *     Ola Spjuth
  *     
  ******************************************************************************/
+
 package net.bioclipse.cdk.business;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
+
 /**
  * 
  * @author jonalv
  */
 public class CDKManagerFactory implements IExecutableExtension, 
                                               IExecutableExtensionFactory {
+
     private Object cdkManager;
+    
     public void setInitializationData(IConfigurationElement config,
             String propertyName, Object data) throws CoreException {
+        
         cdkManager = Activator.getDefault().getCDKManager();
         if(cdkManager==null) {
             cdkManager = new Object();
         }
     }
+
     public Object create() throws CoreException {
         return cdkManager;
 //        return new Object();

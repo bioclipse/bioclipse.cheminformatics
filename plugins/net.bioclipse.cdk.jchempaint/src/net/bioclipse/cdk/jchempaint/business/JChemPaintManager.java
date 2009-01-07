@@ -11,11 +11,14 @@
  * Contact: http://www.bioclipse.net/
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.business;
+
 import javax.vecmath.Point2d;
+
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.scripting.ui.Activator;
+
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
@@ -23,12 +26,15 @@ import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IBond.Order;
+
 /**
  * @author egonw
  */
 public class JChemPaintManager implements IJChemPaintManager {
+
     /** Not to be used by manager method directly, but is just needed for the syncRun() call. */
     private JChemPaintEditor jcpEditor;
+
     public IAtom getClosestAtom(Point2d worldCoord) {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -39,12 +45,15 @@ public class JChemPaintManager implements IJChemPaintManager {
             return null;
         }
     }
+
     public String getNamespace() {
         return "jcp";
     }
+
     protected void setActiveEditor(JChemPaintEditor activeEditor) {
         jcpEditor = activeEditor;
     }
+
     private JChemPaintEditor findActiveEditor() {
         final Display display = PlatformUI.getWorkbench().getDisplay();
         setActiveEditor(null);
@@ -63,6 +72,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         });
         return jcpEditor;
     }
+
     public ICDKMolecule getModel() throws BioclipseException {
         JChemPaintEditor editor = findActiveEditor();
         if (editor == null) {
@@ -70,6 +80,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         return editor.getCDKMolecule();
     }
+
     public void setModel(ICDKMolecule molecule) throws BioclipseException {
         if (molecule == null) {
             throw new BioclipseException("Input is null.");
@@ -80,6 +91,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         Display.getDefault().asyncExec(new SetInputRunnable(editor, molecule));
     }
+
     public void addAtom(String atomType, Point2d worldcoord) {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -90,6 +102,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         updateView();
     }
+
     public IBond getClosestBond(Point2d worldCoord) {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -100,6 +113,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             return null;
         }
     }
+
     public void removeAtom(IAtom atom) {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -110,6 +124,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         updateView();
     }
+
     public void removeBond( IBond bond ) throws BioclipseException {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -120,6 +135,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         updateView();
     }
+    
     public void updateView() {
         PlatformUI.getWorkbench().getDisplay().syncExec( new Runnable() {
             public void run() {
@@ -128,20 +144,25 @@ public class JChemPaintManager implements IJChemPaintManager {
             }
         });
     }
+
     class SetInputRunnable implements Runnable {
         ICDKMolecule molecule;
         JChemPaintEditor editor;
+
         public SetInputRunnable(JChemPaintEditor editor, ICDKMolecule molecule) {
             this.molecule = molecule;
             this.editor = editor;
         }
+
         public void run() {
             editor.setInput(molecule);
         }
     }
+
     public Point2d newPoint2d( double x, double y ) {
         return new Point2d(x, y);
     }
+
     public void updateImplicitHydrogenCounts() {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -152,6 +173,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         updateView();
     }
+
     public void addBond(IAtom fromAtom, IAtom toAtom) {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -162,6 +184,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         updateView();
     }
+
     public void moveTo(IAtom atom, Point2d point) {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -172,6 +195,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         updateView();
     }
+
     public void moveTo(IBond bond, Point2d point) {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -182,6 +206,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         updateView();
     }
+
     public void setCharge( IAtom atom, int charge ) {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -192,6 +217,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         updateView();
     }
+
     public void setMassNumber( IAtom atom, int massNumber ) {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -202,6 +228,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         updateView();
     }
+
     public void setOrder( IBond bond, Order order ) {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -212,6 +239,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         updateView();
     }
+
     public void setSymbol( IAtom atom, String symbol ) {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -222,6 +250,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         updateView();
     }
+
     public void setWedgeType( IBond bond, int type ) {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -232,6 +261,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         updateView();
     }
+
     public void addAtom(String elementSymbol, IAtom atom) {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -242,6 +272,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         updateView();
     }
+
     public void zap() {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -252,6 +283,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         updateView();
     }
+
     public void cleanup() {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -262,6 +294,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         updateView();
     }
+
     public void addRing(IAtom atom, int size) {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -272,6 +305,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         updateView();
     }
+
     public IBond.Order getBondOrder(int order) {
         switch (order) {
             case 1:  return IBond.Order.SINGLE;
@@ -281,6 +315,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             default: return null;
         }
     }
+
     public void addPhenyl(IAtom atom) {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -291,6 +326,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         updateView();
     }
+
     public void addRing(IBond bond, int size) {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
@@ -301,6 +337,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
         updateView();
     }
+
     public void addPhenyl(IBond bond) {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {

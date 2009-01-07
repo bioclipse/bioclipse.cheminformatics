@@ -11,9 +11,12 @@
  *     
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.outline;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import net.bioclipse.cdk.jchempaint.Activator;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -21,6 +24,7 @@ import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
+
 /**
  * A LabelProvider for JCPOutline
  * @author ola
@@ -28,6 +32,7 @@ import org.openscience.cdk.interfaces.IChemObject;
  */
 @SuppressWarnings("serial")
 public class StructureLabelProvider extends LabelProvider {
+
     private final static String[] cachedAtoms = {
         "h",
         "c", "n", "o",
@@ -35,9 +40,11 @@ public class StructureLabelProvider extends LabelProvider {
         "ca", "fe", "br",
         "unknown"
     };
+    
     private final static String[] cachedBonds = {
         "1", "2", "3", "aromatic"
     };
+    
     private final static Map<String,Image> cachedImages
         = new HashMap<String,Image>() {
             {
@@ -46,6 +53,7 @@ public class StructureLabelProvider extends LabelProvider {
                 for ( String bond : cachedBonds )
                     put(bond, createImage("icons/bond_", bond));
             }
+
             private Image createImage( String prefix, String type ) {
 //            	System.out.println("SLABELPROV: " + prefix + type + ".png");
             	ImageDescriptor desc=Activator.imageDescriptorFromPlugin(
@@ -54,19 +62,27 @@ public class StructureLabelProvider extends LabelProvider {
                 return desc.createImage();
             }
     };
+    
     public String getText(Object obj) {
+        
         String s = obj instanceof Container     ? ((Container)    obj).getName()
                  : obj instanceof CDKChemObject ? ((CDKChemObject)obj).getName()
                  : obj.toString();
+                 
        return s == null ? "???" : s;
     }
+    
     public Image getImage(Object element) {
+
         if (!(element instanceof CDKChemObject))
             return null;
+        
         IChemObject chemobj = ((CDKChemObject)element).getChemobj();
+
         if (chemobj instanceof IAtom) {
             IAtom atom = (IAtom) chemobj;
             String symbol = atom.getSymbol().toLowerCase();
+                    
             return cachedImages.get(
                        cachedImages.containsKey(symbol) ? symbol : "unknown"
                    );

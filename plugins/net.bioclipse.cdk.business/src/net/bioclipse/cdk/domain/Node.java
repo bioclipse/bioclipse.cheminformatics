@@ -10,7 +10,11 @@
  *     
  ******************************************************************************/
 package net.bioclipse.cdk.domain;
+
+
+
 public class Node {
+
     private Node next;
     private SDFElement data;
     boolean hasNext;
@@ -27,6 +31,7 @@ public class Node {
         }
         return next;
     }
+    
     public synchronized SDFElement data() {
         return data;
     }

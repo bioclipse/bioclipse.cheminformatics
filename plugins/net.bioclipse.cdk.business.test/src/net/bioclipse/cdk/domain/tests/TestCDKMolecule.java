@@ -10,22 +10,28 @@
  *
  ******************************************************************************/
 package net.bioclipse.cdk.domain.tests;
+
 import static org.junit.Assert.assertNotNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.BitSet;
+
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.business.BioclipseException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Before;
 import org.junit.Test;
 import org.openscience.cdk.io.IChemObjectReader;
 import org.openscience.cdk.io.ReaderFactory;
+
 public class TestCDKMolecule {
+
     //Needed to run these tests on some systems. If it breaks them on 
     //other systems we need to do some sort of checking before 
     //setting them...
@@ -37,49 +43,58 @@ public class TestCDKMolecule {
                             "com.sun.org.apache.xerces.internal."
                                 + "jaxp.DocumentBuilderFactoryImpl" );
     }
+    
     ICDKManager cdk;
+
     //Do not use SPRING OSGI for this manager
     //since we are only testing the implementations of the manager methods
     @Before
     public void initialize() {
         cdk = new CDKManager();
     }
+
     @Test
     public void testFingerprinter() throws IOException, 
                                            BioclipseException, 
                                            CoreException {
         String path = getClass().getResource("/testFiles/0037.cml")
                                 .getPath();
+
         ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
         assertNotNull(mol);
         BitSet bs = mol.getFingerprint(false);
         assertNotNull(bs);
         System.out.println("FP: " + bs.toString());
     }
+
     @Test
     public void testGetCML() throws IOException, 
                                     BioclipseException, 
                                     CoreException {
         String path = getClass().getResource("/testFiles/0037.cml")
                                 .getPath();
+
         ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
         assertNotNull(mol);
         String cmlString = mol.getCML();
         assertNotNull(cmlString);
         System.out.println("CML:\n" + cmlString);
     }
+
     @Test
     public void testGetSmiles() throws IOException, 
                                        BioclipseException, 
                                        CoreException {
         String path = getClass().getResource("/testFiles/0037.cml")
                                 .getPath();
+
         ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
         assertNotNull(mol);
         String smiles = mol.getSMILES();
         assertNotNull(smiles);
         System.out.println("Smiles: " + smiles);
     }
+    
     @Test
     public void testCreateFromString() throws IOException, 
                                               BioclipseException {
@@ -91,14 +106,17 @@ public class TestCDKMolecule {
         String content = new String(buf);
         String cutcontent = content.substring( 0,a );
         System.out.println("Content: " + cutcontent.length());
+        
         ICDKMolecule mol = cdk.fromCml( cutcontent );
         assertNotNull(mol);
         String smiles = mol.getSMILES();
         assertNotNull(smiles);
         System.out.println("Smiles: " + smiles);
     }
+
     @Test
     public void testReadCML() throws IOException{
+            
         String cmlstring="<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>"
 +"<molecule id=\"m1\" xmlns=\"http://www.xml-cml.org/schema\">"
 +"  <atomArray>"
@@ -142,11 +160,17 @@ public class TestCDKMolecule {
 +"<scalar dictRef=\"cdk:molecularProperty\" title=\"ACCH\" dataType=\"xsd:string\">3</scalar>"
 +"<scalar dictRef=\"cdk:molecularProperty\" title=\"SALTID\" dataType=\"xsd:string\">0</scalar>"
 +"</molecule>";
+    	
         ByteArrayInputStream bais=new ByteArrayInputStream(cmlstring.getBytes());
+
         ReaderFactory readerFactory=new ReaderFactory();
 //        CDK10ManagerHelper.registerFormats(readerFactory);
+
         //Create the reader
         IChemObjectReader reader= readerFactory.createReader(bais);
         reader.getFormat();
+        
+        
     }
+
 }

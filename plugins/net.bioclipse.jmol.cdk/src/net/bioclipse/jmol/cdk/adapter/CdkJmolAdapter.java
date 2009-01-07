@@ -10,6 +10,7 @@
  *    Ola Spjuth
  *******************************************************************************/
 package net.bioclipse.jmol.cdk.adapter;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.jmol.api.JmolAdapter;
 import org.openscience.cdk.CDKConstants;
@@ -40,6 +42,7 @@ import org.openscience.cdk.protein.data.PDBStructure;
 import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
+
 /**
  * Provides an interface to CDK IO and CDK data classes. The
  * <code>openBufferedReader</code> uses the ReaderFactory to get an CDK Reader.
@@ -48,15 +51,20 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
  * <code>ChemFile</code>s.
  */
 public class CdkJmolAdapter extends JmolAdapter {
+
     public final static String ATOM_SET_INDEX
         = "org.jmol.adapter.cdk.ATOM_SET_INDEX";
+
     private static final Logger logger = Logger.getLogger(CdkJmolAdapter.class);
+
     public CdkJmolAdapter() {
         super("CdkJmolAdapter");
     }
+
     /* **************************************************************
      * The file-related methods
      * **************************************************************/
+
     public Object openBufferedReader(String name,
                                      BufferedReader bufferedReader) {
         IChemFile chemFile = null;
@@ -106,16 +114,20 @@ public class CdkJmolAdapter extends JmolAdapter {
             }
             return chemFile;
     }
+
     public Object openBufferedReader(String name, String type,
             BufferedReader bufferedReader, Hashtable htParams) {
+        
         return openBufferedReader(name, bufferedReader);
     }
+    
     public String getFileTypeName(Object clientFile) {
         if (clientFile instanceof PDBPolymer) {
             return "pdb";
         }
         return "other";
     }
+
     public String getAtomSetCollectionName(Object clientFile) {
         logger.debug("Getting atom set collection name...");
         if (clientFile instanceof IChemObject) {
@@ -128,9 +140,11 @@ public class CdkJmolAdapter extends JmolAdapter {
         }
         return null;
     }
+
     /* **************************************************************
      * The frame-related methods
      * **************************************************************/
+
     public int getAtomSetCount(Object clientFile) {
         logger.debug("Getting atom set count...");
         if (clientFile instanceof IAtomContainer) {
@@ -142,6 +156,7 @@ public class CdkJmolAdapter extends JmolAdapter {
                          + ChemFileManipulator.getAllChemModels(
                                (IChemFile)clientFile
                            ).size() );
+            
             return ChemFileManipulator.getAllChemModels(
                 (IChemFile)clientFile
             ).size();
@@ -150,6 +165,7 @@ public class CdkJmolAdapter extends JmolAdapter {
             return 0;
         }
     }
+
     public int getEstimatedAtomCount(Object clientFile) {
         logger.debug("Estimating atom count...");
         if (clientFile instanceof IAtomContainer)
@@ -160,8 +176,10 @@ public class CdkJmolAdapter extends JmolAdapter {
                      + clientFile.getClass().getName());
         return 0;
     }
+
     /*
      this needs to be handled through the StructureIterator
+
      String[] getPdbStructureRecords(Object clientFile) {
      ChemFile chemFile = (ChemFile)clientFile;
      ChemSequence chemSequence = chemFile.getChemSequence(0);
@@ -175,6 +193,7 @@ public class CdkJmolAdapter extends JmolAdapter {
      return t;
      }
      */
+
     public float[] getNotionalUnitcell(Object clientFile) {
         if (clientFile instanceof ICrystal) {
             ICrystal crystal = (ICrystal) clientFile;
@@ -188,30 +207,37 @@ public class CdkJmolAdapter extends JmolAdapter {
         } // else: no crystal thus no unit cell info
         return null;
     }
+
     public String getClientAtomStringProperty(Object clientAtom,
             String propertyName) {
         Object value = ((IAtom) clientAtom).getProperty(propertyName);
         return value == null ? null : "" + value;
     }
+
     public JmolAdapter.AtomIterator getAtomIterator(Object clientFile) {
         logger.debug("Jmol requested an AtomIterator...");
         return new AtomIterator((IChemFile) clientFile);
     }
+
     public JmolAdapter.BondIterator getBondIterator(Object clientFile) {
         logger.debug("Jmol requested an BondIterator...");
         return new BondIterator((IChemFile) clientFile);
     }
+
     /* ***************************************************************
      * the frame iterators
      * **************************************************************/
     class AtomIterator extends JmolAdapter.AtomIterator {
+        
         IChemFile chemFile;
         int atomCount, iatom;
         int modelCount, imodel;
         int icontainer;
         List<IChemModel> models;
         List<IAtomContainer> containers;
+
         IAtom atom;
+
         AtomIterator(IChemFile chemFile) {
             this.chemFile = chemFile;
             models = ChemFileManipulator.getAllChemModels(chemFile);
@@ -228,6 +254,7 @@ public class CdkJmolAdapter extends JmolAdapter {
             imodel = 0;
             icontainer = 0;
         }
+
         public boolean hasNext() {
             if (modelCount == 0) return false;
             if (iatom == atomCount) {
@@ -279,36 +306,45 @@ public class CdkJmolAdapter extends JmolAdapter {
 //                  logger.debug("insertion code: " + getInsertionCode());
             return true;
         }
+
         public int getAtomSerial() {
             return iatom;
         }
+
         public Object getUniqueID() {
             return atom;
         }
+
         public int getElementNumber() {
             int atomicNum = atom.getAtomicNumber();
             if (atomicNum == 0)
                 atomicNum = -1;
             return atomicNum;
         }
+
         public String getElementSymbol() {
             return atom.getSymbol();
         }
+
         public float getX() {
             return atom.getPoint3d() == null ? 0.0f
                                              : (float)atom.getPoint3d().x;
         }
+
         public float getY() {
             return atom.getPoint3d() == null ? 0.0f
                                              : (float)atom.getPoint3d().y;
         }
+
         public float getZ() {
             return atom.getPoint3d() == null ? 0.0f
                                              : (float)atom.getPoint3d().z;
         }
+
         public String getPdbAtomRecord() {
             return (String) atom.getProperty("pdb.record");
         }
+
         public String getAtomName() {
             if (atom instanceof IPDBAtom) {
                 IPDBAtom pdbAtom = (IPDBAtom) atom;
@@ -316,9 +352,11 @@ public class CdkJmolAdapter extends JmolAdapter {
             }
             return super.getAtomName();
         }
+
         public int getAtomSetIndex() {
             return imodel;
         }
+
         public char getChainID() {
             if (atom instanceof IPDBAtom) {
                 IPDBAtom pdbAtom = (IPDBAtom) atom;
@@ -327,6 +365,7 @@ public class CdkJmolAdapter extends JmolAdapter {
             }
             return super.getChainID();
         }
+
         public String getGroup3() {
             if (atom instanceof IPDBAtom) {
                 IPDBAtom pdbAtom = (IPDBAtom) atom;
@@ -336,6 +375,7 @@ public class CdkJmolAdapter extends JmolAdapter {
             }
             return super.getGroup3();
         }
+
         public int getSequenceNumber() {
             if (atom instanceof IPDBAtom) {
                 IPDBAtom pdbAtom = (IPDBAtom) atom;
@@ -344,6 +384,7 @@ public class CdkJmolAdapter extends JmolAdapter {
             }
             return super.getSequenceNumber();
         }
+
         public char getInsertionCode() {
             if (atom instanceof IPDBAtom) {
                 IPDBAtom pdbAtom = (IPDBAtom) atom;
@@ -352,11 +393,14 @@ public class CdkJmolAdapter extends JmolAdapter {
             }
             return super.getInsertionCode();
         }
+
         public Object getClientAtomReference() {
             return atom;
         }
     }
+
     class BondIterator extends JmolAdapter.BondIterator {
+
         IChemFile chemFile;
         int modelCount, imodel;
         int bondCount, ibond;
@@ -364,6 +408,7 @@ public class CdkJmolAdapter extends JmolAdapter {
         IBond bond;
         List<IChemModel> models;
         List<IAtomContainer> containers;
+
         BondIterator(IChemFile chemFile) {
             this.chemFile = chemFile;
             bondCount = 0;
@@ -382,6 +427,7 @@ public class CdkJmolAdapter extends JmolAdapter {
             imodel = 0;
             icontainer = 0;
         }
+
         public boolean hasNext() {
             if (ibond == bondCount) {
                 icontainer++;
@@ -415,12 +461,15 @@ public class CdkJmolAdapter extends JmolAdapter {
             // end of work-around
             return true;
         }
+
         public Object getAtomUniqueID1() {
             return (bond.getAtomCount() == 2) ? bond.getAtom(0) : null;
         }
+
         public Object getAtomUniqueID2() {
             return (bond.getAtomCount() == 2) ? bond.getAtom(1) : null;
         }
+
         public int getEncodedOrder() {
             if (bond.getOrder().equals(Order.SINGLE))
                 return 1;
@@ -433,19 +482,24 @@ public class CdkJmolAdapter extends JmolAdapter {
             return -1;
         }
     }
+
     public JmolAdapter.StructureIterator getStructureIterator(
         Object clientFile) {
+        
         logger.debug("Jmol requested a stucture iterator for a "
                 + clientFile.getClass().getName());
         if (clientFile instanceof IChemFile)
             return new StructureIterator((IChemFile)clientFile);
         return null;
     }
+
     public class StructureIterator extends JmolAdapter.StructureIterator {
         int structureCount;
         Iterator structures;
         PDBStructure structure;
+
         int istructure;
+
         StructureIterator(IChemFile chemFile) {
             // OK, the structures are only defined in the first PDBPolymer
             this.structures = new ArrayList(0).iterator();
@@ -464,6 +518,7 @@ public class CdkJmolAdapter extends JmolAdapter {
             if (pdbStructures == null) return;
             this.structures = pdbStructures.iterator();
         }
+
         @Override
         public boolean hasNext() {
             if (!structures.hasNext())
@@ -471,34 +526,42 @@ public class CdkJmolAdapter extends JmolAdapter {
             structure = (PDBStructure) structures.next();
             return true;
         }
+
         @Override
         public String getStructureType() {
             return structure.getStructureType();
         }
+
         @Override
         public char getStartChainID() {
             return structure.getStartChainID();
         }
+
         @Override
         public int getStartSequenceNumber() {
             return structure.getStartSequenceNumber();
         }
+
         @Override
         public char getStartInsertionCode() {
             return structure.getStartInsertionCode();
         }
+
         @Override
         public char getEndChainID() {
             return structure.getEndChainID();
         }
+
         @Override
         public int getEndSequenceNumber() {
             return structure.getEndSequenceNumber();
         }
+
         @Override
         public char getEndInsertionCode() {
             return structure.getEndInsertionCode();
         }
+
         @Override
         public int getModelIndex() {
             // FIXME: do something good here!!!

@@ -10,8 +10,12 @@
  *     
  ******************************************************************************/
 package net.bioclipse.cdk.domain;
+
 import org.eclipse.core.resources.IFile;
+
 import net.bioclipse.core.domain.BioObject;
+
+
 /**
  * An element in an sdf file
  * 
@@ -19,35 +23,50 @@ import net.bioclipse.core.domain.BioObject;
  *
  */
 public class SDFElement extends BioObject {
+
     private String name;
     private long position;
     private int number;
+    
     public SDFElement(IFile file, 
                       String name, 
                       long position, 
                       int number) {
+
         super();
         this.name = name;
         this.position = position;
         this.resource = file;
         this.setNumber( number ); 
     }
+
     public String getName() {
+    
         return name;
     }
+    
     public void setName( String name ) {
+    
         this.name = name;
     }
+    
     public long getPosition() {
+    
         return position;
     }
+    
     public void setPosition( long position ) {
+    
         this.position = position;
     }
+
     public void setNumber( int number ) {
+
         this.number = number;
     }
+
     public int getNumber() {
+
         return number;
     }
 }

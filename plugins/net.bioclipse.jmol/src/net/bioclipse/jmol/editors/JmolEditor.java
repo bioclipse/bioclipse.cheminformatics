@@ -9,6 +9,8 @@
  *     Ola Spjuth - core API and implementation
  *******************************************************************************/
 package net.bioclipse.jmol.editors;
+
+
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +20,9 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.swing.JScrollPane;
+
 import net.bioclipse.jmol.views.JmolPanel;
 import net.bioclipse.jmol.views.JmolCompMouseListener;
 import net.bioclipse.jmol.views.JmolSelection;
@@ -26,9 +30,12 @@ import net.bioclipse.jmol.views.outline.JmolContentOutlinePage;
 import net.bioclipse.jmol.views.outline.JmolModel;
 import net.bioclipse.jmol.views.outline.JmolModelString;
 import net.bioclipse.jmol.views.outline.JmolObject;
+
 import org.apache.log4j.Logger;
+
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.util.LogUtils;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -58,6 +65,7 @@ import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.ide.IDE;
 import org.jmol.modelset.Model;
+
 /**
  * An example showing how to create a multi-page editor.
  * This example has 3 pages:
@@ -68,22 +76,32 @@ import org.jmol.modelset.Model;
  * </ul>
  */
 public class JmolEditor extends MultiPageEditorPart implements IResourceChangeListener, IAdaptable, ISelectionListener, ISelectionProvider{
+
     private static final Logger logger = Logger.getLogger(JmolEditor.class);
+
     /** The text editor used in page 1. */
     private TextEditor editor;
+
     /** The ContentOutlinePage for the Outline View */
     JmolContentOutlinePage fOutlinePage;
+
     /** The JmolPanel that we can get the JmolViewer from to e.g. call scripts */
     JmolPanel jmolPanel;
+
     /** Registered listeners */
     private List<ISelectionChangedListener> selectionListeners;
+
     /** Store last selection */
     private JmolSelection selection;
+
+
     //Should we hold the model as a string (read from file) or let it be the actual file?
     //Not yet decided. Will start by having as String.
     //Must check how react on resource changes works.
     //Ola 2007-11-20
     String content;        //Read from EditorInput
+
+
     /**
      * Creates a multi-page editor example.
      */
@@ -92,12 +110,15 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
         selectionListeners=new ArrayList<ISelectionChangedListener>();
     }
+
     /**
      * Creates page 0 of the multi-page editor,
      * which consists of Jmol.
      */
     void createPage0() {
+
         Composite parent = new Composite(getContainer(), SWT.NONE);
+
         //Set the layout for parent
         GridLayout layout = new GridLayout();
         layout.numColumns = 1;
@@ -105,45 +126,66 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         layout.marginWidth = 0;
         layout.marginHeight = 2;
         parent.setLayout(layout);
+
         GridData layoutData = new GridData();
         layoutData.grabExcessHorizontalSpace = true;
         layoutData.grabExcessVerticalSpace=true;
         parent.setLayoutData(layoutData);
+
         //Add the Jmol composite to the top
         Composite composite = new Composite(parent, SWT.EMBEDDED);
         layout = new GridLayout();
         composite.setLayout(layout);
         layoutData = new GridData(GridData.FILL_BOTH);
         composite.setLayoutData(layoutData);
+
+
+
         java.awt.Frame awtFrame = SWT_AWT.new_Frame(composite);
         java.awt.Panel awtPanel = new java.awt.Panel(new java.awt.BorderLayout());
         awtFrame.add(awtPanel);
+
         jmolPanel = new JmolPanel(this);
         JScrollPane scrollPane = new JScrollPane(jmolPanel);
         awtPanel.add(scrollPane);
+
         jmolPanel.addMouseListener((MouseListener) new
                 JmolCompMouseListener(composite,this));
+
+
+
         content=getContentsFromEditor();
         if (content==null){
             logger.error("Could not get FILE in jmol editor");
             content = "";//return;
         }
+
         jmolPanel.getViewer().openStringInline(content);
+
         //Initialize jmol
         //===============
         //Use halos as selction marker
         jmolPanel.getViewer().setSelectionHalos(true);
+
         //display all frames, then use 'display'
         runScript("frame 0.0");
         runScript("display 1.1");
+
         runScript("select none");
+
         //End Initialize jmol
         //===============
+
+
         int index = addPage(parent);
         setPageText(index, "Jmol");
+
         //Post selections in Jmol to Eclipse
         getSite().setSelectionProvider(this);
+
     }
+
+
     /**
      * Creates page 1 of the multi-page editor,
      * which contains a text editor.
@@ -161,12 +203,15 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
                     e.getStatus());
         }
     }
+
+
     /**
      * Creates the pages of the multi-page editor.
      */
     protected void createPages() {
         createPage0();
         //createPage1();
+
         getSite().getPage().addSelectionListener(this);
     }
     /**
@@ -212,6 +257,7 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
 //            throw new PartInitException("Invalid Input: Must be IFileEditorInput");
         super.init(site, editorInput);
         setPartName(editorInput.getName());
+
     }
     /* (non-Javadoc)
      * Method declared on IEditorPart.
@@ -246,13 +292,18 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
             });
         }
     }
+
     private String getContentsFromEditor(){
+
         IEditorInput input=getEditorInput();
         ResourcePathTransformer transformer 
                                     = ResourcePathTransformer.getInstance();
+
         try {
+
             String val = (String) input.getAdapter( String.class );
             if(val != null) return val;
+            
             if ((input instanceof IFileEditorInput) && 
                     ((IFileEditorInput)input).getFile().exists()) {
                 return readFile( ((IFileEditorInput)input)
@@ -269,9 +320,11 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
                 IFile file = transformer.transform( uri.toString() );
                 return readFile( file.getContents() );
             }
+            
             logger.debug("Can't read input");
             //TODO: Close editor?
             return null;
+
         } catch (CoreException e) {
             // TODO Auto-generated catch block
             LogUtils.debugTrace(logger, e);
@@ -279,18 +332,23 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
             // TODO Auto-generated catch block
             LogUtils.debugTrace(logger, e);
         }
+
         return null;
     }
+
     private String readFile(InputStream instream) throws IOException {        
         StringBuilder builder = new StringBuilder();
+
         // read bytes until eof
         for(int i = instream.read(); i != -1; i = instream.read())
         {
             builder.append((char)i);
         }
         instream.close();
+
         return builder.toString();
     }
+
     /**
      *
      * Provide Adapters for the JmolEditor
@@ -298,6 +356,7 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
     @SuppressWarnings("unchecked")
     @Override
     public Object getAdapter(Class required) {
+
         //Adapter for Outline
         if (IContentOutlinePage.class.equals(required)) {
             if (fOutlinePage == null) {
@@ -307,13 +366,16 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
             }
             return fOutlinePage;
         }
+        
         if (required==JmolModelString.class){
         	String jms=(String) jmolPanel.getViewer().getProperty("String", "stateinfo", "");
             JmolModelString jmso = new JmolModelString(jms);
             return jmso;
         }
+        
         return super.getAdapter(required);
     }
+
     public void runScript(String script){
         logger.debug("Running jmol script: '" + script + "'");
         String res=jmolPanel.getViewer().evalString(script);
@@ -324,14 +386,19 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         logger.debug("Running jmol script: '" + script + "'");
         jmolPanel.getViewer().evalString(script);
     }
+
     public JmolPanel getJmolPanel() {
         return jmolPanel;
     }
+
     public void setJmolPanel(JmolPanel jmolPanel) {
         this.jmolPanel = jmolPanel;
     }
+
+
     @SuppressWarnings("unchecked")
     public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+
         //Check what part it is selected in
         //Only listen for the outline with our created JmolPage (IAdapter)
         if (part instanceof ContentOutline) {
@@ -341,46 +408,58 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
             if (!(fOutlinePage.equals(pg)))
                 return;
         }
+
         if (selection instanceof IStructuredSelection) {
             IStructuredSelection selection2 = (IStructuredSelection) selection;
 //            System.out.println("JmolEditor caught selection: " + selection2.getFirstElement());
+
             if (selection2==null){
                 runScript("select all; halos off;");
                 return;
             }
+
             List<String> selectedModelsList=new ArrayList<String>();
             List<String> selectedObjects=new ArrayList<String>();
+
             for (Iterator selIt=selection2.iterator();selIt.hasNext();){
                 Object element=selIt.next();
+
                 //Add models separately as they use display instead of select
                 if (element instanceof JmolModel) {
                     JmolModel jmodel = (JmolModel) element;
                     Model model=(Model) jmodel.getObject();
+
                     //Add +1 as jmol uses base 1 and arrays 0
                     selectedModelsList.add(String.valueOf(model.getModelIndex()+1));
                 }
+
                 else if (element instanceof JmolObject) {
                     JmolObject jobj = (JmolObject) element;
                     selectedObjects.add(jobj.getSelectString());
                 }
             }
+
             /*
             //List used to collect monomers/polymers to select
             List<String> selectedMonomersList=new ArrayList<String>();
             List<String> selectedModelsList=new ArrayList<String>();
+
             for (Iterator selIt=selection2.iterator();selIt.hasNext();){
                 Object element=selIt.next();
+
                 //Collect all selected objects
                 if (element instanceof Model) {
                     Model model=(Model)element;
                     int currentModelIndex=jmolPanel.getViewer().getDisplayModelIndex();
                     if (model.getModelIndex()!=currentModelIndex){
                         logger.debug("Should change to model: " + model.getModelIndex());
+
                         selectedModelsList.add(String.valueOf(model.getModelIndex()+1));
                         //Add +1 as jmol uses base 1 and arrays 0
                         runScript("display 1." + (model.getModelIndex()+1));
                     }
                 }
+
                 //Replace BioPolymer with Chain: TODO
                 else if (element instanceof BioPolymer) {
                     //We should select all entire BioPplymer
@@ -394,6 +473,7 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
                             //Add this monomer to selection
                         selectedMonomersList.add(selStr);
                     }
+
                 }
                 else if (element instanceof Monomer) {
                     Monomer mono = (Monomer) element;
@@ -406,57 +486,81 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
                 }
                 //Handle proteinStructures?
              */
+
 //            Polymers are collections of Monomers, which extend Group. Each Group
 //            is a member of a chain.
+
 //            Not all groups are monomers, because not all groups are DNA, RNA,
 //            carbohydrate, or protein (for example, H2O).
+
 //            Chains are very specifically the sets defined in PDB and mmCIF
 //            files based on the character in the chain field. If this field
 //            is blank, it's still a chain -- the blank chain. For a file that
 //            is not PDB or mmCIF, there is one chain,
 //            and it's designation is blank.
+
             //A polymer is smaller than a chain. "Chain" refers to PDB chain.
             //water molecules in a PDB file are part of a chain, not a polymer.
             //polymers are only DNA, RNA, protein, carbohydrate
+
+
 //            else if (element instanceof Strands) {
 //            PDBStrand strand = (PDBStrand) chobj;
 //            selectionList.add("*:" + strand.getStrandName());
 //            }
+
+
+
             //Handle selection of Frames by DISPLAY in Jmol
             if (selectedModelsList.size() > 0) {
                 if (selectedModelsList.get(0) !=null) {
+
                     selectedModelsList=removeDuplicates(selectedModelsList);
+
                     //Collect all Select commands into one string
                     String collectedSelects="Display ";
                     for (Iterator<String> it = selectedModelsList.iterator(); it.hasNext();) {
                         String sel = it.next();
                         collectedSelects+="1." +sel+",";
                     }
+
                     //Remove last comma
                     collectedSelects=collectedSelects.substring(0, collectedSelects.length()-1);
                     logger.debug("Collected display string: '" + collectedSelects + "'");
+
                     runScript(collectedSelects);
                 }
             }
+
             //Handle selection of JmolObjects by SELECT in Jmol
             if (selectedObjects.size() > 0) {
                 if (selectedObjects.get(0) !=null) {
+
                     //Sort list of monomers and remove duplicates
                     selectedObjects=removeDuplicates(selectedObjects);
+
                     //Collect all Select commands into one string
                     String collectedSelects="Select ";
                     for (Iterator<String> it = selectedObjects.iterator(); it.hasNext();) {
                         String sel = it.next();
                         collectedSelects+=sel+",";
                     }
+
                     //Remove last comma
                     collectedSelects=collectedSelects.substring(0, collectedSelects.length()-1);
                     logger.debug("Collected select string: '" + collectedSelects + "'");
+
                     runScript(collectedSelects);
                 }
             } // else: nothing to select
+
+
         }
+
     }
+
+
+
     /**
      * Convenience method to remove duplicates in a list
      * @param items
@@ -468,24 +572,32 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         set.addAll(items);
         return new ArrayList(set);
     }
+
+
     /* Below are for setting selections in Bioclipse from Jmol, e.g when
      clicked on an Atom*/
+
+
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
         if(!selectionListeners.contains(listener))
         {
             selectionListeners.add(listener);
         }
     }
+
     public ISelection getSelection() {
         return selection;
     }
+
     public void removeSelectionChangedListener(
             ISelectionChangedListener listener) {
         if(selectionListeners.contains(listener))
             selectionListeners.remove(listener);
     }
+
     public void setSelection(ISelection selection) {
         if (!(selection instanceof JmolSelection)) return;
+
         //Mark this editor as active
 //        Display.getDefault().syncExec(new Runnable() {
 //            public void run() {
@@ -493,10 +605,13 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
 //                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(getPart());
 //            }
 //        });
+
         this.selection = (JmolSelection)selection;
+
         //Issue select string
         String selStr="Select " + ((JmolSelection)selection).getFirstElement().toString();
         runScript(selStr);
+
         if (selectionListeners==null) return;
         java.util.Iterator<ISelectionChangedListener> iter = selectionListeners.iterator();
         while( iter.hasNext() )
@@ -509,11 +624,14 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
                     listener.selectionChanged(e);
                 }
             });
+
         }
     }
+
     public IEditorPart getPart(){
         return this;
     }
+    
     public void setDataInput(IEditorInput input){  
         String data = (String) input.getAdapter( String.class );
         if(jmolPanel != null && data != null) {

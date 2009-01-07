@@ -11,6 +11,7 @@
  *     
  ******************************************************************************/
 package net.bioclipse.cdk.ui.views;
+
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.ui.model.IMoleculesFromFile;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -20,6 +21,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.navigator.IDescriptionProvider;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
+
 /**
  * This Provider provides text, image, and description for Molecules
  * @author ola
@@ -27,15 +29,19 @@ import org.eclipse.ui.progress.PendingUpdateAdapter;
  */
 public class MoleculeLabelProvider implements ILabelProvider, 
                                               IDescriptionProvider {
+
     public Image getImage(Object element) {
         if ( element instanceof SDFElement ) {
             AbstractUIPlugin plugin = net.bioclipse.ui.Activator.getDefault();
             ImageRegistry imageRegistry = plugin.getImageRegistry();
+
             return imageRegistry
                     .get( net.bioclipse.ui.Activator.MOLECULE_2D_ICON );
+
         }
         return null;
     }
+
     public String getText(Object element) {
         if (element instanceof SDFElement) {
             SDFElement mol = (SDFElement) element;
@@ -50,21 +56,30 @@ public class MoleculeLabelProvider implements ILabelProvider,
         }
         return null;
     }
+
     public void addListener(ILabelProviderListener listener) {
         // TODO Auto-generated method stub
+
     }
+
     public void dispose() {
         // TODO Auto-generated method stub
+
     }
+
     public boolean isLabelProperty(Object element, String property) {
         // TODO Auto-generated method stub
         return true;
     }
+
     public void removeListener(ILabelProviderListener listener) {
         // TODO Auto-generated method stub
+
     }
+
     public String getDescription(Object anElement) {
         // TODO Auto-generated method stub
         return null;
     }
+
 }

@@ -10,6 +10,7 @@
  *     Egon Willighagen
  ******************************************************************************/
 package net.bioclipse.cdk.business;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.Properties;
+
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.io.CMLReader;
@@ -33,7 +35,9 @@ import org.openscience.cdk.io.formats.PDBFormat;
 import org.openscience.cdk.io.formats.SDFFormat;
 import org.openscience.cdk.io.listener.PropertiesListener;
 import org.openscience.cdk.nonotify.NNChemFile;
+
 public class CDKManagerHelper {
+
     /**
      * Register all formats that we support for reading in Bioclipse.
      * 
@@ -51,6 +55,7 @@ public class CDKManagerHelper {
             if (!fac.getFormats().contains(format)) fac.registerFormat((IChemFormatMatcher)format);
         }
     }
+    
     /**
      * Register all formats known to the CDK.
      */
@@ -79,19 +84,27 @@ public class CDKManagerHelper {
             System.out.println("Error loading all formats");
         }
     }
+
     public static void customizeReading(ISimpleChemObjectReader reader, IChemFile chemFile) {
         System.out.println("customingIO, reader found: " + reader.getClass().getName());
         System.out.println("Found # IO settings: " + reader.getIOSettings().length);
         if (reader instanceof PDBReader) {
             chemFile = new NNChemFile();
+
             Properties customSettings = new Properties();
             customSettings.setProperty("DeduceBonding", "false");
+
             PropertiesListener listener = new PropertiesListener(customSettings);
             reader.addChemObjectIOListener(listener);
         }
+
         if (reader instanceof CMLReader) {
             ((CMLReader)reader).registerConvention("md:mdMolecule", new MDMoleculeConvention(new ChemFile()));
             System.out.println("****** CmlReader, registered MDMoleculeConvention");
+
         }
+
     }
+
+
 }

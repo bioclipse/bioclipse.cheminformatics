@@ -9,8 +9,10 @@
  * Contact: http://www.bioclipse.net/
  ******************************************************************************/
 package net.bioclipse.chemoinformatics.wizards;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -21,28 +23,35 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
+
 /**
  * Creates a new MDL molfile.
  * 
  * @author egonw
  */
 public class NewMDLMolfileWizard extends BasicNewResourceWizard {
-        public static final String WIZARD_ID =
-                "net.bioclipse.chemoinformatics.wizards.NewMDLMolfileWizard"; //$NON-NLS-1$
-        public static String newline = System.getProperty("line.separator");
-        private static final String FILE_CONTENT =
-                "" + System.getProperty("line.separator") +
-                "  Bioclipse Empty File" + System.getProperty("line.separator") +
-                "" + System.getProperty("line.separator") +
-                "  0  0  0  0  0  0  0  0  0  0999 V2000" + System.getProperty("line.separator") +
-                "M  END" + System.getProperty("line.separator");
+
+	public static final String WIZARD_ID =
+		"net.bioclipse.chemoinformatics.wizards.NewMDLMolfileWizard"; //$NON-NLS-1$
+	
+	public static String newline = System.getProperty("line.separator");
+	
+	private static final String FILE_CONTENT =
+		"" + System.getProperty("line.separator") +
+		"  Bioclipse Empty File" + System.getProperty("line.separator") +
+		"" + System.getProperty("line.separator") +
+		"  0  0  0  0  0  0  0  0  0  0999 V2000" + System.getProperty("line.separator") +
+		"M  END" + System.getProperty("line.separator");
+	
     private WizardNewFileCreationPage mainPage;
+
     /**
      * Creates a wizard for creating a new file resource in the workspace.
      */
     public NewMDLMolfileWizard() {
         super();
     }
+
     public void addPages() {
         super.addPages();
         mainPage = new WizardNewFileCreationPage("newFilePage1", getSelection());//$NON-NLS-1$
@@ -50,24 +59,28 @@ public class NewMDLMolfileWizard extends BasicNewResourceWizard {
         mainPage.setDescription("Create a new MDL MolFile"); 
         addPage(mainPage);
     }
+
     public void init(IWorkbench workbench, IStructuredSelection currentSelection) {
         super.init(workbench, currentSelection);
         setWindowTitle("New MDL Molfile");
         setNeedsProgressMonitor(true);
     }
+
     public boolean performFinish() {
         IFile file = mainPage.createNewFile();
         if (file == null) {
-                        return false;
-                }
+			return false;
+		}
         InputStream source = new ByteArrayInputStream(FILE_CONTENT.getBytes());
         try {
-                        file.setContents(source, true, false, null);
-                } catch (CoreException e1) {
-                        e1.printStackTrace();
-                        return false;
-                }
+			file.setContents(source, true, false, null);
+		} catch (CoreException e1) {
+			e1.printStackTrace();
+			return false;
+		}
+
         selectAndReveal(file);
+
         IWorkbenchWindow bench = getWorkbench().getActiveWorkbenchWindow();
         try {
             if (bench != null) {
@@ -79,6 +92,8 @@ public class NewMDLMolfileWizard extends BasicNewResourceWizard {
         } catch (PartInitException e) {
             e.printStackTrace();
         }
+
         return true;
     }
+
 }

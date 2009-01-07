@@ -10,12 +10,17 @@
  *     
  ******************************************************************************/
 package net.bioclipse.cdk.ui.model;
+
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
+
+
 /**
  * @author arvid
  *
  */
 public interface IMoleculesFromFile extends IDeferredWorkbenchAdapter,
         IMoleculesEditorModel {
+
 }

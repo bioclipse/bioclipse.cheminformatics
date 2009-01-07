@@ -9,7 +9,9 @@
  *     Egon Willighagen <egonw@user.sf.net>
  ******************************************************************************/
 package net.bioclipse.cdkdebug.business;
+
 import java.lang.reflect.InvocationTargetException;
+
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
@@ -18,9 +20,11 @@ import net.bioclipse.core.TestClasses;
 import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.domain.IMolecule;
+
 @PublishedClass("Contains CDK debug related methods")
 @TestClasses("net.bioclipse.cdk.debug.test.CDKDebugManagerTest")
 public interface ICDKDebugManager extends IBioclipseManager {
+
     /**
      * @param mol The molecule to save
      */
@@ -31,6 +35,7 @@ public interface ICDKDebugManager extends IBioclipseManager {
     )
     @TestMethods("testDiff")
     public void diff(ICDKMolecule mol, ICDKMolecule mol2);
+    
     /**
      * @param mol The molecule to save
      */
@@ -41,6 +46,7 @@ public interface ICDKDebugManager extends IBioclipseManager {
     )
     @TestMethods("testDebug")
     public void debug(ICDKMolecule mol);
+
     @Recorded
     @PublishedMethod(
          params = "IMolecule mol",
@@ -48,6 +54,7 @@ public interface ICDKDebugManager extends IBioclipseManager {
     )
     @TestMethods("testDepictSybylAtomTypes")
     public ICDKMolecule perceiveSybylAtomTypes(IMolecule mol) throws InvocationTargetException;
+
     @Recorded
     @PublishedMethod(
          params = "IMolecule mol",
@@ -55,4 +62,5 @@ public interface ICDKDebugManager extends IBioclipseManager {
     )
     @TestMethods("testDepictCDKAtomTypes")
     public void perceiveCDKAtomTypes(IMolecule mol) throws InvocationTargetException;
+
 }

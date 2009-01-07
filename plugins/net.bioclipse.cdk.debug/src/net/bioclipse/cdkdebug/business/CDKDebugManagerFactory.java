@@ -9,19 +9,24 @@
  *     Egon Willighagen <egonw@user.sf.net>
  ******************************************************************************/
 package net.bioclipse.cdkdebug.business;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
 import net.bioclipse.cdkdebug.Activator;
+
 public class CDKDebugManagerFactory implements IExecutableExtension, 
                                               IExecutableExtensionFactory {
+
     private Object exampleManager;
+    
     public void setInitializationData( IConfigurationElement config,
                                        String propertyName, 
                                        Object data) throws CoreException {
         exampleManager = Activator.getDefault().getManager();
     }
+    
     public Object create() throws CoreException {
         return exampleManager;
     }
