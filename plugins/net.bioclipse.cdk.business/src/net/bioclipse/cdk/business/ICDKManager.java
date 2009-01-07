@@ -148,6 +148,83 @@ public interface ICDKManager extends IBioclipseManager {
                                              IProgressMonitor monitor,
                                              IChemFormat format)
         throws IOException, BioclipseException, CoreException;
+
+    /**
+     * Save a molecule in same format as loaded to same filename, if exists
+     * @param mol The molecule to save
+     * @throws IllegalStateException
+     */
+    @Recorded
+    @PublishedMethod(params = "IMolecule mol", 
+            methodSummary="Saves molecule to file, if read from file.")
+    public void saveMolecule(IMolecule mol) 
+    	throws BioclipseException, CDKException, CoreException;
+
+    /**
+     * Save a molecule in same format as loaded to same filename, if exists
+     * @param mol The molecule to save
+     * @param overwrite If set to true, overwrite if file exists
+     * @throws IllegalStateException
+     */
+    @Recorded
+    @PublishedMethod(params = "IMolecule mol, boolean overwrite", 
+            methodSummary="saves mol to a file, if previously read from file. " +
+            		"Overwrite determines if existing file shall be overwritten.")
+    public void saveMolecule(IMolecule mol, boolean overwrite) 
+    	throws BioclipseException, CDKException, CoreException;
+
+    /**
+     * Save a molecule in same format as loaded
+     * @param mol The molecule to save
+     * @param filename Where to save, relative to workspace root
+     * @throws IllegalStateException
+     */
+    @Recorded
+    @PublishedMethod(params = "IMolecule mol, String filename", 
+            methodSummary="saves mol to a file (filename must be a relative to workspace root and "+
+            "folder must exist), filetype must be one of the constants given by getPossibleFiletypes")
+    public void saveMolecule(IMolecule mol, String filename) 
+    	throws BioclipseException, CDKException, CoreException;
+
+    /**
+     * Save a molecule in same format as loaded
+     * @param mol The molecule to save
+     * @param filename Where to save, relative to workspace root
+     * @param overwrite If set to true, overwrite if file exists
+     * @throws IllegalStateException
+     */
+    @Recorded
+    @PublishedMethod(params = "IMolecule mol, String filename, boolean overwrite", 
+            methodSummary="saves mol to a file (filename must be a relative to workspace root and "+
+            "folder must exist), filetype must be one of the constants given by " +
+            "getPossibleFiletypes, " +
+            "overwrite determines if existing file shall be overwritten.")
+    public void saveMolecule(IMolecule mol, String filename, boolean overwrite) 
+    	throws BioclipseException, CDKException, CoreException;
+    
+    /**
+     * Save a molecule in same format as loaded
+     * @param mol The molecule to save
+     * @param file Where to save
+     * @param overwrite If set to true, overwrite if file exists
+     * @throws IllegalStateException
+     */
+    @Recorded
+    @PublishedMethod(params = "IMolecule mol, IFile file, boolean overwrite", 
+            methodSummary="saves mol to a file, filetype must be one of the constants given by " +
+            "getPossibleFiletypes, " +
+            "overwrite determines if existing file shall be overwritten.")
+    public void saveMolecule(IMolecule mol, IFile file, boolean overwrite) 
+    	throws BioclipseException, CDKException, CoreException;
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /**
      * @param mol The molecule to save
      * @param filename Where to save, relative to workspace root
@@ -161,6 +238,7 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testSaveMolecule_IMolecule_String_String")
     public void saveMolecule(IMolecule mol, String filename, String filetype) 
     	throws BioclipseException, CDKException, CoreException;
+
     /**
      * @param mol The molecule to save
      * @param target Where to save
@@ -170,6 +248,34 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     public void saveMolecule(IMolecule mol, IFile target, String filetype) 
     	throws BioclipseException, CDKException, CoreException;
+
+    /**
+     * @param mol The molecule to save
+     * @param filename Where to save, relative to workspace root
+     * @param filetype Which format to save (for formats, see constants)
+     * @param overwrite if true and file exists, overwrite
+     * @throws IllegalStateException
+     */
+    @Recorded
+    @PublishedMethod(params = "IMolecule mol, String filename, String filetype, boolean overwrite", 
+            methodSummary="saves mol to a file (filename must be a relative to workspace root and "+
+            "folder must exist), filetype must be one of the constants given by getPossibleFiletypes. " +
+            "If overwrite=true then file will be overwritten if exists.")
+    @TestMethods("testSaveMolecule_IMolecule_String_String")
+    public void saveMolecule(IMolecule mol, String filename, String filetype, boolean overwrite) 
+    	throws BioclipseException, CDKException, CoreException;
+
+    /**
+     * @param mol The molecule to save
+     * @param target Where to save
+     * @param filetype Which format to save (for formats, see constants)
+     * @param overwrite if true and file exists, overwrite
+     * @throws IllegalStateException
+     */
+    @Recorded
+    public void saveMolecule(IMolecule mol, IFile target, String filetype, boolean overwrite) 
+    	throws BioclipseException, CDKException, CoreException;
+
     /**
      * Save a list of molecules to file
      * @param molecules The molecules to save
@@ -180,7 +286,7 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws CoreException
      */
     @Recorded
-    public void saveMolecules(List<IMolecule> molecules, IFile target, String filetype)
+    public void saveMolecules(List<? extends IMolecule> molecules, IFile target, String filetype)
     	throws BioclipseException, CDKException, CoreException;
     /**
      * @param model The ChemModel to save
