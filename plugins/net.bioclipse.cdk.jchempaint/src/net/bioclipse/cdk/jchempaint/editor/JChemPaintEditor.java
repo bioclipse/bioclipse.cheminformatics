@@ -64,6 +64,11 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
     JChemPaintEditorWidget widget;
     IControllerModel c2dm;
     SWTMouseEventRelay relay;
+    
+    public JChemPaintEditorWidget getWidget() {
+    	return widget;
+    }
+
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		// TODO Auto-generated method stub
