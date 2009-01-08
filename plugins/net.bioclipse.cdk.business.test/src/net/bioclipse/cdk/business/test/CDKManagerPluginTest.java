@@ -13,6 +13,7 @@
 
 package net.bioclipse.cdk.business.test;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -38,6 +39,7 @@ import net.bioclipse.cdk.business.CDKManagerHelper;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdkdebug.business.CDKDebugManager;
 import net.bioclipse.cdkdebug.business.ICDKDebugManager;
 import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.business.BioclipseException;
@@ -87,6 +89,7 @@ public class CDKManagerPluginTest {
     //since we are only testing the implementations of the manager methods
     public CDKManagerPluginTest() {
         cdk = new CDKManager();
+        cdkdebug= new CDKDebugManager();
     }
 
     @Test
@@ -375,6 +378,56 @@ public class CDKManagerPluginTest {
         target.getContents().read(bytes);
         Assert.assertArrayEquals(new byte[]{10,32,32,67,68,75}, bytes);
     }
+    
+    @Test
+    public void testLoadSaveSingleMol() throws URISyntaxException, MalformedURLException, IOException, CoreException, BioclipseException, CDKException {
+
+        URI uri = getClass().getResource("/testFiles/atp.mol").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        ICDKMolecule mol = cdk.loadMolecule( path);
+
+        //Make sure resource is set
+        IFile resourceFile=(IFile)mol.getResource();
+        assertNotNull(resourceFile);
+        assertTrue(resourceFile.getFullPath().toOSString().endsWith("atp.mol"));
+
+        //Save to the molecules resource, should throw exception (file exists)
+        try{
+            cdk.saveMolecule(mol);
+            fail("cdk.saveMolecule(mol) did not throw exception for overwrite");
+        }catch (BioclipseException e){}
+        
+        //Save to the molecules resource with overwrite =true
+        cdk.saveMolecule(mol, true);
+        
+        //Save mol to same resource read from, should throw exc (file exists)
+        try{
+            cdk.saveMolecule(mol, mol.getResource().getLocation().toOSString());
+            fail("cdk.saveMolecule(mol, mol.getResource().getLocation().toOSString()) " +
+            		"did not throw exception for overwrite");
+        }catch (BioclipseException e){}
+
+        //Save mol to same resource read from with overwrite=true
+        cdk.saveMolecule(mol, mol.getResource().getLocation().toOSString(), true);
+
+        //Save mol to other location (virtual) without specifying file extension
+        cdk.saveMolecule(mol, "/Virtual/atp0.mol");
+        ICDKMolecule mol2 = cdk.loadMolecule("/Virtual/atp0.mol");
+        assertNotNull(mol2);
+
+        //Save mol to other location (virtual) with extension specified
+        cdk.saveMolecule(mol, "/Virtual/atp2.mol", ICDKManager.mol);
+        mol2 = cdk.loadMolecule("/Virtual/atp2.mol");
+        assertNotNull(mol2);
+
+        //Save as CML
+        cdk.saveMolecule(mol, "/Virtual/atp3.cml", ICDKManager.cml);
+        mol2 = cdk.loadMolecule("/Virtual/atp3.cml");
+        assertNotNull(mol2);
+
+    }
+
 
     @Test
     public void testSaveMolecule_IMolecule_String_String() throws BioclipseException, CDKException, CoreException, IOException {
