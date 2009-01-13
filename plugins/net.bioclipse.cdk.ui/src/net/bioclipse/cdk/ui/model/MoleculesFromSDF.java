@@ -4,10 +4,10 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * <http://www.eclipse.org/legal/epl-v10.html>
- * 
+ *
  * Contributors:
  *     Jonathan Alvarsson
- *     
+ *
  ******************************************************************************/
 package net.bioclipse.cdk.ui.model;
 
@@ -17,7 +17,6 @@ import java.util.List;
 
 import net.bioclipse.cdk.domain.Node;
 import net.bioclipse.cdk.domain.SDFElement;
-import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.BioclipseStore;
 import net.bioclipse.core.util.LogUtils;
 
@@ -29,21 +28,20 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
 
 
 public class MoleculesFromSDF implements IMoleculesFromFile{
 
-    private List<SDFElement> children = Collections.synchronizedList( 
+    private List<SDFElement> children = Collections.synchronizedList(
                                            new ArrayList<SDFElement>() );
     private IFile sdfFile;
     private Logger logger = Logger.getLogger( this.getClass() );
-    
+
     public MoleculesFromSDF( IFile sdfFile ) {
         this.sdfFile = sdfFile;
     }
-    
+
     public void fetchDeferredChildren( Object object,
                                        IElementCollector collector,
                                        IProgressMonitor monitor ) {
@@ -53,35 +51,39 @@ public class MoleculesFromSDF implements IMoleculesFromFile{
             long fileSize = EFS.getStore( sdfFile.getLocationURI() )
                                .fetchInfo()
                                .getLength();
+            if( fileSize > 1048576) { // if larger than 1MB
+                monitor.done();
+                return;
+            }
             if ( fileSize < Integer.MAX_VALUE ) {
                 ticks = (int)fileSize;
                 logger.debug( "ticks: " + ticks );
             }
-        } 
+        }
         catch ( CoreException e ) {
             LogUtils.debugTrace( logger, e );
         }
         monitor.beginTask("Reading SDF file", ticks);
         //Node first = (Node) sdfFile.getAdapter( Node.class );
         Node first;
-        synchronized ( BioclipseStore.instance ) {          
-        
+        synchronized ( BioclipseStore.instance ) {
+
             first = (Node) BioclipseStore.get( sdfFile, Node.class );
             if ( first == null ) {
                 first = new Node(null);
-                BioclipseStore.put(sdfFile,Node.class, first);
+//                BioclipseStore.put(sdfFile,Node.class, first);
                 //monitor only used for checking when to abort. Nothing else.
-                BuilderThread builder = new BuilderThread(sdfFile, 
-                                                          first, 
+                BuilderThread builder = new BuilderThread(sdfFile,
+                                                          first,
                                                           monitor);
                 builder.start();
             }
         }
             readSDFElementsFromList( first, collector, monitor );
             monitor.done();
-            
+
     }
-    
+
     private void readSDFElementsFromList( Node first,
                                           IElementCollector collector,
                                           IProgressMonitor monitor ) {
@@ -97,9 +99,9 @@ public class MoleculesFromSDF implements IMoleculesFromFile{
             if (monitor.isCanceled())
                 throw new OperationCanceledException();
         }
-            
+
     }
-    
+
     public ISchedulingRule getRule( Object object ) {
 
         // TODO Auto-generated method stub
@@ -132,18 +134,18 @@ public class MoleculesFromSDF implements IMoleculesFromFile{
      */
     public Object getMoleculeAt( int index ) {
         if(children.size() <=index) {
-            logger.debug( "index out of bounds Index: " 
+            logger.debug( "index out of bounds Index: "
                                           +index + ", Size: "+children.size() );
           return null;
         } else
-            return children.get(index );        
+            return children.get(index );
     }
 
     /* (non-Javadoc)
      * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#getNumberOfMolecules()
      */
     public int getNumberOfMolecules() {
-        
+
         return children.size();
     }
 
@@ -154,6 +156,6 @@ public class MoleculesFromSDF implements IMoleculesFromFile{
         throw new UnsupportedOperationException(this.getClass().getName()+
                                         " does not support this operation yet");
         // TODO Auto-generated method stub
-        
+
     }
 }

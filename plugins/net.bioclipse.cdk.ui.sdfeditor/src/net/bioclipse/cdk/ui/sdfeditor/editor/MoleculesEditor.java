@@ -35,6 +35,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -73,14 +74,12 @@ public class MoleculesEditor extends EditorPart implements
                                  new LinkedHashSet<ISelectionChangedListener>();
     MoleculesEditorLabelProvider labelProvider;
     public List<String>                          propertyHeaders;
-    CompositeTable viewer;
+   
 
     private MoleculesOutlinePage outlinePage;
 
-    private CompositeTable cTable;
-	public CompositeTable getCTable() {
-		return cTable;
-	}
+    
+	
 
 	private MoleculeTableContentProvider contentProvider;
 
@@ -173,74 +172,39 @@ public class MoleculesEditor extends EditorPart implements
 
         labelProvider = new MoleculesEditorLabelProvider(STRUCTURE_COLUMN_WIDTH);
         contentProvider= new MoleculeTableContentProvider();
-        contentProvider.inputChanged( null, null, getEditorInput() );
 
-        cTable = new CompositeTable(parent, SWT.NULL);
-        viewer = cTable;
-        // get First element from list to determin Properties
-        // use a iterator go get the first element and pass the property list to
-        // header and row constructor
-        new Header(cTable, SWT.NULL);
-        new Row(cTable,SWT.NULL);
-        cTable.setRunTime( true );
-        cTable.setNumRowsInCollection( contentProvider.numberOfEntries( 500 ) );
-        cTable.addRowContentProvider( contentProvider );
 
-        if(contentProvider.getFile() !=null) {
-            Job job = new Job("Indexing SD-file") {
-                protected IStatus run(IProgressMonitor monitor) {
-                    Activator.getDefault().getCDKManager()
-                    .createSDFileIndex( contentProvider.getFile(),monitor  );
-                    final int result = contentProvider.init();
-                    WorkbenchJob updateJob = new WorkbenchJob(
-                    "Updating SD editor") {
-                        /*
-                         * (non-Javadoc)
-                         *
-                         * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
-                         */
-                        public IStatus runInUIThread(IProgressMonitor updateMonitor) {
-                            // Cancel the job if the tree viewer got closed
+        MoleculeTableViewer molTableViewer = 
+            new MoleculeTableViewer(parent,SWT.NONE);
 
-                            contentProvider.ready();
-                            int firstVisibleRow = viewer.getTopRow();
-                            viewer.setNumRowsInCollection( result );
-                            viewer.setTopRow( firstVisibleRow );
-                            return Status.OK_STATUS;
-                        }
-                    };
-                    updateJob.setSystem(true);
-                    updateJob.schedule();
-                    monitor.done();
-                    return Status.OK_STATUS;
-                }
-            };
-            job.setPriority(Job.SHORT);
-            job.schedule(); // start as soon as possible
+        molTableViewer.setLabelProvider( labelProvider );
+        molTableViewer.setContentProvider(contentProvider);
 
-        }
+        molTableViewer.setInput(getEditorInput());
+
+        //(new TableViewer(parent,SWT.NONE)).setInput( input )
 
 
 
-
-
-        // See what's currently selected and select it
-        ISelection selection =
-                PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                        .getSelectionService().getSelection();
-        if ( selection instanceof IStructuredSelection ) {
-            IStructuredSelection stSelection = (IStructuredSelection) selection;
-            //reactOnSelection( stSelection );
-        }
-
-        setupDragSource();
-        //getEditorSite().getPage().addSelectionListener( this );
-        //getSite().setSelectionProvider(viewer);
+//
+//        // See what's currently selected and select it
+//        ISelection selection =
+//                PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+//                        .getSelectionService().getSelection();
+//        if ( selection instanceof IStructuredSelection ) {
+//            IStructuredSelection stSelection = (IStructuredSelection) selection;
+//            //reactOnSelection( stSelection );
+//        }
+//
+//        setupDragSource();
+//        //getEditorSite().getPage().addSelectionListener( this );
+//        //getSite().setSelectionProvider(viewer);
 
     }
 
     protected void setupDragSource() {
         int operations = DND.DROP_COPY | DND.DROP_MOVE;
+        CompositeTable viewer=null;
         DragSource dragSource = new DragSource(viewer,operations);
         Transfer[] transferTypes = new Transfer[]
                                         {
@@ -318,14 +282,14 @@ public class MoleculesEditor extends EditorPart implements
 //                                            .containsAll( selection.toList() ))
 //                return;
 //            else
-        if(viewer != null)
-                setSelectedRows(selection);
+//        if(viewer != null)
+//                setSelectedRows(selection);
     }
 
     @Override
     public void setFocus() {
 
-       viewer.setFocus();
+      // viewer.setFocus();
 
     }
 
@@ -406,16 +370,14 @@ public class MoleculesEditor extends EditorPart implements
         return super.getAdapter( adapter );
     }
     public ISelection getSelection() {
-        if(viewer != null)
-            return getSelectedRows();
-        else
+      
             return StructuredSelection.EMPTY;
     }
 
 
     private ISelection getSelectedRows() {
-        viewer.getSelection();
-        viewer.getTopRow();
+//        viewer.getSelection();
+//        viewer.getTopRow();
 
         return StructuredSelection.EMPTY;
 

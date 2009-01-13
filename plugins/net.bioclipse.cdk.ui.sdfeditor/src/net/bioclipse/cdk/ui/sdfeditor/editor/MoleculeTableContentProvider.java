@@ -1,13 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2008 The Bioclipse Project and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * <http://www.eclipse.org/legal/epl-v10.html>.
- *
- * Contributors:
- *     Arvid Berg goglepox@users.sf.net
- *
+ * Copyright (c) 2008 The Bioclipse Project and others. All rights reserved.
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at <http://www.eclipse.org/legal/epl-v10.html>.
+ * Contributors: Arvid Berg goglepox@users.sf.net
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
@@ -27,219 +23,207 @@ import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
 import org.eclipse.swt.nebula.widgets.compositetable.IRowContentProvider;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.progress.WorkbenchJob;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.random.RandomAccessSDFReader;
-import org.openscience.cdk.renderer.color.CPKAtomColors;
-import org.openscience.cdk.renderer.color.IAtomColorer;
-
 
 /**
  * @author arvid
- *
  */
-public class MoleculeTableContentProvider implements IRowContentProvider{
+public class MoleculeTableContentProvider implements IRowContentProvider,
+        ILazyContentProvider {
 
     Logger logger = Logger.getLogger( MoleculeTableContentProvider.class );
 
-    TableViewer viewer;
-    IFile file = null;
-    IMoleculesEditorModel model = null;
-    int childCount;
-    boolean readerReady = false;
-    RandomAccessSDFReader reader;
+    public static int READ_AHEAD = 100;
 
-//    IAtomColorer atomColorer;
+    private MoleculeTableViewer viewer;
+    IMoleculesEditorModel   model       = null;
+
+    // IAtomColorer atomColorer;
     IRenderer2DConfigurator renderer2DConfigurator;
 
-	public IRenderer2DConfigurator getRenderer2DConfigurator() {
-		return renderer2DConfigurator;
-	}
+    public IRenderer2DConfigurator getRenderer2DConfigurator() {
 
-	public void setRenderer2DConfigurator(
-			IRenderer2DConfigurator renderer2DConfigurator) {
-		this.renderer2DConfigurator = renderer2DConfigurator;
-	}
-
-	public void ready() {
-        readerReady = true;
+        return renderer2DConfigurator;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.ILazyContentProvider#updateElement(int)
-     */
+    public void setRenderer2DConfigurator(
+                             IRenderer2DConfigurator renderer2DConfigurator ) {
 
-    public ICDKMolecule getMoleculeAt(int index) {
-        Iterator<ICDKMolecule> iter;
-        try {
-            iter = Activator.getDefault().getCDKManager()
-                   .createMoleculeIterator( file );
+        this.renderer2DConfigurator = renderer2DConfigurator;
+    }
 
-            ICDKMolecule molecule;
-            int count = 0;
-            while ( iter.hasNext() ) {
-                molecule = iter.next();
-                if ( count++ == index ) {
-                    return molecule;
-                }
-            }
-        } catch ( CoreException e ) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+    private ICDKMolecule getMoleculeAt( int index ) throws Exception {
+        ICDKMolecule molecule = null;
+        IMoleculesEditorModel lModel;
+        synchronized ( this ) {
+            lModel = model;
         }
-        return null;
+        if ( lModel != null ) {;
+            Object o = lModel.getMoleculeAt( index );
+            if ( o instanceof IAdaptable ) {
+                molecule = ((ICDKMolecule) ((IAdaptable) o)
+                        .getAdapter( ICDKMolecule.class ));
+            }
+        }
+
+        return molecule;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-     */
-    public void dispose() {
 
-        // TODO Auto-generated method stub
 
-    }
-
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface
+     * .viewers.Viewer, java.lang.Object, java.lang.Object)
      */
     public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {
-
-        if(viewer != this.viewer)
-            this.viewer = (TableViewer)viewer;
-        if ( newInput != oldInput ) {
-            if ( newInput instanceof IEditorInput ) {
-                IEditorInput input = (IEditorInput) newInput;
-                file = (IFile)input.getAdapter( IFile.class );
-                if(file !=null) {
-                    model = null;
-                    return;
-                }
-
-                 model = (IMoleculesEditorModel)
-                                input.getAdapter( IMoleculesEditorModel.class );
-            }
+        if(newInput == null) {
+            getCompositeTable( this.viewer ).removeRowContentProvider( this );
+            return;
         }
-    }
 
-    public int numberOfEntries(int max) {
-        if(model != null) {
-            return model.getNumberOfMolecules();
-        }
-        try {
-            int count = 0;
-            BufferedReader reader = new BufferedReader(
-                         new InputStreamReader( file.getContents() ) );
-            String line;
-            while ( (line = reader.readLine()) != null ) {
-                if ( line.contains( "$$$$" ) )
-                    count++;
-                if(count >= max)
-                    break;
-            }
-            reader.close();
-            return count;
+        Assert.isTrue( viewer instanceof MoleculeTableViewer );
+        Assert.isTrue( newInput instanceof IAdaptable );
 
-        } catch ( CoreException e ) {
-            // TODO Auto-generated catch block
-            LogUtils.debugTrace( logger, e );
-        } catch ( IOException e ) {
-            // TODO Auto-generated catch block
-            LogUtils.debugTrace( logger, e );
-        }
-        return -1;
-    }
-
-    public IFile getFile() {
-        return file;
-    }
-    public int init() {
+        final IFile file = (IFile)((IAdaptable)newInput)
+        .getAdapter( IFile.class );
         if(file != null) {
-            IPath location = file.getLocation();
-            if (location != null) {
-               java.io.File file = location.toFile();
+            
+            if(file != null) {
+                (new SDFileMoleculesEditorModel(this)).init( file );
+                model = new IMoleculesEditorModel() {
+                    int rowSize;
 
-               IChemObjectBuilder builder = DefaultChemObjectBuilder.getInstance();
+                    {
+                        rowSize = numberOfEntries( READ_AHEAD );
+                    }
+                    public Object getMoleculeAt( int index ) {
 
-               try {
+                        return readMoleculeWithIterator( index );
+                    }
 
-                reader = new RandomAccessSDFReader(file,builder);
-                return reader.size();
-            } catch ( IOException e ) {
-                // TODO Auto-generated catch block
-                LogUtils.debugTrace( logger, e );
-            }
+                    public int getNumberOfMolecules() {
+                        return rowSize;
+                    }
+
+                    public void save() {
+                        throw new UnsupportedOperationException();
+                    }
+
+                    private ICDKMolecule readMoleculeWithIterator(int index) {
+                        Iterator<ICDKMolecule> iter;
+                       try {
+                           iter = Activator.getDefault().getCDKManager()
+                                   .createMoleculeIterator( file );
+
+                           ICDKMolecule molecule;
+                           int count = 0;
+                           while ( iter.hasNext() ) {
+                               molecule = iter.next();
+                               if ( count++ == index ) {
+                                   return molecule;
+                               }
+                           }
+                       } catch ( CoreException e ) {
+                           return null;
+                       }
+                       return null;
+                    }
+
+                    private int numberOfEntries( int max ) {
+
+                        try {
+                            int count = 0;
+                            BufferedReader reader =
+                                        new BufferedReader( new InputStreamReader(
+                                                            file.getContents() ) );
+                            String line;
+                            while ( count < max && (line = reader.readLine()) != null ) {
+                                if ( line.contains( "$$$$" ) ) {
+                                    count++;
+                                }
+                            }
+                            reader.close();
+                            return count;
+
+                        } catch ( CoreException e ) {
+
+                        } catch ( IOException e ) {
+
+                        }
+                        return 0;
+                    }
+                };
 
             }
         }
-        return -1;
+
+        if(model == null) {
+            model = (IMoleculesEditorModel)
+            ((IAdaptable)newInput).getAdapter( IMoleculesEditorModel.class );
+        }
+        if(viewer != this.viewer) {
+            Viewer oldViewer = this.viewer;
+            this.viewer = (MoleculeTableViewer)viewer;
+            if(oldInput != null) {
+                getCompositeTable( oldViewer ).removeRowContentProvider( this );
+            }
+            getCompositeTable( viewer ).addRowContentProvider( this );
+        }
+        updateSize( model.getNumberOfMolecules() );
     }
 
-    public void refresh( CompositeTable sender,
-                         int currentObjectOffset,
+    private CompositeTable getCompositeTable(Viewer viewer) {
+        return (CompositeTable)(viewer).getControl();
+    }
+
+    public void refresh( CompositeTable sender, int currentObjectOffset,
                          Control rowControl ) {
 
         Row row = (Row) rowControl;
         Control[] columns = row.getChildren();
-        Text index = (Text)columns[0];
+        Text index = (Text) columns[0];
         JChemPaintWidget structure = (JChemPaintWidget) columns[1];
-        
-        index.setText( Integer.toString( currentObjectOffset+1));
-        IAtomContainer ac=null;
+
+        index.setText( Integer.toString( currentObjectOffset + 1 ) );
+        IAtomContainer ac = null;
         try {
-            if(model != null) {
-                Object o =model.getMoleculeAt( currentObjectOffset );
-                if(o instanceof IAdaptable) {
-                    ac = ((ICDKMolecule) ((IAdaptable)o).getAdapter(
-                                       ICDKMolecule.class  )).getAtomContainer();
-                }
-            } else if(readerReady) {
-                IChemObject chemObject =reader.readRecord( currentObjectOffset );
-//                List<IAtomContainer> containers =                     ChemFileManipulator.getAllAtomContainers((IChemFile)chemObject);
-                IMolecule ret = (IMolecule) chemObject;
-                ac = ret;
-//                if (containers.size() > 1) {
-//                    IAtomContainer newContainer = chemObject.getBuilder()
-//                   .newAtomContainer();
-//                for (IAtomContainer container : containers) {
-//                    newContainer.add( container );
-//                }
-//                    mol = newContainer;
-//                }else {
-//                    if(containers.size() == 1) {
-//                        mol = containers.get( 0 );
-//                    }
-//                }
-                // TODO get a ICDKMolecules and assing it to mol
-
-
-            } else {
-                ac = this.getMoleculeAt( currentObjectOffset ).getAtomContainer();
-            }
+            ICDKMolecule mol = getMoleculeAt( currentObjectOffset );
+            if(mol != null)
+                ac = mol.getAtomContainer();
 
             structure.setAtomContainer( ac );
             setProperties( row.properties, ac );
-            ICDKMolecule cdkmol=new CDKMolecule(ac);
+            ICDKMolecule cdkmol = new CDKMolecule( ac );
 
-            //Allows for external actions to register a renderer2dconfigurator
-            //to customize rendering
-            if (renderer2DConfigurator!=null) renderer2DConfigurator.configure(
-            		structure.getRenderer2DModel(), cdkmol);
-            
+            // Allows for external actions to register a renderer2dconfigurator
+            // to customize rendering
+            if ( renderer2DConfigurator != null )
+                renderer2DConfigurator.configure( structure
+                        .getRenderer2DModel(), cdkmol );
+
         } catch ( CoreException e ) {
             // TODO Auto-generated catch block
             LogUtils.debugTrace( logger, e );
@@ -249,20 +233,131 @@ public class MoleculeTableContentProvider implements IRowContentProvider{
         }
 
     }
-    private void setProperties(Label properties,IAtomContainer ac) {
+
+    private void setProperties( Label properties, IAtomContainer ac ) {
+
         StringBuilder b = new StringBuilder();
-        int count =0;
-        Map<Object,Object> proper= ac.getProperties();
-        for(Object o:proper.keySet()) {
-//            b = new StringBuilder();
-           String key = o.toString();
-           String value = proper.get( o ).toString();
-           b.append( key ).append( ": " ).append( value ).append( ", \n" );
-//           properties.add( b.toString() );
-           // FIXME dirty hack to make it look good
-           if(count++>=5) break;
+        int count = 0;
+        Map<Object, Object> proper = ac.getProperties();
+        for ( Object o : proper.keySet() ) {
+            // b = new StringBuilder();
+            String key = o.toString();
+            String value = proper.get( o ).toString();
+            b.append( key ).append( ": " ).append( value ).append( ", \n" );
+            // properties.add( b.toString() );
+            // FIXME dirty hack to make it look good
+            if ( count++ >= 5 )
+                break;
 
         }
-        properties.setText( b.toString());
+        properties.setText( b.toString() );
+    }
+
+    private void updateSize(int size) {
+        getCompositeTable( viewer ).setNumRowsInCollection( size );
+    }
+
+
+    public void updateElement( int index ) {
+
+    }
+
+    static class SDFileMoleculesEditorModel implements IMoleculesEditorModel {
+        Logger logger = Logger.getLogger( MoleculeTableContentProvider.class );
+        RandomAccessSDFReader reader;
+        MoleculeTableContentProvider provider;
+
+        public SDFileMoleculesEditorModel(
+                                       MoleculeTableContentProvider provider) {
+            this.provider = provider;
+
+        }
+        public void init(IFile file) {
+            createIndex( file );
+        }
+        public Object getMoleculeAt( int index ) {
+
+
+            IChemObject chemObject;
+            try {
+                chemObject = reader
+                .readRecord( index );
+
+                IMolecule ret = (IMolecule) chemObject;
+
+                return (ret!=null?new CDKMolecule(ret):null);
+            } catch ( Exception e ) {
+               logger.debug( "Failed to read molecule for SDFile." );
+               return null;
+            }
+        }
+
+        public int getNumberOfMolecules() {
+
+            return reader.size();
+        }
+
+        public void save() {
+
+            // TODO Auto-generated method stub
+
+        }
+
+        private void createIndex(final IFile file) {
+            Job job = new Job( "Indexing SD-file" ) {
+
+                protected IStatus run( IProgressMonitor monitor ) {
+
+                    Activator.getDefault().getCDKManager()
+                            .createSDFileIndex( file, monitor );
+
+                    IChemObjectBuilder builder = DefaultChemObjectBuilder
+                    .getInstance();
+
+                    IPath location = file.getLocation();
+
+                    java.io.File jFile = (location!=null?location.toFile():null);
+                    try {
+                    reader = new RandomAccessSDFReader( jFile, builder );
+
+            WorkbenchJob updateJob = new WorkbenchJob( "Updating SD editor" ) {
+
+
+                public IStatus runInUIThread( IProgressMonitor updateMonitor ) {
+
+                            // Cancel the job if the tree viewer got closed
+                            synchronized (provider) {
+                                provider.model = SDFileMoleculesEditorModel.this;
+                            }
+                            CompositeTable cTable = provider
+                                          .getCompositeTable( provider.viewer );
+
+                             int firstVisibleRow = cTable.getTopRow();
+                             cTable.setNumRowsInCollection(
+                                                       getNumberOfMolecules() );
+                             cTable.setTopRow( firstVisibleRow );
+
+                            return Status.OK_STATUS;
+                 }
+                    };
+                    updateJob.setSystem( true );
+                    updateJob.schedule();
+
+                    } catch (IOException e) {
+                        logger.debug( "Failed to create reader for : "
+                                          +jFile.getAbsolutePath() );
+                    }
+                    monitor.done();
+                    return Status.OK_STATUS;
+                }
+            };
+            job.setPriority( Job.SHORT );
+            job.schedule(); // start as soon as possible
+
+        }
+    }
+
+    public void dispose() {
+
     }
 }
