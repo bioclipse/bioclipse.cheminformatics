@@ -193,7 +193,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
         if(highlightedAtom != null)
             selection.add( highlightedAtom );
 
-        org.openscience.cdk.renderer.ISelection sel = getRenderer2DModel().getSelection();
+        org.openscience.cdk.renderer.ISelection sel = getRenderer2DModel()
+                                                      .getSelection();
         IAtomContainer modelSelection = sel.getConnectedAtomContainer();
         if(modelSelection != null) {
             for(IAtom atom:modelSelection.atoms()) {
@@ -221,7 +222,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
         Object[] listenersArray = listeners.toArray();
 
         for (int i = 0; i < listenersArray.length; i++) {
-            final ISelectionChangedListener l = (ISelectionChangedListener) listenersArray[i];
+            final ISelectionChangedListener l = (ISelectionChangedListener) 
+                                                              listenersArray[i];
             SafeRunner.run(new SafeRunnable() {
                 public void run() {
                     l.selectionChanged(e);
@@ -237,7 +239,10 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
             prevHighlightedAtom = getRenderer2DModel().getHighlightedAtom();
             prevHighlightedBond = getRenderer2DModel().getHighlightedBond();
             if(prevHighlightedAtom!=null) {
-                setToolTipText( renderer2DModel.getToolTipText( prevHighlightedAtom ) );
+                setToolTipText( renderer2DModel
+                                       .getToolTipText( prevHighlightedAtom ) );
+            } else if(prevHighlightedBond != null){
+                setToolTipText( null ); // put getToolTipText(prevHighlightedBond) here
             } else {
                 setToolTipText( "" );
             }
