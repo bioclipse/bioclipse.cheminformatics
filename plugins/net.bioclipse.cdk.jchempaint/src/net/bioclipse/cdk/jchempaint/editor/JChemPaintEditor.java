@@ -155,8 +155,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
 
     @Override
 	public void setFocus() {
-		// TODO Auto-generated method stub
-
+		widget.setFocus();
 	}
 
     public ControllerHub getControllerHub() {
