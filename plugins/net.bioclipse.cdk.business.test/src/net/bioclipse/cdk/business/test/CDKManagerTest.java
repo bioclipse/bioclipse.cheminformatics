@@ -136,7 +136,7 @@ public class CDKManagerTest extends AbstractManagerTest {
                                           CoreException {
 
         String path = getClass().getResource("/testFiles/nprods.smi").getPath();
-        List<ICDKMolecule> mols = cdk.loadMolecules(new MockIFile(path), null, (IChemFormat)SMILESFormat.getInstance());
+        List<ICDKMolecule> mols = cdk.loadMolecules(new MockIFile(path), (IChemFormat)SMILESFormat.getInstance(), null);
         
         System.out.println("SMILES file size: " + mols.size());
         assertEquals(30, mols.size());

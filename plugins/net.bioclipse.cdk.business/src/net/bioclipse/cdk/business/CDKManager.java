@@ -48,6 +48,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
@@ -225,9 +226,9 @@ public class CDKManager implements ICDKManager {
 	 */
 	public List<ICDKMolecule> loadMolecules(IFile file, IProgressMonitor monitor)
 	throws IOException, BioclipseException, CoreException {
-		return loadMolecules(file, monitor, null);
+		return loadMolecules(file, null, monitor);
 	}
-	public List<ICDKMolecule> loadMolecules(IFile file, IProgressMonitor monitor, IChemFormat format)
+	public List<ICDKMolecule> loadMolecules(IFile file, IChemFormat format, IProgressMonitor monitor)
 	throws IOException, BioclipseException, CoreException {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
@@ -275,6 +276,7 @@ public class CDKManager implements ICDKManager {
 			List<IAtomContainer> atomContainersList = ChemFileManipulator
 			.getAllAtomContainers(chemFile);
 			int nuMols = atomContainersList.size();
+			int currentMolecule = 0;
 			System.out.println("This file contained: " + nuMols + " molecules");
 			// CDKMolecule[] moleculesData = new
 			// CDKMolecule[atomContainersList.size()];
@@ -306,6 +308,10 @@ public class CDKManager implements ICDKManager {
 				mol.setName(moleculeName);
 				moleculesList.add(mol);
 				monitor.worked((int) (ticks / nuMols));
+				monitor.subTask("Loaded molecule:" + ++currentMolecule + "/" + nuMols);
+				if ( monitor.isCanceled() ) {
+				    throw new OperationCanceledException();
+				}
 			}
 		} finally {
 			monitor.done();

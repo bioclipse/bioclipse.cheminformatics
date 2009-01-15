@@ -160,8 +160,8 @@ public interface ICDKManager extends IBioclipseManager {
         throws IOException, BioclipseException, CoreException;
     
     public List<ICDKMolecule> loadMolecules( IFile file,
-                                             IProgressMonitor monitor,
-                                             IChemFormat format)
+                                             IChemFormat format,
+                                             IProgressMonitor monitor)
         throws IOException, BioclipseException, CoreException;
 
     /**
