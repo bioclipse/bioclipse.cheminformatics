@@ -50,7 +50,7 @@ public interface ICDKManager extends IBioclipseManager {
 	public final static String mdl = "mdl";
 	public final static String cml = "cml";
 	public final static String smi = "smi";
-    public final static String cdk = "cdk";
+  public final static String cdk = "cdk";
 	public final static String mol2 = "mol2";
 	public final static String sdf = "sdf";
 
@@ -64,9 +64,10 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod( params = "String SMILES", 
                       methodSummary = "Creates a cdk molecule from " +
                       		          "SMILES")
-    @TestMethods("testLoadMoleculeFromSMILESFile,testCreateMoleculeFromSMILES," +
-                 "testFingerPrintMatch,testSubStructureMatch,testSMARTSMatching," +
-                 "testSave")
+    @TestMethods(
+       "testLoadMoleculeFromSMILESFile,testCreateMoleculeFromSMILES," +
+       "testFingerPrintMatch,testSubStructureMatch,testSMARTSMatching," +
+       "testSave")
     public ICDKMolecule fromSMILES(String SMILES)
         throws BioclipseException;
 

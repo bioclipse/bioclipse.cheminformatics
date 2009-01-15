@@ -33,6 +33,7 @@ public class Activator extends AbstractUIPlugin {
 
     //For Spring
     private ServiceTracker finderTracker;
+    private ServiceTracker jsFinderTracker;
 
     /**
      * The constructor
@@ -48,10 +49,15 @@ public class Activator extends AbstractUIPlugin {
         super.start(context);
         plugin = this;
         finderTracker = new ServiceTracker( context, 
-                ICDKManager.class.getName(), 
-                null );
+                                            ICDKManager.class.getName(), 
+                                            null );
         
         finderTracker.open();
+        jsFinderTracker = new ServiceTracker( context, 
+                                            IJSCDKManager.class.getName(), 
+                                            null );
+                                    
+        jsFinderTracker.open();
     }
 
     /*
@@ -84,5 +90,17 @@ public class Activator extends AbstractUIPlugin {
         }
         return manager;
     }
-
+    
+    public IJSCDKManager getJSCDKManager() {
+        IJSCDKManager manager = null;
+        try {
+            manager = (IJSCDKManager) jsFinderTracker.waitForService(1000*10);
+        } catch (InterruptedException e) {
+            LogUtils.debugTrace(logger, e);
+        }
+        if(manager == null) {
+            throw new IllegalStateException("Could not get the CDK manager");
+        }
+        return manager;
+    }
 }
