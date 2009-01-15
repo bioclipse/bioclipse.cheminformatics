@@ -20,8 +20,8 @@ import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor.Row;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.util.LogUtils;
-import net.bioclipse.scripting.business.BioclipseUIJob;
 import net.bioclipse.ui.jobs.BioclipseJob;
+import net.bioclipse.ui.jobs.BioclipseUIJob;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -318,9 +318,7 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
                     try {
                     java.io.File jFile = (location!=null?location.toFile():null);
                     reader = new RandomAccessSDFReader( jFile, builder );
-                    synchronized (provider) {
-                        provider.model = SDFileMoleculesEditorModel.this;
-                    }
+                    provider.model = SDFileMoleculesEditorModel.this;
                     CompositeTable cTable = provider
                     .getCompositeTable( provider.viewer );
 
@@ -331,6 +329,11 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
                     } catch (IOException e ) {
                         LogUtils.debugTrace( logger, e );
                     }
+                }
+                
+                @Override
+                public boolean runInBackground() {
+                    return true;
                 }
             });
         }

@@ -41,7 +41,7 @@ import net.bioclipse.core.domain.BioList;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.jobs.Job;
 import net.bioclipse.core.util.LogUtils;
-import net.bioclipse.scripting.business.BioclipseUIJob;
+import net.bioclipse.ui.jobs.BioclipseUIJob;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.EFS;
