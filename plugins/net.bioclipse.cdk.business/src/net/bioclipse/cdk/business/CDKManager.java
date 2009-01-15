@@ -704,7 +704,7 @@ public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
 	 }
 	 public void createSDFileIndex( String path ) {
 		     throw new UnsupportedOperationException(
-		                                "This manager method should not be called");
+		                          "This manager method should not be called");
 	 }
 	 public void createSDFileIndex(IFile file, BioclipseUIJob<?> uiJob) {
 	     throw new UnsupportedOperationException(
@@ -775,8 +775,8 @@ public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
 	 }
 	 @Job
 	 public int numberOfEntriesInSDF(String filePath) {
-		 return numberOfEntriesInSDF(ResourcePathTransformer.getInstance()
-				 .transform(filePath), null);
+	     throw new UnsupportedOperationException(
+	                         "This manager method should not be called");
 	 }
 	 /**
 	  * Reads files and extracts conformers if available. Currently limited to
@@ -868,9 +868,12 @@ public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
 	 BioclipseException, CoreException {
 		 return loadMolecules(file, null);
 	 }
-	 public int numberOfEntriesInSDF(IFile file) {
-		 return numberOfEntriesInSDF(file, null);
-	 }
+	 
+	 public int numberOfEntriesInSDF(IFile file, BioclipseUIJob<Integer> uiJob) {
+	     throw new UnsupportedOperationException(
+	                                 "This manager method should not be called");
+	   }
+	 
 	 public void saveMol2(ICDKMolecule mol, String filename)
 	 throws InvocationTargetException, BioclipseException, CDKException, CoreException {
 		 saveMolecule(mol, filename,CDKManager.mol2);

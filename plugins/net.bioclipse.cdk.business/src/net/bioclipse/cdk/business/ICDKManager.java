@@ -557,8 +557,8 @@ public interface ICDKManager extends IBioclipseManager {
      * @return
      */
     @Recorded
-    public int numberOfEntriesInSDF( IFile file,
-                                     IProgressMonitor monitor );
+    public int numberOfEntriesInSDF( IFile file, IProgressMonitor monitor );
+    public int numberOfEntriesInSDF( IFile file, BioclipseUIJob<Integer> uiJob);
     
     @Recorded
     @PublishedMethod(params = "IMolecule molecule",
@@ -572,12 +572,6 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testGenerate3DCoordinates")
     public IMolecule generate3dCoordinates(IMolecule molecule) throws Exception;
 
-    /**
-     * @param file
-     * @return
-     */
-    @Recorded
-    public int numberOfEntriesInSDF( IFile file );
 
     @Recorded
 	public void saveMol2(ICDKMolecule mol2, String filename) throws InvocationTargetException, BioclipseException, CDKException, CoreException;
