@@ -45,6 +45,14 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
     private String cachedSMILES;
     private BitSet cachedFingerprint;
 
+    
+    /*
+     * Needed by Spring
+     */
+    CDKMolecule() {
+        super();
+    }
+    
     public CDKMolecule(IAtomContainer atomContainer) {
         super();
         this.atomContainer=atomContainer;
