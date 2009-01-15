@@ -81,111 +81,110 @@
                tooltip="Create SMILES code for the selected molecule"/>
       </objectContribution> 
    </extension-->
-
-   <extension point="org.eclipse.ui.popupMenus">
-    <objectContribution
-      id="net.bioclipse.cdk.ui.popup.recreate3d"
-      objectClass="org.eclipse.core.resources.IFile">
-        <visibility>
-        <or>
-           <objectState
-             name="contentTypeId"
-             value="net.bioclipse.contenttypes.cml.singleMolecule3d"/>
-           <objectState
-             name="contentTypeId"
-             value="net.bioclipse.contenttypes.mdlMolFile3D"/>
-        </or>
-        </visibility>
-         <action
-           class="net.bioclipse.cdk.ui.handlers.Create3dHandler"
-           id="net.bioclipse.cdk.ui.handlers.create3d"
-           label="Recreate 3D coordinates"
-           menubarPath="additions" 
-           icon="icons/molecule3D.png">
-         </action>
-    </objectContribution>
-   </extension>
-
-
-   <extension point="org.eclipse.ui.popupMenus">
-    <objectContribution
-      id="net.bioclipse.cdk.ui.popup.create3d"
-      objectClass="org.eclipse.core.resources.IFile">
-        <visibility>
-        <or>
-           <objectState
-             name="contentTypeId"
-             value="net.bioclipse.contenttypes.mdlMolFile2D"/>
-           <objectState
-             name="contentTypeId"
-             value="net.bioclipse.contenttypes.cml.singleMolecule2d"/>
-        </or>
-        </visibility>
-         <action
-           class="net.bioclipse.cdk.ui.handlers.Create3dHandler"
-           id="net.bioclipse.cdk.ui.handlers.create3d"
-           label="Create 3D coordinates"
-           menubarPath="additions" 
-           icon="icons/molecule3D.png">
-         </action>
-    </objectContribution>
-   </extension>
    
-   <extension point="org.eclipse.ui.popupMenus">
-    <objectContribution
-      id="net.bioclipse.cdk.ui.popup.recreate2d"
-      objectClass="org.eclipse.core.resources.IFile">
-        <visibility>
-        <or>
-           <objectState
-             name="contentTypeId"
-             value="net.bioclipse.contenttypes.mdlMolFile2D"/>
-           <objectState
-             name="contentTypeId"
-             value="net.bioclipse.contenttypes.cml.singleMolecule2d"/>
-        </or>
-        </visibility>
-         <action
-           class="net.bioclipse.cdk.ui.handlers.Create2dHandler"
+    <extension
+        point="org.eclipse.ui.commands">
+        <command
+           id="net.bioclipse.cdk.ui.handlers.create3d"
+           defaultHandler="net.bioclipse.cdk.ui.handlers.Create3dHandler"
+           name="create3D"/>
+        <command
            id="net.bioclipse.cdk.ui.handlers.create2d"
-           label="Recreate 2D coordinates"
-           menubarPath="additions" 
-           icon="icons/molecule2D.png">
-         </action>
-    </objectContribution>
-   </extension>
+           defaultHandler="net.bioclipse.cdk.ui.handlers.Create2dHandler"
+           name="create2D"/>
+  	</extension>
 
+	<extension 
+  		point="org.eclipse.ui.menus">
+		<menuContribution
+			locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+		    <command
+		    	commandId="net.bioclipse.cdk.ui.handlers.create3d"
+		    	label="Recreate 3D coordinates"
+		        icon="icons/molecule3D.png">
+		      	<visibleWhen>
+			   		<iterate operator="and" ifEmpty="false">
+		      			<adapt type="org.eclipse.core.resources.IResource">
+			      			<or>
+				                <test property="org.eclipse.core.resources.contentTypeId" 
+				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule3d"/>
+					   		    <test property="org.eclipse.core.resources.contentTypeId" 
+				       	        	value="net.bioclipse.contenttypes.mdlMolFile3D"/>
+				            </or>
+			      		</adapt>
+			   		</iterate>
+		        </visibleWhen>
+	       </command>
+		</menuContribution>
+		<menuContribution
+			locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+		    <command
+		    	commandId="net.bioclipse.cdk.ui.handlers.create3d"
+		    	label="Create 3D coordinates"
+		        icon="icons/molecule3D.png">
+		      	<visibleWhen>
+			   		<iterate operator="and" ifEmpty="false">
+		      			<adapt type="org.eclipse.core.resources.IResource">
+			      			<or>
+				                <test property="org.eclipse.core.resources.contentTypeId" 
+				           	    	value="net.bioclipse.contenttypes.mdlMolFile2D"/>
+					   		    <test property="org.eclipse.core.resources.contentTypeId" 
+				       	        	value="net.bioclipse.contenttypes.cml.singleMolecule2d"/>
+				            </or>
+			      		</adapt>
+			   		</iterate>
+		        </visibleWhen>
+	       </command>
+		</menuContribution>
+		<menuContribution
+			locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+		    <command
+		    	commandId="net.bioclipse.cdk.ui.handlers.create2d"
+		    	label="Recreate 2D coordinates"
+		        icon="icons/molecule2D.png">
+		      	<visibleWhen>
+			   		<iterate operator="and" ifEmpty="false">
+		      			<adapt type="org.eclipse.core.resources.IResource">
+			      			<or>
+				                <test property="org.eclipse.core.resources.contentTypeId" 
+				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule2d"/>
+					   		    <test property="org.eclipse.core.resources.contentTypeId" 
+				       	        	value="net.bioclipse.contenttypes.mdlMolFile2D"/>
+				            </or>
+			      		</adapt>
+			   		</iterate>
+		        </visibleWhen>
+	       </command>
+		</menuContribution>
+		<menuContribution
+			locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+		    <command
+		    	commandId="net.bioclipse.cdk.ui.handlers.create2d"
+		    	label="Create 2D coordinates"
+		        icon="icons/molecule2D.png">
+		      	<visibleWhen>
+			   		<iterate operator="and" ifEmpty="false">
+		      			<adapt type="org.eclipse.core.resources.IResource">
+			      			<or>
+				                <test property="org.eclipse.core.resources.contentTypeId" 
+				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule3d"/>
+					   		    <test property="org.eclipse.core.resources.contentTypeId" 
+				       	        	value="net.bioclipse.contenttypes.mdlMolFile3D"/>
+				            </or>
+			      		</adapt>
+			   		</iterate>
+		        </visibleWhen>
+	       </command>
+		</menuContribution>
+	</extension>
 
-   <extension point="org.eclipse.ui.popupMenus">
-    <objectContribution
-      id="net.bioclipse.cdk.ui.popup.create2d"
-      objectClass="org.eclipse.core.resources.IFile">
-        <visibility>
-        <or>
-           <objectState
-             name="contentTypeId"
-             value="net.bioclipse.contenttypes.cml.singleMolecule3d"/>
-           <objectState
-             name="contentTypeId"
-             value="net.bioclipse.contenttypes.mdlMolFile3D"/>
-        </or>
-        </visibility>
-         <action
-           class="net.bioclipse.cdk.ui.handlers.Create2dHandler"
-           id="net.bioclipse.cdk.ui.handlers.create2d"
-           label="Create 2D coordinates"
-           menubarPath="additions" 
-           icon="icons/molecule2D.png">
-         </action>
-    </objectContribution>
-   </extension>
-   	
 	<extension
     	point="org.eclipse.help.toc">
 		<toc
         	file="toc.xml"
          	primary="true"/>
 	</extension>
+
  <extension
        point="org.eclipse.core.runtime.adapters">
     <factory
