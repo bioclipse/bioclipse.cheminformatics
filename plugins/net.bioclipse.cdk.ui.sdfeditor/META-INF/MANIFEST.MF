@@ -22,7 +22,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide;bundle-version="3.4.0",
  org.openscience.cdk.extra;bundle-version="1.1.2",
  net.bioclipse.chemoinformatics;bundle-version="2.0.0",
- net.bioclipse.ui;bundle-version="2.0.0"
+ net.bioclipse.ui;bundle-version="2.0.0",
+ net.bioclipse.scripting;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: org.apache.log4j;version="1.2.15"

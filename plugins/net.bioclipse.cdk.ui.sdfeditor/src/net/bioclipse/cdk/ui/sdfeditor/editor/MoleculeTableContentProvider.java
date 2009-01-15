@@ -20,6 +20,8 @@ import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor.Row;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.scripting.business.BioclipseUIJob;
+import net.bioclipse.ui.jobs.BioclipseJob;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -304,59 +306,35 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
         }
 
         private void createIndex(final IFile file) {
-            Job job = new Job( "Indexing SD-file" ) {
-
-                protected IStatus run( IProgressMonitor monitor ) {
-
-                    Activator.getDefault().getCDKManager()
-                            .createSDFileIndex( file, monitor );
+            Activator.getDefault().getCDKManager()
+            .createSDFileIndex( file, new BioclipseUIJob<Integer>() {
+                @Override
+                public void runInUI() {
 
                     IChemObjectBuilder builder = DefaultChemObjectBuilder
                     .getInstance();
 
                     IPath location = file.getLocation();
-
-                    java.io.File jFile = (location!=null?location.toFile():null);
                     try {
+                    java.io.File jFile = (location!=null?location.toFile():null);
                     reader = new RandomAccessSDFReader( jFile, builder );
-
-            WorkbenchJob updateJob = new WorkbenchJob( "Updating SD editor" ) {
-
-
-                public IStatus runInUIThread( IProgressMonitor updateMonitor ) {
-
-                            // Cancel the job if the tree viewer got closed
-                            synchronized (provider) {
-                                provider.model = SDFileMoleculesEditorModel.this;
-                            }
-                            CompositeTable cTable = provider
-                                          .getCompositeTable( provider.viewer );
-
-                             int firstVisibleRow = cTable.getTopRow();
-                             cTable.setNumRowsInCollection(
-                                                       getNumberOfMolecules() );
-                             cTable.setTopRow( firstVisibleRow );
-
-                            return Status.OK_STATUS;
-                 }
-                    };
-                    updateJob.setSystem( true );
-                    updateJob.schedule();
-
-                    } catch (IOException e) {
-                        logger.debug( "Failed to create reader for : "
-                                          +jFile.getAbsolutePath() );
+                    synchronized (provider) {
+                        provider.model = SDFileMoleculesEditorModel.this;
                     }
-                    monitor.done();
-                    return Status.OK_STATUS;
-                }
-            };
-            job.setPriority( Job.SHORT );
-            job.schedule(); // start as soon as possible
+                    CompositeTable cTable = provider
+                    .getCompositeTable( provider.viewer );
 
+                    int firstVisibleRow = cTable.getTopRow();
+                    cTable.setNumRowsInCollection(
+                                                  getNumberOfMolecules() );
+                    cTable.setTopRow( firstVisibleRow );
+                    } catch (IOException e ) {
+                        LogUtils.debugTrace( logger, e );
+                    }
+                }
+            });
         }
     }
-
     public void dispose() {
 
     }
