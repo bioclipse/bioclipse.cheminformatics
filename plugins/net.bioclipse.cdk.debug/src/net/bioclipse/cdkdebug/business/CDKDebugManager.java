@@ -15,7 +15,7 @@ import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
-import net.bioclipse.ui.Activator;
+import net.bioclipse.scripting.ui.Activator;
 import org.apache.log4j.Logger;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
@@ -33,12 +33,12 @@ public class CDKDebugManager implements ICDKDebugManager {
     private static final Logger logger = Logger.getLogger(CDKManager.class);
     private static final CDKManager cdk = new CDKManager();
     public void diff(ICDKMolecule mol, ICDKMolecule mol2) {
-        Activator.getDefault().CONSOLE.echo(
+        Activator.getDefault().getJsConsoleManager().print( 
             AtomContainerDiff.diff(mol.getAtomContainer(), mol2.getAtomContainer())
         ); 
     }
     public void debug(ICDKMolecule mol) {
-        Activator.getDefault().CONSOLE.echo(
+        Activator.getDefault().getJsConsoleManager().print(
             mol.getAtomContainer().toString()
         ); 
     }
@@ -129,7 +129,7 @@ public class CDKDebugManager implements ICDKDebugManager {
             try {
                 type = cdkMatcher.findMatchingAtomType(ac, atom);
             } catch ( CDKException e ) {}
-            Activator.getDefault().CONSOLE.echo(
+            Activator.getDefault().getJsConsoleManager().print(
                 (i) + ": " + (type != null ? type.getAtomTypeName() : "null") +
                 "\n" // FIXME: should use NEWLINE here
             );
