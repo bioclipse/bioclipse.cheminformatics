@@ -17,22 +17,23 @@
          	primary="true"/>
 	</extension>
 	
-    <extension point="org.eclipse.ui.popupMenus">
-    <objectContribution
-      id="net.bioclipse.cml.validateCml"
-      objectClass="org.eclipse.core.resources.IFile">
-        <!--visibility>
-           <objectState
-             name="contentTypeId"
-             value="net.bioclipse.contenttypes.cml"/>
-        </visibility-->
-         <action
-           class="net.bioclipse.cml.handlers.CMLValidationHandler"
-           id="net.bioclipse.cml.actions.validateCml"
-           label="Validate CML"
-           menubarPath="additions"> 
-         </action>
-    </objectContribution>
+    <extension
+        point="org.eclipse.ui.commands">
+        <command
+           id="net.bioclipse.cml.handlers.validatecml"
+           defaultHandler="net.bioclipse.cml.handlers.CMLValidationHandler"
+           name="validatecml"/>
+  	</extension>
+
+	<extension 
+  		point="org.eclipse.ui.menus">
+		<menuContribution
+			locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+		    <command
+		    	commandId="net.bioclipse.cml.handlers.validatecml"
+		    	label="Validate CML">
+	       </command>
+		</menuContribution>
    </extension>
     <extension
           point="org.eclipse.wst.xml.core.catalogContributions">

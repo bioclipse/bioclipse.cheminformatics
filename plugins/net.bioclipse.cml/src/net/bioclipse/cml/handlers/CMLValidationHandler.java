@@ -12,26 +12,28 @@ import java.io.IOException;
 
 import net.bioclipse.cml.managers.Activator;
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.ActionDelegate;
 
-public class CMLValidationHandler extends ActionDelegate{
-	public void run(IAction action){
-		  ISelection sel=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
-		  if (sel.isEmpty()==false){
-		      if (sel instanceof IStructuredSelection) {
-		         IStructuredSelection ssel = (IStructuredSelection) sel;
-		         String display;
-				 try {
-					Activator.getDefault().getValidateCMLManager().validate(((IFile)ssel.getFirstElement()));
-				 } catch (IOException e) {
-					throw new RuntimeException(e);
-				 }
-		      }
-		  }		
-	}
+public class CMLValidationHandler extends AbstractHandler{
+    @Override
+    public Object execute( ExecutionEvent event ) throws ExecutionException {
+        ISelection sel=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
+        if (sel.isEmpty()==false){
+            if (sel instanceof IStructuredSelection) {
+               IStructuredSelection ssel = (IStructuredSelection) sel;
+               try {
+                Activator.getDefault().getValidateCMLManager().validate(((IFile)ssel.getFirstElement()));
+               } catch (IOException e) {
+                throw new RuntimeException(e);
+               }
+            }
+        }   
+        return null;
+    }
 }
