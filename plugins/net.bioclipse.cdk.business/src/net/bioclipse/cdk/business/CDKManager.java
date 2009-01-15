@@ -679,6 +679,9 @@ public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
 							 if (c == '$') {
 								 num++;
 								 counterStream.read();
+								 if ( monitor.isCanceled() ) {
+								     throw new OperationCanceledException();
+								 }
 							 }
 						 }
 					 }
@@ -692,6 +695,7 @@ public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
 					 + exception.getMessage(), exception);
 		 }
 		 logger.debug( "numberOfEntriesInSDF took "+(int)((System.nanoTime()-tStart)/1e6)+" to complete");
+		 monitor.done();
 		 return num;
 	 }
 	 private static class Record {
