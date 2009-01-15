@@ -296,8 +296,8 @@ public class CDKManagerTest extends AbstractManagerTest {
     	ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
     	ICDKMolecule molecule2 = cdk.fromSMILES("CCCBr");
     	ICDKMolecule molecule3 = cdk.fromSMILES("C1CCBrC1");
-    	assertTrue(cdk.structureMatches(molecule, molecule2));
-    	Assert.assertFalse(cdk.structureMatches(molecule, molecule3));
+    	assertTrue(cdk.areIsomorphic(molecule, molecule2));
+    	Assert.assertFalse(cdk.areIsomorphic(molecule, molecule3));
    	}
     
     @Test

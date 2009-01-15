@@ -612,7 +612,7 @@ public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
 			throw new RuntimeException(e);
 		}
 	}
-	public boolean structureMatches(ICDKMolecule molecule,
+	public boolean areIsomorphic(ICDKMolecule molecule,
 			ICDKMolecule subStructure) {
 		try {
 			return UniversalIsomorphismTester.isIsomorph(molecule

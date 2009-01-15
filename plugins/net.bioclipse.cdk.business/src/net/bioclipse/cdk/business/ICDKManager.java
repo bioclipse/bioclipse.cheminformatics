@@ -395,7 +395,7 @@ public interface ICDKManager extends IBioclipseManager {
     		                       "checking fingerprints)")
     @Recorded
     @TestMethods("testStructureMatches")
-    public boolean structureMatches( ICDKMolecule molecule1,
+    public boolean areIsomorphic( ICDKMolecule molecule1,
                                         ICDKMolecule molecule2 );
     
 
