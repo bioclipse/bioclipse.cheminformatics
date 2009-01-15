@@ -41,6 +41,8 @@ import net.bioclipse.core.domain.BioList;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.jobs.Job;
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.scripting.business.BioclipseUIJob;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
@@ -701,8 +703,12 @@ public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
 		 int length;
 	 }
 	 public void createSDFileIndex( String path ) {
-		 createSDFileIndex( ResourcePathTransformer.getInstance()
-				 .transform( path ),null );
+		     throw new UnsupportedOperationException(
+		                                "This manager method should not be called");
+	 }
+	 public void createSDFileIndex(IFile file, BioclipseUIJob<?> uiJob) {
+	     throw new UnsupportedOperationException(
+	                                  "This manager method should not be called");
 	 }
 	 public void createSDFileIndex( IFile file , IProgressMonitor monitor) {
 		 if (monitor == null) {

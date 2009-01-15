@@ -28,6 +28,7 @@ import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.scripting.business.BioclipseUIJob;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -488,6 +489,8 @@ public interface ICDKManager extends IBioclipseManager {
     public void createSDFileIndex( String filePath);
     
     public void createSDFileIndex(IFile file, IProgressMonitor monitor);
+    
+    public void createSDFileIndex(IFile file, BioclipseUIJob<?> uiJob);
     /**
      * Reads files and extracts conformers if available.
      * @param path the full path to the file
