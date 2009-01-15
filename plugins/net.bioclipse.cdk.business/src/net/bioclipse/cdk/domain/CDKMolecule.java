@@ -12,26 +12,22 @@
 
 package net.bioclipse.cdk.domain;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.BitSet;
 import java.util.List;
-
-import org.eclipse.ui.views.properties.IPropertySource;
-import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.fingerprint.Fingerprinter;
-import org.openscience.cdk.geometry.GeometryTools;
-import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.io.CMLWriter;
-import org.openscience.cdk.smiles.SmilesGenerator;
-import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.BioObject;
 import net.bioclipse.core.domain.IMolecule;
-import net.bioclipse.core.domain.props.BioObjectPropertySource;
+
+import org.openscience.cdk.fingerprint.Fingerprinter;
+import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.libio.cml.Convertor;
+import org.openscience.cdk.smiles.SmilesGenerator;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
+import org.xmlcml.cml.element.CMLMolecule;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * The CKMolecule wraps an IAtomContainer and is able to cache SMILES
@@ -140,24 +136,10 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
         if (getAtomContainer()==null) throw new BioclipseException("No molecule to " +
         "get CML from!");
 
-        ByteArrayOutputStream bo=new ByteArrayOutputStream();
+        Convertor convertor = new Convertor(true, null);
+        CMLMolecule cmlMol = convertor.cdkAtomContainerToCMLMolecule(getAtomContainer());
 
-        CMLWriter writer=new CMLWriter(bo);
-        try {
-            writer.write(getAtomContainer());
-            writer.close();
-        } catch (CDKException e) {
-            throw new BioclipseException("Could not convert molecule to CML: "
-                    + e.getMessage());
-        } catch (IOException e) {
-            throw new BioclipseException("Could not write molecule to CML: "
-                    + e.getMessage());
-        }
-
-        if (bo==null) throw new BioclipseException("Convert to CML resulted in " +
-        "empty String.");
-
-        return bo.toString();
+        return cmlMol.toXML();
     }
 
     /**
