@@ -7,6 +7,9 @@
  * 
  * Contributors:
  *     Egon Willighagen <egonw@user.sf.net>
+ *     Jonathan Alvarsson <jonalv@user.sf.net> 2009-01-15 Corrected Whitespaces 
+ *                                             tabs and scripts seemed to have
+ *                                             wrecked havoc...
  ******************************************************************************/
 package net.bioclipse.cdkdebug.business;
 import java.io.InputStream;
@@ -29,106 +32,138 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.tools.diff.AtomContainerDiff;
 import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
+
 public class CDKDebugManager implements ICDKDebugManager {
+
     private static final Logger logger = Logger.getLogger(CDKManager.class);
     private static final CDKManager cdk = new CDKManager();
+    
     public void diff(ICDKMolecule mol, ICDKMolecule mol2) {
         Activator.getDefault().getJsConsoleManager().print( 
-            AtomContainerDiff.diff(mol.getAtomContainer(), mol2.getAtomContainer())
+            AtomContainerDiff.diff( mol.getAtomContainer(), 
+                                    mol2.getAtomContainer() )
         ); 
     }
+    
     public void debug(ICDKMolecule mol) {
         Activator.getDefault().getJsConsoleManager().print(
             mol.getAtomContainer().toString()
         ); 
     }
+    
     public String getNamespace() {
         return "cdx";
     }
+   
     public ICDKMolecule perceiveSybylAtomTypes(IMolecule mol)
-    throws InvocationTargetException {
+                        throws InvocationTargetException {
+        
         ICDKMolecule cdkmol;
+        
         try {
             cdkmol = cdk.create(mol);
-        } catch (BioclipseException e) {
+        } 
+        catch (BioclipseException e) {
             System.out.println("Error converting cdk10 to cdk");
             e.printStackTrace();
             throw new InvocationTargetException(e);
         }
+        
         IAtomContainer ac = cdkmol.getAtomContainer();
-        CDKAtomTypeMatcher cdkMatcher = CDKAtomTypeMatcher.getInstance(ac
-                                                                       .getBuilder());
-        AtomTypeMapper mapper = AtomTypeMapper
-        .getInstance("org/openscience/cdk/dict/data/cdk-sybyl-mappings.owl");
-        InputStream iStream = org.openscience.cdk.atomtype.Activator.class.getResourceAsStream("/org/openscience/cdk/dict/data/sybyl-atom-types.owl");
-        AtomTypeFactory factory = AtomTypeFactory.getInstance(iStream, "owl", ac
-                                                              .getBuilder());
+        CDKAtomTypeMatcher cdkMatcher 
+            = CDKAtomTypeMatcher.getInstance(ac.getBuilder());
+        AtomTypeMapper mapper 
+            = AtomTypeMapper.getInstance(
+                 "org/openscience/cdk/dict/data/cdk-sybyl-mappings.owl" );
+        InputStream iStream 
+            = org.openscience.cdk.atomtype.Activator.class.getResourceAsStream(
+                 "/org/openscience/cdk/dict/data/sybyl-atom-types.owl");
+        AtomTypeFactory factory 
+            = AtomTypeFactory.getInstance( iStream, "owl", ac.getBuilder() );
+        
         IAtomType[] sybylTypes = new IAtomType[ac.getAtomCount()];
+        
         int atomCounter = 0;
         int a=0;
         for (IAtom atom : ac.atoms()) {
-        	IAtomType type;
-			try {
-				type = cdkMatcher.findMatchingAtomType(ac, atom);
-			} catch (CDKException e) {
-				type = null;
-			}
-        	if (type==null){
-        		logger.debug("AT null for atom: " + atom);
-        		type = atom.getBuilder().newAtomType(atom.getSymbol());
-        		type.setAtomTypeName("X");
-        	}
-        	AtomTypeManipulator.configure(atom, type);
-        	a++;
+            IAtomType type;
+            try {
+                type = cdkMatcher.findMatchingAtomType(ac, atom);
+            } 
+            catch (CDKException e) {
+                type = null;
+            }
+            if (type==null) {
+                logger.debug("AT null for atom: " + atom);
+                type = atom.getBuilder().newAtomType(atom.getSymbol());
+                type.setAtomTypeName("X");
+            }
+            AtomTypeManipulator.configure(atom, type);
+            a++;
         }
         try {
-			System.out.println("Arom: "
-					+ CDKHueckelAromaticityDetector.detectAromaticity(ac));
-		} catch (CDKException e) {
-			logger.debug("Failed to perceive aromaticity: " + e.getMessage());
-		}
+            System.out.println("Arom: " 
+                + CDKHueckelAromaticityDetector.detectAromaticity(ac) );
+		    } 
+        catch (CDKException e) {
+			    logger.debug("Failed to perceive aromaticity: " + e.getMessage());
+		    }
         for (IAtom atom : ac.atoms()) {
-        	String mappedType = mapper.mapAtomType(atom.getAtomTypeName());
-        	if ("C.2".equals(mappedType)
-        			&& atom.getFlag(CDKConstants.ISAROMATIC)) {
-        		mappedType = "C.ar";
-        	} else if ("N.pl3".equals(mappedType)
-        			&& atom.getFlag(CDKConstants.ISAROMATIC)) {
-        		mappedType = "N.ar";
-        	}
-        	try {
-				sybylTypes[atomCounter] = factory.getAtomType(mappedType);
-			} catch (NoSuchAtomTypeException e) {
-				sybylTypes[atomCounter] = null; // yes, setting null's here is important
-			}
-        	atomCounter++;
+            String mappedType = mapper.mapAtomType(atom.getAtomTypeName());
+            if ("C.2".equals(mappedType)
+                    && atom.getFlag(CDKConstants.ISAROMATIC)) {
+                mappedType = "C.ar";
+            } 
+            else if ("N.pl3".equals(mappedType)
+                    && atom.getFlag(CDKConstants.ISAROMATIC)) {
+                mappedType = "N.ar";
+            }
+            try {
+                sybylTypes[atomCounter] = factory.getAtomType(mappedType);
+		        } 
+            catch (NoSuchAtomTypeException e) {
+                // yes, setting null's here is important
+                sybylTypes[atomCounter] = null; 
+			      }
+            atomCounter++;
         }
         // now that full perception is finished, we can set atom type names:
         for (int i = 0; i < sybylTypes.length; i++) {
-        	if (sybylTypes[i] != null) {
-        		ac.getAtom(i).setAtomTypeName(sybylTypes[i].getAtomTypeName());
-        	} else {
-        		ac.getAtom(i).setAtomTypeName("X");
-        	}
+            if (sybylTypes[i] != null) {
+                ac.getAtom(i).setAtomTypeName(sybylTypes[i].getAtomTypeName());
+            } 
+            else {
+                ac.getAtom(i).setAtomTypeName("X");
+            }
         }
         return cdkmol;
     }
-    public void perceiveCDKAtomTypes(IMolecule mol) throws InvocationTargetException {
+    
+    public void perceiveCDKAtomTypes(IMolecule mol) 
+                throws InvocationTargetException {
+        
         ICDKMolecule cdkmol;
+        
         try {
             cdkmol = cdk.create(mol);
-        } catch ( BioclipseException e ) {
+        } 
+        catch ( BioclipseException e ) {
             e.printStackTrace();
-            throw new InvocationTargetException(e, "Error while creating a ICDKMolecule");
+            throw new InvocationTargetException(
+                          e, "Error while creating a ICDKMolecule" );
         }
+        
         IAtomContainer ac = cdkmol.getAtomContainer();
-        CDKAtomTypeMatcher cdkMatcher = CDKAtomTypeMatcher.getInstance(ac.getBuilder());
+        CDKAtomTypeMatcher cdkMatcher 
+            = CDKAtomTypeMatcher.getInstance(ac.getBuilder());
+        
         int i = 1;
         for (IAtom atom : ac.atoms()) {
             IAtomType type = null;
             try {
                 type = cdkMatcher.findMatchingAtomType(ac, atom);
-            } catch ( CDKException e ) {}
+            } 
+            catch ( CDKException e ) {}
             Activator.getDefault().getJsConsoleManager().print(
                 (i) + ": " + (type != null ? type.getAtomTypeName() : "null") +
                 "\n" // FIXME: should use NEWLINE here
