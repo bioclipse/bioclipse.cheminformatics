@@ -14,13 +14,16 @@ package net.bioclipse.cdk.jchempaint.editor;
 import java.awt.Color;
 import java.util.Iterator;
 
+import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.outline.CDKChemObject;
 import net.bioclipse.cdk.jchempaint.outline.JCPOutlinePage;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
+import net.bioclipse.core.business.BioclipseException;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
@@ -43,6 +46,7 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.IControllerModel;
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -63,14 +67,28 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
     SWTMouseEventRelay relay;
     Menu menu;
 
+
     public JChemPaintEditorWidget getWidget() {
     	return widget;
     }
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		// TODO Auto-generated method stub
 
+		try {
+            Activator.getDefault().getCDKManager().saveMolecule( model );
+            dirty = false;
+            firePropertyChange( IEditorPart.PROP_DIRTY );
+        } catch ( BioclipseException e ) {
+            monitor.isCanceled();
+            logger.debug( "Failed to save file "+e.getMessage() );
+        } catch ( CDKException e ) {
+            monitor.isCanceled();
+            logger.debug( "Failed to save file "+e.getMessage() );
+        } catch ( CoreException e ) {
+            monitor.isCanceled();
+            logger.debug( "Failed to save file "+e.getMessage() );
+        }
 	}
 
 	@Override
