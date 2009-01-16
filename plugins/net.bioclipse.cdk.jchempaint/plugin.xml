@@ -9,16 +9,13 @@
             icon="icons/editor/triangle.gif"
             id="net.bioclipse.cdk.ui.editors.jchempaint"
             name="JChemPaintEditor">
-         <contentTypeBinding
-               contentTypeId="net.bioclipse.contenttypes.cml.singleMolecule2d">
-         </contentTypeBinding>
       </editor>
       <editor
             class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
             default="true"
             icon="icons/doc_mol_2d.png"
-            id="net.bioclipse.cdk.ui.editors.jchempaint.MDLMolfileEditor"
-            name="MDLMolfileEditor 1.2">
+            id="net.bioclipse.cdk.ui.editors.jchempaint"
+            name="MDLMolfileEditor">
          <contentTypeBinding
                contentTypeId="net.bioclipse.contenttypes.mdlMolFile2D">
          </contentTypeBinding>
@@ -27,8 +24,8 @@
             class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
             default="true"
             icon="icons/doc_mol_2d.png"
-            id="net.bioclipse.cdk.ui.editors.jchempaint.CMLfileEditor"
-            name="CMLfileEditor 1.2">
+            id="net.bioclipse.cdk.ui.editors.jchempaint"
+            name="CMLfileEditor">
          <contentTypeBinding
                contentTypeId="net.bioclipse.contenttypes.cml.singleMolecule2d">
          </contentTypeBinding>
@@ -234,7 +231,7 @@
        </toolbar>
     </menuContribution>
     <menuContribution
-          locationURI="popup:net.bioclipse.cdk.ui.editors.jchempaint.menu">
+          locationURI="popup:net.bioclipse.cdk.ui.editors.jchempaint">
        <menu
              label="Change Element">
           <menu
@@ -455,7 +452,7 @@
               variable="activeEditorId">
            <or>
               <equals
-                    value="net.bioclipse.cdk.ui.editors.jchempaint.MDLMolfileEditor">
+                    value="net.bioclipse.cdk.ui.editors.jchempaint">
               </equals>
               <equals
                     value="net.bioclipse.contenttypes.cml.singleMolecule2d">
