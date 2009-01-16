@@ -21,8 +21,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PlatformUI;
 
 public class CMLValidationHandler extends AbstractHandler{
-    @Override
-    public Object execute( ExecutionEvent event ) throws ExecutionException {
+
+	public Object execute( ExecutionEvent event ) throws ExecutionException {
         ISelection sel=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
         if (sel.isEmpty()==false){
             if (sel instanceof IStructuredSelection) {
