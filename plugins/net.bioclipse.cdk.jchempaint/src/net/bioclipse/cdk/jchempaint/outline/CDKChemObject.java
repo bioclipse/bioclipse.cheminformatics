@@ -18,8 +18,8 @@ import org.openscience.cdk.interfaces.IChemObject;
 
 /**
  * Wraps an IChemObject as GUI object
- * 
- * 
+ *
+ *
  * @author ola
  *
  */
@@ -30,7 +30,7 @@ public class CDKChemObject extends BioObject implements IBioObject{
     private String name;
 
     private IPropertySource propSource;
-    
+
     /**
      * Used to look up e.g. the molecule of an Atom
      */
@@ -70,6 +70,7 @@ public class CDKChemObject extends BioObject implements IBioObject{
         this.parentChemobj = parentChemobj;
     }
 
+    @SuppressWarnings("unchecked")
     public Object getAdapter(Class adapter) {
         if (adapter ==IPropertySource.class){
             if (propSource ==null){

@@ -17,10 +17,6 @@ package net.bioclipse.cdk.jchempaint.widgets;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.vecmath.Point2d;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -34,7 +30,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.openscience.cdk.geometry.GeometryTools;
-import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.IJava2DRenderer;
 import org.openscience.cdk.renderer.RendererModel;
@@ -46,7 +41,7 @@ public class JChemPaintSWTWidget extends Canvas {
     
     private SWTRenderer renderer;
     private IAtomContainer molecule;
-    private Map<IAtom,Point2d> coordinates=new HashMap<IAtom,Point2d>();
+    
     protected boolean generated = false;
     private final static int compactSize = 200;
     boolean notSet = true;
@@ -147,24 +142,18 @@ public class JChemPaintSWTWidget extends Canvas {
     private void paintControl(PaintEvent event) {
         if(notSet)
             updateOnReize( new Dimension(this.getSize().x,this.getSize().y) );
-      int x = 0,y = 0;
+      int y = 0;
       
       if(generated ){
           String text = "Generated from 3D coordinates";
           // FIXME : dispose font
           event.gc.setFont( new Font(event.gc.getDevice(),"Arial",34,SWT.NORMAL) );
           Point p = event.gc.textExtent( text );
-          Point p2 = JChemPaintSWTWidget.this.getSize();
-          x = p.x;
+         
           y = p.y;
-//          x = p2.x - p.x;
-//          y = p2.y - p.y;
-//          x/=2;
-//          y/=2;
+       
           event.gc.setForeground( new org.eclipse.swt.graphics.Color( 
                                             event.gc.getDevice(),220,220,255) );
-          
-          
           event.gc.drawText( text,0,0);
       }          
     	renderer.paintMolecule(molecule,event.gc,

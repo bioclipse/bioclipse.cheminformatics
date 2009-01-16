@@ -12,7 +12,6 @@
 package net.bioclipse.cdk.jchempaint.editor;
 
 import java.awt.Color;
-import java.lang.reflect.Method;
 import java.util.Iterator;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -26,18 +25,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -46,7 +40,6 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
-import org.eclipse.ui.services.IDisposable;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.IControllerModel;
@@ -192,6 +185,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
         return model;
     }
 
+    @SuppressWarnings("unchecked")
     public Object getAdapter(Class adapter) {
         if (IContentOutlinePage.class.equals(adapter)) {
             if (fOutlinePage == null) {
@@ -205,41 +199,6 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
         return super.getAdapter(adapter);
     }
 
-    protected MenuItem createMenuItem( Menu parent, int style, String text,
-                                       Image icon, int accel, boolean enabled,
-                                       String callback) {
-        MenuItem mi = new MenuItem(parent, style);
-        if (text != null) {
-            mi.setText(text);
-        }
-        if (icon != null) {
-            mi.setImage(icon);
-        }
-        if (accel != -1) {
-            mi.setAccelerator(accel);
-        }
-        mi.setEnabled(enabled);
-        if (callback != null) {
-            registerCallback(mi, this, callback);
-        }
-        return mi;
-    }
-
-    protected void registerCallback(final MenuItem mi,
-                                    final Object handler,
-                                    final String handlerName) {
-        mi.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                try {
-                    Method m = handler.getClass().getMethod(handlerName, null);
-                    m.invoke(handler, null);
-                }
-                catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
-    }
     public void doAddAtom() {
 
         logger.debug( "Executing 'Add atom' action" );

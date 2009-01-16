@@ -14,7 +14,6 @@ package net.bioclipse.cdk.jchempaint.handlers;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import net.bioclipse.cdk.jchempaint.business.IJChemPaintManager;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
@@ -53,7 +52,7 @@ public class ChangeModuleHandler extends AbstractJChemPaintHandler {
         Integer value = (intString != null ? new Integer(intString):null);
         String boolString = event.getParameter( "jcp.controller.param.boolean" );
         Boolean bool = boolString != null ?new Boolean(boolString):null;
-        Class<IJChemPaintManager> cl = IJChemPaintManager.class;
+        
         try {
             
             Class<?> cls = Class.forName( "org.openscience.cdk.controller."

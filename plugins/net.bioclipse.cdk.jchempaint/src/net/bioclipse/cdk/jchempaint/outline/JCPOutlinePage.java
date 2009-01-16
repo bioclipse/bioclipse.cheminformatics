@@ -84,6 +84,7 @@ public class JCPOutlinePage extends ContentOutlinePage
         return CONTRIBUTOR_ID;
     }
 
+    @SuppressWarnings("unchecked")
     public Object getAdapter(Class adapter) {
         // TODO Auto-generated method stub
         return null;

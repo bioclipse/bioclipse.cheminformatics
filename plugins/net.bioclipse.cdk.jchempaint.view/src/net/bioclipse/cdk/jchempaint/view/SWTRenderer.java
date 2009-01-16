@@ -14,14 +14,10 @@ import javax.vecmath.Vector2d;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.AtomSymbolElement;
 import org.openscience.cdk.renderer.elements.ElementGroup;
@@ -112,11 +108,13 @@ public class SWTRenderer implements IRenderingVisitor{
 
     public void visit( LineElement element ) {
         Color colorOld = gc.getBackground();
+        int oldLineWidth = gc.getLineWidth();
         // init recursion with background to get the first draw with foreground
         gc.setForeground( toSWTColor( gc, element.color ));
         gc.setLineWidth( (int)element.width );
         drawLine( element );
 
+        gc.setLineWidth( oldLineWidth );
         gc.setBackground( colorOld);
     }
 
@@ -204,20 +202,6 @@ public class SWTRenderer implements IRenderingVisitor{
         path.lineTo( (float)p2[0], (float)p2[1] );
        gc.drawPath( path );
        path.dispose();
-    }
-
-    private void drawLineX(LineElement element, int val) {
-        if(val <= 0) return; // end recursion if less than 1
-        int width = (int) (element.width*val+element.width*(val-1)+.5);
-        // switch foreground and background
-        if(!gc.getForeground().equals( getBackgroundColor() ))
-            gc.setForeground( getBackgroundColor() );
-        else
-            gc.setForeground( toSWTColor( gc, element.color ) );
-        gc.setLineWidth( width );
-        drawLine(element);
-
-        drawLineX(element, val-1);
     }
 
     private Font getFont() {
@@ -354,6 +338,7 @@ public class SWTRenderer implements IRenderingVisitor{
 //    }
 
     public void visit( RectangleElement element ) {
+
         if(element.filled) {
             gc.setBackground( toSWTColor( gc, element.color ) );
             gc.fillRectangle( transformX(element.x), transformY(element.y),
