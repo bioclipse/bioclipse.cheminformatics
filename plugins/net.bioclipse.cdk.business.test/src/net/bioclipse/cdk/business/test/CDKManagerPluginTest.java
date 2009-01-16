@@ -477,14 +477,15 @@ public class CDKManagerPluginTest {
         ICDKMolecule mol1=cdk.fromSMILES("CCC");
         ICDKMolecule mol2=cdk.fromSMILES("C1CCCCC1CCO");
         
+        String longStringValue="[(42/593;0.11804384485666104), (3/5;1.0), (9/560;0.026785714285714284), (0/2;0.0), (0/1;0.0), (0/0;0.0), (0/0;0.0), (0/0;0.0), (0/0;0.0), (0/0;0.0), (0/0;0.0), (0/0;0.0), (2/80;0.04166666666666667), (35/492;0.11856368563685638), (29/466;0.10371959942775394), (49/484;0.16873278236914602), (2/810;0.00411522633744856), (2/810;0.00411522633744856), (39/111;0.5855855855855856), (35/109;0.5351681957186545), (1/260;0.006410256410256411), (1/192;0.008680555555555556), (41/101;0.6765676567656767), (35/95;0.6140350877192983), (1/340;0.004901960784313725), (1/340;0.004901960784313725), (1/175;0.009523809523809525), (0/0;0.0), (2/1066;0.0031269543464665416), (0/0;0.0), (4/261;0.02554278416347382)]        ";
         mol1.getAtomContainer().setProperty("wee", "how");
-        mol2.getAtomContainer().setProperty("santa", "claus");
+        mol2.getAtomContainer().setProperty("santa", longStringValue);
+        
         
         List<IMolecule> mols=new ArrayList<IMolecule>();
         mols.add(mol1);
         mols.add(mol2);
         
-        //FIXME: needs porting to PLUGIN I/O from URL not IMockFile
         String virtualPath="/Virtual/testSaveMoleculesSDFtoTEMPwithProps.cml";
         cdk.saveMolecules(mols, virtualPath, ICDKManager.sdf);
         
@@ -511,7 +512,7 @@ public class CDKManagerPluginTest {
         	if (cdkmol.getAtomContainer().getAtomCount()==3){
             	assertEquals("how", cdkmol.getAtomContainer().getProperty("wee"));
         	}else{
-            	assertEquals("claus", cdkmol.getAtomContainer().getProperty("santa"));
+            	assertEquals(longStringValue, cdkmol.getAtomContainer().getProperty("santa"));
         	}
         }
         
