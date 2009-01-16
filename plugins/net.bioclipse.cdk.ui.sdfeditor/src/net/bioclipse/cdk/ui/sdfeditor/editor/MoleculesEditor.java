@@ -83,8 +83,12 @@ public class MoleculesEditor extends EditorPart implements
 
 	private MoleculeTableContentProvider contentProvider;
 
+	private MoleculeTableViewer molTableViewer;
+    public MoleculeTableViewer getMolTableViewer() {
+		return molTableViewer;
+	}
 
-    public MoleculeTableContentProvider getContentProvider() {
+	public MoleculeTableContentProvider getContentProvider() {
 		return contentProvider;
 	}
 
@@ -174,7 +178,7 @@ public class MoleculesEditor extends EditorPart implements
         contentProvider= new MoleculeTableContentProvider();
 
 
-        MoleculeTableViewer molTableViewer = 
+        molTableViewer = 
             new MoleculeTableViewer(parent,SWT.NONE);
 
         molTableViewer.setLabelProvider( labelProvider );
