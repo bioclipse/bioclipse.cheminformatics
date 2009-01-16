@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.WorkbenchJob;
 
-
+@Deprecated 
 public class MoleculeTable extends Composite {
     public final static int STRUCTURE_COLUMN_WIDTH = 200;
 
