@@ -14,9 +14,6 @@
 package net.bioclipse.cdk.business.test;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -42,6 +39,7 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdkdebug.business.CDKDebugManager;
 import net.bioclipse.cdkdebug.business.ICDKDebugManager;
 import net.bioclipse.core.MockIFile;
+import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IMoleculeManager;
 import net.bioclipse.core.business.MoleculeManager;
@@ -487,12 +485,15 @@ public class CDKManagerPluginTest {
         mols.add(mol2);
         
         //FIXME: needs porting to PLUGIN I/O from URL not IMockFile
-        IFile target=new MockIFile();
-        cdk.saveMolecules(mols, target, ICDKManager.sdf);
-
+        String virtualPath="/Virtual/testSaveMoleculesSDFtoTEMPwithProps.cml";
+        cdk.saveMolecules(mols, virtualPath, ICDKManager.sdf);
+        
+        //For debug output
+        System.out.println("#############################################");
+        IFile target=ResourcePathTransformer.getInstance().transform(virtualPath);
+        assertNotNull(target);
         BufferedReader reader=new BufferedReader(new InputStreamReader(target.getContents()));
 
-        System.out.println("#############################################");
         String line=reader.readLine();
         while(line!=null){
         	System.out.println(line);
@@ -500,7 +501,8 @@ public class CDKManagerPluginTest {
         }
         System.out.println("#############################################");
         
-        List<ICDKMolecule> readmols = cdk.loadMolecules(target);
+        //So, load back again
+        List<ICDKMolecule> readmols = cdk.loadMolecules(virtualPath);
         assertEquals(2, readmols.size());
 
     	System.out.println("** Reading back created SDFile: ");
@@ -579,6 +581,40 @@ public class CDKManagerPluginTest {
         System.out.println("#############################################");
         
         List<ICDKMolecule> readmols = cdk.loadMolecules(target);
+    	System.out.println("** Reading back created CML File: ");
+        for (ICDKMolecule cdkmol : readmols){
+        	System.out.println("  - SMILES: " + cdk.calculateSMILES(cdkmol));
+        	if (cdkmol.getAtomContainer().getAtomCount()==3){
+            	assertEquals("how", cdkmol.getAtomContainer().getProperty("wee"));
+        	}else{
+            	assertEquals("claus", cdkmol.getAtomContainer().getProperty("santa"));
+        	}
+        }
+        
+        System.out.println("*************************");
+        
+    }
+    
+    @Test
+    public void testSaveMoleculesCMLtoTEMPwithProps() throws BioclipseException, CDKException, CoreException, IOException {
+
+        System.out.println("*************************");
+        System.out.println("testSaveMoleculesCMLwithProps()");
+
+        ICDKMolecule mol1=cdk.fromSMILES("CCC");
+        ICDKMolecule mol2=cdk.fromSMILES("C1CCCCC1CCO");
+        
+        mol1.getAtomContainer().setProperty("wee", "how");
+        mol2.getAtomContainer().setProperty("santa", "claus");
+        
+        List<IMolecule> mols=new ArrayList<IMolecule>();
+        mols.add(mol1);
+        mols.add(mol2);
+
+        String vitualPath="/Virtual/testSaveMoleculesCMLtoTEMPwithProps.cml";
+        cdk.saveMolecules(mols, vitualPath, ICDKManager.cml);
+
+        List<ICDKMolecule> readmols = cdk.loadMolecules(vitualPath);
     	System.out.println("** Reading back created CML File: ");
         for (ICDKMolecule cdkmol : readmols){
         	System.out.println("  - SMILES: " + cdk.calculateSMILES(cdkmol));
@@ -767,7 +803,7 @@ public class CDKManagerPluginTest {
         try {
             chemFile=(IChemFile)reader.read(chemFile);
         } catch (CDKException e) {
-        	e.printStackTrace();
+        	fail(e.getMessage());
         }
 
     }
