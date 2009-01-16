@@ -469,6 +469,17 @@ public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
 
 
 	/**
+	 * Delegate to IFile via ResourcePathTransformer
+	 */
+	public void saveMolecules(List<? extends IMolecule> molecules, String path,
+			String filetype) throws BioclipseException, CDKException,
+			CoreException {
+		
+		saveMolecules(molecules, ResourcePathTransformer.getInstance().transform(path), filetype);
+		
+	}
+
+	/**
 	 * Save a list of molecules in SDF or CML
 	 */
 	public void saveMolecules(List<? extends IMolecule> molecules, IFile target, String filetype)

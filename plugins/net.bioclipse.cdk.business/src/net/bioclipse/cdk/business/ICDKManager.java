@@ -305,6 +305,19 @@ public interface ICDKManager extends IBioclipseManager {
     public void saveMolecules(List<? extends IMolecule> molecules, IFile target, String filetype)
     	throws BioclipseException, CDKException, CoreException;
 
+    /**
+     * Save a list of molecules to file
+     * @param molecules The molecules to save
+     * @param path Path to file to save to
+     * @param filetype either CML or SDF
+     * @throws BioclipseException
+     * @throws CDKException
+     * @throws CoreException
+     */
+    @Recorded
+    public void saveMolecules(List<? extends IMolecule> molecules, String path, String filetype)
+    	throws BioclipseException, CDKException, CoreException;
+
 
     /**
      * @param model The ChemModel to save
