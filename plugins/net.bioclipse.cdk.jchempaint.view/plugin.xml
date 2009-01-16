@@ -3,28 +3,17 @@
 <plugin>
    <extension
          point="org.eclipse.ui.views">
-      <view
-            category="net.bioclipse.cdk.category"
-            class="net.bioclipse.cdk.jchempaint.view.Java2DRendererView"
-            icon="icons/doc_mol_2d.png"
-            id="net.bioclipse.cdk.jchempaint.view.molecule"
-            name="JChemPaintView"
-            restorable="true">
-      </view>
-   </extension>
-   <extension
-         point="org.eclipse.ui.views">
       <category
             id="net.bioclipse.cdk.category"
             name="Chemoinformatics">
       </category>
       <view
             category="net.bioclipse.cdk.category"
-            class="net.bioclipse.cdk.jchempaint.view.Java2DRendererView"
+            class="net.bioclipse.cdk.jchempaint.view.JChemPaintView"
             icon="icons/doc_mol_2d.png"
             id="net.bioclipse.cdk.ui.view.Java2DRendererView"
             name="2D-Structure"
-            restorable="false">
+            restorable="true">
       </view>
    </extension>
 

@@ -57,7 +57,7 @@ public class JChemPaintWidget extends Canvas {
                 disposeView();
             }
         });
-        setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
+        
         fontManager = new SWTFontManager(this.getDisplay());
         currentTransform = new Transform(getDisplay());
         renderer2DModel = new RendererModel();
@@ -95,8 +95,10 @@ public class JChemPaintWidget extends Canvas {
 
     private void paintControl( PaintEvent event ) {
         drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
-        if ( atomContainer == null )
+        if ( atomContainer == null ) {
+            setBackground( getParent().getBackground() );
             return;
+        } else setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
         renderer.setBounds( new Rectangle2D.Double(margin,margin,this.getSize().x-margin*2,this.getSize().y-margin*2 ));
 
         SWTRenderer visitor = new SWTRenderer( event.gc,fontManager, renderer2DModel);

@@ -26,8 +26,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -43,6 +46,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.services.IDisposable;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.IControllerModel;
@@ -64,7 +68,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
     JChemPaintEditorWidget widget;
     IControllerModel c2dm;
     SWTMouseEventRelay relay;
-    
+    Menu menu;
+
     public JChemPaintEditorWidget getWidget() {
     	return widget;
     }
@@ -138,11 +143,12 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
 
 		MenuManager menuMgr = new MenuManager();
 	  menuMgr.add( new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-	  getSite().registerContextMenu( "net.bioclipse.cdk.ui.editors.jchempaint.menu",
-	                                 menuMgr, widget);
+	  getSite().registerContextMenu( menuMgr, widget);
+	  //getSite().registerContextMenu( "net.bioclipse.cdk.ui.editors.jchempaint.menu",
+	    //                             menuMgr, widget);
 
 	  //Control control = lViewer.getControl();
-	  Menu menu = menuMgr.createContextMenu(widget);
+	  menu = menuMgr.createContextMenu(widget);
 	  widget.setMenu(menu);
 
 
@@ -150,6 +156,13 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
 		getSite().setSelectionProvider( widget );
 		getSite().getPage().addSelectionListener(this);
 		widget.setAtomContainer( atomContainer );
+
+		parent.addDisposeListener( new DisposeListener () {
+
+            public void widgetDisposed( DisposeEvent e ) {
+                disposeControll( e );
+            }
+		});
 
 	}
 
@@ -185,6 +198,9 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
                 fOutlinePage= new JCPOutlinePage(getEditorInput(), this);
             }
             return fOutlinePage;
+        }
+        if (IAtomContainer.class.equals( adapter )) {
+            return model.getAtomContainer();
         }
         return super.getAdapter(adapter);
     }
@@ -258,5 +274,17 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
             }
         }
 
+    }
+
+    private void disposeControll(DisposeEvent e) {
+        // TODO remove regiistration?
+        //getSite().registerContextMenu( "net.bioclipse.cdk.ui.editors.jchempaint.menu",
+        //                               menuMgr, widget);
+
+        getSite().setSelectionProvider( null );
+        getSite().getPage().removeSelectionListener( this );
+
+        widget.dispose();
+        menu.dispose();
     }
 }
