@@ -24,6 +24,7 @@ import net.bioclipse.core.business.BioclipseException;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
@@ -53,6 +54,7 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
 import org.openscience.cdk.interfaces.IChemObjectListener;
+import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 public class JChemPaintEditor extends EditorPart implements ISelectionListener{
 
@@ -228,29 +230,38 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
     public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
         if(part != null && part.equals( this )) return;
         if(selection instanceof IStructuredSelection) {
-            Object structSel = ((IStructuredSelection)selection).getFirstElement();
 
-            if (structSel instanceof CDKChemObject && ((CDKChemObject)structSel).getChemobj() instanceof IChemObject) {
-                IAtomContainer container = ((CDKChemObject)structSel).getChemobj().getBuilder().newAtomContainer();
-                for(Iterator<?> iter =((IStructuredSelection)selection).iterator();iter.hasNext();) {
-                    Object c = iter.next();
-                    if(! (c instanceof CDKChemObject)) {
-                        continue;
-                    }
-                    IChemObject o = ((CDKChemObject)c).getChemobj();
-                    if(o instanceof IAtom) {
-                        container.addAtom( (IAtom)o );
-                    }else if( o instanceof IBond) {
-                        container.addBond( (IBond)o);
-                    }
 
+            IAtomContainer container = null;
+
+            for(Iterator<?> iter =((IStructuredSelection)selection).iterator();iter.hasNext();) {
+                Object c = iter.next();
+                if(! (c instanceof CDKChemObject)) {
+                    continue;
                 }
+
+                IChemObject o = ((CDKChemObject)c).getChemobj();
+                if(container == null )
+                    container = o.getBuilder().newAtomContainer();
+                if(o instanceof IAtom) {
+                    container.addAtom( (IAtom)o );
+                }else if( o instanceof IBond) {
+                    container.addBond( (IBond)o);
+                }
+            }
+
+            if(container!= null) {
                 widget.getRenderer2DModel().setExternalHighlightColor( Color.ORANGE );
-                widget.getRenderer2DModel().setExternalSelectedPart( container );
+                widget.getRenderer2DModel().setExternalSelectedPart(container);
+                widget.redraw();
+            } else {
+                widget.getRenderer2DModel().setExternalSelectedPart(
+                                                                    model.getAtomContainer()
+                                                                    .getBuilder().newAtomContainer());
                 widget.redraw();
             }
-        }
 
+        }
     }
 
     private void disposeControll(DisposeEvent e) {
