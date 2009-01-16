@@ -37,7 +37,6 @@ public class Create2dHandler extends AbstractHandler {
                                                        .getLogger( Create2dHandler.class );
     public int                  answer;
 
-    @Override
     public Object execute( ExecutionEvent event ) throws ExecutionException {
 
         ISelection sel =
