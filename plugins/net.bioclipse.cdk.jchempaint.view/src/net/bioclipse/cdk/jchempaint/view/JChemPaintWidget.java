@@ -57,7 +57,8 @@ public class JChemPaintWidget extends Canvas {
             }
         });
         
-        fontManager = new SWTFontManager(this.getDisplay());
+        fontManager = new SWTFontManager(this.getDisplay(),
+                              new java.awt.Font("Arial",java.awt.Font.PLAIN,9));
         currentTransform = new Transform(getDisplay());
         renderer2DModel = new RendererModel();
         renderer2DModel.setAtomRadius( 20 );
