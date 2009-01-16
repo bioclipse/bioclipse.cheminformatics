@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+
 import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -53,7 +54,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ChemModel;
 import org.openscience.cdk.ConformerContainer;
@@ -464,7 +464,7 @@ public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
 			CDKException, CoreException {
 		if(filename.indexOf("."+filetype)==-1)
 			filename=filename+"."+filetype;
-		saveMolecule(mol, ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(filename)),CDKManager.mol, overwrite);
+		saveMolecule(mol, ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(filename)),filetype, overwrite);
 	}
 
 
