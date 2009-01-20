@@ -4,7 +4,7 @@
       label="Bioclipse Chemoinformatics"
       version="2.0.0.A20081121"
       provider-name="The Bioclipse Team"
-      plugin="net.bioclipse.cdk.ui">
+      plugin="net.bioclipse.chemoinformatics">
 
    <description>
       Chemoinformatics functionality for Bioclipse, mainly based on Chemistry Development Kit (CDK).

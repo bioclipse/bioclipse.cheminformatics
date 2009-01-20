@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Bioclipse Chemoinformatics
+Bundle-Name: CDK Plugin
 Bundle-SymbolicName: net.bioclipse.cdk.ui;singleton:=true
 Bundle-Version: 2.0.0.B20090123
 Bundle-Activator: net.bioclipse.cdk.ui.Activator

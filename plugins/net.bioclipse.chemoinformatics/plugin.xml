@@ -44,4 +44,12 @@
       </wizard>
    </extension>
 
+   <extension point="org.eclipse.ui.perspectives">
+      <perspective name="Chemoinformatics"
+          class="net.bioclipse.chemoinformatics.ChemoinformaticsPerspective"
+          id="net.bioclipse.chemoinformatics.ChemoinformaticsPerspective"
+          icon="icons/molecule3D.png">
+      </perspective>
+   </extension>
+
 </plugin>
