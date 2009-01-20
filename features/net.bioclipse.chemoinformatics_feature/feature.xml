@@ -2,7 +2,7 @@
 <feature
       id="net.bioclipse.chemoinformatics_feature"
       label="Bioclipse Chemoinformatics"
-      version="2.0.0.A20081121"
+      version="2.0.0.B20090123"
       provider-name="The Bioclipse Team"
       plugin="net.bioclipse.chemoinformatics">
 
@@ -38,7 +38,7 @@ http://www.eclipse.org/legal/epl-v10.html
    </url>
 
    <requires>
-      <import feature="net.bioclipse_feature" version="2.0.0.A20081121" match="greaterOrEqual"/>
+      <import feature="net.bioclipse_feature" version="2.0.0.B20090123" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -400,13 +400,6 @@ http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="net.bioclipse.chemoinformatics"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="net.bioclipse.cdk.jchempaint"
          download-size="0"
          install-size="0"
          version="0.0.0"
