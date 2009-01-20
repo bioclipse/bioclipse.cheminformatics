@@ -11,8 +11,12 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources,
  net.bioclipse.cdk.business,
  net.bioclipse.core,
- org.eclipse.ui.console;bundle-version="3.3.0"
+ org.eclipse.ui.console,
+ org.eclipse.core.variables,
+ org.eclipse.core.runtime.compatibility.auth
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.log4j;version="1.2.15"
-Export-Package: net.bioclipse.chemoinformatics.contentlabelproviders
+Export-Package: net.bioclipse.chemoinformatics.contentlabelproviders,
+ net.bioclipse.chemoinformatics.wizards,
+ net.bioclipse.chemoinformatics
