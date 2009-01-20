@@ -28,19 +28,23 @@
             id="net.bioclipse.cdk.ChemistryFiles"
             name="Chemistry Files"/>
       <wizard
-            class="net.bioclipse.chemoinformatics.wizards.NewMDLMolfileWizard"
-            id="net.bioclipse.chemoinformatics.wizards.NewMDLMolfileWizard"
             category="net.bioclipse.cdk.ChemistryFiles"
-            name="New MDL Molfile">
+            class="net.bioclipse.chemoinformatics.wizards.NewMDLMolfileWizard"
+            icon="icons/molecule3D.png"
+            id="net.bioclipse.chemoinformatics.wizards.NewMDLMolfileWizard"
+            name="New MDL Molfile"
+            preferredPerspectives="net.bioclipse.chemoinformatics.ChemoinformaticsPerspective">
       </wizard>
    </extension>
    <extension
          point="org.eclipse.ui.newWizards">
       <wizard
-            class="net.bioclipse.chemoinformatics.wizards.NewCMLFileWizard"
-            id="net.bioclipse.chemoinformatics.wizards.NewCMLFileWizard"
             category="net.bioclipse.cdk.ChemistryFiles"
-            name="New CML File">
+            class="net.bioclipse.chemoinformatics.wizards.NewCMLFileWizard"
+            icon="icons/molecule3D.png"
+            id="net.bioclipse.chemoinformatics.wizards.NewCMLFileWizard"
+            name="New CML File"
+            preferredPerspectives="net.bioclipse.chemoinformatics.ChemoinformaticsPerspective">
       </wizard>
    </extension>
 
