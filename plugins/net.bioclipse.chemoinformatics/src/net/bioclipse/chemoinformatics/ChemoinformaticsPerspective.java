@@ -15,13 +15,11 @@ package net.bioclipse.chemoinformatics;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
-import org.eclipse.ui.console.IConsoleConstants;
 
 /**
  * The Bioclipse Chemoinformatic perspective.
  * 
  * @author ola
- *
  */
 public class ChemoinformaticsPerspective implements IPerspectiveFactory {
 
@@ -30,79 +28,53 @@ public class ChemoinformaticsPerspective implements IPerspectiveFactory {
 	public static final String ID_PERSPECTIVE =
 		"net.bioclipse.chemoinformatics.ChemoinformaticsPerspective";
 
+    public static final String ID_NAVIGATOR =
+        "net.bioclipse.navigator";
+
 	public void createInitialLayout(IPageLayout layout) {
-		String editorArea = layout.getEditorArea();
-		layout.setEditorAreaVisible(true);
-		layout.setFixed(false);
+        String editorArea = layout.getEditorArea();
+        layout.setEditorAreaVisible(true);
+        layout.setFixed(false);
+        layout.addPerspectiveShortcut(ID_PERSPECTIVE);
 
-		IFolderLayout left_folder_layout =
-			layout.createFolder(
-					"left",
-					IPageLayout.LEFT,
-					0.20f,
-					editorArea);
+        //Add layouts for views
+        IFolderLayout left_folder_layout =
+            layout.createFolder(
+                    "explorer",
+                    IPageLayout.LEFT,
+                    0.20f,
+                    editorArea);
 
-		IFolderLayout right_folder_layout =
-			layout.createFolder(
-					"right",
-					IPageLayout.RIGHT,
-					0.70f,
-					editorArea);
+        IFolderLayout right_folder_layout =
+            layout.createFolder(
+                    "outline",
+                    IPageLayout.RIGHT,
+                    0.70f,
+                    editorArea);
 
-		IFolderLayout bottom_folder_layout =
-			layout.createFolder(
-					"bottom",
-					IPageLayout.BOTTOM,
-					0.70f,
-					editorArea);
+        IFolderLayout bottom_folder_layout =
+            layout.createFolder(
+                    "properties",
+                    IPageLayout.BOTTOM,
+                    0.70f,
+                    editorArea);
 
+        //Add views
+        left_folder_layout.addView(ID_NAVIGATOR);
+        bottom_folder_layout.addView(IPageLayout.ID_PROP_SHEET);
+        bottom_folder_layout.addView(IPageLayout.ID_PROGRESS_VIEW);
+        right_folder_layout.addView(IPageLayout.ID_OUTLINE);
 
-		IFolderLayout rightBottom_folder_layout =
-			layout.createFolder(
-					"rightBottom",
-					IPageLayout.BOTTOM,
-					0.50f,
-			"right");
+        //Add NewWizards shortcuts
+        layout.addNewWizardShortcut("net.bioclipse.chemoinformatics.wizards.NewMDLMolfileWizard");
+        layout.addNewWizardShortcut("net.bioclipse.chemoinformatics.wizards.NewCMLFileWizard");
 
-		IFolderLayout leftBottom_folder_layout =
-			layout.createFolder(
-					"leftBottom",
-					IPageLayout.BOTTOM,
-					0.70f,
-			"left");
-
-		IFolderLayout COT_layout =
-			layout.createFolder(
-					"cot",
-					IPageLayout.RIGHT,
-					0.70f,
-					editorArea);
-
-		left_folder_layout.addView("net.bioclipse.views.BioResourceView");
-		bottom_folder_layout.addView(IConsoleConstants.ID_CONSOLE_VIEW);
-		rightBottom_folder_layout.addView(IPageLayout.ID_PROP_SHEET);
-
-//		Note:
-//		We ship Bioclipse with jmol and cdk
-//		therefore, we can add the views on first start
-//		When this changes, change addView to addPlaceHolder
-		right_folder_layout.addView("net.bioclipse.plugins.views.JmolView");
-		COT_layout.addView("net.bioclipse.plugins.views.ChemTreeView");
-
-		leftBottom_folder_layout.addView("net.bioclipse.plugins.views.Structure2DView");
-
-		layout.addNewWizardShortcut("net.bioclipse.wizards.NewFileWizard");
-		layout.addNewWizardShortcut("net.bioclipse.wizards.NewFolderWizard");
-		layout.addNewWizardShortcut("net.bioclipse.wizards.NewMoleculeWizard");
-		layout.addNewWizardShortcut("net.bioclipse.wizards.NewMoleculeFromSMILESWizard");
-
-		layout.addPerspectiveShortcut(ID_PERSPECTIVE);
-		layout.addShowViewShortcut("net.bioclipse.views.BioResourceView");
-		layout.addShowViewShortcut("net.bioclipse.plugins.views.JmolView");
-		layout.addShowViewShortcut("net.bioclipse.plugins.views.Structure2DView");
-		layout.addShowViewShortcut("net.bioclipse.plugins.views.ChemTreeView");
-		layout.addShowViewShortcut(IConsoleConstants.ID_CONSOLE_VIEW);
-		layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET);
+        //Add ShowView shortcuts
+        layout.addShowViewShortcut(ID_NAVIGATOR);
+        layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET);
+        layout.addShowViewShortcut(IPageLayout.ID_PROGRESS_VIEW);
+        layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
+        layout.addShowViewShortcut("net.bioclipse.jmol.cdk.views.JmolView");
 	}
 
 	public IPageLayout getStoredLayout() {
