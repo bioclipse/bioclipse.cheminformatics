@@ -91,7 +91,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
     //Use logging
     private static final Logger logger = Logger.getLogger(JmolView.class);
 
-    public static final String ID = "net.bioclipse.jmol.views.JmolView";
+    public static final String ID = "net.bioclipse.jmol.cdk.views.JmolView";
 
     private JmolPanel jmolPanel;
     private Text text;
