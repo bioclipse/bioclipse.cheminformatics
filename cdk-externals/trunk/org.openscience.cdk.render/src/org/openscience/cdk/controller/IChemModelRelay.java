@@ -47,6 +47,9 @@ public interface IChemModelRelay {
     public abstract IBond getClosestBond(Point2d worldCoord);
     public abstract void updateView();
     
+    /* Event model */
+    public void setEventHandler(IChemModelEventRelayHandler handler);
+
     /**
      * Adds an temporary atom which might be cleared later, when the final
      * atom is added. Controllers can use this to draw temporary atoms, for

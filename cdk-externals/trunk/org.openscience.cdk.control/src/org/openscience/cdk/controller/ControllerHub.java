@@ -83,6 +83,8 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	private final static RingPlacer ringPlacer = new RingPlacer();
 	
 	private IAtomContainer phantoms;
+
+    private IChemModelEventRelayHandler changeHandler;
 	
 	public ControllerHub(IControllerModel controllerModel,
 		                   IJava2DRenderer renderer,
@@ -323,6 +325,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		    // FIXME : always add to the first container?
 		    molSet.getAtomContainer(0).addAtom(newAtom);
 		}
+        structureChanged();
 		return newAtom;
 	}
 
@@ -371,6 +374,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
         atomCon.addAtom(newAtom);
         atomCon.addBond(newBond);
+        structureChanged();
         return newAtom;
     }
     
@@ -379,6 +383,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
             Point2d atomCoord = new Point2d( worldCoords );
             atom.setPoint2d( atomCoord );
         }
+        coordinatesChanged();
     }
 
     public void moveTo( IBond bond, Point2d point ) {
@@ -393,32 +398,39 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 				atom.setPoint2d(result);
 			}
         }
+        coordinatesChanged();
     }
 
     public IBond addBond(IAtom fromAtom, IAtom toAtom) {
         IBond newBond = chemModel.getBuilder().newBond(fromAtom, toAtom);
         chemModel.getMoleculeSet().getAtomContainer(0).addBond(newBond);
+        structureChanged();
         return newBond;
     }
 
     public void setCharge(IAtom atom, int charge) {
         atom.setFormalCharge(charge);
+        structureChanged();
     }
 
     public void setMassNumber(IAtom atom, int charge) {
         atom.setMassNumber(charge);
+        structureChanged();
     }
 
     public void setOrder(IBond bond, Order order) {
         bond.setOrder(order);
+        structureChanged();
     }
 
     public void setSymbol(IAtom atom, String symbol) {
         atom.setSymbol(symbol);
+        structureChanged();
     }
 
     public void setWedgeType(IBond bond, int type) {
         bond.setStereo(type);
+        structureChanged();
     }
 
     public void updateImplicitHydrogenCounts() {
@@ -446,6 +458,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
                 }
             }
         }
+        structureChanged();
     }
 
     public void zap() {
@@ -453,6 +466,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
             ChemModelManipulator.getAllAtomContainers(chemModel)) {
             container.removeAllElements();
         }
+        structureChanged();
     }
 
     public void cleanup() {
@@ -487,6 +501,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
                 e.printStackTrace();
             }
         }
+        coordinatesChanged();
     }
     
     public IRing addRing(int ringSize, Point2d worldcoord) {
@@ -501,6 +516,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
             chemModel.setMoleculeSet(set);
         }
         set.addAtomContainer(ring);
+        structureChanged();
         return ring;
     }
 
@@ -531,6 +547,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         for (IBond ringBond : newRing.bonds()) {
             sourceContainer.addBond(ringBond);
         }
+        structureChanged();
         return newRing;
     }
 
@@ -578,6 +595,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         for (IBond ringBond : newRing.bonds()) {
             sourceContainer.addBond(ringBond);
         }
+        structureChanged();
         return newRing;
     }
 
@@ -704,6 +722,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
                 sourceContainer.addBond(ringBond);
             }
         }
+        structureChanged();
         return newRing;
     }
 
@@ -778,6 +797,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
                 sourceContainer.addBond(ringBond);
             }
         }
+        structureChanged();
         return newRing;
     }
 
@@ -785,6 +805,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         IAtomContainer sourceContainer = ChemModelManipulator
             .getRelevantAtomContainer(chemModel, bond);
         sourceContainer.removeBond(bond);
+        structureChanged();
     }
 
     public void addPhantomAtom( IAtom atom ) {
@@ -826,4 +847,16 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		}
 		return formula.toString();
 	}
+
+    public void setEventHandler(IChemModelEventRelayHandler handler) {
+        this.changeHandler = handler;
+    }
+
+    private void structureChanged() {
+        if (changeHandler != null) changeHandler.structureChanged();
+    }
+
+    private void coordinatesChanged() {
+        if (changeHandler != null) changeHandler.coordinatesChanged();
+    }
 }
