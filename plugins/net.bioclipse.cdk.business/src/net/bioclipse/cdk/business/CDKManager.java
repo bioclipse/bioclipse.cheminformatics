@@ -462,7 +462,7 @@ public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
 	public void saveMolecule(IMolecule mol, String filename,
 			String filetype, boolean overwrite) throws BioclipseException,
 			CDKException, CoreException {
-		saveMolecule(mol, ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(filename)),filetype, overwrite);
+		saveMolecule(mol, ResourcePathTransformer.getInstance().transform(filename) ,filetype, overwrite);
 	}
 
 
