@@ -115,6 +115,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
   public void setChemModel(IChemModel model) {
       this.chemModel = model;
+      structureChanged();
     }
 
 	/**
@@ -307,6 +308,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	
 	public void removeAtom(IAtom atom) {
 		ChemModelManipulator.removeAtomAndConnectedElectronContainers(chemModel, atom);
+		structureChanged();
 	}
 	
 	public IAtom addAtom(String atomType, Point2d worldCoord) {
@@ -410,27 +412,27 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
     public void setCharge(IAtom atom, int charge) {
         atom.setFormalCharge(charge);
-        structureChanged();
+        structurePropertiesChanged();
     }
 
     public void setMassNumber(IAtom atom, int charge) {
         atom.setMassNumber(charge);
-        structureChanged();
+        structurePropertiesChanged();
     }
 
     public void setOrder(IBond bond, Order order) {
         bond.setOrder(order);
-        structureChanged();
+        structurePropertiesChanged();
     }
 
     public void setSymbol(IAtom atom, String symbol) {
         atom.setSymbol(symbol);
-        structureChanged();
+        structurePropertiesChanged();
     }
 
     public void setWedgeType(IBond bond, int type) {
         bond.setStereo(type);
-        structureChanged();
+        structurePropertiesChanged();
     }
 
     public void updateImplicitHydrogenCounts() {
@@ -458,7 +460,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
                 }
             }
         }
-        structureChanged();
+        structurePropertiesChanged();
     }
 
     public void zap() {
@@ -854,6 +856,10 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
     private void structureChanged() {
         if (changeHandler != null) changeHandler.structureChanged();
+    }
+
+    private void structurePropertiesChanged() {
+        if (changeHandler != null) changeHandler.structurePropertiesChanged();
     }
 
     private void coordinatesChanged() {
