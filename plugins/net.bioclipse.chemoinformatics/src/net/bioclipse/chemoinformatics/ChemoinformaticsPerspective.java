@@ -66,7 +66,6 @@ public class ChemoinformaticsPerspective implements IPerspectiveFactory {
         right_folder_layout.addView(IPageLayout.ID_OUTLINE);
 
         //Add NewWizards shortcuts
-        layout.addNewWizardShortcut("net.bioclipse.chemoinformatics.wizards.NewMDLMolfileWizard");
         layout.addNewWizardShortcut("net.bioclipse.chemoinformatics.wizards.NewCMLFileWizard");
 
         //Add ShowView shortcuts
