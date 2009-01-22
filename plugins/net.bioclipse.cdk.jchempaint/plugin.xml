@@ -109,21 +109,6 @@
              id="net.bioclipse.cdk.ui.jchempaint.toolbar">
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
-                icon="icons/atom_unknown.png"
-                style="radio">
-             <visibleWhen
-                   checkEnabled="true">
-                <reference
-                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
-                </reference>
-             </visibleWhen>
-             <parameter
-                   name="jcp.controller.module"
-                   value="AddAtomModule">
-             </parameter>
-          </command>
-          <command
-                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
                 icon="icons/editor/new_atom_bond.gif"
                 style="radio">
              <visibleWhen
