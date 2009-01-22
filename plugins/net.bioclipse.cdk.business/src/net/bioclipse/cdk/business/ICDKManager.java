@@ -233,14 +233,6 @@ public interface ICDKManager extends IBioclipseManager {
     public void saveMolecule(IMolecule mol, IFile file, boolean overwrite) 
     	throws BioclipseException, CDKException, CoreException;
     
-    
-    
-    
-    
-    
-    
-    
-    
     /**
      * @param mol The molecule to save
      * @param filename Where to save, relative to workspace root
@@ -640,7 +632,8 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod( params = "String path", 
                       methodSummary = "Returns number of molecules in file.")
-	public MoleculesInfo getInfo(String path);
+	@TestMethods("testGetInfo")
+    public MoleculesInfo getInfo(String path);
 
     /**
      * Depict if molecule has 2D coordinates available.

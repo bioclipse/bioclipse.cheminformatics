@@ -844,4 +844,11 @@ public class CDKManagerPluginTest {
                       2,
                       cdk.numberOfEntriesInSDF( path ) );
     }
+
+    @Test public void testGetInfo() throws Exception {
+        String path = getClass().getResource("/testFiles/cs2a.cml").getPath();
+        Assert.assertNotNull(cdk.getInfo(path));
+    }
+
+
 }
