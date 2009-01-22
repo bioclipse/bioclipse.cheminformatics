@@ -40,7 +40,10 @@ public class NewMDLMolfileWizard extends BasicNewResourceWizard {
 		"" + System.getProperty("line.separator") +
 		"  Bioclipse Empty File" + System.getProperty("line.separator") +
 		"" + System.getProperty("line.separator") +
-		"  0  0  0  0  0  0  0  0  0  0999 V2000" + System.getProperty("line.separator") +
+		"  2  1  0  0  0  0  0  0  0  0999 V2000" + System.getProperty("line.separator") +
+	    "    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0" + System.getProperty("line.separator") +
+        "    1.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0" + System.getProperty("line.separator") +
+        "  1  2  1  0  0  0  0" + System.getProperty("line.separator") +
 		"M  END" + System.getProperty("line.separator");
 	
     private WizardNewFileCreationPage mainPage;
