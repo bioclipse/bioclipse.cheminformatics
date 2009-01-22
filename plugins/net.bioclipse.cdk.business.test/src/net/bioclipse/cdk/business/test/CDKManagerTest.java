@@ -619,15 +619,16 @@ public class CDKManagerTest extends AbstractManagerTest {
         ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
         assertEquals(4, molecule.getAtomContainer().getAtomCount());
         Assert.assertNull(molecule.getAtomContainer().getAtom(0).getPoint2d());
-        cdk.generate2dCoordinates(molecule);
-        assertNotNull(molecule.getAtomContainer().getAtom(0).getPoint2d());
+        IMolecule cdkMolecule = cdk.generate2dCoordinates(molecule);
+        Assert.assertTrue(cdkMolecule instanceof ICDKMolecule);
+        assertNotNull(((ICDKMolecule)cdkMolecule).getAtomContainer().getAtom(0).getPoint2d());
     }
     
     @Test public void testHas2d() throws Exception {
         ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
         Assert.assertFalse(cdk.has2d(molecule));
-        cdk.generate2dCoordinates(molecule);
-        Assert.assertTrue(cdk.has2d(molecule));
+        IMolecule cdkMolecule = cdk.generate2dCoordinates(molecule);
+        Assert.assertTrue(cdk.has2d(cdkMolecule));
     }
 
     @Test public void testHas3d() throws Exception {
