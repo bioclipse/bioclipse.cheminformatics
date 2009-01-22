@@ -105,6 +105,24 @@ public class CDKManagerPluginTest {
     }
 
     @Test
+    public void testLoadMolecules() throws IOException,
+                                          BioclipseException,
+                                          CoreException, URISyntaxException {
+
+        URI uri = getClass().getResource("/testFiles/dbsmallconf").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        List<ICDKMolecule> mols = cdk.loadMolecules(path);
+
+        assertNotNull(mols);
+        Assert.assertNotSame(0, mols.size());
+        for (ICDKMolecule mol : mols) {
+            Assert.assertNotNull(mol);
+            Assert.assertNotSame(0, mol.getAtomContainer().getAtomCount());
+        }
+    }
+
+    @Test
     public void testLoadCMLFromFile2() throws IOException, 
                                           BioclipseException, 
                                           CoreException, URISyntaxException {
