@@ -81,20 +81,12 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
 	public void doSave(IProgressMonitor monitor) {
 
 		try {
-		    if(getEditorSite().getId()
-		            .equals( "net.bioclipse.cdk.ui.editors.jchempaint.mdl" )) {
-            Activator.getDefault().getCDKManager().saveMDLMolfile( model,
-                               model.getResource().getLocationURI().toString());
-		    } else if(getEditorSite().getId()
-		            .equals( "net.bioclipse.cdk.ui.editors.jchempaint.cml" )) {
-		        Activator.getDefault().getCDKManager().saveCML( model,
-		                           model.getResource().getLocationURI().toString());
-		    } else {
-		        logger.error( "Failed to save file. Not CML or MDL editor: ");
-		        logger.debug( getEditorSite().getId() );
 
-		        return;
-		    }
+		        Activator.getDefault().getCDKManager().
+            saveMolecule( model,
+                          model.getResource().getLocationURI().toString(),
+                          true);
+
             widget.setDirty( false );
         } catch ( BioclipseException e ) {
             monitor.isCanceled();
@@ -104,8 +96,6 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
             logger.debug( "Failed to save file: "+e.getMessage() );
         } catch ( CoreException e ) {
             monitor.isCanceled();
-            logger.debug( "Failed to save file: "+e.getMessage() );
-        } catch ( InvocationTargetException e ) {
             logger.debug( "Failed to save file: "+e.getMessage() );
         }
 	}
@@ -122,8 +112,10 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
 	    IPath path = saveAsDialog.getResult();
 	    try {
 
-	        Activator.getDefault().getCDKManager().saveMolecule( model,
-	                                                     path.toPortableString());
+	        Activator.getDefault().getCDKManager().
+          saveMolecule( model,
+                        path.toPortableString(),
+                        true);
 	    } catch ( BioclipseException e ) {
 	        logger.warn( "Failed to save molecule. " + e.getMessage());
 	    } catch ( CDKException e ) {
