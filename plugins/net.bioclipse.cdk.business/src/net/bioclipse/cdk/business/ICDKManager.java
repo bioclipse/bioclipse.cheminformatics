@@ -651,6 +651,7 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod( params = "IMolecule mol", 
                       methodSummary = "Returns true if molecule has 2D coordinates, " +
                       		"false otherwise.")
+    @TestMethods("testHas2d")
 	boolean has2d(IMolecule mol) throws BioclipseException; 
 
     /**
@@ -663,6 +664,7 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod( params = "IMolecule mol", 
                       methodSummary = "Returns true if molecule has 3D coordinates, " +
                       		"false otherwise.")
+    @TestMethods("testHas3d")
 	boolean has3d(IMolecule mol) throws BioclipseException; 
     
     @Recorded
