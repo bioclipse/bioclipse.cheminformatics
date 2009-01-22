@@ -12,6 +12,7 @@
 package net.bioclipse.cdk.jchempaint.editor;
 
 import java.awt.Color;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
 import net.bioclipse.cdk.business.Activator;
@@ -25,6 +26,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
@@ -43,6 +45,7 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.controller.ControllerHub;
@@ -62,7 +65,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
 
     private JCPOutlinePage fOutlinePage;
 
-    boolean dirty=false;
+
     ICDKMolecule model;
     JChemPaintEditorWidget widget;
     IControllerModel c2dm;
@@ -78,77 +81,98 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
 	public void doSave(IProgressMonitor monitor) {
 
 		try {
-            Activator.getDefault().getCDKManager().saveMolecule( model );
-            dirty = false;
-            firePropertyChange( IEditorPart.PROP_DIRTY );
+		    if(getEditorSite().getId()
+		            .equals( "net.bioclipse.cdk.ui.editors.jchempaint.mdl" )) {
+            Activator.getDefault().getCDKManager().saveMDLMolfile( model,
+                               model.getResource().getLocationURI().toString());
+		    } else if(getEditorSite().getId()
+		            .equals( "net.bioclipse.cdk.ui.editors.jchempaint.cml" )) {
+		        Activator.getDefault().getCDKManager().saveCML( model,
+		                           model.getResource().getLocationURI().toString());
+		    } else {
+		        logger.error( "Failed to save file. Not CML or MDL editor: ");
+		        logger.debug( getEditorSite().getId() );
+
+		        return;
+		    }
+            widget.setDirty( false );
         } catch ( BioclipseException e ) {
             monitor.isCanceled();
-            logger.debug( "Failed to save file "+e.getMessage() );
+            logger.debug( "Failed to save file: "+e.getMessage() );
         } catch ( CDKException e ) {
             monitor.isCanceled();
-            logger.debug( "Failed to save file "+e.getMessage() );
+            logger.debug( "Failed to save file: "+e.getMessage() );
         } catch ( CoreException e ) {
             monitor.isCanceled();
-            logger.debug( "Failed to save file "+e.getMessage() );
+            logger.debug( "Failed to save file: "+e.getMessage() );
+        } catch ( InvocationTargetException e ) {
+            logger.debug( "Failed to save file: "+e.getMessage() );
         }
 	}
 
 	@Override
 	public void doSaveAs() {
-		// TODO Auto-generated method stub
+	    SaveAsDialog saveAsDialog = new SaveAsDialog(this.getSite().getShell());
 
+	    int result = saveAsDialog.open();
+	    if(result == 1) {
+	        logger.debug( "SaveAs cancelled.");
+	    }
+
+	    IPath path = saveAsDialog.getResult();
+	    try {
+
+	        Activator.getDefault().getCDKManager().saveMolecule( model,
+	                                                     path.toPortableString());
+	    } catch ( BioclipseException e ) {
+	        logger.warn( "Failed to save molecule. " + e.getMessage());
+	    } catch ( CDKException e ) {
+	        logger.warn( "Failed to save molecule. " + e.getMessage());
+	    } catch ( CoreException e ) {
+	        logger.warn( "Failed to save molecule. " + e.getMessage());
+	    }
+	    widget.setDirty( false );
 	}
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
-			throws PartInitException {
+	                                                throws PartInitException {
 
 	    setSite(site);
-        setInput(input);
-        ICDKMolecule cModel = (ICDKMolecule)input.getAdapter( ICDKMolecule.class );
-        if(cModel == null){
-            IFile file = (IFile) input.getAdapter(IFile.class);
-            if(file != null)
-		            cModel=(ICDKMolecule)  file.getAdapter(ICDKMolecule.class);
-        }
-		if(cModel != null ){
+	    setInput(input);
+	    ICDKMolecule cModel = (ICDKMolecule)input.getAdapter( ICDKMolecule.class );
+	    if(cModel == null){
+	        IFile file = (IFile) input.getAdapter(IFile.class);
+	        if(file != null)
+	            cModel=(ICDKMolecule)  file.getAdapter(ICDKMolecule.class);
+	    }
+	    if(cModel != null ){
 
-
-
-		setPartName(input.getName());
-		model=cModel;
-		model.getAtomContainer().addListener(new IChemObjectListener(){
-		   public void stateChanged(IChemObjectChangeEvent event) {
-
-		       if(!isDirty()){
-		           dirty=true;
-		           Display.getDefault().syncExec( new Runnable() {
-		               public void run() {
-		                   firePropertyChange(IEditorPart.PROP_DIRTY);
-		               }
-		           });
-
-		       }
-		    }
-		});
-		}
-//		widget.setAtomContainer(model.getMoleculeSet().getAtomContainer(0));
+	        setPartName(input.getName());
+	        model=cModel;
+	    }
 	}
 
 	@Override
 	public boolean isDirty() {
-		return false;
+		return widget.getDirty();
 	}
 
 	@Override
 	public boolean isSaveAsAllowed() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public void createPartControl(Composite parent) {
 	    //  create widget
-		widget=new JChemPaintEditorWidget(parent,SWT.NONE);
+		widget=new JChemPaintEditorWidget(parent,SWT.NONE) {
+		    @Override
+		    public void setDirty( boolean dirty ) {
+		        super.setDirty( dirty );
+		        firePropertyChange( IEditorPart.PROP_DIRTY );
+		    }
+		};
 		IAtomContainer atomContainer=null;
 		if(model!=null)
 		    atomContainer=model.getAtomContainer();

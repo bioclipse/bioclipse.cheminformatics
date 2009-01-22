@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Listener;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.ControllerModel;
+import org.openscience.cdk.controller.IChemModelEventRelayHandler;
 import org.openscience.cdk.controller.IControllerModule;
 import org.openscience.cdk.controller.IViewEventRelay;
 import org.openscience.cdk.controller.MoveModule;
@@ -66,7 +67,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
     ControllerHub hub;
     ControllerModel c2dm;
     SWTMouseEventRelay relay;
-     boolean generated = false;
+    boolean generated = false;
+
+    boolean isdirty = false;
 
     public JChemPaintEditorWidget(Composite parent, int style) {
         super( parent, style );
@@ -87,6 +90,26 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
                 JChemPaintEditorWidget.this.redraw();
             }
         } );
+
+      hub.setEventHandler( new IChemModelEventRelayHandler() {
+
+        public void coordinatesChanged() {
+            setDirty( true );
+        }
+
+        public void selectionChanged() {
+            setDirty( true );
+        }
+
+        public void structureChanged() {
+            setDirty( true );
+        }
+
+        public void structurePropertiesChanged() {
+            setDirty( true );
+        }
+
+      });
 
       if(relay != null) {
 
@@ -125,6 +148,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
                !GeometryTools.has2DCoordinates( atomContainer )) {
                 atomContainer = generate2Dfrom3D( atomContainer );
                 generated = true;
+                setDirty( true );
             }
         } else {
         	atomContainer = NoNotificationChemObjectBuilder.getInstance()
@@ -132,7 +156,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
         }
         setupControllerHub( atomContainer );
         super.setAtomContainer( atomContainer );
-
+        setDirty( false );
     }
 
     public void setInput( Object element ) {
@@ -222,7 +246,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
         Object[] listenersArray = listeners.toArray();
 
         for (int i = 0; i < listenersArray.length; i++) {
-            final ISelectionChangedListener l = (ISelectionChangedListener) 
+            final ISelectionChangedListener l = (ISelectionChangedListener)
                                                               listenersArray[i];
             SafeRunner.run(new SafeRunnable() {
                 public void run() {
@@ -254,4 +278,13 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
 	public void setActiveDrawModule(IControllerModule activeDrawModule){
 		hub.setActiveDrawModule(activeDrawModule);
 	}
+
+	public void setDirty( boolean dirty) {
+	    this.isdirty = dirty;
+	}
+
+	public boolean getDirty() {
+	    return isdirty;
+	}
+
 }
