@@ -460,6 +460,7 @@ public interface ICDKManager extends IBioclipseManager {
                        methodSummary = "Creates a cdk molecule from a " +
                                        "CML String" )
     @Recorded
+    @TestMethods("testFromCML")
     public ICDKMolecule fromCml( String cml ) 
                         throws BioclipseException, IOException;
 
