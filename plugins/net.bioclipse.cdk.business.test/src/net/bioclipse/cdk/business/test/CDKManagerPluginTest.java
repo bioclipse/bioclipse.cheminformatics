@@ -444,6 +444,84 @@ public class CDKManagerPluginTest {
 
     }
 
+    @Test public void testSaveMolecule_IMolecule() throws Exception {
+        // set up a file to load, edit and then save
+        ICDKMolecule propane  = cdk.fromSMILES("CCC");
+        cdk.saveMolecule(propane, "/Virtual/testSaveMoleculeBBB.mol", false);
+        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMoleculeBBB.mol");
+
+        // try overwrite
+        ICDKMolecule coc  = cdk.fromSMILES("COC");
+        cdk.saveMolecule(coc);
+        mol = cdk.loadMolecule("/Virtual/testSaveMoleculeBBB.mol");
+        assertEquals("COC", mol.getSMILES());
+    }
+
+    @Test public void testSaveMolecule_IMolecule_boolean() throws Exception {
+        // set up a file to load, edit and then save
+        ICDKMolecule propane  = cdk.fromSMILES("CCC");
+        cdk.saveMolecule(propane, "/Virtual/testSaveMoleculeBBB.mol", false);
+        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMoleculeBBB.mol");
+
+        // try overwrite
+        ICDKMolecule coc  = cdk.fromSMILES("COC");
+        cdk.saveMolecule(coc, true);
+        mol = cdk.loadMolecule("/Virtual/testSaveMoleculeBBB.mol");
+        assertEquals("COC", mol.getSMILES());
+    }
+
+    @Test public void testSaveMolecule_IMolecule_String() throws Exception {
+        ICDKMolecule propane  = cdk.fromSMILES("CCC");
+        cdk.saveMolecule(propane, "/Virtual/testSaveMoleculeAAA.mol", false);
+        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMoleculeAAA.mol");
+        assertEquals("CCC", mol.getSMILES());
+    }
+
+    @Test public void testSaveMolecule_IMolecule_String_boolean() throws Exception {
+        ICDKMolecule propane  = cdk.fromSMILES("CCC");
+        cdk.saveMolecule(propane, "/Virtual/testSaveMoleculeZZZ.mol", false);
+        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMoleculeZZZ.mol");
+        assertEquals("CCC", mol.getSMILES());
+
+        // try overwrite
+        ICDKMolecule coc  = cdk.fromSMILES("COC");
+        cdk.saveMolecule(coc, "/Virtual/testSaveMoleculeZZZ.mol", true);
+        mol = cdk.loadMolecule("/Virtual/testSaveMoleculeZZZ.mol");
+        assertEquals("COC", mol.getSMILES());
+    }
+
+    @Test public void testSaveMolecule_IMolecule_IFile_boolean() throws Exception {
+        ICDKMolecule propane  = cdk.fromSMILES("CCC");
+        IFile target = ResourcePathTransformer.getInstance()
+            .transform("/Virtual/testSaveMoleculeXXX.mol");
+        cdk.saveMolecule(propane, target, false);
+        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMoleculeXXX.mol");
+        assertEquals("CCC", mol.getSMILES());
+
+        // try overwrite
+        ICDKMolecule coc  = cdk.fromSMILES("COC");
+        cdk.saveMolecule(coc, target, true);
+        mol = cdk.loadMolecule("/Virtual/testSaveMoleculeXXX.mol");
+        assertEquals("COC", mol.getSMILES());
+    }
+
+    @Test(expected=java.lang.Exception.class)
+    public void testSaveMolecule_IMolecule_IFile_boolean_overwrite() throws Exception {
+        ICDKMolecule propane  = cdk.fromSMILES("CCC");
+        IFile target = ResourcePathTransformer.getInstance()
+            .transform("/Virtual/testSaveMoleculeYYY.mol");
+        cdk.saveMolecule(propane, target, false);
+        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMoleculeYYY.mol");
+        assertEquals("CCC", mol.getSMILES());
+
+        // try overwrite
+        ICDKMolecule coc  = cdk.fromSMILES("COC");
+        target = ResourcePathTransformer.getInstance()
+            .transform("/Virtual/testSaveMoleculeYYY.mol");
+        cdk.saveMolecule(coc, target, false);
+        mol = cdk.loadMolecule("/Virtual/testSaveMoleculeYYY.mol");
+        assertEquals("COC", mol.getSMILES());
+    }
 
     @Test
     public void testSaveMolecule_IMolecule_String_String() throws BioclipseException, CDKException, CoreException, IOException {

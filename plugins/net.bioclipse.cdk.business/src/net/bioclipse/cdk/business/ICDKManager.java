@@ -174,6 +174,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(params = "IMolecule mol", 
             methodSummary="Saves molecule to file, if read from file.")
+    @TestMethods("testSaveMolecule_IMolecule")
     public void saveMolecule(IMolecule mol) 
     	throws BioclipseException, CDKException, CoreException;
 
@@ -187,6 +188,7 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod(params = "IMolecule mol, boolean overwrite", 
             methodSummary="saves mol to a file, if previously read from file. " +
             		"Overwrite determines if existing file shall be overwritten.")
+    @TestMethods("testSaveMolecule_IMolecule_boolean")
     public void saveMolecule(IMolecule mol, boolean overwrite) 
     	throws BioclipseException, CDKException, CoreException;
 
@@ -200,6 +202,7 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod(params = "IMolecule mol, String filename", 
             methodSummary="saves mol to a file (filename must be a relative to workspace root and "+
             "folder must exist), filetype must be one of the constants given by getPossibleFiletypes")
+    @TestMethods("testSaveMolecule_IMolecule_String")
     public void saveMolecule(IMolecule mol, String filename) 
     	throws BioclipseException, CDKException, CoreException;
 
@@ -216,6 +219,7 @@ public interface ICDKManager extends IBioclipseManager {
             "folder must exist), filetype must be one of the constants given by " +
             "getPossibleFiletypes, " +
             "overwrite determines if existing file shall be overwritten.")
+    @TestMethods("testSaveMolecule_IMolecule_String_boolean")
     public void saveMolecule(IMolecule mol, String filename, boolean overwrite) 
     	throws BioclipseException, CDKException, CoreException;
     
@@ -231,6 +235,7 @@ public interface ICDKManager extends IBioclipseManager {
             methodSummary="saves mol to a file, filetype must be one of the constants given by " +
             "getPossibleFiletypes, " +
             "overwrite determines if existing file shall be overwritten.")
+    @TestMethods("testSaveMolecule_IMolecule_IFile_boolean")
     public void saveMolecule(IMolecule mol, IFile file, boolean overwrite) 
     	throws BioclipseException, CDKException, CoreException;
     
