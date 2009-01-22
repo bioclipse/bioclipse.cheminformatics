@@ -610,7 +610,7 @@ public class CDKManagerTest extends AbstractManagerTest {
     @Test public void testGenerate3DCoordinates() throws Exception {
         ICDKMolecule molecule = cdk.fromSMILES("CCC");
         assertEquals(3, molecule.getAtomContainer().getAtomCount());
-        assertTrue(molecule.getAtomContainer().getAtom(0).getPoint3d() == null);
+        Assert.assertNull(molecule.getAtomContainer().getAtom(0).getPoint3d());
         cdk.generate3dCoordinates(molecule);
         assertNotNull(molecule.getAtomContainer().getAtom(0).getPoint3d());
     }
@@ -618,7 +618,7 @@ public class CDKManagerTest extends AbstractManagerTest {
     @Test public void testGenerate2DCoordinates() throws Exception {
         ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
         assertEquals(4, molecule.getAtomContainer().getAtomCount());
-        assertTrue(molecule.getAtomContainer().getAtom(0).getPoint2d() == null);
+        Assert.assertNull(molecule.getAtomContainer().getAtom(0).getPoint2d());
         cdk.generate2dCoordinates(molecule);
         assertNotNull(molecule.getAtomContainer().getAtom(0).getPoint2d());
     }
