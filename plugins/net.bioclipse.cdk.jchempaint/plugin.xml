@@ -14,7 +14,7 @@
             class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
             default="true"
             icon="icons/doc_mol_2d.png"
-            id="net.bioclipse.cdk.ui.editors.jchempaint"
+            id="net.bioclipse.cdk.ui.editors.jchempaint.mdl"
             name="MDLMolfileEditor">
          <contentTypeBinding
                contentTypeId="net.bioclipse.contenttypes.mdlMolFile2D">
@@ -24,7 +24,7 @@
             class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
             default="true"
             icon="icons/doc_mol_2d.png"
-            id="net.bioclipse.cdk.ui.editors.jchempaint"
+            id="net.bioclipse.cdk.ui.editors.jchempaint.cml"
             name="CMLfileEditor">
          <contentTypeBinding
                contentTypeId="net.bioclipse.contenttypes.cml.singleMolecule2d">
@@ -427,9 +427,6 @@
     </scriptContribution>
   </extension>
   <extension
-        point="org.eclipse.ui.menus">
-  </extension>
-  <extension
         point="org.eclipse.core.expressions.definitions">
      <definition
            id="net.bioclipse.cdk.jchempaint.editor.type">
@@ -440,10 +437,10 @@
                     value="net.bioclipse.cdk.ui.editors.jchempaint">
               </equals>
               <equals
-                    value="net.bioclipse.contenttypes.cml.singleMolecule2d">
+                    value="net.bioclipse.cdk.ui.editors.jchempaint.mdl">
               </equals>
               <equals
-                    value="net.bioclipse.cdk.ui.editors.jchempaint">
+                    value="net.bioclipse.cdk.ui.editors.jchempaint.cml">
               </equals>
            </or>
         </with>
