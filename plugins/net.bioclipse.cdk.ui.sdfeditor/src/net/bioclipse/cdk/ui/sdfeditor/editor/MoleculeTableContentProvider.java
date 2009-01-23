@@ -217,7 +217,7 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
                 ac = mol.getAtomContainer();
 
             structure.setAtomContainer( ac );
-            setProperties( row.properties, ac );
+//            setProperties( row.properties, ac );
             ICDKMolecule cdkmol = new CDKMolecule( ac );
 
             // Allows for external actions to register a renderer2dconfigurator
@@ -237,6 +237,7 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
     }
 
     private void setProperties( Label properties, IAtomContainer ac ) {
+        
         if(ac == null) {
             properties.setText( "No properties found");
             return;
