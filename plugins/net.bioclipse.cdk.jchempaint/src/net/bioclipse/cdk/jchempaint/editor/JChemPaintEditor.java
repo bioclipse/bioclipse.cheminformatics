@@ -106,7 +106,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
 
 	    int result = saveAsDialog.open();
 	    if(result == 1) {
-	        logger.debug( "SaveAs cancelled.");
+	        logger.debug( "SaveAs canceled.");
+	        return;
 	    }
 
 	    IPath path = saveAsDialog.getResult();
