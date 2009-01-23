@@ -103,7 +103,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
 	@Override
 	public void doSaveAs() {
 	    SaveAsDialog saveAsDialog = new SaveAsDialog(this.getSite().getShell());
-
+	    if(model.getResource() instanceof IFile)
+	        saveAsDialog.setOriginalFile( (IFile)model.getResource() );
 	    int result = saveAsDialog.open();
 	    if(result == 1) {
 	        logger.debug( "SaveAs canceled.");
