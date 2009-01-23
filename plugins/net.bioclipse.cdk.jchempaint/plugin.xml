@@ -14,7 +14,7 @@
             class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
             default="true"
             icon="icons/doc_mol_2d.png"
-            id="net.bioclipse.cdk.ui.editors.jchempaint.mdl"
+            id="net.bioclipse.cdk.ui.editors.jchempaint"
             name="MDLMolfileEditor">
          <contentTypeBinding
                contentTypeId="net.bioclipse.contenttypes.mdlMolFile2D">
@@ -24,7 +24,7 @@
             class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
             default="true"
             icon="icons/doc_mol_2d.png"
-            id="net.bioclipse.cdk.ui.editors.jchempaint.cml"
+            id="net.bioclipse.cdk.ui.editors.jchempaint"
             name="CMLfileEditor">
          <contentTypeBinding
                contentTypeId="net.bioclipse.contenttypes.cml.singleMolecule2d">
