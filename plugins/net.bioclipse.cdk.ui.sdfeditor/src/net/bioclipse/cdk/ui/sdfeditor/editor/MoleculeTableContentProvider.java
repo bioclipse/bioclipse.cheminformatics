@@ -237,7 +237,10 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
     }
 
     private void setProperties( Label properties, IAtomContainer ac ) {
-
+        if(ac == null) {
+            properties.setText( "No properties found");
+            return;
+        }
         StringBuilder b = new StringBuilder();
         int count = 0;
         Map<Object, Object> proper = ac.getProperties();

@@ -750,14 +750,14 @@ public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
 					 if ( c == '$' ) {
 						 dollars++;
 						 if ( dollars == 4 ) {
-							 indexList.add( new Record( start, pos - start ) );
+							 indexList.add( new Record( start, (pos) - start ) );
 							 monitor.worked( pos-start );
 							 if(monitor.isCanceled()) {
 							     cs.close();
 							     throw new OperationCanceledException();
 							 }
 							 dollars = 0;
-							 start = pos + 1;
+							 start = pos +2;
 							 num++;
 						 }
 					 } else
