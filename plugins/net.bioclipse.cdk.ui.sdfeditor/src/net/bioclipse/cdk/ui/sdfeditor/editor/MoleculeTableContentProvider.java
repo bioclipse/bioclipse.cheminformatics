@@ -320,6 +320,7 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
                     IPath location = file.getLocation();
                     try {
                     java.io.File jFile = (location!=null?location.toFile():null);
+                    if(jFile == null) return;
                     reader = new RandomAccessSDFReader( jFile, builder );
                     provider.model = SDFileMoleculesEditorModel.this;
                     CompositeTable cTable = provider
