@@ -776,6 +776,7 @@ public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
 				 os.println( file.getLocation().toOSString() );
 				 os.flush();
 				 os.close();
+				 indexFile.deleteOnExit();
 				 logger.debug( "Created Index in "
 						 + (int) ((System.nanoTime() - tStart) / 1e6)
 						 + "ms" );
