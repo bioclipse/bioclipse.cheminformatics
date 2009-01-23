@@ -732,8 +732,9 @@ public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
 				 long tStart = System.nanoTime();
 				 File indexFile = RandomAccessReader.getIndexFile( file
 						 .getLocation().toOSString() );
-				 if ( indexFile.exists() )
-					 return;
+				 if ( indexFile.exists() ) {
+					 indexFile.delete();
+				 }
 				 long size = EFS.getStore( file.getLocationURI() ).fetchInfo()
 				 .getLength();
 				 monitor.beginTask( "Creating SD-file index", (int)size );
