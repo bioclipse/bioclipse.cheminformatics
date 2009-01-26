@@ -293,7 +293,7 @@ public class MoleculesEditor extends EditorPart implements
     @Override
     public void setFocus() {
 
-      // viewer.setFocus();
+      molTableViewer.getControl().setFocus();
 
     }
 
