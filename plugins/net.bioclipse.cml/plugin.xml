@@ -32,6 +32,12 @@
 		    <command
 		    	commandId="net.bioclipse.cml.handlers.validatecml"
 		    	label="Validate CML">
+		      	<visibleWhen>
+			   		<iterate operator="and" ifEmpty="false">
+		      			<adapt type="org.eclipse.core.resources.IFile">
+			      		</adapt>
+			   		</iterate>
+		        </visibleWhen>
 	       </command>
 		</menuContribution>
    </extension>
