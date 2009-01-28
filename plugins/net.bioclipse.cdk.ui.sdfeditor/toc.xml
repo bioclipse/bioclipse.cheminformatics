@@ -4,5 +4,6 @@
 <toc label="SDF Editor plugin">
 	<topic label="About SDF Editor plugin"  href="html/maintopic.html"> 
 		<topic label="The New SDF Wizard" href="html/newwizard.html"/> 
+		<topic label="Extracting from SDF" href="html/extract.html"/>
 	</topic>
 </toc>
