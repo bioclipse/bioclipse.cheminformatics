@@ -14,15 +14,21 @@ package net.bioclipse.cdk.domain.tests;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.BitSet;
+import java.util.List;
+
+import junit.framework.Assert;
 
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.IMolecule;
 
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Before;
@@ -171,6 +177,15 @@ public class TestCDKMolecule {
         reader.getFormat();
         
         
+    }
+    
+    @Test
+    public void testExtractFromSDFile() throws FileNotFoundException, BioclipseException, InvocationTargetException{
+        String path = getClass().getResource("/testFiles/test.sdf")
+        .getPath();
+
+        List<IMolecule> mol = cdk.extractFromSDFile( new MockIFile(path), 0, 1 );
+        Assert.assertEquals( 2,mol.size() );
     }
 
 }
