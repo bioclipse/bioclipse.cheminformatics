@@ -684,4 +684,10 @@ public interface ICDKManager extends IBioclipseManager {
                      methodSummary="Creates an sd file from a number of molecules")
     @TestMethods("testCreateSDFile")
    	public void createSDFile(IFile file, IMolecule[] entries) throws BioclipseException, InvocationTargetException;
+
+    @Recorded
+    @PublishedMethod(params = "IFile file, int startenty, int endentry", 
+                     methodSummary="Extracts a number of entries from an sd file. Does not read the complete file for this.")
+    @TestMethods("testExtractFromSDFile")
+    public List<IMolecule> extractFromSDFile(IFile file, int startenty, int endentry) throws BioclipseException, InvocationTargetException;
 }

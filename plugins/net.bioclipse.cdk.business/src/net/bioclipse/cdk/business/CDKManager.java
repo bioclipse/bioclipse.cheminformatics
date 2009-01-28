@@ -47,12 +47,10 @@ import net.bioclipse.ui.jobs.BioclipseUIJob;
 import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ChemModel;
@@ -1118,5 +1116,33 @@ public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
 			 monitor.done();
 		 }
 	 }
+    public List<IMolecule> extractFromSDFile( IFile file, int startenty,
+                                          int endentry )
+                                                        throws BioclipseException,
+                                                        InvocationTargetException {
+        IProgressMonitor monitor = new NullProgressMonitor();
+        int ticks = 10000;
+        try{
+          monitor.beginTask( "Writing file", ticks );
+          IteratingBioclipseMDLReader reader = new IteratingBioclipseMDLReader(file.getContents(), DefaultChemObjectBuilder.getInstance(), monitor);
+          int i=0;
+          List<IMolecule> result=new ArrayList<IMolecule>();
+          while(reader.hasNext()){
+              if(i>=startenty && i<=endentry){
+                  result.add( reader.next() );
+              }
+              i++;
+              if(i>endentry)
+                  break;
+          }
+          monitor.worked(ticks);
+          return result;
+        } catch (Exception e) {
+          e.printStackTrace();
+          throw new BioclipseException(e.getMessage());
+        }finally {
+          monitor.done();
+        }
+    }
 
 }
