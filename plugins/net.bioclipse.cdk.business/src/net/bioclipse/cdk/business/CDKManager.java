@@ -368,8 +368,12 @@ public class CDKManager implements ICDKManager {
 				cmlWriter.write(model.getMoleculeSet());
 				towrite = writer.toString();
 			} else {
-				throw new IllegalArgumentException("Filetype " + filetype
-						+ " not supported!");
+			    // by default, save as CML, not matter what the extension is
+			    // CML just needs some extra promotion love
+			    StringWriter writer = new StringWriter();
+			    CMLWriter cmlWriter = new CMLWriter(writer);
+			    cmlWriter.write(model);
+			    towrite = writer.toString();
 			}
 			if (target.exists()) {
 				try {
