@@ -110,7 +110,8 @@
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
                 icon="icons/editor/new_atom_bond.gif"
-                style="radio">
+                style="radio"
+                tooltip="Draw new Atoms and Bonds">
              <visibleWhen
                    checkEnabled="true">
                 <reference
@@ -125,7 +126,8 @@
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
                 icon="icons/editor/lasso.gif"
-                style="radio">
+                style="radio"
+                tooltip="Select Atoms and Bonds">
              <visibleWhen
                    checkEnabled="true">
                 <reference
@@ -140,7 +142,8 @@
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
                 icon="icons/editor/charge_plus.gif"
-                style="radio">
+                style="radio"
+                tooltip="Increase formal Charge">
              <visibleWhen
                    checkEnabled="true">
                 <reference
@@ -159,7 +162,8 @@
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
                 icon="icons/editor/charge_minus.gif"
-                style="radio">
+                style="radio"
+                tooltip="Decrease formal Charge">
              <visibleWhen
                    checkEnabled="true">
                 <reference
@@ -178,7 +182,8 @@
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
                 icon="icons/editor/move.gif"
-                style="radio">
+                style="radio"
+                tooltip="Move Atoms and Bonds">
              <visibleWhen
                    checkEnabled="true">
                 <reference
@@ -193,7 +198,8 @@
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
                 icon="icons/editor/benzene.gif"
-                style="radio">
+                style="radio"
+                tooltip="Draw a Benzene ring">
              <parameter
                    name="jcp.controller.module"
                    value="AddRingModule">
