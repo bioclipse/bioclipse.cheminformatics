@@ -324,9 +324,13 @@ public class CDKManager implements ICDKManager {
 	public String calculateSMILES(IMolecule molecule) throws BioclipseException {
 		return molecule.getSMILES();
 	}
-	public void save(IChemModel model, IFile target, String filetype)
-	throws BioclipseException, CDKException, CoreException {
-		IProgressMonitor monitor = new NullProgressMonitor();
+	public void save(IChemModel model, String target, String filetype)
+        throws BioclipseException, CDKException, CoreException {
+	    save(model, ResourcePathTransformer.getInstance().transform(target), filetype, null);
+	}
+	public void save(IChemModel model, IFile target, String filetype, IProgressMonitor monitor)
+        throws BioclipseException, CDKException, CoreException {
+	    if (monitor == null) monitor = new NullProgressMonitor();
 		try {
 			int ticks = 10000;
 			monitor.beginTask("Writing file", ticks);
@@ -457,7 +461,7 @@ public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
 		.newChemModel();
 		chemModel.setMoleculeSet(chemModel.getBuilder().newMoleculeSet());
 		chemModel.getMoleculeSet().addAtomContainer(mol.getAtomContainer());
-		this.save(chemModel, target, filetype);
+		this.save(chemModel, target, filetype, null);
 
 	}
 
@@ -506,7 +510,7 @@ public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
 			}
 			chemModel.getMoleculeSet().addMolecule(imol);
 		}
-		this.save(chemModel, target, filetype);
+		this.save(chemModel, target, filetype, null);
 	}
 	/**
 	 * Create molecule from SMILES.
