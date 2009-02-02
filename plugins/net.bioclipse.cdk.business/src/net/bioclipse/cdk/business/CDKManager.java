@@ -104,6 +104,9 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
  * 
  */
 public class CDKManager implements ICDKManager {
+
+    private static final String NAMESPACE = "cdk";
+
 	private static final Logger logger = Logger.getLogger(CDKManager.class);
 	// ReaderFactory used to instantiate IChemObjectReaders
 	private static ReaderFactory readerFactory;
@@ -116,7 +119,7 @@ public class CDKManager implements ICDKManager {
 		CDKManagerHelper.registerAllFormats(formatsFactory);
 	}
 	public String getNamespace() {
-		return "cdk";
+		return NAMESPACE;
 	}
 	/*
 	 * Load a molecule from a file. If many molecules, just return first. To
