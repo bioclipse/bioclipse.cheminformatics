@@ -1,23 +1,13 @@
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
-import net.bioclipse.cdk.business.Activator;
-import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor.Header;
-import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor.Row;
+import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer.Header;
+import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer.Row;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
-import org.eclipse.jface.viewers.IContentProvider;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.progress.WorkbenchJob;
 
 @Deprecated 
 public class MoleculeTable extends Composite {

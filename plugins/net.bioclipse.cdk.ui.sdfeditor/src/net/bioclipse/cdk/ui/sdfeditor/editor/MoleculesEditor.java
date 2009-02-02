@@ -18,24 +18,18 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
-import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.ui.sdfeditor.MoleculesOutlinePage;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -43,22 +37,17 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
-import org.eclipse.swt.nebula.widgets.compositetable.GridRowLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorInputTransfer;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.EditorInputTransfer.EditorInputData;
-import org.eclipse.ui.progress.WorkbenchJob;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 import org.openscience.cdk.interfaces.IAtomContainer;
 
@@ -74,12 +63,12 @@ public class MoleculesEditor extends EditorPart implements
                                  new LinkedHashSet<ISelectionChangedListener>();
     MoleculesEditorLabelProvider labelProvider;
     public List<String>                          propertyHeaders;
-   
+
 
     private MoleculesOutlinePage outlinePage;
 
-    
-	
+
+
 
 	private MoleculeTableContentProvider contentProvider;
 
@@ -134,42 +123,7 @@ public class MoleculesEditor extends EditorPart implements
         // TODO Auto-generated method stub
         return false;
     }
-    public static class Header extends Composite {
 
-        public Header(Composite parent, int style) {
-            super(parent,style);
-            setLayout( new GridRowLayout( new int[] {10,STRUCTURE_COLUMN_WIDTH,100},false) );
-            new Label(this,SWT.NULL).setText( "Index" );
-            new Label(this,SWT.NULL).setText( "2D-Structure" );
-//            new Label(this,SWT.NULL).setText( "Properties" );
-        }
-    }
-    public static class Row extends AbstractSelectableRow {
-        public Row(Composite parent, int style) {
-            super(parent,style);
-            setLayout( new GridRowLayout( new int[] {10,STRUCTURE_COLUMN_WIDTH,100},false)  );
-            //super.setColumnCount( 2 );
-            index = new Text(this,SWT.NULL);
-            index.setEditable( false );
-            structure = new JChemPaintWidget(this,SWT.NULL);
-            structure.getRenderer2DModel().setShowExplicitHydrogens( false );
-            structure.setMargin( 3 );
-            structure.getRenderer2DModel().setIsCompact( true );
-
-            //properties = new Label(this,SWT.NULL);
-//            properties.setEditable( false );
-            //properties = new org.eclipse.swt.widgets.List(this,SWT.SINGLE);
-
-
-            this.add( index );
-            this.add( structure);
-//            this.add( properties );
-            initialize();
-        }
-        public final Text index;
-        public final JChemPaintWidget structure;
-//        public final Label properties;
-    }
 
     @Override
     public void createPartControl( Composite parent ) {
@@ -178,7 +132,7 @@ public class MoleculesEditor extends EditorPart implements
         contentProvider= new MoleculeTableContentProvider();
 
 
-        molTableViewer = 
+        molTableViewer =
             new MoleculeTableViewer(parent,SWT.NONE);
 
         molTableViewer.setLabelProvider( labelProvider );
@@ -374,7 +328,7 @@ public class MoleculesEditor extends EditorPart implements
         return super.getAdapter( adapter );
     }
     public ISelection getSelection() {
-      
+
             return StructuredSelection.EMPTY;
     }
 
