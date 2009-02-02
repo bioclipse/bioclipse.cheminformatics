@@ -1,9 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2008 The Bioclipse Project and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at <http://www.eclipse.org/legal/epl-v10.html>.
- * Contributors: Arvid Berg goglepox@users.sf.net
+ * Copyright (c) 2008 The Bioclipse Project and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * <http://www.eclipse.org/legal/epl-v10.html>.
+ *
+ * Contributors:
+ *        Arvid Berg <goglepox@users.sf.net>
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
@@ -61,7 +64,6 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
     private MoleculeTableViewer viewer;
     IMoleculesEditorModel   model       = null;
 
-    // IAtomColorer atomColorer;
     IRenderer2DConfigurator renderer2DConfigurator;
 
     public IRenderer2DConfigurator getRenderer2DConfigurator() {
@@ -92,15 +94,8 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
         return molecule;
     }
 
-
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface
-     * .viewers.Viewer, java.lang.Object, java.lang.Object)
-     */
     public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {
+
         if(newInput == null) {
             getCompositeTable( this.viewer ).removeRowContentProvider( this );
             return;
@@ -109,18 +104,21 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
         Assert.isTrue( viewer instanceof MoleculeTableViewer );
         Assert.isTrue( newInput instanceof IAdaptable );
 
-        final IFile file = (IFile)((IAdaptable)newInput)
-        .getAdapter( IFile.class );
+        final IFile file = ( IFile )( ( IAdaptable )newInput )
+                                    .getAdapter( IFile.class );
         if(file != null) {
-            
-            if(file != null) {
-                (new SDFileMoleculesEditorModel(this)).init( file );
-                model = new IMoleculesEditorModel() {
-                    int rowSize;
 
+            if(file != null) {
+
+                (new SDFileMoleculesEditorModel(this)).init( file );
+
+                model = new IMoleculesEditorModel() {
+
+                    int rowSize;
                     {
                         rowSize = numberOfEntries( READ_AHEAD );
                     }
+
                     public Object getMoleculeAt( int index ) {
 
                         return readMoleculeWithIterator( index );
@@ -134,24 +132,25 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
                         throw new UnsupportedOperationException();
                     }
 
-                    private ICDKMolecule readMoleculeWithIterator(int index) {
-                        Iterator<ICDKMolecule> iter;
-                       try {
-                           iter = Activator.getDefault().getCDKManager()
-                                   .createMoleculeIterator( file );
+                    private ICDKMolecule readMoleculeWithIterator( int index ) {
 
-                           ICDKMolecule molecule;
-                           int count = 0;
-                           while ( iter.hasNext() ) {
-                               molecule = iter.next();
-                               if ( count++ == index ) {
-                                   return molecule;
-                               }
-                           }
-                       } catch ( CoreException e ) {
-                           return null;
-                       }
-                       return null;
+                        Iterator<ICDKMolecule> iter;
+                        try {
+                            iter = Activator.getDefault().getCDKManager()
+                                    .createMoleculeIterator( file );
+
+                            ICDKMolecule molecule;
+                            int count = 0;
+                            while ( iter.hasNext() ) {
+                                molecule = iter.next();
+                                if ( count++ == index ) {
+                                    return molecule;
+                                }
+                            }
+                        } catch ( CoreException e ) {
+                            return null;
+                        }
+                        return null;
                     }
 
                     private int numberOfEntries( int max ) {
@@ -159,10 +158,13 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
                         try {
                             int count = 0;
                             BufferedReader reader =
-                                        new BufferedReader( new InputStreamReader(
-                                                            file.getContents() ) );
+                               new BufferedReader(
+                                  new InputStreamReader( file.getContents() ) );
+
                             String line;
-                            while ( count < max && (line = reader.readLine()) != null ) {
+                            while ( count < max
+                                    && (line = reader.readLine()) != null ) {
+
                                 if ( line.contains( "$$$$" ) ) {
                                     count++;
                                 }
@@ -186,10 +188,13 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
             model = (IMoleculesEditorModel)
             ((IAdaptable)newInput).getAdapter( IMoleculesEditorModel.class );
         }
+
         if(viewer != this.viewer) {
+
             Viewer oldViewer = this.viewer;
             this.viewer = (MoleculeTableViewer)viewer;
             if(oldInput != null) {
+
                 getCompositeTable( oldViewer ).removeRowContentProvider( this );
             }
             getCompositeTable( viewer ).addRowContentProvider( this );
@@ -198,6 +203,7 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
     }
 
     private CompositeTable getCompositeTable(Viewer viewer) {
+
         return (CompositeTable)(viewer).getControl();
     }
 
@@ -237,7 +243,7 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
     }
 
     private void setProperties( Label properties, IAtomContainer ac ) {
-        
+
         if(ac == null) {
             properties.setText( "No properties found");
             return;
@@ -325,7 +331,7 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
                     reader = new RandomAccessSDFReader( jFile, builder );
                     provider.model = SDFileMoleculesEditorModel.this;
                     CompositeTable cTable = provider
-                    .getCompositeTable( provider.viewer );
+                                        .getCompositeTable( provider.viewer );
 
                     int firstVisibleRow = cTable.getTopRow();
                     cTable.setNumRowsInCollection(
@@ -335,7 +341,7 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
                         LogUtils.debugTrace( logger, e );
                     }
                 }
-                
+
                 @Override
                 public boolean runInBackground() {
                     return true;
