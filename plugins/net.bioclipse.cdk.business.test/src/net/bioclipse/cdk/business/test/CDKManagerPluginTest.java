@@ -80,7 +80,7 @@ public class CDKManagerPluginTest {
                                 + "jaxp.DocumentBuilderFactoryImpl" );
     }
     
-    ICDKManager cdk;
+    CDKManager cdk;
     ICDKDebugManager cdkdebug;
 
     //Do not use SPRING OSGI for this manager
@@ -376,7 +376,7 @@ public class CDKManagerPluginTest {
         chemmodel.setMoleculeSet(setOfMolecules);
         
         IFile target=new MockIFile();
-        cdk.save(chemmodel, target, ICDKManager.mol);
+        cdk.save(chemmodel, target, ICDKManager.mol, null);
         byte[] bytes=new byte[6];
         target.getContents().read(bytes);
         Assert.assertArrayEquals(new byte[]{10,32,32,67,68,75}, bytes);
