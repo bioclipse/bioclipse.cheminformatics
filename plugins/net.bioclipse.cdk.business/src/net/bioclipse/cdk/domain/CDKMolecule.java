@@ -15,6 +15,7 @@ package net.bioclipse.cdk.domain;
 import java.util.BitSet;
 import java.util.List;
 
+import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.BioObject;
 import net.bioclipse.core.domain.IMolecule;
@@ -191,8 +192,9 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
     }
 
     public String toString() {
-        return this.getClass().getSimpleName() 
-            + name == null ? "" 
-                           : ":" + getName(); 
+        if ( getName() != null )
+            return getClass().getSimpleName() + ":" + getName();
+        return getClass().getSimpleName() + ":" 
+               + Activator.getDefault().getCDKManager().molecularFormula(this);
     }
 }
