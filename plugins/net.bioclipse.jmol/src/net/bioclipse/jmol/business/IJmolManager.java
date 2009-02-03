@@ -12,6 +12,7 @@
 package net.bioclipse.jmol.business;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
@@ -37,17 +38,23 @@ public interface IJmolManager extends IBioclipseManager{
     /**
      * Load jmoo with a file
      * @param path Path to file, relative workspace
+     * @throws CoreException 
      */
     @PublishedMethod( methodSummary = "Load jmol with a file", 
                       params = "Path to file" )
     @Recorded
-    public void load(String path);
+    public void load(String path) throws CoreException;
 
     /**
      * @param file
+     * @throws CoreException 
      */
-    public void load(IFile file);
+    public void load(IFile file) throws CoreException;
     
+    
+    @Recorded
+    @PublishedMethod( methodSummary = "Export as image")
+    public void snapshot(String filepath);
     
     /**
      * Runs "spin on" in jmol

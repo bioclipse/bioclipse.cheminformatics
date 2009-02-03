@@ -12,15 +12,15 @@
 package net.bioclipse.jmol.business;
 
 import net.bioclipse.core.ResourcePathTransformer;
-import net.bioclipse.core.TestClasses;
 import net.bioclipse.jmol.editors.JmolEditor;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 
-public class JmolManager implements IJmolManager{
+public class JmolManager implements IJmolManager {
 
     private JmolEditor jmolEditor;
 
@@ -28,7 +28,7 @@ public class JmolManager implements IJmolManager{
         return "jmol";
     }
 
-    public void run(String script){
+    public void run(String script) {
 
         if (script == null || script.length() <= 0)
             throw new IllegalArgumentException(
@@ -42,15 +42,12 @@ public class JmolManager implements IJmolManager{
 
     }
 
-    public void load( String path ) {
-        
-        load( ResourcePathTransformer.getInstance().transform( path ) );
+    public void load(String path) throws CoreException {
+        load(ResourcePathTransformer.getInstance().transform(path));
     }
-
-    public void load( IFile file ) {
-        //TODO FIXME implement this load method 
-        throw new UnsupportedOperationException(
-            "FIXME: jmol.load is not implemented yet" );
+    
+    public void load(IFile file) throws CoreException {
+    	jmolEditor.load(file);
     }
     
     /**
@@ -93,4 +90,9 @@ public class JmolManager implements IJmolManager{
     public void minimize() {
         run("minimize");
     }
+
+	public void snapshot(String filepath) {
+		IFile file = ResourcePathTransformer.getInstance().transform(filepath);
+		this.findActiveJmolEditor().snapshot(file);
+	}
 }

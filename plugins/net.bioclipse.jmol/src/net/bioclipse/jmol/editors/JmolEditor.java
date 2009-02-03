@@ -11,9 +11,17 @@
 package net.bioclipse.jmol.editors;
 
 
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,6 +29,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
 import javax.swing.JScrollPane;
 
 import net.bioclipse.jmol.views.JmolPanel;
@@ -223,23 +232,77 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
         super.dispose();
     }
+    
+    public void load(IFile file) throws CoreException {
+    	BufferedReader contentStream = 
+    		new BufferedReader(new InputStreamReader(file.getContents()));
+    	StringBuffer stringModel = new StringBuffer();
+    	try {
+    		String line;
+			while ((line = contentStream.readLine()) != null) {
+				stringModel.append(line);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	jmolPanel.getViewer().loadInline(stringModel.toString());
+    }
+    
+    /**
+     * Take a snapshot of the editor contents and save as a png file
+     */
+    public void snapshot(IFile file) {
+		Image image = new BufferedImage(
+				jmolPanel.getWidth(),
+				jmolPanel.getHeight(),
+				BufferedImage.TYPE_INT_RGB);
+		Graphics g = image.getGraphics();
+		jmolPanel.paint(g);
+		
+		try {
+		    // this seems like a convoluted way to do things...
+		    ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); 
+			ImageIO.write((RenderedImage) image, "PNG", outputStream);
+			if (file.exists()) {
+    			file.setContents(
+    			        new ByteArrayInputStream(outputStream.toByteArray()),
+    			        false,
+    			        true,
+    			        null);
+			} else {
+			    file.create(
+                        new ByteArrayInputStream(outputStream.toByteArray()),
+                        false,
+                        null);
+			}
+		} catch (IOException ioe) {
+			//logger.error("Problem with the path " + result);
+		} catch (CoreException e) {
+            e.printStackTrace();
+        }
+    }
+    
     /**
      * Saves the multi-page editor's document.
      */
     public void doSave(IProgressMonitor monitor) {
         getEditor(0).doSave(monitor);
     }
+    
     /**
      * Saves the multi-page editor's document as another file.
      * Also updates the text for page 0's tab, and updates this multi-page editor's input
      * to correspond to the nested editor's.
      */
     public void doSaveAs() {
-        IEditorPart editor = getEditor(0);
-        editor.doSaveAs();
-        setPageText(0, editor.getTitle());
-        setInput(editor.getEditorInput());
+        IEditorPart editor = getActiveEditor();
+        if (editor != null) {
+        	editor.doSaveAs();
+        	setPageText(0, editor.getTitle());
+        	setInput(editor.getEditorInput());
+        }
     }
+    
     /* (non-Javadoc)
      * Method declared on IEditorPart
      */
@@ -247,6 +310,7 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         setActivePage(0);
         IDE.gotoMarker(getEditor(0), marker);
     }
+    
     /**
      * The <code>MultiPageEditorExample</code> implementation of this method
      * checks that the input is an instance of <code>IFileEditorInput</code>.
