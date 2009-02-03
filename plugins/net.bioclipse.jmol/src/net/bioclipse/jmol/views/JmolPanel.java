@@ -67,6 +67,7 @@ public class JmolPanel extends JPanel {
         viewer.setColorBackground("white");
         viewer.setAutoBond(true);
         viewer.setJmolStatusListener(new StatusListener(part));
+        viewer.setFrankOn(false);
         return viewer;
     }
 
