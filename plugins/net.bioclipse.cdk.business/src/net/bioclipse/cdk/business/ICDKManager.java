@@ -690,4 +690,9 @@ public interface ICDKManager extends IBioclipseManager {
                      methodSummary="Extracts a number of entries from an sd file. Does not read the complete file for this.")
     @TestMethods("testExtractFromSDFile")
     public List<IMolecule> extractFromSDFile(IFile file, int startenty, int endentry) throws BioclipseException, InvocationTargetException;
+
+    @Recorded
+    @PublishedMethod(params = "ICDKMolecule m", 
+                     methodSummary = "Gives the molecularformula as a String")
+    public String molecularFormula( ICDKMolecule m );
 }

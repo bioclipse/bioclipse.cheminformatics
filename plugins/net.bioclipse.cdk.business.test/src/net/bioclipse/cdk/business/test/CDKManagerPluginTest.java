@@ -946,5 +946,12 @@ public class CDKManagerPluginTest {
         Assert.assertNotNull(cdk.getInfo(path));
     }
 
+    @Test
+    public void testMolecularFormula() throws BioclipseException {
+        ICDKMolecule m = cdk.fromSMILES( "C" );
+        assertEquals( "CH4", cdk.molecularFormula(m) );
+        m = cdk.fromSMILES( "C[H]" );
+        assertEquals( "CH4", cdk.molecularFormula(m) );
+    }
 
 }

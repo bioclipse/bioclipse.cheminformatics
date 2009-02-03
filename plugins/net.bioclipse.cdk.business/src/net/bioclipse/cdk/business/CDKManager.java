@@ -58,9 +58,11 @@ import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
+import org.openscience.cdk.config.Elements;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.fingerprint.FingerprinterTool;
+import org.openscience.cdk.formula.MolecularFormula;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.interfaces.IAtom;
@@ -69,6 +71,7 @@ import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CDKSourceCodeWriter;
 import org.openscience.cdk.io.CMLReader;
@@ -97,6 +100,7 @@ import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
+import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
 /**
  * The manager class for CDK. Contains CDK related methods.
  *
@@ -1486,4 +1490,50 @@ public class CDKManager implements ICDKManager {
   	        monitor.done();
   	    }
   	}
+
+    public String molecularFormula( ICDKMolecule m ) {
+
+        IMolecularFormula mf 
+            = MolecularFormulaManipulator.getMolecularFormula( 
+                  m.getAtomContainer() ); 
+        
+        int missingHCount = 0;
+        for (IAtom atom : m.getAtomContainer().atoms()) {
+            missingHCount += calculateMissingHydrogens( m.getAtomContainer(), 
+                                                        atom );
+        }
+        
+        mf.addIsotope( m.getAtomContainer().getBuilder()
+                                           .newIsotope( Elements.HYDROGEN), 
+                       missingHCount );
+        
+        return MolecularFormulaManipulator.getString( mf );
+    }
+
+    private int calculateMissingHydrogens( IAtomContainer container, 
+                                           IAtom atom ) {
+        CDKAtomTypeMatcher matcher 
+            = CDKAtomTypeMatcher.getInstance(container.getBuilder());
+        IAtomType type;
+        try {
+            type = matcher.findMatchingAtomType(container, atom);
+            if (type.getAtomTypeName() == null)
+                return 0;
+              
+            if ("X".equals(atom.getAtomTypeName())) {
+                return 0; 
+              }
+              
+            if (type.getFormalNeighbourCount() == CDKConstants.UNSET)
+              return 0;
+            
+            // very simply counting: 
+            // each missing explicit neighbor is a missing hydrogen
+            return type.getFormalNeighbourCount() 
+                   - container.getConnectedAtomsCount(atom);
+        } 
+        catch ( CDKException e ) {
+            return 0;
+        }
+    }
 }
