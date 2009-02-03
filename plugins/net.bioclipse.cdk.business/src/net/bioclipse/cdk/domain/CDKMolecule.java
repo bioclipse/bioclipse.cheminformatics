@@ -20,6 +20,7 @@ import net.bioclipse.core.domain.BioObject;
 import net.bioclipse.core.domain.IMolecule;
 
 import org.openscience.cdk.fingerprint.Fingerprinter;
+import org.openscience.cdk.formula.MolecularFormula;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.libio.cml.Convertor;
@@ -189,4 +190,9 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
         
     }
 
+    public String toString() {
+        return this.getClass().getSimpleName() 
+            + name == null ? "" 
+                           : ":" + getName(); 
+    }
 }
