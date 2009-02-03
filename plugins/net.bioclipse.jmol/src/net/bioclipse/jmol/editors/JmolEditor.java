@@ -11,7 +11,6 @@
 package net.bioclipse.jmol.editors;
 
 
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -256,24 +255,18 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
 				jmolPanel.getWidth(),
 				jmolPanel.getHeight(),
 				BufferedImage.TYPE_INT_RGB);
-		Graphics g = image.getGraphics();
-		jmolPanel.paint(g);
+		jmolPanel.paint(image.getGraphics());
 		
 		try {
 		    // this seems like a convoluted way to do things...
 		    ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); 
 			ImageIO.write((RenderedImage) image, "PNG", outputStream);
+			ByteArrayInputStream input = 
+			    new ByteArrayInputStream(outputStream.toByteArray());
 			if (file.exists()) {
-    			file.setContents(
-    			        new ByteArrayInputStream(outputStream.toByteArray()),
-    			        false,
-    			        true,
-    			        null);
+    			file.setContents(input, false, true, null);
 			} else {
-			    file.create(
-                        new ByteArrayInputStream(outputStream.toByteArray()),
-                        false,
-                        null);
+			    file.create(input, false, null);
 			}
 		} catch (IOException ioe) {
 			//logger.error("Problem with the path " + result);
