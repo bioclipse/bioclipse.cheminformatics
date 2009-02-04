@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
 import org.eclipse.swt.nebula.widgets.compositetable.IRowContentProvider;
 import org.eclipse.swt.widgets.Control;
@@ -62,6 +63,8 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
     IMoleculesEditorModel   model       = null;
 
     IRenderer2DConfigurator renderer2DConfigurator;
+    MoleculesEditorLabelProvider melp = new MoleculesEditorLabelProvider(
+                                    MoleculeTableViewer.STRUCTURE_COLUMN_WIDTH);
 
     public IRenderer2DConfigurator getRenderer2DConfigurator() {
 
@@ -249,34 +252,24 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
 
         Row row = (Row) rowControl;
         Control[] columns = row.getChildren();
-        Text index = (Text) columns[0];
-        JChemPaintWidget structure = (JChemPaintWidget) columns[1];
-
-        index.setText( Integer.toString( currentObjectOffset + 1 ) );
-        IAtomContainer ac = null;
+        
         try {
-            ICDKMolecule mol = getMoleculeAt( currentObjectOffset );
-            if(mol != null)
-                ac = mol.getAtomContainer();
-
-            structure.setAtomContainer( ac );
-//            setProperties( row.properties, ac );
-            ICDKMolecule cdkmol = new CDKMolecule( ac );
-
-            // Allows for external actions to register a renderer2dconfigurator
-            // to customize rendering
-            if ( renderer2DConfigurator != null )
-                renderer2DConfigurator.configure( structure
-                        .getRenderer2DModel(), cdkmol );
-
-        } catch ( CoreException e ) {
-            // TODO Auto-generated catch block
-            LogUtils.debugTrace( logger, e );
-        } catch ( Exception e ) {
-            // TODO Auto-generated catch block
-            LogUtils.debugTrace( logger, e );
-        }
-
+        ICDKMolecule molecule = getMoleculeAt( currentObjectOffset );
+                
+                    Image image;
+                
+                    image = melp.getColumnImage( molecule ,1);
+        //             image = new Image(rowControl.getDisplay(), "icons/many_molecules.png");
+                    ((Label)columns[1]).setImage( image );
+        //            children[0].setSize( 100,100);
+                    
+                    
+                    
+                } catch ( Exception e ) {
+                    ((Label)columns[1]).setImage( null );
+                    ((Label)columns[1]).setText( "no structure" );
+                    logger.debug( "Failed to generate iamge" );
+                 }
     }
 
     private void setProperties( Label properties, IAtomContainer ac ) {

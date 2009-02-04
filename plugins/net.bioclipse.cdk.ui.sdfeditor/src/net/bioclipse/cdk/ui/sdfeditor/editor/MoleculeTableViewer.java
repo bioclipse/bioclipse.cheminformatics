@@ -1,16 +1,15 @@
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
-import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
-
 import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.nebula.widgets.compositetable.AbstractSelectableRow;
 import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
 import org.eclipse.swt.nebula.widgets.compositetable.GridRowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 
 
 public class MoleculeTableViewer extends ContentViewer {
@@ -60,10 +59,9 @@ public class MoleculeTableViewer extends ContentViewer {
 
             super( parent, style );
             setLayout( new GridRowLayout( new int[] { 10,
-                    STRUCTURE_COLUMN_WIDTH, 100 }, false ) );
+                    STRUCTURE_COLUMN_WIDTH}, false ) );
             new Label( this, SWT.NULL ).setText( "Index" );
             new Label( this, SWT.NULL ).setText( "2D-Structure" );
-            // new Label(this,SWT.NULL).setText( "Properties" );
         }
     }
 
@@ -75,22 +73,15 @@ public class MoleculeTableViewer extends ContentViewer {
             setLayout( new GridRowLayout( new int[]
                        { 10,
                          STRUCTURE_COLUMN_WIDTH,
-                         100 },
+                         },
                     false ) );
-
-            index = new Text( this, SWT.NULL );
-            index.setEditable( false );
-            structure = new JChemPaintWidget( this, SWT.NULL );
-            structure.getRenderer2DModel().setShowExplicitHydrogens( false );
-            structure.setMargin( 3 );
-            structure.getRenderer2DModel().setIsCompact( true );
-
-            this.add( index );
-            this.add( structure );
-            initialize();
+            this.setColumnCount( 2 );
         }
-
-        public final Text             index;
-        public final JChemPaintWidget structure;
+        @Override
+        public Point computeSize( int hint, int hint2 ) {
+            Point p =super.computeSize( hint, hint2 );
+            p.y = STRUCTURE_COLUMN_WIDTH;
+            return p;
+        }
     }
 }
