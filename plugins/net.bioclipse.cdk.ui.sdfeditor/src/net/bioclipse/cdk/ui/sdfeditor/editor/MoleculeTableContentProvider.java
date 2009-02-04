@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import net.bioclipse.cdk.business.Activator;
@@ -38,6 +39,8 @@ import org.eclipse.swt.nebula.widgets.compositetable.IRowContentProvider;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.progress.DeferredTreeContentManager;
+import org.eclipse.ui.progress.WorkbenchJob;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemObject;
@@ -88,7 +91,7 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
         return molecule;
     }
 
-    public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {
+    public void inputChanged( final Viewer viewer, Object oldInput, Object newInput ) {
 
         if(newInput == null) {
             getCompositeTable( this.viewer ).removeRowContentProvider( this );
@@ -102,12 +105,51 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
                                     .getAdapter( IFile.class );
         if(file != null) {
 
-            if(file != null) {
+            if(file != null && file.getProject()
+                  .equals( net.bioclipse.core.Activator.getVirtualProject() )) {
+                Activator.getDefault().getCDKManager()
+                .loadMolecules( file, new BioclipseUIJob<List<ICDKMolecule>>() {
+                    @Override
+                    public void runInUI() {
+                        final List<ICDKMolecule> bioList = getReturnValue();
 
+                        model = new IMoleculesEditorModel() {
+                            List<ICDKMolecule> molecules;
+                            {
+                                molecules = bioList;
+                            }
+                            public Object getMoleculeAt( int index ) {
+
+                                return molecules.get( index );
+                            }
+
+                            public int getNumberOfMolecules() {
+
+                                return molecules.size();
+                            }
+
+                            public void save() {
+                                throw new UnsupportedOperationException();
+                            }
+
+                        };
+
+                        CompositeTable cTable = getCompositeTable( viewer );
+                        int firstVisibleRow = cTable.getTopRow();
+                        cTable.setNumRowsInCollection(bioList.size());
+                        cTable.setTopRow( firstVisibleRow );
+
+                    }
+
+                    @Override
+                    public boolean runInBackground() {
+                        return true;
+                    }
+                });
+            }
+            else {
                 (new SDFileMoleculesEditorModel(this)).init( file );
-
                 model = new IMoleculesEditorModel() {
-
                     int rowSize;
                     {
                         rowSize = numberOfEntries( READ_AHEAD );
@@ -193,7 +235,8 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
             }
             getCompositeTable( viewer ).addRowContentProvider( this );
         }
-        updateSize( model.getNumberOfMolecules() );
+
+        updateSize( (model!=null?model.getNumberOfMolecules():0) );
     }
 
     private CompositeTable getCompositeTable(Viewer viewer) {
