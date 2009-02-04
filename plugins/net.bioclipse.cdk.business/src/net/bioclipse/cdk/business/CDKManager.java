@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
@@ -258,7 +259,7 @@ public class CDKManager implements ICDKManager {
   	                                 CoreException {
 
   	    return loadMolecules( ResourcePathTransformer.getInstance()
-  	                                                 .transform(path), 
+  	                                                 .transform(path),
   	                                                 (IProgressMonitor)null );
   	}
 
@@ -280,11 +281,11 @@ public class CDKManager implements ICDKManager {
   	public List<ICDKMolecule> loadMolecules(
   	                                         IFile file,
   	                                         BioclipseUIJob<List<ICDKMolecule>> uiJob ) {
-  	
+
   	    throw new UnsupportedOperationException(
         "This manager method should not be called");
   	}
-  	
+
   	public List<ICDKMolecule> loadMolecules( IFile file,
   	                                         IChemFormat format,
   	                                         IProgressMonitor monitor )
@@ -1515,45 +1516,45 @@ public class CDKManager implements ICDKManager {
 
     public String molecularFormula( ICDKMolecule m ) {
 
-        IMolecularFormula mf 
-            = MolecularFormulaManipulator.getMolecularFormula( 
-                  m.getAtomContainer() ); 
-        
+        IMolecularFormula mf
+            = MolecularFormulaManipulator.getMolecularFormula(
+                  m.getAtomContainer() );
+
         int missingHCount = 0;
         for (IAtom atom : m.getAtomContainer().atoms()) {
-            missingHCount += calculateMissingHydrogens( m.getAtomContainer(), 
+            missingHCount += calculateMissingHydrogens( m.getAtomContainer(),
                                                         atom );
         }
-        
+
         mf.addIsotope( m.getAtomContainer().getBuilder()
-                                           .newIsotope( Elements.HYDROGEN), 
+                                           .newIsotope( Elements.HYDROGEN),
                        missingHCount );
-        
+
         return MolecularFormulaManipulator.getString( mf );
     }
 
-    private int calculateMissingHydrogens( IAtomContainer container, 
+    private int calculateMissingHydrogens( IAtomContainer container,
                                            IAtom atom ) {
-        CDKAtomTypeMatcher matcher 
+        CDKAtomTypeMatcher matcher
             = CDKAtomTypeMatcher.getInstance(container.getBuilder());
         IAtomType type;
         try {
             type = matcher.findMatchingAtomType(container, atom);
             if (type.getAtomTypeName() == null)
                 return 0;
-              
+
             if ("X".equals(atom.getAtomTypeName())) {
-                return 0; 
+                return 0;
               }
-              
+
             if (type.getFormalNeighbourCount() == CDKConstants.UNSET)
               return 0;
-            
-            // very simply counting: 
+
+            // very simply counting:
             // each missing explicit neighbor is a missing hydrogen
-            return type.getFormalNeighbourCount() 
+            return type.getFormalNeighbourCount()
                    - container.getConnectedAtomsCount(atom);
-        } 
+        }
         catch ( CDKException e ) {
             return 0;
         }
