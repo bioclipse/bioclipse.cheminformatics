@@ -18,7 +18,6 @@ import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.TestClasses;
 import net.bioclipse.core.business.IBioclipseManager;
-import net.bioclipse.core.jobs.Job;
 
 @TestClasses("net.bioclipse.jmol.test.JmolManagerTest")
 public interface IJmolManager extends IBioclipseManager{
@@ -73,7 +72,6 @@ public interface IJmolManager extends IBioclipseManager{
     public void spinOff();
 
     @Recorded
-    @Job 
     @PublishedMethod(methodSummary = "Optimizes the geometry of the structure in the active JmolEditor" )
     public void minimize();
 }
