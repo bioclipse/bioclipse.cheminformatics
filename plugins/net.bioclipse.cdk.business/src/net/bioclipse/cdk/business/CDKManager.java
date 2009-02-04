@@ -952,14 +952,18 @@ public class CDKManager implements ICDKManager {
 
   	            monitor.beginTask( "Creating SD-file index", (int)size );
   	            List<Record> indexList = new LinkedList<Record>();
+
   	            BufferedInputStream cs
   	                = new BufferedInputStream( file.getContents(), 8192 );
+
+  	            boolean nextNewLine = false;
 
   	            int num = 0;
   	            int pos = 0;
   	            int start = 0;
   	            int c = 0;
   	            int dollars = 0;
+  	            int newLine = 0;
 
   	            while ( (c = cs.read()) != -1 ) {
   	                pos++;
@@ -978,12 +982,21 @@ public class CDKManager implements ICDKManager {
   	                        }
 
   	                        dollars = 0;
-  	                        start = pos +2;
+  	                        nextNewLine = true;
+  	                        newLine = 0;
   	                        num++;
   	                    }
   	                }
   	                else
   	                    dollars = 0;
+
+  	                if(nextNewLine && c == '\n') {
+  	                    newLine++;
+  	                    if(newLine == 1) {
+  	                        start = pos;
+  	                        nextNewLine = false;
+  	                    }
+  	                }
   	            }
 
   	            cs.close();
