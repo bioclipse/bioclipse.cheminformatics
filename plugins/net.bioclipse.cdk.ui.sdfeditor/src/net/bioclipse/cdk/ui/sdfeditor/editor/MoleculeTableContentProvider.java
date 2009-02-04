@@ -73,7 +73,7 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
         this.renderer2DConfigurator = renderer2DConfigurator;
     }
 
-    private ICDKMolecule getMoleculeAt( int index ) throws Exception {
+    public ICDKMolecule getMoleculeAt( int index ) {
         ICDKMolecule molecule = null;
         IMoleculesEditorModel lModel;
         synchronized ( this ) {
