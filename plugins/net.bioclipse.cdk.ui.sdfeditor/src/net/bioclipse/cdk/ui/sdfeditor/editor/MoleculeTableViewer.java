@@ -85,12 +85,16 @@ public class MoleculeTableViewer extends ContentViewer {
 
         if(getContentProvider() instanceof MoleculeTableContentProvider) {
 
-            Object o = ((MoleculeTableContentProvider)getContentProvider()
-                    ).getMoleculeAt( table.getSelection().y+table.getTopRow());
+            int selectedIndex = table.getSelection().y+table.getTopRow();
+            MoleculeTableContentProvider contentProvider =
+                            (MoleculeTableContentProvider)getContentProvider();
 
-            if ( o != null ) {
-                IStructuredSelection selection = new StructuredSelection( o );
-                return selection;
+            if(selectedIndex >=0 ) {
+                Object o = contentProvider.getMoleculeAt( selectedIndex );
+                if ( o != null ) {
+                  IStructuredSelection selection = new StructuredSelection( o );
+                  return selection;
+                }
             }
         }
 
