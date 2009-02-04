@@ -161,6 +161,9 @@ public interface ICDKManager extends IBioclipseManager {
     public List<ICDKMolecule> loadMolecules( IFile file )
         throws IOException, BioclipseException, CoreException;
     
+    public List<ICDKMolecule> loadMolecules( IFile file, 
+                                       BioclipseUIJob<List<ICDKMolecule>> uiJob);
+    
     public List<ICDKMolecule> loadMolecules( IFile file,
                                              IChemFormat format,
                                              IProgressMonitor monitor)

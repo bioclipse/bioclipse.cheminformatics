@@ -258,7 +258,8 @@ public class CDKManager implements ICDKManager {
   	                                 CoreException {
 
   	    return loadMolecules( ResourcePathTransformer.getInstance()
-  	                                                 .transform(path), null );
+  	                                                 .transform(path), 
+  	                                                 (IProgressMonitor)null );
   	}
 
   	/**
@@ -276,6 +277,14 @@ public class CDKManager implements ICDKManager {
   	    return loadMolecules(file, null, monitor);
   	}
 
+  	public List<ICDKMolecule> loadMolecules(
+  	                                         IFile file,
+  	                                         BioclipseUIJob<List<ICDKMolecule>> uiJob ) {
+  	
+  	    throw new UnsupportedOperationException(
+        "This manager method should not be called");
+  	}
+  	
   	public List<ICDKMolecule> loadMolecules( IFile file,
   	                                         IChemFormat format,
   	                                         IProgressMonitor monitor )
@@ -1136,7 +1145,7 @@ public class CDKManager implements ICDKManager {
   	                          throws IOException,
   	                                 BioclipseException,
   	                                 CoreException {
-  	    return loadMolecules(file, null);
+  	    return loadMolecules(file, (IProgressMonitor)null);
   	}
 
   	public int numberOfEntriesInSDF( IFile file,

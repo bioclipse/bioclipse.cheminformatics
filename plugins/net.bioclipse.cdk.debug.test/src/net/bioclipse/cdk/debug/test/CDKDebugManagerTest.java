@@ -32,6 +32,7 @@ import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.tests.AbstractManagerTest;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Test;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
@@ -67,7 +68,8 @@ public class CDKDebugManagerTest extends AbstractManagerTest {
         CDKManager cdk = new CDKManager();
 
         String path = getClass().getResource("/testFiles/m2d_ref_232.sdf").getPath();
-        List<ICDKMolecule> mols = cdk.loadMolecules( new MockIFile(path), null);
+        List<ICDKMolecule> mols = cdk.loadMolecules( new MockIFile(path),
+                                                     new NullProgressMonitor());
 
         int cnt=0;
         for (ICDKMolecule mol : mols){

@@ -20,7 +20,8 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.smiles,
  org.openscience.cdk.extra,
  org.openscience.cdk.io,
- javax.vecmath
+ javax.vecmath,
+ net.bioclipse.ui;bundle-version="2.0.0"
 Eclipse-LazyStart: true
 Export-Package: net.bioclipse.cdk,
  net.bioclipse.cdk.business.test
