@@ -20,7 +20,6 @@ import java.util.Map;
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer.Row;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.util.LogUtils;
@@ -39,9 +38,6 @@ import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
 import org.eclipse.swt.nebula.widgets.compositetable.IRowContentProvider;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.progress.DeferredTreeContentManager;
-import org.eclipse.ui.progress.WorkbenchJob;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemObject;
@@ -252,19 +248,19 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
 
         Row row = (Row) rowControl;
         Control[] columns = row.getChildren();
-        
+        ((Label)columns[0]).setText( ""+(currentObjectOffset+1 ));
         try {
         ICDKMolecule molecule = getMoleculeAt( currentObjectOffset );
-                
+
                     Image image;
-                
+
                     image = melp.getColumnImage( molecule ,1);
         //             image = new Image(rowControl.getDisplay(), "icons/many_molecules.png");
                     ((Label)columns[1]).setImage( image );
         //            children[0].setSize( 100,100);
-                    
-                    
-                    
+
+
+
                 } catch ( Exception e ) {
                     ((Label)columns[1]).setImage( null );
                     ((Label)columns[1]).setText( "no structure" );
