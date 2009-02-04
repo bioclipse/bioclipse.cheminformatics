@@ -15,7 +15,6 @@ import net.bioclipse.core.Recorded;
 import net.bioclipse.core.TestClasses;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IBioclipseManager;
-import net.bioclipse.core.jobs.Job;
 
 import org.eclipse.core.resources.IFile;
 import org.xmlcml.cml.base.CMLElement;
@@ -25,7 +24,6 @@ public interface IValidateCMLManager extends IBioclipseManager{
 
 
 	    @Recorded
-	    @Job
 	    public void validate(IFile input) throws IOException;
 	    
 	    @Recorded
