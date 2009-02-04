@@ -41,7 +41,6 @@ import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.BioList;
 import net.bioclipse.core.domain.IMolecule;
-import net.bioclipse.core.jobs.Job;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.ui.jobs.BioclipseUIJob;
 
@@ -729,7 +728,6 @@ public class CDKManager implements ICDKManager {
   	    }
   	}
 
-  	@Job
   	public Iterator<ICDKMolecule> createConformerIterator(String path) {
   	    return creatConformerIterator( ResourcePathTransformer.getInstance()
   	                                                          .transform(path),
@@ -1032,7 +1030,6 @@ public class CDKManager implements ICDKManager {
   	    }
   	}
 
-  	@Job
   	public int numberOfEntriesInSDF(String filePath) {
   	           throw new UnsupportedOperationException(
   	    "This manager method should not be called");
@@ -1046,7 +1043,6 @@ public class CDKManager implements ICDKManager {
   	 *            the full path to the file
   	 * @return a list of molecules that may have multiple conformers
   	 */
-  	@Job
   	public List<ICDKMolecule> loadConformers(String path) {
   	    return loadConformers( ResourcePathTransformer.getInstance()
   	                                                  .transform(path), null);
