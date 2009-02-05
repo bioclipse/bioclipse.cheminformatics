@@ -69,11 +69,13 @@ public class HighlightModule extends ControllerModuleAdapter {
 	}
 	
 	private void unsetHighlights(RendererModel model) {
-        model.setHighlightedAtom(null);
-        model.setHighlightedBond(null);
-        prevHighlightAtom = null;
-        prevHighlightBond = null;
-        chemObjectRelay.updateView();
+	    if (prevHighlightAtom != null || prevHighlightBond != null) {
+	        model.setHighlightedAtom(null);
+	        model.setHighlightedBond(null);
+	        prevHighlightAtom = null;
+	        prevHighlightBond = null;
+	        chemObjectRelay.updateView();
+	    }
 	}
 
 	public void mouseMove(Point2d worldCoord) {
@@ -82,23 +84,36 @@ public class HighlightModule extends ControllerModuleAdapter {
 		RendererModel model = 
 		    chemObjectRelay.getRenderer().getRenderer2DModel();
 		
-		if (atom == null && bond == null) {
-		    if (prevHighlightAtom == null && prevHighlightBond == null) {
-		        return;
-		    }
-		    unsetHighlights(model);
-		} else if (atom != null && bond == null) {
-		    updateAtom(atom, model);
-		} else if (atom == null && bond != null) {
-		    updateBond(bond, model);
-		} else {
+		if (atom != null && bond != null) {
 		    double dA = atom.getPoint2d().distance(worldCoord);
 		    double dB = bond.get2DCenter().distance(worldCoord);
-		    if (dA <= dB) {
-		        updateAtom(atom, model);
-		    } else {
-		       updateBond(bond, model);
+		    if (dA > model.getHighlightRadiusModel() &&
+		        dB > model.getHighlightRadiusModel()) {
+		        unsetHighlights(model);
+		        return; // done
 		    }
+
+		    // highlight atom or bond, which ever is closer
+		    if (dA < dB && dA < model.getHighlightRadiusModel()) {
+		        // atom closest
+		        updateAtom(atom, model);
+		    } else if (dB < model.getHighlightRadiusModel()) {
+		        // bond closest
+		        updateBond(bond, model);
+		    }
+		} else if (atom != null) {
+		    // atom is only closest, but in range?
+		    double dA = atom.getPoint2d().distance(worldCoord);
+		    if (dA < model.getHighlightRadiusModel())
+		        updateAtom(atom, model);
+		} else if (bond != null) {
+		    // bond is only closest, but in range?
+		    double dB = bond.get2DCenter().distance(worldCoord);
+		    if (dB < model.getHighlightRadiusModel())
+		        updateBond(bond, model);
+		} else {
+		    // nothing nearby
+		    unsetHighlights(model);
 		}
 	}
 
