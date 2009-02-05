@@ -997,6 +997,13 @@ public class CDKManager implements ICDKManager {
   	                    }
   	                }
   	            }
+  	            // Adds the last entry file contains no ending '$$$$'
+  	            if(start!=pos) {
+  	                indexList.add(
+  	                          new Record(start,pos-1-start));
+  	                monitor.worked( pos-start );
+  	                num++;
+  	            }
 
   	            cs.close();
   	            PrintStream os = new PrintStream( indexFile );
