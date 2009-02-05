@@ -22,6 +22,7 @@ import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
 
 import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.jchempaint.view.SWTFontManager;
@@ -37,9 +38,11 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
+import org.openscience.cdk.Molecule;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.font.IFontManager;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
@@ -96,23 +99,17 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
             // If no 2D coordinates
             if ( GeometryTools.has2DCoordinates( drawMolecule ) == false ) {
                 // Test if 3D coordinates
-                if ( GeometryTools.has3DCoordinates( drawMolecule ) == true ) {
-                    // Collapse on XY plane
-                   drawMolecule = generate2Dfrom3D( drawMolecule );
-                    drawMolecule = AtomContainerManipulator.
-                          removeHydrogensPreserveMultiplyBonded( drawMolecule );
 
-                }else {
-                    try {
-                        drawMolecule = ((ICDKMolecule)Activator.getDefault()
-                                                .getCDKManager()
-                                                .generate2dCoordinates( mol ))
-                                                .getAtomContainer();
-                    } catch ( Exception e ) {
-                        logger.info( "Failed to generate 2D-coordinates" );
-                        return null;
-                    }
+                try {
+                    drawMolecule = ((ICDKMolecule)Activator.getDefault()
+                            .getCDKManager()
+                            .generate2dCoordinates( mol ))
+                            .getAtomContainer();
+                } catch ( Exception e ) {
+                    logger.info( "Failed to generate 2D-coordinates" );
+                    return null;
                 }
+
             }
 
 
