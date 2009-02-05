@@ -21,6 +21,7 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.openscience.cdk.geometry.GeometryTools;
@@ -41,7 +42,7 @@ public class JChemPaintWidget extends Canvas {
     int margin = 20;
 
     protected IAtomContainer  atomContainer;
-    protected RendererModel renderer2DModel;
+    protected RendererModel renderer2DModel = new RendererModel();
     Renderer renderer;
     SWTFontManager fontManager;
 
@@ -61,7 +62,6 @@ public class JChemPaintWidget extends Canvas {
         renderer = new Renderer(set,fontManager);
 
         renderer2DModel = renderer.getRenderer2DModel();
-        renderer2DModel = new RendererModel();
         renderer2DModel.setAtomRadius( 20 );
         renderer2DModel.setHighlightRadiusModel( .4 );
         renderer2DModel.setBondDistance( .05 );
@@ -99,11 +99,22 @@ public class JChemPaintWidget extends Canvas {
             return;
         } else setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
 
+        Rectangle clientArea = getClientArea();
+//        new Rectangle2D.Double( margin, margin,
+//                                this.getSize().x-margin*2,
+//                                this.getSize().y-margin*2 )
         SWTRenderer visitor = new SWTRenderer( event.gc);
+
+
+//        renderer.setZoom( Math.min( clientArea.width/acBounds.getWidth(),
+//                                    clientArea.height/acBounds.getHeight() ) );
+
+        renderer.getRenderer2DModel().setFitToScreen( true );
         renderer.paintMolecule( atomContainer, visitor,
-                                new Rectangle2D.Double( margin, margin,
-                                                     this.getSize().x-margin*2,
-                                                     this.getSize().y-margin*2 )
+                                new Rectangle2D.Double( clientArea.x,
+                                                        clientArea.y,
+                                                        clientArea.width,
+                                                        clientArea.height)
                                 , true );
     }
 
