@@ -689,16 +689,24 @@ public interface ICDKManager extends IBioclipseManager {
    	public IMolecule addImplicitHydrogens(IMolecule molecule) throws BioclipseException, InvocationTargetException;
 
     @Recorded
-    @PublishedMethod(params = "IFile file, IMolecule[] entries",
-                     methodSummary="Creates an sd file from a number of molecules")
-    @TestMethods("testCreateSDFile")
+    @TestMethods("testCreateSDFile_IFile_IMoleculeArray")
    	public void createSDFile(IFile file, IMolecule[] entries) throws BioclipseException, InvocationTargetException;
 
     @Recorded
-    @PublishedMethod(params = "IFile file, int startenty, int endentry",
-                     methodSummary="Extracts a number of entries from an sd file. Does not read the complete file for this.")
-    @TestMethods("testExtractFromSDFile")
+    @PublishedMethod(params = "String file, IMolecule[] entries", 
+                     methodSummary="Creates an sd file from a number of molecules")
+    @TestMethods("testCreateSDFile_String_IMoleculeArray")
+    public void createSDFile(String file, IMolecule[] entries) throws BioclipseException, InvocationTargetException;
+
+    @Recorded
+    @TestMethods("testExtractFromSDFile_IFile_int_int")
     public List<IMolecule> extractFromSDFile(IFile file, int startenty, int endentry) throws BioclipseException, InvocationTargetException;
+    
+    @Recorded
+    @PublishedMethod(params = "String file, int startenty, int endentry", 
+                     methodSummary="Extracts a number of entries from an sd file. Does not read the complete file for this.")
+    @TestMethods("testExtractFromSDFile_String_int_int")
+    public List<IMolecule> extractFromSDFile(String file, int startenty, int endentry) throws BioclipseException, InvocationTargetException;
 
     @Recorded
     @PublishedMethod(params = "ICDKMolecule m",

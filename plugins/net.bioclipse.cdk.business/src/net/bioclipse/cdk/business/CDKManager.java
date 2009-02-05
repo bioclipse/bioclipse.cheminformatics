@@ -1540,6 +1540,21 @@ public class CDKManager implements ICDKManager {
   	    }
   	}
 
+    public List<IMolecule> extractFromSDFile( String file, int startenty,
+                                              int endentry )
+                                                            throws BioclipseException,
+                                                            InvocationTargetException {
+        return extractFromSDFile( ResourcePathTransformer.getInstance().transform(file), startenty, endentry );
+    }
+
+    public void createSDFile( String file, IMolecule[] entries )
+                                                                throws BioclipseException,
+                                                                InvocationTargetException {
+
+        createSDFile( ResourcePathTransformer.getInstance().transform(file), entries );
+        
+    }
+
     public String molecularFormula( ICDKMolecule m ) {
 
         IMolecularFormula mf
