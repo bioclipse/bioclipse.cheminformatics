@@ -37,13 +37,17 @@ import org.openscience.cdk.validate.ProblemMarker;
 /**
  * @cdk.module render
  */
-public class BasicAtomGenerator implements IGenerator{
+public class BasicAtomGenerator implements IGenerator {
 
 	protected RendererModel model;
-	
+
 	public BasicAtomGenerator(RendererModel r2dm) {
 		this.model = r2dm;
 	}
+	
+    public void setRendererModel(RendererModel model) {
+        this.model = model;
+    }
 
 	public IRenderingElement generate(IAtomContainer ac) {
 		ElementGroup elementGroup = new ElementGroup();
@@ -52,7 +56,7 @@ public class BasicAtomGenerator implements IGenerator{
 		}
 		return elementGroup;
 	}
-	
+
 	protected Color getColorForAtom(IAtom atom) {
 		return this.model.getAtomColor(atom, Color.BLACK);
 	}
@@ -61,25 +65,25 @@ public class BasicAtomGenerator implements IGenerator{
 		// FIXME: pseudoatom from paintAtom
 	    if (atom == null || atom.getPoint2d() == null)
 	      return null;
-	    
+
 		if (isHydrogen(atom) && !this.model.getShowExplicitHydrogens()) {
 		    // don't draw hydrogen
-			return null; 
+			return null;
 		}
-		
+
 		if (isCarbon(atom) && !showCarbon(atom, ac)) {
 		    // don't draw carbon
 		    return null;
 		}
-		
+
 		if (this.model.getIsCompact()) {
 		    return this.generateCompactElement(atom);
 		}
-		
+
 		int alignment = GeometryTools.getBestAlignmentForLabelXY(ac, atom);
 		return generateElements(atom, alignment);
 	}
-	
+
 	public IRenderingElement generateCompactElement(IAtom atom) {
 	    Point2d p = atom.getPoint2d();
 	    double r = 0.1;
@@ -92,7 +96,7 @@ public class BasicAtomGenerator implements IGenerator{
 		return new AtomSymbolElement(
 				atom.getPoint2d().x,
 				atom.getPoint2d().y,
-				atom.getSymbol(), 
+				atom.getSymbol(),
 				atom.getFormalCharge(),
 				atom.getHydrogenCount(),
 				alignment, this.getColorForAtom(atom));

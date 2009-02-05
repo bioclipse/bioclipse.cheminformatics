@@ -30,7 +30,6 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
-import org.openscience.cdk.renderer.ISelection;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
@@ -106,6 +105,7 @@ public abstract class ShapeSelection implements ISelection {
     }
     
     public void select(IAtomContainer atomContainer) {
+    	clear();
         for (IAtom atom : atomContainer.atoms()) {
             if (this.contains(atom.getPoint2d()) && !this.atoms.contains(atom)) {
                 this.atoms.add(atom); 

@@ -21,8 +21,11 @@
 package org.openscience.cdk.renderer.selection;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import javax.vecmath.Point2d;
 
@@ -34,10 +37,10 @@ import org.openscience.cdk.renderer.elements.RectangleElement;
  */
 public class RectangleSelection extends ShapeSelection {
     
-    private final Rectangle rectangle;
+    private Rectangle2D rectangle;
    
     public RectangleSelection() {
-        this.rectangle = new Rectangle();
+        this.rectangle = new Rectangle2D.Double();
     }
     
     public IRenderingElement generate(Color color) {
@@ -54,7 +57,14 @@ public class RectangleSelection extends ShapeSelection {
     }
 
     public void addPoint(Point2d p) {
-        this.rectangle.add(new Point2D.Double(p.x, p.y));
+    	if(rectangle.getHeight()==0 && rectangle.getWidth()==0){
+    		rectangle=new Rectangle2D.Double(p.x, p.y, 1,1);
+    	}else{
+    		if(rectangle.contains(new Point2D.Double(p.x, p.y)))
+    			rectangle.setRect(rectangle.getX(), rectangle.getY(),p.x-rectangle.getX(),p.y-rectangle.getY());
+    		else
+    			rectangle.add(new Point2D.Double(p.x, p.y));
+    	}
     }
 
     public boolean isEmpty() {
@@ -63,6 +73,6 @@ public class RectangleSelection extends ShapeSelection {
 
     public void reset() {
         this.finished = true;
-        this.rectangle.setSize(0, 0);
+        this.rectangle.setRect(rectangle.getX(), rectangle.getY(), 0, 0);
     }
 }

@@ -25,7 +25,9 @@
  */
 package org.openscience.cdk.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -46,15 +48,19 @@ import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.interfaces.IPseudoAtom;
 import org.openscience.cdk.interfaces.IRing;
+import org.openscience.cdk.interfaces.ISingleElectron;
 import org.openscience.cdk.interfaces.IBond.Order;
 import org.openscience.cdk.layout.AtomPlacer;
 import org.openscience.cdk.layout.RingPlacer;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.layout.TemplateHandler;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
-import org.openscience.cdk.renderer.IJava2DRenderer;
+import org.openscience.cdk.renderer.Renderer;
+import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.tools.SaturationChecker;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
-import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
+import org.openscience.cdk.validate.ProblemMarker;
 
 /**
  * Class that will central interaction point between a mouse event throwing
@@ -72,7 +78,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	private IChemModel chemModel;
 	
 	private IControllerModel controllerModel; 
-	private IJava2DRenderer renderer;
+	private Renderer renderer;
 	private IViewEventRelay eventRelay;
 	
 	private List<IControllerModule> generalModules;
@@ -87,7 +93,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     private IChemModelEventRelayHandler changeHandler;
 	
 	public ControllerHub(IControllerModel controllerModel,
-		                   IJava2DRenderer renderer,
+		                   Renderer renderer,
 		                   IChemModel chemModel,
 		                   IViewEventRelay eventRelay) {
 		this.controllerModel = controllerModel;
@@ -105,7 +111,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		return controllerModel;
 	}
 	
-	public IJava2DRenderer getIJava2DRenderer() {
+	public Renderer getRenderer() {
 		return renderer;
 	}
 	
@@ -134,7 +140,8 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	}
 	
 	public void mouseClickedDouble(int screenCoordX, int screenCoordY) {
-		Point2d worldCoord = renderer.getCoorFromScreen(screenCoordX, screenCoordY);
+		Point2d worldCoord = 
+		    renderer.toModelCoordinates(screenCoordX, screenCoordY);
 			
 		// Relay the mouse event to the general handlers
 		for (IControllerModule module : generalModules) {
@@ -147,74 +154,79 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	}
 
 
-	public void mouseClickedDownRight(int screenCoordX, int screenCoordY) {
-		Point2d worldCoord = renderer.getCoorFromScreen(screenCoordX, screenCoordY);
+	public void mouseClickedDownRight(int screenX, int screenY) {
+		Point2d modelCoord = renderer.toModelCoordinates(screenX, screenY);
 		
 		// Relay the mouse event to the general handlers
 		for (IControllerModule module : generalModules) {
-			module.mouseClickedDownRight(worldCoord);
+			module.mouseClickedDownRight(modelCoord);
 		}
 
 		// Relay the mouse event to the active 
 		IControllerModule activeModule = getActiveDrawModule();
-		if (activeModule != null) activeModule.mouseClickedDownRight(worldCoord);
+		if (activeModule != null) activeModule.mouseClickedDownRight(modelCoord);
 	}
 
-	public void mouseClickedUpRight(int screenCoordX, int screenCoordY) {
-		Point2d worldCoord = renderer.getCoorFromScreen(screenCoordX, screenCoordY);
+	public void mouseClickedUpRight(int screenX, int screenY) {
+		Point2d modelCoord = renderer.toModelCoordinates(screenX, screenY);
 		
 		// Relay the mouse event to the general handlers
 		for (IControllerModule module : generalModules) {
-			module.mouseClickedUpRight(worldCoord);
+			module.mouseClickedUpRight(modelCoord);
 		}
 
 		// Relay the mouse event to the active 
 		IControllerModule activeModule = getActiveDrawModule();
-		if (activeModule != null) activeModule.mouseClickedUpRight(worldCoord);
+		if (activeModule != null) activeModule.mouseClickedUpRight(modelCoord);
 	}
 	
-	public void mouseClickedDown(int screenCoordX, int screenCoordY) {
-		Point2d worldCoord = renderer.getCoorFromScreen(screenCoordX, screenCoordY);
+	public void mouseClickedDown(int screenX, int screenY) {
+		Point2d modelCoord = renderer.toModelCoordinates(screenX, screenY);
 		
 		// Relay the mouse event to the general handlers
 		for (IControllerModule module : generalModules) {
-			module.mouseClickedDown(worldCoord);
+			module.mouseClickedDown(modelCoord);
 		}
 
 		// Relay the mouse event to the active 
 		IControllerModule activeModule = getActiveDrawModule();
-		if (activeModule != null) activeModule.mouseClickedDown(worldCoord);
+		if (activeModule != null) activeModule.mouseClickedDown(modelCoord);
 	}
 
-	public void mouseClickedUp(int screenCoordX, int screenCoordY) {
-		Point2d worldCoord = renderer.getCoorFromScreen(screenCoordX, screenCoordY);
+	public void mouseClickedUp(int screenX, int screenY) {
+		Point2d modelCoord = renderer.toModelCoordinates(screenX, screenY);
 		
 		// Relay the mouse event to the general handlers
 		for (IControllerModule module : generalModules) {
-			module.mouseClickedUp(worldCoord);
+			module.mouseClickedUp(modelCoord);
 		}
 
 		// Relay the mouse event to the active 
 		IControllerModule activeModule = getActiveDrawModule();
-		if (activeModule != null) activeModule.mouseClickedUp(worldCoord);
+		if (activeModule != null) activeModule.mouseClickedUp(modelCoord);
 	}
 
-	public void mouseDrag(int screenCoordXFrom, int screenCoordYFrom, int screenCoordXTo, int screenCoordYTo) {
-		Point2d worldCoordFrom = renderer.getCoorFromScreen(screenCoordXFrom, screenCoordYFrom);
-		Point2d worldCoordTo = renderer.getCoorFromScreen(screenCoordXTo, screenCoordYTo);
+	public void mouseDrag(
+	        int screenXFrom, int screenYFrom, int screenXTo, int screenYTo) {
+		Point2d modelCoordFrom = 
+		    renderer.toModelCoordinates(screenXFrom, screenYFrom);
+		Point2d modelCoordTo = 
+		    renderer.toModelCoordinates(screenXTo, screenYTo);
 			
 		// Relay the mouse event to the general handlers
 		for (IControllerModule module : generalModules) {
-			module.mouseDrag(worldCoordFrom, worldCoordTo);
+			module.mouseDrag(modelCoordFrom, modelCoordTo);
 		}
 
 		// Relay the mouse event to the active 
 		IControllerModule activeModule = getActiveDrawModule();
-		if (activeModule != null) activeModule.mouseDrag(worldCoordFrom, worldCoordTo);
+		if (activeModule != null) { 
+		    activeModule.mouseDrag(modelCoordFrom, modelCoordTo);
+		}
 	}
 
-	public void mouseEnter(int screenCoordX, int screenCoordY) {
-		Point2d worldCoord = renderer.getCoorFromScreen(screenCoordX, screenCoordY);
+	public void mouseEnter(int screenX, int screenY) {
+		Point2d worldCoord = renderer.toModelCoordinates(screenX, screenY);
 		
 		// Relay the mouse event to the general handlers
 		for (IControllerModule module : generalModules) {
@@ -226,8 +238,8 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		if (activeModule != null) activeModule.mouseEnter(worldCoord);
 	}
 
-	public void mouseExit(int screenCoordX, int screenCoordY) {
-		Point2d worldCoord = renderer.getCoorFromScreen(screenCoordX, screenCoordY);
+	public void mouseExit(int screenX, int screenY) {
+		Point2d worldCoord = renderer.toModelCoordinates(screenX, screenY);
 		
 		// Relay the mouse event to the general handlers
 		for (IControllerModule module : generalModules) {
@@ -239,8 +251,8 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		if (activeModule != null) activeModule.mouseExit(worldCoord);
 	}
 
-	public void mouseMove(int screenCoordX, int screenCoordY) {
-		Point2d worldCoord = renderer.getCoorFromScreen(screenCoordX, screenCoordY);
+	public void mouseMove(int screenX, int screenY) {
+		Point2d worldCoord = renderer.toModelCoordinates(screenX, screenY);
 		
 		// Relay the mouse event to the general handlers
 		for (IControllerModule module : generalModules) {
@@ -274,7 +286,6 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 			Iterator<IAtom> atoms = containers.next().atoms().iterator();
 			while (atoms.hasNext()) {
 				IAtom nextAtom = atoms.next();
-				if (nextAtom.getPoint2d() == null) continue;
 				double distance = nextAtom.getPoint2d().distance(worldCoord);
 				if (distance <= renderer.getRenderer2DModel().getHighlightRadiusModel() &&
 					distance < closestDistance) {
@@ -826,28 +837,84 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         return this.phantoms;
     }
 
-	public int getAtomCount() {
-		return ChemModelManipulator.getAtomCount(chemModel);
-	}
-
-	public int getBondCount() {
-		return ChemModelManipulator.getBondCount(chemModel);
-	}
-
-	public String getChemicalFormula() {
-		StringBuffer formula = new StringBuffer();
-		List<IAtomContainer> containers =
-			ChemModelManipulator.getAllAtomContainers(chemModel);
-		for (int i=0;i<containers.size(); i++) {
-			IAtomContainer container = containers.get(i);
-			formula.append(
-			    MolecularFormulaManipulator.getMolecularFormula(
-			    	container
-			    )
-			);
-			if ((i+1)<containers.size()) formula.append('.');
+	public void adjustBondOrders()  throws IOException, ClassNotFoundException, CDKException {
+		SaturationChecker satChecker = new SaturationChecker();
+		List<IAtomContainer> containersList = ChemModelManipulator.getAllAtomContainers(chemModel);
+		Iterator<IAtomContainer> iterator = containersList.iterator();
+		while(iterator.hasNext())
+		{
+			IAtomContainer ac = (IAtomContainer)iterator.next();
+			satChecker.saturate(ac);
 		}
-		return formula.toString();
+	}
+
+	public void resetBondOrders(){
+		List<IAtomContainer> containersList = ChemModelManipulator.getAllAtomContainers(chemModel);
+		Iterator<IAtomContainer> iterator = containersList.iterator();
+		while(iterator.hasNext())
+		{
+			IAtomContainer ac = iterator.next();
+            for(IBond bond : ac.bonds()) {
+                bond.setOrder(Order.SINGLE);
+            }
+		}		
+	}
+
+	public void replaceAtom(IAtom atomnew, IAtom atomold) {
+        IAtomContainer relevantContainer = ChemModelManipulator.getRelevantAtomContainer(chemModel, atomold);
+        AtomContainerManipulator.replaceAtomByAtom(relevantContainer, 
+            atomold, atomnew);
+	}
+
+	public void addSingleElectron(IAtom atom) {
+        IAtomContainer relevantContainer = ChemModelManipulator.getRelevantAtomContainer(chemModel, atom);
+    	ISingleElectron singleElectron = atom.getBuilder().newSingleElectron(atom);
+        relevantContainer.addSingleElectron(singleElectron);
+	}
+
+	public void clearValidation() {
+		Iterator<IAtomContainer> containers = ChemModelManipulator.getAllAtomContainers(chemModel).iterator();
+		while (containers.hasNext()) {
+			IAtomContainer atoms = containers.next();
+			for (int i = 0; i < atoms.getAtomCount(); i++)
+			{
+				ProblemMarker.unmark(atoms.getAtom(i));
+			}
+		}	
+	}
+	
+	public HashMap<IAtom, Point2d[]> flip(boolean horizontal){
+		HashMap<IAtom, Point2d[]> atomCoordsMap = new HashMap<IAtom, Point2d[]>();
+		RendererModel renderModel = renderer.getRenderer2DModel();
+		IAtomContainer toflip;
+        if (renderModel.getSelection().getConnectedAtomContainer()!=null) {
+            toflip = renderModel.getSelection().getConnectedAtomContainer();
+        }else{
+        	List<IAtomContainer> toflipall = ChemModelManipulator.getAllAtomContainers(chemModel);
+        	toflip=toflipall.get(0).getBuilder().newAtomContainer();
+        	for (IAtomContainer atomContainer : toflipall) {
+				toflip.add(atomContainer);
+			}
+        }
+        Point2d center = GeometryTools.get2DCenter(toflip);
+        for (int i=0; i<toflip.getAtomCount(); i++) {
+        	IAtom atom = toflip.getAtom(i);
+            Point2d p2d = atom.getPoint2d();
+            Point2d oldCoord = new Point2d(p2d.x, p2d.y);
+            if (horizontal) {
+            	p2d.y = 2.0*center.y - p2d.y;
+            } else {
+            	p2d.x = 2.0*center.x - p2d.x;
+            }
+            Point2d newCoord = p2d;
+            if (!oldCoord.equals(newCoord)) {
+                Point2d[] coords = new Point2d[2];
+                coords[0] = newCoord;
+                coords[1] = oldCoord;
+                atomCoordsMap.put(atom, coords);
+            }
+        }
+        return atomCoordsMap;
 	}
 
     public void setEventHandler(IChemModelEventRelayHandler handler) {

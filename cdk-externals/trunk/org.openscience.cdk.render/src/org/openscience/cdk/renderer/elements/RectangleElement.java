@@ -35,16 +35,18 @@ public class RectangleElement implements IRenderingElement {
     public final Color color;
 
     
-    public RectangleElement( double x1,double y1, 
-                             double x2,double y2,
-                             Color color) {
-        this(x1,y1,x2-x1,y2-y1,false,color);
+    public RectangleElement(
+            double x1, double y1, double x2, double y2, Color color) {
         
+        this(x1, y1, x2 - x1, y2 - y1, false, color);
     }
-    public RectangleElement( double x,double y, 
-                             double width, double height,
-                             boolean filled,
-                             Color color) {
+    
+    public RectangleElement(double x,
+                            double y, 
+                            double width,
+                            double height,
+                            boolean filled,
+                            Color color) {
         this.x = x;
         this.y =y;
         this.width = width;
@@ -52,10 +54,9 @@ public class RectangleElement implements IRenderingElement {
         this.filled = filled;
         this.color = color;
     }
-    public void accept( IRenderingVisitor v ) {
-
+    
+    public void accept(IRenderingVisitor v) {
         v.visit(this);
-
     }
 
 }

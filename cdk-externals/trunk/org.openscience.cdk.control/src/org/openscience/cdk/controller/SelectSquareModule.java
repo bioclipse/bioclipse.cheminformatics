@@ -23,22 +23,23 @@ package org.openscience.cdk.controller;
 import javax.vecmath.Point2d;
 
 import org.openscience.cdk.renderer.selection.LassoSelection;
+import org.openscience.cdk.renderer.selection.RectangleSelection;
 import org.openscience.cdk.renderer.selection.ShapeSelection;
 
 /**
  * @cdk.module control
  */
-public class SelectModule extends ControllerModuleAdapter {
+public class SelectSquareModule extends ControllerModuleAdapter {
     
-    private ShapeSelection selection = new LassoSelection();
+    private RectangleSelection selection = new RectangleSelection();
     
-    public SelectModule(IChemModelRelay chemModelRelay) {
+    public SelectSquareModule(IChemModelRelay chemModelRelay) {
         super(chemModelRelay);
     }
     
     public void mouseClickedDown(Point2d p) {
         this.selection.clear();
-        this.chemModelRelay.getRenderer()
+        this.chemModelRelay.getIJava2DRenderer()
                            .getRenderer2DModel()
                            .setSelection(this.selection);
     }
@@ -56,7 +57,7 @@ public class SelectModule extends ControllerModuleAdapter {
     }
     
     public String getDrawModeString() {
-        return "Select in Free Form";
+        return "Select Square";
     }
 
 }

@@ -79,7 +79,8 @@ public class HighlightModule extends ControllerModuleAdapter {
 	public void mouseMove(Point2d worldCoord) {
 		IAtom atom = chemObjectRelay.getClosestAtom(worldCoord);
 		IBond bond = chemObjectRelay.getClosestBond(worldCoord);
-		RendererModel model = chemObjectRelay.getIJava2DRenderer().getRenderer2DModel();
+		RendererModel model = 
+		    chemObjectRelay.getRenderer().getRenderer2DModel();
 		
 		if (atom == null && bond == null) {
 		    if (prevHighlightAtom == null && prevHighlightBond == null) {

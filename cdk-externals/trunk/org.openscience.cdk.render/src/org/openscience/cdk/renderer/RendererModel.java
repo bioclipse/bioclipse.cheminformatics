@@ -25,7 +25,6 @@
 package org.openscience.cdk.renderer;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EventObject;
@@ -42,10 +41,12 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.renderer.color.CDK2DAtomColors;
 import org.openscience.cdk.renderer.color.IAtomColorer;
+import org.openscience.cdk.renderer.font.IFontManager;
+import org.openscience.cdk.renderer.selection.ISelection;
 import org.openscience.cdk.renderer.selection.LassoSelection;
 
 /**
- * Model for {@link RendererModel} that contains settings for drawing objects.
+ * Model for {@link Renderer} that contains settings for drawing objects.
  * 
  * @cdk.module render
  * @cdk.svnrev $Revision$
@@ -59,7 +60,8 @@ public class RendererModel implements Serializable, Cloneable {
     /* If true, the class will notify its listeners of changes */
     private boolean notification = true;
     
-    private transient List<ICDKChangeListener> listeners = new ArrayList<ICDKChangeListener>();
+    private transient List<ICDKChangeListener> listeners = 
+        new ArrayList<ICDKChangeListener>();
    
     /** Determines how much the image is zoomed into on. */
     private double zoomFactor = 1.0;
@@ -69,7 +71,8 @@ public class RendererModel implements Serializable, Cloneable {
      * 
      * @see #getColorHash()
      */
-    private Map<IChemObject, Color> colorHash = new Hashtable<IChemObject, Color>();
+    private Map<IChemObject, Color> colorHash = 
+        new Hashtable<IChemObject, Color>();
     
     private Map<IAtom, String> toolTipTextMap = new HashMap<IAtom, String>();
     
@@ -110,15 +113,39 @@ public class RendererModel implements Serializable, Cloneable {
     }
 
     /**
-     * @return null if no custom font set
+     * Get the name of the font family (Arial, etc).
+     * 
+     * @return the name of the font family as a String. 
      */
-    public Font getFont() {
-        return this.parameters.getCustomFont();
+    public String getFontName() {
+        return this.parameters.getFontName();
     }
 
-    public void setFont(Font customFont) {
-        this.parameters.setCustomFont(customFont);
+    /**
+     * Set the name of the font family (Arial, etc).
+     */
+    public void setFontName(String fontName) {
+        this.parameters.setFontName(fontName);
         fireChange();
+    }
+
+    /**
+     * Get the style of the font (Normal, Bold).
+     * 
+     * @return the style of the font as a member of the IFontManager.FontStyle
+     *         enum
+     */
+    public IFontManager.FontStyle getFontStyle() {
+        return this.parameters.getFontStyle();
+    }
+    
+    /**
+     * Set the style of font to use (Normal, Bold).
+     * 
+     * @param fontStyle a member of the enum in {@link IFontManager}
+     */
+    public void setFontManager(IFontManager.FontStyle fontStyle) {
+        this.parameters.setFontStyle(fontStyle);
     }
 
     public boolean getIsCompact() {
@@ -154,6 +181,25 @@ public class RendererModel implements Serializable, Cloneable {
     public void setShowMoleculeTitle(boolean bool) {
         this.parameters.setShowMoleculeTitle(bool);
         fireChange();
+    }
+    
+    /**
+     * The length on the screen of a typical bond.
+     * 
+     * @return the user-selected length of a bond, or the default length.
+     */
+    public double getBondLength() {
+        return this.parameters.getBondLength();
+    }
+    
+    /**
+     * Set the length on the screen of a typical bond.
+     * 
+     * @param bondLength the length in pixels of a typical bond.
+     * 
+     */
+    public void getBondLength(double length) {
+        this.parameters.setBondLength(length);
     }
 
     /**
@@ -214,6 +260,14 @@ public class RendererModel implements Serializable, Cloneable {
     public void setZoomFactor(double zoomFactor) {
         this.zoomFactor = zoomFactor;
         fireChange();
+    }
+    
+    public boolean isFitToScreen() {
+        return this.parameters.isFitToScreen();
+    }
+    
+    public void setFitToScreen(boolean value) {
+        this.parameters.setFitToScreen(value);
     }
 
     /**
@@ -366,6 +420,15 @@ public class RendererModel implements Serializable, Cloneable {
     public boolean getDrawNumbers() {
         return this.parameters.isWillDrawNumbers();
     }
+    
+    public Color getDefaultBondColor() {
+        return this.parameters.getDefaultBondColor();
+    }
+    
+    public void setDefaultBondColor(Color defaultBondColor) {
+        this.parameters.setDefaultBondColor(defaultBondColor);
+    }
+
 
     /**
      * Returns the radius around an atoms, for which the atom is marked
@@ -764,5 +827,13 @@ public class RendererModel implements Serializable, Cloneable {
 
     public void setMargin(double margin) {
         this.parameters.setMargin(margin);
+    }
+
+    public Color getBoundsColor() {
+        return this.parameters.getBoundsColor();
+    }
+    
+    public void setBoundsColor(Color color) {
+        this.parameters.setBoundsColor(color);
     }
 }

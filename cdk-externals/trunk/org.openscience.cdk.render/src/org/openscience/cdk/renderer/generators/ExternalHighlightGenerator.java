@@ -24,8 +24,6 @@
  */
 package org.openscience.cdk.renderer.generators;
 
-import java.awt.Color;
-
 import javax.vecmath.Point2d;
 
 import org.openscience.cdk.interfaces.IAtom;
@@ -42,40 +40,41 @@ import org.openscience.cdk.renderer.elements.OvalElement;
  */
 public class ExternalHighlightGenerator implements IGenerator {
 
-    RendererModel model;
-    Color highlightcolor;
-    public ExternalHighlightGenerator(RendererModel r2dm) {
-        this.model= r2dm;
-        highlightcolor = model.getExternalHighlightColor();
-      }
+    private RendererModel model;
 
-    public IRenderingElement generate( IAtomContainer ac ) {
+    public ExternalHighlightGenerator(RendererModel r2dm) {
+        this.model = r2dm;
+    }
+
+    public void setRendererModel(RendererModel model) {
+        this.model = model;
+    }
+
+    public IRenderingElement generate(IAtomContainer ac) {
         ElementGroup group = new ElementGroup();
         ac = model.getExternalSelectedPart();
-        if(ac == null) return group;
-        for(IAtom atom: ac.atoms()) {
-            group.add(generate( atom ));
+        if (ac == null)
+            return group;
+        for (IAtom atom : ac.atoms()) {
+            group.add(generate(atom));
         }
-        for(IBond bond: ac.bonds()) {
-            group.add( generate(bond));
+        for (IBond bond : ac.bonds()) {
+            group.add(generate(bond));
         }
         return group;
     }
 
-    public IRenderingElement generate(IAtom atom ) {
+    public IRenderingElement generate(IAtom atom) {
         Point2d p = atom.getPoint2d();
-        return new OvalElement( p.x, p.y,
-                                model.getHighlightRadiusModel()*1.3,
-                                highlightcolor);
+        return new OvalElement(p.x, p.y, model.getHighlightRadiusModel() * 1.3,
+                model.getExternalHighlightColor());
     }
 
     public IRenderingElement generate(IBond bond) {
-        Point2d p1 = bond.getAtom( 0 ).getPoint2d();
-        Point2d p2 = bond.getAtom( 1 ).getPoint2d();
-        return new LineElement( p1.x, p1.y,
-                                p2.x, p2.y,
-                                model.getBondWidth()*3,
-                                highlightcolor);
+        Point2d p1 = bond.getAtom(0).getPoint2d();
+        Point2d p2 = bond.getAtom(1).getPoint2d();
+        return new LineElement(p1.x, p1.y, p2.x, p2.y,
+                model.getBondWidth() * 3, model.getExternalHighlightColor());
     }
 
 }

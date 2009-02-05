@@ -62,9 +62,9 @@ public class ChangeFormalChargeModule extends ControllerModuleAdapter {
 
 	public String getDrawModeString() {
 		if (change < 0)
-            return IControllerModel.DrawMode.DECCHARGE.getName();
+            return "Decrease Charge";
         else
-            return IControllerModel.DrawMode.INCCHARGE.getName();
+            return "Increase Charge";
 	}
 
 }

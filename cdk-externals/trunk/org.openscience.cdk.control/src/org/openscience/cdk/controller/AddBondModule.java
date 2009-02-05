@@ -70,9 +70,8 @@ public class AddBondModule extends ControllerModuleAdapter {
 	
 	private void addNewBond(Point2d worldCoordinate) {
 	    String atomType = chemModelRelay.getController2DModel().getDrawElement();
-	    chemModelRelay.addAtom(atomType, worldCoordinate);
-	    IAtom justCreatedAtom = chemModelRelay.getClosestAtom(worldCoordinate);
-	    chemModelRelay.addAtom(atomType, justCreatedAtom);
+	    chemModelRelay.addAtom(atomType, 
+	            chemModelRelay.addAtom(atomType, worldCoordinate));
 	    chemModelRelay.updateView();
 	}
 	
@@ -111,7 +110,7 @@ public class AddBondModule extends ControllerModuleAdapter {
     }
 	
 	public String getDrawModeString() {
-		return IControllerModel.DrawMode.DRAWBOND.getName();
+		return "Draw Bond";
 	}
 
 }

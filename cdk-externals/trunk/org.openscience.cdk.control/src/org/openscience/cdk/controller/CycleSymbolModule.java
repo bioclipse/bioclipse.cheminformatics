@@ -77,6 +77,6 @@ public class CycleSymbolModule extends ControllerModuleAdapter {
     }
 
 	public String getDrawModeString() {
-		return IControllerModel.DrawMode.CYCLESYMBOL.getName();
+		return "Cycle Symbol";
 	}
 }

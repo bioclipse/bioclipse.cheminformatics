@@ -1,4 +1,4 @@
-package org.openscience.cdk.renderer;
+package org.openscience.cdk.renderer.font;
 
 import java.awt.Font;
 import java.util.HashMap;
@@ -7,8 +7,6 @@ import java.util.HashMap;
  * @cdk.module render
  */
 public class AWTFontManager extends AbstractFontManager {
-	
-	public static final String FONT_FAMILY_NAME = "Arial";
 	
 	private HashMap<Integer, Font> fontSizeToFontMap;
 	
@@ -20,31 +18,32 @@ public class AWTFontManager extends AbstractFontManager {
 		// apparently 9 pixels per em is the minimum
 		// but I don't know if (size 9 == 9 px.em-1)... 
 		this.minFontSize = 9;
-		
 		this.makeFonts();
-		
 		this.toMiddle();
 		this.resetVirtualCounts();
 	}
 	
-	private void makeFonts() {
+	protected void makeFonts() {
 		int size = this.minFontSize;
 		double scale = 0.5;
 		this.fontSizeToFontMap = new HashMap<Integer, Font>();
 		
-//		for (int i = 0; i < this.getNumberOfFontSizes(); i++) {
 		for (int i = 0; i < 20; i++) {
-			this.fontSizeToFontMap.put(size,
-					new Font(AWTFontManager.FONT_FAMILY_NAME, Font.PLAIN, size));
+		    if (super.getFontStyle() == IFontManager.FontStyle.NORMAL) {
+    			this.fontSizeToFontMap.put(size,
+    					new Font(super.getFontName(), Font.PLAIN, size));
+		    } else {
+		        this.fontSizeToFontMap.put(size,
+                        new Font(super.getFontName(), Font.BOLD, size));
+		    }
 			this.registerFontSizeMapping(scale, size);
 			size += 1;
 			scale += 0.1;
 		}
 	}
 	
-	@Override
-	public void setFontForScale(double scale) {
-		int size = this.getFontSizeForScale(scale);
+	public void setFontForZoom(double zoom) {
+		int size = this.getFontSizeForZoom(zoom);
 		if (size != -1) {
 			this.currentFont = this.fontSizeToFontMap.get(size); 
 		}

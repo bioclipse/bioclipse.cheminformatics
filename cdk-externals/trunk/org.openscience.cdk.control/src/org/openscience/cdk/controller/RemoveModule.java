@@ -81,7 +81,7 @@ public class RemoveModule extends ControllerModuleAdapter {
     }
 
 	public String getDrawModeString() {
-		return IControllerModel.DrawMode.ERASER.getName();
+		return "Delete";
 	}
 	
 }

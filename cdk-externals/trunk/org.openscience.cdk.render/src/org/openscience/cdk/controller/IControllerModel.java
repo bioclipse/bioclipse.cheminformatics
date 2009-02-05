@@ -34,40 +34,6 @@ import org.openscience.cdk.interfaces.IBond;
  */
 public interface IControllerModel {
 
-    public enum DrawMode {
-    	DRAWBOND("Draw"), 
-    	MOVE("Move"), 
-    	SELECT("Select"), 
-    	ERASER("Delete"), 
-    	ADDATOMORCHANGEELEMENT("Add Atom Or Change Element"), 
-    	CYCLESYMBOL("CycleSymbol"),
-    	RING("Ring"), 
-    	FLIP_H, 
-    	FLIP_V, 
-    	ROTATION, 
-    	UP_BOND("Wedge Up"),
-    	DOWN_BOND("Wedge Down"), 
-    	NORMALIZE("Normalize"), 
-    	LASSO("Select"), 
-    	INCCHARGE("Increase Charge"), 
-    	DECCHARGE("Decrease Charge"),
-    	BENZENERING, 
-    	MAPATOMATOM("Map Atom-Atom"),
-    	ENTERELEMENT;
-    	
-    	private final String name;
-    	DrawMode() {
-    		this("");
-    	}
-    	DrawMode(String name) {
-    		this.name = name;
-    	}
-    	
-    	public String getName() {
-    		return this.name;
-    	}
-    }
-    
     public abstract IBond.Order getMaxOrder();
     
     public abstract void setMaxOrder(IBond.Order maxOrder);

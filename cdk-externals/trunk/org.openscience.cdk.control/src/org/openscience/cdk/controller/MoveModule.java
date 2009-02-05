@@ -133,7 +133,7 @@ public class MoveModule extends ControllerModuleAdapter {
     }
 
 	public String getDrawModeString() {
-		return IControllerModel.DrawMode.MOVE.getName();
+		return "Move";
 	}
 
 }

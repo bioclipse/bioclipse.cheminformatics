@@ -64,30 +64,27 @@ public class DrawBondModule extends ControllerModuleAdapter {
     }
 
     public void mouseClickedDown(Point2d worldCoordinate) {
-    	if (chemModelRelay.getAtomCount() == 0) {
-    		newAtom = chemModelRelay.addAtom("C", new Point2d(0,0));
-    	} else {
-    		IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoordinate);
-    		IBond closestBond = chemModelRelay.getClosestBond(worldCoordinate);
-    		atomToBondFrom = null;
-    		newAtom = null;
-    		if (noSelection(closestAtom, closestBond)) {
-    			atomToBondFrom = null;
-    			newAtom = addAtomTo(worldCoordinate);
-    		} else if (isBondSelected(closestAtom, closestBond)) {
-    			this.cycleBondValence(closestBond);
-    		} else if (isAtomSelected(closestAtom, closestBond)) {
-    			atomToBondFrom = closestAtom;
-    		} else {
-    			double dA = closestAtom.getPoint2d().distance(worldCoordinate);
-    			double dB = closestBond.get2DCenter().distance(worldCoordinate);
-    			if (dA <= dB) {
-    				atomToBondFrom = closestAtom;
-    			} else {
-    				this.cycleBondValence(closestBond);
-    			}
-    		}
-    	}
+        IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoordinate);
+        IBond closestBond = chemModelRelay.getClosestBond(worldCoordinate);
+        atomToBondFrom = null;
+        newAtom = null;
+        if (noSelection(closestAtom, closestBond)) {
+            atomToBondFrom = null;
+            newAtom = addAtomTo(worldCoordinate);
+        } else if (isBondSelected(closestAtom, closestBond)) {
+            this.cycleBondValence(closestBond);
+        } else if (isAtomSelected(closestAtom, closestBond)) {
+            atomToBondFrom = closestAtom;
+        } else {
+            double dA = closestAtom.getPoint2d().distance(worldCoordinate);
+            double dB = closestBond.get2DCenter().distance(worldCoordinate);
+            if (dA <= dB) {
+                atomToBondFrom = closestAtom;
+            } else {
+                this.cycleBondValence(closestBond);
+            }
+        }
+
     }
 
     private boolean isBondSelected(IAtom atom, IBond bond) {

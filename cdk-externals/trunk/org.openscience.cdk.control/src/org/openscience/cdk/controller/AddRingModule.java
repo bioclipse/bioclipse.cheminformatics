@@ -97,7 +97,10 @@ public class AddRingModule extends ControllerModuleAdapter {
     }
 
     public String getDrawModeString() {
-        return IControllerModel.DrawMode.RING.getName() + " " + ringSize;
+    	if(addingBenzene)
+    		return "Benzene";
+    	else
+    		return "Ring" + " " + ringSize;
     }
 
 }

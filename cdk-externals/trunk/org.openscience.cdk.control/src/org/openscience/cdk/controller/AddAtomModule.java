@@ -68,7 +68,7 @@ public class AddAtomModule extends ControllerModuleAdapter {
 	}
 
 	public String getDrawModeString() {
-		return IControllerModel.DrawMode.ADDATOMORCHANGEELEMENT.getName();
+		return "Add Atom Or Change Element";
 	}
 
 }

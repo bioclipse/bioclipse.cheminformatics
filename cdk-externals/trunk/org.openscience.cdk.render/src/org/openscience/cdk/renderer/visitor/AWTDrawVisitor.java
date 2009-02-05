@@ -25,13 +25,11 @@ import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
-import org.openscience.cdk.renderer.AWTFontManager;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.AtomSymbolElement;
 import org.openscience.cdk.renderer.elements.ElementGroup;
@@ -42,23 +40,33 @@ import org.openscience.cdk.renderer.elements.PathElement;
 import org.openscience.cdk.renderer.elements.RectangleElement;
 import org.openscience.cdk.renderer.elements.TextElement;
 import org.openscience.cdk.renderer.elements.WedgeLineElement;
+import org.openscience.cdk.renderer.font.AWTFontManager;
+import org.openscience.cdk.renderer.font.IFontManager;
 
 
 /**
  * @cdk.module render
  */
-public class TransformingDrawVisitor extends AbstractAWTRenderingVisitor {
+public class AWTDrawVisitor extends AbstractAWTDrawVisitor {
+	
+    /**
+     * The font manager cannot be set by the constructor as it needs to
+     * be managed by the Renderer.
+     */
+    private AWTFontManager fontManager;
+
+    /**
+     * The renderer model cannot be set by the constructor as it needs to
+     * be managed by the Renderer.
+     */
+	private RendererModel rendererModel;
 	
 	private final Graphics2D g;
-	private final AWTFontManager fontManager;
-	private final RendererModel rendererModel;
 	
-	public TransformingDrawVisitor(Graphics2D g, AffineTransform transform,
-	        AWTFontManager fontManager, RendererModel rendererModel) {
-	    super(transform);
+	public AWTDrawVisitor(Graphics2D g) {
 		this.g = g;
-		this.fontManager = fontManager;
-		this.rendererModel = rendererModel;
+		this.fontManager = null;
+		this.rendererModel = null;
 	}
 	
 	public void visitElementGroup(ElementGroup elementGroup) {
@@ -78,8 +86,10 @@ public class TransformingDrawVisitor extends AbstractAWTRenderingVisitor {
 
     public void visit(OvalElement oval) {
         this.g.setColor(oval.color);
-        int[] min = this.transformPoint(oval.x - oval.radius, oval.y - oval.radius);
-        int[] max = this.transformPoint(oval.x + oval.radius, oval.y + oval.radius);
+        int[] min = 
+            this.transformPoint(oval.x - oval.radius, oval.y - oval.radius);
+        int[] max = 
+            this.transformPoint(oval.x + oval.radius, oval.y + oval.radius);
         int w = max[0] - min[0];
         int h = max[1] - min[1];
         this.g.drawOval(min[0], min[1], w, h);
@@ -87,9 +97,11 @@ public class TransformingDrawVisitor extends AbstractAWTRenderingVisitor {
 
     public void visit(TextElement textElement) {
         this.g.setFont(this.fontManager.getFont());
-        Point p = this.getTextBasePoint(textElement.text, textElement.x, textElement.y, g);
+        Point p = this.getTextBasePoint(
+                textElement.text, textElement.x, textElement.y, g);
         Rectangle2D textBounds =
-                this.getTextBounds(textElement.text, textElement.x, textElement.y, g);
+                this.getTextBounds(
+                        textElement.text, textElement.x, textElement.y, g);
         
         this.g.setColor(this.rendererModel.getBackColor());
         this.g.fill(textBounds);
@@ -99,7 +111,8 @@ public class TransformingDrawVisitor extends AbstractAWTRenderingVisitor {
     
     public void visit(WedgeLineElement wedge) {
         // make the vector normal to the wedge axis
-        Vector2d normal = new Vector2d(wedge.y1 - wedge.y2, wedge.x2 - wedge.x1);
+        Vector2d normal = 
+            new Vector2d(wedge.y1 - wedge.y2, wedge.x2 - wedge.x1);
         normal.normalize();
         normal.scale(0.2);  // XXX
         
@@ -117,7 +130,8 @@ public class TransformingDrawVisitor extends AbstractAWTRenderingVisitor {
         }
     }
     
-    private void drawFilledWedge(Point2d vertexA, Point2d vertexB, Point2d vertexC) {
+    private void drawFilledWedge(
+            Point2d vertexA, Point2d vertexB, Point2d vertexC) {
         int[] pB = this.transformPoint(vertexB.x, vertexB.y);
         int[] pC = this.transformPoint(vertexC.x, vertexC.y);
         int[] pA = this.transformPoint(vertexA.x, vertexA.y);
@@ -127,7 +141,8 @@ public class TransformingDrawVisitor extends AbstractAWTRenderingVisitor {
         this.g.fillPolygon(xs, ys, 3);
     }
     
-    private void drawDashedWedge(Point2d vertexA, Point2d vertexB, Point2d vertexC) {
+    private void drawDashedWedge(
+            Point2d vertexA, Point2d vertexB, Point2d vertexC) {
         // store the current stroke
         Stroke storedStroke = this.g.getStroke();
         this.g.setStroke(new BasicStroke(1));
@@ -159,7 +174,9 @@ public class TransformingDrawVisitor extends AbstractAWTRenderingVisitor {
     
     public void visit(AtomSymbolElement atomSymbol) {
         this.g.setFont(this.fontManager.getFont());
-        Point p = super.getTextBasePoint(atomSymbol.text, atomSymbol.x, atomSymbol.y, g);
+        Point p = 
+            super.getTextBasePoint(
+                    atomSymbol.text, atomSymbol.x, atomSymbol.y, g);
         Rectangle2D textBounds = 
             this.getTextBounds(atomSymbol.text, atomSymbol.x, atomSymbol.y, g);
         this.g.setColor(this.rendererModel.getBackColor());
@@ -187,13 +204,17 @@ public class TransformingDrawVisitor extends AbstractAWTRenderingVisitor {
         int x = (int) textBounds.getCenterX();
         int y = (int) textBounds.getCenterY();
         if (atomSymbol.alignment == 1) {           // RIGHT
-            this.g.drawString(chargeString, x + offset, (int)textBounds.getMinY());
+            this.g.drawString(
+                    chargeString, x + offset, (int)textBounds.getMinY());
         } else if (atomSymbol.alignment == -1) {   // LEFT
-            this.g.drawString(chargeString, x - offset, (int)textBounds.getMinY());
+            this.g.drawString(
+                    chargeString, x - offset, (int)textBounds.getMinY());
         } else if (atomSymbol.alignment == 2) {    // TOP
-            this.g.drawString(chargeString, x, y - offset);
+            this.g.drawString(
+                    chargeString, x, y - offset);
         } else if (atomSymbol.alignment == -2) {   // BOT
-            this.g.drawString(chargeString, x, y + offset);
+            this.g.drawString(
+                    chargeString, x, y + offset);
         }
     }
     
@@ -240,5 +261,16 @@ public class TransformingDrawVisitor extends AbstractAWTRenderingVisitor {
         else
             System.err.println("Visitor method for "
                     + element.getClass().getName() + " is not implemented");
+    }
+
+    /**
+     * The font manager must be set by any renderer that uses this class! 
+     */
+    public void setFontManager(IFontManager fontManager) {
+        this.fontManager = (AWTFontManager) fontManager;
+    }
+
+    public void setRendererModel(RendererModel rendererModel) {
+        this.rendererModel = rendererModel;
     }
 }

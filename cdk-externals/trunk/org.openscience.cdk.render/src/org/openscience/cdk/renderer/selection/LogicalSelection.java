@@ -1,4 +1,4 @@
-package org.openscience.cdk.renderer;
+package org.openscience.cdk.renderer.selection;
 
 import java.awt.Color;
 

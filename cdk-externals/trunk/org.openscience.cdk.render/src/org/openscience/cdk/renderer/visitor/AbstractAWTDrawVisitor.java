@@ -26,19 +26,15 @@ import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
-import org.openscience.cdk.renderer.elements.IRenderingElement;
-import org.openscience.cdk.renderer.elements.IRenderingVisitor;
-
 /**
  * @cdk.module render
  */
-public abstract class AbstractAWTRenderingVisitor implements IRenderingVisitor {
+public abstract class AbstractAWTDrawVisitor implements IDrawVisitor {
 	
-	private AffineTransform transform;
-	
-	public AbstractAWTRenderingVisitor(AffineTransform transform) {
-	    this.transform = transform;
-	}
+	/**
+	 * This is initially null, and must be set in the setTransform method!
+	 */
+	private AffineTransform transform = null;
 	
 	public int[] transformPoint(double x, double y) {
         double[] src = new double[] {x, y};
@@ -47,9 +43,8 @@ public abstract class AbstractAWTRenderingVisitor implements IRenderingVisitor {
         return new int[] { (int) dest[0], (int) dest[1] };
     }
 
-	public abstract void visit(IRenderingElement element);
-	   
-    protected Rectangle2D getTextBounds(String text, double x, double y, Graphics2D g) {
+    protected Rectangle2D getTextBounds(String text, double x, double y,
+            Graphics2D g) {
         FontMetrics fm = g.getFontMetrics();
         Rectangle2D bounds = fm.getStringBounds(text, g);
         
@@ -62,17 +57,18 @@ public abstract class AbstractAWTRenderingVisitor implements IRenderingVisitor {
         return new Rectangle2D.Double(p[0] - w / 2, p[1] - h / 2, w, h);
     }
     
-    protected Point getTextBasePoint(String text, double x, double y, Graphics2D g) {
+    protected Point getTextBasePoint(String text, double x, double y, 
+            Graphics2D g) {
         FontMetrics fm = g.getFontMetrics();
         Rectangle2D stringBounds = fm.getStringBounds(text, g);
         int[] p = this.transformPoint(x, y);
         int baseX = (int) (p[0] - (stringBounds.getWidth() / 2));
         
         // correct the baseline by the ascent
-        int baseY = (int) (p[1] + (fm.getAscent() - stringBounds.getHeight() / 2));
+        int baseY = (int) (p[1] + 
+                (fm.getAscent() - stringBounds.getHeight() / 2));
         return new Point(baseX, baseY);
     }
-    
     
     public void setTransform(AffineTransform transform) {
         this.transform = transform;

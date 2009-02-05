@@ -1,7 +1,8 @@
 package org.openscience.cdk.renderer;
 
 import java.awt.Color;
-import java.awt.Font;
+
+import org.openscience.cdk.renderer.font.IFontManager;
 
 /**
  * @cdk.module render
@@ -10,20 +11,52 @@ public class RenderingParameters {
 
     private int atomRadius = 8;
 
+    /**
+     * The background color of the rendered image
+     */
     private Color backColor = Color.white;
 
-    private double bondDistance = 6.0;
+    /**
+     * The gap between double and triple bond lines in model space
+     */
+    private double bondDistance = 0.15;
+    
+    /**
+     * The length on screen of a typical bond
+     */
+    private double bondLength = 40.0;
 
     private double bondWidth = 2.0;
 
-    /** Determines whether atoms are colored by type. */
+    /**
+     * The color of the box drawn at the bounds of a 
+     * molecule, molecule set, or reaction 
+     */
+    private Color boundsColor = Color.LIGHT_GRAY;
+
+    /**
+     * Determines whether atoms are colored by type 
+     */
     private boolean colorAtomsByType = true;
     
+    /**
+     * If true, atoms are displayed in a compact notation, 
+     * as a colored square or circle, rather than as text
+     */
     private boolean compact = false;
     
-    private Font customFont = null;
+    /**
+     * The color to draw bonds if not other color is given.
+     */
+    private Color defaultBondColor;
+
+    private String fontName = "Arial";
+    
+    private IFontManager.FontStyle fontStyle = IFontManager.FontStyle.NORMAL;
     
     private Color externalHighlightColor = Color.orange;
+    
+    private boolean fitToScreen = false;
     
     private Color foreColor = Color.black;
 
@@ -36,7 +69,11 @@ public class RenderingParameters {
      */
     private boolean kekuleStructure = false;
     
-    private double highlightRadiusModel = 0.7;
+    /**
+     * The minimum distance the mouse pointer has to be (in model space)
+     * from an atom or bond before it is highlighted.  
+     */
+    private double highlightRadiusModel = 0.4;
 
     private Color mappingColor = Color.gray;
 
@@ -47,6 +84,10 @@ public class RenderingParameters {
 
     private Color selectedPartColor = Color.lightGray;
     
+    /**
+     * When atoms are selected, they will be covered by a shape
+     * determined by this enumeration
+     */
     public enum SelectionShape { OVAL, SQUARE };
     
     /**
@@ -87,7 +128,15 @@ public class RenderingParameters {
     private boolean useAntiAliasing = true;
 
     private boolean willDrawNumbers = false;
-    
+
+    public Color getDefaultBondColor() {
+        return defaultBondColor;
+    }
+
+    public void setDefaultBondColor(Color defaultBondColor) {
+        this.defaultBondColor = defaultBondColor;
+    }
+
     public SelectionShape getSelectionShape() {
         return this.selectionShape;
     }
@@ -96,12 +145,20 @@ public class RenderingParameters {
         this.selectionShape = selectionShape;
     }
 
-	public Font getCustomFont() {
-        return customFont;
+	public String getFontName() {
+        return this.fontName;
     }
 
-    public void setCustomFont(Font customFont) {
-        this.customFont = customFont;
+    public void setFontName(String fontName) {
+        this.fontName = fontName;
+    }
+    
+    public IFontManager.FontStyle getFontStyle() {
+        return this.fontStyle;
+    }
+    
+    public void setFontStyle(IFontManager.FontStyle fontStyle) {
+        this.fontStyle = fontStyle;
     }
 
     public double getHighlightRadiusModel() {
@@ -124,12 +181,28 @@ public class RenderingParameters {
         return bondDistance;
     }
 
+    public double getBondLength() {
+        return bondLength;
+    }
+
+    public void setBondLength(double bondLength) {
+        this.bondLength = bondLength;
+    }
+
     public double getBondWidth() {
         return bondWidth;
     }
 
     public Color getExternalHighlightColor() {
         return externalHighlightColor;
+    }
+
+    public boolean isFitToScreen() {
+        return fitToScreen;
+    }
+
+    public void setFitToScreen(boolean fitToScreen) {
+        this.fitToScreen = fitToScreen;
     }
 
     public Color getForeColor() {
@@ -310,6 +383,14 @@ public class RenderingParameters {
 
     public void setWillDrawNumbers(boolean willDrawNumbers) {
         this.willDrawNumbers = willDrawNumbers;
+    }
+
+    public Color getBoundsColor() {
+        return this.boundsColor;
+    }
+    
+    public void setBoundsColor(Color color) {
+        this.boundsColor = color;
     }
 
 }

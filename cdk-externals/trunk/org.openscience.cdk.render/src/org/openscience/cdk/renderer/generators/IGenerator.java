@@ -21,6 +21,7 @@
 package org.openscience.cdk.renderer.generators;
 
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 
 /**
@@ -29,5 +30,7 @@ import org.openscience.cdk.renderer.elements.IRenderingElement;
 public interface IGenerator {
 
     public IRenderingElement generate(IAtomContainer ac);
+    
+    public void setRendererModel(RendererModel model);
 
 }

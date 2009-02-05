@@ -24,14 +24,17 @@
  */
 package org.openscience.cdk.controller;
 
+import java.io.IOException;
+
 import javax.vecmath.Point2d;
 
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IRing;
-import org.openscience.cdk.renderer.IJava2DRenderer;
+import org.openscience.cdk.renderer.Renderer;
 
 /**
  * @cdk.module render
@@ -40,7 +43,7 @@ public interface IChemModelRelay {
 
     /* Interaction*/
     public abstract IControllerModel getController2DModel();
-    public abstract IJava2DRenderer getIJava2DRenderer();
+    public abstract Renderer getRenderer();
     public abstract IChemModel getIChemModel();
     public void setChemModel(IChemModel model);
     public abstract IAtom getClosestAtom(Point2d worldCoord);
@@ -85,6 +88,15 @@ public interface IChemModelRelay {
     public IRing addRing(IBond bond, int size);
     public IRing addPhenyl(IBond bond);
     public void cleanup();
+    /**
+     * Adjusts all bond orders to fit valency
+     */
+    public void adjustBondOrders() throws IOException, ClassNotFoundException, CDKException;
+    /**
+     * Sets all bond order to single
+     */
+    public void resetBondOrders();
+    public void clearValidation();
 //    public abstract void cleanupSelection(Selector sectionIdentifier);
 
     /* Editing actions for atoms */
@@ -95,6 +107,8 @@ public interface IChemModelRelay {
     public abstract void setSymbol(IAtom atom, String symbol);
     public abstract void setCharge(IAtom atom, int charge);
     public abstract void setMassNumber(IAtom atom, int charge);
+    public void replaceAtom(IAtom atomnew, IAtom atomold);
+    public void addSingleElectron(IAtom atom);
 
     /* Editing actions for bonds */
     public abstract IBond addBond(IAtom fromAtom, IAtom toAtom);
@@ -103,8 +117,4 @@ public interface IChemModelRelay {
     public abstract void setOrder(IBond bond, IBond.Order order);
     public abstract void setWedgeType(IBond bond, int type);
 	
-    public String getChemicalFormula();
-    public int getAtomCount();
-    public int getBondCount();
-    
 }

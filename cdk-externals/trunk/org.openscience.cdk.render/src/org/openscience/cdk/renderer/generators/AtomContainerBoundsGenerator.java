@@ -24,6 +24,7 @@ import java.awt.Color;
 
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.RectangleElement;
 
@@ -33,10 +34,14 @@ import org.openscience.cdk.renderer.elements.RectangleElement;
 public class AtomContainerBoundsGenerator implements IGenerator {
 
     public IRenderingElement generate( IAtomContainer ac) {
-        double[] minMax = GeometryTools.getMinMax( ac );
-        return new RectangleElement( minMax[0], minMax[1],
-                                     minMax[2],minMax[3],
-                                     new Color(.7f,.7f,1.0f));
+        double[] minMax = GeometryTools.getMinMax(ac);
+        return new RectangleElement(minMax[0], minMax[1], minMax[2], minMax[3],
+                new Color(.7f, .7f, 1.0f));
+        
+    }
+
+    public void setRendererModel(RendererModel model) {
+        // TODO Auto-generated method stub
         
     }
 

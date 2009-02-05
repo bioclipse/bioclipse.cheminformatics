@@ -26,13 +26,13 @@ import javax.vecmath.Point2d;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.renderer.ISelection;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.RenderingParameters.SelectionShape;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
 import org.openscience.cdk.renderer.elements.RectangleElement;
+import org.openscience.cdk.renderer.selection.ISelection;
 
 /**
  * @cdk.module render
@@ -48,6 +48,10 @@ public class SelectionGenerator implements IGenerator {
         this.rendererModel = rendererModel;
         this.selectionColor = rendererModel.getSelectedPartColor();
         this.shape = rendererModel.getSelectionShape();
+    }
+
+    public void setRendererModel(RendererModel model) {
+        this.rendererModel = model;
     }
 
     public IRenderingElement generate(IAtomContainer ac) {
@@ -68,8 +72,10 @@ public class SelectionGenerator implements IGenerator {
                     IRenderingElement element;
                     switch (this.shape) {
                         case SQUARE:
-                            element  = new RectangleElement(
-                                    p.x - r, p.y - r, d, d, true, selectionColor);
+                            element = 
+                                new RectangleElement(
+                                    p.x - r, p.y - r, d, d, true, 
+                                    selectionColor);
                             break;
                         case OVAL:
                         default:

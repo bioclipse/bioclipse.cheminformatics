@@ -45,39 +45,54 @@ public class PrintVisitor implements IRenderingVisitor {
 
 	public void visitElementGroup(ElementGroup elementGroup) {
 		this.depth += 1;
+		System.out.println("Group");
 		elementGroup.visitChildren(this);
 		this.depth -= 1;
 	}
 
 	public void visitLine(LineElement lineElement) {
-		System.out.println("line" + lineElement.x1 + " " + lineElement.y1 + " "
-				+ lineElement.x2 + " " + lineElement.y2);
+		System.out.println("Line [" 
+		        + lineElement.x1 
+		        + " " 
+		        + lineElement.y1 
+		        + "]-["
+				+ lineElement.x2 
+				+ " " 
+				+ lineElement.y2
+				+"]");
 	}
 
 	public void visitOval(OvalElement ovalElement) {
-		System.out.println("oval" + ovalElement.x + "," + ovalElement.y + " " + ovalElement.radius);
+		System.out.println("Oval ["
+		        + ovalElement.x 
+		        + "," 
+		        + ovalElement.y 
+		        + " " 
+		        + ovalElement.radius
+		        + "]");
 	}
 
 	public void visitText(TextElement textElement) {
-		System.out.println("text");
+		System.out.println("Text " + textElement.text);
 	}
 
 	public void visitWedge(WedgeLineElement wedgeElement) {
-		System.out.println("wedge");
+		System.out.println("Wedge");
 	}
 
-	public void visit( IRenderingElement element ) {
-      if(element instanceof ElementGroup)
-          visit((ElementGroup) element);
-      else if(element instanceof LineElement)
-          visit((LineElement) element);
-      else if(element instanceof OvalElement)
-          visit((OvalElement) element);
-      else if(element instanceof TextElement)
-          visit((TextElement) element);
-      else
-        System.err.println( "Visitor method for "+element.getClass().getName() 
-                            + " is not implemented");
+	public void visit(IRenderingElement element) {
+        if (element instanceof ElementGroup) {
+           visitElementGroup((ElementGroup) element);
+        } else if (element instanceof LineElement) {
+            visitLine((LineElement) element);
+        } else if (element instanceof OvalElement) {
+            visitOval((OvalElement) element);
+        } else if (element instanceof TextElement) {
+            visitText((TextElement) element);
+        } else {
+            System.err.println("Visitor method for "
+                    + element.getClass().getName() + " is not implemented");
+        }
     }
 	
 	public void setTransform( AffineTransform transform ) {

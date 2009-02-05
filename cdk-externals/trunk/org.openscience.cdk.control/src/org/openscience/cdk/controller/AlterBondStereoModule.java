@@ -119,7 +119,10 @@ public class AlterBondStereoModule extends ControllerModuleAdapter {
 	}
 
 	public String getDrawModeString() {
-		return IControllerModel.DrawMode.ADDATOMORCHANGEELEMENT.getName();
+		if(desiredDirection==Direction.UP)
+			return "Add or convert to bond up";
+		else
+			return "Add or convert to bond down";
 	}
 
 }
