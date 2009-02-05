@@ -41,7 +41,6 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.Renderer;
-import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.font.IFontManager;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
