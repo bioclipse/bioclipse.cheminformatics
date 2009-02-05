@@ -29,8 +29,10 @@ import org.openscience.cdk.renderer.elements.PathElement;
 import org.openscience.cdk.renderer.elements.RectangleElement;
 import org.openscience.cdk.renderer.elements.TextElement;
 import org.openscience.cdk.renderer.elements.WedgeLineElement;
+import org.openscience.cdk.renderer.font.IFontManager;
+import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 
-public class SWTRenderer implements IRenderingVisitor{
+public class SWTRenderer implements IDrawVisitor{
 
     Logger logger = Logger.getLogger( SWTRenderer.class );
 
@@ -38,16 +40,12 @@ public class SWTRenderer implements IRenderingVisitor{
     RendererModel model;
     AffineTransform transform;
 
-    SWTFontManager fontManager;
+    IFontManager fontManager;
 
-    // scale a lite more and translate the differense to center it
-    // dosen't handle zoom
-    public SWTRenderer(GC graphics, SWTFontManager fontManager, RendererModel model) {
-        this.transform = new AffineTransform();
-        this.model = model;
+    public SWTRenderer(GC graphics) {
+        transform = new AffineTransform();
+        this.model = new RendererModel();
         this.gc = graphics;
-        this.fontManager = fontManager;
-
     }
 
     private Map<java.awt.Color, Color> cleanUp;
@@ -205,15 +203,15 @@ public class SWTRenderer implements IRenderingVisitor{
     }
 
     private Font getFont() {
-        return fontManager.getFont();
-//        int fontSize = (int) (scaleX(.4));
-//        fontSize = (fontSize<12?12:fontSize);
-//        fontSize = (fontSize>100?100:fontSize);
-//        return  new Font(gc.getDevice(),"Arial",fontSize,SWT.NORMAL);
+
+        return ((SWTFontManager) fontManager).getFont();
     }
+
     private Font getSmallFont() {
-        return fontManager.getSmallFont();
+
+        return ((SWTFontManager) fontManager).getSmallFont();
     }
+
     public void visit( TextElement element ) {
 
         int x = transformX(element.x);
@@ -315,7 +313,6 @@ public class SWTRenderer implements IRenderingVisitor{
 
     public void setTransform(AffineTransform transform) {
         this.transform = transform;
-        fontManager.setFontForScale( transform.getScaleX() );
     }
 
     public void render() {
@@ -408,5 +405,15 @@ public class SWTRenderer implements IRenderingVisitor{
 //            }
 //        }
         return null;
+    }
+
+    public void setFontManager( IFontManager fontManager ) {
+
+       this.fontManager = fontManager;
+    }
+
+    public void setRendererModel( RendererModel rendererModel ) {
+
+        this.model = rendererModel;
     }
 }

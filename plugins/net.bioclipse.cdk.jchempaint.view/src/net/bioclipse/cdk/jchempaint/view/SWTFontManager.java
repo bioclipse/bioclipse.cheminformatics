@@ -16,7 +16,8 @@ import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.openscience.cdk.renderer.AbstractFontManager;
+import org.openscience.cdk.renderer.font.AbstractFontManager;
+
 
 
 public class SWTFontManager extends AbstractFontManager {
@@ -83,17 +84,16 @@ public class SWTFontManager extends AbstractFontManager {
 		}
 	}
 
-	@Override
-	public void setFontForScale(double scale) {
+	public void setFontForZoom(double scale) {
 	  this.scale = scale;
-		int size = this.getFontSizeForScale(scale);
+		int size = getFontSizeForZoom( scale);
 		if (size != -1) {
 			this.currentFont = this.fontSizeToFontMap.get(size);
 		}
 	}
 
 	public Font getSmallFont() {
-	    int size = this.getFontSizeForScale( scale*.5 );
+	    int size = this.getFontSizeForZoom( scale*.5 );
 	    if(size != -1) {
 	        return this.fontSizeToFontMap.get(size);
 	    } else {
@@ -141,7 +141,7 @@ public class SWTFontManager extends AbstractFontManager {
           System.out.println();
 
           for(double d=.5;d<.5+(20*.1);d+=.1) {
-              System.out.println(fontManager.getFontSizeForScale( d ));
+              System.out.println(fontManager.getFontSizeForZoom( d ));
           }
 
 	        shell.addPaintListener(new PaintListener() {
@@ -153,7 +153,7 @@ public class SWTFontManager extends AbstractFontManager {
 	            for(int y =0 ;y<rect.height;) {
 
 	                double scale = y*k+low;
-	                fontManager.setFontForScale( scale );
+	                fontManager.setFontForZoom( scale );
 
 	                Font font = fontManager.getFont();
 	                event.gc.setFont( font );

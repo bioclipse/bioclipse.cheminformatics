@@ -12,7 +12,6 @@
 package net.bioclipse.cdk.jchempaint.editor;
 
 import java.awt.Color;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
 import net.bioclipse.cdk.business.Activator;
@@ -25,7 +24,6 @@ import net.bioclipse.core.business.BioclipseException;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.GroupMarker;
@@ -36,7 +34,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -55,9 +52,6 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
-import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
-import org.openscience.cdk.interfaces.IChemObjectListener;
-import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 public class JChemPaintEditor extends EditorPart implements ISelectionListener{
 

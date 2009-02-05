@@ -217,8 +217,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
         if(highlightedAtom != null)
             selection.add( highlightedAtom );
 
-        org.openscience.cdk.renderer.ISelection sel = getRenderer2DModel()
-                                                      .getSelection();
+        org.openscience.cdk.renderer.selection.ISelection sel
+                = getRenderer2DModel().getSelection();
         IAtomContainer modelSelection = sel.getConnectedAtomContainer();
         if(modelSelection != null) {
             for(IAtom atom:modelSelection.atoms()) {

@@ -4,11 +4,11 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * <http://www.eclipse.org/legal/epl-v10.html>.
- * 
+ *
  * Contributors:
- *      Arvid Berg 
- *     
- *     
+ *      Arvid Berg
+ *
+ *
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
@@ -18,10 +18,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.vecmath.Point2d;
+import javax.vecmath.Point3d;
+
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.SDFElement;
-import net.bioclipse.cdk.jchempaint.widgets.SWTRenderer;
+import net.bioclipse.cdk.jchempaint.view.SWTFontManager;
+import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
@@ -34,16 +38,20 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
 import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.renderer.IJava2DRenderer;
+import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.font.IFontManager;
+import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 public class MoleculesEditorLabelProvider implements ITableLabelProvider{
 
     public Logger logger = Logger.getLogger(MoleculesEditorLabelProvider.class );
     public List<String>                          propertyHeaders;
-    public IJava2DRenderer                           renderer;    
+    public Renderer                           renderer;
+    private IDrawVisitor drawVisitor;
     public int imageWidth;
 
     Collection<ILabelProviderListener> listeners =
@@ -53,23 +61,27 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
     public MoleculesEditorLabelProvider(int width) {
         imageWidth= width;
         setupRenderer();
-        
+
     }
     public void setPropertyHeaders(List<String> headers){
         propertyHeaders = headers;
     }
     private void setupRenderer() {
-        
-        renderer = new SWTRenderer( new RendererModel() , imageWidth/16f);
-                                    //10f);// 7f old value
-        
+
+
+        IFontManager fontManager = new SWTFontManager(Display.getCurrent(),
+                                         new java.awt.Font( "Arial",
+                                                            java.awt.Font.PLAIN,
+                                                            9));
+        renderer = new Renderer(fontManager);
+
+
         renderer.getRenderer2DModel().setDrawNumbers( false );
         renderer.getRenderer2DModel().setIsCompact( true );
         renderer.getRenderer2DModel().setBondWidth( 15 );
         renderer.getRenderer2DModel().setDrawNumbers( false );
         renderer.getRenderer2DModel().setBondDistance( 1 );
         renderer.getRenderer2DModel().setUseAntiAliasing(true );
-        
     }
 
     public Image getColumnImage( Object element, int columnIndex ) {
@@ -87,14 +99,13 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
 
             // If no 2D coordinates
             if ( GeometryTools.has2DCoordinates( drawMolecule ) == false ) {
-                // Test if 3D coordinates                
+                // Test if 3D coordinates
                 if ( GeometryTools.has3DCoordinates( drawMolecule ) == true ) {
                     // Collapse on XY plane
-                    drawMolecule = SWTRenderer.generate2Dfrom3D( 
-                                                         drawMolecule );
+                   drawMolecule = generate2Dfrom3D( drawMolecule );
                     drawMolecule = AtomContainerManipulator.
                           removeHydrogensPreserveMultiplyBonded( drawMolecule );
-                    
+
                 }else {
                     try {
                         drawMolecule = ((ICDKMolecule)Activator.getDefault()
@@ -111,45 +122,48 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
             GeometryTools.translateAllPositive( drawMolecule );
             GeometryTools.scaleMolecule( drawMolecule, screenSize, 0.8 );
             GeometryTools.center( drawMolecule, screenSize );
-            
+
 
             // renderer.getRenderer2DModel().setRenderingCoordinates(
             // coordinates);
-            
+
             renderer.getRenderer2DModel()
                     .setShowExplicitHydrogens( false );
 
             Image image;
-            
+
             renderer.getRenderer2DModel().setBackColor(new java.awt.Color(252,253,254));
 //            renderer.getRenderer2DModel().setBackColor( java.awt.Color.CYAN );
             renderer.getRenderer2DModel().setUseAntiAliasing( true );
             renderer.getRenderer2DModel().setHighlightRadiusModel( 10 );
-            
+
             Color greenScreen = new Color(Display.getCurrent(), 252, 253, 254);
-            
+
                 image =
                     new Image( Display.getDefault(),
                                imageWidth,
                                imageWidth );
                 GC gc= new GC( image );
-                
-            
+
+
                 gc.setBackground( greenScreen );
                 gc.fillRectangle( image.getBounds() );
-                    ((SWTRenderer)renderer).paintMolecule(drawMolecule, gc ,
-                                                      new Rectangle2D.Double(
-                                                                0,
-                                                                0,
+
+                SWTRenderer drawVisitor= new SWTRenderer(gc);
+                renderer.paintMolecule( drawMolecule,
+                                        drawVisitor,
+                                        new Rectangle2D.Double( 0, 0,
                                                                 imageWidth,
-                                                                imageWidth ) );
+                                                                imageWidth ),
+                                        true );
+
                 gc.dispose();
-            
-            
+
+
             ImageData imageData = image.getImageData();
             imageData.transparentPixel = imageData.palette.getPixel(greenScreen
             .getRGB());
-            
+
             greenScreen.dispose();
             image.dispose();
             return new Image(Display.getDefault(),imageData);
@@ -169,8 +183,8 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
             IAdaptable row = (IAdaptable) element;
             ICDKMolecule molecule =
                     (ICDKMolecule) row.getAdapter( ICDKMolecule.class );
-            
-            
+
+
             // if(propertyHeaders==null && molecule!=null)
             // createPropertyHeaders( molecule.getAtomContainer());
 
@@ -219,5 +233,28 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
         listeners.remove( listener );
     }
 
+    /*
+     * Utility method for copying 3D x,y to 2D coordinates
+     */
+    public static IAtomContainer generate2Dfrom3D( IAtomContainer atomContainer ) {
+
+        try {
+            atomContainer = (IAtomContainer) atomContainer.clone();
+
+            // For each molecule,
+            for ( int i = 0; i < atomContainer.getAtomCount(); i++ ) {
+                IAtom atom = atomContainer.getAtom( i );
+                Point3d p3 = atom.getPoint3d();
+                Point2d p2 = new Point2d();
+                p2.x = p3.x;
+                p2.y = p3.y;
+                atom.setPoint3d( null );
+                atom.setPoint2d( p2 );
+            }
+        } catch ( CloneNotSupportedException e ) {
+            return null;
+        }
+        return atomContainer;
+    }
 
 }
