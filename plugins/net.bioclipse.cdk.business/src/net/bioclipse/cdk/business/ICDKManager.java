@@ -62,7 +62,7 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws BioclipseException
      */
     @Recorded
-    @PublishedMethod( params = "String SMILES", 
+    @PublishedMethod( params = "String SMILES",
                       methodSummary = "Creates a cdk molecule from " +
                       		          "SMILES")
     @TestMethods(
@@ -81,10 +81,10 @@ public interface ICDKManager extends IBioclipseManager {
      * @return a BioJavaSequence object
      * @throws IOException
      * @throws BioclipseException
-     * @throws CoreException 
+     * @throws CoreException
      */
     @Recorded
-    @PublishedMethod( params = "String path", 
+    @PublishedMethod( params = "String path",
                       methodSummary = "Loads a molecule from file. " +
                                       "Returns the first if multiple " +
                       		          "molecules exists in the file ")
@@ -96,15 +96,15 @@ public interface ICDKManager extends IBioclipseManager {
      * Load molecule from an <code>IFile</code> using CDK.
      * If many molecules, just return first.
      * To return a list of molecules, use loadMolecules(...)
-     * 
+     *
      * @param file to be loaded
      * @return loaded sequence
      * @throws IOException
      * @throws BioclipseException
-     * @throws CoreException 
+     * @throws CoreException
      */
     @Recorded
-    public ICDKMolecule loadMolecule( IFile file, 
+    public ICDKMolecule loadMolecule( IFile file,
                                       IProgressMonitor monitor )
         throws IOException, BioclipseException, CoreException;
 
@@ -118,7 +118,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     public ICDKMolecule loadMolecule( IFile file )
         throws IOException, BioclipseException, CoreException;
-    
+
     @Recorded
     @PublishedMethod( params = "String path",
                       methodSummary = "Determines the file format if the file, if chemical")
@@ -132,10 +132,10 @@ public interface ICDKManager extends IBioclipseManager {
      * @return a list of molecules
      * @throws IOException
      * @throws BioclipseException on parsing trouble of the molecules
-     * @throws CoreException 
+     * @throws CoreException
      */
     @Recorded
-    @PublishedMethod( params = "String path", 
+    @PublishedMethod( params = "String path",
                       methodSummary = "Loads molecules from a file at " +
                       		          "a given path into a list of " +
                       		          "molecules")
@@ -145,12 +145,12 @@ public interface ICDKManager extends IBioclipseManager {
 
     /**
      * Loads molecules from an IFile.
-     * 
+     *
      * @param file
      * @return a list of molecules
      * @throws IOException
      * @throws BioclipseException on parsing trouble of the molecules
-     * @throws CoreException 
+     * @throws CoreException
      */
     @Recorded
     public List<ICDKMolecule> loadMolecules( IFile file,
@@ -160,10 +160,10 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     public List<ICDKMolecule> loadMolecules( IFile file )
         throws IOException, BioclipseException, CoreException;
-    
-    public List<ICDKMolecule> loadMolecules( IFile file, 
+
+    public List<ICDKMolecule> loadMolecules( IFile file,
                                        BioclipseUIJob<List<ICDKMolecule>> uiJob);
-    
+
     public List<ICDKMolecule> loadMolecules( IFile file,
                                              IChemFormat format,
                                              IProgressMonitor monitor)
@@ -175,10 +175,10 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    @PublishedMethod(params = "IMolecule mol", 
+    @PublishedMethod(params = "IMolecule mol",
             methodSummary="Saves molecule to file, if read from file.")
     @TestMethods("testSaveMolecule_IMolecule")
-    public void saveMolecule(IMolecule mol) 
+    public void saveMolecule(IMolecule mol)
     	throws BioclipseException, CDKException, CoreException;
 
     /**
@@ -188,11 +188,11 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    @PublishedMethod(params = "IMolecule mol, boolean overwrite", 
+    @PublishedMethod(params = "IMolecule mol, boolean overwrite",
             methodSummary="saves mol to a file, if previously read from file. " +
             		"Overwrite determines if existing file shall be overwritten.")
     @TestMethods("testSaveMolecule_IMolecule_boolean")
-    public void saveMolecule(IMolecule mol, boolean overwrite) 
+    public void saveMolecule(IMolecule mol, boolean overwrite)
     	throws BioclipseException, CDKException, CoreException;
 
     /**
@@ -202,11 +202,11 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    @PublishedMethod(params = "IMolecule mol, String filename", 
+    @PublishedMethod(params = "IMolecule mol, String filename",
             methodSummary="saves mol to a file (filename must be a relative to workspace root and "+
             "folder must exist), filetype must be one of the constants given by getPossibleFiletypes")
     @TestMethods("testSaveMolecule_IMolecule_String")
-    public void saveMolecule(IMolecule mol, String filename) 
+    public void saveMolecule(IMolecule mol, String filename)
     	throws BioclipseException, CDKException, CoreException;
 
     /**
@@ -217,15 +217,15 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    @PublishedMethod(params = "IMolecule mol, String filename, boolean overwrite", 
+    @PublishedMethod(params = "IMolecule mol, String filename, boolean overwrite",
             methodSummary="saves mol to a file (filename must be a relative to workspace root and "+
             "folder must exist), filetype must be one of the constants given by " +
             "getPossibleFiletypes, " +
             "overwrite determines if existing file shall be overwritten.")
     @TestMethods("testSaveMolecule_IMolecule_String_boolean")
-    public void saveMolecule(IMolecule mol, String filename, boolean overwrite) 
+    public void saveMolecule(IMolecule mol, String filename, boolean overwrite)
     	throws BioclipseException, CDKException, CoreException;
-    
+
     /**
      * Save a molecule in same format as loaded
      * @param mol The molecule to save
@@ -234,14 +234,14 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    @PublishedMethod(params = "IMolecule mol, IFile file, boolean overwrite", 
+    @PublishedMethod(params = "IMolecule mol, IFile file, boolean overwrite",
             methodSummary="saves mol to a file, filetype must be one of the constants given by " +
             "getPossibleFiletypes, " +
             "overwrite determines if existing file shall be overwritten.")
     @TestMethods("testSaveMolecule_IMolecule_IFile_boolean")
-    public void saveMolecule(IMolecule mol, IFile file, boolean overwrite) 
+    public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
     	throws BioclipseException, CDKException, CoreException;
-    
+
     /**
      * @param mol The molecule to save
      * @param filename Where to save, relative to workspace root
@@ -249,11 +249,11 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    @PublishedMethod(params = "IMolecule mol, String filename, String filetype", 
+    @PublishedMethod(params = "IMolecule mol, String filename, String filetype",
             methodSummary="saves mol to a file (filename must be a relative to workspace root and "+
             "folder must exist), filetype must be one of the constants given by getPossibleFiletypes")
     @TestMethods("testSaveMolecule_IMolecule_String_String")
-    public void saveMolecule(IMolecule mol, String filename, String filetype) 
+    public void saveMolecule(IMolecule mol, String filename, String filetype)
     	throws BioclipseException, CDKException, CoreException;
 
     /**
@@ -263,7 +263,7 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    public void saveMolecule(IMolecule mol, IFile target, String filetype) 
+    public void saveMolecule(IMolecule mol, IFile target, String filetype)
     	throws BioclipseException, CDKException, CoreException;
 
     /**
@@ -274,12 +274,12 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    @PublishedMethod(params = "IMolecule mol, String filename, String filetype, boolean overwrite", 
+    @PublishedMethod(params = "IMolecule mol, String filename, String filetype, boolean overwrite",
             methodSummary="saves mol to a file (filename must be a relative to workspace root and "+
             "folder must exist), filetype must be one of the constants given by getPossibleFiletypes. " +
             "If overwrite=true then file will be overwritten if exists.")
     @TestMethods("testSaveMolecule_IMolecule_String_String")
-    public void saveMolecule(IMolecule mol, String filename, String filetype, boolean overwrite) 
+    public void saveMolecule(IMolecule mol, String filename, String filetype, boolean overwrite)
     	throws BioclipseException, CDKException, CoreException;
 
     /**
@@ -290,7 +290,7 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    public void saveMolecule(IMolecule mol, IFile target, String filetype, boolean overwrite) 
+    public void saveMolecule(IMolecule mol, IFile target, String filetype, boolean overwrite)
     	throws BioclipseException, CDKException, CoreException;
 
     /**
@@ -337,11 +337,11 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws BioclipseException
      */
     @Recorded
-    @PublishedMethod ( params = "IMolecule molecule", 
+    @PublishedMethod ( params = "IMolecule molecule",
                        methodSummary = "Returns the SMILES for a " +
                        		           "molecule" )
     @TestMethods("testSaveMoleculesSDF,testSaveMoleculesCML,testSaveMoleculesCMLwithProps")
-    public String calculateSMILES (IMolecule molecule) 
+    public String calculateSMILES (IMolecule molecule)
                   throws BioclipseException;
 
     /**
@@ -354,25 +354,25 @@ public interface ICDKManager extends IBioclipseManager {
                       		          "molecules in the file at the " +
                       		          "path")
     @TestMethods("testCreatingMoleculeIterator")
-    public Iterator<ICDKMolecule> createMoleculeIterator(String path) 
+    public Iterator<ICDKMolecule> createMoleculeIterator(String path)
                                   throws CoreException;
-    
+
     /**
      * @param file
      * @return
-     * @throws CoreException 
+     * @throws CoreException
      */
-    public Iterator<ICDKMolecule> createMoleculeIterator( 
+    public Iterator<ICDKMolecule> createMoleculeIterator(
         IFile file,
         IProgressMonitor monitor ) throws CoreException;
-    
-    public Iterator<ICDKMolecule> createMoleculeIterator(IFile file) 
+
+    public Iterator<ICDKMolecule> createMoleculeIterator(IFile file)
                                   throws CoreException;
-    
+
     /**
-     * True if the fingerprint of the subStructure is a subset of the 
+     * True if the fingerprint of the subStructure is a subset of the
      * fingerprint for the molecule
-     * 
+     *
      * @param molecule
      * @param subStructure
      * @return
@@ -386,16 +386,16 @@ public interface ICDKManager extends IBioclipseManager {
                       		          "fingerprint for the molecule")
     @Recorded
     @TestMethods("testLoadMoleculeFromSMILESFile,testFingerPrintMatch")
-    public boolean fingerPrintMatches( ICDKMolecule molecule, 
-                                       ICDKMolecule subStructure ) 
+    public boolean fingerPrintMatches( ICDKMolecule molecule,
+                                       ICDKMolecule subStructure )
                    throws BioclipseException;
-    
+
     /**
-     * True if the paramater molecule1 and the 
-     * paramater molecule2 are isomorph. 
-     * 
+     * True if the paramater molecule1 and the
+     * paramater molecule2 are isomorph.
+     *
      * (Performs an isomophism test without checking fingerprints first)
-     * 
+     *
      * @param molecule
      * @param subStructure
      * @return
@@ -411,14 +411,14 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testStructureMatches")
     public boolean areIsomorphic( ICDKMolecule molecule1,
                                         ICDKMolecule molecule2 );
-    
+
 
     /**
-     * True if the paramater substructure is a substructure to the 
-     * paramater molecule. 
-     * 
+     * True if the paramater substructure is a substructure to the
+     * paramater molecule.
+     *
      * (Performs an isomophism test without checking fingerprints first)
-     * 
+     *
      * @param molecule
      * @param subStructure
      * @return
@@ -434,13 +434,13 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testSubStructureMatch")
     public boolean subStructureMatches( ICDKMolecule molecule,
                                         ICDKMolecule subStructure );
-    
+
     /**
      * Creates a cdk molecule from an IMolecule
-     * 
+     *
      * @param m
      * @return
-     * @throws BioclipseException 
+     * @throws BioclipseException
      */
     @PublishedMethod ( params = "IMolecule m",
                        methodSummary = "Creates a cdk molecule from a" +
@@ -451,7 +451,7 @@ public interface ICDKManager extends IBioclipseManager {
 
     /**
      * Creates a cdk molecule from a CML String
-     * 
+     *
      * @param m
      * @return
      * @throws BioclipseException if input is null or parse fails
@@ -462,24 +462,24 @@ public interface ICDKManager extends IBioclipseManager {
                                        "CML String" )
     @Recorded
     @TestMethods("testFromCML")
-    public ICDKMolecule fromCml( String cml ) 
+    public ICDKMolecule fromCml( String cml )
                         throws BioclipseException, IOException;
 
     /**
      * Returns true if the given molecule matches the given SMARTS
-     * 
+     *
      * @param molecule
      * @param smarts
      * @return whether the given SMARTS matches the given molecule
-     * @throws BioclipseException 
+     * @throws BioclipseException
      */
-    @PublishedMethod ( params = "ICDKMolecule molecule, String smarts", 
+    @PublishedMethod ( params = "ICDKMolecule molecule, String smarts",
                        methodSummary = "Returns true if the given " +
                                        "SMARTS matches the given " +
                                        "molecule" )
     @Recorded
     @TestMethods("testSMARTSMatching")
-    public boolean smartsMatches( ICDKMolecule molecule, String smarts ) 
+    public boolean smartsMatches( ICDKMolecule molecule, String smarts )
                    throws BioclipseException;
 
     /**
@@ -495,16 +495,16 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @TestMethods("testNumberOfEntriesInSDF")
     public int numberOfEntriesInSDF( String filePath );
-    
+
     /**
      * @param filePath
      */
     @PublishedMethod ( params = "String filePath",
                        methodSummary = "Creates a index file for the SD-file." )
     public void createSDFileIndex( String filePath);
-    
+
     public void createSDFileIndex(IFile file, IProgressMonitor monitor);
-    
+
     public void createSDFileIndex(IFile file, BioclipseUIJob<?> uiJob);
     /**
      * Reads files and extracts conformers if available.
@@ -525,9 +525,9 @@ public interface ICDKManager extends IBioclipseManager {
      * @return a list of molecules that may have multiple conformers
      */
     @Recorded
-    public List<ICDKMolecule> loadConformers( IFile file, 
+    public List<ICDKMolecule> loadConformers( IFile file,
                                               IProgressMonitor monitor );
-    
+
     /**
      * @param file
      * @return
@@ -542,16 +542,16 @@ public interface ICDKManager extends IBioclipseManager {
      * @return
      */
     @Recorded
-    public Iterator<ICDKMolecule> creatConformerIterator( 
+    public Iterator<ICDKMolecule> creatConformerIterator(
         IFile file, IProgressMonitor monitor );
-    
+
     /**
      * @param file
      * @return
      */
     @Recorded
     public Iterator<ICDKMolecule> creatConformerIterator(IFile file);
-    
+
     @Recorded
     @PublishedMethod( params = "String path",
                       methodSummary = "" )
@@ -563,7 +563,7 @@ public interface ICDKManager extends IBioclipseManager {
                                        "molecule.")
     @Recorded
     @TestMethods("testLoadMoleculeFromSMILESFile")
-    public double calculateMass( IMolecule molecule ) 
+    public double calculateMass( IMolecule molecule )
                   throws BioclipseException;
 
     /**
@@ -574,7 +574,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     public int numberOfEntriesInSDF( IFile file, IProgressMonitor monitor );
     public int numberOfEntriesInSDF( IFile file, BioclipseUIJob<Integer> uiJob);
-    
+
     @Recorded
     @PublishedMethod(params = "IMolecule molecule",
                      methodSummary="Create 2D coordinate for the given molecule")
@@ -635,17 +635,17 @@ public interface ICDKManager extends IBioclipseManager {
 	 * @return
 	 */
     @Recorded
-    @PublishedMethod( params = "String path", 
+    @PublishedMethod( params = "String path",
                       methodSummary = "Returns number of molecules in file.")
-	public int getNoMolecules(String path); 
-    
+	public int getNoMolecules(String path);
+
 	/**
 	 * Return number of molecules in file
 	 * @param file
 	 * @return
 	 */
     @Recorded
-    @PublishedMethod( params = "String path", 
+    @PublishedMethod( params = "String path",
                       methodSummary = "Returns number of molecules in file.")
 	@TestMethods("testGetInfo")
     public MoleculesInfo getInfo(String path);
@@ -657,11 +657,11 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws BioclipseException if calculation failed
      */
     @Recorded
-    @PublishedMethod( params = "IMolecule mol", 
+    @PublishedMethod( params = "IMolecule mol",
                       methodSummary = "Returns true if molecule has 2D coordinates, " +
                       		"false otherwise.")
     @TestMethods("testHas2d")
-	boolean has2d(IMolecule mol) throws BioclipseException; 
+	boolean has2d(IMolecule mol) throws BioclipseException;
 
     /**
      * Depict if molecule has 3D coordinates available.
@@ -670,38 +670,38 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws BioclipseException if calculation failed
      */
     @Recorded
-    @PublishedMethod( params = "IMolecule mol", 
+    @PublishedMethod( params = "IMolecule mol",
                       methodSummary = "Returns true if molecule has 3D coordinates, " +
                       		"false otherwise.")
     @TestMethods("testHas3d")
-	boolean has3d(IMolecule mol) throws BioclipseException; 
-    
+	boolean has3d(IMolecule mol) throws BioclipseException;
+
     @Recorded
-    @PublishedMethod(params = "IMolecule mol", 
+    @PublishedMethod(params = "IMolecule mol",
                      methodSummary="Adds explicit hydrogens to this molecule")
     @TestMethods("testAddExplicitHydrogens")
     public IMolecule addExplicitHydrogens(IMolecule molecule) throws Exception;
 
     @Recorded
-    @PublishedMethod(params = "IMolecule mol", 
+    @PublishedMethod(params = "IMolecule mol",
                      methodSummary="Adds implicit hydrogens to this molecule")
     @TestMethods("testAddImplicitHydrogens")
    	public IMolecule addImplicitHydrogens(IMolecule molecule) throws BioclipseException, InvocationTargetException;
 
     @Recorded
-    @PublishedMethod(params = "IFile file, IMolecule[] entries", 
+    @PublishedMethod(params = "IFile file, IMolecule[] entries",
                      methodSummary="Creates an sd file from a number of molecules")
     @TestMethods("testCreateSDFile")
    	public void createSDFile(IFile file, IMolecule[] entries) throws BioclipseException, InvocationTargetException;
 
     @Recorded
-    @PublishedMethod(params = "IFile file, int startenty, int endentry", 
+    @PublishedMethod(params = "IFile file, int startenty, int endentry",
                      methodSummary="Extracts a number of entries from an sd file. Does not read the complete file for this.")
     @TestMethods("testExtractFromSDFile")
     public List<IMolecule> extractFromSDFile(IFile file, int startenty, int endentry) throws BioclipseException, InvocationTargetException;
 
     @Recorded
-    @PublishedMethod(params = "ICDKMolecule m", 
+    @PublishedMethod(params = "ICDKMolecule m",
                      methodSummary = "Gives the molecularformula as a String")
     public String molecularFormula( ICDKMolecule m );
 }
