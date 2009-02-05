@@ -393,15 +393,15 @@ public class CDKManager implements ICDKManager {
 
   	                String molName
   	                    = (String) 
-  	                      imol.getProperty("PUBCHEM_IUPAC_TRADITIONAL_NAME");
-  	                
-  	                if ( molName == null || ( molName.equals("") ) )
+  	                imol.getProperty("PUBCHEM_IUPAC_TRADITIONAL_NAME");
+
+                    if ( molName == null || ( molName.equals("") ) )
   	                    molName
   	                        = (String) imol.getProperty(CDKConstants.TITLE);
 
   	                if ( molName != null && !( molName.equals("") ) ) {
   	                    moleculeName = molName;
-  	                }
+                    }
   	            }
 
   	            mol.setName(moleculeName);
