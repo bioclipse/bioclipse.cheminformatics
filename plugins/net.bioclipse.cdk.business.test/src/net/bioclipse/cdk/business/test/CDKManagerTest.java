@@ -23,6 +23,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -43,6 +46,7 @@ import net.bioclipse.core.tests.AbstractManagerTest;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openscience.cdk.exception.CDKException;
@@ -644,7 +648,7 @@ public class CDKManagerTest extends AbstractManagerTest {
         Assert.assertEquals(2, molecule.getAtomContainer().getAtomCount());
     }
 
-    @Test public void testCreateSDFile() throws Exception{
+    @Test public void testCreateSDFile_File_IMoleculeArray() throws Exception{
     	IMolecule[] mol=new IMolecule[2];
     	mol[0] = cdk.fromSMILES("CCCBr");
     	mol[1] = cdk.fromSMILES("CCCCl");
@@ -660,4 +664,15 @@ public class CDKManagerTest extends AbstractManagerTest {
         assertTrue(sb.toString().contains("Cl"));
         assertTrue(sb.toString().contains("Br"));
     }
+    
+    
+    @Test
+    public void testExtractFromSDFile_IFile_int_int() throws FileNotFoundException, BioclipseException, InvocationTargetException{
+        String path = getClass().getResource("/testFiles/test.sdf")
+        .getPath();
+
+        List<IMolecule> mol = cdk.extractFromSDFile( new MockIFile(path), 0, 1 );
+        Assert.assertEquals( 2,mol.size() );
+    }
+
 }

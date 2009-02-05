@@ -178,14 +178,4 @@ public class TestCDKMolecule {
         
         
     }
-    
-    @Test
-    public void testExtractFromSDFile() throws FileNotFoundException, BioclipseException, InvocationTargetException{
-        String path = getClass().getResource("/testFiles/test.sdf")
-        .getPath();
-
-        List<IMolecule> mol = cdk.extractFromSDFile( new MockIFile(path), 0, 1 );
-        Assert.assertEquals( 2,mol.size() );
-    }
-
 }

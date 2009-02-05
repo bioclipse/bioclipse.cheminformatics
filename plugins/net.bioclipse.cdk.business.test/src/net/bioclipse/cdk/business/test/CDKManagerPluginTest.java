@@ -946,6 +946,35 @@ public class CDKManagerPluginTest {
         Assert.assertNotNull(cdk.getInfo(path));
     }
 
+    
+    @Test
+    public void testExtractFromSDFile_String_int_int() throws Exception{
+        URI uri = getClass().getResource("/testFiles/test.sdf").toURI();
+        URL url = FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        
+        List<IMolecule> mol = cdk.extractFromSDFile( path, 0, 1 );
+        Assert.assertEquals( 2,mol.size() );
+    }
+    
+    @Test 
+    public void testCreateSDFile_String_IMoleculeArray() throws Exception{
+        IMolecule[] mol=new IMolecule[2];
+        mol[0] = cdk.fromSMILES("CCCBr");
+        mol[1] = cdk.fromSMILES("CCCCl");
+        cdk.createSDFile( "/Virtual/test.sdf", mol);
+        byte[] bytes=new byte[1000];
+        IFile file=new MockIFile("/Virtual/test.sdf");
+        file.getContents().read(bytes);
+        StringBuffer sb=new StringBuffer();
+          for(int i=0;i<bytes.length;i++){
+            sb.append((char)bytes[i]);
+          }
+          assertTrue(sb.toString().contains("$$$$"));
+          assertTrue(sb.toString().contains("Cl"));
+          assertTrue(sb.toString().contains("Br"));
+      }
+
     @Test
     public void testMolecularFormula() throws BioclipseException {
         ICDKMolecule m = cdk.fromSMILES( "C" );
