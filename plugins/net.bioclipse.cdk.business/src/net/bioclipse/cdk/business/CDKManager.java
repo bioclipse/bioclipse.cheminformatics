@@ -1179,7 +1179,22 @@ public class CDKManager implements ICDKManager {
   	                                                  .transform(path) );
   	}
 
-  	public List<ICDKMolecule> loadSMILESFile(IFile file)
+  	public List<ICDKMolecule> loadSMILESFile( IFile file,
+  	                                 BioclipseUIJob<List<ICDKMolecule>> uiJob )
+  	                                 throws CoreException, IOException {
+  	      throw new UnsupportedOperationException(
+  	      "This manager method should not be called");
+  	}
+
+  	public List<ICDKMolecule> loadSMILESFile( IFile file )
+  	                                                      throws CoreException,
+  	                                                      IOException {
+
+  	    throw new UnsupportedOperationException(
+  	    "This manager method should not be called");
+  	}
+
+  	public List<ICDKMolecule> loadSMILESFile(IFile file,IProgressMonitor monitor)
   	                          throws CoreException, IOException {
 
   	    //Only process files with smiles extension

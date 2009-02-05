@@ -610,18 +610,24 @@ public interface ICDKManager extends IBioclipseManager {
      *
      * @param path String with the path to the file
      * @return a list of molecules
-     * @throws CoreException 
-     * @throws IOException 
+     * @throws CoreException
+     * @throws IOException
      */
     @Recorded
-    @PublishedMethod( params = "String path", 
+    @PublishedMethod( params = "String path",
                       methodSummary = "Loads molecules from a SMILES file at " +
                       		          "a given path into a list of " +
                       		          "molecules")
     @TestMethods("testLoadMoleculeFromSMILESFileDirectly,testLoadMoleculeFromSMILESFile")
     public List<ICDKMolecule> loadSMILESFile(String path) throws CoreException, IOException;
-    
-	public List<ICDKMolecule> loadSMILESFile(IFile file) throws CoreException, IOException;
+
+	public List<ICDKMolecule> loadSMILESFile(IFile file) throws CoreException,
+	                                                            IOException;
+	public List<ICDKMolecule> loadSMILESFile(IFile file,IProgressMonitor monitor)
+	                                    throws CoreException, IOException;
+	public List<ICDKMolecule> loadSMILESFile(IFile file,
+	                               BioclipseUIJob<List<ICDKMolecule>> uiJob)
+	                               throws CoreException, IOException;
 
 	/**
 	 * Return number of molecules in file
