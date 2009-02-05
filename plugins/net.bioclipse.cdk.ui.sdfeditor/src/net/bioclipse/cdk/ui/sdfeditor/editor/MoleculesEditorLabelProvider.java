@@ -69,18 +69,15 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
     private void setupRenderer() {
 
 
-        IFontManager fontManager = new SWTFontManager(Display.getCurrent(),
-                                         new java.awt.Font( "Arial",
-                                                            java.awt.Font.PLAIN,
-                                                            9));
+        IFontManager fontManager = new SWTFontManager(Display.getCurrent());
         renderer = new Renderer(fontManager);
 
 
         renderer.getRenderer2DModel().setDrawNumbers( false );
         renderer.getRenderer2DModel().setIsCompact( true );
-        renderer.getRenderer2DModel().setBondWidth( 15 );
+        //renderer.getRenderer2DModel().setBondWidth( 15 );
         renderer.getRenderer2DModel().setDrawNumbers( false );
-        renderer.getRenderer2DModel().setBondDistance( 1 );
+        //renderer.getRenderer2DModel().setBondDistance( 1 );
         renderer.getRenderer2DModel().setUseAntiAliasing(true );
     }
 
@@ -119,9 +116,6 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
                 }
             }
 
-            GeometryTools.translateAllPositive( drawMolecule );
-            GeometryTools.scaleMolecule( drawMolecule, screenSize, 0.8 );
-            GeometryTools.center( drawMolecule, screenSize );
 
 
             // renderer.getRenderer2DModel().setRenderingCoordinates(
@@ -136,6 +130,7 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
 //            renderer.getRenderer2DModel().setBackColor( java.awt.Color.CYAN );
             renderer.getRenderer2DModel().setUseAntiAliasing( true );
             renderer.getRenderer2DModel().setHighlightRadiusModel( 10 );
+            renderer.getRenderer2DModel().setFitToScreen( true );
 
             Color greenScreen = new Color(Display.getCurrent(), 252, 253, 254);
 

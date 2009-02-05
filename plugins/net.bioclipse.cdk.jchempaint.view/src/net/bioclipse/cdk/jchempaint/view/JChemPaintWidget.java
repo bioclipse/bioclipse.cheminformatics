@@ -55,8 +55,7 @@ public class JChemPaintWidget extends Canvas {
             }
         });
 
-        fontManager = new SWTFontManager(this.getDisplay(),
-                              new java.awt.Font("Arial",java.awt.Font.PLAIN,9));
+        fontManager = new SWTFontManager(this.getDisplay());
 
         List<IGenerator> set =createGenerators();
         renderer = new Renderer(set,fontManager);

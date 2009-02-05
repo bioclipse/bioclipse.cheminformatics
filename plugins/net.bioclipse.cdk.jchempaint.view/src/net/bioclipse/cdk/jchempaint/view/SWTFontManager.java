@@ -35,11 +35,11 @@ public class SWTFontManager extends AbstractFontManager {
 
 	private Device device;
 
-	public SWTFontManager(Device device,java.awt.Font font) {
+	public SWTFontManager(Device device) {
 		// apparently 9 pixels per em is the minimum
 		// but I don't know if (size 9 == 9 px.em-1)...
 		this.minFontSize = 9;
-		setFont( font );
+
 		this.device = device;
 		this.makeFonts();
 
@@ -47,15 +47,22 @@ public class SWTFontManager extends AbstractFontManager {
 		this.resetVirtualCounts();
 	}
 
-	public void setFont(java.awt.Font font) {
-	    FONT_FAMILY_NAME = font.getFamily();
-	    switch (font.getStyle()) {
-	        case java.awt.Font.PLAIN: FONT_STYLE = SWT.NONE;break;
-	        case java.awt.Font.BOLD: FONT_STYLE = SWT.BOLD;break;
-	        case java.awt.Font.ITALIC: FONT_STYLE = SWT.BOLD;break;
-	        default: FONT_STYLE = SWT.ITALIC | SWT.BOLD;
-	    }
-	}
+	public void setFont() {
+	    FONT_FAMILY_NAME = getFontName()!=null?getFontName():"Arial";
+        if ( getFontStyle() != null ) {
+            switch ( super.getFontStyle() ) {
+                case NORMAL:
+                    FONT_STYLE = SWT.NONE;
+                    break;
+                case BOLD:
+                    FONT_STYLE = SWT.BOLD;
+                    break;
+                default:
+                    FONT_STYLE = SWT.ITALIC | SWT.BOLD;
+            }
+        } else
+            FONT_STYLE = SWT.NONE;
+    }
 
 	private void makeFontsAWT(Device device) {
 	    int size = this.minFontSize;
@@ -75,10 +82,12 @@ public class SWTFontManager extends AbstractFontManager {
 	private void makeFonts(Device device) {
 		int size = this.minFontSize;
 		double scale = 12;
+		setFont();
 		this.fontSizeToFontMap = new HashMap<Integer, Font>();
 
 //		for (int i = 0; i < this.getNumberOfFontSizes(); i++) {
 		for (int i = 0; i < 20; i++) {
+
 			this.fontSizeToFontMap.put(size,
 					new Font(device, FONT_FAMILY_NAME, size,FONT_STYLE));
 			this.registerFontSizeMapping(scale, size);
@@ -128,10 +137,7 @@ public class SWTFontManager extends AbstractFontManager {
 	        final Display display = new Display();
 	        final Shell shell = new Shell(display);
 
-	        final SWTFontManager fontManager = new SWTFontManager( display,
-	                            new java.awt.Font( "Arial",
-	                                               java.awt.Font.PLAIN,
-	                                               9));
+	        final SWTFontManager fontManager = new SWTFontManager( display);
 
 	        List<Integer> list = new ArrayList<Integer>(fontManager.fontSizeToFontMap.keySet());
           Collections.sort(list);
