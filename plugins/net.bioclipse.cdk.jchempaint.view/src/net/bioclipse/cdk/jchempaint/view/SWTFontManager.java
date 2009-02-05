@@ -33,12 +33,15 @@ public class SWTFontManager extends AbstractFontManager {
 
 	private double scale;
 
+	private Device device;
+
 	public SWTFontManager(Device device,java.awt.Font font) {
 		// apparently 9 pixels per em is the minimum
 		// but I don't know if (size 9 == 9 px.em-1)...
 		this.minFontSize = 9;
 		setFont( font );
-		this.makeFonts(device);
+		this.device = device;
+		this.makeFonts();
 
 		this.toMiddle();
 		this.resetVirtualCounts();
@@ -111,6 +114,13 @@ public class SWTFontManager extends AbstractFontManager {
 	    for(Font font:fonts)
 	        font.dispose();
 	    fonts.clear();
+	}
+
+	@Override
+	protected void makeFonts() {
+
+	    makeFonts( device );
+
 	}
 
 	public static class FontTest {
@@ -187,4 +197,5 @@ public class SWTFontManager extends AbstractFontManager {
 
 	      }
 	}
+
 }
