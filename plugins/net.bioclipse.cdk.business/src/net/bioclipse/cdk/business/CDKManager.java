@@ -386,13 +386,18 @@ public class CDKManager implements ICDKManager {
 
   	            // If there's a CDK property TITLE (read from file), use that
   	            // as name
-  	            if (ac instanceof IMolecule) {
+  	            if (ac instanceof org.openscience.cdk.interfaces.IMolecule) {
 
   	                org.openscience.cdk.interfaces.IMolecule imol
   	                    = (org.openscience.cdk.interfaces.IMolecule) ac;
 
   	                String molName
-  	                    = (String) imol.getProperty(CDKConstants.TITLE);
+  	                    = (String) 
+  	                      imol.getProperty("PUBCHEM_IUPAC_TRADITIONAL_NAME");
+  	                
+  	                if ( molName == null || ( molName.equals("") ) )
+  	                    molName
+  	                        = (String) imol.getProperty(CDKConstants.TITLE);
 
   	                if ( molName != null && !( molName.equals("") ) ) {
   	                    moleculeName = molName;
