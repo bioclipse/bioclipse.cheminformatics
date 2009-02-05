@@ -39,7 +39,7 @@ public class SelectSquareModule extends ControllerModuleAdapter {
     
     public void mouseClickedDown(Point2d p) {
         this.selection.clear();
-        this.chemModelRelay.getIJava2DRenderer()
+        this.chemModelRelay.getRenderer()
                            .getRenderer2DModel()
                            .setSelection(this.selection);
     }
