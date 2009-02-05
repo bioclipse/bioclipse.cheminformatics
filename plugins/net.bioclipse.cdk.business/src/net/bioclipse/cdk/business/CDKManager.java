@@ -1027,6 +1027,9 @@ public class CDKManager implements ICDKManager {
   	        catch ( CoreException e ) {
   	            LogUtils.debugTrace( logger, e );
   	        }
+  	        finally {
+  	            monitor.done();
+  	        }
   	    }
   	}
 
