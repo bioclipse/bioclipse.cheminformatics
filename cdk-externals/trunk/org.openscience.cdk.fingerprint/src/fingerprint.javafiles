@@ -3,3 +3,5 @@ org/openscience/cdk/fingerprint/SubstructureFingerprinter.java
 org/openscience/cdk/fingerprint/StandardSubstructureSets.java
 org/openscience/cdk/fingerprint/EStateFingerprinter.java
 org/openscience/cdk/fingerprint/ExtendedFingerprinter.java
+org/openscience/cdk/similarity/DistanceMoment.java
+org/openscience/cdk/similarity/Tanimoto.java

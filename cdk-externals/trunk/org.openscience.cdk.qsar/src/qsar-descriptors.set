@@ -19,7 +19,6 @@ org.openscience.cdk.qsar.descriptors.atomic.PartialSigmaChargeDescriptor
 org.openscience.cdk.qsar.descriptors.atomic.PartialPiChargeDescriptor
 org.openscience.cdk.qsar.descriptors.atomic.AtomHybridizationVSEPRDescriptor
 org.openscience.cdk.qsar.descriptors.atomic.RDFProtonDescriptor_GSR
-org.openscience.cdk.qsar.descriptors.atomic.ProtonTotalPartialChargeDescriptor
 org.openscience.cdk.qsar.descriptors.atomic.PartialTChargePEOEDescriptor
 org.openscience.cdk.qsar.descriptors.atomic.ProtonAffinityHOSEDescriptor
 org.openscience.cdk.qsar.descriptors.atomic.InductiveAtomicHardnessDescriptor

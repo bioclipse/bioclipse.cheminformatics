@@ -75,8 +75,6 @@ org/openscience/cdk/validate/AbstractValidator.java
 org/openscience/cdk/validate/CDKValidator.java
 org/openscience/cdk/validate/ValidationReport.java
 org/openscience/cdk/validate/ValidationTest.java
-org/openscience/cdk/similarity/DistanceMoment.java
-org/openscience/cdk/similarity/Tanimoto.java
 org/openscience/cdk/exception/IncorrectUseOfCDKCoreClassError.java
 org/openscience/cdk/templates/saturatedhydrocarbons/IsoAlkanes.java
 org/openscience/cdk/templates/MoleculeFactory.java
