@@ -420,6 +420,23 @@
                 value="zap">
           </parameter>
        </command>
+       <command
+             commandId="net.bioclipse.cdk.jchempaint.manager.action"
+             label="Add hexagon"
+             style="push">
+          <parameter
+                name="jcp.controller.param.int"
+                value="6">
+          </parameter>
+          <visibleWhen
+                checkEnabled="true">
+             <iterate>
+                <instanceof
+                      value="org.openscience.cdk.interfaces.IBond">
+                </instanceof>
+             </iterate>
+          </visibleWhen>
+       </command>
     </menuContribution>
  </extension>
 
@@ -448,6 +465,12 @@
            </or>
         </with>
      </definition>
+  </extension>
+  <extension
+        point="org.eclipse.ui.popupMenus">
+  </extension>
+  <extension
+        point="org.eclipse.ui.popupMenus">
   </extension>
 
 </plugin>
