@@ -115,11 +115,12 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
                         (new SDFileMoleculesEditorModel( this )).init( file );
                         model = createSDFTemporaryModel( file );
 
-                    } else
+                    } else {
                         if(file.getContentDescription().getContentType().getId()
                                 .equals( "net.bioclipse.contenttypes.smi" ) ) {
                             loadMoleculesFromManager( file , FileType.SMI);
                         }
+                    }
 
             } catch ( CoreException e ) {
                 logger.warn( "Failed to load file: " + e.getMessage() );

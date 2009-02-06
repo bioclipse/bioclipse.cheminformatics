@@ -65,6 +65,7 @@ public class SWTFontManager extends AbstractFontManager {
     }
 
 	private void makeFontsAWT(Device device) {
+	    setFont();
 	    int size = this.minFontSize;
 	    double scale = 0.5;
 	    this.fontSizeToFontMap = new HashMap<Integer, Font>();
@@ -128,7 +129,7 @@ public class SWTFontManager extends AbstractFontManager {
 	@Override
 	protected void makeFonts() {
 
-	    makeFonts( device );
+	    makeFontsAWT( device );
 
 	}
 
