@@ -7,6 +7,7 @@ Bundle-Activator: net.bioclipse.jmol.cdk.Activator
 Bundle-Vendor: The Bioclipse Team
 Require-Bundle: org.openscience.cdk.data,
  org.openscience.cdk.interfaces,
+ org.openscience.cdk.ioformats,
  org.openscience.cdk.pcore,
  org.openscience.cdk.core,
  org.openscience.cdk.standard,
