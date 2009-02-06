@@ -96,6 +96,14 @@ public class RendererModel implements Serializable, Cloneable {
         this.parameters = parameters;
     }
     
+    public double getScale() {
+        return this.parameters.getScale();
+    }
+    
+    public void setScale(double scale) {
+        this.parameters.setScale(scale);
+    }
+    
     public void setSelection(ISelection selection) {
         this.selection = selection;
     }
@@ -449,6 +457,28 @@ public class RendererModel implements Serializable, Cloneable {
      */
     public void setHighlightRadiusModel(double highlightRadius) {
         this.parameters.setHighlightRadiusModel(highlightRadius);
+        fireChange();
+    }
+    
+    /**
+     * Returns the radius around an atoms, for which the atom is marked
+     * highlighted if a pointer device is placed within this radius.
+     * 
+     * @return The highlight distance for all atoms (in screen space)
+     */
+    public double getHighlightDistance() {
+        return this.parameters.getHighlightDistance();
+    }
+
+    /**
+     * Sets the radius around an atoms, for which the atom is marked highlighted
+     * if a pointer device is placed within this radius.
+     * 
+     * @param highlightDistance
+     *            the highlight radius of all atoms (in screen space)
+     */
+    public void setHighlightDistance(double highlightDistance) {
+        this.parameters.setHighlightDistance(highlightDistance);
         fireChange();
     }
 

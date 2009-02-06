@@ -17,15 +17,18 @@ public class RenderingParameters {
     private Color backColor = Color.white;
 
     /**
-     * The gap between double and triple bond lines in model space
+     * The gap between double and triple bond lines on the screen
      */
-    private double bondDistance = 0.15;
+    private double bondDistance = 2;
     
     /**
      * The length on screen of a typical bond
      */
     private double bondLength = 40.0;
 
+    /**
+     * The width on screen of a bond
+     */
     private double bondWidth = 2.0;
 
     /**
@@ -69,6 +72,13 @@ public class RenderingParameters {
      */
     private boolean kekuleStructure = false;
     
+    
+    /**
+     * The maximum distance on the screen the mouse pointer has to be to 
+     * highlight an element. 
+     */
+    private double highlightDistance = 8;
+    
     /**
      * The minimum distance the mouse pointer has to be (in model space)
      * from an atom or bond before it is highlighted.  
@@ -81,6 +91,11 @@ public class RenderingParameters {
      * Area on each of the four margins to keep white.
      */
     private double margin = 0.05;
+    
+    /**
+     * The factor to convert from model space to screen space.
+     */
+    private double scale;
 
     private Color selectedPartColor = Color.lightGray;
     
@@ -128,6 +143,28 @@ public class RenderingParameters {
     private boolean useAntiAliasing = true;
 
     private boolean willDrawNumbers = false;
+
+    /**
+     * The scale is the factor to multiply model coordinates by to convert to
+     * coordinates in screen space.
+     * 
+     * @return the scale
+     */
+    public double getScale() {
+        return scale;
+    }
+
+    public void setScale(double scale) {
+        this.scale = scale;
+    }
+
+    public double getHighlightDistance() {
+        return highlightDistance;
+    }
+
+    public void setHighlightDistance(double highlightDistance) {
+        this.highlightDistance = highlightDistance;
+    }
 
     public Color getDefaultBondColor() {
         return defaultBondColor;

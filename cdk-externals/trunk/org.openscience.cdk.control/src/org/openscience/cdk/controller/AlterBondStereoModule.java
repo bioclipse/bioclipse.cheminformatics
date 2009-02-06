@@ -33,7 +33,10 @@ import static org.openscience.cdk.CDKConstants.STEREO_BOND_UP_INV;
 
 import javax.vecmath.Point2d;
 
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 
 /**
@@ -109,6 +112,25 @@ public class AlterBondStereoModule extends ControllerModuleAdapter {
 	            bond.setStereo(STEREO_BOND_UP);
 	        } else if (noStereo && desiredDirection == Direction.DOWN) {
 	            bond.setStereo(STEREO_BOND_DOWN);
+	        }
+	    } else {
+	        // if an atom has been clicked, make a new bond, and make it stereo
+	        IAtom atom = this.chemModelRelay.getClosestAtom(worldCoord);
+	        if (atom == null) return;
+	        String atomType = 
+	            chemModelRelay.getController2DModel().getDrawElement();
+	        IAtom newAtom = chemModelRelay.addAtom(atomType, atom);
+	        
+	        // XXX these calls would not be necessary if addAtom returned a bond
+	        IAtomContainer atomContainer = 
+	            ChemModelManipulator.getRelevantAtomContainer(
+	                    chemModelRelay.getIChemModel(), newAtom);
+	        IBond newBond = atomContainer.getBond(atom, newAtom);
+
+	        if (desiredDirection == Direction.UP) {
+	            newBond.setStereo(STEREO_BOND_UP);
+	        } else {
+	            newBond.setStereo(STEREO_BOND_DOWN);
 	        }
 	    }
 		chemModelRelay.updateView();

@@ -22,9 +22,7 @@ package org.openscience.cdk.controller;
 
 import javax.vecmath.Point2d;
 
-import org.openscience.cdk.renderer.selection.LassoSelection;
 import org.openscience.cdk.renderer.selection.RectangleSelection;
-import org.openscience.cdk.renderer.selection.ShapeSelection;
 
 /**
  * @cdk.module control

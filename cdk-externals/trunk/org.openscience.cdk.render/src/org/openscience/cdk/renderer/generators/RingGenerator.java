@@ -35,7 +35,6 @@ import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
-import org.openscience.cdk.tools.LoggingTool;
 
 /**
  * @cdk.module render
@@ -43,7 +42,6 @@ import org.openscience.cdk.tools.LoggingTool;
 public class RingGenerator extends BasicBondGenerator {
 
 	private RendererModel model;
-	private LoggingTool logger = new LoggingTool(RingGenerator.class);
 	private Collection<IRing> painted_rings;
 
 	public RingGenerator(RendererModel r2dm) {
@@ -69,14 +67,14 @@ public class RingGenerator extends BasicBondGenerator {
 
 	private IRenderingElement generateRingRingElement(IBond bond, IRing ring) {
 		Point2d center = GeometryTools.get2DCenter(ring);
-		logger.debug("painting a Ringring now at " + center);
 
 		double[] minmax = GeometryTools.getMinMax(ring);
 		double width  = minmax[2] - minmax[0];
 		double height = minmax[3] - minmax[1];
 		double radius = Math.min(width, height) * 0.35;
 
-		return new OvalElement(center.x, center.y, radius, super.getColorForBond(bond));
+		return new OvalElement(
+		        center.x, center.y, radius, super.getColorForBond(bond));
 	}
 
 	private boolean ringIsAromatic(final IRing ring) {

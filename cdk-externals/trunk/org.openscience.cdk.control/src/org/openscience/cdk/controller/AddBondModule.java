@@ -53,7 +53,8 @@ public class AddBondModule extends ControllerModuleAdapter {
 	    }
 	    
         // cycle the bond order up to maxOrder
-	    IBond.Order maxOrder = super.chemModelRelay.getController2DModel().getMaxOrder();
+	    IBond.Order maxOrder = 
+	        super.chemModelRelay.getController2DModel().getMaxOrder();
         if (BondManipulator.isLowerOrder(bond.getOrder(), maxOrder)) {
             BondManipulator.increaseBondOrder(bond);
         } else {
@@ -63,13 +64,15 @@ public class AddBondModule extends ControllerModuleAdapter {
 	}
 	
 	private void addBondToAtom(IAtom atom) {
-	       String atomType = chemModelRelay.getController2DModel().getDrawElement();
-	       chemModelRelay.addAtom(atomType, atom);
-	       chemModelRelay.updateView();
+	    String atomType = 
+	        chemModelRelay.getController2DModel().getDrawElement();
+	    chemModelRelay.addAtom(atomType, atom);
+	    chemModelRelay.updateView();
 	}
 	
 	private void addNewBond(Point2d worldCoordinate) {
-	    String atomType = chemModelRelay.getController2DModel().getDrawElement();
+	    String atomType = 
+	        chemModelRelay.getController2DModel().getDrawElement();
 	    chemModelRelay.addAtom(atomType, 
 	            chemModelRelay.addAtom(atomType, worldCoordinate));
 	    chemModelRelay.updateView();

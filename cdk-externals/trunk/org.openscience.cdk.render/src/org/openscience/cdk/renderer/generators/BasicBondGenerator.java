@@ -52,7 +52,7 @@ import org.openscience.cdk.tools.manipulator.RingSetManipulator;
 /**
  * @cdk.module render
  */
-public class BasicBondGenerator implements IGenerator{
+public class BasicBondGenerator implements IGenerator {
 
 	protected RendererModel model;
 	
@@ -149,8 +149,8 @@ public class BasicBondGenerator implements IGenerator{
 		Point2d p1 = bond.getAtom(0).getPoint2d();
 		Point2d p2 = bond.getAtom(1).getPoint2d();
 		Color color = this.getColorForBond(bond);
-		double bondWidth = model.getBondWidth();
-		double bondDistance = model.getBondDistance();
+		double bondWidth = model.getBondWidth() / model.getScale();
+		double bondDistance = model.getBondDistance() / model.getScale();
 		if (type == IBond.Order.SINGLE) {
 		    return new LineElement(p1.x, p1.y, p2.x, p2.y, bondWidth, color);
 		} else {
@@ -251,7 +251,7 @@ public class BasicBondGenerator implements IGenerator{
 		// uu.interpolate(u, w, alpha);
 		// return new BondSymbol(uu.x, uu.y, ww.x, ww.y);
 		return new LineElement(
-		        u.x, u.y, w.x, w.y, model.getBondWidth(), 
+		        u.x, u.y, w.x, w.y, model.getBondWidth() / model.getScale(), 
 		        this.getColorForBond(bond));
 	}
 

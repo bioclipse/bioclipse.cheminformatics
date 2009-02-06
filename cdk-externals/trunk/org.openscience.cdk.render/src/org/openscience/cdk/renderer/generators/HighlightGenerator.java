@@ -25,9 +25,11 @@ public class HighlightGenerator extends BasicBondGenerator
         IAtom highlightedAtom = atom;
         if (highlightedAtom != null) {
             Point2d p = atom.getPoint2d();
-            return new OvalElement(
-                    p.x, p.y, 
-                    model.getHighlightRadiusModel(), model.getHoverOverColor());
+            
+            // the element size has to be scaled to model space 
+            // so that it can be scaled back to screen space...
+            double radius = model.getHighlightDistance() / model.getScale();
+            return new OvalElement(p.x, p.y, radius, model.getHoverOverColor());
         }
         return null;
     }
@@ -43,8 +45,15 @@ public class HighlightGenerator extends BasicBondGenerator
 
     public IRenderingElement generate(IAtomContainer ac) {
         ElementGroup elementGroup = new ElementGroup();
-        elementGroup.add(this.generate(ac, model.getHighlightedAtom()));
-        elementGroup.add(this.generate(ac, model.getHighlightedBond()));
+        IAtom atom = model.getHighlightedAtom();
+        if (atom != null) {
+            elementGroup.add(this.generate(ac, atom));
+        }
+        
+        IBond bond = model.getHighlightedBond();
+        if (bond != null) {
+            elementGroup.add(this.generate(ac, bond));
+        }
         return elementGroup;
     }
     
