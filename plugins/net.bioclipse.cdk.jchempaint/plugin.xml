@@ -330,9 +330,6 @@
                       <instanceof
                             value="org.openscience.cdk.interfaces.IAtom">
                       </instanceof>
-                      <instanceof
-                            value="org.openscience.cdk.interfaces.IAtomContainer">
-                      </instanceof>
                    </or>
                 </iterate>
              </with>
