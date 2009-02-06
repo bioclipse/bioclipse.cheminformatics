@@ -2,15 +2,17 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDK plugin
 Bundle-SymbolicName: org.openscience.cdk.extra;singleton:=true
-Bundle-Version: 1.1.4.20090105
+Bundle-Version: 1.1.4.20090206
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openscience.cdk.extra.Activator
 Bundle-ClassPath: .
-Require-Bundle: org.openscience.cdk.data,
+Require-Bundle: org.openscience.cdk.annotation,
+ org.openscience.cdk.data,
  org.openscience.cdk.core,
  org.openscience.cdk.interfaces,
  org.openscience.cdk.io,
+ org.openscience.cdk.ioformats,
  org.openscience.cdk.standard,
  org.openscience.cdk.valencycheck,
  org.openscience.cdk.formula,

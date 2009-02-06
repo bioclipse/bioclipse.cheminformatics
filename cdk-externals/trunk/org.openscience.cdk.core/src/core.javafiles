@@ -2,7 +2,6 @@ org/openscience/cdk/graph/matrix/AdjacencyMatrix.java
 org/openscience/cdk/graph/PathTools.java
 org/openscience/cdk/graph/SpanningTree.java
 org/openscience/cdk/tools/manipulator/BondManipulator.java
-org/openscience/cdk/tools/DataFeatures.java
 org/openscience/cdk/tools/LoggingTool.java
 org/openscience/cdk/fingerprint/IFingerprinter.java
 org/openscience/cdk/CDKConstants.java
@@ -24,5 +23,3 @@ org/openscience/cdk/atomtype/IAtomTypeGuesser.java
 org/openscience/cdk/exception/CDKException.java
 org/openscience/cdk/exception/NoSuchAtomTypeException.java
 org/openscience/cdk/exception/NoSuchAtomException.java
-org/openscience/cdk/annotations/TestClass.java
-org/openscience/cdk/annotations/TestMethod.java
