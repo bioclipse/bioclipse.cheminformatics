@@ -983,4 +983,17 @@ public class CDKManagerPluginTest {
         assertEquals( "CH4", cdk.molecularFormula(m) );
     }
 
+    @Test
+    public void testNoMolecules_String() throws Exception{
+        URI uri = getClass().getResource("/testFiles/atp.mol").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        int nomols = cdk.getNoMolecules( path );
+        assertEquals( 1, nomols);
+        uri = getClass().getResource("/testFiles/nprods.smi").toURI();
+        url=FileLocator.toFileURL(uri.toURL());
+        path=url.getFile();
+        nomols = cdk.getNoMolecules( path );
+        assertEquals( 1, nomols);
+    }
 }
