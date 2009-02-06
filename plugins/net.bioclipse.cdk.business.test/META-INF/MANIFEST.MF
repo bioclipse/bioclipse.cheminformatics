@@ -21,7 +21,8 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.extra,
  org.openscience.cdk.io,
  javax.vecmath,
- net.bioclipse.ui;bundle-version="2.0.0"
+ net.bioclipse.ui;bundle-version="2.0.0",
+ org.openscience.cdk.ioformats
 Eclipse-LazyStart: true
 Export-Package: net.bioclipse.cdk,
  net.bioclipse.cdk.business.test
