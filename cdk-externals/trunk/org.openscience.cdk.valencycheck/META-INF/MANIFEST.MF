@@ -13,4 +13,5 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.standard,
  javax.vecmath,
  org.eclipse.core.runtime
-Export-Package: org.openscience.cdk.tools
+Export-Package: org.openscience.cdk.tools,
+ org.openscience.cdk.valencycheck

@@ -18,4 +18,5 @@ Require-Bundle: org.openscience.cdk.annotation,
  org.openscience.cdk.charges,
  org.openscience.cdk.reaction,
  org.eclipse.core.runtime
-Export-Package: org.openscience.cdk.tools
+Export-Package: org.openscience.cdk.tools,
+ org.openscience.cdk.ionpot

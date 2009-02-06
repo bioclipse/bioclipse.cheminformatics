@@ -27,4 +27,5 @@ Require-Bundle: org.openscience.cdk.annotation,
  javax.vecmath,
  net.bioclipse.xom,
  org.eclipse.core.runtime
-Export-Package: org.openscience.cdk.qsar.descriptors.atomic
+Export-Package: org.openscience.cdk.qsar.descriptors.atomic,
+ org.openscience.cdk.qsaratomic

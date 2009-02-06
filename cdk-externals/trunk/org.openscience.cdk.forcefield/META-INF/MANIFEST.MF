@@ -22,4 +22,5 @@ Require-Bundle: org.openscience.cdk.annotation,
  org.eclipse.core.runtime
 Export-Package: org.openscience.cdk.charges,
  org.openscience.cdk.modeling.forcefield,
- org.openscience.cdk.modeling.builder3d
+ org.openscience.cdk.modeling.builder3d,
+ org.openscience.cdk.forcefield

@@ -13,4 +13,5 @@ Require-Bundle: org.openscience.cdk.annotation,
  org.openscience.cdk.data,
  javax.vecmath,
  org.eclipse.core.runtime
-Export-Package: org.openscience.cdk.debug
+Export-Package: org.openscience.cdk.debug,
+ org.openscience.cdk.datadebug

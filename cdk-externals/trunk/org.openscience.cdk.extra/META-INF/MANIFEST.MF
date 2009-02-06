@@ -48,4 +48,5 @@ Export-Package: org.openscience.cdk.graph,
  org.openscience.cdk.templates.saturatedhydrocarbons,
  org.openscience.cdk.templates,
  org.openscience.cdk.structgen,
- org.openscience.cdk.index
+ org.openscience.cdk.index,
+ org.openscience.cdk.extra

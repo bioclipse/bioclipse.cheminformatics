@@ -21,4 +21,5 @@ Require-Bundle: org.openscience.cdk.annotation,
 Export-Package: org.openscience.cdk.isomorphism.matchers.smarts,
  org.openscience.cdk.smiles.smarts.parser,
  org.openscience.cdk.smiles.smarts.parser.visitor,
- org.openscience.cdk.smiles.smarts
+ org.openscience.cdk.smiles.smarts,
+ org.openscience.cdk.smarts

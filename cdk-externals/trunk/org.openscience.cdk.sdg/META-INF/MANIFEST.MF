@@ -15,4 +15,5 @@ Require-Bundle: org.openscience.cdk.annotation,
  org.openscience.cdk.valencycheck,
  javax.vecmath,
  org.eclipse.core.runtime
-Export-Package: org.openscience.cdk.layout
+Export-Package: org.openscience.cdk.layout,
+ org.openscience.cdk.sdg

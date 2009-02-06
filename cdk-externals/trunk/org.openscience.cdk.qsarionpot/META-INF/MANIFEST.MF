@@ -29,4 +29,5 @@ Require-Bundle: org.openscience.cdk.annotation,
  org.eclipse.core.runtime
 Export-Package: org.openscience.cdk.qsar.descriptors.bond,
  org.openscience.cdk.qsar.descriptors.atomic,
- org.openscience.cdk.qsar.descriptors.molecular
+ org.openscience.cdk.qsar.descriptors.molecular,
+ org.openscience.cdk.qsarionpot

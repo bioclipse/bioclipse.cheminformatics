@@ -40,4 +40,5 @@ Export-Package: org.openscience.cdk.graph,
  org.openscience.cdk.exception,
  org.openscience.cdk.qsar,
  org.openscience.cdk.qsar.result,
- org.openscience.cdk.libio.cml
+ org.openscience.cdk.libio.cml,
+ org.openscience.cdk.standard

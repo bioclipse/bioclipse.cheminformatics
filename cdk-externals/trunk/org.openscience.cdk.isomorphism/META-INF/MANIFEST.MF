@@ -16,4 +16,5 @@ Require-Bundle: org.openscience.cdk.annotation,
  org.eclipse.core.runtime
 Import-Package: org.apache.log4j
 Export-Package: org.openscience.cdk.isomorphism.matchers,
- org.openscience.cdk.isomorphism.matchers.smarts
+ org.openscience.cdk.isomorphism.matchers.smarts,
+ org.openscience.cdk.isomorphism

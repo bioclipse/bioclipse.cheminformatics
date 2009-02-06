@@ -9,4 +9,5 @@ Bundle-Activator: org.openscience.cdk.ioformats.Activator
 Bundle-ClassPath: .
 Require-Bundle: org.openscience.cdk.annotation,
  org.eclipse.core.runtime
-Export-Package: org.openscience.cdk.io.formats
+Export-Package: org.openscience.cdk.io.formats,
+ org.openscience.cdk.ioformats

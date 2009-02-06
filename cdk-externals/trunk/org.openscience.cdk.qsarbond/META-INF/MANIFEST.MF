@@ -25,4 +25,5 @@ Require-Bundle: org.openscience.cdk.annotation,
  javax.vecmath,
  net.bioclipse.xom,
  org.eclipse.core.runtime
-Export-Package: org.openscience.cdk.qsar.descriptors.bond
+Export-Package: org.openscience.cdk.qsar.descriptors.bond,
+ org.openscience.cdk.qsarbond

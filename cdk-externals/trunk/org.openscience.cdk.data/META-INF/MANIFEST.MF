@@ -15,4 +15,5 @@ Require-Bundle: org.openscience.cdk.annotation,
 Export-Package: org.openscience.cdk,
  org.openscience.cdk.protein.data,
  org.openscience.cdk.event,
- org.openscience.cdk.formula
+ org.openscience.cdk.formula,
+ org.openscience.cdk.data
