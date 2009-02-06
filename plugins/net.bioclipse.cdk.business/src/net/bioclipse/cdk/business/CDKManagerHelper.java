@@ -11,7 +11,6 @@
  ******************************************************************************/
 package net.bioclipse.cdk.business;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,7 +60,7 @@ public class CDKManagerHelper {
      */
     public static void registerAllFormats(ReaderFactory fac) {
         try {
-            InputStream iStream = org.openscience.cdk.io.Activator.class.getResourceAsStream("/io-formats.set");
+            InputStream iStream = org.openscience.cdk.ioformats.Activator.class.getResourceAsStream("/io-formats.set");
             BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
             int formatCount = 0;
             while (reader.ready()) {
