@@ -31,7 +31,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
@@ -62,7 +61,6 @@ import org.openscience.cdk.config.Elements;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.fingerprint.FingerprinterTool;
-import org.openscience.cdk.formula.MolecularFormula;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.interfaces.IAtom;
@@ -686,7 +684,23 @@ public class CDKManager implements ICDKManager {
   	                         (IChemFormat)CMLFormat.getInstance() );
   	}
 
-  	public Iterator<ICDKMolecule>
+    public ICDKMolecule fromString(String molstring)
+        throws BioclipseException, IOException {
+        if (molstring == null)
+            throw new BioclipseException("Input cannot be null.");
+        if (molstring.length() == 0)
+            throw new BioclipseException("Input cannot be empty.");
+
+        return loadMolecule(
+            new ByteArrayInputStream(molstring.getBytes()),
+            new NullProgressMonitor(),
+            formatsFactory.guessFormat(
+                 new ByteArrayInputStream(molstring.getBytes())
+            )
+        );
+    }
+
+    public Iterator<ICDKMolecule>
   	    createMoleculeIterator( IFile file, IProgressMonitor monitor)
   	        throws CoreException {
 

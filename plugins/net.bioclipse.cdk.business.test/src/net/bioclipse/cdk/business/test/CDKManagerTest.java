@@ -648,6 +648,12 @@ public class CDKManagerTest extends AbstractManagerTest {
         Assert.assertEquals(2, molecule.getAtomContainer().getAtomCount());
     }
 
+    @Test public void testFromString() throws Exception {
+        ICDKMolecule molecule = cdk.fromCml("<molecule id='m1'><atomArray atomID='a1 a2' x2='0.0 0.1' y2='1.2 1.3'/></molecule>");
+        Assert.assertNotNull(molecule);
+        Assert.assertEquals(2, molecule.getAtomContainer().getAtomCount());
+    }
+
     @Test public void testCreateSDFile_File_IMoleculeArray() throws Exception{
     	IMolecule[] mol=new IMolecule[2];
     	mol[0] = cdk.fromSMILES("CCCBr");

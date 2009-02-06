@@ -1,5 +1,5 @@
  /*******************************************************************************
- * Copyright (c) 2008 The Bioclipse Project and others.
+ * Copyright (c) 2008-2009 The Bioclipse Project and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -464,6 +464,17 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testFromCML")
     public ICDKMolecule fromCml( String cml )
                         throws BioclipseException, IOException;
+
+    /**
+     * Creates a cdk molecule from any String.
+     */
+    @PublishedMethod ( params = "String input file",
+                       methodSummary = "Creates a cdk molecule from a " +
+                                       "String." )
+    @Recorded
+    @TestMethods("testFromString")
+    public ICDKMolecule fromString( String cml ) throws
+        BioclipseException, IOException;
 
     /**
      * Returns true if the given molecule matches the given SMARTS
