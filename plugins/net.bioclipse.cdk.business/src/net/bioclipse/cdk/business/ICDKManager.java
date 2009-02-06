@@ -637,6 +637,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod( params = "String path",
                       methodSummary = "Returns number of molecules in file.")
+    @TestMethods("testNoMoleucles_String")
 	public int getNoMolecules(String path);
 
 	/**
