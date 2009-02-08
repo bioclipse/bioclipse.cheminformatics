@@ -109,7 +109,7 @@ public class CDKManagerPluginTest {
                                           BioclipseException,
                                           CoreException, URISyntaxException {
 
-        URI uri = getClass().getResource("/testFiles/dbsmallconf").toURI();
+        URI uri = getClass().getResource("/testFiles/dbsmallconf.sdf").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
         List<ICDKMolecule> mols = cdk.loadMolecules(path);
@@ -452,6 +452,7 @@ public class CDKManagerPluginTest {
 
         // try overwrite
         ICDKMolecule coc  = cdk.fromSMILES("COC");
+        coc.setResource(mol.getResource());
         cdk.saveMolecule(coc);
         mol = cdk.loadMolecule("/Virtual/testSaveMoleculeBBB.mol");
         assertEquals("COC", mol.getSMILES());
@@ -465,6 +466,7 @@ public class CDKManagerPluginTest {
 
         // try overwrite
         ICDKMolecule coc  = cdk.fromSMILES("COC");
+        coc.setResource(mol.getResource());
         cdk.saveMolecule(coc, true);
         mol = cdk.loadMolecule("/Virtual/testSaveMoleculeBBB.mol");
         assertEquals("COC", mol.getSMILES());
