@@ -234,10 +234,6 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    @PublishedMethod(params = "IMolecule mol, IFile file, boolean overwrite",
-            methodSummary="saves mol to a file, filetype must be one of the constants given by " +
-            "getPossibleFiletypes, " +
-            "overwrite determines if existing file shall be overwritten.")
     @TestMethods("testSaveMolecule_IMolecule_IFile_boolean")
     public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
     	throws BioclipseException, CDKException, CoreException;
