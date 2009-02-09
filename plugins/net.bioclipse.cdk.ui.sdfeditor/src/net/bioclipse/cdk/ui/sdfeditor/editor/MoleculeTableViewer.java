@@ -1,6 +1,7 @@
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import org.eclipse.jface.viewers.ContentViewer;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -22,7 +23,7 @@ public class MoleculeTableViewer extends ContentViewer {
     public final static int STRUCTURE_COLUMN_WIDTH = 200;
 
     CompositeTable table;
-
+    Control headerControl;
 
     public MoleculeTableViewer(Composite parent, int style) {
 
@@ -34,43 +35,34 @@ public class MoleculeTableViewer extends ContentViewer {
 
             public void arrive( CompositeTable sender, int currentObjectOffset,
                                 Control newRow ) {
-
                 updateSelection( getSelection() );
-
             }
 
             public void depart( CompositeTable sender, int currentObjectOffset,
                                 Control row ) {
-
                 updateSelection( getSelection() );
-
             }
 
             public boolean requestRowChange( CompositeTable sender,
                                              int currentObjectOffset,
                                              Control row ) {
-
                 return true;
             }
 
         });
         table.addRowConstructionListener( new RowConstructionListener() {
-
             @Override
             public void headerConstructed( Control arg0 ) {
-
-                // TODO Auto-generated method stub
-
+                headerControl = arg0;
             }
 
             @Override
             public void rowConstructed( Control arg0 ) {
-
                 arg0.setMenu( table.getMenu() );
-
             }
 
         });
+
         table.setRunTime( true );
     }
 
@@ -119,15 +111,29 @@ public class MoleculeTableViewer extends ContentViewer {
         fireSelectionChanged(event);
       }
 
+    @Override
+    public void setContentProvider( IContentProvider contentProvider ) {
+
+       if(contentProvider instanceof MoleculeTableContentProvider) {
+           ((MoleculeTableContentProvider)contentProvider)
+               .headerControl = headerControl;
+       }
+        super.setContentProvider( contentProvider );
+    }
+
     public static class Header extends Composite {
 
         public Header(Composite parent, int style) {
 
             super( parent, style );
             setLayout( new GridRowLayout( new int[] { 10,
-                    STRUCTURE_COLUMN_WIDTH}, false ) );
+                    STRUCTURE_COLUMN_WIDTH,
+                    20,20,20,20,20,20,20,20,20,20}, false ) );
             new Label( this, SWT.NULL ).setText( "Index" );
             new Label( this, SWT.NULL ).setText( "2D-Structure" );
+            for(int i=0;i<10;i++) {
+                new Label(this, SWT.NULL).setText( "P"+(i+1) );
+            }
         }
     }
 
@@ -139,9 +145,10 @@ public class MoleculeTableViewer extends ContentViewer {
             setLayout( new GridRowLayout( new int[]
                        { 10,
                          STRUCTURE_COLUMN_WIDTH,
+                         20,20,20,20,20,20,20,20,20,20
                          },
                     false ) );
-            this.setColumnCount( 2 );
+            this.setColumnCount( 2+10 );
         }
         @Override
         public Point computeSize( int hint, int hint2 ) {

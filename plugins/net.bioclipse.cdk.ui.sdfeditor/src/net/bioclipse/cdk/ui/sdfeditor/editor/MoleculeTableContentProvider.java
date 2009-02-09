@@ -37,6 +37,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
 import org.eclipse.swt.nebula.widgets.compositetable.IRowContentProvider;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.openscience.cdk.DefaultChemObjectBuilder;
@@ -58,6 +59,8 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
 
     private MoleculeTableViewer viewer;
     IMoleculesEditorModel   model       = null;
+    Object[] properties;
+    Control headerControl=null;
 
     IRenderer2DConfigurator renderer2DConfigurator;
     MoleculesEditorLabelProvider melp = new MoleculesEditorLabelProvider(
@@ -105,6 +108,7 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
                                     .getAdapter( IFile.class );
         if ( file != null ) {
             try {
+                readProperties( file );
                 if ( file.getProject().equals( net.bioclipse.core.Activator
                                                .getVirtualProject() ) ) {
                     loadMoleculesFromManager( file , FileType.SDF);
@@ -130,11 +134,9 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
                 LogUtils.debugTrace( logger, e );
             }
         } else {
-
-            if(model == null) {
-                model = (IMoleculesEditorModel)
-                ((IAdaptable)newInput).getAdapter( IMoleculesEditorModel.class );
-            }
+            model = (IMoleculesEditorModel)
+            ((IAdaptable)newInput).getAdapter( IMoleculesEditorModel.class );
+            readProperties( model );
         }
         if(viewer != this.viewer) {
 
@@ -148,6 +150,39 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
         }
 
         updateSize( (model!=null?model.getNumberOfMolecules():0) );
+        updateHeaders();
+    }
+
+    private void readProperties(IFile file) throws CoreException{
+        Iterator<ICDKMolecule> iter = Activator.getDefault()
+                                .getCDKManager().createMoleculeIterator( file );
+        if(iter.hasNext()) {
+            ICDKMolecule moleucle = iter.next();
+            properties = moleucle.getAtomContainer().getProperties()
+                        .keySet().toArray();
+        }
+    }
+
+    private void readProperties(IMoleculesEditorModel model) {
+        ICDKMolecule moleucle = (ICDKMolecule)model.getMoleculeAt( 0 );
+        properties = moleucle.getAtomContainer().getProperties()
+                    .keySet().toArray();
+    }
+
+    void updateHeaders() {
+        if(headerControl == null) return;
+
+        Control[] columns = ((Composite)headerControl).getChildren();
+
+        for(int i=2;i<columns.length;i++) {
+            Label label = ((Label)columns[i]);
+            String text ="";
+            if(i<properties.length+2)
+                text = properties[i-2].toString();
+            label.setText( text );
+            label.setToolTipText( text );
+        }
+        ((CompositeTable)viewer.getControl()).getHeaderControl().redraw();
     }
 
     private CompositeTable getCompositeTable(Viewer viewer) {
@@ -161,23 +196,28 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
         Row row = (Row) rowControl;
         Control[] columns = row.getChildren();
         ((Label)columns[0]).setText( ""+(currentObjectOffset+1 ));
+        ICDKMolecule molecule = null;
         try {
-        ICDKMolecule molecule = getMoleculeAt( currentObjectOffset );
-
-                    Image image;
-
-                    image = melp.getColumnImage( molecule ,1);
-        //             image = new Image(rowControl.getDisplay(), "icons/many_molecules.png");
-                    ((Label)columns[1]).setImage( image );
-        //            children[0].setSize( 100,100);
+            molecule = getMoleculeAt( currentObjectOffset );
+            Image image;
+            image = melp.getColumnImage( molecule ,1);
+            ((Label)columns[1]).setImage( image );
 
 
+        } catch ( Exception e ) {
+            ((Label)columns[1]).setImage( null );
+            ((Label)columns[1]).setText( "no structure" );
+            logger.debug( "Failed to generate iamge" );
+        }
 
-                } catch ( Exception e ) {
-                    ((Label)columns[1]).setImage( null );
-                    ((Label)columns[1]).setText( "no structure" );
-                    logger.debug( "Failed to generate iamge" );
-                 }
+        for(int i=2;i<columns.length && i<properties.length+2;i++) {
+            if(properties!=null && molecule!=null) {
+                Object value = molecule.getAtomContainer()
+                .getProperty( properties[i-2]);
+                ((Label)columns[i]).setText(
+                                            value!=null?value.toString():"");
+            }
+        }
     }
     enum FileType {
         SDF,SMI
