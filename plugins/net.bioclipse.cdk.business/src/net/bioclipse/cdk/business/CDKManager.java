@@ -74,6 +74,7 @@ import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CDKSourceCodeWriter;
 import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.io.CMLWriter;
+import org.openscience.cdk.io.FormatFactory;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.MDLRXNWriter;
 import org.openscience.cdk.io.MDLWriter;
@@ -113,12 +114,12 @@ public class CDKManager implements ICDKManager {
     private static ReaderFactory readerFactory;
 
     // ReaderFactory used solely to determine chemical file formats
-    private static ReaderFactory formatsFactory;
+    private static FormatFactory formatsFactory;
 
     static {
         readerFactory = new ReaderFactory();
         CDKManagerHelper.registerSupportedFormats(readerFactory);
-        formatsFactory = new ReaderFactory();
+        formatsFactory = new FormatFactory();
         CDKManagerHelper.registerAllFormats(formatsFactory);
     }
 

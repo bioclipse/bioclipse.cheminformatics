@@ -21,6 +21,7 @@ import java.util.Properties;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.io.CMLReader;
+import org.openscience.cdk.io.FormatFactory;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.PDBReader;
 import org.openscience.cdk.io.ReaderFactory;
@@ -58,7 +59,7 @@ public class CDKManagerHelper {
     /**
      * Register all formats known to the CDK.
      */
-    public static void registerAllFormats(ReaderFactory fac) {
+    public static void registerAllFormats(FormatFactory fac) {
         try {
             InputStream iStream = org.openscience.cdk.ioformats.Activator.class.getResourceAsStream("/io-formats.set");
             BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
