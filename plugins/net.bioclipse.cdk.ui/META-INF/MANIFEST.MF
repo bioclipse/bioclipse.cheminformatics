@@ -25,7 +25,8 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.cdk.business,
  org.eclipse.ui.forms,
  org.eclipse.core.filesystem;bundle-version="1.2.0",
- javax.vecmath
+ javax.vecmath,
+ org.eclipse.core.expressions;bundle-version="3.4.0"
 Eclipse-LazyStart: true
 Import-Package: org.apache.log4j
 Export-Package: net.bioclipse.cdk.ui.model,
