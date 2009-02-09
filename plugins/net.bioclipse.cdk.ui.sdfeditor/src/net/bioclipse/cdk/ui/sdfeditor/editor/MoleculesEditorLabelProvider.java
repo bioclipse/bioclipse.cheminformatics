@@ -15,8 +15,11 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
@@ -32,10 +35,13 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.Transform;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
 import org.openscience.cdk.Molecule;
@@ -58,7 +64,6 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
 
     Collection<ILabelProviderListener> listeners =
      new HashSet<ILabelProviderListener>();
-
 
     public MoleculesEditorLabelProvider(int width) {
         imageWidth= width;
@@ -84,6 +89,7 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
     }
 
     public Image getColumnImage( Object element, int columnIndex ) {
+        boolean generated = false;
 
         if ( columnIndex == 1 && element instanceof IAdaptable ) {
             ICDKMolecule mol =
@@ -92,24 +98,25 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
             if ( mol == null )
                 return null;
             IAtomContainer drawMolecule = mol.getAtomContainer();
-            Dimension screenSize =
-                    new Dimension( imageWidth,
-                                   imageWidth );
 
             // If no 2D coordinates
             if ( GeometryTools.has2DCoordinates( drawMolecule ) == false ) {
                 // Test if 3D coordinates
+                drawMolecule = null;
+                if(drawMolecule == null) {
+                    try {
 
-                try {
-                    drawMolecule = ((ICDKMolecule)Activator.getDefault()
-                            .getCDKManager()
-                            .generate2dCoordinates( mol ))
-                            .getAtomContainer();
-                } catch ( Exception e ) {
-                    logger.info( "Failed to generate 2D-coordinates" );
-                    return null;
+                        drawMolecule = ((ICDKMolecule)Activator.getDefault()
+                                .getCDKManager()
+                                .generate2dCoordinates( mol ))
+                                .getAtomContainer();
+                    } catch ( Exception e ) {
+                        logger.info( "Failed to generate 2D-coordinates" );
+
+                        return null;
+                    }
                 }
-
+                generated = true;
             }
 
 
@@ -140,6 +147,17 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
                 gc.setBackground( greenScreen );
                 gc.fillRectangle( image.getBounds() );
 
+
+                Color generatedColor = new Color(gc.getDevice(),200,100,100);
+                Font generatedFont =new Font(gc.getDevice(),"Arial",32,SWT.BOLD);
+                if(generated) {
+                    gc.setFont( generatedFont );
+                    int h = image.getBounds().height-gc.getFontMetrics().getHeight();
+                    gc.setForeground( generatedColor);
+                    gc.drawText( "Generated", 0, h );
+
+                }
+
                 SWTRenderer drawVisitor= new SWTRenderer(gc);
                 renderer.paintMolecule( drawMolecule,
                                         drawVisitor,
@@ -149,7 +167,7 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
                                         true );
 
                 gc.dispose();
-
+                generatedColor.dispose();
 
             ImageData imageData = image.getImageData();
             imageData.transparentPixel = imageData.palette.getPixel(greenScreen
