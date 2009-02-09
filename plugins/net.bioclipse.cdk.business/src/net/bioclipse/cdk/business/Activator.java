@@ -84,9 +84,11 @@ public class Activator extends AbstractUIPlugin {
             manager = (ICDKManager) finderTracker.waitForService(1000*10);
         } catch (InterruptedException e) {
             LogUtils.debugTrace(logger, e);
+            throw new IllegalStateException("Could not get the CDK manager: " +
+                e.getMessage(), e);
         }
         if(manager == null) {
-            throw new IllegalStateException("Could not get the CDK manager");
+            throw new IllegalStateException("Could not get the CDK manager.");
         }
         return manager;
     }
