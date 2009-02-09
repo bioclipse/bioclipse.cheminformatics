@@ -80,14 +80,14 @@ public class CDKManagerPluginTest {
                                 + "jaxp.DocumentBuilderFactoryImpl" );
     }
     
-    CDKManager cdk;
+    ICDKManager cdk;
     ICDKDebugManager cdkdebug;
 
     //Do not use SPRING OSGI for this manager
     //since we are only testing the implementations of the manager methods
     public CDKManagerPluginTest() {
-        cdk = new CDKManager();
-        cdkdebug= new CDKDebugManager();
+        cdk = net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
+        cdkdebug= net.bioclipse.cdkdebug.Activator.getDefault().getManager();
     }
 
     @Test
@@ -390,7 +390,8 @@ public class CDKManagerPluginTest {
         chemmodel.setMoleculeSet(setOfMolecules);
         
         IFile target=new MockIFile();
-        cdk.save(chemmodel, target, ICDKManager.mol, null);
+        cdk.save(chemmodel, target.getProjectRelativePath().toPortableString(),
+            ICDKManager.mol);
         byte[] bytes=new byte[6];
         target.getContents().read(bytes);
         Assert.assertArrayEquals(new byte[]{10,32,32,67,68,75}, bytes);
