@@ -338,6 +338,8 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         if(event.getType() == IResourceChangeEvent.PRE_CLOSE){
             Display.getDefault().asyncExec(new Runnable(){
                 public void run(){
+                	if (getSite()==null) return;
+                	if (getSite().getWorkbenchWindow()==null) return;
                     IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
                     for (int i = 0; i<pages.length; i++){
                         if(((FileEditorInput)editor.getEditorInput()).getFile().getProject().equals(event.getResource())){
