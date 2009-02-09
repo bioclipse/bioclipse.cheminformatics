@@ -537,17 +537,18 @@ public class SMARTSParser/*@bgen(jjtree)*/implements SMARTSParserTreeConstants, 
         ASTAtom jjtn000 = new ASTAtom(JJTATOM);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);Token firstToken;
+        Token secondToken;
         Token rightBracket;
-        Node massNode = null;
+        ASTAtomicMass massNode = null;
     try {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case L_BRACKET:
         jj_consume_token(L_BRACKET);
-                              firstToken = getToken(1);
+                              firstToken = getToken(1); secondToken = getToken(2);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case DIGIT:
           AtomicMass();
-                                 massNode = jjtree.popNode();
+                                 massNode = (ASTAtomicMass)jjtree.popNode();
           break;
         default:
           jj_la1[13] = jj_gen;
@@ -561,9 +562,15 @@ public class SMARTSParser/*@bgen(jjtree)*/implements SMARTSParserTreeConstants, 
                                 }
         jj_consume_token(R_BRACKET);
                               rightBracket = token;
+                        Token HToken = null;
                         // If the LowAndExpression is "[H]", change it to an ExplicitAtom
                         if (firstToken.image.equals("H")) {
-                                if ( (rightBracket.beginColumn - firstToken.endColumn) == 1) {
+                                HToken = firstToken;
+                        } else if (massNode != null && massNode.getMass() <= 3 && secondToken != null && secondToken.image.equals("H")) {
+                                HToken = secondToken;
+                        }
+                        if (HToken != null) {
+                                if ( (rightBracket.beginColumn - HToken.endColumn) == 1) {
                                         jjtree.popNode();
                                         ASTExplicitAtom explicitAtom = new ASTExplicitAtom(JJTEXPLICITATOM);
                                                 explicitAtom.setSymbol("H");
@@ -2719,6 +2726,21 @@ public class SMARTSParser/*@bgen(jjtree)*/implements SMARTSParserTreeConstants, 
     finally { jj_save(2, xla); }
   }
 
+  final private boolean jj_3R_17() {
+    Token xsp;
+    if (jj_3R_18()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_18()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  final private boolean jj_3_1() {
+    if (jj_scan_token(S_BOND)) return true;
+    return false;
+  }
+
   final private boolean jj_3_2() {
     if (jj_scan_token(149)) return true;
     Token xsp;
@@ -2734,21 +2756,6 @@ public class SMARTSParser/*@bgen(jjtree)*/implements SMARTSParserTreeConstants, 
 
   final private boolean jj_3R_18() {
     if (jj_scan_token(DIGIT)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_17() {
-    Token xsp;
-    if (jj_3R_18()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_18()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  final private boolean jj_3_1() {
-    if (jj_scan_token(S_BOND)) return true;
     return false;
   }
 

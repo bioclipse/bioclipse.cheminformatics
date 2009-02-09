@@ -1,3 +1,4 @@
+org/openscience/cdk/io/FormatFactory.java
 org/openscience/cdk/io/formats/PubChemFormat.java
 org/openscience/cdk/io/formats/MDLFormat.java
 org/openscience/cdk/io/formats/CDKSourceCodeFormat.java
