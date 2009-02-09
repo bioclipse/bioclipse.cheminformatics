@@ -13,7 +13,10 @@
 
 package net.bioclipse.cdk.business.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -31,12 +34,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.CDKManagerHelper;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdkdebug.business.CDKDebugManager;
 import net.bioclipse.cdkdebug.business.ICDKDebugManager;
 import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.ResourcePathTransformer;
@@ -49,6 +50,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.NoSuchAtomException;
@@ -80,12 +82,10 @@ public class CDKManagerPluginTest {
                                 + "jaxp.DocumentBuilderFactoryImpl" );
     }
     
-    ICDKManager cdk;
-    ICDKDebugManager cdkdebug;
+    private static ICDKManager cdk;
+    private static ICDKDebugManager cdkdebug;
 
-    //Do not use SPRING OSGI for this manager
-    //since we are only testing the implementations of the manager methods
-    public CDKManagerPluginTest() {
+    @BeforeClass public static void setupCDKManagerPluginTest() {
         cdk = net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
         cdkdebug= net.bioclipse.cdkdebug.Activator.getDefault().getManager();
     }
