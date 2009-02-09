@@ -80,5 +80,16 @@
           icon="icons/molecule3D.png">
       </perspective>
    </extension>
+   
+     <extension
+        point="org.eclipse.ui.perspectiveExtensions">
+     <perspectiveExtension
+           targetID="net.bioclipse.ui.Perspective">
+        <perspectiveShortcut
+              id="net.bioclipse.chemoinformatics.ChemoinformaticsPerspective">
+        </perspectiveShortcut>
+     </perspectiveExtension>
+  </extension>
+   
 
 </plugin>
