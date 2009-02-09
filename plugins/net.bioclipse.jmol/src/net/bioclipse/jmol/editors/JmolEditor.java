@@ -124,6 +124,19 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
      * which consists of Jmol.
      */
     void createPage0() {
+    	
+        /*
+         * Set a Windows specific AWT property that prevents heavyweight
+         * components from erasing their background. Note that this is a global
+         * property and cannot be scoped. It might not be suitable for your
+         * application.
+         */
+    	try {
+    		System.setProperty("sun.awt.noerasebackground", "true");
+    	} catch (NoSuchMethodError error) {
+    	}
+    	
+
 
         Composite parent = new Composite(getContainer(), SWT.NONE);
 
@@ -141,7 +154,7 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         parent.setLayoutData(layoutData);
 
         //Add the Jmol composite to the top
-        Composite composite = new Composite(parent, SWT.EMBEDDED);
+        Composite composite = new Composite(parent, SWT.NO_BACKGROUND | SWT.EMBEDDED);
         layout = new GridLayout();
         composite.setLayout(layout);
         layoutData = new GridData(GridData.FILL_BOTH);
@@ -217,6 +230,7 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
      * Creates the pages of the multi-page editor.
      */
     protected void createPages() {
+
         createPage0();
         //createPage1();
 
