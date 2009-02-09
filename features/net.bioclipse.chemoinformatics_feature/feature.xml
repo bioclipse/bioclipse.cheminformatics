@@ -441,13 +441,6 @@ http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="net.bioclipse.inchi.business"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.openscience.cdk.annotation"
          download-size="0"
          install-size="0"
@@ -484,6 +477,13 @@ http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="net.bioclipse.webservices"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.bioclipse.inchi"
          download-size="0"
          install-size="0"
          version="0.0.0"
