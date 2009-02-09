@@ -94,6 +94,17 @@
            name="create2D"/>
   	</extension>
 
+  <extension point="org.eclipse.core.expressions.propertyTesters">
+    <propertyTester
+      id="net.bioclipse.cdk.ICDKMoleculeTester"
+      type="net.bioclipse.cdk.domain.ICDKMolecule"
+      namespace="net.bioclipse.cdk.ui"
+      properties="has2D,has3D"
+      class="net.bioclipse.cdk.ui.domain.CDKMoleculeTester">
+    </propertyTester>
+  </extension>
+
+
 	<extension 
   		point="org.eclipse.ui.menus">
 		<menuContribution
@@ -176,6 +187,7 @@
 		        </visibleWhen>
 	       </command>
 		</menuContribution>
+
 	</extension>
 
 	<extension
