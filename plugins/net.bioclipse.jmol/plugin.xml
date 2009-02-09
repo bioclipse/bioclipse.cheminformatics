@@ -888,8 +888,7 @@
             <command
                   commandId="net.bioclipse.jmol.actions.export"
                   tooltip="Export as image..."
-                  label="Export as image..."
-                  icon="icons/molecule3D.png">
+                  label="Export as image...">
              </command>
       </menuContribution>
 
@@ -901,7 +900,7 @@
             <command
                   commandId="net.bioclipse.jmol.actions.export"
                   tooltip="Export as image"
-                  icon="icons/molecule3D.png">
+                  icon="icons/capture-screen.png">
                <visibleWhen>
                   <reference
                         definitionId="net.bioclipse.definitions.activeJmolEditor">
