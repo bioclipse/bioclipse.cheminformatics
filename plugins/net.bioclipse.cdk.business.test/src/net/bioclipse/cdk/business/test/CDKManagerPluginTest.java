@@ -246,6 +246,20 @@ public class CDKManagerPluginTest {
     }
 
     @Test
+    public void testLoadPDB() throws IOException, 
+                                            BioclipseException, 
+                                            CoreException, URISyntaxException {
+
+        URI uri = getClass().getResource("/testFiles/1D66.pdb").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        ICDKMolecule mol = cdk.loadMolecule( path);
+
+        System.out.println("PDB mol: " + mol.toString());
+        assertNotNull(mol);
+    }
+
+    @Test
     public void testCreateSMILES() throws BioclipseException, 
                                           IOException, 
                                           CoreException, URISyntaxException {
