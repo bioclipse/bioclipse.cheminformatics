@@ -98,7 +98,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
         }
 
         public void selectionChanged() {
-            setDirty( true );
+            setSelection( getSelection() );
         }
 
         public void structureChanged() {
