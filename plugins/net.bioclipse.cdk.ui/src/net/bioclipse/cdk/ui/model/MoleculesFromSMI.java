@@ -55,9 +55,7 @@ public class MoleculesFromSMI implements IMoleculesFromFile {
 
        ICDKManager manager = Activator.getDefault().getCDKManager();
        try {
-           // TODO : merge with MoleculesFromSMI
-        List<ICDKMolecule> mols = manager.loadMolecules( file, monitor );
-        // TODO : Builder thread and Node just as MoleculesFromSDF
+        List<ICDKMolecule> mols = manager.loadSMILESFile( file, monitor );
         for(int i=0;i<mols.size();i++) {
             ICDKMolecule molecule = mols.get( i );
             SDFElement element = new SDFElement( file,
@@ -75,9 +73,6 @@ public class MoleculesFromSMI implements IMoleculesFromFile {
     } catch ( IOException e ) {
         // TODO Auto-generated catch block
        LogUtils.debugTrace( logger, e );
-    } catch ( BioclipseException e ) {
-        // TODO Auto-generated catch block
-        LogUtils.debugTrace( logger, e );
     } catch ( CoreException e ) {
         // TODO Auto-generated catch block
         LogUtils.debugTrace( logger, e );
