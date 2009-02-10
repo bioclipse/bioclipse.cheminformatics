@@ -149,7 +149,7 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
 
 
                 Color generatedColor = new Color(gc.getDevice(),200,100,100);
-                Font generatedFont =new Font(gc.getDevice(),"Arial",32,SWT.BOLD);
+                Font generatedFont =new Font(gc.getDevice(),"Arial",16,SWT.BOLD);
                 if(generated) {
                     gc.setFont( generatedFont );
                     int h = image.getBounds().height-gc.getFontMetrics().getHeight();
