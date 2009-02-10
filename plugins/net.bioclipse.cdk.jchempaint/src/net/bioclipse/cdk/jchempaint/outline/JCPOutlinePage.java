@@ -71,10 +71,10 @@ public class JCPOutlinePage extends ContentOutlinePage
      */
     public void selectionChanged(IWorkbenchPart selectedPart,
                                  ISelection selection) {
-        // TODO Auto-generated method stub
-        // Does nothing for now. See selectionChanged in
-        // net.bioclipse.jmol.views.outline.JmolContentOutlinePage
-        // for implementation inspiration.
+      if(selectedPart.equals( this.getSite().getPage().getActiveEditor() )) {
+
+          treeViewer.setSelection( selection );
+      }
     }
 
     /**
