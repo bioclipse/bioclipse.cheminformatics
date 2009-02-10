@@ -52,6 +52,8 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
+import org.openscience.cdk.renderer.selection.LogicalSelection;
+import org.openscience.cdk.renderer.selection.LogicalSelection.Type;
 
 public class JChemPaintEditor extends EditorPart implements ISelectionListener{
 
@@ -243,7 +245,6 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
         if(part != null && part.equals( this )) return;
         if(selection instanceof IStructuredSelection) {
 
-
             IAtomContainer container = null;
 
             for(Iterator<?> iter =((IStructuredSelection)selection).iterator();iter.hasNext();) {
@@ -262,17 +263,14 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
                 }
             }
 
+            LogicalSelection sel = new LogicalSelection(Type.NONE);
             if(container!= null) {
-                widget.getRenderer2DModel().setExternalHighlightColor( Color.ORANGE );
-                widget.getRenderer2DModel().setExternalSelectedPart(container);
-                widget.redraw();
+                sel.select( container );
+                widget.getRenderer2DModel().setSelection( sel );
             } else {
-                widget.getRenderer2DModel().setExternalSelectedPart(
-                                                                    model.getAtomContainer()
-                                                                    .getBuilder().newAtomContainer());
-                widget.redraw();
+                widget.getRenderer2DModel().setSelection( sel );
             }
-
+            widget.redraw();
         }
     }
 
