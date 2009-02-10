@@ -323,42 +323,20 @@
           </menu>
           <visibleWhen
                 checkEnabled="false">
-             <with
-                   variable="activeMenuSelection">
-                <iterate
-                      ifEmpty="false">
-                   <or>
-                      <instanceof
-                            value="org.openscience.cdk.interfaces.IAtom">
-                      </instanceof>
-                   </or>
-                </iterate>
-             </with>
+             <reference
+                   definitionId="net.bioclipse.cdk.jchempaint.selected.atom">
+             </reference>
           </visibleWhen>
        </menu>
-       <separator
-             name="net.bioclipse.cdk.jchempaint.atomspecific"
-             visible="true">
-       </separator>
        <command
              commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.incharge"
              label="Increase charge"
              style="push">
           <visibleWhen
-                checkEnabled="true">
-             <with
-                   variable="activeMenuSelection">
-                <iterate>
-                   <or>
-                      <instanceof
-                            value="org.openscience.cdk.interfaces.IAtom">
-                      </instanceof>
-                      <instanceof
-                            value="org.openscience.cdk.interfaces.IAtomContainer">
-                      </instanceof>
-                   </or>
-                </iterate>
-             </with>
+                checkEnabled="false">
+             <reference
+                   definitionId="net.bioclipse.cdk.jchempaint.selected.atom">
+             </reference>
           </visibleWhen>
        </command>
        <command
@@ -366,22 +344,16 @@
              label="Decrease charge"
              style="push">
           <visibleWhen
-                checkEnabled="true">
-             <with
-                   variable="activeMenuSelection">
-                <iterate>
-                   <or>
-                      <instanceof
-                            value="org.openscience.cdk.interfaces.IAtom">
-                      </instanceof>
-                      <instanceof
-                            value="org.openscience.cdk.interfaces.IAtomContainer">
-                      </instanceof>
-                   </or>
-                </iterate>
-             </with>
+                checkEnabled="false">
+             <reference
+                   definitionId="net.bioclipse.cdk.jchempaint.selected.atom">
+             </reference>
           </visibleWhen>
        </command>
+       <separator
+             name="net.bioclipse.cdk.jchempaint.atomspecific"
+             visible="true">
+       </separator>
        <separator
              name="net.bioclipse.cdk.jchempaint.managerActions">
        </separator>
@@ -477,15 +449,15 @@
   <extension
         point="org.eclipse.ui.menus">
      <menuContribution
-           locationURI="popup:net.bioclipse.cdk.ui.editors.jchempaint?after=additions">
+           locationURI="popup:net.bioclipse.cdk.ui.editors.jchempaint">
         <command
               commandId="net.bioclipse.cdk.jchempaint.manager.action"
               label="Add Hexagon"
               style="push">
            <visibleWhen
-                 checkEnabled="true">
+                 checkEnabled="false">
               <reference
-                    definitionId="net.bioclipse.cdk.jchempaint.selected.atom">
+                    definitionId="net.bioclipse.cdk.jchempaint.selected.bond">
               </reference>
            </visibleWhen>
         </command>
