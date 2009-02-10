@@ -322,10 +322,11 @@
              </command>
           </menu>
           <visibleWhen
-                checkEnabled="true">
+                checkEnabled="false">
              <with
                    variable="activeMenuSelection">
-                <iterate>
+                <iterate
+                      ifEmpty="false">
                    <or>
                       <instanceof
                             value="org.openscience.cdk.interfaces.IAtom">
@@ -403,7 +404,7 @@
           </parameter>
        </command>
        <separator
-             name="net.bioclipse.cdk.jchempaint.separator2"
+             name="additions"
              visible="true">
        </separator>
        <command
@@ -419,23 +420,6 @@
                 name="jcp.manager.method"
                 value="zap">
           </parameter>
-       </command>
-       <command
-             commandId="net.bioclipse.cdk.jchempaint.manager.action"
-             label="Add hexagon"
-             style="push">
-          <parameter
-                name="jcp.controller.param.int"
-                value="6">
-          </parameter>
-          <visibleWhen
-                checkEnabled="true">
-             <iterate>
-                <instanceof
-                      value="org.openscience.cdk.interfaces.IBond">
-                </instanceof>
-             </iterate>
-          </visibleWhen>
        </command>
     </menuContribution>
  </extension>
@@ -465,12 +449,58 @@
            </or>
         </with>
      </definition>
+     <definition
+           id="net.bioclipse.cdk.jchempaint.selected.atom">
+        <with
+              variable="activeMenuSelection">
+           <iterate
+                 ifEmpty="false">
+              <instanceof
+                    value="org.openscience.cdk.interfaces.IAtom">
+              </instanceof>
+           </iterate>
+        </with>
+     </definition>
+     <definition
+           id="net.bioclipse.cdk.jchempaint.selected.bond">
+        <with
+              variable="activeMenuSelection">
+           <iterate
+                 ifEmpty="false">
+              <instanceof
+                    value="org.openscience.cdk.interfaces.IBond">
+              </instanceof>
+           </iterate>
+        </with>
+     </definition>
   </extension>
   <extension
-        point="org.eclipse.ui.popupMenus">
-  </extension>
-  <extension
-        point="org.eclipse.ui.popupMenus">
+        point="org.eclipse.ui.menus">
+     <menuContribution
+           locationURI="popup:net.bioclipse.cdk.ui.editors.jchempaint?after=additions">
+        <command
+              commandId="net.bioclipse.cdk.jchempaint.manager.action"
+              label="Add Hexagon"
+              style="push">
+           <visibleWhen
+                 checkEnabled="true">
+              <reference
+                    definitionId="net.bioclipse.cdk.jchempaint.selected.atom">
+              </reference>
+           </visibleWhen>
+        </command>
+        <command
+              commandId="net.bioclipse.cdk.jchempaint.manager.action"
+              label="Atom action"
+              style="push">
+           <visibleWhen
+                 checkEnabled="false">
+              <reference
+                    definitionId="net.bioclipse.cdk.jchempaint.selected.atom">
+              </reference>
+           </visibleWhen>
+        </command>
+     </menuContribution>
   </extension>
 
 </plugin>
