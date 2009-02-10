@@ -8,7 +8,7 @@
  * Contributors:
  *     Ola Spjuth
  *     Jonathan Alvarsson
- *     
+ *
  ******************************************************************************/
 
 //TODO: Add support for more file formats than sdf
@@ -33,6 +33,7 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IBioObject;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -48,16 +49,16 @@ import org.eclipse.ui.progress.DeferredTreeContentManager;
 import org.openscience.cdk.interfaces.IMolecule;
 
 /**
- * This ContentProvider hooks into the CNF to list if IResource contains 
+ * This ContentProvider hooks into the CNF to list if IResource contains
  * one or many Molecules.
  * @author ola, jonalv
  *
  */
 public class MoleculeContentProvider implements ITreeContentProvider,
-                                                IResourceChangeListener, 
+                                                IResourceChangeListener,
                                                 IResourceDeltaVisitor {
 
-    private static final Logger logger 
+    private static final Logger logger
         = Logger.getLogger(MoleculeContentProvider.class);
 
     private static final Object[] NO_CHILDREN = new Object[0];
@@ -66,17 +67,17 @@ public class MoleculeContentProvider implements ITreeContentProvider,
 
     private final Map<IFile, IMoleculesFromFile> cachedModelMap;
 
-    private DeferredTreeContentManager contentManager; 
+    private DeferredTreeContentManager contentManager;
 
     //Register us as listener for resource changes
     @SuppressWarnings("serial")
     public MoleculeContentProvider() {
         ResourcesPlugin.getWorkspace()
-                       .addResourceChangeListener( this, 
+                       .addResourceChangeListener( this,
                                                    IResourceChangeEvent
                                                    .POST_CHANGE );
         cachedModelMap = new HashMap<IFile, IMoleculesFromFile>();
-        
+
         MOLECULE_EXT = new ArrayList<String>() {
             { add("SDF");
               add("SMI");}
@@ -89,11 +90,11 @@ public class MoleculeContentProvider implements ITreeContentProvider,
             /* possible model file */
             IFile modelFile = (IFile) parentElement;
             if ( MoleculeExt.valueOf( modelFile ).isSupported() ) {
-                                                 
+
                 if ( !cachedModelMap.containsKey( modelFile ) ) {
                     updateModel(modelFile);
                 }
-                return cachedModelMap.containsKey( modelFile ) 
+                return cachedModelMap.containsKey( modelFile )
                        ? new Object[] {cachedModelMap.get( modelFile )}
                        : NO_CHILDREN;
             }
@@ -103,7 +104,7 @@ public class MoleculeContentProvider implements ITreeContentProvider,
         }
         return NO_CHILDREN;
     }
-        
+
     public Object getParent(Object element) {
         if (element instanceof SDFElement) {
             return ( (SDFElement)element ).getResource();
@@ -116,7 +117,17 @@ public class MoleculeContentProvider implements ITreeContentProvider,
 
     public boolean hasChildren(Object element) {
         if ( element instanceof IFile ) {
-            return MoleculeExt.valueOf( (IFile) element ).isSupported();            
+
+            long size = 0;
+            try {
+                size = EFS.getStore( ((IFile)element ).getLocationURI() )
+                                .fetchInfo().getLength();
+            } catch ( CoreException e ) {
+                return MoleculeExt.valueOf( (IFile) element ).isSupported();
+            }
+
+            return MoleculeExt.valueOf( (IFile) element ).isSupported() &&
+                size < 1000000;
         }
         if ( element instanceof IMoleculesFromFile ) {
             return contentManager.mayHaveChildren( element );
@@ -140,10 +151,10 @@ public class MoleculeContentProvider implements ITreeContentProvider,
     /**
      * When input changes, clear cache so that we will reload content later
      */
-    public void inputChanged( Viewer viewer, 
-                              Object oldInput, 
+    public void inputChanged( Viewer viewer,
+                              Object oldInput,
                               Object newInput ) {
-        
+
         if ( oldInput != null && !oldInput.equals(newInput) ) {
             cachedModelMap.clear();
         }
@@ -174,9 +185,9 @@ public class MoleculeContentProvider implements ITreeContentProvider,
      * @param modelFile The IFile which contains the persisted model
      */
     private synchronized void updateModel(IFile modelFile) {
-        MoleculeExt format = MoleculeExt.valueOf( modelFile ); 
-        if ( format.isSupported()) {                
-            
+        MoleculeExt format = MoleculeExt.valueOf( modelFile );
+        if ( format.isSupported()) {
+
             IMoleculesFromFile model;
             if (modelFile.exists()) {
 
@@ -188,19 +199,19 @@ public class MoleculeContentProvider implements ITreeContentProvider,
                             break;
                         default: return;
                     }
-                    
-                } 
+
+                }
                 catch (Exception e) {
                     return;
                 }
                 cachedModelMap.put(modelFile, model);
-            } 
+            }
             else {
                 cachedModelMap.remove(modelFile);
             }
         }
     }
-    
+
     enum MoleculeExt {
         SDF, SMI, UNKNOWNED {
 
