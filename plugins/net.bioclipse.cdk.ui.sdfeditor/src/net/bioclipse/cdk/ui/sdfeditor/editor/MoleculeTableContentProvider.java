@@ -177,7 +177,7 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
         for(int i=2;i<columns.length;i++) {
             Label label = ((Label)columns[i]);
             String text ="";
-            if(i<properties.length+2)
+            if(properties!=null && i<properties.length+2)
                 text = properties[i-2].toString();
             label.setText( text );
             label.setToolTipText( text );
@@ -210,7 +210,8 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
             logger.debug( "Failed to generate iamge" );
         }
 
-        for(int i=2;i<columns.length && i<properties.length+2;i++) {
+        for(int i=2;i<columns.length && properties != null
+                                     && i<properties.length+2;i++) {
             if(properties!=null && molecule!=null) {
                 Object value = molecule.getAtomContainer()
                 .getProperty( properties[i-2]);
