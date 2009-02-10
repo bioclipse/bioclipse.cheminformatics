@@ -65,8 +65,8 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         try {
             addPage(MOLECULES_PAGE, moleculesPage , getEditorInput());
             setPageText( MOLECULES_PAGE, "Molecules" );
-            addPage(SINGLE_ENTRY_PAGE, jcpWidget);
-            setPageText( SINGLE_ENTRY_PAGE, "Single 2D" );
+//            addPage(SINGLE_ENTRY_PAGE, jcpWidget);
+//            setPageText( SINGLE_ENTRY_PAGE, "Single 2D" );
 //            addPage( jmolPage, getEditorInput() );                 
 //            setPageText(JMOL_PAGE, "Single 3D");            
 
