@@ -150,9 +150,7 @@ public class CDKManager implements ICDKManager {
         ICDKMolecule loadedMol = loadMolecule(
             file.getContents(),
             monitor,
-            formatsFactory.guessFormat(
-                new BufferedInputStream(file.getContents())
-            )
+            determineIChemFormat(file)
         );
   	    loadedMol.setResource(file);
 
@@ -1466,14 +1464,21 @@ public class CDKManager implements ICDKManager {
   	    saveMolecule(mol, filename,CDKManager.mol);
   	}
 
-  	public String determineFormat( String path ) throws IOException,
-  	                                                    CoreException {
+    public IChemFormat determineIChemFormat(IFile file)
+        throws IOException, CoreException {
         return formatsFactory.guessFormat(
-            new BufferedInputStream(
-                ResourcePathTransformer.getInstance()
-                    .transform(path).getContents()
-            )
-        ).getFormatName();
+            new BufferedReader(new InputStreamReader(
+                file.getContents()
+            ))
+        );
+    }
+
+    public String determineFormat( String path ) throws IOException,
+                                                        CoreException {
+        IChemFormat format = determineIChemFormat(
+            ResourcePathTransformer.getInstance().transform(path)
+        );
+        return format == null ? "Unknown" : format.getFormatName();
     }
 
   	public void createSDFile(IFile file, IMolecule[] entries)
