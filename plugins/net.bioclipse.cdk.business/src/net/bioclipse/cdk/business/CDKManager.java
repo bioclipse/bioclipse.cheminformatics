@@ -147,10 +147,13 @@ public class CDKManager implements ICDKManager {
   	public ICDKMolecule loadMolecule(IFile file, IProgressMonitor monitor)
   	                    throws IOException, BioclipseException, CoreException {
 
-  	    ICDKMolecule loadedMol
-  	        = loadMolecule( file.getContents(),
-  	                        monitor,
-  	                        formatsFactory.guessFormat(file.getContents()) );
+        ICDKMolecule loadedMol = loadMolecule(
+            file.getContents(),
+            monitor,
+            formatsFactory.guessFormat(
+                new BufferedInputStream(file.getContents())
+            )
+        );
   	    loadedMol.setResource(file);
 
   	    return loadedMol;
@@ -1465,10 +1468,13 @@ public class CDKManager implements ICDKManager {
 
   	public String determineFormat( String path ) throws IOException,
   	                                                    CoreException {
-  	    return formatsFactory.guessFormat(
-  	               ResourcePathTransformer.getInstance().transform(path)
-  	                                      .getContents() ).getFormatName();
-  	}
+        return formatsFactory.guessFormat(
+            new BufferedInputStream(
+                ResourcePathTransformer.getInstance()
+                    .transform(path).getContents()
+            )
+        ).getFormatName();
+    }
 
   	public void createSDFile(IFile file, IMolecule[] entries)
   	            throws BioclipseException, InvocationTargetException {
