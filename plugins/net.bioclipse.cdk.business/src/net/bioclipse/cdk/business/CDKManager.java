@@ -281,7 +281,8 @@ public class CDKManager implements ICDKManager {
   	                                         BioclipseUIJob<List<ICDKMolecule>> uiJob ) {
 
   	    throw new UnsupportedOperationException(
-        "This manager method should not be called");
+            "This manager method should not be called, " +
+            "loadMolecules(IFile, BioclipseUIJob)");
   	}
 
   	public List<ICDKMolecule> loadMolecules( IFile file,
