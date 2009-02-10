@@ -64,23 +64,15 @@ public class MoleculesFromSDF implements IMoleculesFromFile{
             LogUtils.debugTrace( logger, e );
         }
         monitor.beginTask("Reading SDF file", ticks);
-        //Node first = (Node) sdfFile.getAdapter( Node.class );
         Node first;
-        synchronized ( BioclipseStore.instance ) {
+        first = new Node(null);
+        BuilderThread builder = new BuilderThread(sdfFile,
+                                                  first,
+                                                  monitor);
+        builder.start();
 
-            first = (Node) BioclipseStore.get( sdfFile, Node.class );
-            if ( first == null ) {
-                first = new Node(null);
-//                BioclipseStore.put(sdfFile,Node.class, first);
-                //monitor only used for checking when to abort. Nothing else.
-                BuilderThread builder = new BuilderThread(sdfFile,
-                                                          first,
-                                                          monitor);
-                builder.start();
-            }
-        }
-            readSDFElementsFromList( first, collector, monitor );
-            monitor.done();
+        readSDFElementsFromList( first, collector, monitor );
+        monitor.done();
 
     }
 
