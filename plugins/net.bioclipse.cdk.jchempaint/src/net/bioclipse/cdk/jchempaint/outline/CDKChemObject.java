@@ -81,4 +81,19 @@ public class CDKChemObject extends BioObject implements IBioObject{
         return super.getAdapter(adapter);
     }
 
+    @Override
+    public boolean equals( Object obj ) {
+
+        if(obj instanceof IChemObject) {
+            return chemobj.equals( obj );
+        }
+
+        return super.equals( obj );
+    }
+
+    @Override
+    public int hashCode() {
+
+        return chemobj.hashCode();
+    }
 }
