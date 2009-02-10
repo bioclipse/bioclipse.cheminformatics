@@ -173,17 +173,16 @@ public class CDKManager implements ICDKManager {
   	        ISimpleChemObjectReader reader
   	            = readerFactory.createReader(format);
 
+            if (reader == null) {
+                throw new BioclipseException("Could not create reader in CDK.");
+            }
+
   	        try {
   	            reader.setReader(instream);
   	        }
   	        catch ( CDKException e1 ) {
   	            throw new RuntimeException(
   	                "Failed to set the reader's inputstream", e1);
-  	        }
-
-  	        if (reader == null) {
-  	            throw new BioclipseException(
-  	                "Could not create reader in CDK.");
   	        }
 
   	        IChemFile chemFile = new org.openscience.cdk.ChemFile();
