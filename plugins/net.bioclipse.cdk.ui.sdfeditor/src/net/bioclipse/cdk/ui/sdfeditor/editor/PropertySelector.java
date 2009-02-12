@@ -1,7 +1,6 @@
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -24,33 +23,27 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-
 public class PropertySelector extends Composite{
-
-
 
     public PropertySelector(Composite parent, int style) {
 
         super( parent, style );
-        Composite composite= new Composite(parent, SWT.NONE);
-//        composite.setSize( 300,300 );
-        composite.setLayout(new GridLayout());
-        composite.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+        setLayout(new GridLayout(1,true));
+        setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
 
-        createControl( composite );
+        createControl( this );
     }
 
-    Collection<Object> properties = new HashSet<Object>();
     List<Object> viewProperties = new ArrayList<Object>(10);
     Collection<Object> moleculeTableProperties = new HashSet<Object>();
 
     TableViewer pTable;
     TableViewer vTable;
 
-
+    Button removeAll;
+    Button addAll;
 
     private void createControl(Composite parent) {
-
 
         Composite leftCenterRightCompsite = new Composite(parent,SWT.NONE);
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true,true);
@@ -86,9 +79,12 @@ public class PropertySelector extends Composite{
         gridLayout.marginWidth = 0;
         rightCompsite.setLayout( gridLayout );
 
-        pTable = createTable( leftComposite, "Avaliable properties", properties );
-        vTable = createTable( rightCompsite, "Visible properties", viewProperties);
+        pTable = createTable( leftComposite, "Avaliable properties",
+                              moleculeTableProperties );
+        vTable = createTable( rightCompsite, "Visible properties",
+                              viewProperties);
 
+        vTable.setInput( viewProperties );
         pTable.setInput(moleculeTableProperties);
         pTable.refresh( true );
         vTable.refresh(true);
@@ -96,19 +92,20 @@ public class PropertySelector extends Composite{
         createButtonBar( centerComposite );
 
         pTable.getTable().setFocus();
-
-
     }
 
-    private void initialSelectedElements() {
-
-    }
-
-    public void setInitialData(Object[] data) {
+    public void setInitialData(List<Object> visible,Collection<Object> available) {
         // TODO get data from current table properties and all create the
         // two sets
-        properties.addAll( Arrays.asList( data ) );
-        pTable.refresh(true);
+        viewProperties.clear();
+        viewProperties.addAll( visible );
+        moleculeTableProperties.clear();
+        moleculeTableProperties.addAll(available);
+        moleculeTableProperties.removeAll( viewProperties );
+        pTable.refresh();
+        vTable.refresh();
+        addAll.setEnabled( pTable.getTable().getItemCount() >0 );
+        removeAll.setEnabled( vTable.getTable().getItemCount() >0 );
     }
 
     private TableViewer createTable( Composite parent, String text,
@@ -130,9 +127,9 @@ public class PropertySelector extends Composite{
         configureTable(fTable);
 
         fTable.setContentProvider( new IStructuredContentProvider() {
-
+            Collection<Object> model;
             public Object[] getElements( Object inputElement ) {
-                return set.toArray();
+                return model.toArray();
             }
 
             public void dispose() {
@@ -140,6 +137,7 @@ public class PropertySelector extends Composite{
 
             public void inputChanged( Viewer viewer, Object oldInput,
                                       Object newInput ) {
+                model = (Collection<Object>) newInput;
             }
         });
         return fTable;
@@ -167,10 +165,11 @@ public class PropertySelector extends Composite{
         final Button removeAllButton = new Button(parent, SWT.PUSH);
         removeAllButton.setLayoutData( new GridData(SWT.FILL,SWT.TOP,true,false) );
         removeAllButton.setText( "Remove All" );
-        removeAllButton.setEnabled( !vTable.getSelection().isEmpty() );
+        removeAllButton.setEnabled( vTable.getTable().getItemCount() >0 );
+
+
 
         pTable.addSelectionChangedListener( new ISelectionChangedListener() {
-
             public void selectionChanged( SelectionChangedEvent event ) {
                 addButton.setEnabled( !event.getSelection().isEmpty() );
             }
@@ -179,7 +178,7 @@ public class PropertySelector extends Composite{
         addButton.addSelectionListener( new SelectionAdapter() {
             @Override
             public void widgetSelected( SelectionEvent e ) {
-                // add selection
+                addSelection();
 
                 removeAllButton.setEnabled( true );
                 addAllButton.setEnabled( pTable.getTable().getItems().length >0 );
@@ -191,11 +190,20 @@ public class PropertySelector extends Composite{
             public void doubleClick( DoubleClickEvent event ) {
                 addSelection();
 
-                removeAllButton.setEnabled( pTable.getTable().getItems().length >0 );
+                removeAllButton.setEnabled( vTable.getTable().getItemCount() >0 );
             }
 
         });
 
+        vTable.addDoubleClickListener( new IDoubleClickListener() {
+
+            public void doubleClick( DoubleClickEvent event ) {
+                removeSelection();
+
+                addAllButton.setEnabled( vTable.getTable().getItemCount() >0 );
+            }
+
+        });
         vTable.addSelectionChangedListener( new ISelectionChangedListener() {
 
             public void selectionChanged( SelectionChangedEvent event ) {
@@ -213,31 +221,71 @@ public class PropertySelector extends Composite{
             }
         });
 
+        removeAllButton.addSelectionListener( new SelectionAdapter() {
+            @Override
+            public void widgetSelected( SelectionEvent e ) {
+                IStructuredSelection selection =
+                                (IStructuredSelection) vTable.getSelection();
+                moleculeTableProperties.addAll( viewProperties );
+                viewProperties.clear();
+                vTable.refresh();
+                pTable.refresh();
+                pTable.setSelection( selection );
+                pTable.getControl().setFocus();
+
+                removeAllButton.setEnabled( false );
+                addAllButton.setEnabled( true );
+            }
+        });
+
+        addAllButton.addSelectionListener( new SelectionAdapter() {
+            @Override
+            public void widgetSelected( SelectionEvent e ) {
+                IStructuredSelection selection =
+                                (IStructuredSelection) vTable.getSelection();
+                viewProperties.addAll( moleculeTableProperties );
+                moleculeTableProperties.clear();
+                vTable.refresh();
+                pTable.refresh();
+                vTable.setSelection( selection );
+                vTable.getControl().setFocus();
+
+                removeAllButton.setEnabled( true );
+                addAllButton.setEnabled( false );
+            }
+        });
+
+        addAll = addAllButton;
+        removeAll = removeAllButton;
     }
 
     private void addSelection() {
         IStructuredSelection selection = (IStructuredSelection) pTable.getSelection();
-        Object[] selectedElements = selection.toArray();
-        vTable.add( selectedElements );
-        pTable.remove(selectedElements);
+        viewProperties.addAll(selection.toList());
+        moleculeTableProperties.removeAll( selection.toList() );
+        vTable.refresh();
+        pTable.refresh();
         vTable.setSelection( selection );
         vTable.getControl().setFocus();
-        //validate
     }
 
     private void removeSelection() {
-        IStructuredSelection selection = (IStructuredSelection) pTable.getSelection();
-        Object[] selectedElements = selection.toArray();
-        pTable.add( selectedElements );
-        vTable.remove( selectedElements );
+        IStructuredSelection selection = (IStructuredSelection) vTable.getSelection();
+        viewProperties.removeAll( selection.toList());
+        moleculeTableProperties.addAll( selection.toList() );
+        pTable.refresh();
+        vTable.refresh();
         pTable.setSelection( selection );
         pTable.getControl().setFocus();
-        // validate
     }
 
     private void configureTable( TableViewer table ) {
 
         table.setLabelProvider( new LabelProvider());
 
+    }
+
+    public List<Object> getVisibleProperties() {
+        return new ArrayList<Object>(viewProperties);
     }
 }

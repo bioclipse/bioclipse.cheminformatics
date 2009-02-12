@@ -4,23 +4,24 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * <http://www.eclipse.org/legal/epl-v10.html>.
- * 
+ *
  * Contributors:
- *      Arvid Berg 
- *     
- *     
+ *      Arvid Berg
+ *
+ *
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
-import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jmol.editors.JmolEditor;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -34,92 +35,104 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 
 
 public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
-//                            ISelectionChangedListener, // do we need this?
-                            ISelectionListener
-                                {
+                                                    ISelectionListener {
 
     Logger logger = Logger.getLogger( MultiPageMoleculesEditorPart.class );
+
     private MoleculesEditor moleculesPage;
-    public MoleculesEditor getMoleculesPage() {
-		return moleculesPage;
-	}
-	private JChemPaintEditor jcpEditor;
     private JChemPaintEditorWidget jcpWidget;
     private JmolEditor jmolPage;
+    PropertySelector ps;
+    Pages lastPage;
 
-    private final int MOLECULES_PAGE = 0;
-    private final int SINGLE_ENTRY_PAGE = 1;
-    private final int JMOL_PAGE = 2;
+    enum Pages {
+        Molecules,
+        Headers,
+        JCP,
+        Jmol;
+    }
+    Map<Integer,Pages> pageOrder = new HashMap<Integer,Pages>();
+
 
     public MultiPageMoleculesEditorPart() {
         super();
     }
-    
+
+    public MoleculesEditor getMoleculesPage() {
+        return moleculesPage;
+    }
+
+
+
     @Override
     protected void createPages() {
 
-        moleculesPage = new MoleculesEditor();        
-        jmolPage = new JmolEditor();
-        jcpWidget = new JChemPaintEditorWidget(getContainer(), SWT.NONE);
-        
         try {
-            addPage(MOLECULES_PAGE, moleculesPage , getEditorInput());
-            setPageText( MOLECULES_PAGE, "Molecules" );
-//            addPage(SINGLE_ENTRY_PAGE, jcpWidget);
-//            setPageText( SINGLE_ENTRY_PAGE, "Single 2D" );
-//            addPage( jmolPage, getEditorInput() );                 
-//            setPageText(JMOL_PAGE, "Single 3D");            
+            int i;
+            for(Pages page:new Pages[]{ Pages.Molecules,
+                                        Pages.Headers}) {
+                switch(page) {
+                    case Molecules:
+                        i = addPage( moleculesPage =
+                                            new MoleculesEditor(),
+                                                getEditorInput());
+                        pageOrder.put(i, page);
+                        setPageText(i,"Molecules");
+                        break;
+
+                    case Headers:
+                        i = addPage( ps = new PropertySelector(
+                                                   this.getContainer(),
+                                                   SWT.NONE));
+                        pageOrder.put(i, page);
+                        setPageText(i,"Headers");
+                        break;
+                }
+            }
 
         } catch ( PartInitException e ) {
             logger.debug( "Failed to create pages: " + e.getMessage() );
             LogUtils.debugTrace( logger, e );
         }
 
-
         setPartName( getEditorInput().getName());
-
-       // getSite().setSelectionProvider( moleculesPage.getViewer() );
         getSite().getPage().addPostSelectionListener( this );
     }
-    
+
     @Override
     public void init( IEditorSite site, IEditorInput input )
                                                       throws PartInitException {
         super.init( site, input );
-        
+
         //site.getPage().addSelectionListener( this );
-     
+
     }
 
     @Override
-    protected void setActivePage( int pageIndex ) {    
+    protected void setActivePage( int pageIndex ) {
         //reactOnSelection( (IStructuredSelection)moleculesPage.getSelection() );
         updateJCPPage();
         super.setActivePage( pageIndex );
     }
-    
+
     @Override
     public void doSave( IProgressMonitor monitor ) {
-
-        // TODO Auto-generated method stub
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void doSaveAs() {
-
-        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException();
+        // Unsupported
 
     }
 
     @Override
     public boolean isSaveAsAllowed() {
-
-        // TODO Auto-generated method stub
         return false;
     }
 
-//    private void reactOnSelection(IStructuredSelection selection){  
+//    private void reactOnSelection(IStructuredSelection selection){
 //        moleculesPage.reactOnSelection( selection );
 //        if(SINGLE_ENTRY_PAGE == getActivePage()) {
 //            updateJCPPage();
@@ -131,65 +144,72 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
 //        if( selection instanceof IStructuredSelection){
 //            reactOnSelection( (IStructuredSelection) selection );
 //        }
-//        
+//
 //    }
+
 
    @Override
     protected void pageChange( int newPageIndex ) {
+       Pages page = pageOrder.get( newPageIndex );
 
-        if ( SINGLE_ENTRY_PAGE == newPageIndex ) {
-            updateJCPPage();            
-        }
-        else if (JMOL_PAGE == newPageIndex) {
-            updateJmolPage();
-        }
+       switch(page) {
+           case Molecules:
+               if(lastPage == Pages.Headers) {
+                   moleculesPage.getContentProvider()
+                           .setVisibleProperties( ps.getVisibleProperties() );
+                   moleculesPage.getMolTableViewer().refresh();
+               }break;
+           case Headers:
+               MoleculeTableContentProvider contentProvider =
+                       moleculesPage.getContentProvider();
+               ps.setInitialData( contentProvider.getProperties(),
+                                  contentProvider.getAvailableProperties());
+       }
+
+       lastPage = pageOrder.get(newPageIndex);
+       super.pageChange( newPageIndex );
     }
 
     private void updateJmolPage() {
         ISelection selection = moleculesPage.getSelection();
         if(selection instanceof IStructuredSelection) {
-           Object element = ((IStructuredSelection)selection).getFirstElement();           
+           Object element = ((IStructuredSelection)selection).getFirstElement();
            if(element instanceof SDFElement) {
                jmolPage.setDataInput(  (IEditorInput) ((SDFElement) element)
                               .getAdapter( MoleculesIndexEditorInput.class ) );
            }
         }
-    
+
 //        try {
 //            //jmolPage.init( getEditorSite(), getEditorInput() );
 //        } catch ( PartInitException e ) {
 //            // TODO Auto-generated catch block
 //            e.printStackTrace();
-//        }        
+//        }
     }
 
-    public void selectionChanged( IWorkbenchPart part, ISelection selection ) {        
+    public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
         if( part != this && selection instanceof IStructuredSelection) {
-//            logger.debug( "Selection has chaged" + this.getClass().getName() );
-        
+
             moleculesPage.reactOnSelection( selection );
-            if(getActivePage() == JMOL_PAGE)
+            if(pageOrder.get(getActivePage() ) == Pages.Jmol)
                 updateJmolPage();
-            if(getActivePage() == SINGLE_ENTRY_PAGE)
+            if(pageOrder.get(getActivePage() ) == Pages.JCP)
                 updateJCPPage();
         }
     }
-//    
-    private void updateJCPPage() {        
+
+    private void updateJCPPage() {
         ISelection selection = moleculesPage.getSelection();
         if(selection instanceof IStructuredSelection) {
-           Object element = ((IStructuredSelection)selection).getFirstElement();           
+           Object element = ((IStructuredSelection)selection).getFirstElement();
            if(element instanceof SDFElement) {
                try {
                jcpWidget.setInput( element );
                } catch (IllegalArgumentException x) {
-                   
+
                }
-//               element = ((IAdaptable)element).getAdapter( ICDKMolecule.class );
-//               if( element != null )
-//                   jcpPage.setInput(((ICDKMolecule)element).getAtomContainer());
            }
         }
     }
-    
 }

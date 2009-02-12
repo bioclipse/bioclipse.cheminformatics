@@ -13,7 +13,9 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +34,6 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
@@ -57,22 +58,28 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
     Logger logger = Logger.getLogger( MoleculeTableContentProvider.class );
 
     public static int READ_AHEAD = 100;
+    static final int NUMBER_OF_PROPERTIES =10;
 
     private MoleculeTableViewer viewer;
     IMoleculesEditorModel   model       = null;
-    Object[] properties;
+    List<Object> properties = new ArrayList<Object>(NUMBER_OF_PROPERTIES);
+    Collection<Object> availableProperties = new HashSet<Object>();
+
     Control headerControl=null;
 
     IRenderer2DConfigurator renderer2DConfigurator;
     MoleculesEditorLabelProvider melp = new MoleculesEditorLabelProvider(
                                     MoleculeTableViewer.STRUCTURE_COLUMN_WIDTH);
 
-    public Object[] getProperties() {
-        if(properties== null)
-            return new Object[0];
-        return properties;
+    public List<Object> getProperties() {
+
+        return new ArrayList<Object>(properties);
     }
-    
+
+    public Collection<Object> getAvailableProperties() {
+        return new HashSet<Object>(availableProperties);
+    }
+
     public IRenderer2DConfigurator getRenderer2DConfigurator() {
 
         return renderer2DConfigurator;
@@ -90,7 +97,7 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
         synchronized ( this ) {
             lModel = model;
         }
-        if ( lModel != null ) {;
+        if ( lModel != null ) {
             Object o = lModel.getMoleculeAt( index );
             if ( o instanceof IAdaptable ) {
                 molecule = ((ICDKMolecule) ((IAdaptable) o)
@@ -157,6 +164,13 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
         }
 
         updateSize( (model!=null?model.getNumberOfMolecules():0) );
+
+        // fill properties with elements from availableProperties
+        Iterator<Object> iter = availableProperties.iterator();
+        for(int i=0;i<NUMBER_OF_PROPERTIES;i++) {
+            if(iter.hasNext())
+                properties.add(iter.next());
+        }
         updateHeaders();
     }
 
@@ -165,15 +179,15 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
                                 .getCDKManager().createMoleculeIterator( file );
         if(iter.hasNext()) {
             ICDKMolecule moleucle = iter.next();
-            properties = moleucle.getAtomContainer().getProperties()
-                        .keySet().toArray();
+            availableProperties = moleucle.getAtomContainer().getProperties()
+                        .keySet();
         }
     }
 
     private void readProperties(IMoleculesEditorModel model) {
         ICDKMolecule moleucle = (ICDKMolecule)model.getMoleculeAt( 0 );
-        properties = moleucle.getAtomContainer().getProperties()
-                    .keySet().toArray();
+        availableProperties = moleucle.getAtomContainer().getProperties()
+                    .keySet();
     }
 
     void updateHeaders() {
@@ -184,8 +198,8 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
         for(int i=2;i<columns.length;i++) {
             Label label = ((Label)columns[i]);
             String text ="";
-            if(properties!=null && i<properties.length+2)
-                text = properties[i-2].toString();
+            if(properties!=null && i<properties.size()+2)
+                text = properties.get(i-2).toString();
             label.setText( text );
             label.setToolTipText( text );
         }
@@ -217,19 +231,20 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
             logger.debug( "Failed to generate iamge" );
         }
 
-        for(int i=2;i<columns.length && properties != null
-                                     && i<properties.length+2;i++) {
-            if(properties!=null && molecule!=null) {
+        for(int i=2;i<columns.length ;i++) {
+            if( properties != null && i<properties.size()+2) {
                 Object value = molecule.getAtomContainer()
-                .getProperty( properties[i-2]);
-                ((Label)columns[i]).setText(
-                                            value!=null?value.toString():"");
-            }
+                .getProperty( properties.get(i-2));
+                ((Label)columns[i]).setText( value!=null?value.toString():"");
+            } else
+                ((Label)columns[i]).setText("");
         }
     }
+
     enum FileType {
         SDF,SMI
     }
+
     private void loadMoleculesFromManager(IFile file,FileType type)
                                             throws CoreException, IOException {
         BioclipseUIJob< List<ICDKMolecule>> uiJob =
@@ -462,5 +477,11 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
     }
     public void dispose() {
 
+    }
+
+    public void setVisibleProperties( List<Object> visibleProperties ) {
+        properties.clear();
+        properties.addAll( visibleProperties );
+        updateHeaders();
     }
 }

@@ -68,24 +68,20 @@ public class MoleculesEditor extends EditorPart implements
     MoleculesEditorLabelProvider labelProvider;
     public List<String>                          propertyHeaders;
 
-
     private MoleculesOutlinePage outlinePage;
+    private MoleculeTableContentProvider contentProvider;
+    private MoleculeTableViewer molTableViewer;
+
+    public MoleculesEditor() {
+    }
+
+    public MoleculeTableContentProvider getContentProvider() {
+        return contentProvider;
+    }
 
 
-
-
-	private MoleculeTableContentProvider contentProvider;
-
-	private MoleculeTableViewer molTableViewer;
     public MoleculeTableViewer getMolTableViewer() {
-		return molTableViewer;
-	}
-
-	public MoleculeTableContentProvider getContentProvider() {
-		return contentProvider;
-	}
-
-	public MoleculesEditor() {
+        return molTableViewer;
     }
 
     @Override
