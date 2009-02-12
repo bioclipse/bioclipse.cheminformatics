@@ -72,6 +72,7 @@ public interface IJmolManager extends IBioclipseManager{
     public void spinOff();
 
     @Recorded
-    @PublishedMethod(methodSummary = "Optimizes the geometry of the structure in the active JmolEditor" )
+    @PublishedMethod(methodSummary = "Optimizes the geometry of the structure" +
+    		"in the active JmolEditor (but not back to file)" )
     public void minimize();
 }
