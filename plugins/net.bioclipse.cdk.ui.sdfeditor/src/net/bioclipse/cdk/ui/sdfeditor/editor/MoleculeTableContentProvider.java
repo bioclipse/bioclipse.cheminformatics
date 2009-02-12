@@ -13,6 +13,7 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,12 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
     MoleculesEditorLabelProvider melp = new MoleculesEditorLabelProvider(
                                     MoleculeTableViewer.STRUCTURE_COLUMN_WIDTH);
 
+    public Object[] getProperties() {
+        if(properties== null)
+            return new Object[0];
+        return properties;
+    }
+    
     public IRenderer2DConfigurator getRenderer2DConfigurator() {
 
         return renderer2DConfigurator;
