@@ -24,25 +24,19 @@ public class SDFAdapterFactory implements IAdapterFactory {
     @SuppressWarnings("unchecked")
     public Object getAdapter(Object adaptableObject, Class adapterType) {
         ICDKMolecule molecule=null;
-        if(MoleculesIndexEditorInput.class.isAssignableFrom( adapterType )) {
+        if(adapterType.isAssignableFrom( MoleculesIndexEditorInput.class )) {
           if(adaptableObject instanceof SDFElement) {
               SDFElement element = (SDFElement) adaptableObject;
               return new MoleculesIndexEditorInput(element);
           }            
         } else
-        if(adaptableObject instanceof SDFElement){
-            SDFElement element=(SDFElement)adaptableObject;
-            if(element.getResource() !=null )
-                molecule=(ICDKMolecule)BioclipseStore.get( 
-                                                         element.getResource(),
-                                                         element);
-            if(molecule==null){
-                molecule=loadSDFPart( element);
-                if(molecule!=null)
-                    BioclipseStore.put( element.getResource(),element,molecule);
-            
-        }
-        }
+            if(adaptableObject instanceof SDFElement){
+                SDFElement element=(SDFElement)adaptableObject;
+                if(element.getResource() !=null ) {
+
+                    molecule=loadSDFPart( element);
+                }
+            }
         return molecule;
     }
 

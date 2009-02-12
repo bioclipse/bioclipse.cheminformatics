@@ -70,10 +70,10 @@ public class MoleculesIndexEditorInput implements IFileEditorInput{
 
     @SuppressWarnings("unchecked")
     public Object getAdapter( Class adapter ) {
-        if(SDFElement.class.isAssignableFrom( adapter )) {
+        if(adapter.isAssignableFrom( SDFElement.class )) {
             return element;
         }
-        if(ICDKMolecule.class.isAssignableFrom( adapter )) {
+        if(adapter.isAssignableFrom( ICDKMolecule.class )) {
             return element.getAdapter( adapter );
         }
         if(String.class.equals( adapter )) {
