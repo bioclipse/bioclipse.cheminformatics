@@ -58,6 +58,9 @@ public class NewMDLMolfileWizard extends BasicNewResourceWizard {
     public void addPages() {
         super.addPages();
         mainPage = new WizardNewFileCreationPage("newFilePage1", getSelection());//$NON-NLS-1$
+        mainPage.setFileName(
+            WizardHelper.findUnusedFileName(getSelection(), "unnamed", ".mol")
+        );
         mainPage.setTitle("New MDL MolFile");
         mainPage.setDescription("Create a new MDL MolFile"); 
         addPage(mainPage);

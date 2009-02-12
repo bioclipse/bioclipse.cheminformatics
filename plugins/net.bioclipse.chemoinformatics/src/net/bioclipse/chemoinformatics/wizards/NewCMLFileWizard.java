@@ -25,7 +25,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 
 /**
- * Creates a new MDL molfile.
+ * Creates a new CML molfile.
  * 
  * @author egonw
  */
@@ -59,8 +59,11 @@ public class NewCMLFileWizard extends BasicNewResourceWizard {
     public void addPages() {
         super.addPages();
         mainPage = new WizardNewFileCreationPage("newFilePage1", getSelection());//$NON-NLS-1$
+        mainPage.setFileName(
+            WizardHelper.findUnusedFileName(getSelection(), "unnamed", ".cml")
+        );
         mainPage.setTitle("New CML File");
-        mainPage.setDescription("Create a new CML file"); 
+        mainPage.setDescription("Create a new CML file");
         addPage(mainPage);
     }
 
