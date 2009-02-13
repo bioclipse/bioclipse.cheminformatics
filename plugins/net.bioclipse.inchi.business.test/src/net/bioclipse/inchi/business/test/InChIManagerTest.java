@@ -49,7 +49,7 @@ public class InChIManagerTest extends AbstractManagerTest {
         Assert.assertNotNull("Input structure is unexpectedly null", mol);
         String inchiStr = inchi.generate(mol);
         Assert.assertNotNull(inchiStr);
-        Assert.assertEquals("InChI=1/CH4/h1H4", inchiStr);
+        Assert.assertEquals("InChI=1/CHBrClFO/c2-1(3,4)5/h5H", inchiStr);
     }
 
     @Test public void testGenerateKey() throws Exception {
