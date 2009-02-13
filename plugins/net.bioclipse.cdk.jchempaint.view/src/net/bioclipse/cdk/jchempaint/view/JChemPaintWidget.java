@@ -62,6 +62,7 @@ public class JChemPaintWidget extends Canvas {
 
         renderer2DModel = renderer.getRenderer2DModel();
         renderer2DModel.setAtomRadius( 20 );
+        renderer2DModel.setHighlightDistance( 20 );
 
         renderer2DModel.setShowImplicitHydrogens( true );
         renderer2DModel.setShowEndCarbons( true );
