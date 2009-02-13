@@ -114,7 +114,9 @@ public class CDKManagerTest extends AbstractManagerTest {
         String path = getClass().getResource("/testFiles/cs2a.cml").getPath();
         ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
 
-        System.out.println("mol: " + mol.toString());
+        Assert.assertNotNull(mol);
+        Assert.assertNotSame(0, mol.getAtomContainer().getAtomCount());
+        Assert.assertNotSame(0, mol.getAtomContainer().getBondCount());
     }
 
     
