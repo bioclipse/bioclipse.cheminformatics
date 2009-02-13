@@ -50,13 +50,16 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
     private String cachedSMILES;
     private BitSet cachedFingerprint;
 
-    Preferences prefs = Activator.getDefault().getPluginPreferences();
+    private static Preferences prefs;
 
     /*
      * Needed by Spring
      */
     CDKMolecule() {
         super();
+        if (prefs == null) {
+            prefs = Activator.getDefault().getPluginPreferences();
+        }
     }
     
     public CDKMolecule(IAtomContainer atomContainer) {
