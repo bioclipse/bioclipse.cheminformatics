@@ -28,7 +28,6 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
-import org.openscience.cdk.renderer.font.IFontManager.FontStyle;
 import org.openscience.cdk.renderer.generators.AtomContainerBoundsGenerator;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator;
@@ -63,8 +62,6 @@ public class JChemPaintWidget extends Canvas {
 
         renderer2DModel = renderer.getRenderer2DModel();
         renderer2DModel.setAtomRadius( 20 );
-        renderer2DModel.setHighlightRadiusModel( .4 );
-        renderer2DModel.setBondDistance( .05 );
 
         renderer2DModel.setShowImplicitHydrogens( true );
         renderer2DModel.setShowEndCarbons( true );
