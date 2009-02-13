@@ -285,12 +285,14 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		    ChemModelManipulator.getAllAtomContainers(chemModel)) {
 		    
 		    for (IAtom atom : atomContainer.atoms()) {
-				double distanceSQ = 
-				    atom.getPoint2d().distanceSquared(worldCoord);
-				if (distanceSQ < closestDistanceSQ) {
-					closestAtom = atom;
-					closestDistanceSQ = distanceSQ;
-				}
+		        if (atom.getPoint2d() != null) {
+		            double distanceSQ =
+		                atom.getPoint2d().distanceSquared(worldCoord);
+		            if (distanceSQ < closestDistanceSQ) {
+		                closestAtom = atom;
+		                closestDistanceSQ = distanceSQ;
+		            }
+		        }
 			}
 		}
 
@@ -305,11 +307,16 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		    ChemModelManipulator.getAllAtomContainers(chemModel)) {
 		    
 		    for (IBond bond : atomContainer.bonds()) {
-		        double distanceSQ = 
-		            bond.get2DCenter().distanceSquared(worldCoord);
-		        if (distanceSQ < closestDistanceSQ) {
-		            closestBond = bond;
-		            closestDistanceSQ = distanceSQ;
+		        boolean hasCenter = true;
+		        for (IAtom atom : bond.atoms())
+		            hasCenter = hasCenter && (atom.getPoint2d() != null);
+		        if (hasCenter) {
+		            double distanceSQ =
+		                bond.get2DCenter().distanceSquared(worldCoord);
+		            if (distanceSQ < closestDistanceSQ) {
+		                closestBond = bond;
+		                closestDistanceSQ = distanceSQ;
+		            }
 		        }
 		    }
 		}
