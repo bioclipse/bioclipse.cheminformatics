@@ -523,19 +523,19 @@ public class RendererModel implements Serializable, Cloneable {
     }
 
     /**
-     * XXX No idea what this is about.
+     * This is used for the size of the compact atom element. 
      */
-    public int getAtomRadius() {
+    public double getAtomRadius() {
         return this.parameters.getAtomRadius();
     }
 
     /**
-     * XXX No idea what this is about.
+     * Set the radius of the compact atom representation.
      * 
-     * @param atomRadius
-     *            XXX No idea what this is about
+     * @param atomRadius the size of the compact atom symbol.
+     *
      */
-    public void setAtomRadius(int atomRadius) {
+    public void setAtomRadius(double atomRadius) {
         this.parameters.setAtomRadius(atomRadius);
         fireChange();
     }

@@ -12,7 +12,7 @@ public class RenderingParameters {
     /**
      * The size on screen of a compact mode shape
      */
-    private int atomRadius = 8;
+    private double atomRadius = 8;
     
     /**
      * When atoms are selected or in compact mode, they will 
@@ -104,7 +104,7 @@ public class RenderingParameters {
     /**
      * Area on each of the four margins to keep white.
      */
-    private double margin = 0.05;
+    private double margin = 10;
     
     /**
      * The proportion of a ring bounds to use to draw the ring. 
@@ -263,7 +263,7 @@ public class RenderingParameters {
         this.highlightRadiusModel = highlightRadiusModel;
     }
 
-    public int getAtomRadius() {
+    public double getAtomRadius() {
         return atomRadius;
     }
 
@@ -375,7 +375,7 @@ public class RenderingParameters {
         return willDrawNumbers;
     }
 
-    public void setAtomRadius(int atomRadius) {
+    public void setAtomRadius(double atomRadius) {
         this.atomRadius = atomRadius;
     }
 
