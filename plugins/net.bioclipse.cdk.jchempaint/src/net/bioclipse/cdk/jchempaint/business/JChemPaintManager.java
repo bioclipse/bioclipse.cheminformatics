@@ -26,6 +26,7 @@ import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IBond.Order;
+import org.openscience.cdk.renderer.RendererModel;
 
 /**
  * @author egonw
@@ -347,5 +348,254 @@ public class JChemPaintManager implements IJChemPaintManager {
             Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
         }
         updateView();
+    }
+    
+    private RendererModel getRendererModel() {
+        JChemPaintEditor editor = findActiveEditor();
+        if (editor != null) {
+            return editor.getControllerHub().getRenderer().getRenderer2DModel();
+        } else {
+            return null;
+        }
+    }
+
+    public void setBondLength(double bondLength) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.setBondLength(bondLength);
+        }
+    }
+
+    public void setAtomRadius(int atomRadius) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.setAtomRadius(atomRadius);
+        }
+    }
+
+    public void setIsCompact(boolean isCompact) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.setIsCompact(isCompact);
+        }
+    }
+
+    public void setBondDistance(double bondDistance) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.setBondDistance(bondDistance);
+        }
+    }
+
+    public void setBondWidth(double bondWidth) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.setBondWidth(bondWidth);
+        }
+    }
+
+    public void setDrawNumbers(boolean setDrawNumbers) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.setDrawNumbers(setDrawNumbers);
+        }
+    }
+
+    public void setFitToScreen(boolean fitToScreen) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.setFitToScreen(fitToScreen);
+        }
+    }
+
+    public void setHighlightDistance(double highlightDistance) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.setHighlightDistance(highlightDistance);
+        }
+    }
+
+    public void setRingProportion(double ringProportion) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.setBondDistance(ringProportion);
+        }
+    }
+
+    public void setShowAromaticity(boolean showAromaticity) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.setShowAromaticity(showAromaticity);
+        }
+    }
+
+    public void setShowAromaticityInCDKStyle(boolean showAromaticityCDK) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.setShowAromaticityCDKStyle(showAromaticityCDK);
+        }
+    }
+
+    public void setShowEndCarbons(boolean showEndCarbons) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.setShowEndCarbons(showEndCarbons);
+        }
+    }
+
+    public void setShowExplicitHydrogens(boolean explicitHydrogens) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.setShowExplicitHydrogens(explicitHydrogens);
+        }
+    }
+
+    public void setShowImplicitHydrogens(boolean implicitHydrogens) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.setShowImplicitHydrogens(implicitHydrogens);
+        }
+    }
+
+    public void setWedgeWidth(double wedgeWidth) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.setWedgeWidth(wedgeWidth);
+        }
+    }
+
+    public int getAtomRadius() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            return model.getAtomRadius();
+        } else {
+            return 0;
+        }
+    }
+
+    public double getBondDistance() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            return model.getBondDistance();
+        } else {
+            return 0;
+        }
+    }
+
+    public double getBondLength() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            return model.getBondLength();
+        } else {
+            return 0;
+        }
+    }
+
+    public double getBondWidth() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            return model.getBondWidth();
+        } else {
+            return 0;
+        }
+    }
+
+    public boolean getDrawNumbers() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            return model.getDrawNumbers();
+        } else {
+            return false;
+        }
+    }
+
+    public boolean getFitToScreen() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            return model.isFitToScreen();
+        } else {
+            return false;
+        }
+    }
+
+    public double getHighlightDistance() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            return model.getHighlightDistance();
+        } else {
+            return 0;
+        }
+    }
+
+    public boolean getIsCompact() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            return model.getIsCompact();
+        } else {
+            return false;
+        }
+    }
+
+    public double getRingProportion() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            return model.getRingProportion();
+        } else {
+            return 0;
+        }
+    }
+
+    public boolean getShowAromaticity() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            return model.getShowAromaticity();
+        } else {
+            return false;
+        }
+    }
+
+    public boolean getShowAromaticityInCDKStyle() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            return model.getShowAromaticityCDKStyle();
+        } else {
+            return false;
+        }
+    }
+
+    public boolean getShowEndCarbons() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            return model.getShowEndCarbons();
+        } else {
+            return false;
+        }
+    }
+
+    public boolean getShowExplicitHydrogens() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            return model.getShowExplicitHydrogens();
+        } else {
+            return false;
+        }
+    }
+
+    public boolean getShowImplicitHydrogens() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            return model.getShowImplicitHydrogens();
+        } else {
+            return false;
+        }
+    }
+
+    public double getWedgeWidth() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            return model.getWedgeWidth();
+        } else {
+            return 0;
+        }
     }
 }

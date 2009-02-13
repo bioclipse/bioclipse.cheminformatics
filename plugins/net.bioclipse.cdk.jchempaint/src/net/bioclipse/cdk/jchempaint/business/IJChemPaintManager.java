@@ -31,6 +31,141 @@ import org.openscience.cdk.interfaces.IBond;
 @PublishedClass ("Manager for the JChemPaintEditor scripting language." )
 @TestClasses("net.bioclipse.cdk.jchempaint.business.test.JChemPaintManagerTest")
 public interface IJChemPaintManager extends IBioclipseManager {
+    
+    @Recorded
+    @PublishedMethod ( params = "double the width on screen of a wedge bond", 
+                       methodSummary = "set the on-screen width of a wedge" )
+    public void setWedgeWidth(double wedgeWidth);
+    
+    @Recorded
+    @PublishedMethod ( params = "boolean true if atom numbers shown", 
+                       methodSummary = "set to show atom numbers" )
+    public void setDrawNumbers(boolean setDrawNumbers);
+    
+    @Recorded
+    @PublishedMethod ( params = "boolean true if hydrogens shown explicitly", 
+                       methodSummary = "set to show hydrogens explicitly" )
+    public void setShowExplicitHydrogens(boolean explicitHydrogens);
+    
+    @Recorded
+    @PublishedMethod ( params = "boolean true if hydrogens shown implicitly", 
+                       methodSummary = "set to show hydrogens implicitly" )
+    public void setShowImplicitHydrogens(boolean implicitHydrogens);
+    
+    @Recorded
+    @PublishedMethod ( params = "boolean true if methyl groups shown explicitly", 
+                       methodSummary = "set to show explicit methyl groups" )
+    public void setShowEndCarbons(boolean showEndCarbons);
+    
+    @Recorded
+    @PublishedMethod ( params = "boolean true if CDK aromatic indicators shown", 
+                       methodSummary = "set to true for CDK indicators" )
+    public void setShowAromaticityInCDKStyle(boolean showAromaticityCDK);    
+    
+    @Recorded
+    @PublishedMethod ( params = "boolean true if aromatic indicators shown", 
+                       methodSummary = "set to true if aromatic indicators on" )
+    public void setShowAromaticity(boolean showAromaticity);
+    
+    @Recorded
+    @PublishedMethod ( params = "double the fraction of ring diameter to use", 
+                       methodSummary = "set the position of inner-ring bonds" )
+    public void setRingProportion(double ringProportion);
+
+    @Recorded
+    @PublishedMethod ( params = "double the highlight distance on screen", 
+                       methodSummary = "set the distance to highlight within" )
+    public void setHighlightDistance(double highlightDistance);
+    
+    @Recorded
+    @PublishedMethod ( params = "boolean true if the diagram should fit screen", 
+                       methodSummary = "set the diagram to fit the screen" )
+    public void setFitToScreen(boolean fitToScreen);
+
+    @Recorded
+    @PublishedMethod ( params = "double width of a bond", 
+                       methodSummary = "set the width of bonds" )
+    public void setBondWidth(double bondWidth);
+  
+    @Recorded
+    @PublishedMethod ( params = "double distance on screen between bonds", 
+                       methodSummary = "set distance between multiple bonds")
+    public void setBondDistance(double bondDistance);
+    
+    @Recorded
+    @PublishedMethod ( params = "boolean atoms should be shown in compact form", 
+                       methodSummary = "set to true if atoms are to be compact")
+    public void setIsCompact(boolean isCompact);
+
+    @Recorded
+    @PublishedMethod ( params = "double length on screen of a typical bond", 
+                       methodSummary = "set the standard bond length" )
+    public void setBondLength(double bondLength);
+    
+    @Recorded
+    @PublishedMethod ( params = "int radius of the atom symbol on screen", 
+                       methodSummary = "set the radius of an atom symbol" )
+    public void setAtomRadius(int atomRadius);
+
+    @Recorded
+    @PublishedMethod ( methodSummary = "get the on-screen width of a wedge" )
+    public double getWedgeWidth();
+    
+    @Recorded
+    @PublishedMethod ( methodSummary = "showing atom numbers" )
+    public boolean getDrawNumbers();
+    
+    @Recorded
+    @PublishedMethod ( methodSummary = "get to show hydrogens explicitly" )
+    public boolean getShowExplicitHydrogens();
+    
+    @Recorded
+    @PublishedMethod ( methodSummary = "get to show hydrogens implicitly" )
+    public boolean getShowImplicitHydrogens();
+    
+    @Recorded
+    @PublishedMethod ( methodSummary = "true if showing explicit methyl groups")
+    public boolean getShowEndCarbons();
+    
+    @Recorded
+    @PublishedMethod ( methodSummary = "true if CDK indicators are shown" )
+    public boolean getShowAromaticityInCDKStyle();    
+    
+    @Recorded
+    @PublishedMethod ( methodSummary = "true if aromatic indicators on" )
+    public boolean getShowAromaticity();
+    
+    @Recorded
+    @PublishedMethod ( methodSummary = "get the position of inner-ring bonds" )
+    public double getRingProportion();
+
+    @Recorded
+    @PublishedMethod ( methodSummary = "get the distance to highlight within" )
+    public double getHighlightDistance();
+    
+    @Recorded
+    @PublishedMethod ( methodSummary = "get if the diagram fits the screen" )
+    public boolean getFitToScreen();
+
+    @Recorded
+    @PublishedMethod ( methodSummary = "get the width of bonds" )
+    public double getBondWidth();
+  
+    @Recorded
+    @PublishedMethod ( methodSummary = "get distance between multiple bonds")
+    public double getBondDistance();
+    
+    @Recorded
+    @PublishedMethod ( methodSummary = "get to true if atoms are to be compact")
+    public boolean getIsCompact();
+
+    @Recorded
+    @PublishedMethod ( methodSummary = "get the standard bond length" )
+    public double getBondLength();
+    
+    @Recorded
+    @PublishedMethod ( methodSummary = "get the radius of an atom symbol" )
+    public int getAtomRadius();
 
     @Recorded
     @PublishedMethod ( params = "Point2d worldCoordinate", 
