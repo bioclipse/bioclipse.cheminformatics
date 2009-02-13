@@ -36,9 +36,9 @@ public class JChemPaintPreferencePage
 	 */
 	public void createFieldEditors() {
 		addField(
-			new BooleanFieldEditor(
-				PreferenceConstants.P_BOOLEAN,
-				"&Be useful",
+			new ColorFieldEditor(
+				PreferenceConstants.DEFAULTBOND_COLOR,
+				"Default &Bond Color",
 				getFieldEditorParent()));
 	}
 
