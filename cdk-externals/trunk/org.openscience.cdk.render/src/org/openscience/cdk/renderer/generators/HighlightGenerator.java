@@ -1,9 +1,7 @@
 package org.openscience.cdk.renderer.generators;
 
-import java.awt.geom.AffineTransform;
 
 import javax.vecmath.Point2d;
-import javax.vecmath.Vector2d;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -11,8 +9,6 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
-import org.openscience.cdk.renderer.elements.IRenderingVisitor;
-import org.openscience.cdk.renderer.elements.LineElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
 
 /**
@@ -42,42 +38,10 @@ public class HighlightGenerator extends BasicBondGenerator
     public IRenderingElement generate(IAtomContainer ac, IBond bond) {
         if (bond != null) {
             super.ringSet = super.getRingSet(ac);
-            final ElementGroup group = new ElementGroup();
-            IRenderingElement lines = generate( bond );
-                       IRenderingVisitor v = new IRenderingVisitor() {
             
-                        public void visit( IRenderingElement element ) {
-            
-                            if(element instanceof ElementGroup) {
-                                ((ElementGroup) element).visitChildren( this );
-                            } else if (element instanceof LineElement) {
-                                LineElement line = (LineElement)element;
-                                Point2d point = new Point2d();
-                                point.interpolate(
-                                           new Point2d(line.x2,line.y2), 
-                                           new Point2d(line.x1,line.y1),
-                                           .5);
-                                group.add( new OvalElement(
-                                            point.x,point.y,
-                                            model.getHighlightRadiusModel(),
-                                            model.getHoverOverColor()
-                                ) );
-//                                group.add( new LineElement( line.x1, line.y1,
-//                                                            line.x2, line.y2,
-//                                                            line.width*3,
-//                                                       model.getHoverOverColor()
-//                                                           ));
-                            }
-                        }
-
-                        public void setTransform( AffineTransform transform ) {
-
-                            // TODO Auto-generated method stub
-                            
-                        }
-                        };
-                        lines.accept( v );
-                        return group;
+            Point2d c = bond.get2DCenter();
+            double r = model.getHighlightDistance() / model.getScale();
+            return new OvalElement(c.x, c.y, r, model.getHoverOverColor());
         } else {
             return new ElementGroup();
         }
