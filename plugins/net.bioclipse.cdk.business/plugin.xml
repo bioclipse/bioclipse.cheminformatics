@@ -28,5 +28,19 @@
          </adapter>
       </factory>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="net.bioclipse.cdk.business.preferences.CDKPreferencePage"
+            id="net.bioclipse.cdk.business.preferences.CDKPreferencePage"
+            name="Chemistry Development Kit Preferences">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="net.bioclipse.cdk.business.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>
