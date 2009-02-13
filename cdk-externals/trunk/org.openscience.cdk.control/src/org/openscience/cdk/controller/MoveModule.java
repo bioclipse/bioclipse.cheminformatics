@@ -28,8 +28,10 @@ package org.openscience.cdk.controller;
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
+import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.renderer.selection.ISelection;
 import org.openscience.cdk.tools.LoggingTool;
 
 /**
@@ -43,12 +45,13 @@ import org.openscience.cdk.tools.LoggingTool;
 public class MoveModule extends ControllerModuleAdapter {
 
     private enum Type {
-        BOND, ATOM, NONE
+        BOND, ATOM, SELECTION, NONE
     }
 
     private LoggingTool logger = new LoggingTool(MoveModule.class);
     private IAtom atom;
     private IBond bond;
+    private ISelection selection;
     private Vector2d offset;
     private Type type = Type.NONE;
 
@@ -56,21 +59,28 @@ public class MoveModule extends ControllerModuleAdapter {
         super(chemObjectRelay);
     }
 
-    private Type getClosest(IAtom atom, IBond bond, Point2d worldCoord) {
-        if (atom == null && bond == null)
+    private Type getClosest(IAtom atom, IBond bond, ISelection selection,
+            Point2d worldCoord) {
+        if (selection.isFilled())
+            return Type.SELECTION;
+        
+        double dA = super.distanceToAtom(atom, worldCoord);
+        double dB = super.distanceToBond(bond, worldCoord);
+        double dH = super.getHighlightDistance();
+        
+        if (super.noSelection(dA, dB, dH)) {
             return Type.NONE;
-        if (atom != null && bond != null) {
-            double atomDist = atom.getPoint2d().distance(worldCoord);
-            double bondDist = bond.get2DCenter().distance(worldCoord);
-            if (bondDist >= atomDist)
-                return Type.ATOM;
-            else
-                return Type.BOND;
-        }
-        if (atom != null)
+        } else if (super.isAtomOnlyInHighlightDistance(dA, dB, dH)) {
             return Type.ATOM;
-        else
+        } else if (super.isBondOnlyInHighlightDistance(dA, dB, dH)) {
             return Type.BOND;
+        } else {
+            if (dA > dB) {
+                return Type.ATOM;
+            } else { 
+                return Type.BOND;
+            }
+        }
     }
 
     public void mouseClickedDown(Point2d worldCoord) {
@@ -78,15 +88,19 @@ public class MoveModule extends ControllerModuleAdapter {
         Point2d current = null;
         atom = chemModelRelay.getClosestAtom(worldCoord);
         bond = chemModelRelay.getClosestBond(worldCoord);
+        selection = 
+              chemModelRelay.getRenderer().getRenderer2DModel().getSelection();
 
-        switch (type = getClosest(atom, bond, worldCoord)) {
+        switch (type = getClosest(atom, bond, selection, worldCoord)) {
             case ATOM:
                 current = atom.getPoint2d();
-                bond = null;
                 break;
             case BOND:
                 current = bond.get2DCenter();
-                atom = null;
+                break;
+            case SELECTION:
+                current = GeometryTools.get2DCenter(
+                        selection.getConnectedAtomContainer());
                 break;
             default:
                 return;
@@ -100,6 +114,7 @@ public class MoveModule extends ControllerModuleAdapter {
         type = Type.NONE;
         atom = null;
         bond = null;
+        selection = null;
         offset = null;
     }
 
@@ -114,6 +129,14 @@ public class MoveModule extends ControllerModuleAdapter {
                     break;
                 case BOND:
                 	chemModelRelay.moveTo(bond, atomCoord);
+                    break;
+                case SELECTION:
+                    Point2d d = new Point2d();
+                    d.sub(worldCoordTo, worldCoordFrom);
+                    for (IAtom atom : 
+                        selection.getConnectedAtomContainer().atoms()) {
+                        atom.getPoint2d().add(d);
+                    }
                     break;
                 default:
                     return;

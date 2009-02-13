@@ -28,9 +28,11 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.RenderingParameters.AtomShape;
 import org.openscience.cdk.renderer.elements.AtomSymbolElement;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
+import org.openscience.cdk.renderer.elements.OvalElement;
 import org.openscience.cdk.renderer.elements.RectangleElement;
 import org.openscience.cdk.validate.ProblemMarker;
 
@@ -86,10 +88,15 @@ public class BasicAtomGenerator implements IGenerator {
 
 	public IRenderingElement generateCompactElement(IAtom atom) {
 	    Point2d p = atom.getPoint2d();
-	    double r = 0.1;
+	    double r = model.getAtomRadius() / model.getScale();
 	    double d = 2 * r;
-	    return new RectangleElement(
-	            p.x - r, p.y - r, d, d, true, this.getColorForAtom(atom));
+	    if (model.getCompactShape() == AtomShape.SQUARE) {
+    	    return new RectangleElement(
+    	            p.x - r, p.y - r, d, d, true, this.getColorForAtom(atom));
+	    } else {
+	        return new OvalElement(
+	                p.x, p.y, r, true, this.getColorForAtom(atom));
+	    }
 	}
 
 	public IRenderingElement generateElements(IAtom atom, int alignment) {

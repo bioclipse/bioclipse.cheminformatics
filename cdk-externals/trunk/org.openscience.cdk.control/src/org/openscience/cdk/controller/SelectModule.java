@@ -36,6 +36,12 @@ public class SelectModule extends ControllerModuleAdapter {
         super(chemModelRelay);
     }
     
+    public SelectModule(IChemModelRelay chemModelRelay,
+            IChemModelEventRelayHandler eventhandler) {
+        super(chemModelRelay);
+        selection.setEventHandler(eventhandler);
+    }
+    
     public void mouseClickedDown(Point2d p) {
         this.selection.clear();
         this.chemModelRelay.getRenderer()

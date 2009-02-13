@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.vecmath.Point2d;
 
+import org.openscience.cdk.controller.IChemModelEventRelayHandler;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -41,6 +42,8 @@ public abstract class ShapeSelection implements ISelection {
     public final List<IAtom> atoms = new ArrayList<IAtom>();
     
     public final List<IBond> bonds = new ArrayList<IBond>();
+    
+    private IChemModelEventRelayHandler changeHandler;
     
     protected boolean finished = false;
     
@@ -117,6 +120,8 @@ public abstract class ShapeSelection implements ISelection {
                 this.bonds.add(bond); 
              }
         }   
+        if(changeHandler!=null)
+        	changeHandler.selectionChanged();
     }
     
     public void select(IChemModel chemModel) {
@@ -124,5 +129,9 @@ public abstract class ShapeSelection implements ISelection {
             ChemModelManipulator.getAllAtomContainers(chemModel)) {
             this.select(atomContainer);
         }
+    }
+    
+    public void setEventHandler(IChemModelEventRelayHandler handler) {
+        this.changeHandler = handler;
     }
 }

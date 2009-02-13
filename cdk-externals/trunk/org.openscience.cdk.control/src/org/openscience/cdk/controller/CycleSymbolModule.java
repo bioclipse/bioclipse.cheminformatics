@@ -44,32 +44,37 @@ public class CycleSymbolModule extends ControllerModuleAdapter {
 
     public void mouseClickedDown(Point2d worldCoord) {
         IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoord);
-        String symbol = closestAtom.getSymbol();
-        if (closestAtom == null) return;
-        
-        boolean changed = false;
-        String[] elements = chemModelRelay.getController2DModel().getCommonElements(); 
-        for (int i = 0; i < elements.length; i++) {
-            if (elements[i].equals(symbol)) {
-                if (i < elements.length - 2) {
-                    closestAtom.setSymbol(elements[i + 1]);
-                } else {
-                    closestAtom.setSymbol(elements[0]);
+        double dA = super.distanceToAtom(closestAtom, worldCoord);
+        double dH = super.getHighlightDistance();
+        if (dA < dH) {
+            String symbol = closestAtom.getSymbol();
+            
+            
+            boolean changed = false;
+            String[] elements = 
+                chemModelRelay.getController2DModel().getCommonElements(); 
+            for (int i = 0; i < elements.length; i++) {
+                if (elements[i].equals(symbol)) {
+                    if (i < elements.length - 2) {
+                        closestAtom.setSymbol(elements[i + 1]);
+                    } else {
+                        closestAtom.setSymbol(elements[0]);
+                    }
+                    changed = true;
+                    break;
                 }
-                changed = true;
-                break;
             }
+            if (!changed)
+                closestAtom.setSymbol("C");
+            // configure the atom, so that the atomic number matches the symbol
+            try {
+                IsotopeFactory.getInstance(
+                        closestAtom.getBuilder()).configure(closestAtom);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+            chemModelRelay.updateView();
         }
-        if (!changed)
-            closestAtom.setSymbol("C");
-        // configure the atom, so that the atomic number matches the symbol
-        try {
-            IsotopeFactory.getInstance(closestAtom.getBuilder()).configure(
-                    closestAtom);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        chemModelRelay.updateView();
     }
 
     public void setChemModelRelay(IChemModelRelay relay) {

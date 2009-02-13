@@ -40,7 +40,8 @@ public class AddRingModule extends ControllerModuleAdapter {
     private int ringSize;
     private boolean addingBenzene = false;
 
-    public AddRingModule(IChemModelRelay chemModelRelay, int ringSize, boolean addingBenzene) {
+    public AddRingModule(IChemModelRelay chemModelRelay, int ringSize,
+            boolean addingBenzene) {
         super(chemModelRelay);
         this.ringSize = ringSize;
         this.addingBenzene = addingBenzene;
@@ -74,20 +75,19 @@ public class AddRingModule extends ControllerModuleAdapter {
         IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoord);
         IBond closestBond = chemModelRelay.getClosestBond(worldCoord);
         
-        if (closestAtom == null && closestBond == null) {
+        double dH = getHighlightDistance();
+        double dA = super.distanceToAtom(closestAtom, worldCoord);
+        double dB = super.distanceToBond(closestBond, worldCoord);
+        
+        if (noSelection(dA, dB, dH)) {
             this.addRingToEmptyCanvas(worldCoord);
-        } else if (closestAtom != null && closestBond == null) {
+        } else if (isAtomOnlyInHighlightDistance(dA, dB, dH) || dA < dB) {
             this.addRingToAtom(closestAtom);
-        } else if (closestAtom == null && closestBond != null) {
+        } else if (isBondOnlyInHighlightDistance(dA, dB, dH) || dB < dA) {
             this.addRingToBond(closestBond);
         } else {
-            double dA = closestAtom.getPoint2d().distance(worldCoord);
-            double dB = closestBond.get2DCenter().distance(worldCoord);
-            if (dA <= dB) {
-                this.addRingToAtom(closestAtom);
-            } else {
-                this.addRingToBond(closestBond);
-            }
+            // the closest bond and closest atom are equidistant
+            this.addRingToAtom(closestAtom);
         }
         chemModelRelay.updateView();
     }

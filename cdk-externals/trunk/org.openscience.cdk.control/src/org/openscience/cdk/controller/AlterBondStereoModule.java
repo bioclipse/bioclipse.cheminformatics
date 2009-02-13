@@ -93,45 +93,62 @@ public class AlterBondStereoModule extends ControllerModuleAdapter {
         return stereo == STEREO_BOND_NONE || stereo == STEREO_BOND_UNDEFINED;
     }
     
-	public void mouseClickedDown(Point2d worldCoord) {
-	    IBond bond = this.chemModelRelay.getClosestBond(worldCoord);
-	    if (bond != null) {
-	        int stereo = bond.getStereo();
-	        boolean isUp = isUp(stereo);
-	        boolean isDown = isDown(stereo);
-	        boolean noStereo = noStereo(stereo);
-	        if (isUp && desiredDirection == Direction.UP) {
-	            flipDirection(bond, stereo);
-	        } else if (isDown && desiredDirection == Direction.UP) {
-	            flipOrientation(bond, stereo);
-	        } else if (isUp && desiredDirection == Direction.DOWN) {
-	            flipOrientation(bond, stereo);
-	        } else if (isDown && desiredDirection == Direction.DOWN) {
-	            flipDirection(bond, stereo);
-	        } else if (noStereo && desiredDirection == Direction.UP) {
-	            bond.setStereo(STEREO_BOND_UP);
-	        } else if (noStereo && desiredDirection == Direction.DOWN) {
-	            bond.setStereo(STEREO_BOND_DOWN);
-	        }
-	    } else {
-	        // if an atom has been clicked, make a new bond, and make it stereo
-	        IAtom atom = this.chemModelRelay.getClosestAtom(worldCoord);
-	        if (atom == null) return;
-	        String atomType = 
-	            chemModelRelay.getController2DModel().getDrawElement();
-	        IAtom newAtom = chemModelRelay.addAtom(atomType, atom);
-	        
-	        // XXX these calls would not be necessary if addAtom returned a bond
-	        IAtomContainer atomContainer = 
-	            ChemModelManipulator.getRelevantAtomContainer(
-	                    chemModelRelay.getIChemModel(), newAtom);
-	        IBond newBond = atomContainer.getBond(atom, newAtom);
+    private void makeNewStereoBond(IAtom atom) {
+        String atomType = 
+            chemModelRelay.getController2DModel().getDrawElement();
+        IAtom newAtom = chemModelRelay.addAtom(atomType, atom);
+        
+        // XXX these calls would not be necessary if addAtom returned a bond
+        IAtomContainer atomContainer = 
+            ChemModelManipulator.getRelevantAtomContainer(
+                    chemModelRelay.getIChemModel(), newAtom);
+        IBond newBond = atomContainer.getBond(atom, newAtom);
 
-	        if (desiredDirection == Direction.UP) {
-	            newBond.setStereo(STEREO_BOND_UP);
-	        } else {
-	            newBond.setStereo(STEREO_BOND_DOWN);
-	        }
+        if (desiredDirection == Direction.UP) {
+            newBond.setStereo(STEREO_BOND_UP);
+        } else {
+            newBond.setStereo(STEREO_BOND_DOWN);
+        }
+    }
+    
+    private void makeBondStereo(IBond bond) {
+        int stereo = bond.getStereo();
+        boolean isUp = isUp(stereo);
+        boolean isDown = isDown(stereo);
+        boolean noStereo = noStereo(stereo);
+        if (isUp && desiredDirection == Direction.UP) {
+            flipDirection(bond, stereo);
+        } else if (isDown && desiredDirection == Direction.UP) {
+            flipOrientation(bond, stereo);
+        } else if (isUp && desiredDirection == Direction.DOWN) {
+            flipOrientation(bond, stereo);
+        } else if (isDown && desiredDirection == Direction.DOWN) {
+            flipDirection(bond, stereo);
+        } else if (noStereo && desiredDirection == Direction.UP) {
+            bond.setStereo(STEREO_BOND_UP);
+        } else if (noStereo && desiredDirection == Direction.DOWN) {
+            bond.setStereo(STEREO_BOND_DOWN);
+        }
+    }
+    
+	public void mouseClickedDown(Point2d worldCoord) {
+	    IAtom atom = this.chemModelRelay.getClosestAtom(worldCoord);
+	    IBond bond = this.chemModelRelay.getClosestBond(worldCoord);
+	    
+	    double dH = super.getHighlightDistance();
+        double dA = super.distanceToAtom(atom, worldCoord);
+        double dB = super.distanceToBond(bond, worldCoord);
+        
+	    if (super.noSelection(dA, dB, dH)) {
+	        // probably don't make empty stereo bonds in blank space..
+	        return;
+	    } else if (super.isAtomOnlyInHighlightDistance(dA, dB, dH)) {
+	        this.makeNewStereoBond(atom);
+	    } else if (super.isBondOnlyInHighlightDistance(dA, dB, dH)) {
+	        this.makeBondStereo(bond);
+	    } else {
+	        // if same distance, default to changing the bond
+	        this.makeBondStereo(bond);
 	    }
 		chemModelRelay.updateView();
 	}
@@ -141,10 +158,11 @@ public class AlterBondStereoModule extends ControllerModuleAdapter {
 	}
 
 	public String getDrawModeString() {
-		if(desiredDirection==Direction.UP)
+		if (desiredDirection==Direction.UP) {
 			return "Add or convert to bond up";
-		else
+		} else {
 			return "Add or convert to bond down";
+		}
 	}
 
 }

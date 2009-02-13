@@ -46,10 +46,13 @@ public class ChangeFormalChargeModule extends ControllerModuleAdapter {
 
 	public void mouseClickedDown(Point2d worldCoord) {
 		IAtom atom = chemModelRelay.getClosestAtom(worldCoord);
-		if (atom != null) {
+		double dA = super.distanceToAtom(atom, worldCoord);
+		double dH = super.getHighlightDistance();
+		if (dA < dH) {
 			Integer newCharge = new Integer(change);
-			if (atom.getFormalCharge() != null)
+			if (atom.getFormalCharge() != null) {
 				newCharge += atom.getFormalCharge();
+			}
 
 			atom.setFormalCharge(newCharge);
 			chemModelRelay.updateView();

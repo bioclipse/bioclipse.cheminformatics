@@ -230,7 +230,7 @@ public class BasicBondGenerator implements IGenerator {
 		}
 	}
 
-	private LineElement generateInnerElement(IBond bond, IRing ring) {
+	public LineElement generateInnerElement(IBond bond, IRing ring) {
 		Point2d center = GeometryTools.get2DCenter(ring);
 		Point2d a = bond.getAtom(0).getPoint2d();
 		Point2d b = bond.getAtom(1).getPoint2d();

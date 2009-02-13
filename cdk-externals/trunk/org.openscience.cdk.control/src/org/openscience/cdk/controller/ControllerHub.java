@@ -279,40 +279,39 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
 	public IAtom getClosestAtom(Point2d worldCoord) {
 		IAtom closestAtom = null;
-		double closestDistance = Double.MAX_VALUE;
+		double closestDistanceSQ = Double.MAX_VALUE;
 		
-		Iterator<IAtomContainer> containers = ChemModelManipulator.getAllAtomContainers(chemModel).iterator();
-		while (containers.hasNext()) {
-			Iterator<IAtom> atoms = containers.next().atoms().iterator();
-			while (atoms.hasNext()) {
-				IAtom nextAtom = atoms.next();
-				double distance = nextAtom.getPoint2d().distance(worldCoord);
-				if (distance <= renderer.getRenderer2DModel().getHighlightRadiusModel() &&
-					distance < closestDistance) {
-					closestAtom = nextAtom;
-					closestDistance = distance;
+		for (IAtomContainer atomContainer : 
+		    ChemModelManipulator.getAllAtomContainers(chemModel)) {
+		    
+		    for (IAtom atom : atomContainer.atoms()) {
+				double distanceSQ = 
+				    atom.getPoint2d().distanceSquared(worldCoord);
+				if (distanceSQ < closestDistanceSQ) {
+					closestAtom = atom;
+					closestDistanceSQ = distanceSQ;
 				}
 			}
 		}
+
 		return closestAtom;
 	}
 	
 	public IBond getClosestBond(Point2d worldCoord) {
 		IBond closestBond = null;
-		double closestDistance = Double.MAX_VALUE;
-		
-		Iterator<IAtomContainer> containers = ChemModelManipulator.getAllAtomContainers(chemModel).iterator();
-		while (containers.hasNext()) {
-			Iterator<IBond> bonds = containers.next().bonds().iterator();
-			while (bonds.hasNext()) {
-				IBond nextBond = bonds.next();
-				double distance = nextBond.get2DCenter().distance(worldCoord);
-				if (distance <= renderer.getRenderer2DModel().getHighlightRadiusModel() &&
-					distance < closestDistance) {
-					closestBond = nextBond;
-					closestDistance = distance;
-				}
-			}
+		double closestDistanceSQ = Double.MAX_VALUE;
+
+		for (IAtomContainer atomContainer : 
+		    ChemModelManipulator.getAllAtomContainers(chemModel)) {
+		    
+		    for (IBond bond : atomContainer.bonds()) {
+		        double distanceSQ = 
+		            bond.get2DCenter().distanceSquared(worldCoord);
+		        if (distanceSQ < closestDistanceSQ) {
+		            closestBond = bond;
+		            closestDistanceSQ = distanceSQ;
+		        }
+		    }
 		}
 		return closestBond;
 	}
@@ -345,7 +344,17 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     public IAtom addAtom(String atomType, IAtom atom) {
         IAtom newAtom = chemModel.getBuilder().newAtom(atomType);
         IBond newBond = chemModel.getBuilder().newBond(atom, newAtom);
-        IAtomContainer atomCon = chemModel.getMoleculeSet().getAtomContainer(0);
+        IAtomContainer atomCon = 
+            ChemModelManipulator.getRelevantAtomContainer(chemModel, atom);
+        if (atomCon == null) {
+            atomCon = chemModel.getBuilder().newAtomContainer();
+            IMoleculeSet moleculeSet = chemModel.getMoleculeSet();
+            if (moleculeSet == null) {
+                moleculeSet = chemModel.getBuilder().newMoleculeSet();
+                chemModel.setMoleculeSet(moleculeSet);
+            }
+            moleculeSet.addAtomContainer(atomCon);
+        }
         
         // The AtomPlacer generates coordinates for the new atom
         AtomPlacer atomPlacer = new AtomPlacer();
@@ -371,7 +380,8 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
             ac.addAtom(newAtom);
             Point2d distanceMeasure = new Point2d(0,0); // XXX not sure about this?
             IAtom connectedAtom = connectedAtoms.get(0);
-            Vector2d v = atomPlacer.getNextBondVector(atom, connectedAtom, distanceMeasure, true);
+            Vector2d v = atomPlacer.getNextBondVector(
+                    atom, connectedAtom, distanceMeasure, true);
             atomPlacer.placeLinearChain(ac, v, bondLength);
         } else {
             IAtomContainer placedAtoms = atomCon.getBuilder().newAtomContainer();

@@ -82,15 +82,17 @@ public class AddBondModule extends ControllerModuleAdapter {
 		IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoordinate);
 		IBond closestBond = chemModelRelay.getClosestBond(worldCoordinate);
 		
-		if (noSelection(closestAtom, closestBond)) {
+        double dH = super.getHighlightDistance();
+        double dA = super.distanceToAtom(closestAtom, worldCoordinate);
+        double dB = super.distanceToBond(closestBond, worldCoordinate);
+		
+		if (noSelection(dA, dB, dH)) {
             addNewBond(worldCoordinate);
-        } else if (isBondClosest(closestAtom, closestBond)) {
-            this.cycleBondValence(closestBond);
-        } else if (isAtomClosest(closestAtom, closestBond)) {
+        } else if (isAtomOnlyInHighlightDistance(dA, dB, dH)) {
             this.addBondToAtom(closestAtom);
+        } else if (isBondOnlyInHighlightDistance(dA, dB, dH)) {
+            this.cycleBondValence(closestBond);
         } else {
-		    double dA = closestAtom.getPoint2d().distance(worldCoordinate);
-		    double dB = closestBond.get2DCenter().distance(worldCoordinate);
 		    if (dA <= dB) {
 		        this.addBondToAtom(closestAtom);
 		    } else {
@@ -99,18 +101,6 @@ public class AddBondModule extends ControllerModuleAdapter {
 		}
 		
 	}
-
-	private boolean isBondClosest(IAtom atom, IBond bond) {
-        return atom == null && bond != null;
-    }
-
-    private boolean isAtomClosest(IAtom atom, IBond bond) {
-        return atom != null && bond == null;
-    }
-
-    private boolean noSelection(IAtom atom, IBond bond) {
-        return atom == null && bond == null;
-    }
 	
 	public String getDrawModeString() {
 		return "Draw Bond";

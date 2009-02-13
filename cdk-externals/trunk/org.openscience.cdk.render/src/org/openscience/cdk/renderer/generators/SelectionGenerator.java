@@ -27,7 +27,7 @@ import javax.vecmath.Point2d;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.RendererModel;
-import org.openscience.cdk.renderer.RenderingParameters.SelectionShape;
+import org.openscience.cdk.renderer.RenderingParameters.AtomShape;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
@@ -42,7 +42,7 @@ public class SelectionGenerator implements IGenerator {
     private RendererModel rendererModel;
     private Color selectionColor;
     private boolean autoUpdateSelection = true;
-    private SelectionShape shape;
+    private AtomShape shape;
     
     public SelectionGenerator(RendererModel rendererModel) {
         this.rendererModel = rendererModel;

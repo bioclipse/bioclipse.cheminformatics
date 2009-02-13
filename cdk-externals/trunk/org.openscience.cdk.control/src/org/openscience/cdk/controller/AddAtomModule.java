@@ -28,6 +28,7 @@ import javax.vecmath.Point2d;
 
 import org.openscience.cdk.config.IsotopeFactory;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.renderer.RendererModel;
 
 /**
  * Adds an atom on the given location on mouseclick
@@ -45,9 +46,14 @@ public class AddAtomModule extends ControllerModuleAdapter {
 	public void mouseClickedDown(Point2d worldCoord) {
 
 		IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoord);
+		RendererModel model = chemModelRelay.getRenderer().getRenderer2DModel();
+		
+		double dH = model.getHighlightDistance() / model.getScale();
 		String atomType = 
 			chemModelRelay.getController2DModel().getDrawElement();
-		if (closestAtom == null) {
+		
+		// if we are outside the highlight radius
+		if (closestAtom.getPoint2d().distance(worldCoord) > dH) {
 			chemModelRelay.addAtom(atomType, worldCoord);
 		} else {
 			closestAtom.setSymbol(atomType);

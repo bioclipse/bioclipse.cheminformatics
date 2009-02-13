@@ -24,6 +24,7 @@ package org.openscience.cdk.renderer.visitor;
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
 
@@ -92,7 +93,11 @@ public class AWTDrawVisitor extends AbstractAWTDrawVisitor {
             this.transformPoint(oval.x + oval.radius, oval.y + oval.radius);
         int w = max[0] - min[0];
         int h = max[1] - min[1];
-        this.g.drawOval(min[0], min[1], w, h);
+        if (oval.fill) {
+            this.g.fillOval(min[0], min[1], w, h);
+        } else {
+            this.g.drawOval(min[0], min[1], w, h);
+        }
     }
 
     public void visit(TextElement textElement) {
@@ -114,7 +119,7 @@ public class AWTDrawVisitor extends AbstractAWTDrawVisitor {
         Vector2d normal = 
             new Vector2d(wedge.y1 - wedge.y2, wedge.x2 - wedge.x1);
         normal.normalize();
-        normal.scale(0.2);  // XXX
+        normal.scale(rendererModel.getWedgeWidth() / rendererModel.getScale());  
         
         // make the triangle corners
         Point2d vertexA = new Point2d(wedge.x1, wedge.y1);
@@ -272,5 +277,10 @@ public class AWTDrawVisitor extends AbstractAWTDrawVisitor {
 
     public void setRendererModel(RendererModel rendererModel) {
         this.rendererModel = rendererModel;
+        if (rendererModel.getUseAntiAliasing()) {
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setStroke(new BasicStroke((int)rendererModel.getBondWidth()));
+        }
     }
 }

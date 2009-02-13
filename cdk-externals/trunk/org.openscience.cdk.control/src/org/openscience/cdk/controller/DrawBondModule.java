@@ -68,16 +68,18 @@ public class DrawBondModule extends ControllerModuleAdapter {
         IBond closestBond = chemModelRelay.getClosestBond(worldCoordinate);
         atomToBondFrom = null;
         newAtom = null;
-        if (noSelection(closestAtom, closestBond)) {
+        double dA = super.distanceToAtom(closestAtom, worldCoordinate);
+        double dB = super.distanceToBond(closestBond, worldCoordinate);
+        double dH = super.getHighlightDistance();
+        
+        if (noSelection(dA, dB, dH)) {
             atomToBondFrom = null;
             newAtom = addAtomTo(worldCoordinate);
-        } else if (isBondSelected(closestAtom, closestBond)) {
+        } else if (isBondOnlyInHighlightDistance(dA, dB, dH)) {
             this.cycleBondValence(closestBond);
-        } else if (isAtomSelected(closestAtom, closestBond)) {
+        } else if (isAtomOnlyInHighlightDistance(dA, dB, dH)) {
             atomToBondFrom = closestAtom;
         } else {
-            double dA = closestAtom.getPoint2d().distance(worldCoordinate);
-            double dB = closestBond.get2DCenter().distance(worldCoordinate);
             if (dA <= dB) {
                 atomToBondFrom = closestAtom;
             } else {
@@ -85,18 +87,6 @@ public class DrawBondModule extends ControllerModuleAdapter {
             }
         }
 
-    }
-
-    private boolean isBondSelected(IAtom atom, IBond bond) {
-        return atom == null && bond != null;
-    }
-
-    private boolean isAtomSelected(IAtom atom, IBond bond) {
-        return atom != null && bond == null;
-    }
-
-    private boolean noSelection(IAtom atom, IBond bond) {
-        return atom == null && bond == null;
     }
 
     @Override

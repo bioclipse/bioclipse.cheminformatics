@@ -46,13 +46,18 @@ public class RemoveModule extends ControllerModuleAdapter {
 	public void mouseClickedDown(Point2d worldCoordinate) {
 	    IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoordinate);
 		IBond closestBond = chemModelRelay.getClosestBond(worldCoordinate);
-		if (isAtomClosest(closestAtom, closestBond)) {
+		
+		double dH = super.getHighlightDistance();
+        double dA = super.distanceToAtom(closestAtom, worldCoordinate);
+        double dB = super.distanceToBond(closestBond, worldCoordinate);
+		
+		if (super.noSelection(dA, dB, dH)) {
+		    return;
+		} else if (super.isAtomOnlyInHighlightDistance(dA, dB, dH)) {
 		    removeAtom(closestAtom);
-		} else if (isBondClosest(closestAtom, closestBond)) {
+		} else if (super.isBondOnlyInHighlightDistance(dA, dB, dH)) {
 		    removeBond(closestBond);
 		} else {
-		    double dA = closestAtom.getPoint2d().distance(worldCoordinate);
-            double dB = closestBond.get2DCenter().distance(worldCoordinate);
             if (dA <= dB) {
                 removeAtom(closestAtom);               
             } else {
@@ -71,14 +76,6 @@ public class RemoveModule extends ControllerModuleAdapter {
         chemModelRelay.removeBond(bond);
         chemModelRelay.updateView();
 	}
-	
-	private boolean isBondClosest(IAtom atom, IBond bond) {
-        return atom == null && bond != null;
-    }
-
-    private boolean isAtomClosest(IAtom atom, IBond bond) {
-        return atom != null && bond == null;
-    }
 
 	public String getDrawModeString() {
 		return "Delete";

@@ -39,6 +39,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
+import org.openscience.cdk.renderer.RenderingParameters.AtomShape;
 import org.openscience.cdk.renderer.color.CDK2DAtomColors;
 import org.openscience.cdk.renderer.color.IAtomColorer;
 import org.openscience.cdk.renderer.font.IFontManager;
@@ -96,6 +97,39 @@ public class RendererModel implements Serializable, Cloneable {
         this.parameters = parameters;
     }
     
+    public boolean getShowAromaticityCDKStyle() {    
+        return this.parameters.isShowAromaticityInCDKStyle();   
+    }   
+    
+    public void setShowAromaticityCDKStyle(boolean showIt) {  
+        this.parameters.setShowAromaticityInCDKStyle(showIt);   
+        fireChange();   
+    }
+    
+    public double getWedgeWidth() {
+        return this.parameters.getWedgeWidth();
+    }
+    
+    public void setWedgeWidth(double wedgeWidth) {
+        this.parameters.setWedgeWidth(wedgeWidth);
+    }
+    
+    public double getRingProportion() {
+        return this.parameters.getRingProportion();
+    }
+    
+    public void setRingProportion(double ringProportion) {
+        this.parameters.setRingProportion(ringProportion);
+    }
+    
+    public AtomShape getCompactShape() {
+        return this.parameters.getCompactShape();
+    }
+    
+    public void setCompactShape(AtomShape compactShape) {
+        this.parameters.setCompactShape(compactShape);
+    }
+    
     public double getScale() {
         return this.parameters.getScale();
     }
@@ -112,11 +146,11 @@ public class RendererModel implements Serializable, Cloneable {
         return this.selection;
     }
     
-    public RenderingParameters.SelectionShape getSelectionShape() {
+    public RenderingParameters.AtomShape getSelectionShape() {
         return this.parameters.getSelectionShape();
     }
     
-    public void setSelectionShape(RenderingParameters.SelectionShape selectionShape) {
+    public void setSelectionShape(RenderingParameters.AtomShape selectionShape) {
         this.parameters.setSelectionShape(selectionShape);
     }
 
@@ -206,7 +240,7 @@ public class RendererModel implements Serializable, Cloneable {
      * @param bondLength the length in pixels of a typical bond.
      * 
      */
-    public void getBondLength(double length) {
+    public void setBondLength(double length) {
         this.parameters.setBondLength(length);
     }
 
@@ -398,15 +432,6 @@ public class RendererModel implements Serializable, Cloneable {
 
     public void setShowAromaticity(boolean showIt) {
         this.parameters.setShowAromaticity(showIt);
-        fireChange();
-    }
-
-    public boolean getShowAromaticityInCDKStyle() {
-        return this.parameters.isShowAromaticityInCDKStyle();
-    }
-
-    public void setShowAromaticityInCDKStyle(boolean showIt) {
-        this.parameters.setShowAromaticityInCDKStyle(showIt);
         fireChange();
     }
 

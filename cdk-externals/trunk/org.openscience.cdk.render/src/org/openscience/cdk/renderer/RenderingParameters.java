@@ -8,8 +8,17 @@ import org.openscience.cdk.renderer.font.IFontManager;
  * @cdk.module render
  */
 public class RenderingParameters {
-
+    
+    /**
+     * The size on screen of a compact mode shape
+     */
     private int atomRadius = 8;
+    
+    /**
+     * When atoms are selected or in compact mode, they will 
+     * be covered by a shape determined by this enumeration
+     */
+    public enum AtomShape { OVAL, SQUARE };
 
     /**
      * The background color of the rendered image
@@ -29,7 +38,7 @@ public class RenderingParameters {
     /**
      * The width on screen of a bond
      */
-    private double bondWidth = 2.0;
+    private double bondWidth = 1.0;
 
     /**
      * The color of the box drawn at the bounds of a 
@@ -47,6 +56,11 @@ public class RenderingParameters {
      * as a colored square or circle, rather than as text
      */
     private boolean compact = false;
+    
+    /**
+     * The shape of the compact mode atom.
+     */
+    private AtomShape compactShape = AtomShape.SQUARE;
     
     /**
      * The color to draw bonds if not other color is given.
@@ -93,29 +107,29 @@ public class RenderingParameters {
     private double margin = 0.05;
     
     /**
+     * The proportion of a ring bounds to use to draw the ring. 
+     */
+    private double ringProportion = 0.35;
+    
+    /**
      * The factor to convert from model space to screen space.
      */
     private double scale;
 
     private Color selectedPartColor = Color.lightGray;
     
-    /**
-     * When atoms are selected, they will be covered by a shape
-     * determined by this enumeration
-     */
-    public enum SelectionShape { OVAL, SQUARE };
     
     /**
      * The shape to display over selected atoms
      */
-    private SelectionShape selectionShape = SelectionShape.SQUARE;
+    private AtomShape selectionShape = AtomShape.SQUARE;
 
     /**
      * Determines whether rings should be drawn with a circle if they are
      * aromatic.
      */
     private boolean showAromaticity = false;
-
+    
     private boolean showAromaticityInCDKStyle = false;
 
     private boolean showAtomAtomMapping = true;
@@ -143,6 +157,49 @@ public class RenderingParameters {
     private boolean useAntiAliasing = true;
 
     private boolean willDrawNumbers = false;
+    
+    /**
+     * The width on screen of the fat end of a wedge bond.
+     */
+    private double wedgeWidth = 2.0;
+
+    public boolean isShowAromaticityInCDKStyle() {
+        return this.showAromaticityInCDKStyle;
+    }
+    
+    public void setShowAromaticityInCDKStyle(boolean shouldShow) {
+        this.showAromaticityInCDKStyle = shouldShow;
+    }
+
+    public double getWedgeWidth() {
+        return wedgeWidth;
+    }
+
+    public void setWedgeWidth(double wedgeWidth) {
+        this.wedgeWidth = wedgeWidth;
+    }
+
+    public double getRingProportion() {
+        return ringProportion;
+    }
+
+    public void setRingProportion(double ringProportion) {
+        this.ringProportion = ringProportion;
+    }
+
+    /**
+     * @return the shape to draw the atoms when in compact mode
+     */
+    public AtomShape getCompactShape() {
+        return compactShape;
+    }
+
+    /**
+     * @param compactShape the shape to draw the atoms when in compact mode
+     */
+    public void setCompactShape(AtomShape compactShape) {
+        this.compactShape = compactShape;
+    }
 
     /**
      * The scale is the factor to multiply model coordinates by to convert to
@@ -174,11 +231,11 @@ public class RenderingParameters {
         this.defaultBondColor = defaultBondColor;
     }
 
-    public SelectionShape getSelectionShape() {
+    public AtomShape getSelectionShape() {
         return this.selectionShape;
     }
     
-    public void setSelectionShape(SelectionShape selectionShape) {
+    public void setSelectionShape(AtomShape selectionShape) {
         this.selectionShape = selectionShape;
     }
 
@@ -278,10 +335,6 @@ public class RenderingParameters {
         return showAromaticity;
     }
 
-    public boolean isShowAromaticityInCDKStyle() {
-        return showAromaticityInCDKStyle;
-    }
-
     public boolean isShowAtomAtomMapping() {
         return showAtomAtomMapping;
     }
@@ -376,10 +429,6 @@ public class RenderingParameters {
 
     public void setShowAromaticity(boolean showAromaticity) {
         this.showAromaticity = showAromaticity;
-    }
-
-    public void setShowAromaticityInCDKStyle(boolean showAromaticityInCDKStyle) {
-        this.showAromaticityInCDKStyle = showAromaticityInCDKStyle;
     }
 
     public void setShowAtomAtomMapping(boolean showAtomAtomMapping) {

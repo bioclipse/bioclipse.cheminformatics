@@ -63,6 +63,8 @@ public abstract class AbstractFontManager implements IFontManager {
 		for (double upper : this.zoomToFontSizeMap.keySet()) {
 			if (lower == -1) {
 				lower = upper;
+				if(zoom<lower)
+				    return this.zoomToFontSizeMap.get(upper);
 				continue;
 			}
 			if (zoom > lower && zoom <= upper) {
@@ -70,7 +72,8 @@ public abstract class AbstractFontManager implements IFontManager {
 			}
 			lower = upper;
 		}
-		return -1;
+
+		return this.zoomToFontSizeMap.get(lower);
 	}
 
 	public int getNumberOfFontSizes() {

@@ -4,6 +4,9 @@ import javax.vecmath.Point2d;
 
 import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.controller.IControllerModule;
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.renderer.RendererModel;
 
 /**
  * @cdk.module control
@@ -15,6 +18,39 @@ public abstract class ControllerModuleAdapter implements IControllerModule {
 	public ControllerModuleAdapter(IChemModelRelay chemModelRelay) {
 		this.chemModelRelay = chemModelRelay;
 	}
+	
+	public double getHighlightDistance() {
+	    RendererModel model = chemModelRelay.getRenderer().getRenderer2DModel();
+        return model.getHighlightDistance() / model.getScale();
+	}
+	
+	public double distanceToAtom(IAtom atom, Point2d p) {
+	    if (atom == null) {
+	        return Double.MAX_VALUE;
+	    } else {
+	        return atom.getPoint2d().distance(p);
+	    }
+	}
+	
+	public double distanceToBond(IBond bond, Point2d p) {
+	    if (bond == null) {
+            return Double.MAX_VALUE;
+        } else {
+            return bond.get2DCenter().distance(p);
+        }
+	}
+	
+	public boolean isBondOnlyInHighlightDistance(double dA, double dB, double dH) {
+        return dA > dH && dB < dH;
+    }
+
+	public boolean isAtomOnlyInHighlightDistance(double dA, double dB, double dH) {
+        return dA < dH && dB > dH;
+    }
+
+	public boolean noSelection(double dA, double dB, double dH) {
+        return (dH == Double.POSITIVE_INFINITY) || (dA > dH && dB > dH);
+    }
 
 	public void mouseClickedDouble(Point2d worldCoord) {
 	}

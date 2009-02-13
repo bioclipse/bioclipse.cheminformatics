@@ -44,7 +44,9 @@ import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.BoundsGenerator;
 import org.openscience.cdk.renderer.generators.HighlightGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.LonePairGenerator;
 import org.openscience.cdk.renderer.generators.MappingGenerator;
+import org.openscience.cdk.renderer.generators.RadicalGenerator;
 import org.openscience.cdk.renderer.generators.RingGenerator;
 import org.openscience.cdk.renderer.generators.SelectionGenerator;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
@@ -74,12 +76,12 @@ public class Renderer {
 	/**
 	 * The center of the model coordinates 
 	 */
-	private Point2d modelCenter;
+	private Point2d modelCenter = new Point2d(0, 0);
 
 	/**
 	 * The center point of the diagram on screen
 	 */
-	private Point2d drawCenter;
+	private Point2d drawCenter = new Point2d(200, 200);
 
 	/**
 	 * The rotation applied to the diagram
@@ -110,9 +112,11 @@ public class Renderer {
 		this.generators.add(new BasicAtomGenerator(this.rendererModel));
 		this.generators.add(new HighlightGenerator(this.rendererModel));
 		this.generators.add(new AtomNumberGenerator(this.rendererModel));
+		this.generators.add(new RadicalGenerator(this.rendererModel));
+		this.generators.add(new LonePairGenerator(this.rendererModel));
 		this.generators.add(new SelectionGenerator(this.rendererModel));
 		
-		this.transform = new AffineTransform();
+		this.setup();
 	}
 
     /**
@@ -132,7 +136,7 @@ public class Renderer {
         }
         this.fontManager = fontManager;
         
-        this.transform = new AffineTransform();
+        this.setup();
     }
 	
 	/**
@@ -160,7 +164,7 @@ public class Renderer {
         }
     
         // calculate the total bounding box
-        Rectangle2D modelBounds = this.calculateBounds(moleculeSet);
+        Rectangle2D modelBounds = Renderer.calculateBounds(moleculeSet);
         
         this.setupTransform(bounds, modelBounds,
                 this.calculateAverageBondLength(chemModel), resetCenter);
@@ -187,7 +191,7 @@ public class Renderer {
         // total up the bounding boxes
         Rectangle2D totalBounds = null;
         for (IReaction reaction : reactionSet.reactions()) {
-            Rectangle2D modelBounds = this.calculateBounds(reaction);  
+            Rectangle2D modelBounds = Renderer.calculateBounds(reaction);  
             if (totalBounds == null) {
                 totalBounds = modelBounds;
             } else {
@@ -220,7 +224,7 @@ public class Renderer {
             Rectangle2D bounds, boolean resetCenter) {
         
 	    // calculate the bounds
-        Rectangle2D modelBounds = this.calculateBounds(reaction);
+        Rectangle2D modelBounds = Renderer.calculateBounds(reaction);
         
         this.setupTransform(bounds, modelBounds,
                 this.calculateAverageBondLength(reaction), resetCenter);
@@ -247,7 +251,7 @@ public class Renderer {
         // total up the bounding boxes
         Rectangle2D totalBounds = null;
         for (IAtomContainer molecule : molecules.molecules()) {
-            Rectangle2D modelBounds = this.calculateBounds(molecule);  
+            Rectangle2D modelBounds = Renderer.calculateBounds(molecule);  
             if (totalBounds == null) {
                 totalBounds = modelBounds;
             } else {
@@ -279,7 +283,7 @@ public class Renderer {
             IDrawVisitor drawVisitor, Rectangle2D bounds, boolean resetCenter) {
 
         // the bounds of the model
-    	Rectangle2D modelBounds = this.calculateBounds(atomContainer);
+    	Rectangle2D modelBounds = Renderer.calculateBounds(atomContainer);
     	
     	this.setupTransform(bounds, modelBounds, 
     	        GeometryTools.getBondLengthAverage(atomContainer), resetCenter);
@@ -307,27 +311,53 @@ public class Renderer {
 	 */
 	public Rectangle calculateScreenBounds(IChemModel model) {
         IMoleculeSet moleculeSet = model.getMoleculeSet();
-        if (moleculeSet == null || this.drawCenter == null) {
+        IReactionSet reactionSet = model.getReactionSet();
+        if ((moleculeSet == null && reactionSet == null)
+                || this.drawCenter == null) {
             return new Rectangle();
         }
 
-        Rectangle2D modelBounds = this.calculateBounds(moleculeSet);
-        double margin = this.rendererModel.getMargin();
-
-        // this is the center on the screen where the model will be drawn
+        Rectangle2D modelBounds;
+        if (moleculeSet == null) {
+            modelBounds = Renderer.calculateBounds(reactionSet);
+        } else {
+            modelBounds = Renderer.calculateBounds(moleculeSet);
+        }
+        
+        return this.calculateScreenBounds(modelBounds);
+    }
+	
+	public Rectangle calculateScreenBounds(IReactionSet reactionSet) {
+        return this.calculateScreenBounds(
+                Renderer.calculateBounds(reactionSet));
+	}
+	
+	public Rectangle calculateScreenBounds(IReaction reaction) {
+        return this.calculateScreenBounds(
+                Renderer.calculateBounds(reaction));
+	}
+	
+	public Rectangle calculateScreenBounds(IMoleculeSet moleculeSet) {
+	    return this.calculateScreenBounds(
+	               Renderer.calculateBounds(moleculeSet));
+	}
+	
+	public Rectangle calculateScreenBounds(IAtomContainer atomContainer) {
+	   return this.calculateScreenBounds(
+	           Renderer.calculateBounds(atomContainer));
+	}
+	
+	public Rectangle calculateScreenBounds(Rectangle2D modelBounds) {
+	    double margin = this.rendererModel.getMargin();
         Point2d modelScreenCenter
-                = this.toScreenCoordinates(modelBounds.getCenterX(),
-                                           modelBounds.getCenterY());
-        double w = scale * (modelBounds.getWidth() + 2 * margin);
-        double h = scale * (modelBounds.getHeight() + 2 * margin);
+            = this.toScreenCoordinates(modelBounds.getCenterX(),
+                                       modelBounds.getCenterY());
+        double w = (scale * zoom * modelBounds.getWidth()) + (2 * margin);
+        double h = (scale * zoom * modelBounds.getHeight()) + (2 * margin);
         return new Rectangle((int) (modelScreenCenter.x - w / 2),
                              (int) (modelScreenCenter.y - h / 2),
                              (int) w,
                              (int) h);
-    }
-	
-	public Rectangle calculateScreenBounds(IReactionSet reactionSet) {
-	    return new Rectangle();    // TODO
 	}
 
 	public RendererModel getRenderer2DModel() {
@@ -392,6 +422,7 @@ public class Renderer {
      */
 	private void paint(IDrawVisitor drawVisitor, 
 	                   IRenderingElement diagram) {
+	    if (diagram == null) return;
 	    
 	    // cache the diagram for quick-redraw
 	    this.cachedDiagram = diagram;
@@ -427,7 +458,14 @@ public class Renderer {
 	        double scaledHeight = modelBounds.getHeight() * this.scale;
 	        this.setDrawCenter(scaledWidth / 2, scaledHeight / 2);
 	    } else {
-	        this.scale = this.rendererModel.getBondLength() / bondLen;
+	        
+	        // calculate the scale 
+	        if (Double.isNaN(bondLen)) {
+	            this.scale = Renderer.DEFAULT_SCALE;
+	        } else {
+	            this.scale = this.rendererModel.getBondLength() / bondLen;
+	        }
+	        
 	        this.setDrawCenter(
 	                drawBounds.getCenterX(), 
 	                drawBounds.getCenterY());
@@ -475,26 +513,31 @@ public class Renderer {
 	    
 	    // set the scale in the renderer model for the generators
 	    this.rendererModel.setScale(scale);
+	  
+	    this.setup();
+	}
+	
+	private void setup() {
 	    
-	    // set the transform
-	    try {
-	        this.transform = new AffineTransform();
-	        this.transform.translate(this.drawCenter.x, this.drawCenter.y);
-	        this.transform.scale(this.scale, this.scale);
-	        this.transform.scale(this.zoom, this.zoom);
-	        this.transform.rotate(this.theta);
-	        this.transform.translate(-this.modelCenter.x, -this.modelCenter.y);
-	    } catch (NullPointerException npe) {
-	        // one of the drawCenter or modelCenter points have not been set!
-	        System.err.println(String.format(
-	                "null pointer when setting transform: " +
-	                "drawCenter=%s scale=%s zoom=%s rotation=%s modelCenter=%s",
-	                this.drawCenter,
-	                this.scale,
-	                this.zoom,
-	                this.theta,
-	                this.modelCenter));
-	    }
+        // set the transform
+        try {
+            this.transform = new AffineTransform();
+            this.transform.translate(this.drawCenter.x, this.drawCenter.y);
+            this.transform.scale(this.scale, this.scale);
+            this.transform.scale(this.zoom, this.zoom);
+            this.transform.rotate(this.theta);
+            this.transform.translate(-this.modelCenter.x, -this.modelCenter.y);
+        } catch (NullPointerException npe) {
+            // one of the drawCenter or modelCenter points have not been set!
+            System.err.println(String.format(
+                    "null pointer when setting transform: " +
+                    "drawCenter=%s scale=%s zoom=%s rotation=%s modelCenter=%s",
+                    this.drawCenter,
+                    this.scale,
+                    this.zoom,
+                    this.theta,
+                    this.modelCenter));
+        }
 	}
 
     /**
@@ -597,22 +640,35 @@ public class Renderer {
         return diagram;
 	}
 	
-	private Rectangle2D calculateBounds(IReaction reaction) {
+	public static Rectangle2D calculateBounds(IReactionSet reactionSet) {
+	    Rectangle2D totalBounds = new Rectangle2D.Double();
+	    for (IReaction reaction : reactionSet.reactions()) {
+	        Rectangle2D reactionBounds = Renderer.calculateBounds(reaction);
+	        if (totalBounds.isEmpty()) {
+	            totalBounds = reactionBounds;
+	        } else {
+	            Rectangle2D.union(totalBounds, reactionBounds, totalBounds);
+	        }
+	    }
+	    return totalBounds;
+	}
+	
+	public static Rectangle2D calculateBounds(IReaction reaction) {
 	    // get the participants in the reaction
         IMoleculeSet reactants = reaction.getReactants();
         IMoleculeSet products = reaction.getProducts();
         if (reactants == null || products == null) return null;
         
         // determine the bounds of everything in the reaction
-        Rectangle2D reactantsBounds = this.calculateBounds(reactants);
-        return reactantsBounds.createUnion(this.calculateBounds(products));
+        Rectangle2D reactantsBounds = Renderer.calculateBounds(reactants);
+        return reactantsBounds.createUnion(Renderer.calculateBounds(products));
 	}
 
-	private Rectangle2D calculateBounds(IMoleculeSet moleculeSet) {
+	public static Rectangle2D calculateBounds(IMoleculeSet moleculeSet) {
 	    Rectangle2D totalBounds = new Rectangle2D.Double();
         for (int i = 0; i < moleculeSet.getAtomContainerCount(); i++) {
             IAtomContainer ac = moleculeSet.getAtomContainer(i);
-            Rectangle2D acBounds = this.calculateBounds(ac);
+            Rectangle2D acBounds = Renderer.calculateBounds(ac);
             if (totalBounds.isEmpty()) {
                 totalBounds = acBounds;
             } else {
@@ -622,14 +678,14 @@ public class Renderer {
         return totalBounds;
 	}
 	
-	private Rectangle2D calculateBounds(IAtomContainer ac) {
+	public static Rectangle2D calculateBounds(IAtomContainer ac) {
         // this is essential, otherwise a rectangle
         // of (+INF, -INF, +INF, -INF) is returned!
         if (ac.getAtomCount() == 0) {
             return new Rectangle2D.Double();
         } else if (ac.getAtomCount() == 1) {
             Point2d p = ac.getAtom(0).getPoint2d();
-            return new Rectangle2D.Double(p.x, p.y, 0, 0);
+            return new Rectangle2D.Double(p.x, p.y, 10, 10);
         }
     
     	double xmin = Double.POSITIVE_INFINITY;
