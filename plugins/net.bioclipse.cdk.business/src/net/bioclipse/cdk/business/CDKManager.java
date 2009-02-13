@@ -1607,7 +1607,7 @@ public class CDKManager implements ICDKManager {
         IAtomType type;
         try {
             type = matcher.findMatchingAtomType(container, atom);
-            if (type.getAtomTypeName() == null)
+            if (type == null || type.getAtomTypeName() == null)
                 return 0;
 
             if ("X".equals(atom.getAtomTypeName())) {
