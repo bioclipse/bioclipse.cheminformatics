@@ -27,7 +27,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 */
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		store.setDefault(PreferenceConstants.P_BOOLEAN, true);
+		store.setDefault(PreferenceConstants.DEFAULTBOND_COLOR, true);
 	}
 
 }
