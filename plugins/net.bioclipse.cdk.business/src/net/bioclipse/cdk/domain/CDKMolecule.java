@@ -12,18 +12,25 @@
 
 package net.bioclipse.cdk.domain;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Properties;
 
 import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.cdk.business.preferences.PreferenceConstants;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.BioObject;
 import net.bioclipse.core.domain.IMolecule;
 
+import org.eclipse.core.runtime.Preferences;
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.fingerprint.Fingerprinter;
-import org.openscience.cdk.formula.MolecularFormula;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.io.CMLWriter;
+import org.openscience.cdk.io.listener.PropertiesListener;
 import org.openscience.cdk.libio.cml.Convertor;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
@@ -43,7 +50,8 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
     private String cachedSMILES;
     private BitSet cachedFingerprint;
 
-    
+    Preferences prefs = Activator.getDefault().getPluginPreferences();
+
     /*
      * Needed by Spring
      */
@@ -133,14 +141,36 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
         this.cachedSMILES = cachedSMILES;
     }
 
+    private final static Properties cmlPrefs = new Properties();
+    static {
+        cmlPrefs.put("XMLDeclaration", "false");
+    }
+
     public String getCML() throws BioclipseException {
 
         if (getAtomContainer()==null) throw new BioclipseException("No molecule to " +
         "get CML from!");
 
+        if (prefs.getBoolean(PreferenceConstants.P_BOOLEAN)) {
+            ByteArrayOutputStream bo=new ByteArrayOutputStream();
+
+            CMLWriter writer=new CMLWriter(bo);
+            writer.addChemObjectIOListener(new PropertiesListener(cmlPrefs));
+            try {
+                writer.write(getAtomContainer());
+                writer.close();
+            } catch (CDKException e) {
+                throw new BioclipseException("Could not convert molecule to CML: "
+                        + e.getMessage());
+            } catch (IOException e) {
+                throw new BioclipseException("Could not write molecule to CML: "
+                        + e.getMessage());
+            }
+            return bo.toString();
+        }
+
         Convertor convertor = new Convertor(true, null);
         CMLMolecule cmlMol = convertor.cdkAtomContainerToCMLMolecule(getAtomContainer());
-
         return cmlMol.toXML();
     }
 
