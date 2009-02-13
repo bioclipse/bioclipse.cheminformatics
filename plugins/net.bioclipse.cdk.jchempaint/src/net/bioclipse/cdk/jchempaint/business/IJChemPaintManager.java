@@ -33,6 +33,11 @@ import org.openscience.cdk.interfaces.IBond;
 public interface IJChemPaintManager extends IBioclipseManager {
     
     @Recorded
+    @PublishedMethod ( params = "double the screen margin", 
+                       methodSummary = "set the margin of the diagram" )
+    public void setMargin(double margin);
+    
+    @Recorded
     @PublishedMethod ( params = "double the width on screen of a wedge bond", 
                        methodSummary = "set the on-screen width of a wedge" )
     public void setWedgeWidth(double wedgeWidth);
@@ -103,9 +108,13 @@ public interface IJChemPaintManager extends IBioclipseManager {
     public void setBondLength(double bondLength);
     
     @Recorded
-    @PublishedMethod ( params = "int radius of the atom symbol on screen", 
+    @PublishedMethod ( params = "double radius of the atom symbol on screen", 
                        methodSummary = "set the radius of an atom symbol" )
-    public void setAtomRadius(int atomRadius);
+    public void setAtomRadius(double atomRadius);
+    
+    @Recorded
+    @PublishedMethod ( methodSummary = "get the margin of the diagram" )
+    public double getMargin();
 
     @Recorded
     @PublishedMethod ( methodSummary = "get the on-screen width of a wedge" )
@@ -165,7 +174,7 @@ public interface IJChemPaintManager extends IBioclipseManager {
     
     @Recorded
     @PublishedMethod ( methodSummary = "get the radius of an atom symbol" )
-    public int getAtomRadius();
+    public double getAtomRadius();
 
     @Recorded
     @PublishedMethod ( params = "Point2d worldCoordinate", 

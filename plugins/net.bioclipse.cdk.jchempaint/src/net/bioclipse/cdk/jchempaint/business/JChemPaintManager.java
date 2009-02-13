@@ -366,7 +366,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
     }
 
-    public void setAtomRadius(int atomRadius) {
+    public void setAtomRadius(double atomRadius) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
             model.setAtomRadius(atomRadius);
@@ -464,7 +464,14 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
     }
 
-    public int getAtomRadius() {
+    public void setMargin(double margin) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.setMargin(margin);
+        }
+    }
+
+    public double getAtomRadius() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
             return model.getAtomRadius();
@@ -597,5 +604,13 @@ public class JChemPaintManager implements IJChemPaintManager {
         } else {
             return 0;
         }
+    }
+
+    public double getMargin() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.getMargin();
+        } 
+        return 0;
     }
 }
