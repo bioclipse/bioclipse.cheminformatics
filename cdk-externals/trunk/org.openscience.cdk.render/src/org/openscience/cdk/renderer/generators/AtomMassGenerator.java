@@ -37,11 +37,10 @@ public class AtomMassGenerator extends BasicAtomGenerator {
 
     private LoggingTool logger = new LoggingTool(AtomMassGenerator.class);
 
-	public AtomMassGenerator(RendererModel r2dm) {
-		super(r2dm);
-	}
+	public AtomMassGenerator() {}
 
-	public IRenderingElement generateElements(IAtom atom, int alignment) {
+	public IRenderingElement generateElements(
+	        IAtom atom, int alignment, RendererModel model) {
 		return new AtomMassSymbolElement(
 				atom.getPoint2d().x,
 				atom.getPoint2d().y, 
@@ -50,10 +49,11 @@ public class AtomMassGenerator extends BasicAtomGenerator {
 				atom.getHydrogenCount(), 
 				alignment, 
 				atom.getMassNumber(),
-				super.getColorForAtom(atom));
+				super.getColorForAtom(atom, model));
 	}
 
-	public boolean showCarbon(IAtom atom, IAtomContainer ac) {
+	public boolean showCarbon(
+	        IAtom atom, IAtomContainer ac, RendererModel model) {
 
 		Integer massNumber = atom.getMassNumber(); 
 		if (massNumber != null) {
@@ -68,6 +68,6 @@ public class AtomMassGenerator extends BasicAtomGenerator {
 				logger.warn(e);
 			}
 		}
-		return super.showCarbon(atom, ac);
+		return super.showCarbon(atom, ac, model);
 	}
 }

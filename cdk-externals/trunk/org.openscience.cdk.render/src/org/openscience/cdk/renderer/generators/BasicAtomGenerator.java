@@ -41,72 +41,67 @@ import org.openscience.cdk.validate.ProblemMarker;
  */
 public class BasicAtomGenerator implements IGenerator {
 
-	protected RendererModel model;
+	public BasicAtomGenerator() {}
 
-	public BasicAtomGenerator(RendererModel r2dm) {
-		this.model = r2dm;
-	}
-	
-    public void setRendererModel(RendererModel model) {
-        this.model = model;
-    }
-
-	public IRenderingElement generate(IAtomContainer ac) {
+	public IRenderingElement generate(IAtomContainer ac, RendererModel model) {
 		ElementGroup elementGroup = new ElementGroup();
 		for (IAtom atom : ac.atoms()) {
-			elementGroup.add(this.generate(ac, atom));
+			elementGroup.add(this.generate(ac, atom, model));
 		}
 		return elementGroup;
 	}
 
-	protected Color getColorForAtom(IAtom atom) {
-		return this.model.getAtomColor(atom, Color.BLACK);
+	protected Color getColorForAtom(IAtom atom, RendererModel model) {
+		return model.getAtomColor(atom, Color.BLACK);
 	}
 
-	public IRenderingElement generate(IAtomContainer ac, IAtom atom) {
+	public IRenderingElement generate(
+	        IAtomContainer ac, IAtom atom, RendererModel model) {
 		// FIXME: pseudoatom from paintAtom
 	    if (atom == null || atom.getPoint2d() == null)
 	      return null;
 
-		if (isHydrogen(atom) && !this.model.getShowExplicitHydrogens()) {
+		if (isHydrogen(atom) && !model.getShowExplicitHydrogens()) {
 		    // don't draw hydrogen
 			return null;
 		}
 
-		if (isCarbon(atom) && !showCarbon(atom, ac)) {
+		if (isCarbon(atom) && !showCarbon(atom, ac, model)) {
 		    // don't draw carbon
 		    return null;
 		}
 
-		if (this.model.getIsCompact()) {
-		    return this.generateCompactElement(atom);
+		if (model.getIsCompact()) {
+		    return this.generateCompactElement(atom, model);
 		}
 
 		int alignment = GeometryTools.getBestAlignmentForLabelXY(ac, atom);
-		return generateElements(atom, alignment);
+		return generateElements(atom, alignment, model);
 	}
 
-	public IRenderingElement generateCompactElement(IAtom atom) {
+	public IRenderingElement generateCompactElement(
+	        IAtom atom, RendererModel model) {
 	    Point2d p = atom.getPoint2d();
 	    double r = model.getAtomRadius() / model.getScale();
 	    double d = 2 * r;
 	    if (model.getCompactShape() == AtomShape.SQUARE) {
     	    return new RectangleElement(
-    	            p.x - r, p.y - r, d, d, true, this.getColorForAtom(atom));
+    	            p.x - r, p.y - r, d, d, true, getColorForAtom(atom, model));
 	    } else {
 	        return new OvalElement(
-	                p.x, p.y, r, true, this.getColorForAtom(atom));
+	                p.x, p.y, r, true, getColorForAtom(atom, model));
 	    }
 	}
 
-	public IRenderingElement generateElements(IAtom atom, int alignment) {
+	public IRenderingElement generateElements(
+	        IAtom atom, int alignment, RendererModel model) {
 		return new AtomSymbolElement(
 				atom.getPoint2d().x,
 				atom.getPoint2d().y,
 				atom.getSymbol(),
 				atom.getFormalCharge(),
 				atom.getHydrogenCount(),
-				alignment, this.getColorForAtom(atom));
+				alignment, getColorForAtom(atom, model));
 	}
 
 	public boolean isHydrogen(IAtom atom) {
@@ -117,9 +112,10 @@ public class BasicAtomGenerator implements IGenerator {
 		return "C".equals(atom.getSymbol());
 	}
 
-	public boolean showCarbon(IAtom atom, IAtomContainer ac) {
+	public boolean showCarbon(
+	        IAtom atom, IAtomContainer ac, RendererModel model) {
 
-		if (this.model.getKekuleStructure())
+		if (model.getKekuleStructure())
 			return true;
 
 		if (atom.getFormalCharge() != 0)
@@ -128,8 +124,8 @@ public class BasicAtomGenerator implements IGenerator {
 		if (ac.getConnectedBondsList(atom).size() < 1)
 			return true;
 
-		if (this.model.getShowEndCarbons()
-				&& ac.getConnectedBondsList(atom).size() == 1)
+		if (model.getShowEndCarbons()
+		        && ac.getConnectedBondsList(atom).size() == 1)
 			return true;
 
 		if (atom.getProperty(ProblemMarker.ERROR_MARKER) != null)

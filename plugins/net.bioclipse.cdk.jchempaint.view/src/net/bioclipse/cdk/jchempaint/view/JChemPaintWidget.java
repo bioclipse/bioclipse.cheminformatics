@@ -82,9 +82,9 @@ public class JChemPaintWidget extends Canvas {
     protected List<IGenerator> createGenerators() {
         List<IGenerator> generatorList = new ArrayList<IGenerator>();
         generatorList.add( new AtomContainerBoundsGenerator() );
-        generatorList.add( new HighlightGenerator(renderer2DModel) );
-        generatorList.add( new BasicBondGenerator(renderer2DModel) );
-        generatorList.add( new BasicAtomGenerator(renderer2DModel));
+        generatorList.add( new HighlightGenerator() );
+        generatorList.add( new BasicBondGenerator() );
+        generatorList.add( new BasicAtomGenerator());
 
         return generatorList;
     }

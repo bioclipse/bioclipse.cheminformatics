@@ -1,6 +1,7 @@
 package org.openscience.cdk.renderer.generators;
 
 import org.openscience.cdk.interfaces.IReaction;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 
 /**
@@ -12,6 +13,6 @@ import org.openscience.cdk.renderer.elements.IRenderingElement;
  */
 public interface IReactionGenerator {
     
-    public IRenderingElement generate(IReaction reaction);
+    public IRenderingElement generate(IReaction reaction, RendererModel model);
 
 }

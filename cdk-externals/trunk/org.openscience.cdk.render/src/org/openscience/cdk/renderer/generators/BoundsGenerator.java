@@ -24,28 +24,24 @@ import org.openscience.cdk.renderer.elements.RectangleElement;
  */
 public class BoundsGenerator {
     
-    private RendererModel model;
+    public BoundsGenerator() {}
     
-    public BoundsGenerator(RendererModel model) {
-        this.model = model;
-    }
-    
-    public IRenderingElement generate(IReaction reaction) {
+    public IRenderingElement generate(IReaction reaction, RendererModel model) {
         ElementGroup elementGroup = new ElementGroup();
         IMoleculeSet reactants = reaction.getReactants();
         if (reactants != null) {
-            elementGroup.add(this.generate(reactants));
+            elementGroup.add(this.generate(reactants, model));
         }
         
         IMoleculeSet products = reaction.getProducts();
         if (products != null) {
-            elementGroup.add(this.generate(products));
+            elementGroup.add(this.generate(products, model));
         }
         
         return elementGroup;
     }
     
-    public IRenderingElement generate(IMolecule molecule) {
+    public IRenderingElement generate(IMolecule molecule, RendererModel model) {
         Rectangle2D bounds = this.calculateBounds(molecule);
         return new RectangleElement(bounds.getMinX(),
                 bounds.getMinY(),
@@ -54,7 +50,8 @@ public class BoundsGenerator {
                 model.getBoundsColor());
     }
     
-    public IRenderingElement generate(IMoleculeSet moleculeSet) {
+    public IRenderingElement generate(
+            IMoleculeSet moleculeSet, RendererModel model) {
         Rectangle2D totalBounds = null;
         for (IAtomContainer molecule : moleculeSet.molecules()) {
             Rectangle2D bounds = this.calculateBounds(molecule);

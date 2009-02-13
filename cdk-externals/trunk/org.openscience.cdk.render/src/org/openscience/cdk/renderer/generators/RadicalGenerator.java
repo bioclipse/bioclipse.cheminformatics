@@ -42,13 +42,9 @@ import org.openscience.cdk.renderer.elements.OvalElement;
  */
 public class RadicalGenerator implements IGenerator {
     
-    private RendererModel model;
-    
-    public RadicalGenerator(RendererModel model) {
-        this.model = model;
-    }
+    public RadicalGenerator() {}
 
-    public IRenderingElement generate(IAtomContainer ac) {
+    public IRenderingElement generate(IAtomContainer ac, RendererModel model) {
         ElementGroup group = new ElementGroup();
         
         // TODO : put into RendererModel
@@ -79,9 +75,4 @@ public class RadicalGenerator implements IGenerator {
         }
         return group;
     }
-
-    public void setRendererModel(RendererModel model) {
-        this.model = model;
-    }
-
 }

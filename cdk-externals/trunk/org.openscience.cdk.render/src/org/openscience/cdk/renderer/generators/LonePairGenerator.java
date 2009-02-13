@@ -42,13 +42,9 @@ import org.openscience.cdk.renderer.elements.OvalElement;
  */
 public class LonePairGenerator implements IGenerator {
     
-    private RendererModel model;
-    
-    public LonePairGenerator(RendererModel model) {
-        this.model = model;
-    }
+    public LonePairGenerator() {}
 
-    public IRenderingElement generate(IAtomContainer ac) {
+    public IRenderingElement generate(IAtomContainer ac, RendererModel model) {
         ElementGroup group = new ElementGroup();
         
         // TODO : put into RendererModel
@@ -94,9 +90,4 @@ public class LonePairGenerator implements IGenerator {
         }
         return group;
     }
-
-    public void setRendererModel(RendererModel model) {
-        this.model = model;
-    }
-
 }

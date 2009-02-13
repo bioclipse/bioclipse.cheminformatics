@@ -29,8 +29,6 @@ import org.openscience.cdk.renderer.elements.IRenderingElement;
  */
 public interface IGenerator {
 
-    public IRenderingElement generate(IAtomContainer ac);
+    public IRenderingElement generate(IAtomContainer ac, RendererModel model);
     
-    public void setRendererModel(RendererModel model);
-
 }

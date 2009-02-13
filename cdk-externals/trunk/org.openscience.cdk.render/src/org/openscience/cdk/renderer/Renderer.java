@@ -24,7 +24,6 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.vecmath.Point2d;
@@ -39,16 +38,9 @@ import org.openscience.cdk.interfaces.IReactionSet;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.font.IFontManager;
-import org.openscience.cdk.renderer.generators.AtomNumberGenerator;
-import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.BoundsGenerator;
-import org.openscience.cdk.renderer.generators.HighlightGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
-import org.openscience.cdk.renderer.generators.LonePairGenerator;
 import org.openscience.cdk.renderer.generators.MappingGenerator;
-import org.openscience.cdk.renderer.generators.RadicalGenerator;
-import org.openscience.cdk.renderer.generators.RingGenerator;
-import org.openscience.cdk.renderer.generators.SelectionGenerator;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 
 /**
@@ -99,26 +91,6 @@ public class Renderer {
 
 	private IRenderingElement cachedDiagram;
 
-	/**
-	 * A renderer that makes default diagrams.
-	 * 
-	 * @param fontManager
-	 */
-	public Renderer(IFontManager fontManager) {
-	    this.fontManager = fontManager;
-
-		this.generators = new ArrayList<IGenerator>();
-		this.generators.add(new RingGenerator(this.rendererModel));
-		this.generators.add(new BasicAtomGenerator(this.rendererModel));
-		this.generators.add(new HighlightGenerator(this.rendererModel));
-		this.generators.add(new AtomNumberGenerator(this.rendererModel));
-		this.generators.add(new RadicalGenerator(this.rendererModel));
-		this.generators.add(new LonePairGenerator(this.rendererModel));
-		this.generators.add(new SelectionGenerator(this.rendererModel));
-		
-		this.setup();
-	}
-
     /**
      * A renderer that generates diagrams using the specified
      * generators and manages fonts with the supplied font manager.
@@ -131,9 +103,6 @@ public class Renderer {
 	public Renderer(List<IGenerator> generators, 
 	        IFontManager fontManager) {
         this.generators = generators;
-        for (IGenerator generator : generators) {
-            generator.setRendererModel(this.rendererModel);
-        }
         this.fontManager = fontManager;
         
         this.setup();
@@ -452,10 +421,11 @@ public class Renderer {
 	                            Rectangle2D modelBounds, 
 	                            double bondLen,
 	                            boolean resetCenter) {
+	    double scaledWidth  = modelBounds.getWidth() * this.scale;
+	    double scaledHeight = modelBounds.getHeight() * this.scale;
+	    
 	    if (drawBounds == null) {
 	        this.scale = Renderer.DEFAULT_SCALE;
-	        double scaledWidth  = modelBounds.getWidth() * this.scale;
-	        double scaledHeight = modelBounds.getHeight() * this.scale;
 	        this.setDrawCenter(scaledWidth / 2, scaledHeight / 2);
 	    } else {
 	        
@@ -469,12 +439,10 @@ public class Renderer {
 	        this.setDrawCenter(
 	                drawBounds.getCenterX(), 
 	                drawBounds.getCenterY());
+	        
 	        if (rendererModel.isFitToScreen()) {
-	            double w = drawBounds.getWidth() * 0.9;
-	            double h = drawBounds.getHeight() * 0.9;
-	            
-	            double widthRatio = w / (modelBounds.getWidth() * this.scale);
-	            double heightRatio = h / (modelBounds.getHeight() * this.scale);
+	            double widthRatio = drawBounds.getWidth() / scaledWidth;
+	            double heightRatio = drawBounds.getHeight() / scaledHeight;
 
 	            // the area is contained completely within the target
 	            if (widthRatio > 1 && heightRatio > 1) {
@@ -502,6 +470,7 @@ public class Renderer {
 	            }
 	        }
 	        this.fontManager.setFontForZoom(this.zoom);
+	        this.rendererModel.setZoomFactor(zoom);
 	    }
 	    
 	    // this controls whether editing a molecule causes it to re-center
@@ -607,16 +576,16 @@ public class Renderer {
 	    ElementGroup diagram = new ElementGroup();
 	    
 	    // generate the bounds first, so that they are to the back
-	    BoundsGenerator boundsGenerator = new BoundsGenerator(rendererModel);
-	    diagram.add(boundsGenerator.generate(reaction));
+	    BoundsGenerator boundsGenerator = new BoundsGenerator();
+	    diagram.add(boundsGenerator.generate(reaction, this.rendererModel));
 	    
 	    // now make the molecules
 	    diagram.add(generateDiagram(reaction.getReactants()));
 	    diagram.add(generateDiagram(reaction.getProducts()));
 	    
 	    // specialised reaction-specific generators
-	    MappingGenerator mapper = new MappingGenerator(rendererModel);
-	    diagram.add(mapper.generate(reaction));
+	    MappingGenerator mapper = new MappingGenerator();
+	    diagram.add(mapper.generate(reaction, this.rendererModel));
 	    
 	    return diagram;
 	}
@@ -626,7 +595,7 @@ public class Renderer {
         for (int i = 0; i < moleculeSet.getAtomContainerCount(); i++) {
             IAtomContainer ac = moleculeSet.getAtomContainer(i);
             for (IGenerator generator : this.generators) {
-                diagram.add(generator.generate(ac));
+                diagram.add(generator.generate(ac, this.rendererModel));
             }
         }
         return diagram;
@@ -635,7 +604,7 @@ public class Renderer {
 	private IRenderingElement generateDiagram(IAtomContainer ac) {
 	    ElementGroup diagram = new ElementGroup();
         for (IGenerator generator : this.generators) {
-            diagram.add(generator.generate(ac));
+            diagram.add(generator.generate(ac, this.rendererModel));
         }
         return diagram;
 	}

@@ -1,5 +1,6 @@
 package org.openscience.cdk.renderer.generators;
 
+import java.awt.Color;
 
 import javax.vecmath.Point2d;
 
@@ -17,12 +18,10 @@ import org.openscience.cdk.renderer.elements.OvalElement;
 public class HighlightGenerator extends BasicBondGenerator 
                                 implements IGenerator {
 
-    public HighlightGenerator(RendererModel model) {
-        super(model);
-        super.setOverrideColor(model.getHoverOverColor());
-    }
+    public HighlightGenerator() {}
 
-    public IRenderingElement generate(IAtomContainer ac, IAtom atom) {
+    public IRenderingElement generate(
+            IAtomContainer ac, IAtom atom, RendererModel model) {
         IAtom highlightedAtom = atom;
         if (highlightedAtom != null) {
             Point2d p = atom.getPoint2d();
@@ -35,34 +34,32 @@ public class HighlightGenerator extends BasicBondGenerator
         return null;
     }
 
-    public IRenderingElement generate(IAtomContainer ac, IBond bond) {
+    public IRenderingElement generate(
+            IAtomContainer ac, IBond bond, RendererModel model) {
         if (bond != null) {
             super.ringSet = super.getRingSet(ac);
             
-            Point2d c = bond.get2DCenter();
             double r = model.getHighlightDistance() / model.getScale();
-            return new OvalElement(c.x, c.y, r, model.getHoverOverColor());
+            Color hColor = model.getHoverOverColor();
+            Point2d p = bond.get2DCenter();
+            return new OvalElement(p.x, p.y, r, hColor);
         } else {
             return new ElementGroup();
         }
     }
 
-    public IRenderingElement generate(IAtomContainer ac) {
+    public IRenderingElement generate(IAtomContainer ac, RendererModel model) {
+        super.setOverrideColor(model.getHoverOverColor());
         ElementGroup elementGroup = new ElementGroup();
         IAtom atom = model.getHighlightedAtom();
         if (atom != null) {
-            elementGroup.add(this.generate(ac, atom));
+            elementGroup.add(this.generate(ac, atom, model));
         }
         
         IBond bond = model.getHighlightedBond();
         if (bond != null) {
-            elementGroup.add(this.generate(ac, bond));
+            elementGroup.add(this.generate(ac, bond, model));
         }
         return elementGroup;
-    }
-    
-    @Override
-    public void setRendererModel( RendererModel model ) {
-        super.setRendererModel( model );
     }
 }

@@ -22,7 +22,6 @@ import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.AtomSymbolElement;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
-import org.openscience.cdk.renderer.elements.IRenderingVisitor;
 import org.openscience.cdk.renderer.elements.LineElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
 import org.openscience.cdk.renderer.elements.PathElement;
@@ -34,21 +33,23 @@ import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 
 public class SWTRenderer implements IDrawVisitor{
 
-    Logger logger = Logger.getLogger( SWTRenderer.class );
+    private Logger logger = Logger.getLogger( SWTRenderer.class );
 
-    GC gc;
-    RendererModel model;
-    AffineTransform transform;
+    private GC gc;
+    
+    private RendererModel model;
+    
+    private AffineTransform transform;
 
-    IFontManager fontManager;
+    private SWTFontManager fontManager;
 
+    private Map<java.awt.Color, Color> cleanUp;
+    
     public SWTRenderer(GC graphics) {
         transform = new AffineTransform();
         this.model = new RendererModel();
         this.gc = graphics;
     }
-
-    private Map<java.awt.Color, Color> cleanUp;
 
     public RendererModel getModel() {
         return model;
@@ -57,14 +58,17 @@ public class SWTRenderer implements IDrawVisitor{
     private int transformX(double x) {
         return (int) transform( x, 1 )[0];
     }
+    
     private int transformY(double y) {
         return (int) transform( 1, y )[1];
     }
+    
     private double[] transform(double x, double y) {
         double [] result = new double[2];
         transform.transform( new double[] {x,y}, 0, result, 0, 1 );
         return result;
     }
+    
     private int scaleX(double x) {
         return (int) (x*transform.getScaleX());
     }
@@ -74,7 +78,7 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void render(ElementGroup renderingModel) {
-        for(IRenderingElement re:renderingModel ) {
+        for (IRenderingElement re : renderingModel) {
            re.accept( this );
         }
     }
@@ -82,24 +86,23 @@ public class SWTRenderer implements IDrawVisitor{
 
     public void visit( OvalElement element ) {
         Color colorOld = gc.getBackground();
-//        int radius = (int) (scaleX(element.getRadius())+.5);
-//        int radius_2 = (int) (scaleX(element.getRadius())/2.0+.5);
-        int radius = (int)round( scaleX( element.radius));
-        int radius_2 = (int)round( scaleX(element.radius/2d ));
-        if(element.fill) {
-        gc.setBackground( toSWTColor( gc, element.color ) );
+        int radius = (int) round(scaleX(element.radius));
+        int diameter = (int) round(scaleX(element.radius * 2));
+        
+        if (element.fill) {
+            gc.setBackground(toSWTColor(gc, element.color));
 
-        gc.fillOval( transformX( element.x)-radius_2,
-                     transformY(element.y)-radius_2,
-                     radius,
-                     radius );
+            gc.fillOval(transformX(element.x) - radius,
+                        transformY(element.y) - radius,
+                        diameter,
+                        diameter );
         } else {
-            gc.setForeground(  toSWTColor( gc, element.color ) );
+            gc.setForeground(toSWTColor(gc, element.color));
 
-            gc.drawOval( transformX(element.x)-radius_2,
-                         transformY(element.y)-radius_2,
-                         radius,
-                         radius );
+            gc.drawOval(transformX(element.x) - radius,
+                        transformY(element.y) - radius,
+                        diameter,
+                        diameter );
         }
         gc.setBackground( colorOld);
     }
@@ -151,6 +154,7 @@ public class SWTRenderer implements IDrawVisitor{
             drawFilledWedge( p1a, p1b, p2);
 
     }
+    
     private void drawFilledWedge( Point2d p1a, Point2d p1b,
                                   Point2d p2) {
         Path path = new Path(gc.getDevice());
@@ -163,6 +167,7 @@ public class SWTRenderer implements IDrawVisitor{
 
         path.dispose();
     }
+    
     private void drawDashedWedge( Point2d p1a, Point2d p1b,
                                   Point2d p2, double d) {
 
@@ -182,7 +187,6 @@ public class SWTRenderer implements IDrawVisitor{
         gc.drawPath( dashes );
         dashes.dispose();
     }
-
 
     private Color getForgroundColor() {
         return toSWTColor( gc, getModel().getForeColor() );
@@ -204,12 +208,12 @@ public class SWTRenderer implements IDrawVisitor{
 
     private Font getFont() {
 
-        return ((SWTFontManager) fontManager).getFont();
+        return fontManager.getFont();
     }
 
     private Font getSmallFont() {
 
-        return ((SWTFontManager) fontManager).getSmallFont();
+        return fontManager.getSmallFont();
     }
 
     public void visit( TextElement element ) {
@@ -281,13 +285,19 @@ public class SWTRenderer implements IDrawVisitor{
 
         }
     }
-    public  Color toSWTColor(GC graphics,java.awt.Color color) {
-        if(cleanUp == null)
+    
+    public Color toSWTColor(GC graphics,java.awt.Color color) {
+        if (cleanUp == null) {
             cleanUp = new HashMap<java.awt.Color,Color>();
-        if(color == null) return graphics.getDevice().getSystemColor( SWT.COLOR_MAGENTA );
+        }
+        
+        if (color == null) {
+            return graphics.getDevice().getSystemColor(SWT.COLOR_MAGENTA);
+        }
+        
         assert(color != null);
-        Color otherColor=cleanUp.get(color);
-        if(otherColor==null){
+        Color otherColor = cleanUp.get(color);
+        if (otherColor == null) {
             otherColor = new Color(graphics.getDevice(),
                                    color.getRed(),
                                    color.getGreen(),
@@ -298,57 +308,44 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void dispose() {
-        for(Color c:cleanUp.values())
+        for (Color c : cleanUp.values()) {
             c.dispose();
-          cleanUp.clear();
+        }
+        cleanUp.clear();
     }
 
     public void visit( ElementGroup elementGroup ) {
-
-        for(IRenderingElement element:elementGroup) {
-            element.accept( this );
+        for (IRenderingElement element : elementGroup) {
+            element.accept(this);
         }
-
     }
 
     public void setTransform(AffineTransform transform) {
         this.transform = transform;
     }
 
-    public void render() {
-
-        // TODO Auto-generated method stub
-
-    }
-
     public void visitDefault(IRenderingElement element) {
-//        throw new RuntimeException( "visitor for "+element.getClass().getName()
-//                                    + " is not implemented yet.");
-        logger.debug( "No visitor method implemented for : "+element.getClass() );
-
+        logger.debug("No visitor method implemented for : "
+                + element.getClass());
     }
 
-//    public void visit( AtomSymbolElement element ) {
-//
-//        // TODO Auto-generated method stub
-//
-//    }
+    public void visit(RectangleElement element) {
 
-    public void visit( RectangleElement element ) {
-
-        if(element.filled) {
-            gc.setBackground( toSWTColor( gc, element.color ) );
-            gc.fillRectangle( transformX(element.x), transformY(element.y),
-                              scaleX(element.width), scaleY(element.height ));
+        if (element.filled) {
+            gc.setBackground(toSWTColor(gc, element.color));
+            gc.fillRectangle(
+                    transformX(element.x), transformY(element.y),
+                    scaleX(element.width), scaleY(element.height));
         } else {
-            gc.setForeground( toSWTColor( gc, element.color ) );
-            gc.drawRectangle( transformX(element.x), transformY(element.y),
-                              scaleX(element.width), scaleY(element.height ));
+            gc.setForeground(toSWTColor(gc, element.color));
+            gc.drawRectangle(
+                    transformX(element.x), transformY(element.y),
+                    scaleX(element.width), scaleY(element.height));
         }
     }
 
-    public void visit( PathElement element) {
-        gc.setForeground( toSWTColor( gc,element.color) );
+    public void visit(PathElement element) {
+        gc.setForeground(toSWTColor(gc, element.color));
         Path path = new Path(gc.getDevice());
         boolean first = true;
         for(Point2d p: element.points) {
@@ -368,7 +365,7 @@ public class SWTRenderer implements IDrawVisitor{
     public void visit(IRenderingElement element)  {
 
         Method method = getMethod( element );
-        if(method == null) {
+        if (method == null) {
             visitDefault(element);
         }
         else {
@@ -383,6 +380,7 @@ public class SWTRenderer implements IDrawVisitor{
             }
         }
     }
+    
     private Method getMethod( IRenderingElement element ) {
 
         Class<?> cl = element.getClass();
@@ -395,25 +393,15 @@ public class SWTRenderer implements IDrawVisitor{
                 cl = cl.getSuperclass();
             }
         }
-//        Class<?>[] interfaces = element.getClass().getInterfaces();
-//        for ( Class<?> c : interfaces ) {
-//            try {
-//                return this.getClass().getDeclaredMethod( "visit",
-//                                                          new Class[] { c } );
-//            } catch ( NoSuchMethodException e ) {
-//                // try with the next interface
-//            }
-//        }
+
         return null;
     }
 
     public void setFontManager( IFontManager fontManager ) {
-
-       this.fontManager = fontManager;
+        this.fontManager = (SWTFontManager) fontManager;
     }
 
     public void setRendererModel( RendererModel rendererModel ) {
-
         this.model = rendererModel;
     }
 }

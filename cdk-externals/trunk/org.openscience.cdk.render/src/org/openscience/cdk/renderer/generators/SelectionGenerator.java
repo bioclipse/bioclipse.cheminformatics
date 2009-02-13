@@ -39,38 +39,31 @@ import org.openscience.cdk.renderer.selection.ISelection;
  */
 public class SelectionGenerator implements IGenerator {
 
-    private RendererModel rendererModel;
-    private Color selectionColor;
     private boolean autoUpdateSelection = true;
-    private AtomShape shape;
     
-    public SelectionGenerator(RendererModel rendererModel) {
-        this.rendererModel = rendererModel;
-        this.selectionColor = rendererModel.getSelectedPartColor();
-        this.shape = rendererModel.getSelectionShape();
-    }
+    public SelectionGenerator() {}
 
-    public void setRendererModel(RendererModel model) {
-        this.rendererModel = model;
-    }
-
-    public IRenderingElement generate(IAtomContainer ac) {
+    public IRenderingElement generate(IAtomContainer ac, RendererModel model) {
+        Color selectionColor = model.getSelectedPartColor();
+        AtomShape shape = model.getSelectionShape();
+        ISelection selection = model.getSelection();
+        
         ElementGroup selectionElements = new ElementGroup();
-        ISelection selection = this.rendererModel.getSelection();
         if (this.autoUpdateSelection || selection.isFilled()) {
             double r;
-            switch(this.shape) {
+            switch(shape) {
                 case SQUARE: r = 0.1; break;
                 
                 case OVAL: default: r = 1; break;
             }
+            
             double d = 2 * r;
             IAtomContainer selectedAC = selection.getConnectedAtomContainer();
             if (selectedAC != null) {
                 for (IAtom atom : selectedAC.atoms()) {
                     Point2d p = atom.getPoint2d();
                     IRenderingElement element;
-                    switch (this.shape) {
+                    switch (shape) {
                         case SQUARE:
                             element = 
                                 new RectangleElement(
@@ -88,7 +81,7 @@ public class SelectionGenerator implements IGenerator {
         }
         
         if (!selection.isFinished()) {
-           selectionElements.add(selection.generate(this.selectionColor));
+           selectionElements.add(selection.generate(selectionColor));
         }
         return selectionElements; 
     }

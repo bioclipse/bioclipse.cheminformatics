@@ -41,18 +41,11 @@ import org.openscience.cdk.renderer.elements.TextElement;
  */
 public class AtomNumberGenerator implements IGenerator {
 
-	private RendererModel model;
+	public AtomNumberGenerator() {}
 
-	public AtomNumberGenerator(RendererModel model) {
-		this.model = model;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.openscience.cdk.renderer.generators.IGenerator#generate(org.openscience.cdk.interfaces.IAtomContainer)
-	 */
-	public IRenderingElement generate(IAtomContainer ac) {
+	public IRenderingElement generate(IAtomContainer ac, RendererModel model) {
 		ElementGroup numbers = new ElementGroup();
-		if (!this.model.drawNumbers()) return numbers;
+		if (!model.drawNumbers()) return numbers;
 
 		int number = 1;
 		for (IAtom atom : ac.atoms()) {
@@ -65,8 +58,5 @@ public class AtomNumberGenerator implements IGenerator {
 		return numbers;
 	}
 
-    public void setRendererModel(RendererModel model) {
-        this.model = model;
-    }
 
 }

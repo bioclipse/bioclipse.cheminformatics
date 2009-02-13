@@ -14,6 +14,7 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,6 +52,11 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.font.IFontManager;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator;
+import org.openscience.cdk.renderer.generators.HighlightGenerator;
+import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.RingGenerator;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
@@ -77,7 +83,14 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
 
 
         IFontManager fontManager = new SWTFontManager(Display.getCurrent());
-        renderer = new Renderer(fontManager);
+        
+        List<IGenerator> generators = new ArrayList<IGenerator>();
+        generators.add(new BasicBondGenerator());
+        generators.add(new BasicAtomGenerator());
+        generators.add(new RingGenerator());
+        generators.add(new HighlightGenerator());
+        
+        renderer = new Renderer(generators, fontManager);
 
 
         renderer.getRenderer2DModel().setDrawNumbers( false );
@@ -132,7 +145,7 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
             renderer.getRenderer2DModel().setBackColor(new java.awt.Color(252,253,254));
 //            renderer.getRenderer2DModel().setBackColor( java.awt.Color.CYAN );
             renderer.getRenderer2DModel().setUseAntiAliasing( true );
-            renderer.getRenderer2DModel().setHighlightRadiusModel( 10 );
+            renderer.getRenderer2DModel().setHighlightDistance( 10 );
             renderer.getRenderer2DModel().setFitToScreen( true );
 
             Color greenScreen = new Color(Display.getCurrent(), 252, 253, 254);

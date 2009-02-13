@@ -34,15 +34,15 @@ public class BasicGenerator {
 	private BasicAtomGenerator atomGenerator;
 	private BasicBondGenerator bondGenerator;
 	
-	public BasicGenerator(RendererModel model) {
-		this.atomGenerator = new BasicAtomGenerator(model);
-		this.bondGenerator = new BasicBondGenerator(model);
+	public BasicGenerator() {
+		this.atomGenerator = new BasicAtomGenerator();
+		this.bondGenerator = new BasicBondGenerator();
 	}
 	
-	public IRenderingElement generate(IAtomContainer ac) {
+	public IRenderingElement generate(IAtomContainer ac, RendererModel model) {
 		ElementGroup diagram = new ElementGroup();
-		diagram.add(this.bondGenerator.generate(ac));
-		diagram.add(this.atomGenerator.generate(ac));
+		diagram.add(this.bondGenerator.generate(ac, model));
+		diagram.add(this.atomGenerator.generate(ac, model));
 		return diagram;
 	}
 

@@ -17,13 +17,9 @@ import org.openscience.cdk.renderer.elements.LineElement;
  */
 public class MappingGenerator implements IReactionGenerator {
 
-    private RendererModel model;
+    public MappingGenerator() {}
 
-    public MappingGenerator(RendererModel model) {
-        this.model = model;
-    }
-
-    public IRenderingElement generate(IReaction reaction) {
+    public IRenderingElement generate(IReaction reaction, RendererModel model) {
         ElementGroup elementGroup = new ElementGroup();
         Color mappingColor = model.getAtomAtomMappingLineColor();
         for (IMapping mapping : reaction.mappings()) {

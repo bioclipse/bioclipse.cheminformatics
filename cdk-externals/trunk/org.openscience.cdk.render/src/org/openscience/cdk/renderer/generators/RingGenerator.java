@@ -42,39 +42,38 @@ import org.openscience.cdk.renderer.elements.OvalElement;
  */
 public class RingGenerator extends BasicBondGenerator {
 
-	private RendererModel model;
 	private Collection<IRing> painted_rings;
 
-	public RingGenerator(RendererModel r2dm) {
-		super(r2dm);
-		this.model = r2dm;
-		painted_rings = new HashSet<IRing>();
+	public RingGenerator() {
+		this.painted_rings = new HashSet<IRing>();
 	}
 
 	@Override
-	public IRenderingElement generateRingElements(IBond bond, IRing ring) {
-		if (ringIsAromatic(ring) && this.model.getShowAromaticity()) {
+	public IRenderingElement generateRingElements(
+	        IBond bond, IRing ring, RendererModel model) {
+		if (ringIsAromatic(ring) && model.getShowAromaticity()) {
 			ElementGroup pair = new ElementGroup();
-			if (this.model.getShowAromaticityCDKStyle()) {
-			    pair.add(super.generateBondElement(bond, IBond.Order.SINGLE));
+			if (model.getShowAromaticityCDKStyle()) {
+			    pair.add(generateBondElement(bond, IBond.Order.SINGLE, model));
 			    super.setOverrideColor(Color.LIGHT_GRAY);
-			    pair.add(super.generateInnerElement(bond, ring));
+			    pair.add(generateInnerElement(bond, ring, model));
 			    super.setOverrideColor(null);
 			} else {
-    			pair.add(super.generateBondElement(bond, IBond.Order.SINGLE));
+    			pair.add(generateBondElement(bond, IBond.Order.SINGLE, model));
     			if (!painted_rings.contains(ring)) {
     				painted_rings.add(ring);
-    				pair.add(generateRingRingElement(bond, ring));
+    				pair.add(generateRingRingElement(bond, ring, model));
     			}
 			}
 			return pair;
 		} else {
-			return super.generateRingElements(bond, ring);
+			return super.generateRingElements(bond, ring, model);
 		}
 	}
 
-	private IRenderingElement generateRingRingElement(IBond bond, IRing ring) {
-		Point2d center = GeometryTools.get2DCenter(ring);
+	private IRenderingElement generateRingRingElement(
+	        IBond bond, IRing ring, RendererModel model) {
+		Point2d c = GeometryTools.get2DCenter(ring);
 
 		double[] minmax = GeometryTools.getMinMax(ring);
 		double width  = minmax[2] - minmax[0];
@@ -82,7 +81,7 @@ public class RingGenerator extends BasicBondGenerator {
 		double radius = Math.min(width, height) * model.getRingProportion();
 
 		return new OvalElement(
-		        center.x, center.y, radius, false, super.getColorForBond(bond));
+		        c.x, c.y, radius, false, getColorForBond(bond, model));
 	}
 
 	private boolean ringIsAromatic(final IRing ring) {

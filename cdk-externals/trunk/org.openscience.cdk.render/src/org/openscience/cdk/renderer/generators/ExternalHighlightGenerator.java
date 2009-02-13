@@ -40,41 +40,34 @@ import org.openscience.cdk.renderer.elements.OvalElement;
  */
 public class ExternalHighlightGenerator implements IGenerator {
 
-    private RendererModel model;
+    public ExternalHighlightGenerator() {}
 
-    public ExternalHighlightGenerator(RendererModel r2dm) {
-        this.model = r2dm;
-    }
-
-    public void setRendererModel(RendererModel model) {
-        this.model = model;
-    }
-
-    public IRenderingElement generate(IAtomContainer ac) {
+    public IRenderingElement generate(IAtomContainer ac, RendererModel model) {
         ElementGroup group = new ElementGroup();
         ac = model.getExternalSelectedPart();
         if (ac == null)
             return group;
         for (IAtom atom : ac.atoms()) {
-            group.add(generate(atom));
+            group.add(generate(atom, model));
         }
         for (IBond bond : ac.bonds()) {
-            group.add(generate(bond));
+            group.add(generate(bond, model));
         }
         return group;
     }
 
-    public IRenderingElement generate(IAtom atom) {
+    public IRenderingElement generate(IAtom atom, RendererModel model) {
         Point2d p = atom.getPoint2d();
-        return new OvalElement(p.x, p.y, model.getHighlightRadiusModel() * 1.3,
-                model.getExternalHighlightColor());
+        double r = model.getHighlightDistance() / model.getScale();
+        return new OvalElement(p.x, p.y, r, model.getExternalHighlightColor());
     }
 
-    public IRenderingElement generate(IBond bond) {
+    public IRenderingElement generate(IBond bond, RendererModel model) {
         Point2d p1 = bond.getAtom(0).getPoint2d();
         Point2d p2 = bond.getAtom(1).getPoint2d();
-        return new LineElement(p1.x, p1.y, p2.x, p2.y,
-                model.getBondWidth() * 3, model.getExternalHighlightColor());
+        double w = model.getBondWidth() / model.getScale();
+        return new LineElement(
+                p1.x, p1.y, p2.x, p2.y, w, model.getExternalHighlightColor());
     }
 
 }

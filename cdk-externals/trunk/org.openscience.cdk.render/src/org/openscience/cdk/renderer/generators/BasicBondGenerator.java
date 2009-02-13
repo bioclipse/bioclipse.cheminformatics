@@ -54,8 +54,6 @@ import org.openscience.cdk.tools.manipulator.RingSetManipulator;
  */
 public class BasicBondGenerator implements IGenerator {
 
-	protected RendererModel model;
-	
 	private LoggingTool logger = new LoggingTool(BasicBondGenerator.class);
 	
 	protected IRingSet ringSet;
@@ -66,13 +64,7 @@ public class BasicBondGenerator implements IGenerator {
 	 */
 	private Color overrideColor = null;
 
-	public BasicBondGenerator(RendererModel r2dm) {
-		this.model = r2dm;
-	}
-	
-    public void setRendererModel(RendererModel model) {
-        this.model = model;
-    }
+	public BasicBondGenerator() {}
 	
 	public void setOverrideColor(Color color) {
 	    this.overrideColor = color;
@@ -98,10 +90,10 @@ public class BasicBondGenerator implements IGenerator {
 		}
 	}
 
-	public Color getColorForBond(IBond bond) {
+	public Color getColorForBond(IBond bond, RendererModel model) {
 	    if (this.overrideColor != null) return overrideColor;
 	    
-	    Color color = this.model.getColorHash().get(bond);
+	    Color color = model.getColorHash().get(bond);
 	    if (color == null) {
 	        return Color.BLACK;
 	    } else {
@@ -109,26 +101,27 @@ public class BasicBondGenerator implements IGenerator {
 	    }
 	}
 
-	public IRenderingElement generate(IAtomContainer ac) {
+	public IRenderingElement generate(IAtomContainer ac, RendererModel model) {
 		ElementGroup group = new ElementGroup();
 		this.ringSet = this.getRingSet(ac);
 		for (IBond bond : ac.bonds()) {
-			group.add(this.generate(bond));
+			group.add(this.generate(bond, model));
 		}
 		return group;
 	}
 
-	public IRenderingElement generate(IBond currentBond) {
+	public IRenderingElement generate(IBond currentBond, RendererModel model) {
 		IRing ring = RingSetManipulator.getHeaviestRing(ringSet, currentBond);
 		if (ring != null) {
-			return generateRingElements(currentBond, ring);
+			return generateRingElements(currentBond, ring, model);
 		} else {
-			return generateBond(currentBond);
+			return generateBond(currentBond, model);
 		}
 	}
 
-	public IRenderingElement generateBondElement(IBond bond) {
-	    return this.generateBondElement(bond, bond.getOrder());
+	public IRenderingElement generateBondElement(
+	        IBond bond, RendererModel model) {
+	    return this.generateBondElement(bond, bond.getOrder(), model);
 	}
 
 	/**
@@ -140,7 +133,8 @@ public class BasicBondGenerator implements IGenerator {
 	 * @param type the type of the bond - single, double, etc
 	 * @return
 	 */
-	public IRenderingElement generateBondElement(IBond bond, IBond.Order type) {
+	public IRenderingElement generateBondElement(
+	        IBond bond, IBond.Order type, RendererModel model) {
 		// More than 2 atoms per bond not supported by this module
 		if (bond.getAtomCount() > 2)
 			return null;
@@ -148,7 +142,7 @@ public class BasicBondGenerator implements IGenerator {
 		// is object right? if not replace with a good one
 		Point2d p1 = bond.getAtom(0).getPoint2d();
 		Point2d p2 = bond.getAtom(1).getPoint2d();
-		Color color = this.getColorForBond(bond);
+		Color color = this.getColorForBond(bond, model);
 		double bondWidth = model.getBondWidth() / model.getScale();
 		double bondDistance = model.getBondDistance() / model.getScale();
 		if (type == IBond.Order.SINGLE) {
@@ -214,23 +208,25 @@ public class BasicBondGenerator implements IGenerator {
                 line1p2.x, line1p2.y, line2p2.x, line2p2.y };
 	}
 
-	public IRenderingElement generateRingElements(IBond bond, IRing ring) {
+	public IRenderingElement generateRingElements(
+	        IBond bond, IRing ring, RendererModel model) {
 		if (isSingle(bond) && isStereoBond(bond)) {
-			return generateStereoElement(bond);
+			return generateStereoElement(bond, model);
 		} else if (isDouble(bond)) {
 			ElementGroup pair = new ElementGroup();
 			IRenderingElement e1 = generateBondElement(
-			        bond, IBond.Order.SINGLE);
-			IRenderingElement e2 = generateInnerElement(bond, ring);
+			        bond, IBond.Order.SINGLE, model);
+			IRenderingElement e2 = generateInnerElement(bond, ring, model);
 			pair.add(e1);
 			pair.add(e2);
 			return pair;
 		} else {
-			return generateBondElement(bond);
+			return generateBondElement(bond, model);
 		}
 	}
 
-	public LineElement generateInnerElement(IBond bond, IRing ring) {
+	public LineElement generateInnerElement(
+	        IBond bond, IRing ring, RendererModel model) {
 		Point2d center = GeometryTools.get2DCenter(ring);
 		Point2d a = bond.getAtom(0).getPoint2d();
 		Point2d b = bond.getAtom(1).getPoint2d();
@@ -243,19 +239,20 @@ public class BasicBondGenerator implements IGenerator {
 		Point2d u = new Point2d();
 		u.interpolate(b, center, DIST);
 
-		// XXX : uncomment to make the bonds slightly shorter
-		// double alpha = 0.2;
-		// Point2d ww = new Point2d();
-		// ww.interpolate(w, u, alpha);
-		// Point2d uu = new Point2d();
-		// uu.interpolate(u, w, alpha);
-		// return new BondSymbol(uu.x, uu.y, ww.x, ww.y);
+		double alpha = 0.2;
+		Point2d ww = new Point2d();
+		ww.interpolate(w, u, alpha);
+		Point2d uu = new Point2d();
+		uu.interpolate(u, w, alpha);
+		
+		double width = model.getBondWidth() / model.getScale();
+		
 		return new LineElement(
-		        u.x, u.y, w.x, w.y, model.getBondWidth() / model.getScale(), 
-		        this.getColorForBond(bond));
+		        u.x, u.y, w.x, w.y, width, getColorForBond(bond, model));
 	}
 
-	private IRenderingElement generateStereoElement(IBond bond) {
+	private IRenderingElement generateStereoElement(
+	        IBond bond, RendererModel model) {
 
 		int stereo = bond.getStereo();
 		boolean dashed = false;
@@ -265,9 +262,10 @@ public class BasicBondGenerator implements IGenerator {
 		if (stereo == STEREO_BOND_DOWN_INV || stereo == STEREO_BOND_UP_INV)
 			dir = Direction.toFirst;
 
-		IRenderingElement base = generateBondElement(bond, IBond.Order.SINGLE);
+		IRenderingElement base = generateBondElement(
+		        bond, IBond.Order.SINGLE, model);
 		return new WedgeLineElement(
-		        (LineElement)base, dashed, dir, this.getColorForBond(bond));
+		        (LineElement)base, dashed, dir, getColorForBond(bond, model));
 	}
 
 	public boolean isDouble(IBond bond) {
@@ -292,15 +290,15 @@ public class BasicBondGenerator implements IGenerator {
 		return false;
 	}
 
-	public IRenderingElement generateBond(IBond bond) {
-		if (!this.model.getShowExplicitHydrogens() && bindsHydrogen(bond)) {
+	public IRenderingElement generateBond(IBond bond, RendererModel model) {
+		if (!model.getShowExplicitHydrogens() && bindsHydrogen(bond)) {
 			return null;
 		}
 
 		if (isStereoBond(bond)) {
-			return generateStereoElement(bond);
+			return generateStereoElement(bond, model);
 		} else {
-			return generateBondElement(bond);
+			return generateBondElement(bond, model);
 		}
 	}
 
