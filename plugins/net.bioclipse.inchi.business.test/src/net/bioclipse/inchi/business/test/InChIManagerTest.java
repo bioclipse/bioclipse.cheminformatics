@@ -43,6 +43,15 @@ public class InChIManagerTest extends AbstractManagerTest {
         Assert.assertEquals("InChI=1/CH4/h1H4", inchiStr);
     }
 
+    @Test public void testGenerateNoStereo() throws Exception {
+        CDKManager cdk = new CDKManager();
+        IMolecule mol = cdk.fromSMILES("ClC(Br)(F)(O)");
+        Assert.assertNotNull("Input structure is unexpectedly null", mol);
+        String inchiStr = inchi.generate(mol);
+        Assert.assertNotNull(inchiStr);
+        Assert.assertEquals("InChI=1/CH4/h1H4", inchiStr);
+    }
+
     @Test public void testGenerateKey() throws Exception {
         CDKManager cdk = new CDKManager();
         IMolecule mol = cdk.fromSMILES("C");
