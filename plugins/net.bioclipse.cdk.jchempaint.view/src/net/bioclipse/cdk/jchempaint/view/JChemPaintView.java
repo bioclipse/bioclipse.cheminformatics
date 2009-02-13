@@ -150,7 +150,7 @@ public class JChemPaintView extends ViewPart
             }
 
         });
-        
+
     }
 
     @Override
@@ -167,9 +167,13 @@ public class JChemPaintView extends ViewPart
     public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
 
         if ( part instanceof IEditorPart ) {
-            setAtomContainer( getAtomContainerFromPart( part ) );
-        } else
-            reactOnSelection( selection );
+            IAtomContainer ac = getAtomContainerFromPart( part );
+            if(ac != null) {
+                setAtomContainer( ac );
+                return;
+            }
+        }
+        reactOnSelection( selection );
     }
 
     private void reactOnSelection(ISelection selection) {
@@ -249,8 +253,8 @@ public class JChemPaintView extends ViewPart
                 logger.debug( "Unable to generate structure in 2Dview: "
                               + e.getMessage() );
             }
-            
-            
+
+
 
             //Handle case where Iadaptable can return atoms to be highlighted
             Object selobj=ada
