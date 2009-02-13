@@ -63,7 +63,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
     }
     
     public CDKMolecule(IAtomContainer atomContainer) {
-        super();
+        this();
         this.atomContainer=atomContainer;
     }
     
@@ -79,8 +79,8 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
                         IAtomContainer atomContainer, 
                         String smiles, 
                         BitSet fingerprint ) {
+        this(atomContainer);
         this.name = name;
-        this.atomContainer = atomContainer;
         this.cachedFingerprint = fingerprint;
         this.cachedSMILES = smiles;
     }
