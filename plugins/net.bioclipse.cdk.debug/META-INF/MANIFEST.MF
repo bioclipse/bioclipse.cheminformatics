@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDK Debug Plugin
 Bundle-SymbolicName: net.bioclipse.cdk.debug;singleton:=true
-Bundle-Version: 2.0.0.B20090123
+Bundle-Version: 2.0.0.B20090213
 Bundle-Activator: net.bioclipse.cdkdebug.Activator
 Import-Package: org.apache.log4j,
  org.eclipse.core.resources
@@ -21,3 +21,4 @@ Require-Bundle: org.eclipse.ui,
 Eclipse-LazyStart: true
 Export-Package: net.bioclipse.cdkdebug,
  net.bioclipse.cdkdebug.business
+Bundle-Vendor: The Bioclipse Team
