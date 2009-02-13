@@ -57,7 +57,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
      */
     CDKMolecule() {
         super();
-        if (prefs == null) {
+        if (prefs == null && Activator.getDefault() != null) {
             prefs = Activator.getDefault().getPluginPreferences();
         }
     }
@@ -154,7 +154,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
         if (getAtomContainer()==null) throw new BioclipseException("No molecule to " +
         "get CML from!");
 
-        if (prefs.getBoolean(PreferenceConstants.P_BOOLEAN)) {
+        if (prefs != null && prefs.getBoolean(PreferenceConstants.P_BOOLEAN)) {
             ByteArrayOutputStream bo=new ByteArrayOutputStream();
 
             CMLWriter writer=new CMLWriter(bo);
@@ -227,6 +227,9 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
     public String toString() {
         if ( getName() != null )
             return getClass().getSimpleName() + ":" + getName();
+        if (Activator.getDefault() == null)
+            return getClass().getSimpleName() + ":" + hashCode();
+
         return getClass().getSimpleName() + ":" 
                + Activator.getDefault().getCDKManager().molecularFormula(this);
     }
