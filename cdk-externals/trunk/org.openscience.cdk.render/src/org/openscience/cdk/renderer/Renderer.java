@@ -441,8 +441,10 @@ public class Renderer {
 	                drawBounds.getCenterY());
 	        
 	        if (rendererModel.isFitToScreen()) {
-	            double widthRatio = drawBounds.getWidth() / scaledWidth;
-	            double heightRatio = drawBounds.getHeight() / scaledHeight;
+	            double m = 2 * this.rendererModel.getMargin();
+	            double widthRatio  = (drawBounds.getWidth() - m) / scaledWidth;
+	            double heightRatio = 
+	                (drawBounds.getHeight() - m) / scaledHeight;
 
 	            // the area is contained completely within the target
 	            if (widthRatio > 1 && heightRatio > 1) {
