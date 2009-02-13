@@ -39,12 +39,15 @@ import org.openscience.cdk.renderer.generators.IGenerator;
  */
 public class JChemPaintWidget extends Canvas {
 
-    int margin = 20;
+    private int margin = 20;
 
     protected IAtomContainer  atomContainer;
+    
     protected RendererModel renderer2DModel = new RendererModel();
-    Renderer renderer;
-    SWTFontManager fontManager;
+    
+    private Renderer renderer;
+    
+    private SWTFontManager fontManager;
 
     public JChemPaintWidget(Composite parent, int style) {
 
@@ -57,13 +60,12 @@ public class JChemPaintWidget extends Canvas {
 
         fontManager = new SWTFontManager(this.getDisplay());
 
-        List<IGenerator> set =createGenerators();
+        List<IGenerator> set = createGenerators();
         renderer = new Renderer(set,fontManager);
 
         renderer2DModel = renderer.getRenderer2DModel();
-        renderer2DModel.setAtomRadius( 20 );
-        renderer2DModel.setHighlightDistance( 20 );
-
+      
+        renderer2DModel.setFitToScreen( true );
         renderer2DModel.setShowImplicitHydrogens( true );
         renderer2DModel.setShowEndCarbons( true );
         renderer2DModel.setShowExplicitHydrogens( true );
@@ -94,23 +96,12 @@ public class JChemPaintWidget extends Canvas {
             return;
         } else setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
 
-        Rectangle clientArea = getClientArea();
-//        new Rectangle2D.Double( margin, margin,
-//                                this.getSize().x-margin*2,
-//                                this.getSize().y-margin*2 )
+        Rectangle c = getClientArea();
+        Rectangle2D clientArea =
+            new Rectangle2D.Double(c.x, c.y, c.width, c.height); 
         SWTRenderer visitor = new SWTRenderer( event.gc);
 
-
-//        renderer.setZoom( Math.min( clientArea.width/acBounds.getWidth(),
-//                                    clientArea.height/acBounds.getHeight() ) );
-
-        renderer.getRenderer2DModel().setFitToScreen( true );
-        renderer.paintMolecule( atomContainer, visitor,
-                                new Rectangle2D.Double( clientArea.x,
-                                                        clientArea.y,
-                                                        clientArea.width,
-                                                        clientArea.height)
-                                , true );
+        renderer.paintMolecule(atomContainer, visitor, clientArea, true);
     }
 
     public void setAtomContainer( IAtomContainer atomContainer ) {
