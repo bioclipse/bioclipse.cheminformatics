@@ -67,9 +67,12 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
 
     Control headerControl=null;
 
-    IRenderer2DConfigurator renderer2DConfigurator;
     MoleculesEditorLabelProvider melp = new MoleculesEditorLabelProvider(
                                     MoleculeTableViewer.STRUCTURE_COLUMN_WIDTH);
+
+    public MoleculesEditorLabelProvider getLabelProvider() {
+        return melp;
+    }
 
     public List<Object> getProperties() {
 
@@ -80,16 +83,6 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
         return new HashSet<Object>(availableProperties);
     }
 
-    public IRenderer2DConfigurator getRenderer2DConfigurator() {
-
-        return renderer2DConfigurator;
-    }
-
-    public void setRenderer2DConfigurator(
-                             IRenderer2DConfigurator renderer2DConfigurator ) {
-
-        this.renderer2DConfigurator = renderer2DConfigurator;
-    }
 
     public ICDKMolecule getMoleculeAt( int index ) {
         ICDKMolecule molecule = null;

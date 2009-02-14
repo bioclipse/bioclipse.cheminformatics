@@ -67,6 +67,7 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
     public Renderer                           renderer;
     private IDrawVisitor drawVisitor;
     public int imageWidth;
+    private  IRenderer2DConfigurator renderer2DConfigurator;
 
     Collection<ILabelProviderListener> listeners =
      new HashSet<ILabelProviderListener>();
@@ -76,6 +77,16 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
         setupRenderer();
 
     }
+    
+    public IRenderer2DConfigurator getRenderer2DConfigurator() {
+        return renderer2DConfigurator;
+    }
+    public void setRenderer2DConfigurator(
+                             IRenderer2DConfigurator renderer2DConfigurator ) {
+        this.renderer2DConfigurator = renderer2DConfigurator;
+    }
+    
+    
     public void setPropertyHeaders(List<String> headers){
         propertyHeaders = headers;
     }
@@ -148,6 +159,9 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
             renderer.getRenderer2DModel().setHighlightDistance( 10 );
             renderer.getRenderer2DModel().setFitToScreen( true );
 
+            if (renderer2DConfigurator!=null){
+                renderer2DConfigurator.configure( renderer.getRenderer2DModel(), mol );
+            }
             Color greenScreen = new Color(Display.getCurrent(), 252, 253, 254);
 
                 image =

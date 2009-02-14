@@ -78,6 +78,9 @@ public class MoleculesEditor extends EditorPart implements
     public MoleculeTableContentProvider getContentProvider() {
         return contentProvider;
     }
+    public MoleculesEditorLabelProvider getLabelProvider() {
+        return labelProvider;
+    }
 
 
     public MoleculeTableViewer getMolTableViewer() {
