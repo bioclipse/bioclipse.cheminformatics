@@ -30,24 +30,27 @@ import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.AtomContainerBoundsGenerator;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
-import org.openscience.cdk.renderer.generators.BasicBondGenerator;
 import org.openscience.cdk.renderer.generators.HighlightGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.RingGenerator;
 
 /**
  * @author arvid
  */
 public class JChemPaintWidget extends Canvas {
 
-    private int margin = 20;
-
     protected IAtomContainer  atomContainer;
     
-    protected RendererModel renderer2DModel = new RendererModel();
+    protected RendererModel rendererModel = new RendererModel();
     
     private Renderer renderer;
     
     private SWTFontManager fontManager;
+    
+    /**
+     * A new model has to reset the center
+     */
+    private boolean isNew = true;
 
     public JChemPaintWidget(Composite parent, int style) {
 
@@ -60,15 +63,14 @@ public class JChemPaintWidget extends Canvas {
 
         fontManager = new SWTFontManager(this.getDisplay());
 
-        List<IGenerator> set = createGenerators();
-        renderer = new Renderer(set,fontManager);
+        renderer = new Renderer(createGenerators(), fontManager);
 
-        renderer2DModel = renderer.getRenderer2DModel();
+        rendererModel = renderer.getRenderer2DModel();
       
-        renderer2DModel.setFitToScreen( true );
-        renderer2DModel.setShowImplicitHydrogens( true );
-        renderer2DModel.setShowEndCarbons( true );
-        renderer2DModel.setShowExplicitHydrogens( true );
+        rendererModel.setFitToScreen( true );
+        rendererModel.setShowImplicitHydrogens( true );
+        rendererModel.setShowEndCarbons( true );
+        rendererModel.setShowExplicitHydrogens( true );
 
         addPaintListener( new PaintListener() {
 
@@ -83,7 +85,7 @@ public class JChemPaintWidget extends Canvas {
         List<IGenerator> generatorList = new ArrayList<IGenerator>();
         generatorList.add( new AtomContainerBoundsGenerator() );
         generatorList.add( new HighlightGenerator() );
-        generatorList.add( new BasicBondGenerator() );
+        generatorList.add( new RingGenerator() );
         generatorList.add( new BasicAtomGenerator());
 
         return generatorList;
@@ -95,13 +97,14 @@ public class JChemPaintWidget extends Canvas {
             setBackground( getParent().getBackground() );
             return;
         } else setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
-
+        
         Rectangle c = getClientArea();
         Rectangle2D clientArea =
             new Rectangle2D.Double(c.x, c.y, c.width, c.height); 
-        SWTRenderer visitor = new SWTRenderer( event.gc);
+        SWTRenderer visitor = new SWTRenderer( event.gc );
 
-        renderer.paintMolecule(atomContainer, visitor, clientArea, true);
+        renderer.paintMolecule(atomContainer, visitor, clientArea, isNew);
+        isNew = false;
     }
 
     public void setAtomContainer( IAtomContainer atomContainer ) {
@@ -113,17 +116,18 @@ public class JChemPaintWidget extends Canvas {
 
     public void setRenderer2DModel( RendererModel renderer2DModel ) {
 
-        this.renderer2DModel = renderer2DModel;
+        this.rendererModel = renderer2DModel;
         updateView( renderer2DModel!=null );
     }
 
     public RendererModel getRenderer2DModel() {
-        return renderer2DModel;
+        return rendererModel;
     }
 
     private void updateView(boolean show) {
-        if(isVisible() != show)
+        if (isVisible() != show) {
             setVisible( show );
+        }
         redraw();
     }
 
@@ -136,23 +140,11 @@ public class JChemPaintWidget extends Canvas {
         fontManager.dispose();
     }
 
-
-    public int getMargin() {
-
-        return margin;
-    }
-
-
-    public void setMargin( int margin ) {
-
-        this.margin = margin;
-    }
-
     public Point computeSize(int wHint, int hHint, boolean changed) {
 
         int width = 0, height = 0;
 
-        height = Math.max(100,wHint);
+        height = Math.max(100, wHint);
         width = height;
 
         return new Point(width + 2, height + 2);
