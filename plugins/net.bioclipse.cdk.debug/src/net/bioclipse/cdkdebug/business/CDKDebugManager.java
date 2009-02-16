@@ -94,7 +94,7 @@ public class CDKDebugManager implements ICDKDebugManager {
                 type = null;
             }
             if (type==null) {
-                logger.debug("AT null for atom: " + atom);
+//                logger.debug("AT null for atom: " + atom);
                 type = atom.getBuilder().newAtomType(atom.getSymbol());
                 type.setAtomTypeName("X");
             }
@@ -102,8 +102,9 @@ public class CDKDebugManager implements ICDKDebugManager {
             a++;
         }
         try {
-            System.out.println("Arom: " 
-                + CDKHueckelAromaticityDetector.detectAromaticity(ac) );
+            CDKHueckelAromaticityDetector.detectAromaticity(ac);
+//            System.out.println("Arom: " 
+//                + CDKHueckelAromaticityDetector.detectAromaticity(ac) );
 		    } 
         catch (CDKException e) {
 			    logger.debug("Failed to perceive aromaticity: " + e.getMessage());
