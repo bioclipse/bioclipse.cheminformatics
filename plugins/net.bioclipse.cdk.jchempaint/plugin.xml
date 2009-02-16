@@ -488,5 +488,8 @@
             name="JChemPaint Preferences">
       </page>
    </extension>
+   <extension point="org.eclipse.core.runtime.preferences">
+      <initializer class="net.bioclipse.cdk.jchempaint.preferences.PreferenceInitializer"/>
+   </extension>
 
 </plugin>
