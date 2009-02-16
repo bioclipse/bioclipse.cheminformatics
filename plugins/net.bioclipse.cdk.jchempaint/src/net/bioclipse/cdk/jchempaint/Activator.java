@@ -1,5 +1,6 @@
 package net.bioclipse.cdk.jchempaint;
 
+import net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintManager;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -19,8 +20,10 @@ public class Activator extends AbstractUIPlugin {
     // The shared instance
     private static Activator plugin;
     
-    // tracks the example manager
-    private ServiceTracker finderTracker;
+    // tracks the JChemPaintManager
+    private ServiceTracker jcpFinderTracker;
+    // tracks the JChemPaintGlobalPropertiesManager
+    private ServiceTracker jcpPropFinderTracker;
     
     /**
      * The constructor
@@ -36,10 +39,18 @@ public class Activator extends AbstractUIPlugin {
         super.start(context);
         plugin = this;
         
-        finderTracker = new ServiceTracker( context, 
-                                            IJChemPaintManager.class.getName(), 
-                                            null );
-        finderTracker.open();
+        jcpFinderTracker = new ServiceTracker(
+                context, 
+                IJChemPaintManager.class.getName(), 
+                null
+        );
+        jcpFinderTracker.open();
+        jcpPropFinderTracker = new ServiceTracker(
+                context, 
+                IJChemPaintGlobalPropertiesManager.class.getName(), 
+                null
+        );
+        jcpPropFinderTracker.open();
     }
 
     /**
@@ -50,7 +61,7 @@ public class Activator extends AbstractUIPlugin {
     public IJChemPaintManager getExampleManager() {
         IJChemPaintManager exampleManager = null;
         try {
-            exampleManager = (IJChemPaintManager) finderTracker.waitForService(1000*30);
+            exampleManager = (IJChemPaintManager) jcpFinderTracker.waitForService(1000*30);
         } catch (InterruptedException e) {
             throw new IllegalStateException("Could not get example manager", e);
         }
@@ -58,6 +69,19 @@ public class Activator extends AbstractUIPlugin {
             throw new IllegalStateException("Could not get example manager");
         }
         return exampleManager;
+    }
+
+    public IJChemPaintGlobalPropertiesManager getJCPPropManager() {
+        IJChemPaintGlobalPropertiesManager manager = null;
+        try {
+            manager = (IJChemPaintGlobalPropertiesManager)jcpPropFinderTracker.waitForService(1000*30);
+        } catch (InterruptedException e) {
+            throw new IllegalStateException("Could not get jcpprop manager", e);
+        }
+        if(manager == null) {
+            throw new IllegalStateException("Could not get example manager");
+        }
+        return manager;
     }
 
     /*

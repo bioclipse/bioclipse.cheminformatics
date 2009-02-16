@@ -401,6 +401,10 @@
       id="net.bioclipse.cdk.jchempaint.business.JChemPaintManager"
       service="net.bioclipse.cdk.jchempaint.business.JChemPaintManagerFactory">
     </scriptContribution>
+    <scriptContribution
+      id="net.bioclipse.cdk.jchempaint.business.JChemPaintGlobalPropertiesManager"
+      service="net.bioclipse.cdk.jchempaint.business.JChemPaintGlobalPropertiesManagerFactory">
+    </scriptContribution>
   </extension>
   <extension
         point="org.eclipse.core.expressions.definitions">

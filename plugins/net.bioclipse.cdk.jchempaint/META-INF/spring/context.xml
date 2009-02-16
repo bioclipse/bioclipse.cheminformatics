@@ -52,4 +52,32 @@
   <osgi:service id="jcpManagerOSGI" 
                 ref="jcpManager"
                 interface="net.bioclipse.cdk.jchempaint.business.IJChemPaintManager" />
+
+  <!-- The target that later on will be proxied. Our manager class. -->
+  <bean id="jcpPropManagerTarget" 
+        class="net.bioclipse.cdk.jchempaint.business.JChemPaintGlobalPropertiesManager">
+  </bean>
+  
+  <!--+ 
+      | The proxy puts together the managerTarget, the pointcut advisor
+      | and defines which interfaces to be proxied 
+      +-->
+  <bean id="jcpPropManager"
+  		class="org.springframework.aop.framework.ProxyFactoryBean">
+  	<property name="target" 
+  	          ref="jcpPropManagerTarget" />
+  	<property name="proxyInterfaces" 
+  	          value="net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager" />
+  	<property name="interceptorNames">
+        <list>
+           <value>recordingAdvisor</value>
+           <value>createJobAdvice</value>
+        </list>
+    </property>
+  </bean>
+
+  <!-- publishes the final manager (the proxy) -->
+  <osgi:service id="jcpPropManagerOSGI" 
+                ref="jcpPropManager"
+                interface="net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager" />
 </beans>

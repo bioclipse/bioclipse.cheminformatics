@@ -15,6 +15,7 @@ package net.bioclipse.cdk.jchempaint.preferences;
  */
 public class PreferenceConstants {
 
-	public static final String DEFAULTBOND_COLOR = "defaultBondColorPreference";
-	
+    public static final String SHOWAROMATICITY_BOOL = "showAromaticityPreference";
+    public static final String SHOWENDCARBONS_BOOL = "showEndCarbonsPreference";
+
 }
