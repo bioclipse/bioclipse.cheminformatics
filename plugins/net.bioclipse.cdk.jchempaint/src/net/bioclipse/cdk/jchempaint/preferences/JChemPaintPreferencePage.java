@@ -28,6 +28,7 @@ public class JChemPaintPreferencePage
 
     private BooleanFieldEditor showAromaticityField;
     private BooleanFieldEditor showEndCarbons;
+    private DoubleFieldEditor margin;
     
 	public JChemPaintPreferencePage() {
 		super(GRID);
@@ -54,6 +55,12 @@ public class JChemPaintPreferencePage
             getFieldEditorParent()
         );
         addField(showEndCarbons);
+        margin = new DoubleFieldEditor(
+                PreferenceConstants.MARGIN_DOUBLE,
+                "&Margin",
+                getFieldEditorParent()
+        );
+        addField(margin);
 	}
 
 	/* (non-Javadoc)

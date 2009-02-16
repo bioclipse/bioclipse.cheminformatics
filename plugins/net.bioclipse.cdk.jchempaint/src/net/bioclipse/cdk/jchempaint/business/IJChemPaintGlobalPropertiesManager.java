@@ -39,6 +39,12 @@ public interface IJChemPaintGlobalPropertiesManager extends IBioclipseManager {
     public void setShowAromaticity(boolean showAromaticity)
     throws BioclipseException;
     
+    @Recorded
+    @PublishedMethod ( params = "margin whitespace margin size", 
+                       methodSummary = "set the amount of whitespace around" +
+                       		"the diagram" )
+    public void setMargin(double margin) throws BioclipseException;
+    
     @PublishedMethod ( methodSummary = "true if showing explicit methyl groups")
     public boolean getShowEndCarbons()
     throws BioclipseException;
@@ -51,4 +57,7 @@ public interface IJChemPaintGlobalPropertiesManager extends IBioclipseManager {
     @PublishedMethod ( methodSummary = "applies the global properties to all" +
     		"opened JChemPaint editors" )
     public void applyGlobalProperties() throws BioclipseException;
+
+    @PublishedMethod ( methodSummary = "returns the margin size" )
+    public double getMargin() throws BioclipseException;
 }

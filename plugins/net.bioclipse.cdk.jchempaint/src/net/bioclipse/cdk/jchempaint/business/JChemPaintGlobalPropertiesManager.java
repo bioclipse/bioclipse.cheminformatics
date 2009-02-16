@@ -69,6 +69,9 @@ public class JChemPaintGlobalPropertiesManager
             RendererModel model = this.getRendererModel(editor);
             model.setShowAromaticity(getShowAromaticity());
             model.setShowEndCarbons(getShowEndCarbons());
+            model.setMargin(getMargin());
+            
+            // update the editor's rendering
             PlatformUI.getWorkbench().getDisplay().syncExec( new Runnable() {
                 public void run() {
                     if (editor != null) editor.update();
@@ -134,6 +137,29 @@ public class JChemPaintGlobalPropertiesManager
             prefs.setValue(
                     PreferenceConstants.SHOWENDCARBONS_BOOL, 
                     showEndCarbons
+            );
+        } else {
+            throwCannotGetPreferenceException();
+        }
+        applyGlobalProperties();
+    }
+
+    public double getMargin() throws BioclipseException {
+        Preferences prefs = getPreferences();
+        if (prefs != null) {
+            double pref = prefs.getDouble(PreferenceConstants.MARGIN_DOUBLE);
+            return pref; 
+        }
+        throwCannotGetPreferenceException();
+        return 0.0;
+    }
+
+    public void setMargin(double margin) throws BioclipseException {
+        Preferences prefs = getPreferences();
+        if (prefs != null) {
+            prefs.setValue(
+                    PreferenceConstants.MARGIN_DOUBLE, 
+                    margin
             );
         } else {
             throwCannotGetPreferenceException();
