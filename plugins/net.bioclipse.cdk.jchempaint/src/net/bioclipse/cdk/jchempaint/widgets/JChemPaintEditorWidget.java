@@ -18,8 +18,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.jchempaint.Activator;
+import net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager;
 import net.bioclipse.cdk.jchempaint.editor.SWTMouseEventRelay;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
+import net.bioclipse.core.business.BioclipseException;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.SafeRunner;
@@ -32,6 +35,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.PlatformUI;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.ControllerModel;
 import org.openscience.cdk.controller.IChemModelEventRelayHandler;
@@ -46,6 +50,7 @@ import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.ExternalHighlightGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.SelectionGenerator;
@@ -121,6 +126,17 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
     	relay = new SWTMouseEventRelay(hub);
     	hub.setActiveDrawModule( new MoveModule(hub) );
 
+        // apply the global JCP properties
+        IJChemPaintGlobalPropertiesManager jcpprop =
+            Activator.getDefault().getJCPPropManager();
+        RendererModel model = hub.getRenderer().getRenderer2DModel();
+        try {
+            model.setShowAromaticity(jcpprop.getShowAromaticity());
+            model.setShowEndCarbons(jcpprop.getShowEndCarbons());
+        } catch (BioclipseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     	addMouseListener(relay);
     	addMouseMoveListener(relay);
