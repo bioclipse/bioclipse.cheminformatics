@@ -39,12 +39,10 @@ public interface IJChemPaintGlobalPropertiesManager extends IBioclipseManager {
     public void setShowAromaticity(boolean showAromaticity)
     throws BioclipseException;
     
-    @Recorded
     @PublishedMethod ( methodSummary = "true if showing explicit methyl groups")
     public boolean getShowEndCarbons()
     throws BioclipseException;
     
-    @Recorded
     @PublishedMethod ( methodSummary = "true if aromatic indicators on" )
     public boolean getShowAromaticity()
     throws BioclipseException;
