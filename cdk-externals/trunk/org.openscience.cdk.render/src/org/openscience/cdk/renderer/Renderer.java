@@ -421,11 +421,20 @@ public class Renderer {
 	                            Rectangle2D modelBounds, 
 	                            double bondLen,
 	                            boolean resetCenter) {
-	    double scaledWidth  = modelBounds.getWidth() * this.scale;
-	    double scaledHeight = modelBounds.getHeight() * this.scale;
+	    
+	    // these are the model bounds width and height scaled by scale
+	    double scaledWidth;
+	    double scaledHeight;
+	    
+	    double modelWidth = modelBounds.getWidth();
+	    double modelHeight = modelBounds.getHeight();
+        double drawWidth = drawBounds.getWidth();
+        double drawHeight = drawBounds.getHeight();
 	    
 	    if (drawBounds == null) {
 	        this.scale = Renderer.DEFAULT_SCALE;
+	        scaledWidth  = modelWidth * this.scale;
+	        scaledHeight = modelHeight * this.scale;
 	        this.setDrawCenter(scaledWidth / 2, scaledHeight / 2);
 	    } else {
 	        
@@ -436,15 +445,21 @@ public class Renderer {
 	            this.scale = this.rendererModel.getBondLength() / bondLen;
 	        }
 	        
+	        if (modelWidth == 0 && modelHeight == 0) {
+	            scaledWidth  = drawWidth;
+                scaledHeight = drawHeight;
+	        } else {
+    	        scaledWidth  = modelWidth * this.scale;
+    	        scaledHeight = modelHeight * this.scale;
+	        }
+	        
 	        this.setDrawCenter(
-	                drawBounds.getCenterX(), 
-	                drawBounds.getCenterY());
+	                drawBounds.getCenterX(), drawBounds.getCenterY());
 	        
 	        if (rendererModel.isFitToScreen()) {
 	            double m = 2 * this.rendererModel.getMargin();
-	            double widthRatio  = (drawBounds.getWidth() - m) / scaledWidth;
-	            double heightRatio = 
-	                (drawBounds.getHeight() - m) / scaledHeight;
+	            double widthRatio  = (drawWidth - m) / scaledWidth;
+	            double heightRatio = (drawHeight - m) / scaledHeight;
 
 	            // the area is contained completely within the target
 	            if (widthRatio > 1 && heightRatio > 1) {
@@ -471,7 +486,7 @@ public class Renderer {
 	                this.zoom = widthRatio; // either is fine
 	            }
 	        }
-	        this.fontManager.setFontForZoom(this.zoom);
+	        this.fontManager.setFontForZoom(zoom);
 	        this.rendererModel.setZoomFactor(zoom);
 	    }
 	    
@@ -656,7 +671,7 @@ public class Renderer {
             return new Rectangle2D.Double();
         } else if (ac.getAtomCount() == 1) {
             Point2d p = ac.getAtom(0).getPoint2d();
-            return new Rectangle2D.Double(p.x, p.y, 10, 10);
+            return new Rectangle2D.Double(p.x, p.y, 0, 0);
         }
     
     	double xmin = Double.POSITIVE_INFINITY;
