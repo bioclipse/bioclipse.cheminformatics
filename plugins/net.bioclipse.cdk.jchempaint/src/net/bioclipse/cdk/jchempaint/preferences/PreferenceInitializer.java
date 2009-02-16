@@ -10,11 +10,11 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.preferences;
 
-import net.bioclipse.cdk.business.Activator;
-import net.bioclipse.cdk.jchempaint.business.IJChemPaintManager;
+import net.bioclipse.cdk.jchempaint.Activator;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.openscience.cdk.renderer.RendererModel;
 
 /**
  * Class used to initialize default preference values.
@@ -30,13 +30,20 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 
 		// inherit the defaults from the JChemPaintManager
-		IJChemPaintManager jcp = net.bioclipse.cdk.jchempaint.Activator
-	        .getDefault().getExampleManager();
+		RendererModel model = new RendererModel();
 
 		store.setDefault(
 		    PreferenceConstants.SHOWAROMATICITY_BOOL,
-		    jcp.getShowAromaticity()
+		    model.getShowAromaticity()
 		);
+        store.setDefault(
+            PreferenceConstants.SHOWENDCARBONS_BOOL,
+            model.getShowEndCarbons()
+        );
+        store.setDefault(
+            PreferenceConstants.MARGIN_DOUBLE,
+            model.getMargin()
+        );
 	}
 
 }
