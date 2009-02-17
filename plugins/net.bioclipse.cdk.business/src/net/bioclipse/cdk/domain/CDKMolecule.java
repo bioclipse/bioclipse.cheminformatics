@@ -25,6 +25,7 @@ import net.bioclipse.core.domain.BioObject;
 import net.bioclipse.core.domain.IMolecule;
 
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.ui.views.properties.IPropertySource;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.fingerprint.Fingerprinter;
 import org.openscience.cdk.geometry.GeometryTools;
@@ -43,7 +44,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  * @author ola
  *
  */
-public class CDKMolecule extends BioObject implements ICDKMolecule{
+public class CDKMolecule extends BioObject implements ICDKMolecule {
 
     private String name;
     private IAtomContainer atomContainer;
@@ -212,6 +213,10 @@ public class CDKMolecule extends BioObject implements ICDKMolecule{
     
         if (adapter == IMolecule.class){
             return this;
+        }
+        
+        if (adapter.isAssignableFrom(IPropertySource.class)) {
+            return new CDKMoleculePropertySource(this);
         }
         
         // TODO Auto-generated method stub
