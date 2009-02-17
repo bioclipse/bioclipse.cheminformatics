@@ -52,6 +52,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
                 PreferenceConstants.SHOW_IMPLICIT_HYDROGENS_BOOL,
                 model.getShowImplicitHydrogens()
         );
+        store.setDefault(
+                PreferenceConstants.SHOW_NUMBERS_BOOL,
+                model.drawNumbers()
+        );
+
 
         store.setDefault(
                 PreferenceConstants.ATOM_RADIUS_DOUBLE,

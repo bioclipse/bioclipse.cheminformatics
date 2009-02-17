@@ -51,7 +51,6 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
-import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.ExternalHighlightGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.SelectionGenerator;
@@ -131,10 +130,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
         // apply the global JCP properties
         IJChemPaintGlobalPropertiesManager jcpprop =
             Activator.getDefault().getJCPPropManager();
-        RendererModel model = hub.getRenderer().getRenderer2DModel();
         try {
-            model.setShowAromaticity(jcpprop.getShowAromaticity());
-            model.setShowEndCarbons(jcpprop.getShowEndCarbons());
+           jcpprop.applyProperties(hub.getRenderer().getRenderer2DModel());
         } catch (BioclipseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

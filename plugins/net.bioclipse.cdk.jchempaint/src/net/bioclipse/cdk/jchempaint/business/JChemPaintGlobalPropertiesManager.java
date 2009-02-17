@@ -63,21 +63,26 @@ public class JChemPaintGlobalPropertiesManager
         }
         return jcpEditors;
     }
+    
+    public void applyProperties(RendererModel model) throws BioclipseException {
+        model.setIsCompact(getIsCompact());
+        model.setShowAromaticity(getShowAromaticity());
+        model.setShowEndCarbons(getShowEndCarbons());
+        model.setShowExplicitHydrogens(getShowExplicitHydrogens());
+        model.setShowImplicitHydrogens(getShowImplicitHydrogens());
+        model.setDrawNumbers(getShowNumbers());
+        model.setMargin(getMargin());
+        model.setAtomRadius(getAtomRadius());
+        model.setBondLength(getBondLength());
+        model.setBondDistance(getBondDistance());
+        model.setHighlightDistance(getHighlightDistance());
+        model.setWedgeWidth(getWedgeWidth());
+    }
 
     public void applyGlobalProperties() throws BioclipseException {
         for (final JChemPaintEditor editor : getEditors()) {
             RendererModel model = this.getRendererModel(editor);
-            model.setIsCompact(getIsCompact());
-            model.setShowAromaticity(getShowAromaticity());
-            model.setShowEndCarbons(getShowEndCarbons());
-            model.setShowExplicitHydrogens(getShowExplicitHydrogens());
-            model.setShowImplicitHydrogens(getShowImplicitHydrogens());
-            model.setMargin(getMargin());
-            model.setAtomRadius(getAtomRadius());
-            model.setBondLength(getBondLength());
-            model.setBondDistance(getBondDistance());
-            model.setHighlightDistance(getHighlightDistance());
-            model.setWedgeWidth(getWedgeWidth());
+            applyProperties(model);
             
             // update the editor's rendering
             PlatformUI.getWorkbench().getDisplay().syncExec( new Runnable() {
@@ -185,6 +190,14 @@ public class JChemPaintGlobalPropertiesManager
             throws BioclipseException {
         setBool(PreferenceConstants.SHOW_IMPLICIT_HYDROGENS_BOOL, 
                 showImplicitHydrogens);
+    }
+
+    public boolean getShowNumbers() throws BioclipseException {
+        return getBool(PreferenceConstants.SHOW_NUMBERS_BOOL);
+    }
+
+    public void setShowNumbers(boolean showNumbers) throws BioclipseException {
+        setBool(PreferenceConstants.SHOW_NUMBERS_BOOL, showNumbers);
     }
 
     public double getAtomRadius() throws BioclipseException {

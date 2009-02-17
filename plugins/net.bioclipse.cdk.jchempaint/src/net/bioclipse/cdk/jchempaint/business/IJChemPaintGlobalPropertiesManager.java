@@ -11,6 +11,8 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.business;
 
+import org.openscience.cdk.renderer.RendererModel;
+
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
@@ -26,6 +28,8 @@ import net.bioclipse.core.business.IBioclipseManager;
 @PublishedClass ("Manager for the JChemPaintEditor Properties scripting language." )
 @TestClasses("net.bioclipse.cdk.jchempaint.business.test.JChemPaintManagerTest")
 public interface IJChemPaintGlobalPropertiesManager extends IBioclipseManager {
+    
+    public void applyProperties(RendererModel model) throws BioclipseException;
     
     @Recorded
     @PublishedMethod ( methodSummary = "applies the global properties to all" +
@@ -80,6 +84,16 @@ public interface IJChemPaintGlobalPropertiesManager extends IBioclipseManager {
     
     @PublishedMethod ( methodSummary = "true if showing implicit hydrogens")
     public boolean getShowImplicitHydrogens()
+    throws BioclipseException;
+    
+    @Recorded
+    @PublishedMethod ( params = "boolean true if numbers shown on atoms", 
+                       methodSummary = "set to show numbers on atoms" )
+    public void setShowNumbers(boolean showNumbers)
+    throws BioclipseException;
+    
+    @PublishedMethod ( methodSummary = "true if showing numbers on atoms")
+    public boolean getShowNumbers()
     throws BioclipseException;
     
     @Recorded

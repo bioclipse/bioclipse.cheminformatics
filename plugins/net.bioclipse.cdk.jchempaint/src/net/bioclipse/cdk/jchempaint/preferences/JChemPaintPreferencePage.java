@@ -31,6 +31,8 @@ public class JChemPaintPreferencePage
     private BooleanFieldEditor showEndCarbons;
     private BooleanFieldEditor showExplicitHydrogens;
     private BooleanFieldEditor showImplicitHydrogens;
+    private BooleanFieldEditor showNumbers;
+    
     private DoubleFieldEditor atomRadius;
     private DoubleFieldEditor bondLength;
     private DoubleFieldEditor bondDistance;
@@ -85,6 +87,13 @@ public class JChemPaintPreferencePage
                 getFieldEditorParent()
         );
         addField(showImplicitHydrogens);
+        
+        showNumbers = new BooleanFieldEditor(
+                PreferenceConstants.SHOW_NUMBERS_BOOL,
+                "Show &Numbers",
+                getFieldEditorParent()
+        );
+        addField(showNumbers);
         
         atomRadius = new DoubleFieldEditor(
                 PreferenceConstants.ATOM_RADIUS_DOUBLE,

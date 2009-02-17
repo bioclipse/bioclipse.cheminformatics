@@ -20,6 +20,7 @@ public class PreferenceConstants {
     public static final String SHOW_END_CARBONS_BOOL = "showEndCarbons";
     public static final String SHOW_EXPLICIT_HYDROGENS_BOOL = "showExplicit";
     public static final String SHOW_IMPLICIT_HYDROGENS_BOOL = "showImplicit";
+    public static final String SHOW_NUMBERS_BOOL = "showNumbers";
     
     public static final String ATOM_RADIUS_DOUBLE = "atomRadius";
     public static final String BOND_LENGTH_DOUBLE = "bondLength";
