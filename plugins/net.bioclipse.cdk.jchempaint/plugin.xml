@@ -99,6 +99,11 @@
              name="Boolean"
              optional="true">
        </commandParameter>
+       <commandParameter
+             id="jcp.controller.param.direction"
+             name="Direction"
+             optional="true">
+       </commandParameter>
     </command>
  </extension>
  <extension
@@ -109,9 +114,10 @@
              id="net.bioclipse.cdk.ui.jchempaint.toolbar">
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
-                icon="icons/editor/new_atom_bond.gif"
+                icon="icons/jcp/bond.png"
+                label="Draw Bond"
                 style="radio"
-                tooltip="Draw new Atoms and Bonds">
+                tooltip="Draw Bond">
              <visibleWhen
                    checkEnabled="true">
                 <reference
@@ -120,14 +126,15 @@
              </visibleWhen>
              <parameter
                    name="jcp.controller.module"
-                   value="DrawBondModule">
+                   value="AddBondModule">
              </parameter>
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
-                icon="icons/editor/lasso.gif"
+                icon="icons/jcp/symbol.png"
+                label="Cycle Symbol"
                 style="radio"
-                tooltip="Select Atoms and Bonds">
+                tooltip="Draw Bond">
              <visibleWhen
                    checkEnabled="true">
                 <reference
@@ -136,14 +143,57 @@
              </visibleWhen>
              <parameter
                    name="jcp.controller.module"
-                   value="SelectModule">
+                   value="CycleSymbolModule">
              </parameter>
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
-                icon="icons/editor/charge_plus.gif"
+                icon="icons/jcp/up_bond.png"
+                label="Bond Up"
                 style="radio"
-                tooltip="Increase formal Charge">
+                tooltip="Add or convert to bond up">
+             <visibleWhen
+                   checkEnabled="true">
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
+             </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="AlterBondStereoModule">
+             </parameter>
+             <parameter
+                   name="jcp.controller.param.direction"
+                   value="Up">
+             </parameter>
+          </command>
+          <command
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
+                icon="icons/jcp/down_bond.png"
+                label="Bond Down"
+                style="radio"
+                tooltip="Add or convert to bond down">
+             <visibleWhen
+                   checkEnabled="true">
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
+             </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="AlterBondStereoModule">
+             </parameter>
+             <parameter
+                   name="jcp.controller.param.direction"
+                   value="Down">
+             </parameter>
+          </command>
+          <command
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
+                icon="icons/jcp/plus_one.png"
+                label="Increas Charge"
+                style="radio"
+                tooltip="Increas Charge">
              <visibleWhen
                    checkEnabled="true">
                 <reference
@@ -161,9 +211,10 @@
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
-                icon="icons/editor/charge_minus.gif"
+                icon="icons/jcp/min_one.png"
+                label="Decreas Charge"
                 style="radio"
-                tooltip="Decrease formal Charge">
+                tooltip="Decreas Charge">
              <visibleWhen
                    checkEnabled="true">
                 <reference
@@ -181,9 +232,10 @@
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
-                icon="icons/editor/move.gif"
+                icon="icons/jcp/move.png"
+                label="Move"
                 style="radio"
-                tooltip="Move Atoms and Bonds">
+                tooltip="Move">
              <visibleWhen
                    checkEnabled="true">
                 <reference
@@ -197,9 +249,217 @@
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
-                icon="icons/editor/benzene.gif"
+                icon="icons/jcp/eraser.png"
+                label="Delete"
                 style="radio"
-                tooltip="Draw a Benzene ring">
+                tooltip="Delete">
+             <visibleWhen
+                   checkEnabled="true">
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
+             </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="RemoveModule">
+             </parameter>
+          </command>
+          <command
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
+                icon="icons/jcp/lasso.png"
+                label="Select"
+                style="radio"
+                tooltip="Select in Free Form">
+             <visibleWhen
+                   checkEnabled="true">
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
+             </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="SelectModule">
+             </parameter>
+          </command>
+          <command
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
+                icon="icons/jcp/selectsquare.png"
+                label="Select Square"
+                style="radio"
+                tooltip="Select Square">
+             <visibleWhen
+                   checkEnabled="true">
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
+             </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="SelectSquareModule">
+             </parameter>
+          </command>
+          <command
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
+                icon="icons/jcp/triangle.png"
+                label="Ring 3"
+                style="radio"
+                tooltip="Ring 3">
+             <visibleWhen
+                   checkEnabled="true">
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
+             </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="AddRingModule">
+             </parameter>
+             <parameter
+                   name="jcp.controller.param.int"
+                   value="3">
+             </parameter>
+             <parameter
+                   name="jcp.controller.param.boolean"
+                   value="false">
+             </parameter>
+          </command>
+          <command
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
+                icon="icons/jcp/square.png"
+                label="Ring 4"
+                style="radio"
+                tooltip="Ring 4">
+             <visibleWhen
+                   checkEnabled="true">
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
+             </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="AddRingModule">
+             </parameter>
+             <parameter
+                   name="jcp.controller.param.int"
+                   value="4">
+             </parameter>
+             <parameter
+                   name="jcp.controller.param.boolean"
+                   value="false">
+             </parameter>
+          </command>
+          <command
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
+                icon="icons/jcp/pentagon.png"
+                label="Ring 5"
+                style="radio"
+                tooltip="Ring 5">
+             <visibleWhen
+                   checkEnabled="true">
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
+             </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="AddRingModule">
+             </parameter>
+             <parameter
+                   name="jcp.controller.param.int"
+                   value="5">
+             </parameter>
+             <parameter
+                   name="jcp.controller.param.boolean"
+                   value="false">
+             </parameter>
+          </command>
+          <command
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
+                icon="icons/jcp/hexagon.png"
+                label="Ring 6"
+                style="radio"
+                tooltip="Ring 6">
+             <visibleWhen
+                   checkEnabled="true">
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
+             </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="AddRingModule">
+             </parameter>
+             <parameter
+                   name="jcp.controller.param.int"
+                   value="6">
+             </parameter>
+             <parameter
+                   name="jcp.controller.param.boolean"
+                   value="false">
+             </parameter>
+          </command>
+          <command
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
+                icon="icons/jcp/heptagon.png"
+                label="Ring 7"
+                style="radio"
+                tooltip="Ring 7">
+             <visibleWhen
+                   checkEnabled="true">
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
+             </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="AddRingModule">
+             </parameter>
+             <parameter
+                   name="jcp.controller.param.int"
+                   value="7">
+             </parameter>
+             <parameter
+                   name="jcp.controller.param.boolean"
+                   value="false">
+             </parameter>
+          </command>
+          <command
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
+                icon="icons/jcp/octagon.png"
+                label="Ring 8"
+                style="radio"
+                tooltip="Ring 8">
+             <visibleWhen
+                   checkEnabled="true">
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
+             </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="AddRingModule">
+             </parameter>
+             <parameter
+                   name="jcp.controller.param.int"
+                   value="8">
+             </parameter>
+             <parameter
+                   name="jcp.controller.param.boolean"
+                   value="false">
+             </parameter>
+          </command>
+          <command
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
+                icon="icons/jcp/benzene.png"
+                label="Benzene"
+                style="radio"
+                tooltip="Benzene">
+             <visibleWhen
+                   checkEnabled="true">
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
+             </visibleWhen>
              <parameter
                    name="jcp.controller.module"
                    value="AddRingModule">
@@ -212,12 +472,23 @@
                    name="jcp.controller.param.boolean"
                    value="true">
              </parameter>
+          </command>
+          <command
+                commandId="net.bioclipse.cdk.jchempaint.manager.action"
+                icon="icons/jcp/cleanup.png"
+                label="Clean Up"
+                style="push"
+                tooltip="Clean Up">
              <visibleWhen
                    checkEnabled="true">
                 <reference
                       definitionId="net.bioclipse.cdk.jchempaint.editor.type">
                 </reference>
              </visibleWhen>
+             <parameter
+                   name="jcp.manager.method"
+                   value="cleanup">
+             </parameter>
           </command>
        </toolbar>
     </menuContribution>
