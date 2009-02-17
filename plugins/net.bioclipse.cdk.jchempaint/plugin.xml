@@ -278,7 +278,7 @@
              </visibleWhen>
              <parameter
                    name="jcp.controller.module"
-                   value="SelectModule">
+                   value="SelectLassoModule">
              </parameter>
           </command>
           <command
