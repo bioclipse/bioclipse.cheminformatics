@@ -37,16 +37,6 @@ public interface IJChemPaintGlobalPropertiesManager extends IBioclipseManager {
     public void applyGlobalProperties() throws BioclipseException;
     
     @Recorded
-    @PublishedMethod ( params = "boolean true if the atoms are shown compact", 
-                       methodSummary = "set to true if atoms are compact" )
-    public void setIsCompact(boolean isCompact)
-    throws BioclipseException;
-
-    @PublishedMethod ( methodSummary = "true if the atoms are shown as compact")
-    public boolean getIsCompact()
-    throws BioclipseException;
-
-    @Recorded
     @PublishedMethod ( params = "boolean true if aromatic indicators shown", 
                        methodSummary = "set to true if aromatic indicators on" )
     public void setShowAromaticity(boolean showAromaticity)

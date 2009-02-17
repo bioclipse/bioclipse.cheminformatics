@@ -15,7 +15,6 @@ package net.bioclipse.cdk.jchempaint.preferences;
  */
 public class PreferenceConstants {
 
-    public static final String IS_COMPACT_BOOL = "isCompact";
     public static final String SHOW_AROMATICITY_BOOL = "showAromaticity";
     public static final String SHOW_END_CARBONS_BOOL = "showEndCarbons";
     public static final String SHOW_EXPLICIT_HYDROGENS_BOOL = "showExplicit";

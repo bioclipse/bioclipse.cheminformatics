@@ -33,10 +33,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		RendererModel model = new RendererModel();
 
 		store.setDefault(
-		        PreferenceConstants.IS_COMPACT_BOOL,
-		        model.getIsCompact()
-		);
-		store.setDefault(
 		        PreferenceConstants.SHOW_AROMATICITY_BOOL,
 		        model.getShowAromaticity()
 		);

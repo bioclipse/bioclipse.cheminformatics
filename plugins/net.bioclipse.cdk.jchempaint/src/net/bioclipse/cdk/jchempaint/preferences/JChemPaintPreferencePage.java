@@ -26,7 +26,6 @@ public class JChemPaintPreferencePage
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 
-    private BooleanFieldEditor isCompact;
     private BooleanFieldEditor showAromaticityField;
     private BooleanFieldEditor showEndCarbons;
     private BooleanFieldEditor showExplicitHydrogens;
@@ -53,12 +52,6 @@ public class JChemPaintPreferencePage
 	 * restore itself.
 	 */
 	public void createFieldEditors() {
-	    isCompact = new BooleanFieldEditor(
-	            PreferenceConstants.IS_COMPACT_BOOL,
-	            "Set &Compact",
-	            getFieldEditorParent()
-	    );
-	    addField(isCompact);
 	    
 	    showAromaticityField = new BooleanFieldEditor(
 	        PreferenceConstants.SHOW_AROMATICITY_BOOL,

@@ -65,7 +65,6 @@ public class JChemPaintGlobalPropertiesManager
     }
     
     public void applyProperties(RendererModel model) throws BioclipseException {
-        model.setIsCompact(getIsCompact());
         model.setShowAromaticity(getShowAromaticity());
         model.setShowEndCarbons(getShowEndCarbons());
         model.setShowExplicitHydrogens(getShowExplicitHydrogens());
@@ -145,15 +144,7 @@ public class JChemPaintGlobalPropertiesManager
     private void throwCannotGetPreferenceException() throws BioclipseException {
         throw new BioclipseException("Cannot get access to the preferences...");
     }
-   
-    public boolean getIsCompact() throws BioclipseException {
-        return getBool(PreferenceConstants.IS_COMPACT_BOOL);
-    }
-
-    public void setIsCompact(boolean isCompact) throws BioclipseException {
-        setBool(PreferenceConstants.IS_COMPACT_BOOL, isCompact);
-    }
-
+    
     public boolean getShowAromaticity() throws BioclipseException {
         return getBool(PreferenceConstants.SHOW_AROMATICITY_BOOL);
     }
