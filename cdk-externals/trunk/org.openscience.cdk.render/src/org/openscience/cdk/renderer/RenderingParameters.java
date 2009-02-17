@@ -65,7 +65,7 @@ public class RenderingParameters {
     /**
      * The color to draw bonds if not other color is given.
      */
-    private Color defaultBondColor;
+    private Color defaultBondColor = Color.BLACK;
 
     private String fontName = "Arial";
     
