@@ -406,7 +406,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @TestMethods("testStructureMatches")
     public boolean areIsomorphic( ICDKMolecule molecule1,
-                                        ICDKMolecule molecule2 );
+                                  ICDKMolecule molecule2 );
 
 
     /**
@@ -708,13 +708,13 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @TestMethods("testExtractFromSDFile_IFile_int_int")
-    public List<IMolecule> extractFromSDFile(IFile file, int startenty, int endentry) throws BioclipseException, InvocationTargetException;
+    public List<IMolecule> extractFromSDFile(IFile file, int startentry, int endentry) throws BioclipseException, InvocationTargetException;
     
     @Recorded
-    @PublishedMethod(params = "String file, int startenty, int endentry", 
+    @PublishedMethod(params = "String file, int startentry, int endentry", 
                      methodSummary="Extracts a number of entries from an sd file. Does not read the complete file for this.")
     @TestMethods("testExtractFromSDFile_String_int_int")
-    public List<IMolecule> extractFromSDFile(String file, int startenty, int endentry) throws BioclipseException, InvocationTargetException;
+    public List<IMolecule> extractFromSDFile(String file, int startentry, int endentry) throws BioclipseException, InvocationTargetException;
 
     @Recorded
     @PublishedMethod(params = "ICDKMolecule m",
