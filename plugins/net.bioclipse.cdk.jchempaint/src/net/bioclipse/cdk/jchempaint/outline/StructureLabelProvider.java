@@ -15,6 +15,7 @@ package net.bioclipse.cdk.jchempaint.outline;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.jchempaint.Activator;
 
 import org.eclipse.jface.resource.ImageDescriptor;

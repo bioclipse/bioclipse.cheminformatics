@@ -11,12 +11,11 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.editor;
 
-import java.awt.Color;
 import java.util.Iterator;
 
 import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.jchempaint.outline.CDKChemObject;
 import net.bioclipse.cdk.jchempaint.outline.JCPOutlinePage;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.business.BioclipseException;

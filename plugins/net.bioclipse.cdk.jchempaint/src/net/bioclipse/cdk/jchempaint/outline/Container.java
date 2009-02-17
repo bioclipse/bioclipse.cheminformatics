@@ -13,6 +13,8 @@ package net.bioclipse.cdk.jchempaint.outline;
 
 import java.util.ArrayList;
 
+import net.bioclipse.cdk.domain.CDKChemObject;
+
 public class Container {
 
     String name;
