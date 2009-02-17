@@ -128,39 +128,37 @@ public class SWTRenderer implements IDrawVisitor{
         gc.setBackground( colorOld );
     }
 
-    private void drawWedge(WedgeLineElement element) {
-        double width = element.width;
-        Point2d p1 = new Point2d( transformX(element.x1),
-                                  transformY(element.y1));
-        Point2d p2 = new Point2d( transformX(element.x2),
-                                  transformY(element.y2));
-        Vector2d p12 = new Vector2d(p2);p12.sub( p1 );
-        Vector2d v12n = new Vector2d(p12.y,-p12.x); // normal for p12
-        v12n.normalize();
-        //   wedge thickness is based on line width probably better to be based
-        //  on text size
-        double l = width*4/2;
-        Vector2d pa = new Vector2d(v12n);pa.scale( l );
-        Vector2d pb = new Vector2d(v12n);pb.scale(-l);
-        v12n.scale( l);
-
-        Point2d p1a = new Point2d();p1a.add( p1, v12n );
-        Point2d p1b = new Point2d();p1b.sub( p1, v12n );
-
-        gc.setLineWidth( (int) width );
-        if(element.isDashed)
-            drawDashedWedge( p1a, p1b, p2, width );
+    private void drawWedge(WedgeLineElement wedge) {
+      
+        Vector2d normal = 
+            new Vector2d(wedge.y1 - wedge.y2, wedge.x2 - wedge.x1);
+        normal.normalize();
+        normal.scale(model.getWedgeWidth() / model.getScale());
+        
+        // make the triangle corners
+        Point2d vertexA = new Point2d(wedge.x1, wedge.y1);
+        Point2d vertexB = new Point2d(wedge.x2, wedge.y2);
+        Point2d vertexC = new Point2d(vertexB);
+        vertexB.add(normal);
+        vertexC.sub(normal);
+        
+//        gc.setLineWidth( (int) wedge.width );
+        if (wedge.isDashed)
+            drawDashedWedge( vertexA, vertexB, vertexC);
         else
-            drawFilledWedge( p1a, p1b, p2);
+            drawFilledWedge(vertexA, vertexB, vertexC);
 
     }
     
-    private void drawFilledWedge( Point2d p1a, Point2d p1b,
-                                  Point2d p2) {
+    private void drawFilledWedge(Point2d pA, Point2d pB, Point2d pC) {
+        double[] a = transform(pA.x, pA.y);
+        double[] b = transform(pB.x, pB.y);
+        double[] c = transform(pC.x, pC.y);
+        
         Path path = new Path(gc.getDevice());
-        path.moveTo( (float)p2.x,(float) p2.y );
-        path.lineTo( (float)(p1a.x), (float)(p1a.y) );
-        path.lineTo( (float)(p1b.x), (float)(p1b.y) );
+        path.moveTo((float) a[0], (float) a[1]);
+        path.lineTo((float) b[0], (float) b[1]);
+        path.lineTo((float) c[0], (float) c[1]);
         path.close();
 
         gc.fillPath( path );
@@ -168,24 +166,33 @@ public class SWTRenderer implements IDrawVisitor{
         path.dispose();
     }
     
-    private void drawDashedWedge( Point2d p1a, Point2d p1b,
-                                  Point2d p2, double d) {
-
-        double s = (d*2);
-        double t = s / p1a.distance( p2 );
-        double t2 = p1a.distance( p2 )/ s;
-        Path dashes = new Path(gc.getDevice());
-        for(int i=0 ;i<t2;i++) {
-            Point2d w = new Point2d();
-            w.interpolate( p1a, p2, t*i);
-            Point2d u = new Point2d();
-            u.interpolate( p1b,p2, t*i );
-            dashes.moveTo( (float) (w.x), (float) (w.y) );
-            dashes.lineTo( (float) (u.x), (float) (u.y) );
+    private void drawDashedWedge(Point2d pA, Point2d pB, Point2d pC) {
+        // calculate the distances between lines
+        double distance = pB.distance(pA);
+        double gapFactor = 0.075;
+        double gap = distance * gapFactor;
+        double numberOfDashes = distance / gap;
+        double d = 0;
+        
+        // draw by interpolating along the edges of the triangle
+        Path path = new Path(gc.getDevice());
+        for (int i = 0; i < numberOfDashes; i++) {
+            Point2d p1 = new Point2d();
+            p1.interpolate(pA, pB, d);
+            Point2d p2 = new Point2d();
+            p2.interpolate(pA, pC, d);
+            double[] p1T = transform(p1.x, p1.y);
+            double[] p2T = transform(p2.x, p2.y);
+            path.moveTo((float)p1T[0], (float)p1T[1]);
+            path.lineTo((float)p2T[0], (float)p2T[1]);
+            if (distance * (d + gapFactor) >= distance) {
+                break;
+            } else {
+                d += gapFactor;
+            }
         }
-
-        gc.drawPath( dashes );
-        dashes.dispose();
+        gc.drawPath( path);
+        path.dispose();
     }
 
     private Color getForgroundColor() {
