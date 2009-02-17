@@ -95,7 +95,7 @@ public class BasicBondGenerator implements IGenerator {
 	    
 	    Color color = model.getColorHash().get(bond);
 	    if (color == null) {
-	        return Color.BLACK;
+	        return model.getDefaultBondColor();
 	    } else {
 	        return color;
 	    }
