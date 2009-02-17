@@ -219,8 +219,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
     }
 
     public ISelection getSelection() {
-        if(this.getRenderer2DModel()== null)
-            return StructuredSelection.EMPTY;
+        if (this.getRenderer2DModel() == null && model != null)
+            return new StructuredSelection(model);
         List<IChemObject> selection = new LinkedList<IChemObject>();
 
         //selection.add( atomContainer );
@@ -242,6 +242,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
             for(IBond bond:modelSelection.bonds()) {
                 selection.add(bond);
             }
+        }
+        if (selection.size() == 0 && model != null) {
+            return new StructuredSelection(model);
         }
         return new StructuredSelection(selection);
     }
