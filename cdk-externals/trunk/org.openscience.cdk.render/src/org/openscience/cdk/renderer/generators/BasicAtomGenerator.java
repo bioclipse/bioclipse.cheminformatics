@@ -75,7 +75,12 @@ public class BasicAtomGenerator implements IGenerator {
 		    return this.generateCompactElement(atom, model);
 		}
 
-		int alignment = GeometryTools.getBestAlignmentForLabelXY(ac, atom);
+		int alignment = 0;
+		if(isCarbon( atom ))
+		    alignment = GeometryTools.getBestAlignmentForLabel(ac, atom);
+		else
+		    alignment = GeometryTools.getBestAlignmentForLabelXY(ac, atom);
+
 		return generateElements(atom, alignment, model);
 	}
 
