@@ -35,6 +35,7 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.renderer.Renderer;
+import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 
 /**
  * @cdk.module render
@@ -42,13 +43,14 @@ import org.openscience.cdk.renderer.Renderer;
 public interface IChemModelRelay {
 
     /* Interaction*/
-    public abstract IControllerModel getController2DModel();
-    public abstract Renderer getRenderer();
-    public abstract IChemModel getIChemModel();
+    public IControllerModel getController2DModel();
+    public Renderer getRenderer();
+    public IChemModel getIChemModel();
     public void setChemModel(IChemModel model);
-    public abstract IAtom getClosestAtom(Point2d worldCoord);
-    public abstract IBond getClosestBond(Point2d worldCoord);
-    public abstract void updateView();
+    public IAtom getClosestAtom(Point2d worldCoord);
+    public IBond getClosestBond(Point2d worldCoord);
+    public void updateView();
+    public void select(IChemObjectSelection selection);
     
     /* Event model */
     public void setEventHandler(IChemModelEventRelayHandler handler);

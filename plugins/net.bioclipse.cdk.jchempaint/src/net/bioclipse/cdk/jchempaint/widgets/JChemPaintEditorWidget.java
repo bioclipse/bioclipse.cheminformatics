@@ -53,6 +53,7 @@ import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.ExternalHighlightGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.SelectionGenerator;
+import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 
@@ -232,8 +233,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
         if(highlightedAtom != null)
             selection.add( highlightedAtom );
 
-        org.openscience.cdk.renderer.selection.ISelection sel
-                = getRenderer2DModel().getSelection();
+        IChemObjectSelection sel = getRenderer2DModel().getSelection();
         IAtomContainer modelSelection = sel.getConnectedAtomContainer();
         if(modelSelection != null) {
             for(IAtom atom:modelSelection.atoms()) {

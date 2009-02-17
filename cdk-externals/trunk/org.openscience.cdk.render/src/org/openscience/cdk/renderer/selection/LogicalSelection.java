@@ -13,7 +13,7 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
  * @author maclean
  * @cdk.module render
  */
-public class LogicalSelection implements ISelection {
+public class LogicalSelection implements IChemObjectSelection {
     
     public enum Type { ALL, NONE };
     

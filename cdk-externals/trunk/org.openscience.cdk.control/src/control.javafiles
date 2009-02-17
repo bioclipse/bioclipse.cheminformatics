@@ -9,7 +9,7 @@ org/openscience/cdk/controller/CycleSymbolModule.java
 org/openscience/cdk/controller/MoveModule.java
 org/openscience/cdk/controller/ChangeFormalChargeModule.java
 org/openscience/cdk/controller/AddAtomModule.java
-org/openscience/cdk/controller/SelectModule.java
+org/openscience/cdk/controller/SelectLassoModule.java
 org/openscience/cdk/controller/RotateModule.java
 org/openscience/cdk/controller/RemoveModule.java
 org/openscience/cdk/controller/UndoAdapter.java

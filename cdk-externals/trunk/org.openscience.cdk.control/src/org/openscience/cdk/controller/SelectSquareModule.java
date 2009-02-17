@@ -31,9 +31,8 @@ public class SelectSquareModule extends ControllerModuleAdapter {
     
     private RectangleSelection selection = new RectangleSelection();
     
-    public SelectSquareModule(IChemModelRelay chemModelRelay, IChemModelEventRelayHandler eventhandler) {
+    public SelectSquareModule(IChemModelRelay chemModelRelay) {
         super(chemModelRelay);
-        selection.setEventHandler(eventhandler);
     }
     
     public void mouseClickedDown(Point2d p) {
@@ -45,12 +44,12 @@ public class SelectSquareModule extends ControllerModuleAdapter {
     
     public void mouseDrag(Point2d from, Point2d to) {
         this.selection.addPoint(to);
-        this.selection.select(this.chemModelRelay.getIChemModel());
+        this.chemModelRelay.select(selection);
         this.chemModelRelay.updateView();
     }
     
     public void mouseClickedUp(Point2d p) {
-        this.selection.select(this.chemModelRelay.getIChemModel());
+        this.chemModelRelay.select(selection);
         this.selection.reset();
         this.chemModelRelay.updateView();
     }

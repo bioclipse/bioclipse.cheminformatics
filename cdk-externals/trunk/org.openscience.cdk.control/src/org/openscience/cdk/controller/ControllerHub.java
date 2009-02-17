@@ -57,6 +57,7 @@ import org.openscience.cdk.layout.TemplateHandler;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.tools.SaturationChecker;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
@@ -948,5 +949,18 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
     private void coordinatesChanged() {
         if (changeHandler != null) changeHandler.coordinatesChanged();
+    }
+    
+    private void selectionChanged() {
+        if (changeHandler != null) changeHandler.selectionChanged();
+    }
+
+    /* 
+     * Fill a selection by passing it to the hub, which uses its internal
+     * chem model to do so.
+     */
+    public void select(IChemObjectSelection selection) {
+        selection.select(this.chemModel);
+        selectionChanged();
     }
 }

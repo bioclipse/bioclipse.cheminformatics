@@ -26,7 +26,7 @@ package org.openscience.cdk.controller;
 
 import javax.vecmath.Point2d;
 
-import org.openscience.cdk.renderer.selection.ISelection;
+import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.selection.ShapeSelection;
 
 /**
@@ -42,7 +42,7 @@ public class RotateModule extends ControllerModuleAdapter {
     }
 
     public void mouseClickedDown(Point2d worldCoord) {
-        ISelection selection = super.chemModelRelay
+        IChemObjectSelection selection = super.chemModelRelay
                                         .getRenderer()
                                         .getRenderer2DModel()
                                         .getSelection();

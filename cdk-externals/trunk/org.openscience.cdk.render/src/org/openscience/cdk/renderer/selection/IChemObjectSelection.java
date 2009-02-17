@@ -10,7 +10,7 @@ import org.openscience.cdk.renderer.elements.IRenderingElement;
  * @author maclean
  * @cdk.module render
  */
-public interface ISelection {
+public interface IChemObjectSelection {
     
     /**
      * Perform a selection by some method.

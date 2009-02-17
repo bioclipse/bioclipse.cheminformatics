@@ -32,7 +32,7 @@ import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
 import org.openscience.cdk.renderer.elements.RectangleElement;
-import org.openscience.cdk.renderer.selection.ISelection;
+import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 
 /**
  * @cdk.module render
@@ -46,7 +46,7 @@ public class SelectionGenerator implements IGenerator {
     public IRenderingElement generate(IAtomContainer ac, RendererModel model) {
         Color selectionColor = model.getSelectedPartColor();
         AtomShape shape = model.getSelectionShape();
-        ISelection selection = model.getSelection();
+        IChemObjectSelection selection = model.getSelection();
         
         ElementGroup selectionElements = new ElementGroup();
         if (this.autoUpdateSelection || selection.isFilled()) {

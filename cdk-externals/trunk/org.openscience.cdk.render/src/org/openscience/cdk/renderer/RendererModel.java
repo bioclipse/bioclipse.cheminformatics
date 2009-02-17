@@ -43,7 +43,7 @@ import org.openscience.cdk.renderer.RenderingParameters.AtomShape;
 import org.openscience.cdk.renderer.color.CDK2DAtomColors;
 import org.openscience.cdk.renderer.color.IAtomColorer;
 import org.openscience.cdk.renderer.font.IFontManager;
-import org.openscience.cdk.renderer.selection.ISelection;
+import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.selection.LassoSelection;
 
 /**
@@ -87,7 +87,7 @@ public class RendererModel implements Serializable, Cloneable {
     
     private IAtomContainer clipboardContent = null;
     
-    private ISelection selection = new LassoSelection();
+    private IChemObjectSelection selection = new LassoSelection();
 
     public RendererModel() {
         this.parameters = new RenderingParameters();
@@ -138,11 +138,11 @@ public class RendererModel implements Serializable, Cloneable {
         this.parameters.setScale(scale);
     }
     
-    public void setSelection(ISelection selection) {
+    public void setSelection(IChemObjectSelection selection) {
         this.selection = selection;
     }
     
-    public ISelection getSelection() {
+    public IChemObjectSelection getSelection() {
         return this.selection;
     }
     

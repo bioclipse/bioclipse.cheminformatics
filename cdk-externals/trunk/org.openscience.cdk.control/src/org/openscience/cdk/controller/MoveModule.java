@@ -31,7 +31,7 @@ import javax.vecmath.Vector2d;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.renderer.selection.ISelection;
+import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.tools.LoggingTool;
 
 /**
@@ -51,7 +51,7 @@ public class MoveModule extends ControllerModuleAdapter {
     private LoggingTool logger = new LoggingTool(MoveModule.class);
     private IAtom atom;
     private IBond bond;
-    private ISelection selection;
+    private IChemObjectSelection selection;
     private Vector2d offset;
     private Type type = Type.NONE;
 
@@ -59,7 +59,7 @@ public class MoveModule extends ControllerModuleAdapter {
         super(chemObjectRelay);
     }
 
-    private Type getClosest(IAtom atom, IBond bond, ISelection selection,
+    private Type getClosest(IAtom atom, IBond bond, IChemObjectSelection selection,
             Point2d worldCoord) {
         if (selection.isFilled())
             return Type.SELECTION;

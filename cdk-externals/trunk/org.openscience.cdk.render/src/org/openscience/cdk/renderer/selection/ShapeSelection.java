@@ -26,7 +26,6 @@ import java.util.List;
 
 import javax.vecmath.Point2d;
 
-import org.openscience.cdk.controller.IChemModelEventRelayHandler;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -37,13 +36,11 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 /**
  * @cdk.module render
  */
-public abstract class ShapeSelection implements ISelection {
+public abstract class ShapeSelection implements IChemObjectSelection {
     
     public final List<IAtom> atoms = new ArrayList<IAtom>();
     
     public final List<IBond> bonds = new ArrayList<IBond>();
-    
-    private IChemModelEventRelayHandler changeHandler;
     
     protected boolean finished = false;
     
@@ -74,7 +71,7 @@ public abstract class ShapeSelection implements ISelection {
     }
     
     public boolean isFilled() {
-        return !this.atoms.isEmpty() || !this.bonds.isEmpty();
+        return !atoms.isEmpty() || !bonds.isEmpty();
     }
     
     /* 
@@ -86,14 +83,14 @@ public abstract class ShapeSelection implements ISelection {
      */
     public IAtomContainer getConnectedAtomContainer() {
         // you should really have used the isFilled method...
-        if (this.atoms.size() == 0) return null;
+        if (atoms.size() == 0) return null;
         
-        IAtomContainer ac = this.atoms.get(0).getBuilder().newAtomContainer();
-        for (IAtom atom : this.atoms) {
+        IAtomContainer ac = atoms.get(0).getBuilder().newAtomContainer();
+        for (IAtom atom : atoms) {
             ac.addAtom(atom);
         }
         
-        for (IBond bond : this.bonds) {
+        for (IBond bond : bonds) {
             boolean addBond = true;
             for (IAtom atom : bond.atoms()) {
                 if (!ac.contains(atom)) addBond = false;
@@ -110,28 +107,22 @@ public abstract class ShapeSelection implements ISelection {
     public void select(IAtomContainer atomContainer) {
     	clear();
         for (IAtom atom : atomContainer.atoms()) {
-            if (this.contains(atom.getPoint2d()) && !this.atoms.contains(atom)) {
-                this.atoms.add(atom); 
+            if (contains(atom.getPoint2d()) && !atoms.contains(atom)) {
+                atoms.add(atom); 
              }
         }
         
         for (IBond bond : atomContainer.bonds()) {
-            if (this.contains(bond.get2DCenter()) && !this.bonds.contains(bond)) {
-                this.bonds.add(bond); 
+            if (contains(bond.get2DCenter()) && !bonds.contains(bond)) {
+                bonds.add(bond); 
              }
-        }   
-        if(changeHandler!=null)
-        	changeHandler.selectionChanged();
+        }
     }
     
     public void select(IChemModel chemModel) {
         for (IAtomContainer atomContainer : 
             ChemModelManipulator.getAllAtomContainers(chemModel)) {
-            this.select(atomContainer);
+            select(atomContainer);
         }
-    }
-    
-    public void setEventHandler(IChemModelEventRelayHandler handler) {
-        this.changeHandler = handler;
     }
 }

@@ -28,20 +28,14 @@ import org.openscience.cdk.renderer.selection.ShapeSelection;
 /**
  * @cdk.module control
  */
-public class SelectModule extends ControllerModuleAdapter {
+public class SelectLassoModule extends ControllerModuleAdapter {
     
     private ShapeSelection selection = new LassoSelection();
     
-    public SelectModule(IChemModelRelay chemModelRelay) {
+    public SelectLassoModule(IChemModelRelay chemModelRelay) {
         super(chemModelRelay);
     }
-    
-    public SelectModule(IChemModelRelay chemModelRelay,
-            IChemModelEventRelayHandler eventhandler) {
-        super(chemModelRelay);
-        selection.setEventHandler(eventhandler);
-    }
-    
+   
     public void mouseClickedDown(Point2d p) {
         this.selection.clear();
         this.chemModelRelay.getRenderer()
@@ -51,12 +45,12 @@ public class SelectModule extends ControllerModuleAdapter {
     
     public void mouseDrag(Point2d from, Point2d to) {
         this.selection.addPoint(to);
-        this.selection.select(this.chemModelRelay.getIChemModel());
+        this.chemModelRelay.select(selection);
         this.chemModelRelay.updateView();
     }
     
     public void mouseClickedUp(Point2d p) {
-        this.selection.select(this.chemModelRelay.getIChemModel());
+        this.chemModelRelay.select(selection);
         this.selection.reset();
         this.chemModelRelay.updateView();
     }

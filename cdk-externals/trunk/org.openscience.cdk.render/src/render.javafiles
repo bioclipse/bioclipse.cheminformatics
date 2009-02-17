@@ -43,7 +43,7 @@ org/openscience/cdk/renderer/generators/AtomContainerBoundsGenerator.java
 org/openscience/cdk/renderer/generators/IGenerator.java
 org/openscience/cdk/renderer/generators/RingGenerator.java
 org/openscience/cdk/renderer/RendererModel.java
-org/openscience/cdk/renderer/selection/ISelection.java
+org/openscience/cdk/renderer/selection/IChemObjectSelection.java
 org/openscience/cdk/renderer/selection/ShapeSelection.java
 org/openscience/cdk/renderer/selection/LassoSelection.java
 org/openscience/cdk/renderer/selection/LogicalSelection.java
