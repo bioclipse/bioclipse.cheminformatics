@@ -80,9 +80,6 @@ public class JChemPaintGlobalPropertiesManager
         }
     }
     
-    public void setBondLength(double bondLength) {
-    }
-
     private Preferences getPreferences() {
         return Activator.getDefault().getPluginPreferences();
     }
@@ -93,24 +90,14 @@ public class JChemPaintGlobalPropertiesManager
         return editor.getControllerHub().getRenderer().getRenderer2DModel();
     }
 
-    public boolean getShowAromaticity() throws BioclipseException {
-        Preferences prefs = getPreferences();
-        if (prefs != null) {
-            return prefs.getBoolean(PreferenceConstants.SHOWAROMATICITY_BOOL);
-        }
-        throwCannotGetPreferenceException();
-        return false;
-    }
-
     private void throwCannotGetPreferenceException() throws BioclipseException {
         throw new BioclipseException("Cannot get access to the preferences...");
     }
 
-    public boolean getShowEndCarbons() throws BioclipseException{
+    public boolean getShowAromaticity() throws BioclipseException {
         Preferences prefs = getPreferences();
         if (prefs != null) {
-            boolean pref = prefs.getBoolean(PreferenceConstants.SHOWENDCARBONS_BOOL);
-            return pref; 
+            return prefs.getBoolean(PreferenceConstants.SHOWAROMATICITY_BOOL);
         }
         throwCannotGetPreferenceException();
         return false;
@@ -128,6 +115,38 @@ public class JChemPaintGlobalPropertiesManager
             throwCannotGetPreferenceException();
         }
         applyGlobalProperties();
+    }
+
+    public double getBondLength() throws BioclipseException {
+        Preferences prefs = getPreferences();
+        if (prefs != null) {
+            return prefs.getDouble(PreferenceConstants.BOND_LENGTH_DOUBLE);
+        }
+        throwCannotGetPreferenceException();
+        return 0;
+    }
+
+    public void setBondLength(double bondLength) throws BioclipseException {
+            Preferences prefs = getPreferences();
+            if (prefs != null) {
+                prefs.setValue(
+                        PreferenceConstants.BOND_LENGTH_DOUBLE, 
+                        bondLength
+                );
+            } else {
+                throwCannotGetPreferenceException();
+            }
+            applyGlobalProperties();
+    }
+
+    public boolean getShowEndCarbons() throws BioclipseException{
+        Preferences prefs = getPreferences();
+        if (prefs != null) {
+            boolean pref = prefs.getBoolean(PreferenceConstants.SHOWENDCARBONS_BOOL);
+            return pref; 
+        }
+        throwCannotGetPreferenceException();
+        return false;
     }
 
     public void setShowEndCarbons(boolean showEndCarbons)

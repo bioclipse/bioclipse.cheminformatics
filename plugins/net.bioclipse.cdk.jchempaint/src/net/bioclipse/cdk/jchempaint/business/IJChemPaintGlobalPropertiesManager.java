@@ -28,15 +28,29 @@ import net.bioclipse.core.business.IBioclipseManager;
 public interface IJChemPaintGlobalPropertiesManager extends IBioclipseManager {
     
     @Recorded
+    @PublishedMethod ( methodSummary = "applies the global properties to all" +
+    "opened JChemPaint editors" )
+    public void applyGlobalProperties() throws BioclipseException;
+    
+    @Recorded
     @PublishedMethod ( params = "boolean true if methyl groups shown explicitly", 
                        methodSummary = "set to show explicit methyl groups" )
     public void setShowEndCarbons(boolean showEndCarbons)
     throws BioclipseException;
     
+    @PublishedMethod ( methodSummary = "true if showing explicit methyl groups")
+    public boolean getShowEndCarbons()
+    throws BioclipseException;
+    
+    
     @Recorded
     @PublishedMethod ( params = "boolean true if aromatic indicators shown", 
                        methodSummary = "set to true if aromatic indicators on" )
     public void setShowAromaticity(boolean showAromaticity)
+    throws BioclipseException;
+    
+    @PublishedMethod ( methodSummary = "true if aromatic indicators on" )
+    public boolean getShowAromaticity()
     throws BioclipseException;
     
     @Recorded
@@ -45,19 +59,18 @@ public interface IJChemPaintGlobalPropertiesManager extends IBioclipseManager {
                        		"the diagram" )
     public void setMargin(double margin) throws BioclipseException;
     
-    @PublishedMethod ( methodSummary = "true if showing explicit methyl groups")
-    public boolean getShowEndCarbons()
-    throws BioclipseException;
     
-    @PublishedMethod ( methodSummary = "true if aromatic indicators on" )
-    public boolean getShowAromaticity()
-    throws BioclipseException;
-    
-    @Recorded
-    @PublishedMethod ( methodSummary = "applies the global properties to all" +
-    		"opened JChemPaint editors" )
-    public void applyGlobalProperties() throws BioclipseException;
-
     @PublishedMethod ( methodSummary = "returns the margin size" )
     public double getMargin() throws BioclipseException;
+    
+    @Recorded
+    @PublishedMethod ( params = "bondLength the length of a standard bond", 
+                       methodSummary = "set the length of a standar bond")
+    public void setBondLength(double bondLength) throws BioclipseException;
+    
+    
+    @PublishedMethod ( methodSummary = "returns the length of a standard bond" )
+    public double getBondLength() throws BioclipseException;
+    
+    
 }

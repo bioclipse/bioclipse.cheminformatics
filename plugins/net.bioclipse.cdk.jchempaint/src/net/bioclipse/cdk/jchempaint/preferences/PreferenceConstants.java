@@ -18,5 +18,6 @@ public class PreferenceConstants {
     public static final String SHOWAROMATICITY_BOOL = "showAromaticityPreference";
     public static final String SHOWENDCARBONS_BOOL = "showEndCarbonsPreference";
     public static final String MARGIN_DOUBLE = "margin";
+    public static final String BOND_LENGTH_DOUBLE = "bondLength";
 
 }

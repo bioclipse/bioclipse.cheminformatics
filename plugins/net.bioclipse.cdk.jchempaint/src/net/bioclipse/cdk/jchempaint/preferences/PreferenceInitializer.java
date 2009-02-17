@@ -44,6 +44,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
             PreferenceConstants.MARGIN_DOUBLE,
             model.getMargin()
         );
+        store.setDefault(
+                PreferenceConstants.BOND_LENGTH_DOUBLE,
+                model.getBondLength()
+        );
+            
 	}
 
 }

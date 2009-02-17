@@ -29,6 +29,7 @@ public class JChemPaintPreferencePage
     private BooleanFieldEditor showAromaticityField;
     private BooleanFieldEditor showEndCarbons;
     private DoubleFieldEditor margin;
+    private DoubleFieldEditor bondLength;
     
 	public JChemPaintPreferencePage() {
 		super(GRID);
@@ -49,18 +50,26 @@ public class JChemPaintPreferencePage
 	        getFieldEditorParent()
 	    );
 		addField(showAromaticityField);
+		
         showEndCarbons = new BooleanFieldEditor(
             PreferenceConstants.SHOWENDCARBONS_BOOL,
             "Show &End Carbons",
             getFieldEditorParent()
         );
         addField(showEndCarbons);
+        
         margin = new DoubleFieldEditor(
                 PreferenceConstants.MARGIN_DOUBLE,
                 "&Margin",
                 getFieldEditorParent()
         );
         addField(margin);
+        bondLength = new DoubleFieldEditor(
+                PreferenceConstants.BOND_LENGTH_DOUBLE,
+                "Bond &Length",
+                getFieldEditorParent()
+        );
+        addField(bondLength);
 	}
 
 	/* (non-Javadoc)
