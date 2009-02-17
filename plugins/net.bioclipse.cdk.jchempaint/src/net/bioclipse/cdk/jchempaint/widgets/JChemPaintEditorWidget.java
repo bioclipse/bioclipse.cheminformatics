@@ -12,11 +12,14 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.widgets;
 
+import static net.bioclipse.cdk.jchempaint.outline.StructureContentProvider.createCDKChemObject;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.Activator;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager;
@@ -45,7 +48,6 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
@@ -222,25 +224,25 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
     public ISelection getSelection() {
         if (this.getRenderer2DModel() == null && model != null)
             return new StructuredSelection(model);
-        List<IChemObject> selection = new LinkedList<IChemObject>();
+        List<CDKChemObject> selection = new LinkedList<CDKChemObject>();
 
         //selection.add( atomContainer );
 
         IAtom highlightedAtom = this.getRenderer2DModel().getHighlightedAtom();
         IBond highlightedBond = this.getRenderer2DModel().getHighlightedBond();
         if(highlightedBond != null)
-            selection.add(highlightedBond);
+            selection.add(createCDKChemObject( highlightedBond ));
         if(highlightedAtom != null)
-            selection.add( highlightedAtom );
+            selection.add( createCDKChemObject( highlightedAtom ) );
 
         IChemObjectSelection sel = getRenderer2DModel().getSelection();
         IAtomContainer modelSelection = sel.getConnectedAtomContainer();
         if(modelSelection != null) {
             for(IAtom atom:modelSelection.atoms()) {
-                selection.add(atom);
+                selection.add(createCDKChemObject( atom ));
             }
             for(IBond bond:modelSelection.bonds()) {
-                selection.add(bond);
+                selection.add(createCDKChemObject( bond ));
             }
         }
         if (selection.size() == 0 && model != null) {
