@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.ui.contenttypes.CmlFileDescriber;
+import nu.xom.Builder;
 import nu.xom.Element;
 import nu.xom.Elements;
 import nu.xom.ParsingException;
@@ -132,31 +134,15 @@ public class ValidateCMLManager implements IValidateCMLManager {
 		InputStream is=null;
 		try {
 			is=input.getContents();
+      Element element = (Element) new Builder().build(is).getRootElement() ;
+      if(!element.getNamespaceURI().equals(CmlFileDescriber.NS_CML))
+          returnString.append( "Namespace is not " + CmlFileDescriber.NS_CML+"; ");
+      is.close();
+      is=input.getContents();
 			cmlElement = (CMLElement) new CMLBuilder().build(is).getRootElement() ;
 		} catch (ParsingException e) {
 			returnString.append(e);
 			this.succeeded = false;
-		} catch (ClassCastException ccee) {
-			InputStream is2=null;
-			try{
-				is2=input.getContents();
-				Element element=new CMLBuilder().build(is2).getRootElement();
-				namespaceThemAll(element.getChildElements());
-				element.setNamespaceURI(CMLUtil.CML_NS);
-				cmlElement = (CMLElement) new CMLBuilder().parseString(element.toXML());
-			}catch(Exception ex){
-				returnString.append(ex);
-				this.succeeded = false;
-			}
-			finally{
-				
-				try {
-					is2.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
 		} catch (Exception e) {
 			returnString.append(e);
 			this.succeeded = false;
@@ -165,7 +151,6 @@ public class ValidateCMLManager implements IValidateCMLManager {
 			try {
 				is.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

@@ -35,6 +35,10 @@
 		      	<visibleWhen>
 			   		<iterate operator="and" ifEmpty="false">
 		      			<adapt type="org.eclipse.core.resources.IFile">
+			      			<or>
+								<test property="org.eclipse.core.resources.name" value="*.xml"/> 
+            					<test property="org.eclipse.core.resources.name" value="*.cml"/> 
+				            </or>
 			      		</adapt>
 			   		</iterate>
 		        </visibleWhen>
