@@ -93,6 +93,7 @@ public class RingGenerator extends BasicBondGenerator {
 			}
 		}
 		if (!isAromatic) {
+		    isAromatic = true;
 			for (IBond b : ring.bonds()) {
 				if (!b.getFlag(ISAROMATIC)) {
 					return false;
