@@ -4,10 +4,10 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * <http://www.eclipse.org/legal/epl-v10.html>.
- * 
+ *
  * Contributors:
  *     Arvid Berg goglepox@users.sf.net
- *     
+ *
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.handlers;
 
@@ -22,6 +22,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.controller.IControllerModule;
+import org.openscience.cdk.controller.AlterBondStereoModule.Direction;
 
 
 /**
@@ -30,12 +31,12 @@ import org.openscience.cdk.controller.IControllerModule;
  */
 public class ChangeModuleHandler extends AbstractJChemPaintHandler {
     Logger logger = Logger.getLogger( ChangeModuleHandler.class );
-    
-    
-    protected IControllerModule newInstance(Constructor<?> ct, Object[] arglist) 
-                  throws IllegalArgumentException, 
-                  InstantiationException, 
-                  IllegalAccessException, 
+
+
+    protected IControllerModule newInstance(Constructor<?> ct, Object[] arglist)
+                  throws IllegalArgumentException,
+                  InstantiationException,
+                  IllegalAccessException,
                   InvocationTargetException {
         return (IControllerModule)ct.newInstance(arglist);
     }
@@ -45,41 +46,52 @@ public class ChangeModuleHandler extends AbstractJChemPaintHandler {
     public Object execute( ExecutionEvent event ) throws ExecutionException {
 
         ControllerHub hub = getControllerHub( event );
-        
+
         String module = event.getParameter( "jcp.controller.module"  );
         String intString = event.getParameter( "jcp.controller.param.int");
-        
+
         Integer value = (intString != null ? new Integer(intString):null);
         String boolString = event.getParameter( "jcp.controller.param.boolean" );
         Boolean bool = boolString != null ?new Boolean(boolString):null;
-        
+
+        String dirString = event.getParameter( "jcp.controller.param.direction" );
+
+        Direction direction = Direction.valueOf( dirString!=null?dirString.toUpperCase():"UP" );
+
         try {
-            
+
             Class<?> cls = Class.forName( "org.openscience.cdk.controller."
                                           +module);
-            
+
             Constructor<?> ct;
             try {
                 ct = cls.getConstructor(new Class<?>[]{ IChemModelRelay.class });
                 hub.setActiveDrawModule( newInstance( ct, new Object[] {hub} ) );
             } catch(NoSuchMethodException x) {
                 try {
-                    
+
                     ct = cls.getConstructor(new Class<?>[]{ IChemModelRelay.class
-                                                            ,int.class});
-                    hub.setActiveDrawModule( newInstance( ct, 
+                                                            ,Integer.TYPE});
+                    hub.setActiveDrawModule( newInstance( ct,
                               new Object[] {hub,value} ) );
                 }catch (NoSuchMethodException y) {
+                    try {
                    ct = cls.getConstructor(new Class<?>[]{ IChemModelRelay.class
                                                            ,int.class
                                                            ,boolean.class});
-                    hub.setActiveDrawModule( newInstance( ct, 
+                    hub.setActiveDrawModule( newInstance( ct,
                                          new Object[] {hub,value,bool} ) );
+                    } catch(NoSuchMethodException z) {
+                        ct = cls.getConstructor(new Class<?>[]{ IChemModelRelay.class
+                                ,Direction.class});
+                        hub.setActiveDrawModule( newInstance( ct,
+                                               new Object[] {hub,direction} ) );
+                    }
 
                 }
             }
-                        
-            
+
+
 
         } catch ( NoSuchMethodException e ) {
             // TODO Auto-generated catch block
