@@ -67,9 +67,17 @@ public class JChemPaintGlobalPropertiesManager
     public void applyGlobalProperties() throws BioclipseException {
         for (final JChemPaintEditor editor : getEditors()) {
             RendererModel model = this.getRendererModel(editor);
+            model.setIsCompact(getIsCompact());
             model.setShowAromaticity(getShowAromaticity());
             model.setShowEndCarbons(getShowEndCarbons());
+            model.setShowExplicitHydrogens(getShowExplicitHydrogens());
+            model.setShowImplicitHydrogens(getShowImplicitHydrogens());
             model.setMargin(getMargin());
+            model.setAtomRadius(getAtomRadius());
+            model.setBondLength(getBondLength());
+            model.setBondDistance(getBondDistance());
+            model.setHighlightDistance(getHighlightDistance());
+            model.setWedgeWidth(getWedgeWidth());
             
             // update the editor's rendering
             PlatformUI.getWorkbench().getDisplay().syncExec( new Runnable() {
@@ -83,6 +91,45 @@ public class JChemPaintGlobalPropertiesManager
     private Preferences getPreferences() {
         return Activator.getDefault().getPluginPreferences();
     }
+    
+    private void setBool(String pref, boolean value) throws BioclipseException {
+        Preferences prefs = getPreferences();
+        if (prefs != null) {
+            prefs.setValue(pref, value);
+        } else {
+            throwCannotGetPreferenceException();
+        }
+        applyGlobalProperties();
+    }
+    
+    private boolean getBool(String pref) throws BioclipseException {
+        Preferences prefs = getPreferences();
+        if (prefs != null) {
+            return prefs.getBoolean(pref);
+        }
+        throwCannotGetPreferenceException();
+        return false;
+    }
+    
+    private void setDouble(
+            String pref, double value) throws BioclipseException {
+        Preferences prefs = getPreferences();
+        if (prefs != null) {
+            prefs.setValue(pref, value);
+        } else {
+            throwCannotGetPreferenceException();
+        }
+        applyGlobalProperties();
+    }
+    
+    private double getDouble(String pref) throws BioclipseException {
+        Preferences prefs = getPreferences();
+        if (prefs != null) {
+            return prefs.getDouble(pref);
+        }
+        throwCannotGetPreferenceException();
+        return 0;
+    }
 
     private RendererModel getRendererModel(JChemPaintEditor editor) {
         if (editor == null) return null;
@@ -93,97 +140,99 @@ public class JChemPaintGlobalPropertiesManager
     private void throwCannotGetPreferenceException() throws BioclipseException {
         throw new BioclipseException("Cannot get access to the preferences...");
     }
+   
+    public boolean getIsCompact() throws BioclipseException {
+        return getBool(PreferenceConstants.IS_COMPACT_BOOL);
+    }
+
+    public void setIsCompact(boolean isCompact) throws BioclipseException {
+        setBool(PreferenceConstants.IS_COMPACT_BOOL, isCompact);
+    }
 
     public boolean getShowAromaticity() throws BioclipseException {
-        Preferences prefs = getPreferences();
-        if (prefs != null) {
-            return prefs.getBoolean(PreferenceConstants.SHOWAROMATICITY_BOOL);
-        }
-        throwCannotGetPreferenceException();
-        return false;
+        return getBool(PreferenceConstants.SHOW_AROMATICITY_BOOL);
     }
-
+    
     public void setShowAromaticity(boolean showAromaticity)
     throws BioclipseException{
-        Preferences prefs = getPreferences();
-        if (prefs != null) {
-            prefs.setValue(
-                    PreferenceConstants.SHOWAROMATICITY_BOOL, 
-                    showAromaticity
-            );
-        } else {
-            throwCannotGetPreferenceException();
-        }
-        applyGlobalProperties();
-    }
-
-    public double getBondLength() throws BioclipseException {
-        Preferences prefs = getPreferences();
-        if (prefs != null) {
-            return prefs.getDouble(PreferenceConstants.BOND_LENGTH_DOUBLE);
-        }
-        throwCannotGetPreferenceException();
-        return 0;
-    }
-
-    public void setBondLength(double bondLength) throws BioclipseException {
-            Preferences prefs = getPreferences();
-            if (prefs != null) {
-                prefs.setValue(
-                        PreferenceConstants.BOND_LENGTH_DOUBLE, 
-                        bondLength
-                );
-            } else {
-                throwCannotGetPreferenceException();
-            }
-            applyGlobalProperties();
+       setBool(PreferenceConstants.SHOW_AROMATICITY_BOOL, showAromaticity);
     }
 
     public boolean getShowEndCarbons() throws BioclipseException{
-        Preferences prefs = getPreferences();
-        if (prefs != null) {
-            boolean pref = prefs.getBoolean(PreferenceConstants.SHOWENDCARBONS_BOOL);
-            return pref; 
-        }
-        throwCannotGetPreferenceException();
-        return false;
+        return getBool(PreferenceConstants.SHOW_END_CARBONS_BOOL);
     }
 
     public void setShowEndCarbons(boolean showEndCarbons)
     throws BioclipseException{
-        Preferences prefs = getPreferences();
-        if (prefs != null) {
-            prefs.setValue(
-                    PreferenceConstants.SHOWENDCARBONS_BOOL, 
-                    showEndCarbons
-            );
-        } else {
-            throwCannotGetPreferenceException();
-        }
-        applyGlobalProperties();
+        setBool(PreferenceConstants.SHOW_END_CARBONS_BOOL, showEndCarbons);
+    }
+
+    public boolean getShowExplicitHydrogens() throws BioclipseException {
+        return getBool(PreferenceConstants.SHOW_EXPLICIT_HYDROGENS_BOOL);
+    }
+
+    public void setShowExplicitHydrogens(boolean showExplicitHydrogens)
+            throws BioclipseException {
+        setBool(PreferenceConstants.SHOW_EXPLICIT_HYDROGENS_BOOL, 
+                showExplicitHydrogens);
+    }
+
+    public boolean getShowImplicitHydrogens() throws BioclipseException {
+        return getBool(PreferenceConstants.SHOW_IMPLICIT_HYDROGENS_BOOL);
+    }
+
+    public void setShowImplicitHydrogens(boolean showImplicitHydrogens)
+            throws BioclipseException {
+        setBool(PreferenceConstants.SHOW_IMPLICIT_HYDROGENS_BOOL, 
+                showImplicitHydrogens);
+    }
+
+    public double getAtomRadius() throws BioclipseException {
+        return getDouble(PreferenceConstants.ATOM_RADIUS_DOUBLE);
+    }
+
+    public void setAtomRadius(double atomRadius) throws BioclipseException {
+       setDouble(PreferenceConstants.ATOM_RADIUS_DOUBLE, atomRadius);
+    }
+
+    public double getBondLength() throws BioclipseException {
+        return getDouble(PreferenceConstants.BOND_LENGTH_DOUBLE);
+    }
+
+    public void setBondLength(double bondLength) throws BioclipseException {
+        setDouble(PreferenceConstants.BOND_LENGTH_DOUBLE, bondLength);
+    }
+
+    public double getBondDistance() throws BioclipseException {
+        return getDouble(PreferenceConstants.BOND_DISTANCE_DOUBLE);
+    }
+
+    public void setBondDistance(double bondDistance) throws BioclipseException {
+        setDouble(PreferenceConstants.BOND_DISTANCE_DOUBLE, bondDistance);
+    }
+
+    public double getHighlightDistance() throws BioclipseException {
+        return getDouble(PreferenceConstants.HIGHLIGHT_DISTANCE_DOUBLE);
+    }
+
+    public void setHighlightDistance(double dist) throws BioclipseException {
+        setDouble(PreferenceConstants.HIGHLIGHT_DISTANCE_DOUBLE, dist);
     }
 
     public double getMargin() throws BioclipseException {
-        Preferences prefs = getPreferences();
-        if (prefs != null) {
-            double pref = prefs.getDouble(PreferenceConstants.MARGIN_DOUBLE);
-            return pref; 
-        }
-        throwCannotGetPreferenceException();
-        return 0.0;
+        return getDouble(PreferenceConstants.MARGIN_DOUBLE);
     }
 
     public void setMargin(double margin) throws BioclipseException {
-        Preferences prefs = getPreferences();
-        if (prefs != null) {
-            prefs.setValue(
-                    PreferenceConstants.MARGIN_DOUBLE, 
-                    margin
-            );
-        } else {
-            throwCannotGetPreferenceException();
-        }
-        applyGlobalProperties();
+        setDouble(PreferenceConstants.MARGIN_DOUBLE, margin);
+    }
+
+    public double getWedgeWidth() throws BioclipseException {
+        return getDouble(PreferenceConstants.WEDGE_WIDTH_DOUBLE);
+    }
+
+    public void setWedgeWidth(double wedgeWidth) throws BioclipseException {
+        setDouble(PreferenceConstants.WEDGE_WIDTH_DOUBLE, wedgeWidth);
     }
 
 }

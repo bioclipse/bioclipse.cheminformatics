@@ -26,12 +26,19 @@ public class JChemPaintPreferencePage
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 
+    private BooleanFieldEditor isCompact;
     private BooleanFieldEditor showAromaticityField;
     private BooleanFieldEditor showEndCarbons;
-    private DoubleFieldEditor margin;
+    private BooleanFieldEditor showExplicitHydrogens;
+    private BooleanFieldEditor showImplicitHydrogens;
+    private DoubleFieldEditor atomRadius;
     private DoubleFieldEditor bondLength;
+    private DoubleFieldEditor bondDistance;
+    private DoubleFieldEditor highlightDistance;
+    private DoubleFieldEditor margin;
+    private DoubleFieldEditor wedgeWidth;
     
-	public JChemPaintPreferencePage() {
+    public JChemPaintPreferencePage() {
 		super(GRID);
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
 		setDescription("JChemPaint Preferences");
@@ -44,19 +51,68 @@ public class JChemPaintPreferencePage
 	 * restore itself.
 	 */
 	public void createFieldEditors() {
+	    isCompact = new BooleanFieldEditor(
+	            PreferenceConstants.IS_COMPACT_BOOL,
+	            "Set &Compact",
+	            getFieldEditorParent()
+	    );
+	    addField(isCompact);
+	    
 	    showAromaticityField = new BooleanFieldEditor(
-	        PreferenceConstants.SHOWAROMATICITY_BOOL,
+	        PreferenceConstants.SHOW_AROMATICITY_BOOL,
 	        "Show &Aromaticity",
 	        getFieldEditorParent()
 	    );
 		addField(showAromaticityField);
 		
         showEndCarbons = new BooleanFieldEditor(
-            PreferenceConstants.SHOWENDCARBONS_BOOL,
+            PreferenceConstants.SHOW_END_CARBONS_BOOL,
             "Show &End Carbons",
             getFieldEditorParent()
         );
         addField(showEndCarbons);
+        
+        showExplicitHydrogens = new BooleanFieldEditor(
+                PreferenceConstants.SHOW_EXPLICIT_HYDROGENS_BOOL,
+                "Show E&xplicit Hydrogens",
+                getFieldEditorParent()
+        );
+        addField(showExplicitHydrogens);
+        
+        showImplicitHydrogens = new BooleanFieldEditor(
+                PreferenceConstants.SHOW_IMPLICIT_HYDROGENS_BOOL,
+                "Show &Implicit Hydrogens",
+                getFieldEditorParent()
+        );
+        addField(showImplicitHydrogens);
+        
+        atomRadius = new DoubleFieldEditor(
+                PreferenceConstants.ATOM_RADIUS_DOUBLE,
+                "Atom &Radius",
+                getFieldEditorParent()
+        );
+        addField(atomRadius);
+        
+        bondLength = new DoubleFieldEditor(
+                PreferenceConstants.BOND_LENGTH_DOUBLE,
+                "Bond &Length",
+                getFieldEditorParent()
+        );
+        addField(bondLength);
+        
+        bondDistance = new DoubleFieldEditor(
+                PreferenceConstants.BOND_DISTANCE_DOUBLE,
+                "Bond &Distance",
+                getFieldEditorParent()
+        );
+        addField(bondDistance);
+        
+        highlightDistance = new DoubleFieldEditor(
+                PreferenceConstants.HIGHLIGHT_DISTANCE_DOUBLE,
+                "&Highlight Distance",
+                getFieldEditorParent()
+        );
+        addField(highlightDistance);
         
         margin = new DoubleFieldEditor(
                 PreferenceConstants.MARGIN_DOUBLE,
@@ -64,12 +120,14 @@ public class JChemPaintPreferencePage
                 getFieldEditorParent()
         );
         addField(margin);
-        bondLength = new DoubleFieldEditor(
-                PreferenceConstants.BOND_LENGTH_DOUBLE,
-                "Bond &Length",
+        
+        wedgeWidth = new DoubleFieldEditor(
+                PreferenceConstants.WEDGE_WIDTH_DOUBLE,
+                "&Wedge Width",
                 getFieldEditorParent()
         );
-        addField(bondLength);
+        addField(wedgeWidth);
+       
 	}
 
 	/* (non-Javadoc)

@@ -15,9 +15,17 @@ package net.bioclipse.cdk.jchempaint.preferences;
  */
 public class PreferenceConstants {
 
-    public static final String SHOWAROMATICITY_BOOL = "showAromaticityPreference";
-    public static final String SHOWENDCARBONS_BOOL = "showEndCarbonsPreference";
-    public static final String MARGIN_DOUBLE = "margin";
+    public static final String IS_COMPACT_BOOL = "isCompact";
+    public static final String SHOW_AROMATICITY_BOOL = "showAromaticity";
+    public static final String SHOW_END_CARBONS_BOOL = "showEndCarbons";
+    public static final String SHOW_EXPLICIT_HYDROGENS_BOOL = "showExplicit";
+    public static final String SHOW_IMPLICIT_HYDROGENS_BOOL = "showImplicit";
+    
+    public static final String ATOM_RADIUS_DOUBLE = "atomRadius";
     public static final String BOND_LENGTH_DOUBLE = "bondLength";
+    public static final String BOND_DISTANCE_DOUBLE = "bondDistance";
+    public static final String HIGHLIGHT_DISTANCE_DOUBLE = "highlightDistance";
+    public static final String MARGIN_DOUBLE = "margin";
+    public static final String WEDGE_WIDTH_DOUBLE = "wedgeWidth";
 
 }

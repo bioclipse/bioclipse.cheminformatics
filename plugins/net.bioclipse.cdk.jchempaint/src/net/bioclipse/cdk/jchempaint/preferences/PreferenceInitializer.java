@@ -33,20 +33,49 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		RendererModel model = new RendererModel();
 
 		store.setDefault(
-		    PreferenceConstants.SHOWAROMATICITY_BOOL,
-		    model.getShowAromaticity()
+		        PreferenceConstants.IS_COMPACT_BOOL,
+		        model.getIsCompact()
+		);
+		store.setDefault(
+		        PreferenceConstants.SHOW_AROMATICITY_BOOL,
+		        model.getShowAromaticity()
 		);
         store.setDefault(
-            PreferenceConstants.SHOWENDCARBONS_BOOL,
-            model.getShowEndCarbons()
+                PreferenceConstants.SHOW_END_CARBONS_BOOL,
+                model.getShowEndCarbons()
         );
         store.setDefault(
-            PreferenceConstants.MARGIN_DOUBLE,
-            model.getMargin()
+                PreferenceConstants.SHOW_EXPLICIT_HYDROGENS_BOOL,
+                model.getShowExplicitHydrogens()
+        );
+        store.setDefault(
+                PreferenceConstants.SHOW_IMPLICIT_HYDROGENS_BOOL,
+                model.getShowImplicitHydrogens()
+        );
+
+        store.setDefault(
+                PreferenceConstants.ATOM_RADIUS_DOUBLE,
+                model.getAtomRadius()
         );
         store.setDefault(
                 PreferenceConstants.BOND_LENGTH_DOUBLE,
                 model.getBondLength()
+        );
+        store.setDefault(
+                PreferenceConstants.BOND_DISTANCE_DOUBLE,
+                model.getBondDistance()
+        );
+        store.setDefault(
+                PreferenceConstants.HIGHLIGHT_DISTANCE_DOUBLE,
+                model.getHighlightDistance()
+        );
+        store.setDefault(
+                PreferenceConstants.MARGIN_DOUBLE,
+                model.getMargin()
+        );
+        store.setDefault(
+                PreferenceConstants.WEDGE_WIDTH_DOUBLE,
+                model.getWedgeWidth()
         );
             
 	}
