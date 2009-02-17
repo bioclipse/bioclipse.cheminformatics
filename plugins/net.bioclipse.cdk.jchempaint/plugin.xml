@@ -721,34 +721,6 @@
         </with>
      </definition>
   </extension>
-  <extension
-        point="org.eclipse.ui.menus">
-     <menuContribution
-           locationURI="popup:net.bioclipse.cdk.ui.editors.jchempaint">
-        <command
-              commandId="net.bioclipse.cdk.jchempaint.manager.action"
-              label="Add Hexagon"
-              style="push">
-           <visibleWhen
-                 checkEnabled="false">
-              <reference
-                    definitionId="net.bioclipse.cdk.jchempaint.selected.bond">
-              </reference>
-           </visibleWhen>
-        </command>
-        <command
-              commandId="net.bioclipse.cdk.jchempaint.manager.action"
-              label="Atom action"
-              style="push">
-           <visibleWhen
-                 checkEnabled="false">
-              <reference
-                    definitionId="net.bioclipse.cdk.jchempaint.selected.atom">
-              </reference>
-           </visibleWhen>
-        </command>
-     </menuContribution>
-  </extension>
 
    <extension
          point="org.eclipse.ui.preferencePages">
