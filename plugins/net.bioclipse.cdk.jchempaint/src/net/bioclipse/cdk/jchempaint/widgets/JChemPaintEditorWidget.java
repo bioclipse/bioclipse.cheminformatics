@@ -35,7 +35,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.ui.PlatformUI;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.ControllerModel;
 import org.openscience.cdk.controller.IChemModelEventRelayHandler;
