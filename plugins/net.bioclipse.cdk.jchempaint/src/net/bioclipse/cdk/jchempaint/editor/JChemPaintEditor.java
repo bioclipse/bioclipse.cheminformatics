@@ -182,7 +182,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener{
 		// setup hub
 		getSite().setSelectionProvider( widget );
 		getSite().getPage().addSelectionListener(this);
-		widget.setAtomContainer( atomContainer );
+		widget.setInput( model );
 
 		parent.addDisposeListener( new DisposeListener () {
 
