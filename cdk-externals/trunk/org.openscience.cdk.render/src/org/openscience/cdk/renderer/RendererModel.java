@@ -93,6 +93,14 @@ public class RendererModel implements Serializable, Cloneable {
         this.parameters = new RenderingParameters();
     }
     
+    public boolean getHighlightShapeFilled() {
+        return this.parameters.isHighlightShapeFilled();
+    }
+
+    public void setHighlightShapeFilled(boolean highlightShapeFilled) {
+        this.parameters.setHighlightShapeFilled(highlightShapeFilled);
+    }
+
     public RendererModel(RenderingParameters parameters) {
         this.parameters = parameters;
     }
@@ -462,29 +470,6 @@ public class RendererModel implements Serializable, Cloneable {
         this.parameters.setDefaultBondColor(defaultBondColor);
     }
 
-
-    /**
-     * Returns the radius around an atoms, for which the atom is marked
-     * highlighted if a pointer device is placed within this radius.
-     * 
-     * @return The highlight radius for all atoms (in model based size)
-     */
-    public double getHighlightRadiusModel() {
-        return this.parameters.getHighlightRadiusModel();
-    }
-
-    /**
-     * Sets the radius around an atoms, for which the atom is marked highlighted
-     * if a pointer device is placed within this radius.
-     * 
-     * @param highlightRadius
-     *            the highlight radius of all atoms (in model based size)
-     */
-    public void setHighlightRadiusModel(double highlightRadius) {
-        this.parameters.setHighlightRadiusModel(highlightRadius);
-        fireChange();
-    }
-    
     /**
      * Returns the radius around an atoms, for which the atom is marked
      * highlighted if a pointer device is placed within this radius.

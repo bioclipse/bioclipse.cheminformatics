@@ -92,13 +92,9 @@ public class RenderingParameters {
      * highlight an element. 
      */
     private double highlightDistance = 8;
-    
-    /**
-     * The minimum distance the mouse pointer has to be (in model space)
-     * from an atom or bond before it is highlighted.  
-     */
-    private double highlightRadiusModel = 0.4;
 
+    private boolean highlightShapeFilled = false;
+    
     private Color mappingColor = Color.gray;
 
     /**
@@ -162,6 +158,14 @@ public class RenderingParameters {
      * The width on screen of the fat end of a wedge bond.
      */
     private double wedgeWidth = 2.0;
+
+    public boolean isHighlightShapeFilled() {
+        return highlightShapeFilled;
+    }
+
+    public void setHighlightShapeFilled(boolean highlightShapeFilled) {
+        this.highlightShapeFilled = highlightShapeFilled;
+    }
 
     public boolean isShowAromaticityInCDKStyle() {
         return this.showAromaticityInCDKStyle;
@@ -253,14 +257,6 @@ public class RenderingParameters {
     
     public void setFontStyle(IFontManager.FontStyle fontStyle) {
         this.fontStyle = fontStyle;
-    }
-
-    public double getHighlightRadiusModel() {
-        return highlightRadiusModel;
-    }
-
-    public void setHighlightRadiusModel(double highlightRadiusModel) {
-        this.highlightRadiusModel = highlightRadiusModel;
     }
 
     public double getAtomRadius() {
