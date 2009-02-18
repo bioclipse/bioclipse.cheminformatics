@@ -71,7 +71,7 @@ public class Create3dHandler extends AbstractHandler {
                                                mol,
                                                (IFile) ssel.getFirstElement(),
                                                ((IFile) ssel.getFirstElement())
-                                                       .getFileExtension() );
+                                                       .getFileExtension(), true );
                     } catch ( Exception e ) {
                         LogUtils.handleException( e, logger );
                     }
