@@ -77,6 +77,7 @@ public class Create3dHandler extends AbstractHandler {
                     }
                 } else if ( val == SWT.NO){
                     SaveAsDialog dialog = new SaveAsDialog( new Shell() );
+                    dialog.setOriginalFile( (IFile) ssel.getFirstElement() );
                     int saveasreturn = dialog.open();
                     IPath result = dialog.getResult();
                     if ( saveasreturn != SaveAsDialog.CANCEL ) {
