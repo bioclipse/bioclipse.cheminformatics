@@ -79,6 +79,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
 
     public JChemPaintEditorWidget(Composite parent, int style) {
         super( parent, style );
+        getRenderer().getRenderer2DModel().setFitToScreen(false);
         prevHighlightedAtom=null;
         prevHighlightedBond=null;
     }
