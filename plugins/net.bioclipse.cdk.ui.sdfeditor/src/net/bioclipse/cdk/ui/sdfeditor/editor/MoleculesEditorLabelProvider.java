@@ -54,7 +54,8 @@ import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.font.IFontManager;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator;
-import org.openscience.cdk.renderer.generators.HighlightGenerator;
+import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
+import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.RingGenerator;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
@@ -99,7 +100,8 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
         generators.add(new BasicBondGenerator());
         generators.add(new BasicAtomGenerator());
         generators.add(new RingGenerator());
-        generators.add(new HighlightGenerator());
+        generators.add(new HighlightAtomGenerator());
+        generators.add(new HighlightBondGenerator());
         
         renderer = new Renderer(generators, fontManager);
 

@@ -30,7 +30,8 @@ import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.AtomContainerBoundsGenerator;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
-import org.openscience.cdk.renderer.generators.HighlightGenerator;
+import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
+import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.RingGenerator;
 
@@ -84,7 +85,8 @@ public class JChemPaintWidget extends Canvas {
     protected List<IGenerator> createGenerators() {
         List<IGenerator> generatorList = new ArrayList<IGenerator>();
         generatorList.add( new AtomContainerBoundsGenerator() );
-        generatorList.add( new HighlightGenerator() );
+        generatorList.add( new HighlightAtomGenerator() );
+        generatorList.add( new HighlightBondGenerator() );
         generatorList.add( new RingGenerator() );
         generatorList.add( new BasicAtomGenerator());
 
