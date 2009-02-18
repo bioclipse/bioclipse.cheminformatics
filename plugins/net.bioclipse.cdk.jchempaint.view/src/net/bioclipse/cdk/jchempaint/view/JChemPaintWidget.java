@@ -72,6 +72,7 @@ public class JChemPaintWidget extends Canvas {
         rendererModel.setShowImplicitHydrogens( true );
         rendererModel.setShowEndCarbons( true );
         rendererModel.setShowExplicitHydrogens( true );
+        rendererModel.setHighlightShapeFilled( true );
 
         addPaintListener( new PaintListener() {
 
