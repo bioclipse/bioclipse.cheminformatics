@@ -26,9 +26,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
@@ -111,24 +109,5 @@ public class NewSdfWizard extends Wizard implements INewWizard {
                 }
         }
         public void init(IWorkbench workbench, IStructuredSelection selection) {
-            //this.setHelpAvailable( true );
-            //WizardDialog.setDialogHelpAvailable(true);
         }
-        
-        /*public  void  performHelp() {
-            System.err.println("jlkj");
-        }
-        @Override
-        public  boolean   isHelpAvailable() {
-            return true;
-        }
-        @Override
-        public void setContainer(IWizardContainer wizardContainer) {
-            //Option 2: set the help available for the instance
-            if (wizardContainer != null) {
-              ((WizardDialog) wizardContainer).setHelpAvailable(true);
-            }
-            super.setContainer(wizardContainer);
-          }*/
-
 }

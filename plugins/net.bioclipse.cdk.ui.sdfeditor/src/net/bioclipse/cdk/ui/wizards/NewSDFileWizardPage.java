@@ -10,6 +10,7 @@
  *     Stefan Kuhn - Implementation of new sdf wizard
  */
 package net.bioclipse.cdk.ui.wizards;
+import net.bioclipse.chemoinformatics.wizards.WizardHelper;
 import net.bioclipse.ui.contentlabelproviders.FolderContentProvider;
 import net.bioclipse.ui.contentlabelproviders.FolderLabelProvider;
 
@@ -115,6 +116,8 @@ public class NewSDFileWizardPage extends WizardPage {
                 fileText = new Text(container, SWT.BORDER | SWT.SINGLE);
                 gd = new GridData(GridData.FILL_HORIZONTAL);
                 fileText.setLayoutData(gd);
+                if(selectedFolder!=null)
+                    fileText.setText( WizardHelper.findUnusedFileName( new StructuredSelection(selectedFolder), "unnamed", ".sd" ) );
                 fileText.addModifyListener(new ModifyListener() {
                         public void modifyText(ModifyEvent e) {
                                 dialogChanged();
