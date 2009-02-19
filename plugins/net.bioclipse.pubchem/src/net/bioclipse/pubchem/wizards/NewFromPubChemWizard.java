@@ -10,39 +10,21 @@
  ******************************************************************************/
 package net.bioclipse.pubchem.wizards;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Iterator;
 
-import net.bioclipse.model.BioResourceType;
-import net.bioclipse.model.IBioResource;
-import net.bioclipse.model.resources.StringResource;
 import net.bioclipse.scripting.ui.Activator;
 import net.bioclipse.scripting.ui.business.IJsConsoleManager;
-import net.bioclipse.util.BioclipseConsole;
-import net.bioclipse.util.FetchURLContentJob;
-import net.bioclipse.util.IFetchURLContentDoneListener;
-import net.bioclipse.util.folderUtils;
-import net.bioclipse.views.BioResourceView;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Nodes;
 
-import org.eclipse.core.runtime.jobs.IJobStatus;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
 public class NewFromPubChemWizard extends Wizard implements INewWizard{
-	
-	private final static String PUBCHEM_FOLDER_NAME = "PubChem Results";
 	
 	private final static String utilsURLBase = "http://www.ncbi.nlm.nih.gov/entrez/eutils";
 	private final static String pubchemURLBase = "http://pubchem.ncbi.nlm.nih.gov/";
@@ -126,11 +108,11 @@ public class NewFromPubChemWizard extends Wizard implements INewWizard{
 				js.print("Downloading CID: " + cid);
 				String efetch = pubchemURLBase + "summary/summary.cgi?cid=" + cid + "&disopt=DisplaySDF";
 			
-				URL fetchURL = new URL(efetch);
-				Job downloadJobs = new FetchURLContentJob(
-					fetchURL, new DownloadListener(folder, cid)
-				);
-				downloadJobs.schedule();
+//				URL fetchURL = new URL(efetch);
+//				Job downloadJobs = new FetchURLContentJob(
+//					fetchURL, new DownloadListener(folder, cid)
+//				);
+//				downloadJobs.schedule();
 			}
 
 		} catch (Exception e) {
@@ -154,89 +136,89 @@ public class NewFromPubChemWizard extends Wizard implements INewWizard{
 		return result.toString();
 	}
 	
-	public IBioResource createVirtualFolder() {
-		final IBioResource root = BioResourceView.getRootFolder();
-		BioResourceType virtualFolderType = folderUtils.getVirtualFolderType();
-		// find a folder name which is not used yet
-		int counter = 1;
-		String folderName = PUBCHEM_FOLDER_NAME + " " + counter;
-		while (existsFolder(BioResourceView.getRootFolder(), folderName)) {
-			counter++;
-			folderName = PUBCHEM_FOLDER_NAME + " " + counter;
-		}
-		BioclipseConsole.writeToConsole("New virtual folder name: " + folderName);
-		
-		// OK, no SENECA virtual folder created yet...
-		final IBioResource virtualFolder = virtualFolderType.newResource(
-			folderName, folderName
-		);
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				root.addChild(virtualFolder);
-			}
-		});
-		return virtualFolder;
-	}
-
-	private boolean existsFolder(IBioResource root, String folderName) {
-		Iterator children = root.getChildren().iterator();
-		while (children.hasNext()) {
-			Object child = children.next();
-			if (child instanceof IBioResource &&
-				((IBioResource)child).isFolder() &&
-				((IBioResource)child).getName().equals(folderName)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	class DownloadListener implements IFetchURLContentDoneListener {
-
-		private IBioResource parent;
-		private String cid;
-		
-		public DownloadListener(IBioResource parent, String cid) {
-			this.parent = parent;
-			this.cid = cid;
-		}
-		
-		public void processDownloadedContent(byte[] content) {
-			// need to clean up the MOL format
-			BufferedReader reader = new BufferedReader(
-				new InputStreamReader(
-					new ByteArrayInputStream(content)
-				)
-			);
-			boolean done = false;
-			StringBuffer result = new StringBuffer();
-			String line = null;
-			while (!done) {
-				try {
-					line = reader.readLine();
-				} catch (IOException e) {
-					// just ignore
-					done = true;
-				}
-				if (line == null || line.startsWith("$$$$")) done = true;
-				if (!done) {
-					result.append(line);
-					result.append('\n');
-				}
-			}
-			
-			// then create a new resource
-			try {
-				IBioResource newResource = StringResource.createResourceFromObject(
-					result.toString(), cid + ".mol"
-				);
-				newResource.setParent(parent);
-				parent.addChild(newResource);
-			} catch (Exception exception) {
-				parent.setParsed(false);
-			}
-		}
-		
-	}
+//	public IBioResource createVirtualFolder() {
+//		final IBioResource root = BioResourceView.getRootFolder();
+//		BioResourceType virtualFolderType = folderUtils.getVirtualFolderType();
+//		// find a folder name which is not used yet
+//		int counter = 1;
+//		String folderName = PUBCHEM_FOLDER_NAME + " " + counter;
+//		while (existsFolder(BioResourceView.getRootFolder(), folderName)) {
+//			counter++;
+//			folderName = PUBCHEM_FOLDER_NAME + " " + counter;
+//		}
+//		BioclipseConsole.writeToConsole("New virtual folder name: " + folderName);
+//		
+//		// OK, no SENECA virtual folder created yet...
+//		final IBioResource virtualFolder = virtualFolderType.newResource(
+//			folderName, folderName
+//		);
+//		Display.getDefault().syncExec(new Runnable() {
+//			public void run() {
+//				root.addChild(virtualFolder);
+//			}
+//		});
+//		return virtualFolder;
+//	}
+//
+//	private boolean existsFolder(IBioResource root, String folderName) {
+//		Iterator children = root.getChildren().iterator();
+//		while (children.hasNext()) {
+//			Object child = children.next();
+//			if (child instanceof IBioResource &&
+//				((IBioResource)child).isFolder() &&
+//				((IBioResource)child).getName().equals(folderName)) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
+//
+//	class DownloadListener implements IFetchURLContentDoneListener {
+//
+//		private IBioResource parent;
+//		private String cid;
+//		
+//		public DownloadListener(IBioResource parent, String cid) {
+//			this.parent = parent;
+//			this.cid = cid;
+//		}
+//		
+//		public void processDownloadedContent(byte[] content) {
+//			// need to clean up the MOL format
+//			BufferedReader reader = new BufferedReader(
+//				new InputStreamReader(
+//					new ByteArrayInputStream(content)
+//				)
+//			);
+//			boolean done = false;
+//			StringBuffer result = new StringBuffer();
+//			String line = null;
+//			while (!done) {
+//				try {
+//					line = reader.readLine();
+//				} catch (IOException e) {
+//					// just ignore
+//					done = true;
+//				}
+//				if (line == null || line.startsWith("$$$$")) done = true;
+//				if (!done) {
+//					result.append(line);
+//					result.append('\n');
+//				}
+//			}
+//			
+//			// then create a new resource
+//			try {
+//				IBioResource newResource = StringResource.createResourceFromObject(
+//					result.toString(), cid + ".mol"
+//				);
+//				newResource.setParent(parent);
+//				parent.addChild(newResource);
+//			} catch (Exception exception) {
+//				parent.setParsed(false);
+//			}
+//		}
+//		
+//	}
 
 }

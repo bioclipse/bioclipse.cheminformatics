@@ -3,13 +3,16 @@ Bundle-ManifestVersion: 2
 Bundle-Name: PubChem Plug-in
 Bundle-SymbolicName: net.bioclipse.pubchem;singleton:=true
 Bundle-Version: 1.2.0
-Bundle-Activator: bc_pubchem.Activator
+Bundle-Activator: net.bioclipse.pubchem.Activator
 Bundle-Vendor: Bioclipse Team
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
+ org.eclipse.core.resources,
  net.bioclipse.xom,
+ net.bioclipse.core,
  net.bioclipse.ui,
  net.bioclipse.scripting.ui
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
+Import-Package: org.apache.log4j
 Export-Package: net.bioclipse.pubchem.wizards

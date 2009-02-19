@@ -17,4 +17,12 @@
        </wizard>
    </extension>
 
+   <extension
+         point="net.bioclipse.scripting.contribution">
+      <scriptContribution
+            id="net.bioclipse.pubchem.PubChemManager"
+            service="net.bioclipse.pubchem.business.PubChemManagerFactory">
+      </scriptContribution>
+   </extension>
+
 </plugin>
