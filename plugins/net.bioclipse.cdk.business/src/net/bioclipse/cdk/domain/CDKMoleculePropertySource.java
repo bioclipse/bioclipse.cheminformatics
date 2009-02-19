@@ -19,6 +19,9 @@ import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.props.BioObjectPropertySource;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
@@ -29,6 +32,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
     protected static final String PROPERTY_SMILES = "SMILES";
     protected static final String PROPERTY_HAS2D = "Has 2D Coords";
     protected static final String PROPERTY_HAS3D = "Has 3D Coords";
+    protected static final String PROPERTY_FORMAT = "Molecular Format";
     protected static final String PROPERTY_FORMULA = "Molecular Formula";
     protected static final String PROPERTY_MASS = "Molecular Mass";
 
@@ -40,6 +44,8 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
             new TextPropertyDescriptor(PROPERTY_HAS2D,PROPERTY_HAS2D)},
         { PROPERTY_HAS3D,
             new TextPropertyDescriptor(PROPERTY_HAS3D,PROPERTY_HAS3D)},
+        { PROPERTY_FORMAT,
+            new TextPropertyDescriptor(PROPERTY_FORMAT,PROPERTY_FORMAT)},
         { PROPERTY_FORMULA,
             new TextPropertyDescriptor(PROPERTY_FORMULA,PROPERTY_FORMULA)},
         { PROPERTY_MASS,
@@ -97,6 +103,20 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         } catch (BioclipseException e) {
             cdkValueMap.put(PROPERTY_MASS, "N/A");
         }
+        IResource resource = item.getResource();
+        if (resource instanceof IFile) {
+            IFile fileRes = (IFile)resource;
+            try {
+                cdkValueMap.put(
+                    PROPERTY_FORMAT, fileRes.getContentDescription().toString()
+                );
+            } catch (CoreException e) {
+                cdkValueMap.put(PROPERTY_FORMAT, "error");
+            }
+        } else {
+            cdkValueMap.put(PROPERTY_FORMAT, "N/A");
+        }
+
     }
 
     public IPropertyDescriptor[] getPropertyDescriptors() {
