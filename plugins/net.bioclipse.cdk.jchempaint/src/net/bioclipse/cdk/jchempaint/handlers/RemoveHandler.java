@@ -18,6 +18,7 @@ import net.bioclipse.core.business.BioclipseException;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
@@ -31,12 +32,26 @@ public class RemoveHandler extends AbstractJChemPaintHandler {
             Collection<?> selection = getSelection( event );
             for(Object o:selection) {
                 try {
-                if(o instanceof IAtom) {
-                    getManager().removeAtom( (IAtom )o);
-                }
-                else if(o instanceof IBond) {
-                    getManager().removeBond((IBond)o);
-                }
+                    if( o instanceof IAdaptable) {
+                        IAtom atom = (IAtom)((IAdaptable)o)
+                                        .getAdapter( IAtom.class );
+                        if(atom != null) {
+                            getManager().removeAtom( atom );
+                            return null;
+                        }
+                        IBond bond = (IBond)((IAdaptable)o)
+                                        .getAdapter( IBond.class );
+                        if(bond != null) {
+                            getManager().removeBond( bond );
+                            return null;
+                        }
+                    }
+                    if(o instanceof IAtom) {
+                        getManager().removeAtom( (IAtom )o);
+                    }
+                    else if(o instanceof IBond) {
+                        getManager().removeBond((IBond)o);
+                    }
                 } catch (BioclipseException e) {
                     logger.warn( "Failed to remove bond or atom" );
                     logger.debug( o.toString() );

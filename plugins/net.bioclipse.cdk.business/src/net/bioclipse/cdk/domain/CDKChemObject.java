@@ -71,12 +71,16 @@ public class CDKChemObject extends BioObject implements IBioObject{
         this.parentChemobj = parentChemobj;
     }
 
+    @SuppressWarnings("unchecked")
     public Object getAdapter(Class adapter) {
         if (adapter ==IPropertySource.class){
             if (propSource ==null){
                 propSource=new ChemObjectPropertySource(this);
             }
             return propSource;
+        }
+        if (adapter.isAssignableFrom( chemobj.getClass() )) {
+            return chemobj;
         }
         return super.getAdapter(adapter);
     }

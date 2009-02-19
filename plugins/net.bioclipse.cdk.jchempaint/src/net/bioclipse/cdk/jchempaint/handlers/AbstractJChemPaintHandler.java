@@ -20,6 +20,7 @@ import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
@@ -45,9 +46,10 @@ public abstract class AbstractJChemPaintHandler extends AbstractHandler {
         if(selection instanceof IStructuredSelection ) {
             //Object element = ((IStructuredSelection)selection).toArray()[1];
             Object element = ((IStructuredSelection)selection).getFirstElement();
-            if(element instanceof IAtom) {
-                return (IAtom)element;
-            }
+            IAtom atom = null;
+            if(element instanceof IAdaptable)
+                atom = (IAtom) ((IAdaptable)element).getAdapter( IAtom.class );
+            return atom;
         }
         return null;
     }
@@ -57,9 +59,11 @@ public abstract class AbstractJChemPaintHandler extends AbstractHandler {
         if(selection instanceof IStructuredSelection ) {
             //Object element = ((IStructuredSelection)selection).toArray()[1];
             Object element = ((IStructuredSelection)selection).getFirstElement();
-            if(element instanceof IBond) {
-                return (IBond)element;
-            }
+            IBond bond = null;
+            if(element instanceof IAdaptable)
+                bond = (IBond) ((IAdaptable)element).getAdapter( IBond.class );
+            return bond;
+
         }
         return null;
     }
