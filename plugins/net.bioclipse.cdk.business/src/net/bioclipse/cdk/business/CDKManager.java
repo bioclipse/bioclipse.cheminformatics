@@ -1125,8 +1125,13 @@ public class CDKManager implements ICDKManager {
   	        cdkmol = create(molecule);
   	    }
 
-  	    return AtomContainerManipulator.getNaturalExactMass(
-  	               cdkmol.getAtomContainer() );
+        // use four digits in the precision
+        double mass = AtomContainerManipulator.getNaturalExactMass(
+               cdkmol.getAtomContainer()
+        );
+        mass = (Math.round(mass*10000.0))/10000.0;
+
+        return mass;
   	}
 
   	public IMolecule generate2dCoordinates(IMolecule molecule)
