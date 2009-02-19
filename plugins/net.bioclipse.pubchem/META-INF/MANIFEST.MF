@@ -8,7 +8,8 @@ Bundle-Vendor: Bioclipse Team
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  net.bioclipse.xom,
- net.bioclipse.ui
+ net.bioclipse.ui,
+ net.bioclipse.scripting.ui
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
-Export-Package: net.bioclipse.wizards
+Export-Package: net.bioclipse.pubchem.wizards

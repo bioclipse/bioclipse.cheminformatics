@@ -8,7 +8,7 @@
  *
  * Contact: http://www.bioclipse.net/
  ******************************************************************************/
-package net.bioclipse.wizards;
+package net.bioclipse.pubchem.wizards;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -21,6 +21,8 @@ import java.util.Iterator;
 import net.bioclipse.model.BioResourceType;
 import net.bioclipse.model.IBioResource;
 import net.bioclipse.model.resources.StringResource;
+import net.bioclipse.scripting.ui.Activator;
+import net.bioclipse.scripting.ui.business.IJsConsoleManager;
 import net.bioclipse.util.BioclipseConsole;
 import net.bioclipse.util.FetchURLContentJob;
 import net.bioclipse.util.IFetchURLContentDoneListener;
@@ -30,6 +32,7 @@ import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Nodes;
 
+import org.eclipse.core.runtime.jobs.IJobStatus;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -83,6 +86,8 @@ public class NewFromPubChemWizard extends Wizard implements INewWizard{
 	
 	public boolean performFinish() {
 		
+        IJsConsoleManager js = Activator.getDefault().getJsConsoleManager();
+        
 		try {
 //			do the PubChem magic here
 			String db = "pccompound";
@@ -90,9 +95,7 @@ public class NewFromPubChemWizard extends Wizard implements INewWizard{
 
 			String esearch = utilsURLBase + "/esearch.fcgi?" +
 				"db=" + db + "&retmax=50&usehistory=y&tool=" + TOOL + "&term=" + query;
-			
-			IBioResource folder = createVirtualFolder();
-			
+
 			URL queryURL = new URL(esearch);
 			URLConnection connection = queryURL.openConnection();
 			
@@ -104,9 +107,9 @@ public class NewFromPubChemWizard extends Wizard implements INewWizard{
 			if (countNodes.size() > 0) {
 				System.out.println(countNodes.get(0).toString());
 				count = Integer.parseInt(countNodes.get(0).getValue());
-				BioclipseConsole.writeToConsole("PubChem: #compounds found -> " + count);
+				js.print("PubChem: #compounds found -> " + count);
 			} else {
-				BioclipseConsole.writeToConsole("No results found");
+			    js.print("No results found");
 				return false;
 			}
 		
@@ -114,13 +117,13 @@ public class NewFromPubChemWizard extends Wizard implements INewWizard{
 			
 			int max = cidNodes.size();
 			if (max > 15) {
-				BioclipseConsole.writeToConsole("Found more than 15 molecules, only downloading the first 15");
+			    js.print("Found more than 15 molecules, only downloading the first 15");
 				max = 15;
 			}
 			
 			for (int cidCount=0; cidCount<max; cidCount++) {
 				String cid = cidNodes.get(cidCount).getValue();
-				BioclipseConsole.writeToConsole("Downloading CID: " + cid);
+				js.print("Downloading CID: " + cid);
 				String efetch = pubchemURLBase + "summary/summary.cgi?cid=" + cid + "&disopt=DisplaySDF";
 			
 				URL fetchURL = new URL(efetch);
@@ -131,7 +134,7 @@ public class NewFromPubChemWizard extends Wizard implements INewWizard{
 			}
 
 		} catch (Exception e) {
-			BioclipseConsole.writeToConsole("Downloading the search results failed: " + e.getMessage());
+		    js.print("Downloading the search results failed: " + e.getMessage());
 			e.printStackTrace();
 			return false;
 		}

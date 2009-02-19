@@ -1,10 +1,14 @@
-/*
- * Created on Nov 18, 2004
+/*******************************************************************************
+ * Copyright (c) 2006-2009  Egon Willighagen <egonw@users.sf.net>
  *
- * To change the template for this generated file go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
- */
-package net.bioclipse.wizards;
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contact: http://www.bioclipse.net/
+ ******************************************************************************/
+package net.bioclipse.pubchem.wizards;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;

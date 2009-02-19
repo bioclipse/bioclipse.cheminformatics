@@ -9,9 +9,9 @@
        <wizard
            canFinishEarly="false"
            category="net.bioclipse.BioclipseCategory"
-           class="net.bioclipse.wizards.NewFromPubChemWizard"
+           class="net.bioclipse.pubchem.wizards.NewFromPubChemWizard"
            hasPages="true"
-           id="net.bioclipse.wizards.NewFromPubChemWizard"
+           id="net.bioclipse.pubchem.wizards.NewFromPubChemWizard"
            name="Get structure from PubChem"
            project="true">
        </wizard>
