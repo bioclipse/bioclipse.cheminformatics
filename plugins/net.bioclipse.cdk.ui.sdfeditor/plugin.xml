@@ -9,7 +9,6 @@
             extensions="sdf,smi"
             icon="icons/many_molecules.png"
             id="net.bioclipse.cdk.ui.sdfeditor"
-            matchingStrategy="net.bioclipse.cdk.ui.sdfeditor.MoleculesMatchingStrategy"
             name="MoleculeTableEditor">
          <contentTypeBinding
                contentTypeId="net.bioclipse.contenttypes.sdf">
