@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: PubChem Plug-in
+Bundle-SymbolicName: net.bioclipse.pubchem;singleton:=true
+Bundle-Version: 1.2.0
+Bundle-Activator: bc_pubchem.Activator
+Bundle-Vendor: Bioclipse Team
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ net.bioclipse.xom,
+ net.bioclipse.ui
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Export-Package: net.bioclipse.wizards
