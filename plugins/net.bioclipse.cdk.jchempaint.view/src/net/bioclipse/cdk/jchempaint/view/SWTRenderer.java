@@ -279,8 +279,8 @@ public class SWTRenderer implements IDrawVisitor{
             switch(element.alignment) {
                 case -1: x = x -secondTextSize.x - hc.x;break;
                 case 1:  x = x + textSize.x+cp.x;break;
-                case -2: y = y + textSize.y;break;
-                case 2:  y = y+cp.y/2 - Math.max( secondTextSize.y,secondTextSize.y/2 - hc.y);break;
+                case 2: y = y + textSize.y;break;
+                case -2:  y = y+cp.y/2 - Math.max( secondTextSize.y,secondTextSize.y/2 - hc.y);break;
             }
             if(element.hydrogenCount >1) {
                 gc.drawText( Integer.toString( element.hydrogenCount),
