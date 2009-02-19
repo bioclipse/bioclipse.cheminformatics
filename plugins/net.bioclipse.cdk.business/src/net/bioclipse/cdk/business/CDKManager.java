@@ -52,6 +52,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.openscience.cdk.CDKConstants;
+import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.ChemModel;
 import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
@@ -91,6 +92,8 @@ import org.openscience.cdk.io.random.RandomAccessReader;
 import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
+import org.openscience.cdk.nonotify.NNChemFile;
+import org.openscience.cdk.nonotify.NNMolecule;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
@@ -185,14 +188,26 @@ public class CDKManager implements ICDKManager {
   	                "Failed to set the reader's inputstream", e1);
   	        }
 
-  	        IChemFile chemFile = new org.openscience.cdk.ChemFile();
-
   	        // Do some customizations...
-  	        CDKManagerHelper.customizeReading(reader, chemFile);
+  	        CDKManagerHelper.customizeReading(reader, new ChemFile());
+
+            List<IAtomContainer> atomContainersList =
+                new ArrayList<IAtomContainer>();
 
   	        // Read file
   	        try {
-  	            chemFile = (IChemFile) reader.read(chemFile);
+  	            if (reader.accepts(ChemFile.class)) {
+  	                IChemFile chemFile =
+  	                    (IChemFile) reader.read(new NNChemFile());
+  	                atomContainersList =
+  	                    ChemFileManipulator.getAllAtomContainers(chemFile);
+  	            } else if (reader.accepts(Molecule.class)) {
+  	                atomContainersList.add(
+  	                    (NNMolecule) reader.read(new NNMolecule())
+  	                );
+  	            } else {
+  	                throw new RuntimeException("Failed to read file.");
+  	            }
   	        }
   	        catch (CDKException e) {
   	            throw new RuntimeException("Failed to read file", e);
@@ -203,8 +218,6 @@ public class CDKManager implements ICDKManager {
   	        logger.debug("Read CDK chemfile with format: "
   	                     + chemFormat.getFormatName());
 
-  	        List<IAtomContainer> atomContainersList
-  	            = ChemFileManipulator.getAllAtomContainers(chemFile);
   	        int nuMols = atomContainersList.size();
   	        logger.debug("This file contained: " + nuMols + " molecules");
 
