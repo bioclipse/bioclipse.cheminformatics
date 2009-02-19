@@ -53,7 +53,8 @@ public class SWTMouseEventRelay implements MouseListener,MouseMoveListener,Liste
 	}
 
 	public void mouseDown(MouseEvent event) {
-	    if( ((MouseEvent)event).button == 1) {
+
+	    if( ((MouseEvent)event).button == 1 && (event.stateMask & SWT.CTRL) == 0){
 	        relay.mouseClickedDown(event.x, event.y);
 	        dragFromX=event.x;
 	        dragFromY=event.y;
@@ -63,11 +64,11 @@ public class SWTMouseEventRelay implements MouseListener,MouseMoveListener,Liste
 
 	public void mouseUp( MouseEvent event ) {
 
-        if ( ((MouseEvent) event).button == 1 ) {
-            relay.mouseClickedUp( event.x, event.y );
-        }
-        isDragging = false;
-    }
+	    if( ((MouseEvent)event).button == 1 && (event.stateMask & SWT.CTRL) == 0){
+	        relay.mouseClickedUp( event.x, event.y );
+	    }
+	    isDragging = false;
+	}
 
 	public void mouseMove(MouseEvent event) {
 		if(isDragging){
