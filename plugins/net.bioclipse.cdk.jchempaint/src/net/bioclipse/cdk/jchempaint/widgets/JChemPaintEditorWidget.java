@@ -36,6 +36,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Listener;
 import org.openscience.cdk.controller.ControllerHub;
@@ -80,6 +81,12 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
     public JChemPaintEditorWidget(Composite parent, int style) {
         super( parent, style );
         getRenderer().getRenderer2DModel().setFitToScreen(false);
+
+
+        getRenderer().getRenderer2DModel().setSelectedPartColor(
+                createFromSWT(this.getDisplay().getSystemColor(
+                                                   SWT.COLOR_LIST_SELECTION ))
+        );
         prevHighlightedAtom=null;
         prevHighlightedBond=null;
     }
@@ -305,4 +312,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
 	    return isdirty;
 	}
 
+	java.awt.Color createFromSWT(org.eclipse.swt.graphics.Color color) {
+	    return new java.awt.Color( color.getRed(),
+	                               color.getGreen(),
+	                               color.getBlue());
+	}
 }
