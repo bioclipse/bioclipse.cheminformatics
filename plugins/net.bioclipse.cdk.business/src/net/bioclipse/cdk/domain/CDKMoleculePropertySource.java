@@ -108,7 +108,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
             IFile fileRes = (IFile)resource;
             try {
                 cdkValueMap.put(
-                    PROPERTY_FORMAT, fileRes.getContentDescription().toString()
+                    PROPERTY_FORMAT, fileRes.getContentDescription().getContentType().getName()
                 );
             } catch (CoreException e) {
                 cdkValueMap.put(PROPERTY_FORMAT, "error");
