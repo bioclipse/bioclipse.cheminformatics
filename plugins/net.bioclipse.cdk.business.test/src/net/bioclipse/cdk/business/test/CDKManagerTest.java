@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -46,7 +44,6 @@ import net.bioclipse.core.tests.AbstractManagerTest;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openscience.cdk.exception.CDKException;
@@ -588,7 +585,7 @@ public class CDKManagerTest extends AbstractManagerTest {
         IChemFile chemFile = new org.openscience.cdk.ChemFile();
 
         // Do some customizations...
-        CDKManagerHelper.customizeReading(reader, chemFile);
+        CDKManagerHelper.customizeReading(reader);
 
         //Read file
         try {

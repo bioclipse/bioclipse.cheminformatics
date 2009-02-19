@@ -189,7 +189,7 @@ public class CDKManager implements ICDKManager {
   	        }
 
   	        // Do some customizations...
-  	        CDKManagerHelper.customizeReading(reader, new ChemFile());
+  	        CDKManagerHelper.customizeReading(reader);
 
             List<IAtomContainer> atomContainersList =
                 new ArrayList<IAtomContainer>();
@@ -350,7 +350,7 @@ public class CDKManager implements ICDKManager {
   	        IChemFile chemFile = new org.openscience.cdk.ChemFile();
 
   	        // Do some customizations...
-  	        CDKManagerHelper.customizeReading(reader, chemFile);
+  	        CDKManagerHelper.customizeReading(reader);
 
   	        // Read file
   	        try {

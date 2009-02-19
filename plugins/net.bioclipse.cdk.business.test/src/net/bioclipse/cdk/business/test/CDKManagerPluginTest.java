@@ -916,7 +916,7 @@ public class CDKManagerPluginTest {
         IChemFile chemFile = new org.openscience.cdk.ChemFile();
 
         // Do some customizations...
-        CDKManagerHelper.customizeReading(reader, chemFile);
+        CDKManagerHelper.customizeReading(reader);
 
         //Read file
         try {

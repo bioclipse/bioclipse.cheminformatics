@@ -85,12 +85,10 @@ public class CDKManagerHelper {
         }
     }
 
-    public static void customizeReading(ISimpleChemObjectReader reader, IChemFile chemFile) {
+    public static void customizeReading(ISimpleChemObjectReader reader) {
         System.out.println("customingIO, reader found: " + reader.getClass().getName());
         System.out.println("Found # IO settings: " + reader.getIOSettings().length);
         if (reader instanceof PDBReader) {
-            chemFile = new NNChemFile();
-
             Properties customSettings = new Properties();
             customSettings.setProperty("DeduceBonding", "false");
 
@@ -99,7 +97,10 @@ public class CDKManagerHelper {
         }
 
         if (reader instanceof CMLReader) {
-            ((CMLReader)reader).registerConvention("md:mdMolecule", new MDMoleculeConvention(new ChemFile()));
+            ((CMLReader)reader).registerConvention(
+                "md:mdMolecule",
+                new MDMoleculeConvention((IChemFile)null)
+            );
             System.out.println("****** CmlReader, registered MDMoleculeConvention");
 
         }
