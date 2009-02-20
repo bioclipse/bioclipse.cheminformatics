@@ -201,9 +201,9 @@
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
                 icon="icons/jcp/plus_one.png"
-                label="Increas Charge"
+                label="Increase Charge"
                 style="radio"
-                tooltip="Increas Charge">
+                tooltip="Increase Charge">
              <visibleWhen
                    checkEnabled="true">
                 <reference
@@ -222,9 +222,9 @@
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
                 icon="icons/jcp/min_one.png"
-                label="Decreas Charge"
+                label="Decrease Charge"
                 style="radio"
-                tooltip="Decreas Charge">
+                tooltip="Decrease Charge">
              <visibleWhen
                    checkEnabled="true">
                 <reference
