@@ -591,7 +591,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(params = "ICDKMolecule molecule, String filename",
                      methodSummary = "Saves a molecule in the Chemical Markup Language format (filename must be a relative to workspace root and "+
-    								 "folder must exist)")
+    								 "folder must exist). Example of file String: \"/Virtual/bla.cml\"")
     @TestMethods("testSaveCML")
     public void saveCML(ICDKMolecule cml, String filename) throws InvocationTargetException, BioclipseException, CDKException, CoreException;
 
