@@ -72,6 +72,7 @@ import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CMLReader;
+import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.FormatFactory;
 import org.openscience.cdk.io.IChemObjectWriter;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
@@ -469,6 +470,7 @@ public class CDKManager implements ICDKManager {
   	        monitor.beginTask("Writing file", ticks);
   	        StringWriter writer = new StringWriter();
 
+            writerFactory.registerWriter(CMLWriter.class);
   	        IChemObjectWriter chemWriter = writerFactory.createWriter(filetype);
   	        if (chemWriter == null) {
                 throw new BioclipseException("No writer available for this format: " +
