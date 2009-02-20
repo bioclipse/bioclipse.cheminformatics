@@ -11,12 +11,15 @@
 package net.bioclipse.chemoinformatics.wizards;
 
 import java.io.File;
-import java.net.URI;
 import java.util.Iterator;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.actions.WorkspaceAction;
+import org.eclipse.ui.activities.WorkbenchActivityHelper;
 
 /**
  * Helper methods for the NewWizards to find an unused name.
@@ -55,16 +58,20 @@ public class WizardHelper {
                     selectedResource = selectedResource.getParent();
                 }
                 if (selectedResource.isAccessible()) {
-                    URI folderPath = selectedResource.getLocationURI();
-                    File folder = new File(folderPath);
-                    File[] files = folder.listFiles();
-                    boolean alreadyExists = fileAlreadyExists(files, fileName);
-                    int i = 0;
-                    while (alreadyExists) {
+
+                    IPath path = selectedResource.getFullPath();
+
+                    path = path.append( fileName );
+                    IFile file = selectedResource.getWorkspace().getRoot().getFile( path );
+                    int i=0;
+                    while(file.exists()) {
                         i++;
-                        fileName = prefix + i + suffix;
-                        alreadyExists = fileAlreadyExists(files, fileName);
+                        path = path.removeLastSegments( 1 );
+                        path = path.append( prefix+i+suffix );
+                        path = path.removeFirstSegments( 1 );
+                        file = selectedResource.getProject().getFile( path );
                     }
+                    fileName = path.lastSegment();
                 }
             }
         }
