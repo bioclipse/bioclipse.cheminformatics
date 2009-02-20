@@ -64,6 +64,10 @@ import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.formats.CMLFormat;
+import org.openscience.cdk.io.formats.IChemFormat;
+import org.openscience.cdk.io.formats.MDLV2000Format;
+import org.openscience.cdk.io.formats.Mol2Format;
+import org.openscience.cdk.io.formats.SDFFormat;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.templates.MoleculeFactory;
 import org.openscience.cdk.tools.diff.AtomContainerDiff;
@@ -396,7 +400,7 @@ public class CDKManagerPluginTest {
         
         IFile target=new MockIFile();
         cdk.save(chemmodel, target.getProjectRelativePath().toPortableString(),
-            ICDKManager.mol);
+            (IChemFormat)MDLV2000Format.getInstance());
         byte[] bytes=new byte[6];
         target.getContents().read(bytes);
         Assert.assertArrayEquals(new byte[]{10,32,32,67,68,75}, bytes);
@@ -409,7 +413,7 @@ public class CDKManagerPluginTest {
         ICDKMolecule propane  = cdk.fromSMILES( propaneSmiles  );
         
         IFile target=new MockIFile();
-        cdk.saveMolecule(propane, target, ICDKManager.mol);
+        cdk.saveMolecule(propane, target, (IChemFormat)MDLV2000Format.getInstance());
         byte[] bytes=new byte[6];
         target.getContents().read(bytes);
         Assert.assertArrayEquals(new byte[]{10,32,32,67,68,75}, bytes);
@@ -453,12 +457,12 @@ public class CDKManagerPluginTest {
         assertNotNull(mol2);
 
         //Save mol to other location (virtual) with extension specified
-        cdk.saveMolecule(mol, "/Virtual/atp2.mol", ICDKManager.mol);
+        cdk.saveMolecule(mol, "/Virtual/atp2.mol", (IChemFormat)MDLV2000Format.getInstance());
         mol2 = cdk.loadMolecule("/Virtual/atp2.mol");
         assertNotNull(mol2);
 
         //Save as CML
-        cdk.saveMolecule(mol, "/Virtual/atp3.cml", ICDKManager.cml);
+        cdk.saveMolecule(mol, "/Virtual/atp3.cml", (IChemFormat)CMLFormat.getInstance());
         mol2 = cdk.loadMolecule("/Virtual/atp3.cml");
         assertNotNull(mol2);
 
@@ -551,7 +555,7 @@ public class CDKManagerPluginTest {
         
         ICDKMolecule propane  = cdk.fromSMILES( propaneSmiles  );
         
-        cdk.saveMolecule(propane, "/Virtual/testSaveMolecule.mol", ICDKManager.mol);
+        cdk.saveMolecule(propane, "/Virtual/testSaveMolecule.mol", (IChemFormat)MDLV2000Format.getInstance());
         ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMolecule.mol");
         assertEquals("CCC", mol.getSMILES());
     }
@@ -572,7 +576,7 @@ public class CDKManagerPluginTest {
         
         //FIXME: needs porting to PLUGIN I/O from URL not IMockFile
         IFile target=new MockIFile();
-        cdk.saveMolecules(mols, target, ICDKManager.sdf);
+        cdk.saveMolecules(mols, target, (IChemFormat)SDFFormat.getInstance());
 
         List<ICDKMolecule> readmols = cdk.loadMolecules(target);
         assertEquals(2, readmols.size());
@@ -605,7 +609,7 @@ public class CDKManagerPluginTest {
         mols.add(mol2);
         
         String virtualPath="/Virtual/testSaveMoleculesSDFtoTEMPwithProps.cml";
-        cdk.saveMolecules(mols, virtualPath, ICDKManager.sdf);
+        cdk.saveMolecules(mols, virtualPath, (IChemFormat)SDFFormat.getInstance());
         
         //For debug output
         System.out.println("#############################################");
@@ -655,7 +659,7 @@ public class CDKManagerPluginTest {
         
         //FIXME: needs porting to PLUGIN I/O from URL not IMockFile
         IFile target=new MockIFile();
-        cdk.saveMolecules(mols, target, ICDKManager.cml);
+        cdk.saveMolecules(mols, target, (IChemFormat)CMLFormat.getInstance());
 
         List<ICDKMolecule> readmols = cdk.loadMolecules(target);
         assertEquals(2, readmols.size());
@@ -687,7 +691,7 @@ public class CDKManagerPluginTest {
         mols.add(mol2);
         
         IFile target=new MockIFile();
-        cdk.saveMolecules(mols, target, ICDKManager.cml);
+        cdk.saveMolecules(mols, target, (IChemFormat)CMLFormat.getInstance());
 
         BufferedReader reader=new BufferedReader(new InputStreamReader(target.getContents()));
 
@@ -731,7 +735,7 @@ public class CDKManagerPluginTest {
         mols.add(mol2);
 
         String vitualPath="/Virtual/testSaveMoleculesCMLtoTEMPwithProps.cml";
-        cdk.saveMolecules(mols, vitualPath, ICDKManager.cml);
+        cdk.saveMolecules(mols, vitualPath, (IChemFormat)CMLFormat.getInstance());
 
         List<ICDKMolecule> readmols = cdk.loadMolecules(vitualPath);
     	System.out.println("** Reading back created CML File: ");
@@ -858,7 +862,7 @@ public class CDKManagerPluginTest {
         ICDKMolecule propane  = cdk.fromSMILES( propaneSmiles  );
 
         IFile target=new MockIFile();
-        cdk.saveMolecule(propane, target, ICDKManager.mol2);
+        cdk.saveMolecule(propane, target, (IChemFormat)Mol2Format.getInstance());
         
         ICDKMolecule mol = cdk.loadMolecule(target);
         assertNotNull(mol);

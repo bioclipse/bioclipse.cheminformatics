@@ -70,8 +70,7 @@ public class Create3dHandler extends AbstractHandler {
                                 .saveMolecule(
                                                mol,
                                                (IFile) ssel.getFirstElement(),
-                                               ((IFile) ssel.getFirstElement())
-                                                       .getFileExtension(), true );
+                                               true );
                     } catch ( Exception e ) {
                         LogUtils.handleException( e, logger );
                     }
@@ -120,9 +119,7 @@ public class Create3dHandler extends AbstractHandler {
                                                                    .getRoot()
                                                                    .getFile(
                                                                              result ),
-                                                           ((IFile) ssel
-                                                                   .getFirstElement())
-                                                                   .getFileExtension() );
+                                                           true );
                             } else {
                                 Activator
                                         .getDefault()
@@ -134,9 +131,7 @@ public class Create3dHandler extends AbstractHandler {
                                                                .getWorkspace()
                                                                .getRoot()
                                                                .getFile( result ),
-                                                       ((IFile) ssel
-                                                               .getFirstElement())
-                                                               .getFileExtension() );
+                                                       false );
                             }
                         } catch ( Exception e ) {
                             throw new RuntimeException( e.getMessage() );

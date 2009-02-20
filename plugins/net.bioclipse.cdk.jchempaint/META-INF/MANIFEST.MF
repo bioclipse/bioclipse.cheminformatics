@@ -23,7 +23,8 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.eclipse.ui.views;bundle-version="3.3.0",
  org.eclipse.core.expressions;bundle-version="3.4.0",
  net.bioclipse.scripting.ui;bundle-version="2.0.0",
- org.openscience.cdk.nonotify
+ org.openscience.cdk.nonotify,
+ org.openscience.cdk.ioformats;bundle-version="1.1.5"
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.log4j
 Export-Package: net.bioclipse.cdk.jchempaint.business,

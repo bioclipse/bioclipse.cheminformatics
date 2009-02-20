@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,21 +71,19 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMoleculeSet;
-import org.openscience.cdk.io.CDKSourceCodeWriter;
 import org.openscience.cdk.io.CMLReader;
-import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.FormatFactory;
+import org.openscience.cdk.io.IChemObjectWriter;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
-import org.openscience.cdk.io.MDLRXNWriter;
 import org.openscience.cdk.io.MDLWriter;
-import org.openscience.cdk.io.Mol2Writer;
 import org.openscience.cdk.io.ReaderFactory;
-import org.openscience.cdk.io.SMILESWriter;
+import org.openscience.cdk.io.WriterFactory;
 import org.openscience.cdk.io.formats.CIFFormat;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.IResourceFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
+import org.openscience.cdk.io.formats.Mol2Format;
 import org.openscience.cdk.io.formats.PDBFormat;
 import org.openscience.cdk.io.formats.PubChemCompoundXMLFormat;
 import org.openscience.cdk.io.formats.PubChemCompoundsXMLFormat;
@@ -108,7 +105,6 @@ import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
-import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
 /**
  * The manager class for CDK. Contains CDK related methods.
@@ -125,6 +121,8 @@ public class CDKManager implements ICDKManager {
 
     // ReaderFactory used solely to determine chemical file formats
     private static FormatFactory formatsFactory;
+    
+    private static final WriterFactory writerFactory = new WriterFactory();
 
     static {
         readerFactory = new ReaderFactory();
@@ -447,7 +445,7 @@ public class CDKManager implements ICDKManager {
   	    return molecule.getSMILES();
   	}
 
-  	public void save(IChemModel model, String target, String filetype)
+  	public void save(IChemModel model, String target, IChemFormat filetype)
   	            throws BioclipseException, CDKException, CoreException {
   	    save( model,
   	          ResourcePathTransformer.getInstance().transform(target),
@@ -457,77 +455,47 @@ public class CDKManager implements ICDKManager {
 
   	public void save( IChemModel model,
   	                  IFile target,
-  	                  String filetype,
+  	                IChemFormat filetype,
   	                  IProgressMonitor monitor )
   	            throws BioclipseException, CDKException, CoreException {
 
   	    if (monitor == null)
   	        monitor = new NullProgressMonitor();
 
+  	    if (filetype == null) filetype = (IChemFormat)CMLFormat.getInstance();
+  	    
   	    try {
   	        int ticks = 10000;
   	        monitor.beginTask("Writing file", ticks);
   	        StringWriter writer = new StringWriter();
 
-  	        if (filetype.equals(mol) || filetype.equals(mdl)) {
-  	            MDLWriter mdlWriter = new MDLWriter(writer);
-  	            mdlWriter.write(model);
-  	        } else if (filetype.equals(cml)) {
-  	            CMLWriter cmlWriter = new CMLWriter(writer);
-  	            cmlWriter.write(model);
-  	        } else if (filetype.equals(mol2)) {
-  	            Mol2Writer mol2Writer = new Mol2Writer();
-  	            IAtomContainer mol
-  	                = ChemModelManipulator.getAllAtomContainers(model).get(0);
-  	            org.openscience.cdk.interfaces.IMolecule nmol = mol
-  	            .getBuilder().newMolecule(mol);
-  	            mol2Writer.write(nmol);
-  	        } else if (filetype.equals(rxn)) {
-  	            MDLRXNWriter cmlWriter = new MDLRXNWriter(writer);
-  	            cmlWriter.write(model);
-  	        } else if (filetype.equals(smi)) {
-  	            SMILESWriter cmlWriter = new SMILESWriter(writer);
-  	            cmlWriter.write(model);
-  	        } else if (filetype.equals(cdk)) {
-  	            CDKSourceCodeWriter cmlWriter = new CDKSourceCodeWriter(writer);
-  	            cmlWriter.write(model);
-  	        } else if (filetype.equals(sdf)) {
-  	            SDFWriter cmlWriter = new SDFWriter(writer);
-  	            cmlWriter.write(model.getMoleculeSet());
-  	        } else {
-  	            // by default, save as CML, not matter what the extension is
-  	            // CML just needs some extra promotion love
-  	            CMLWriter cmlWriter = new CMLWriter(writer);
-  	            cmlWriter.write(model);
+  	        IChemObjectWriter chemWriter = writerFactory.createWriter(filetype);
+  	        if (chemWriter == null) {
+  	            new BioclipseException("No writer available for this format: " +
+  	                filetype.getFormatName());
   	        }
+  	        chemWriter.write(model);
+  	        chemWriter.close();
 
   	        if (target.exists()) {
-  	            try {
-  	                target.setContents(
+  	            target.setContents(
   	                    new ByteArrayInputStream(writer.toString()
-  	                                                   .getBytes("US-ASCII")),
-  	                    false,
-  	                    true,
-  	                    monitor );
-  	            }
-  	            catch (UnsupportedEncodingException e) {
-  	                throw new BioclipseException(e.getMessage(), e);
-  	            }
+  	                            .getBytes("US-ASCII")),
+  	                            false,
+  	                            true, // overwrite
+  	                            monitor );
   	        } else {
-  	            try {
-  	                target.create(
+  	            target.create(
   	                    new ByteArrayInputStream(writer.toString()
-  	                                                   .getBytes("US-ASCII")),
-  	                    false,
-  	                    monitor );
-  	            }
-  	            catch (UnsupportedEncodingException e) {
-  	                throw new BioclipseException(e.getMessage());
-  	            }
+  	                            .getBytes("US-ASCII")),
+  	                            false,
+  	                            monitor );
   	        }
   	        monitor.worked(ticks);
-  	    }
-  	    finally {
+  	    } catch (IOException exception) {
+  	      throw new BioclipseException("Failed to write file: " +
+  	              exception.getMessage());
+  	    } finally {
   	        monitor.done();
   	    }
   	}
@@ -545,14 +513,17 @@ public class CDKManager implements ICDKManager {
   	public void saveMolecule(IMolecule mol, boolean overwrite)
   	            throws BioclipseException, CDKException, CoreException {
 
-  	    if (mol.getResource() == null)
+  	    if (mol.getResource() == null ||
+  	        !(mol.getResource() instanceof IFile))
   	        throw new BioclipseException(
   	            "Molecule does not have an associated File." );
 
-  	    saveMolecule( mol,
-  	                  (IFile)mol.getResource(),
-  	                  mol.getResource().getFileExtension(),
-  	                  overwrite );
+  	    IFile file = (IFile)mol.getResource();
+  	    saveMolecule(
+  	        mol, file,
+  	        determineFormat(file.getContentDescription().getContentType()),
+  	        overwrite
+  	    );
   	}
 
   	public void saveMolecule(IMolecule mol, String filename, boolean overwrite)
@@ -564,24 +535,28 @@ public class CDKManager implements ICDKManager {
 
   	public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
   	            throws BioclipseException, CDKException, CoreException {
-  	    saveMolecule(mol, file, file.getFileExtension(), overwrite);
+  	    saveMolecule(
+  	            mol, file,
+  	            determineFormat(file.getContentDescription().getContentType()),
+  	            overwrite
+  	    );
   	}
 
   	public void saveMolecule( IMolecule mol_in,
   	                          String filename,
-  	                          String filetype )
+  	                        IChemFormat filetype )
                 throws BioclipseException, CDKException, CoreException {
   	    this.saveMolecule(mol_in, filename, filetype, false);
   	}
 
-  	public void saveMolecule(IMolecule mol_in, IFile target, String filetype)
+  	public void saveMolecule(IMolecule mol_in, IFile target, IChemFormat filetype)
   	            throws BioclipseException, CDKException, CoreException {
   	    this.saveMolecule(mol_in, target, filetype, false);
   	}
 
   	public void saveMolecule( IMolecule mol_in,
   	                          IFile target,
-  	                          String filetype,
+  	                          IChemFormat filetype,
   	                          boolean overwrite)
                 throws BioclipseException, CDKException, CoreException {
 
@@ -600,7 +575,7 @@ public class CDKManager implements ICDKManager {
 
   	public void saveMolecule( IMolecule mol,
   	                          String filename,
-  	                          String filetype,
+  	                          IChemFormat filetype,
   	                          boolean overwrite )
   	            throws BioclipseException, CDKException, CoreException {
 
@@ -616,7 +591,7 @@ public class CDKManager implements ICDKManager {
   	 */
   	public void saveMolecules( List<? extends IMolecule> molecules,
   	                           String path,
-  	                           String filetype )
+  	                         IChemFormat filetype )
   	            throws BioclipseException, CDKException, CoreException {
 
   	    saveMolecules( molecules,
@@ -629,11 +604,11 @@ public class CDKManager implements ICDKManager {
   	 */
   	public void saveMolecules( List<? extends IMolecule> molecules,
   	                           IFile target,
-  	                           String filetype )
+  	                         IChemFormat filetype )
   	            throws BioclipseException, CDKException, CoreException {
 
-  	    if ( filetype.equalsIgnoreCase(cml) ||
-  	         filetype.equalsIgnoreCase(sdf) ) {
+  	    if ( filetype == CMLFormat.getInstance() ||
+  	         filetype == MDLV2000Format.getInstance()) {
 
       	    IChemModel chemModel = new ChemModel();
       	    chemModel.setMoleculeSet( chemModel.getBuilder()
@@ -1226,7 +1201,7 @@ public class CDKManager implements ICDKManager {
   	                   BioclipseException,
   	                   CDKException,
   	                   CoreException {
-  	    saveMolecule(mol, filename,CDKManager.mol2);
+  	    saveMolecule(mol, filename, (IChemFormat)Mol2Format.getInstance());
   	}
 
   	public List<ICDKMolecule> loadSMILESFile(String path)
@@ -1479,7 +1454,7 @@ public class CDKManager implements ICDKManager {
   	                   BioclipseException,
   	                   CDKException,
   	                   CoreException {
-  	    saveMolecule(cml, filename,CDKManager.cml);
+  	    saveMolecule(cml, filename, (IChemFormat)CMLFormat.getInstance());
   	}
 
   	public void saveMDLMolfile(ICDKMolecule mol, String filename)
@@ -1487,7 +1462,7 @@ public class CDKManager implements ICDKManager {
   	                   BioclipseException,
   	                   CDKException,
   	                   CoreException {
-  	    saveMolecule(mol, filename,CDKManager.mol);
+  	    saveMolecule(mol, filename, (IChemFormat)MDLV2000Format.getInstance());
   	}
 
     public IChemFormat determineIChemFormat(IFile file)

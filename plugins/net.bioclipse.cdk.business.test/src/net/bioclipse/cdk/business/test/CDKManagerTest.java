@@ -31,7 +31,6 @@ import java.util.List;
 
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.CDKManagerHelper;
-import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdkdebug.business.ICDKDebugManager;
 import net.bioclipse.core.MockIFile;
@@ -54,7 +53,11 @@ import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.ReaderFactory;
+import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
+import org.openscience.cdk.io.formats.MDLV2000Format;
+import org.openscience.cdk.io.formats.Mol2Format;
+import org.openscience.cdk.io.formats.SDFFormat;
 import org.openscience.cdk.io.formats.SMILESFormat;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.templates.MoleculeFactory;
@@ -353,7 +356,7 @@ public class CDKManagerTest extends AbstractManagerTest {
         chemmodel.setMoleculeSet(setOfMolecules);
         
         IFile target=new MockIFile();
-        cdk.save(chemmodel, target, ICDKManager.mol, null);
+        cdk.save(chemmodel, target, (IChemFormat)MDLV2000Format.getInstance(), null);
         byte[] bytes=new byte[6];
         target.getContents().read(bytes);
         Assert.assertArrayEquals(new byte[]{10,32,32,67,68,75}, bytes);
@@ -366,7 +369,7 @@ public class CDKManagerTest extends AbstractManagerTest {
         ICDKMolecule propane  = cdk.fromSMILES( propaneSmiles  );
         
         IFile target=new MockIFile();
-        cdk.saveMolecule(propane, target, ICDKManager.mol);
+        cdk.saveMolecule(propane, target, (IChemFormat)MDLV2000Format.getInstance());
         byte[] bytes=new byte[6];
         target.getContents().read(bytes);
         Assert.assertArrayEquals(new byte[]{10,32,32,67,68,75}, bytes);
@@ -387,7 +390,7 @@ public class CDKManagerTest extends AbstractManagerTest {
         mols.add(mol2);
         
         IFile target=new MockIFile();
-        cdk.saveMolecules(mols, target, ICDKManager.sdf);
+        cdk.saveMolecules(mols, target, (IChemFormat)SDFFormat.getInstance());
 
         List<ICDKMolecule> readmols = cdk.loadMolecules(target);
         assertEquals(2, readmols.size());
@@ -418,7 +421,7 @@ public class CDKManagerTest extends AbstractManagerTest {
         mols.add(mol2);
         
         IFile target=new MockIFile();
-        cdk.saveMolecules(mols, target, ICDKManager.sdf);
+        cdk.saveMolecules(mols, target, (IChemFormat)SDFFormat.getInstance());
 
         BufferedReader reader=new BufferedReader(new InputStreamReader(target.getContents()));
 
@@ -463,7 +466,7 @@ public class CDKManagerTest extends AbstractManagerTest {
         mols.add(mol2);
         
         IFile target=new MockIFile();
-        cdk.saveMolecules(mols, target, ICDKManager.cml);
+        cdk.saveMolecules(mols, target, (IChemFormat)CMLFormat.getInstance());
 
         List<ICDKMolecule> readmols = cdk.loadMolecules(target);
         assertEquals(2, readmols.size());
@@ -495,7 +498,7 @@ public class CDKManagerTest extends AbstractManagerTest {
         mols.add(mol2);
         
         IFile target=new MockIFile();
-        cdk.saveMolecules(mols, target, ICDKManager.cml);
+        cdk.saveMolecules(mols, target, (IChemFormat)CMLFormat.getInstance());
 
         BufferedReader reader=new BufferedReader(new InputStreamReader(target.getContents()));
 
@@ -532,7 +535,7 @@ public class CDKManagerTest extends AbstractManagerTest {
         ICDKMolecule propane  = cdk.fromSMILES( propaneSmiles  );
 
         IFile target=new MockIFile();
-        cdk.saveMolecule(propane, target, ICDKManager.mol2);
+        cdk.saveMolecule(propane, target, (IChemFormat)Mol2Format.getInstance());
     	
     }
 

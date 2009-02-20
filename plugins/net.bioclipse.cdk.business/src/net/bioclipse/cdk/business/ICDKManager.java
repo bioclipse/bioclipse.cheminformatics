@@ -45,17 +45,6 @@ import org.openscience.cdk.io.formats.IChemFormat;
 )
 public interface ICDKManager extends IBioclipseManager {
 
-	public final static String rxn = "rxn";
-	//These are the same, but since both extensions are common,
-	//they need to be handled
-	public final static String mol = "mol";
-	public final static String mdl = "mdl";
-	public final static String cml = "cml";
-	public final static String smi = "smi";
-  public final static String cdk = "cdk";
-	public final static String mol2 = "mol2";
-	public final static String sdf = "sdf";
-
     /**
      * Create a CDKMolecule from SMILES
      * @param SMILES
@@ -246,11 +235,11 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    @PublishedMethod(params = "IMolecule mol, String filename, String filetype",
+    @PublishedMethod(params = "IMolecule mol, String filename, IChemFormat filetype",
             methodSummary="saves mol to a file (filename must be a relative to workspace root and "+
-            "folder must exist), filetype must be one of the constants given by getPossibleFiletypes")
+            "folder must exist), filetype must be a IChemFormat")
     @TestMethods("testSaveMolecule_IMolecule_String_String")
-    public void saveMolecule(IMolecule mol, String filename, String filetype)
+    public void saveMolecule(IMolecule mol, String filename, IChemFormat filetype)
     	throws BioclipseException, CDKException, CoreException;
 
     /**
@@ -260,7 +249,7 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    public void saveMolecule(IMolecule mol, IFile target, String filetype)
+    public void saveMolecule(IMolecule mol, IFile target, IChemFormat filetype)
     	throws BioclipseException, CDKException, CoreException;
 
     /**
@@ -273,10 +262,10 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(params = "IMolecule mol, String filename, String filetype, boolean overwrite",
             methodSummary="saves mol to a file (filename must be a relative to workspace root and "+
-            "folder must exist), filetype must be one of the constants given by getPossibleFiletypes. " +
+            "folder must exist), filetype must be a IChemFormat. " +
             "If overwrite=true then file will be overwritten if exists.")
     @TestMethods("testSaveMolecule_IMolecule_String_String")
-    public void saveMolecule(IMolecule mol, String filename, String filetype, boolean overwrite)
+    public void saveMolecule(IMolecule mol, String filename, IChemFormat filetype, boolean overwrite)
     	throws BioclipseException, CDKException, CoreException;
 
     /**
@@ -287,7 +276,7 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    public void saveMolecule(IMolecule mol, IFile target, String filetype, boolean overwrite)
+    public void saveMolecule(IMolecule mol, IFile target, IChemFormat filetype, boolean overwrite)
     	throws BioclipseException, CDKException, CoreException;
 
     /**
@@ -300,7 +289,7 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws CoreException
      */
     @Recorded
-    public void saveMolecules(List<? extends IMolecule> molecules, IFile target, String filetype)
+    public void saveMolecules(List<? extends IMolecule> molecules, IFile target, IChemFormat filetype)
     	throws BioclipseException, CDKException, CoreException;
 
     /**
@@ -313,7 +302,7 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws CoreException
      */
     @Recorded
-    public void saveMolecules(List<? extends IMolecule> molecules, String path, String filetype)
+    public void saveMolecules(List<? extends IMolecule> molecules, String path, IChemFormat filetype)
     	throws BioclipseException, CDKException, CoreException;
 
 
@@ -324,7 +313,7 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    public void save(IChemModel model, String target, String filetype)
+    public void save(IChemModel model, String target, IChemFormat filetype)
     	throws BioclipseException, CDKException, CoreException;
 
     /**

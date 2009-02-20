@@ -17,14 +17,12 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.ActionDelegate;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 
 /**
@@ -72,8 +70,7 @@ public class Create2dHandler extends AbstractHandler {
                                 .saveMolecule(
                                                mol,
                                                (IFile) ssel.getFirstElement(),
-                                               ((IFile) ssel.getFirstElement())
-                                                       .getFileExtension() );
+                                               true);
                     } catch ( Exception e ) {
                         throw new RuntimeException( e.getMessage() );
                     }
@@ -122,9 +119,7 @@ public class Create2dHandler extends AbstractHandler {
                                                                    .getRoot()
                                                                    .getFile(
                                                                              result ),
-                                                           ((IFile) ssel
-                                                                   .getFirstElement())
-                                                                   .getFileExtension() );
+                                                           true );
                             } else {
                                 Activator
                                         .getDefault()
@@ -136,9 +131,7 @@ public class Create2dHandler extends AbstractHandler {
                                                                .getWorkspace()
                                                                .getRoot()
                                                                .getFile( result ),
-                                                       ((IFile) ssel
-                                                               .getFirstElement())
-                                                               .getFileExtension() );
+                                                       false );
                             }
                         } catch ( Exception e ) {
                             throw new RuntimeException( e.getMessage() );
