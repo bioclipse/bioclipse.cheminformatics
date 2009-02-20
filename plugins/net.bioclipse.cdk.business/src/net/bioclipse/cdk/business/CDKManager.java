@@ -471,9 +471,10 @@ public class CDKManager implements ICDKManager {
 
   	        IChemObjectWriter chemWriter = writerFactory.createWriter(filetype);
   	        if (chemWriter == null) {
-  	            new BioclipseException("No writer available for this format: " +
+                throw new BioclipseException("No writer available for this format: " +
   	                filetype.getFormatName());
   	        }
+            chemWriter.setWriter(writer);
   	        chemWriter.write(model);
   	        chemWriter.close();
 
