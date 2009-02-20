@@ -14,6 +14,7 @@ package net.bioclipse.cdk.jchempaint.editor;
 import java.util.Iterator;
 
 import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.outline.JCPOutlinePage;
@@ -51,6 +52,9 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
+import org.openscience.cdk.io.formats.CMLFormat;
+import org.openscience.cdk.io.formats.IChemFormat;
+import org.openscience.cdk.io.formats.MDLV2000Format;
 import org.openscience.cdk.renderer.selection.LogicalSelection;
 import org.openscience.cdk.renderer.selection.LogicalSelection.Type;
 
@@ -73,16 +77,24 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
     @Override
     public void doSave( IProgressMonitor monitor ) {
+        ICDKManager cdk = Activator.getDefault().getCDKManager();
 
         try {
-
-            Activator.getDefault().getCDKManager()
-            .saveMolecule(
-                          model,
-                          model.getResource().getLocationURI()
-                          .toString(), true );
-
-            widget.setDirty( false );
+            IFile resource = (IFile)model.getResource();
+            IChemFormat chemFormat = cdk.determineFormat(
+                resource.getContentDescription().getContentType()
+            );
+            if (chemFormat == MDLV2000Format.getInstance() ||
+                chemFormat == CMLFormat.getInstance()) {
+                cdk.saveMolecule(
+                        model,
+                        model.getResource().getLocationURI().toString(),
+                        true // overwrite
+                );
+                widget.setDirty( false );
+            } else {
+                doSaveAs();
+            }
         } catch ( BioclipseException e ) {
             monitor.isCanceled();
             logger.debug( "Failed to save file: " + e.getMessage() );
