@@ -358,7 +358,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             return null;
         }
     }
-
+    
     public void setBondLength(double bondLength) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
@@ -609,8 +609,9 @@ public class JChemPaintManager implements IJChemPaintManager {
     public double getMargin() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.getMargin();
-        } 
-        return 0;
+            return model.getMargin();
+        } else {
+            return 0;
+        }
     }
 }
