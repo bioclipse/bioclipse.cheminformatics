@@ -50,6 +50,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.content.IContentType;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.ChemModel;
@@ -81,9 +82,16 @@ import org.openscience.cdk.io.MDLWriter;
 import org.openscience.cdk.io.Mol2Writer;
 import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.SMILESWriter;
+import org.openscience.cdk.io.formats.CIFFormat;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.IResourceFormat;
+import org.openscience.cdk.io.formats.MDLV2000Format;
+import org.openscience.cdk.io.formats.PDBFormat;
+import org.openscience.cdk.io.formats.PubChemCompoundXMLFormat;
+import org.openscience.cdk.io.formats.PubChemCompoundsXMLFormat;
+import org.openscience.cdk.io.formats.PubChemSubstanceXMLFormat;
+import org.openscience.cdk.io.formats.PubChemSubstancesXMLFormat;
 import org.openscience.cdk.io.formats.SMILESFormat;
 import org.openscience.cdk.io.iterator.IteratingMDLConformerReader;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
@@ -1644,5 +1652,57 @@ public class CDKManager implements ICDKManager {
         catch ( CDKException e ) {
             return 0;
         }
+    }
+
+    // IMPORTANT: the String is the *prefix*, so when matching
+    // startsWith() MUST be used, and NOT an exact match!
+    private final static Map<String, IChemFormat> contentTypeMap =
+        new HashMap<String, IChemFormat>();
+
+    static {
+        contentTypeMap.put(
+                "net.bioclipse.contenttypes.cml",
+                (IChemFormat)CMLFormat.getInstance());
+        contentTypeMap.put(
+                "net.bioclipse.contenttypes.mdlMolFile",
+                (IChemFormat)MDLV2000Format.getInstance());
+        contentTypeMap.put(
+                "net.bioclipse.contenttypes.pubchem.xml.compounds",
+                (IChemFormat)PubChemCompoundsXMLFormat.getInstance());
+        contentTypeMap.put(
+                "net.bioclipse.contenttypes.pubchem.xml.substances",
+                (IChemFormat)PubChemSubstancesXMLFormat.getInstance());
+        contentTypeMap.put(
+                "net.bioclipse.contenttypes.pubchem.xml.substance",
+                (IChemFormat)PubChemSubstanceXMLFormat.getInstance());
+        contentTypeMap.put(
+                "net.bioclipse.contenttypes.pubchem.xml.compound",
+                (IChemFormat)PubChemCompoundXMLFormat.getInstance());
+        contentTypeMap.put(
+                "net.bioclipse.contenttypes.smi",
+                (IChemFormat)SMILESFormat.getInstance());
+        contentTypeMap.put(
+                "net.bioclipse.contenttypes.pdb",
+                (IChemFormat)PDBFormat.getInstance());
+        contentTypeMap.put(
+                "net.bioclipse.contenttypes.cif",
+                (IChemFormat)CIFFormat.getInstance());
+    }
+
+    public IChemFormat determineFormat(IContentType type) {
+        if (type == null) return null;
+
+        // first try a quick exact match ...
+        if (contentTypeMap.containsKey(type.getId()))
+            return contentTypeMap.get(type.getId());
+        // ... then as prefix
+        for (String prefix : contentTypeMap.keySet()) {
+            if (type.getId().startsWith(prefix)) {
+                return contentTypeMap.get(prefix);
+            }
+        }
+
+        // OK, no clue...
+        return null;
     }
 }

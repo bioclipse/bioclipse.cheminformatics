@@ -33,6 +33,7 @@ import net.bioclipse.ui.jobs.BioclipseUIJob;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.content.IContentType;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.io.formats.IChemFormat;
@@ -713,4 +714,12 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod(params = "ICDKMolecule m",
                      methodSummary = "Gives the molecularformula as a String")
     public String molecularFormula( ICDKMolecule m );
+
+    @Recorded
+    @PublishedMethod(
+         params = "IContentType type",
+         methodSummary = "Determines the IChemFormat equivalent of the given" +
+             "content type")
+    public IChemFormat determineFormat(IContentType type);
+
 }
