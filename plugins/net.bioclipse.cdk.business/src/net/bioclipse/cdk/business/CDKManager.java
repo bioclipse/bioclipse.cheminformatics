@@ -90,6 +90,7 @@ import org.openscience.cdk.io.formats.PubChemCompoundXMLFormat;
 import org.openscience.cdk.io.formats.PubChemCompoundsXMLFormat;
 import org.openscience.cdk.io.formats.PubChemSubstanceXMLFormat;
 import org.openscience.cdk.io.formats.PubChemSubstancesXMLFormat;
+import org.openscience.cdk.io.formats.SDFFormat;
 import org.openscience.cdk.io.formats.SMILESFormat;
 import org.openscience.cdk.io.iterator.IteratingMDLConformerReader;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
@@ -106,6 +107,7 @@ import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
+import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
 /**
  * The manager class for CDK. Contains CDK related methods.
@@ -477,7 +479,20 @@ public class CDKManager implements ICDKManager {
   	                filetype.getFormatName());
   	        }
             chemWriter.setWriter(writer);
-  	        chemWriter.write(model);
+            if (chemWriter.accepts(ChemModel.class)) {
+                chemWriter.write(model);
+            } else if (chemWriter.accepts(Molecule.class)){
+                org.openscience.cdk.interfaces.IMolecule smashedContainer =
+                    model.getBuilder().newMolecule();
+                for (IAtomContainer container :
+                     ChemModelManipulator.getAllAtomContainers(model)) {
+                    smashedContainer.add(container);
+                }
+                chemWriter.write(smashedContainer);
+            } else {
+                throw new BioclipseException("Writer does not support writing" +
+                		"IChemModel or IMolecule.");
+            }
   	        chemWriter.close();
 
   	        if (target.exists()) {
@@ -611,7 +626,8 @@ public class CDKManager implements ICDKManager {
   	            throws BioclipseException, CDKException, CoreException {
 
   	    if ( filetype == CMLFormat.getInstance() ||
-  	         filetype == MDLV2000Format.getInstance()) {
+  	         filetype == MDLV2000Format.getInstance() ||
+  	         filetype == SDFFormat.getInstance()) {
 
       	    IChemModel chemModel = new ChemModel();
       	    chemModel.setMoleculeSet( chemModel.getBuilder()

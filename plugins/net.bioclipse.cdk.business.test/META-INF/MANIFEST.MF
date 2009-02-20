@@ -20,6 +20,7 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.smiles,
  org.openscience.cdk.extra,
  org.openscience.cdk.io,
+ org.openscience.cdk.libiocml,
  javax.vecmath,
  net.bioclipse.ui;bundle-version="2.0.0",
  org.openscience.cdk.ioformats
