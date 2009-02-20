@@ -470,6 +470,13 @@ public class JChemPaintManager implements IJChemPaintManager {
             model.setMargin(margin);
         }
     }
+    
+    public void setZoom(double zoom) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.setZoomFactor(zoom);
+        }
+    }
 
     public double getAtomRadius() {
         RendererModel model = this.getRendererModel();
@@ -610,6 +617,15 @@ public class JChemPaintManager implements IJChemPaintManager {
         RendererModel model = this.getRendererModel();
         if (model != null) {
             return model.getMargin();
+        } else {
+            return 0;
+        }
+    }
+    
+    public double getZoom() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            return model.getZoomFactor();
         } else {
             return 0;
         }

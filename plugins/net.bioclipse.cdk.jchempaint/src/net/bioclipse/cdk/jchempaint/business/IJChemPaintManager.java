@@ -33,6 +33,11 @@ import org.openscience.cdk.interfaces.IBond;
 public interface IJChemPaintManager extends IBioclipseManager {
     
     @Recorded
+    @PublishedMethod ( params = "double the zoom factor", 
+                       methodSummary = "set the zoom factor" )
+    public void setZoom(double zoom);
+    
+    @Recorded
     @PublishedMethod ( params = "double the screen margin", 
                        methodSummary = "set the margin of the diagram" )
     public void setMargin(double margin);
@@ -111,6 +116,10 @@ public interface IJChemPaintManager extends IBioclipseManager {
     @PublishedMethod ( params = "double radius of the atom symbol on screen", 
                        methodSummary = "set the radius of an atom symbol" )
     public void setAtomRadius(double atomRadius);
+    
+    @Recorded
+    @PublishedMethod ( methodSummary = "get the zoom factor" )
+    public double getZoom();
     
     @Recorded
     @PublishedMethod ( methodSummary = "get the margin of the diagram" )
