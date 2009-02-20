@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nu.xom.Attribute;
-import nu.xom.CustomSerializer;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Serializer;
@@ -64,6 +63,7 @@ import org.openscience.cdk.io.setting.BooleanIOSetting;
 import org.openscience.cdk.io.setting.IOSetting;
 import org.openscience.cdk.io.setting.StringIOSetting;
 import org.openscience.cdk.libio.cml.Convertor;
+import org.openscience.cdk.libio.cml.CustomSerializer;
 import org.openscience.cdk.libio.cml.ICMLCustomizer;
 import org.openscience.cdk.tools.LoggingTool;
 

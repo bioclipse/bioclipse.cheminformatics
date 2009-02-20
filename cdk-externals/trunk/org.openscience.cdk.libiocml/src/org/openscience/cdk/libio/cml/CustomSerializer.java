@@ -22,11 +22,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package nu.xom;
+package org.openscience.cdk.libio.cml;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+
+import nu.xom.Serializer;
 
 /**
  * Custom {@link Serializer} with the sole purpose and functionality to not
