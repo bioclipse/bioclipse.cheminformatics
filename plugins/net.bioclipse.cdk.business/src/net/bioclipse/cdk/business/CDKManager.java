@@ -763,13 +763,14 @@ public class CDKManager implements ICDKManager {
   	}
 
   	public Iterator<ICDKMolecule> createConformerIterator(String path) {
-  	    return creatConformerIterator( ResourcePathTransformer.getInstance()
-  	                                                          .transform(path),
-  	                                   null );
+  	    return createConformerIterator(
+  	        ResourcePathTransformer.getInstance().transform(path),
+  	        null
+  	    );
   	}
 
   	public Iterator<ICDKMolecule>
-  	    creatConformerIterator( IFile file,
+  	    createConformerIterator( IFile file,
   	                            IProgressMonitor monitor) {
   	    try {
   	        return new IteratingBioclipseMDLConformerReader(
@@ -1105,7 +1106,7 @@ public class CDKManager implements ICDKManager {
   	    monitor.beginTask("Reading file", IProgressMonitor.UNKNOWN);
 
   	    Iterator<ICDKMolecule> it
-  	        = creatConformerIterator( file,
+  	        = createConformerIterator( file,
   	                                  new SubProgressMonitor(monitor, 100) );
 
   	    List<ICDKMolecule> mols = new ArrayList<ICDKMolecule>();
@@ -1188,7 +1189,7 @@ public class CDKManager implements ICDKManager {
   	}
 
   	public Iterator<ICDKMolecule> creatConformerIterator(IFile file) {
-  	    return creatConformerIterator(file, null);
+  	    return createConformerIterator(file, null);
   	}
 
   	public Iterator<ICDKMolecule> createMoleculeIterator(IFile file)

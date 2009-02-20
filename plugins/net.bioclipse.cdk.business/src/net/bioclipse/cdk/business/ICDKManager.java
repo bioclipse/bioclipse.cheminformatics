@@ -549,15 +549,8 @@ public interface ICDKManager extends IBioclipseManager {
      * @return
      */
     @Recorded
-    public Iterator<ICDKMolecule> creatConformerIterator(
+    public Iterator<ICDKMolecule> createConformerIterator(
         IFile file, IProgressMonitor monitor );
-
-    /**
-     * @param file
-     * @return
-     */
-    @Recorded
-    public Iterator<ICDKMolecule> creatConformerIterator(IFile file);
 
     @Recorded
     @PublishedMethod( params = "String path",
