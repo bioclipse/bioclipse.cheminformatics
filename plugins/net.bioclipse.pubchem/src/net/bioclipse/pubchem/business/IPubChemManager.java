@@ -39,6 +39,19 @@ public interface IPubChemManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
+        params = "int PubChem Compound ID, String path to save the content too",
+        methodSummary = "Loads the PubChem Compound 3D MDL molfile with the" +
+            " given number to the given path"
+    )
+    public void loadCompound3d(int cid, String target)
+        throws IOException, BioclipseException, CoreException;
+
+    @Recorded
+    public void loadCompound3d(int cid, IFile target, IProgressMonitor monitor )
+        throws IOException, BioclipseException, CoreException;
+
+    @Recorded
+    @PublishedMethod(
         params = "String query against PubChem", 
         methodSummary = "Returns a List of matching compound CIDs."
     )

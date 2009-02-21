@@ -48,6 +48,22 @@ public class PubChemManager implements IPubChemManager {
     }
 
     public void loadCompound(int cid, IFile target, IProgressMonitor monitor)
+    throws IOException, BioclipseException, CoreException {
+        loadCompoundAny(cid, target, monitor, "DisplayXML");
+    }
+
+    public void loadCompound3d(int cid, String target) throws IOException,
+        BioclipseException, CoreException {
+        loadCompound3d(cid, ResourcePathTransformer.getInstance().transform(target), null);
+    }
+
+    public void loadCompound3d(int cid, IFile target, IProgressMonitor monitor)
+        throws IOException, BioclipseException, CoreException {
+        loadCompoundAny(cid, target, monitor, "3DDisplaySDF");
+    }
+
+    private void loadCompoundAny(int cid, IFile target,
+            IProgressMonitor monitor, String type)
             throws IOException, BioclipseException, CoreException {
         if (monitor == null) {
             monitor = new NullProgressMonitor();
@@ -60,7 +76,8 @@ public class PubChemManager implements IPubChemManager {
         monitor.beginTask("Downloading CID " + cid, 2);
 
         try {                
-            String efetch = PUBCHEM_URL_BASE + "summary/summary.cgi?cid=" + cid + "&disopt=DisplayXML";
+            String efetch = PUBCHEM_URL_BASE + "summary/summary.cgi?cid=" +
+                            cid + "&disopt=" + type;
             monitor.subTask("Downloading from " + efetch);
             URL rawURL = new URL(efetch);
             URLConnection rawConn = rawURL.openConnection();
