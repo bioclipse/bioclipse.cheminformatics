@@ -36,9 +36,14 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.ControllerModel;
 import org.openscience.cdk.controller.IChemModelEventRelayHandler;
@@ -49,9 +54,11 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.ExternalHighlightGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.SelectionGenerator;
@@ -59,96 +66,168 @@ import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 
-public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelectionProvider {
+public class JChemPaintEditorWidget extends JChemPaintWidget 
+                                    implements ISelectionProvider {
+    
     private final static StructureDiagramGenerator sdg = new
                                                     StructureDiagramGenerator();
-    Collection<ISelectionChangedListener> listeners =
+    private Collection<ISelectionChangedListener> listeners =
                                     new ArrayList<ISelectionChangedListener>();
 
-    ISelection theSelection = StructuredSelection.EMPTY;
-    IAtom prevHighlightedAtom;
-    IBond prevHighlightedBond;
+    private ISelection currentSelection = StructuredSelection.EMPTY;
+    
+    private IAtom prevHighlightedAtom;
+    
+    private IBond prevHighlightedBond;
 
-    ICDKMolecule model;
+    private ICDKMolecule cdkMolecule;
 
-    ControllerHub hub;
-    ControllerModel c2dm;
-    SWTMouseEventRelay relay;
-    boolean generated = false;
+    private ControllerHub hub;
+    
+    private ControllerModel c2dm;
+    
+    private SWTMouseEventRelay relay;
+    
+    private boolean generated = false;
 
-    boolean isdirty = false;
+    private boolean isdirty = false;
+    
+    private final Point origin = new Point(0, 0); 
 
     public JChemPaintEditorWidget(Composite parent, int style) {
-        super( parent, style );
-        getRenderer().getRenderer2DModel().setFitToScreen(false);
+        super( parent, style | SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_BACKGROUND);
+        
+        final ScrollBar hBar = getHorizontalBar(); 
+        hBar.setEnabled(true);
+        hBar.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                ScrollBar bar = (ScrollBar) event.widget;
+                int d = bar.getSelection();
+                int dx = -d - origin.x;
+                Rectangle rect = getDiagramBounds();
+                scroll(dx, 0, 0, 0, rect.width, rect.height, false);
+                origin.x = -d;
 
+            }
+        });
 
-        getRenderer().getRenderer2DModel().setSelectedPartColor(
-                createFromSWT(this.getDisplay().getSystemColor(
-                                                   SWT.COLOR_LIST_SELECTION ))
-        );
+        final ScrollBar vBar = getVerticalBar();
+        vBar.setEnabled(true);
+        vBar.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                ScrollBar bar = (ScrollBar) event.widget;
+                int d = bar.getSelection();
+                int dy = -d - origin.y;
+                Rectangle rect = getDiagramBounds();
+                scroll(0, dy, 0, 0, rect.width, rect.height, false);
+                origin.y = -d;
+            }
+        });
+        
+        addListener (SWT.Resize,  new Listener () {
+            public void handleEvent (Event e) {
+                Rectangle rect = getDiagramBounds();
+                Rectangle client = getClientArea();
+                hBar.setMaximum(rect.width);
+                vBar.setMaximum(rect.height);
+                hBar.setThumb(Math.min(rect.width, client.width));
+                vBar.setThumb(Math.min(rect.height, client.height));
+                
+                int hPage = rect.width - client.width;
+                int vPage = rect.height - client.height;
+                int hSelection = hBar.getSelection();
+                int vSelection = vBar.getSelection();
+                if (hSelection >= hPage) {
+                    if (hPage <= 0) hSelection = 0;
+                    origin.x = -hSelection;
+                }
+                if (vSelection >= vPage) {
+                    if (vPage <= 0) vSelection = 0;
+                    origin.y = -vSelection;
+                }
+                redraw();
+            }
+        });
+
+        
+        RendererModel model = getRenderer().getRenderer2DModel(); 
+
+        java.awt.Color color = 
+            createFromSWT(
+                    getDisplay().getSystemColor(SWT.COLOR_LIST_SELECTION )); 
+        model.setSelectedPartColor(color);
+        
         prevHighlightedAtom=null;
         prevHighlightedBond=null;
+    }
+    
+    private Rectangle getDiagramBounds() {
+        java.awt.Rectangle r = 
+            getRenderer().calculateDiagramBounds(hub.getIChemModel());
+        return new Rectangle(r.x, r.y, r.width, r.height); 
     }
 
     private void setupControllerHub( IAtomContainer atomContainer ) {
 
-        hub = new ControllerHub( c2dm = new ControllerModel(),
-                                  getRenderer(),
-                                   ChemModelManipulator
-                                   .newChemModel( atomContainer ),
-                                   new IViewEventRelay() {
+        IChemModel chemModel = ChemModelManipulator.newChemModel(atomContainer);
+        c2dm = new ControllerModel();
+        hub = new ControllerHub(
+                c2dm, getRenderer(), chemModel, 
+                new IViewEventRelay() {
+                    public void updateView() {
+                        updateSelection();
+                        JChemPaintEditorWidget.this.redraw();
+                    }
+                }
+        );
 
-            public void updateView() {
-                updateSelection();
-                JChemPaintEditorWidget.this.redraw();
-            }
-        } );
+        hub.setEventHandler(
+                new IChemModelEventRelayHandler() {
 
-      hub.setEventHandler( new IChemModelEventRelayHandler() {
+                    public void coordinatesChanged() {
+                        setDirty(true);
+                    }
 
-        public void coordinatesChanged() {
-            setDirty( true );
+                    public void selectionChanged() {
+                        setSelection(getSelection());
+                    }
+
+                    public void structureChanged() {
+                        setDirty(true);
+                    }
+
+                    public void structurePropertiesChanged() {
+                        setDirty(true);
+                    }
+
+                }
+        );
+
+        if (relay != null) {
+
+            removeMouseListener(relay);
+            removeMouseMoveListener(relay);
+            removeListener(SWT.MouseEnter, (Listener) relay);
+            removeListener(SWT.MouseExit, (Listener) relay);
         }
-
-        public void selectionChanged() {
-            setSelection( getSelection() );
-        }
-
-        public void structureChanged() {
-            setDirty( true );
-        }
-
-        public void structurePropertiesChanged() {
-            setDirty( true );
-        }
-
-      });
-
-      if(relay != null) {
-
-          removeMouseListener( relay );
-          removeMouseMoveListener( relay );
-          removeListener( SWT.MouseEnter, (Listener)relay );
-          removeListener( SWT.MouseExit, (Listener)relay );
-      }
-    	relay = new SWTMouseEventRelay(hub);
-    	hub.setActiveDrawModule( new MoveModule(hub) );
+        
+        relay = new SWTMouseEventRelay(hub);
+        hub.setActiveDrawModule(new MoveModule(hub));
 
         // apply the global JCP properties
-        IJChemPaintGlobalPropertiesManager jcpprop =
+        IJChemPaintGlobalPropertiesManager jcpprop = 
             Activator.getDefault().getJCPPropManager();
         try {
-           jcpprop.applyProperties(hub.getRenderer().getRenderer2DModel());
+            jcpprop.applyProperties(hub.getRenderer().getRenderer2DModel());
         } catch (BioclipseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-    	addMouseListener(relay);
-    	addMouseMoveListener(relay);
-    	addListener(SWT.MouseEnter, relay);
-    	addListener(SWT.MouseExit, relay);
+        addMouseListener(relay);
+        addMouseMoveListener(relay);
+        addListener(SWT.MouseEnter, relay);
+        addListener(SWT.MouseExit, relay);
 
     }
 
@@ -185,15 +264,18 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
     public void setInput( Object element ) {
 
         if(element instanceof IAdaptable) {
-            ICDKMolecule molecule = (ICDKMolecule)((IAdaptable)element)
-            .getAdapter( ICDKMolecule.class );
-            if(molecule != null ) {
-                model = molecule;
-                setAtomContainer( molecule.getAtomContainer());
+            ICDKMolecule molecule = 
+                (ICDKMolecule)
+                ((IAdaptable)element).getAdapter( ICDKMolecule.class );
+            
+            if (molecule != null) {
+                cdkMolecule = molecule;
+                setAtomContainer(molecule.getAtomContainer());
             }
             else setAtomContainer( null );
         }
     }
+    
     /*
      * Utility method for copying 3D x,y to 2D coordinates
      */
@@ -203,7 +285,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
         try {
             sdg.setMolecule( (IMolecule) atomContainer.clone() );
             sdg.generateCoordinates();
-            // sdg.getMolecule();
             container = sdg.getMolecule();
         } catch ( CloneNotSupportedException e ) {
         	System.out.println("Could not create 3D coordinates: " + e.getMessage());
@@ -227,32 +308,38 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
     }
 
     public ISelection getSelection() {
-        if (this.getRenderer2DModel() == null && model != null)
-            return new StructuredSelection(model);
+        RendererModel rendererModel = getRenderer2DModel();
+        if (rendererModel == null && cdkMolecule != null)
+            return new StructuredSelection(cdkMolecule);
+        
         List<CDKChemObject> selection = new LinkedList<CDKChemObject>();
 
-        //selection.add( atomContainer );
+        IAtom highlightedAtom = rendererModel.getHighlightedAtom();
+        IBond highlightedBond = rendererModel.getHighlightedBond();
+        
+        if (highlightedBond != null)
+            selection.add(createCDKChemObject(highlightedBond));
+        
+        if (highlightedAtom != null)
+            selection.add(createCDKChemObject(highlightedAtom));
 
-        IAtom highlightedAtom = this.getRenderer2DModel().getHighlightedAtom();
-        IBond highlightedBond = this.getRenderer2DModel().getHighlightedBond();
-        if(highlightedBond != null)
-            selection.add(createCDKChemObject( highlightedBond ));
-        if(highlightedAtom != null)
-            selection.add( createCDKChemObject( highlightedAtom ) );
-
-        IChemObjectSelection sel = getRenderer2DModel().getSelection();
+        IChemObjectSelection sel = rendererModel.getSelection();
         IAtomContainer modelSelection = sel.getConnectedAtomContainer();
-        if(modelSelection != null) {
-            for(IAtom atom:modelSelection.atoms()) {
-                selection.add(createCDKChemObject( atom ));
+        
+        if (modelSelection != null) {
+            for (IAtom atom : modelSelection.atoms()) {
+                selection.add(createCDKChemObject(atom));
             }
-            for(IBond bond:modelSelection.bonds()) {
-                selection.add(createCDKChemObject( bond ));
+            
+            for (IBond bond : modelSelection.bonds()) {
+                selection.add(createCDKChemObject(bond));
             }
         }
-        if (selection.size() == 0 && model != null) {
-            return new StructuredSelection(model);
+        
+        if (selection.size() == 0 && cdkMolecule != null) {
+            return new StructuredSelection(cdkMolecule);
         }
+        
         return new StructuredSelection(selection);
     }
 
@@ -264,10 +351,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
     }
 
     public void setSelection( ISelection selection ) {
-
-
-        theSelection = selection;
-        final SelectionChangedEvent e = new SelectionChangedEvent(this, selection);
+        currentSelection = selection;
+        final SelectionChangedEvent e = 
+            new SelectionChangedEvent(this, selection);
         Object[] listenersArray = listeners.toArray();
 
         for (int i = 0; i < listenersArray.length; i++) {
@@ -278,20 +364,24 @@ public class JChemPaintEditorWidget extends JChemPaintWidget  implements ISelect
                     l.selectionChanged(e);
                 }
             });
-    }
+        }
 
     }
 
     private void updateSelection() {
-        if( getRenderer2DModel().getHighlightedAtom() != prevHighlightedAtom ||
-            getRenderer2DModel().getHighlightedBond() != prevHighlightedBond) {
-            prevHighlightedAtom = getRenderer2DModel().getHighlightedAtom();
-            prevHighlightedBond = getRenderer2DModel().getHighlightedBond();
-            if(prevHighlightedAtom!=null) {
-                setToolTipText( rendererModel
-                                       .getToolTipText( prevHighlightedAtom ) );
-            } else if(prevHighlightedBond != null){
-                setToolTipText( null ); // put getToolTipText(prevHighlightedBond) here
+        RendererModel rendererModel = getRenderer2DModel();
+        IAtom atom = rendererModel.getHighlightedAtom();
+        IBond bond = rendererModel.getHighlightedBond();
+        
+        if (atom != prevHighlightedAtom || bond != prevHighlightedBond) {
+            prevHighlightedAtom = atom;
+            prevHighlightedBond = bond;
+            if (prevHighlightedAtom != null) {
+                setToolTipText(
+                        rendererModel.getToolTipText(prevHighlightedAtom));
+            } else if (prevHighlightedBond != null) {
+             // put getToolTipText(prevHighlightedBond) here
+                setToolTipText( null ); 
             } else {
                 setToolTipText( "" );
             }

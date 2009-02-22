@@ -47,7 +47,58 @@ import org.openscience.cdk.renderer.visitor.IDrawVisitor;
  * A general renderer for ChemModels, Reactions, and Molecules. The chem object
  * is converted into a 'diagram' made up of {@link IRenderingElement}s. It takes
  * an {@link IDrawVisitor} to do the drawing of the generated diagram. Various
- * display properties can be set using the {@link RendererModel}.
+ * display properties can be set using the {@link RendererModel}.<p>
+ * 
+ * This class has several usage patterns. For just painting fit-to-screen do:
+ * 
+ *   renderer.paintMolecule(molecule, visitor, drawArea)
+ *  
+ * for painting at a scale determined by the bond length in the RendererModel:
+ * 
+ *   if (moleculeIsNew) {
+ *     renderer.setScale(molecule);
+ *   }
+ *   Rectangle diagramSize = renderer.paintMolecule(molecule, visitor);
+ *   // ...update scroll bars here
+ *   
+ * to paint at full screen size, but not resize with each change:
+ * 
+ *   if (moleculeIsNew) {
+ *     renderer.setScale(molecule);
+ *     Rectangle diagramBounds = renderer.calculateDiagramBounds(molecule);
+ *     renderer.setZoomToFit(diagramBounds, drawArea);
+ *     renderer.paintMolecule(molecule, visitor);
+ *   } else {
+ *     Rectangle diagramSize = renderer.paintMolecule(molecule, visitor);
+ *   // ...update scroll bars here
+ *   }
+ *   
+ * finally, if you are scrolling, and have not changed the diagram:
+ * 
+ *   renderer.repaint(visitor)
+ *   
+ * will just repaint the previously generated diagram, at the same scale.  
+ * 
+ * There are two sets of methods for painting IChemObjects - those that take
+ * a Rectangle that represents the desired draw area, and those that return a
+ * Rectangle that represents the actual draw area. The first are intended for
+ * drawing molecules fitted to the screen (where 'screen' means any drawing
+ * area) while the second type of method are for drawing bonds at the length
+ * defined by the {@link RendererModel} parameter bondLength.<p>
+ * 
+ * There are two numbers used to transform the model so that it fits on screen.
+ * The first is <tt>scale</tt>, which is used to map model coordinates to 
+ * screen coordinates. The second is <tt>zoom</tt> which is used to, well,
+ * zoom the on screen coordinates. If the diagram is fit-to-screen, then the
+ * ratio of the bounds when drawn using bondLength and the bounds of
+ * the screen is used as the zoom.<p>
+ * 
+ * So, if the bond length on screen is set to 40, and the average bond length
+ * of the model is 2 (unitless, but roughly &Aring;ngstrom scale) then the 
+ * scale will be 20. If the model is 10 units wide, then the diagram drawn at
+ * 100% zoom will be 10 * 20 = 200 in width on screen. If the screen is 400 
+ * pixels wide, then fitting it to the screen will make the zoom 200%. Since the
+ * zoom is just a floting point number, 100% = 1 and 200% = 2.
  * 
  * @author maclean
  * @cdk.module render
@@ -74,11 +125,6 @@ public class Renderer {
 	 * The center point of the diagram on screen
 	 */
 	private Point2d drawCenter = new Point2d(200, 200);
-
-	/**
-	 * The rotation applied to the diagram
-	 */
-	private double theta = 0.0; 
 
 	/**
 	 * The default scale is used when the model is empty.
@@ -109,6 +155,228 @@ public class Renderer {
     }
 	
 	/**
+	 * Calculate and set the zoom factor needed to completely fit the diagram
+	 * onto the screen bounds.
+	 * 
+	 * @param diagramBounds
+	 * @param drawBounds
+	 */
+	public void setZoomToFit(
+	        Rectangle2D diagramBounds, Rectangle2D drawBounds) {
+	    
+	      // determine the zoom needed to fit the diagram to the screen
+        double widthRatio  = diagramBounds.getWidth() / drawBounds.getWidth();
+        double heightRatio = diagramBounds.getHeight() / drawBounds.getHeight();
+
+        // the area is contained completely within the target
+        if (widthRatio > 1 && heightRatio > 1) {
+            this.zoom = Math.min(widthRatio, heightRatio);
+        }
+
+        // the area is wider than the target, but fits the height
+        else if (widthRatio < 1 && heightRatio > 1) {
+            this.zoom = widthRatio;
+        }
+
+        // the area is taller than the target, but fits the width
+        else if (widthRatio > 1 && heightRatio < 1) {
+            this.zoom = heightRatio;
+        }
+
+        // the target is completely contained by the area
+        else if (widthRatio > 1 && heightRatio > 1) {
+            this.zoom = Math.max(heightRatio, widthRatio);
+        }
+
+        else {
+            // the bounds are equal
+            this.zoom = widthRatio; // either is fine
+        }
+	    
+	}
+	
+	/**
+	 * Set the scale for an IChemModel. It calculates the average bond length of  
+	 * the model and calculates the multiplication factor to transform this
+	 * to the bond length that is set in the RendererModel. 
+	 * 
+	 * @param chemModel
+	 */
+	public void setScale(IChemModel chemModel) {
+	    double bondLength = Renderer.calculateAverageBondLength(chemModel);
+	    this.scale = this.calculateScaleForBondLength(bondLength);
+	    
+	    // store the scale so that other components can access it
+	    this.rendererModel.setScale(scale);
+	}
+	
+	/**
+	 * Set the scale for an IReactionSet. It calculates the average bond length 
+	 * of the model and calculates the multiplication factor to transform this
+     * to the bond length that is set in the RendererModel. 
+     * 
+	 * @param reactionSet
+	 */
+	public void setScale(IReactionSet reactionSet) {
+        double bondLength = Renderer.calculateAverageBondLength(reactionSet);
+        this.scale = this.calculateScaleForBondLength(bondLength);
+        
+        // store the scale so that other components can access it
+        this.rendererModel.setScale(scale);
+    }
+	
+    /**
+     * Set the scale for an IReaction. It calculates the average bond length 
+     * of the model and calculates the multiplication factor to transform this
+     * to the bond length that is set in the RendererModel.
+     * @param reaction
+     */
+    public void setScale(IReaction reaction) {
+        double bondLength = Renderer.calculateAverageBondLength(reaction);
+        this.scale = this.calculateScaleForBondLength(bondLength);
+        
+        // store the scale so that other components can access it
+        this.rendererModel.setScale(scale);
+    }
+	
+    /**
+     * Set the scale for an IMoleculeSet. It calculates the average bond length 
+     * of the model and calculates the multiplication factor to transform this
+     * to the bond length that is set in the RendererModel.
+     * @param moleculeSet
+     */
+    public void setScale(IMoleculeSet moleculeSet) {
+        double bondLength = Renderer.calculateAverageBondLength(moleculeSet);
+        this.scale = this.calculateScaleForBondLength(bondLength);
+        
+        // store the scale so that other components can access it
+        this.rendererModel.setScale(scale);
+    }
+    
+    /**
+     * Set the scale for an IAtomContainer. It calculates the average bond 
+     * length of the model and calculates the multiplication factor to transform 
+     * this to the bond length that is set in the RendererModel.
+     * @param atomContainer
+     */
+    public void setScale(IAtomContainer atomContainer) {
+        double bondLength = GeometryTools.getBondLengthAverage(atomContainer);
+        this.scale = this.calculateScaleForBondLength(bondLength);
+        
+        // store the scale so that other components can access it
+        this.rendererModel.setScale(scale);
+    }
+    
+    /**
+     * Paint an IChemModel using the IDrawVisitor at a scale determined by the
+     * bond length in RendererModel.
+     * 
+     * @param chemModel
+     *            the chem model to draw
+     * @param drawVisitor
+     *            the visitor used to draw with
+     * @return the rectangular area that the diagram will occupy on screen
+     */
+    public Rectangle paintChemModel(
+            IChemModel chemModel, IDrawVisitor drawVisitor) {
+        
+        IMoleculeSet moleculeSet = chemModel.getMoleculeSet();
+        IReactionSet reactionSet = chemModel.getReactionSet();
+        
+        if (moleculeSet == null || reactionSet != null) {
+            if (reactionSet != null) {
+                return paintMoleculeSet(moleculeSet, drawVisitor);
+            }
+        }
+        
+        Rectangle2D modelBounds = Renderer.calculateBounds(moleculeSet);
+
+        // setup and draw
+        this.setupTransformNatural(modelBounds);
+        IRenderingElement diagram = this.generateDiagram(moleculeSet);
+        this.paint(drawVisitor, diagram); 
+        
+        // the size of the painted diagram is returned
+        return this.convertToDiagramBounds(modelBounds);
+    }
+	
+	public Rectangle paintReactionSet(
+	        IReactionSet reactionSet, IDrawVisitor drawVisitor) {
+	    // total up the bounding boxes
+        Rectangle2D totalBounds = null;
+        for (IReaction reaction : reactionSet.reactions()) {
+            Rectangle2D modelBounds = Renderer.calculateBounds(reaction);  
+            if (totalBounds == null) {
+                totalBounds = modelBounds;
+            } else {
+                totalBounds = totalBounds.createUnion(modelBounds);
+            }
+        }
+
+        // setup and draw
+        this.setupTransformNatural(totalBounds);
+        ElementGroup diagram = new ElementGroup();
+        for (IReaction reaction : reactionSet.reactions()) {
+            diagram.add(this.generateDiagram(reaction));
+        }
+        this.paint(drawVisitor, diagram);
+        
+        // the size of the painted diagram is returned
+        return this.convertToDiagramBounds(totalBounds);
+    }
+
+	public Rectangle paintReaction(
+	        IReaction reaction, IDrawVisitor drawVisitor) {
+	    
+        // calculate the bounds
+        Rectangle2D modelBounds = Renderer.calculateBounds(reaction);
+        
+        // setup and draw
+        this.setupTransformNatural(modelBounds);
+        IRenderingElement diagram = this.generateDiagram(reaction);  
+        this.paint(drawVisitor, diagram);
+        
+        return this.convertToDiagramBounds(modelBounds);
+    }
+	
+	public Rectangle paintMoleculeSet(
+	        IMoleculeSet moleculeSet, IDrawVisitor drawVisitor) {
+	    // total up the bounding boxes
+        Rectangle2D totalBounds = null;
+        for (IAtomContainer molecule : moleculeSet.molecules()) {
+            Rectangle2D modelBounds = Renderer.calculateBounds(molecule);  
+            if (totalBounds == null) {
+                totalBounds = modelBounds;
+            } else {
+                totalBounds = totalBounds.createUnion(modelBounds);
+            }
+        }
+        
+        // setup and draw
+        this.setupTransformNatural(totalBounds);
+        ElementGroup diagram = new ElementGroup();
+        for (IAtomContainer molecule : moleculeSet.molecules()) {
+            diagram.add(this.generateDiagram(molecule));
+        }
+        this.paint(drawVisitor, diagram);
+        
+        return this.convertToDiagramBounds(totalBounds);
+    }
+	
+	public Rectangle paintMolecule(
+	        IAtomContainer atomContainer,IDrawVisitor drawVisitor) {
+	    // the bounds of the model
+        Rectangle2D modelBounds = Renderer.calculateBounds(atomContainer);
+        
+        // setup and draw
+        this.setupTransformNatural(modelBounds);
+        IRenderingElement diagram = this.generateDiagram(atomContainer);
+        this.paint(drawVisitor, diagram);
+        
+        return this.convertToDiagramBounds(modelBounds);
+	}
+	
+	/**
      * Paint a ChemModel.
      *
      * @param chemModel
@@ -135,7 +403,7 @@ public class Renderer {
         // calculate the total bounding box
         Rectangle2D modelBounds = Renderer.calculateBounds(moleculeSet);
         
-        this.setupTransform(bounds, modelBounds,
+        this.setupTransformToFit(bounds, modelBounds,
                 Renderer.calculateAverageBondLength(chemModel), resetCenter);
     
         // generate the elements
@@ -168,7 +436,7 @@ public class Renderer {
             }
         }
         
-        this.setupTransform(bounds, totalBounds,
+        this.setupTransformToFit(bounds, totalBounds,
                 Renderer.calculateAverageBondLength(reactionSet), resetCenter);
         
         ElementGroup diagram = new ElementGroup();
@@ -195,7 +463,7 @@ public class Renderer {
 	    // calculate the bounds
         Rectangle2D modelBounds = Renderer.calculateBounds(reaction);
         
-        this.setupTransform(bounds, modelBounds,
+        this.setupTransformToFit(bounds, modelBounds,
                 Renderer.calculateAverageBondLength(reaction), resetCenter);
         
         // generate the elements
@@ -228,7 +496,7 @@ public class Renderer {
             }
         }
         
-        this.setupTransform(bounds, totalBounds,
+        this.setupTransformToFit(bounds, totalBounds,
                 Renderer.calculateAverageBondLength(molecules), resetCenter); 
         
         ElementGroup diagram = new ElementGroup();
@@ -254,7 +522,7 @@ public class Renderer {
         // the bounds of the model
     	Rectangle2D modelBounds = Renderer.calculateBounds(atomContainer);
     	
-    	this.setupTransform(bounds, modelBounds, 
+    	this.setupTransformToFit(bounds, modelBounds, 
     	        GeometryTools.getBondLengthAverage(atomContainer), resetCenter);
     	
     	// the diagram to draw
@@ -278,11 +546,10 @@ public class Renderer {
 	 * @param model the model to draw.
 	 * @return a rectangle in screen space.
 	 */
-	public Rectangle calculateScreenBounds(IChemModel model) {
+	public Rectangle calculateDiagramBounds(IChemModel model) {
         IMoleculeSet moleculeSet = model.getMoleculeSet();
         IReactionSet reactionSet = model.getReactionSet();
-        if ((moleculeSet == null && reactionSet == null)
-                || this.drawCenter == null) {
+        if ((moleculeSet == null && reactionSet == null)) {
             return new Rectangle();
         }
 
@@ -296,26 +563,27 @@ public class Renderer {
         return this.calculateScreenBounds(modelBounds);
     }
 	
-	public Rectangle calculateScreenBounds(IReactionSet reactionSet) {
+	public Rectangle calculateDiagramBounds(IReactionSet reactionSet) {
         return this.calculateScreenBounds(
                 Renderer.calculateBounds(reactionSet));
 	}
 	
-	public Rectangle calculateScreenBounds(IReaction reaction) {
+	public Rectangle calculateDiagramBounds(IReaction reaction) {
         return this.calculateScreenBounds(
                 Renderer.calculateBounds(reaction));
 	}
 	
-	public Rectangle calculateScreenBounds(IMoleculeSet moleculeSet) {
+	public Rectangle calculateDiagramBounds(IMoleculeSet moleculeSet) {
 	    return this.calculateScreenBounds(
 	               Renderer.calculateBounds(moleculeSet));
 	}
 	
-	public Rectangle calculateScreenBounds(IAtomContainer atomContainer) {
+	public Rectangle calculateDiagramBounds(IAtomContainer atomContainer) {
 	   return this.calculateScreenBounds(
 	           Renderer.calculateBounds(atomContainer));
 	}
 	
+	// XXX this is the same as calculateDiagramBounds!
 	public Rectangle calculateScreenBounds(Rectangle2D modelBounds) {
 	    double margin = this.rendererModel.getMargin();
         Point2d modelScreenCenter
@@ -478,29 +746,6 @@ public class Renderer {
         return new Point2d(dest[0], dest[1]);
     }
     
-    /**
-     * Set the zoom to use; a zoom of 1.0 is 100%, 0.5 is 50%, 2.0 is 200%.
-     * 
-     * @param zoom the zoom
-     */
-    public void setZoom(double zoom) {
-        this.zoom = zoom;
-    }
-    
-    public double getZoom() {
-        return this.zoom;
-    }
-
-    /**
-	 * Set the rotation for drawing; NOTE - should be unset by calling 
-	 * <code>setRotation(0)</code>.
-	 *
-	 * @param degrees the angle to rotate by in degrees.
-	 */
-	public void setRotation(double degrees) {
-	    this.theta = Math.toRadians(degrees);
-	}
-
 	public void setModelCenter(double x, double y) {
 	    this.modelCenter = new Point2d(x, y);
 	}
@@ -508,6 +753,18 @@ public class Renderer {
 	public void setDrawCenter(double x, double y) {
         this.drawCenter = new Point2d(x, y);
     }
+
+    /**
+     * Move the draw center by dx and dy.
+     * 
+     * @param dx
+     *            the x shift
+     * @param dy
+     *            the y shift
+     */
+	public void shiftDrawCenter(int dx, int dy) {
+	    this.drawCenter.set(this.drawCenter.x + dx, this.drawCenter.y + dy);
+	}
 
     /**
      * The target method for paintChemModel, paintReaction, and paintMolecule.
@@ -532,80 +789,81 @@ public class Renderer {
 	    drawVisitor.setRendererModel(this.rendererModel);
 	    diagram.accept(drawVisitor);
 	}
+	
+	/**
+	 * Set the transform for a non-fit to screen paint.
+	 * 
+	 * @param modelBounds
+     *            the bounding box of the model
+	 */
+	private void setupTransformNatural(Rectangle2D modelBounds) {
+	    this.zoom = this.rendererModel.getZoomFactor();
+        this.fontManager.setFontForZoom(zoom);
+        this.setup();
+	}
 
     /**
-     * Sets the transformation needed to draw the model on the canvas.
+     * Sets the transformation needed to draw the model on the canvas when
+     * the diagram needs to fit the screen.
      * 
      * @param screenBounds
      *            the bounding box of the draw area
      * @param modelBounds
      *            the bounding box of the model
-     * @param bondLen
+     * @param bondLength
      *            the average bond length of the model
      * @param reset
      *            if true, model center will be set to the modelBounds center
      *            and the scale will be re-calculated
      */
-	private void setupTransform(Rectangle2D screenBounds, 
+	private void setupTransformToFit(Rectangle2D screenBounds, 
 	                            Rectangle2D modelBounds, 
-	                            double bondLen,
+	                            double bondLength,
 	                            boolean reset) {
 	    
 	    if (screenBounds == null) return;
 	    
-	    // determine the bounds of the diagram
-	    Rectangle2D diagramBounds = 
-	        this.calculateDiagramBounds(screenBounds, modelBounds);
-	    
-	    double diagramWidth = diagramBounds.getWidth();
-	    double diagramHeight = diagramBounds.getHeight();
-	    
         double drawWidth = screenBounds.getWidth();
         double drawHeight = screenBounds.getHeight();
-	    
 
-        // calculate the scale 
-        if (Double.isNaN(bondLen)) {
-            this.scale = Renderer.DEFAULT_SCALE;
-        } else {
-            if (reset) {
-                this.scale = this.rendererModel.getBondLength() / bondLen;
-            }
-        }
-
+        this.scale = this.calculateScaleForBondLength(bondLength);
+        
         this.setDrawCenter(
                 screenBounds.getCenterX(), screenBounds.getCenterY());
 
-        if (rendererModel.isFitToScreen()) {
-            double widthRatio  = drawWidth / (modelBounds.getWidth() * scale);
-            double heightRatio = drawHeight / (modelBounds.getHeight() * scale);
+        
+        // determine the zoom needed to fit the diagram to the screen
+        double widthRatio  = drawWidth / (modelBounds.getWidth() * scale);
+        double heightRatio = drawHeight / (modelBounds.getHeight() * scale);
 
-            // the area is contained completely within the target
-            if (widthRatio > 1 && heightRatio > 1) {
-                this.zoom = Math.min(widthRatio, heightRatio);
-            }
-
-            // the area is wider than the target, but fits the height
-            else if (widthRatio < 1 && heightRatio > 1) {
-                this.zoom = widthRatio;
-            }
-
-            // the area is taller than the target, but fits the width
-            else if (widthRatio > 1 && heightRatio < 1) {
-                this.zoom = heightRatio;
-            }
-
-            // the target is completely contained by the area
-            else if (widthRatio > 1 && heightRatio > 1) {
-                this.zoom = Math.max(heightRatio, widthRatio);
-            }
-
-            else {
-                // the bounds are equal
-                this.zoom = widthRatio; // either is fine
-            }
+        // the area is contained completely within the target
+        if (widthRatio > 1 && heightRatio > 1) {
+            this.zoom = Math.min(widthRatio, heightRatio);
         }
+
+        // the area is wider than the target, but fits the height
+        else if (widthRatio < 1 && heightRatio > 1) {
+            this.zoom = widthRatio;
+        }
+
+        // the area is taller than the target, but fits the width
+        else if (widthRatio > 1 && heightRatio < 1) {
+            this.zoom = heightRatio;
+        }
+
+        // the target is completely contained by the area
+        else if (widthRatio > 1 && heightRatio > 1) {
+            this.zoom = Math.max(heightRatio, widthRatio);
+        }
+
+        else {
+            // the bounds are equal
+            this.zoom = widthRatio; // either is fine
+        }
+        
         this.fontManager.setFontForZoom(zoom);
+        
+        // record the zoom in the model, so that generators can use it 
         this.rendererModel.setZoomFactor(zoom);
 	    
 	    // this controls whether editing a molecule causes it to re-center
@@ -622,6 +880,22 @@ public class Renderer {
 	  
 	    this.setup();
 	}
+	
+	/**
+	 * Given a bond length for a model, calculate the scale that will transform
+	 * this length to the on screen bond length in RendererModel. 
+	 * 
+	 * @param modelBondLength
+	 * @param reset
+	 * @return
+	 */
+	private double calculateScaleForBondLength(double modelBondLength) {
+	    if (Double.isNaN(modelBondLength)) {
+            return Renderer.DEFAULT_SCALE;
+        } else {
+            return this.rendererModel.getBondLength() / modelBondLength;
+        }
+	}
 
     /**
      * This is used to calculate the bounds of the diagram as it should appear
@@ -629,37 +903,45 @@ public class Renderer {
      * 
      * @param screenBounds
      *            the bounds of the draw area
-     * @param modelBounds
-     *            the bounds in model space of the model
      * @return a rectangle that would contain the diagram
      */
-	private Rectangle2D calculateDiagramBounds(
-	        Rectangle2D screenBounds, Rectangle2D modelBounds) {
+	private Rectangle2D calculateFitBounds(Rectangle2D screenBounds) {
 	    double margin = this.rendererModel.getMargin();
-	    if (this.rendererModel.isFitToScreen()) {
-	        return new Rectangle2D.Double(
-	                screenBounds.getMinX() + margin,
-	                screenBounds.getMinY() + margin,
-	                screenBounds.getWidth() - (margin * 2),
-	                screenBounds.getHeight() - (margin * 2));
-	    } else {
-	        double cx = modelBounds.getCenterX();
-	        double cy = modelBounds.getCenterY();
-	        double mw = modelBounds.getWidth();
-	        double mh = modelBounds.getWidth();
-	        
-	        Point2d mc = this.toScreenCoordinates(cx, cy);
-	        
-	        // special case for 0 or 1 atoms
-	        if (mw == 0 && mh == 0) {
-	            return new Rectangle2D.Double(mc.x, mc.y, 0, 0);
-	        }
-	        
-	        double w = (scale * zoom * mw) + (2 * margin);
-	        double h = (scale * zoom * mh) + (2 * margin);
+	    return new Rectangle2D.Double(
+	            screenBounds.getMinX() + margin,
+	            screenBounds.getMinY() + margin,
+	            screenBounds.getWidth() - (margin * 2),
+	            screenBounds.getHeight() - (margin * 2));
+	}
 
-	        return new Rectangle2D.Double((mc.x - w / 2),(mc.y - h / 2), w, h);
-	    }
+    /**
+     * Calculate the bounds of the diagram on screen, given the current scale,
+     * zoom, and margin.
+     * 
+     * @param modelBounds
+     *            the bounds in model space of the chem object
+     * @return the bounds in screen space of the drawn diagram
+     */
+	private Rectangle convertToDiagramBounds(Rectangle2D modelBounds) {
+	    double cx = modelBounds.getCenterX();
+        double cy = modelBounds.getCenterY();
+        double mw = modelBounds.getWidth();
+        double mh = modelBounds.getHeight();
+        
+        Point2d mc = this.toScreenCoordinates(cx, cy);
+        
+        // special case for 0 or 1 atoms
+        if (mw == 0 && mh == 0) {
+            return new Rectangle((int)mc.x, (int)mc.y, 0, 0);
+        }
+        
+        double margin = this.rendererModel.getMargin();
+        int w = (int) ((scale * zoom * mw) + (2 * margin));
+        int h = (int) ((scale * zoom * mh) + (2 * margin));
+        int x = (int) (mc.x - w / 2);
+        int y = (int) (mc.y - h / 2);
+        
+        return new Rectangle(x, y, w, h);
 	}
 	
 	private void setup() {
@@ -670,17 +952,15 @@ public class Renderer {
             this.transform.translate(this.drawCenter.x, this.drawCenter.y);
             this.transform.scale(this.scale, this.scale);
             this.transform.scale(this.zoom, this.zoom);
-            this.transform.rotate(this.theta);
             this.transform.translate(-this.modelCenter.x, -this.modelCenter.y);
         } catch (NullPointerException npe) {
             // one of the drawCenter or modelCenter points have not been set!
             System.err.println(String.format(
                     "null pointer when setting transform: " +
-                    "drawCenter=%s scale=%s zoom=%s rotation=%s modelCenter=%s",
+                    "drawCenter=%s scale=%s zoom=%s modelCenter=%s",
                     this.drawCenter,
                     this.scale,
                     this.zoom,
-                    this.theta,
                     this.modelCenter));
         }
 	}

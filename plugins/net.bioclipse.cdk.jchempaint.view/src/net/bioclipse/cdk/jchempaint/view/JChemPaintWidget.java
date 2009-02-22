@@ -105,8 +105,16 @@ public class JChemPaintWidget extends Canvas {
         Rectangle2D clientArea =
             new Rectangle2D.Double(c.x, c.y, c.width, c.height); 
         SWTRenderer visitor = new SWTRenderer( event.gc );
+        
+        if (isNew) {
+            renderer.setScale(atomContainer);
+        }
 
-        renderer.paintMolecule(atomContainer, visitor, clientArea, isNew);
+        if (renderer.getRenderer2DModel().isFitToScreen()) {
+            renderer.paintMolecule(atomContainer, visitor, clientArea, isNew);
+        } else {
+            renderer.paintMolecule(atomContainer, visitor);
+        }
         isNew = false;
     }
 
