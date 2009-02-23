@@ -52,6 +52,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.exception.CDKException;
@@ -864,7 +865,7 @@ public class CDKManagerPluginTest {
     }
 
     
-    @Test
+    @Test @Ignore("See bug #582")
     public void testSaveMol2() throws BioclipseException, CDKException, CoreException, IOException, NoSuchAtomException {
 
     	String propaneSmiles = "CCC"; 
@@ -874,6 +875,13 @@ public class CDKManagerPluginTest {
         IFile target=new MockIFile();
         cdk.saveMolecule(propane, target, (IChemFormat)Mol2Format.getInstance());
 
+        BufferedReader breader = new BufferedReader(
+                new InputStreamReader(target.getContents()));
+        String line = breader.readLine();
+        while (line != null) {
+            System.out.println(line);
+            line = breader.readLine();
+        }
         Mol2Reader reader = new Mol2Reader(target.getContents());
         IChemFile file = (IChemFile)reader.read(new ChemFile());
         assertNotNull(file);
