@@ -431,7 +431,7 @@ public class CDKManagerPluginTest {
     }
     
     @Test
-    public void testLoadSaveSingleMol() throws URISyntaxException, MalformedURLException, IOException, CoreException, BioclipseException, CDKException {
+    public void testLoadSaveSingleMol() throws Exception {
 
         URI uri = getClass().getResource("/testFiles/atp.mol").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());
