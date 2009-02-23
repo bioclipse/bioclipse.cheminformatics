@@ -35,7 +35,7 @@ public class SelectLassoModule extends ControllerModuleAdapter {
     public SelectLassoModule(IChemModelRelay chemModelRelay) {
         super(chemModelRelay);
     }
-   
+    
     public void mouseClickedDown(Point2d p) {
         this.selection.clear();
         this.chemModelRelay.getRenderer()

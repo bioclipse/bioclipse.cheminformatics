@@ -1,6 +1,7 @@
 /* $Revision: 7636 $ $Author: nielsout $ $Date: 2007-01-04 18:46:10 +0100 (Thu, 04 Jan 2007) $
  *
  * Copyright (C) 2007  Niels Out <nielsout@users.sf.net>
+ * Copyright (C) 2008  Stefan Kuhn (undo redo)
  *
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -26,6 +27,7 @@ package org.openscience.cdk.controller;
 
 import javax.vecmath.Point2d;
 
+import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.interfaces.IAtom;
 
 /**
@@ -53,7 +55,10 @@ public class ChangeFormalChargeModule extends ControllerModuleAdapter {
 			if (atom.getFormalCharge() != null) {
 				newCharge += atom.getFormalCharge();
 			}
-
+		    if(chemModelRelay.getUndoRedoFactory()!=null && chemModelRelay.getUndoRedoHandler()!=null){
+		    	IUndoRedoable undoredo = chemModelRelay.getUndoRedoFactory().getChangeChargeEdit(atom,atom.getFormalCharge(),newCharge, this.getDrawModeString());
+			    chemModelRelay.getUndoRedoHandler().postEdit(undoredo);
+		    }
 			atom.setFormalCharge(newCharge);
 			chemModelRelay.updateView();
 		} 

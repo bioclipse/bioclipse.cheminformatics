@@ -1,6 +1,7 @@
 /* $Revision: 7636 $ $Author: nielsout $ $Date: 2007-01-04 18:46:10 +0100 (Thu, 04 Jan 2007) $
  *
  * Copyright (C) 2007  Niels Out <nielsout@users.sf.net>
+ * Copyright (C) 2008  Stefan Kuhn (undo redo)
  *
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -27,7 +28,9 @@ package org.openscience.cdk.controller;
 import javax.vecmath.Point2d;
 
 import org.openscience.cdk.config.IsotopeFactory;
+import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.RendererModel;
 
 /**
@@ -54,10 +57,20 @@ public class AddAtomModule extends ControllerModuleAdapter {
 		
 		// if we are outside the highlight radius
 		if (closestAtom.getPoint2d().distance(worldCoord) > dH) {
-			chemModelRelay.addAtom(atomType, worldCoord);
+			IAtomContainer undoredocontainer=chemModelRelay.getIChemModel().getBuilder().newAtomContainer();
+			undoredocontainer.addAtom(chemModelRelay.addAtom(atomType, worldCoord));
+		    if(chemModelRelay.getUndoRedoFactory()!=null && chemModelRelay.getUndoRedoHandler()!=null){
+			    IUndoRedoable undoredo = chemModelRelay.getUndoRedoFactory().getAddAtomsAndBondsEdit(chemModelRelay.getIChemModel(), undoredocontainer, "Add Atom",chemModelRelay.getController2DModel());
+			    chemModelRelay.getUndoRedoHandler().postEdit(undoredo);
+		    }
 		} else {
+			String oldsymbol=closestAtom.getSymbol();
 			closestAtom.setSymbol(atomType);
-			// configure the atom, so that the atomic number matches the symbol
+		    if(chemModelRelay.getUndoRedoFactory()!=null && chemModelRelay.getUndoRedoHandler()!=null){
+			    IUndoRedoable undoredo = chemModelRelay.getUndoRedoFactory().getChangeAtomSymbolEdit(closestAtom,oldsymbol,closestAtom.getSymbol(),"Change atom symbol to "+closestAtom.getSymbol());
+			    chemModelRelay.getUndoRedoHandler().postEdit(undoredo);
+		    }
+		    // configure the atom, so that the atomic number matches the symbol
 			try {
 				IsotopeFactory.getInstance(
 						closestAtom.getBuilder()).configure(closestAtom);

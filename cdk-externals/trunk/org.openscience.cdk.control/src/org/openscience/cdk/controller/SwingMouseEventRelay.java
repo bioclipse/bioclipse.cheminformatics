@@ -1,4 +1,4 @@
-/* $Revision$ $Author$ $Date$
+/* $Revision: 14238 $ $Author: gilleain $ $Date: 2009-02-23 16:38:04 +0000 (Mon, 23 Feb 2009) $
  * 
  * Copyright (C) 2007  Niels Out <nielsout@users.sf.net>
  * 
@@ -27,72 +27,87 @@ package org.openscience.cdk.controller;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 /**
  * @cdk.module control
  */
-public class SwingMouseEventRelay 
- 	implements MouseMotionListener, MouseListener {
+public class SwingMouseEventRelay implements MouseMotionListener,
+        MouseListener, MouseWheelListener {
 
-	private IMouseEventRelay relay;
-	
-	public SwingMouseEventRelay(IMouseEventRelay relay) {
-		this.relay = relay;
-	}
-	
-	public void mouseMoved(MouseEvent event) {
-		relay.mouseMove(event.getX(), event.getY());
-	}
-	public void updateView() {
-		System.out.println("updating View now in SwingMouseEventRelay");	
-	}
-	public void mouseDragged(MouseEvent event) {
-		//check http://www.leepoint.net/notes-java/examples/mouse/020dragdemo.html for implementation
-		relay.mouseDrag(dragFromX, dragFromY, event.getX(), event.getY());
-		dragFromX = event.getX();
-		dragFromY = event.getY();
-	}
-	/** Position of mouse press for dragging. */
-	private int dragFromX = 0;
-	private int dragFromY = 0;
-	 /** true means mouse was pressed in ball and still in panel.*/
-    private boolean _canDrag  = false;
+    private IMouseEventRelay relay;
+
+    /** Position of mouse press for dragging. */
+    private int dragFromX = 0;
     
+    private int dragFromY = 0;
+    
+    /** true means mouse was pressed in ball and still in panel. */
+    private boolean _canDrag = false;
+    
+    public SwingMouseEventRelay(IMouseEventRelay relay) {
+        this.relay = relay;
+    }
+
+    public void mouseMoved(MouseEvent event) {
+        relay.mouseMove(event.getX(), event.getY());
+    }
+
+    public void updateView() {
+        System.out.println("updating View now in SwingMouseEventRelay");
+    }
+
+    public void mouseDragged(MouseEvent event) {
+        // check
+        // http://www.leepoint.net/notes-java/examples/mouse/020dragdemo.html
+        // for implementation
+        relay.mouseDrag(dragFromX, dragFromY, event.getX(), event.getY());
+        dragFromX = event.getX();
+        dragFromY = event.getY();
+    }
+
     public void mouseClicked(MouseEvent event) {
-		//normal mouseClicked is the same as mousePressed and mouseReleased after that
-		
-		//Double click is a special case
-		if (event.getClickCount() > 1)
-			relay.mouseClickedDouble(event.getX(), event.getY());
-		System.out.println("mouseClicked at: " + event.getX() + "/" + event.getY() + " event.getClickCount(): " + event.getClickCount());
-		
-		
-	}
+        // normal mouseClicked is the same as mousePressed and mouseReleased
+        // after that
 
-	public void mouseEntered(MouseEvent event) {
-		relay.mouseEnter(event.getX(), event.getY());
-	}
+        // Double click is a special case
+        if (event.getClickCount() > 1)
+            relay.mouseClickedDouble(event.getX(), event.getY());
+    }
 
-	public void mouseExited(MouseEvent event) {
-		relay.mouseExit(event.getX(), event.getY());
-}
+    public void mouseEntered(MouseEvent event) {
+        relay.mouseEnter(event.getX(), event.getY());
+    }
 
-	public void mousePressed(MouseEvent event) {
-		if(event.isPopupTrigger())
-			relay.mouseClickedDownRight(event.getX(), event.getY());
-		else
-			relay.mouseClickedDown(event.getX(), event.getY());
-		System.out.println("mousePressed at: " + event.getX() + "/" + event.getY());
-		dragFromX = event.getX();
-		dragFromY = event.getY();
-	}
+    public void mouseExited(MouseEvent event) {
+        relay.mouseExit(event.getX(), event.getY());
+    }
 
-	public void mouseReleased(MouseEvent event) {
-		if(event.isPopupTrigger())
-			relay.mouseClickedUpRight(event.getX(), event.getY());
-		else
-			relay.mouseClickedUp(event.getX(), event.getY());
-	}
-	
-	
+    public void mousePressed(MouseEvent event) {
+        if (event.isPopupTrigger()) {
+            relay.mouseClickedDownRight(event.getX(), event.getY());
+        } else {
+            relay.mouseClickedDown(event.getX(), event.getY());
+        }
+        dragFromX = event.getX();
+        dragFromY = event.getY();
+    }
+
+    public void mouseReleased(MouseEvent event) {
+        if (event.isPopupTrigger())
+            relay.mouseClickedUpRight(event.getX(), event.getY());
+        else
+            relay.mouseClickedUp(event.getX(), event.getY());
+    }
+
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        int rotation = e.getWheelRotation(); 
+        if (rotation > 0) {
+            relay.mouseWheelMovedForward(rotation);
+        } else {
+            relay.mouseWheelMovedBackward(rotation);
+        }
+    }
+
 }

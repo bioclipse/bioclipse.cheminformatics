@@ -1,6 +1,7 @@
 /* $Revision: 7636 $ $Author: nielsout $ $Date: 2007-01-04 18:46:10 +0100 (Thu, 04 Jan 2007) $
  *
  * Copyright (C) 2007  Niels Out <nielsout@users.sf.net>
+ * Copyright (C) 2008  Stefan Kuhn (undo/redo)
  *
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -24,10 +25,15 @@
  */
 package org.openscience.cdk.controller;
 
+import java.util.Iterator;
+
 import javax.vecmath.Point2d;
 
+import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 
 /**
@@ -68,13 +74,28 @@ public class RemoveModule extends ControllerModuleAdapter {
 	}
 	
 	private void removeAtom(IAtom atom) {
+		IAtomContainer undAtomContainer = atom.getBuilder().newAtomContainer();
+        undAtomContainer.addAtom(atom);
+        Iterator<IBond> it=ChemModelManipulator.getRelevantAtomContainer(chemModelRelay.getIChemModel(),atom).getConnectedBondsList(atom).iterator();
+        while(it.hasNext())
+        	undAtomContainer.addBond(it.next());
         chemModelRelay.removeAtom(atom);
         chemModelRelay.updateView();
+	    if(chemModelRelay.getUndoRedoFactory()!=null && chemModelRelay.getUndoRedoHandler()!=null){
+		    IUndoRedoable undoredo = chemModelRelay.getUndoRedoFactory().getRemoveAtomsAndBondsEdit(chemModelRelay.getIChemModel(), undAtomContainer,this.getDrawModeString());
+		    chemModelRelay.getUndoRedoHandler().postEdit(undoredo);
+	    }
 	}
 	
 	private void removeBond(IBond bond) {
+		IAtomContainer undAtomContainer = bond.getBuilder().newAtomContainer();
         chemModelRelay.removeBond(bond);
+        undAtomContainer.addBond(bond);
         chemModelRelay.updateView();
+	    if(chemModelRelay.getUndoRedoFactory()!=null && chemModelRelay.getUndoRedoHandler()!=null){
+		    IUndoRedoable undoredo = chemModelRelay.getUndoRedoFactory().getRemoveAtomsAndBondsEdit(chemModelRelay.getIChemModel(), undAtomContainer,this.getDrawModeString());
+		    chemModelRelay.getUndoRedoHandler().postEdit(undoredo);
+	    }
 	}
 
 	public String getDrawModeString() {

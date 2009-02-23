@@ -28,6 +28,8 @@ import java.io.IOException;
 
 import javax.vecmath.Point2d;
 
+import org.openscience.cdk.controller.undoredo.IUndoRedoFactory;
+import org.openscience.cdk.controller.undoredo.UndoRedoHandler;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -38,7 +40,7 @@ import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 
 /**
- * @cdk.module render
+ * @cdk.module control
  */
 public interface IChemModelRelay {
 
@@ -118,5 +120,8 @@ public interface IChemModelRelay {
     public abstract void moveTo(IBond bond, Point2d point);
     public abstract void setOrder(IBond bond, IBond.Order order);
     public abstract void setWedgeType(IBond bond, int type);
+    
+    public IUndoRedoFactory getUndoRedoFactory();
+    public UndoRedoHandler getUndoRedoHandler();
 	
 }

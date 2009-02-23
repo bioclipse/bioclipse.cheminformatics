@@ -51,7 +51,13 @@ public abstract class ControllerModuleAdapter implements IControllerModule {
 	public boolean noSelection(double dA, double dB, double dH) {
         return (dH == Double.POSITIVE_INFINITY) || (dA > dH && dB > dH);
     }
+	
+	public void mouseWheelMovedBackward(int clicks) {
+	}
 
+	public void mouseWheelMovedForward(int clicks) {
+	}
+	
 	public void mouseClickedDouble(Point2d worldCoord) {
 	}
 

@@ -27,6 +27,7 @@ package org.openscience.cdk.controller;
 import javax.vecmath.Point2d;
 
 import org.openscience.cdk.config.IsotopeFactory;
+import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.interfaces.IAtom;
 
 /**
@@ -48,14 +49,12 @@ public class CycleSymbolModule extends ControllerModuleAdapter {
         double dH = super.getHighlightDistance();
         if (dA < dH) {
             String symbol = closestAtom.getSymbol();
-            
-            
             boolean changed = false;
             String[] elements = 
                 chemModelRelay.getController2DModel().getCommonElements(); 
             for (int i = 0; i < elements.length; i++) {
                 if (elements[i].equals(symbol)) {
-                    if (i < elements.length - 2) {
+                	if (i < elements.length - 2) {
                         closestAtom.setSymbol(elements[i + 1]);
                     } else {
                         closestAtom.setSymbol(elements[0]);
@@ -66,6 +65,10 @@ public class CycleSymbolModule extends ControllerModuleAdapter {
             }
             if (!changed)
                 closestAtom.setSymbol("C");
+		    if(!symbol.equals(closestAtom.getSymbol()) && chemModelRelay.getUndoRedoFactory()!=null && chemModelRelay.getUndoRedoHandler()!=null){
+			    IUndoRedoable undoredo = chemModelRelay.getUndoRedoFactory().getChangeAtomSymbolEdit(closestAtom,symbol,closestAtom.getSymbol(),this.getDrawModeString());
+			    chemModelRelay.getUndoRedoHandler().postEdit(undoredo);
+		    }
             // configure the atom, so that the atomic number matches the symbol
             try {
                 IsotopeFactory.getInstance(

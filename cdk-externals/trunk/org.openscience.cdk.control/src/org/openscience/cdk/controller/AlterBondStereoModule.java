@@ -1,6 +1,7 @@
 /* $Revision$ $Author$ $Date$
  *
  * Copyright (C) 2008  Gilleain Torrance <gilleain.torrance@gmail.com>
+ * Copyright (C) 2008  Stefan Kuhn (undo redo)
  *
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -31,8 +32,12 @@ import static org.openscience.cdk.CDKConstants.STEREO_BOND_UNDEFINED;
 import static org.openscience.cdk.CDKConstants.STEREO_BOND_UP;
 import static org.openscience.cdk.CDKConstants.STEREO_BOND_UP_INV;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.vecmath.Point2d;
 
+import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -97,6 +102,7 @@ public class AlterBondStereoModule extends ControllerModuleAdapter {
         String atomType = 
             chemModelRelay.getController2DModel().getDrawElement();
         IAtom newAtom = chemModelRelay.addAtom(atomType, atom);
+        IAtomContainer undoRedoContainer=chemModelRelay.getIChemModel().getBuilder().newAtomContainer();
         
         // XXX these calls would not be necessary if addAtom returned a bond
         IAtomContainer atomContainer = 
@@ -109,7 +115,13 @@ public class AlterBondStereoModule extends ControllerModuleAdapter {
         } else {
             newBond.setStereo(STEREO_BOND_DOWN);
         }
-    }
+        undoRedoContainer.addAtom(newAtom);
+        undoRedoContainer.addBond(newBond);
+	    if(chemModelRelay.getUndoRedoFactory()!=null && chemModelRelay.getUndoRedoHandler()!=null){
+		    IUndoRedoable undoredo = chemModelRelay.getUndoRedoFactory().getAddAtomsAndBondsEdit(chemModelRelay.getIChemModel(), undoRedoContainer, "Add Stereo Bond",chemModelRelay.getController2DModel());
+		    chemModelRelay.getUndoRedoHandler().postEdit(undoredo);
+	    }
+	}
     
     private void makeBondStereo(IBond bond) {
         int stereo = bond.getStereo();
@@ -129,6 +141,16 @@ public class AlterBondStereoModule extends ControllerModuleAdapter {
         } else if (noStereo && desiredDirection == Direction.DOWN) {
             bond.setStereo(STEREO_BOND_DOWN);
         }
+        Integer[] stereos=new Integer[2];
+        stereos[1]=stereo;
+        stereos[0]=bond.getStereo();
+		Map<IBond, IBond.Order[]> changedBonds = new HashMap<IBond, IBond.Order[]>();
+		Map<IBond, Integer[]> changedBondsStereo = new HashMap<IBond, Integer[]>();
+		changedBondsStereo.put(bond, stereos);
+	    if(chemModelRelay.getUndoRedoFactory()!=null && chemModelRelay.getUndoRedoHandler()!=null){
+	    	IUndoRedoable undoredo = chemModelRelay.getUndoRedoFactory().getAdjustBondOrdersEdit(changedBonds, changedBondsStereo, "Adjust Bond Stereo");
+		    chemModelRelay.getUndoRedoHandler().postEdit(undoredo);
+	    }
     }
     
 	public void mouseClickedDown(Point2d worldCoord) {

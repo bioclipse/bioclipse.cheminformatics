@@ -19,5 +19,4 @@ Export-Package: org.openscience.cdk.renderer.font,
  org.openscience.cdk.renderer.visitor,
  org.openscience.cdk.renderer.generators,
  org.openscience.cdk.renderer.selection,
- org.openscience.cdk.controller,
  org.openscience.cdk.render

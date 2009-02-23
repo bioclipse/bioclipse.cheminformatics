@@ -47,7 +47,7 @@ public class AddRingModule extends ControllerModuleAdapter {
         this.addingBenzene = addingBenzene;
     }
     
-    private void addRingAsNewAtomContainer(Point2d p) {
+    private void addRingToEmptyCanvas(Point2d p) {
         if (this.addingBenzene) {
             chemModelRelay.addPhenyl(p);
         } else {
@@ -80,7 +80,7 @@ public class AddRingModule extends ControllerModuleAdapter {
         double dB = super.distanceToBond(closestBond, worldCoord);
         
         if (noSelection(dA, dB, dH)) {
-            this.addRingAsNewAtomContainer(worldCoord);
+            this.addRingToEmptyCanvas(worldCoord);
         } else if (isAtomOnlyInHighlightDistance(dA, dB, dH) || dA < dB) {
             this.addRingToAtom(closestAtom);
         } else if (isBondOnlyInHighlightDistance(dA, dB, dH) || dB < dA) {

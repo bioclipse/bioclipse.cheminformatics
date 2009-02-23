@@ -2,6 +2,7 @@
  *
  * Copyright (C) 2007  Niels Out <nielsout@users.sf.net>
  * Copyright (C) 2008  Arvid Berg <goglepox@users.sf.net>
+ * Copyright (C) 2008  Stefan Kuhn (undo redo)
  *
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -28,8 +29,10 @@ package org.openscience.cdk.controller;
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
+import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.tools.LoggingTool;
@@ -54,13 +57,16 @@ public class MoveModule extends ControllerModuleAdapter {
     private IChemObjectSelection selection;
     private Vector2d offset;
     private Type type = Type.NONE;
-
+    IAtomContainer undoRedoContainer;
+    Point2d start;
+    
     public MoveModule(IChemModelRelay chemObjectRelay) {
         super(chemObjectRelay);
     }
 
-    private Type getClosest(IAtom atom, IBond bond, IChemObjectSelection selection,
-            Point2d worldCoord) {
+    private Type getClosest(
+            IAtom atom, IBond bond, 
+            IChemObjectSelection selection, Point2d worldCoord) {
         if (selection.isFilled())
             return Type.SELECTION;
         
@@ -85,6 +91,7 @@ public class MoveModule extends ControllerModuleAdapter {
 
     public void mouseClickedDown(Point2d worldCoord) {
 
+        undoRedoContainer = chemModelRelay.getIChemModel().getBuilder().newAtomContainer();
         Point2d current = null;
         atom = chemModelRelay.getClosestAtom(worldCoord);
         bond = chemModelRelay.getClosestBond(worldCoord);
@@ -93,24 +100,36 @@ public class MoveModule extends ControllerModuleAdapter {
 
         switch (type = getClosest(atom, bond, selection, worldCoord)) {
             case ATOM:
+            	undoRedoContainer.addAtom(atom);
                 current = atom.getPoint2d();
                 break;
             case BOND:
                 current = bond.get2DCenter();
+            	undoRedoContainer.addAtom(bond.getAtom(0));
+            	undoRedoContainer.addAtom(bond.getAtom(1));
                 break;
             case SELECTION:
                 current = GeometryTools.get2DCenter(
                         selection.getConnectedAtomContainer());
+                undoRedoContainer.add(selection.getConnectedAtomContainer());
                 break;
             default:
                 return;
         }
-
+        start=current;
         offset = new Vector2d();
         offset.sub(current, worldCoord);
     }
 
     public void mouseClickedUp(Point2d worldCoord) {
+    	if(start!=null){
+    		Vector2d end=new Vector2d();
+    		end.sub(worldCoord,start);
+    		if(chemModelRelay.getUndoRedoFactory()!=null && chemModelRelay.getUndoRedoHandler()!=null){
+    			IUndoRedoable undoredo = chemModelRelay.getUndoRedoFactory().getMoveAtomEdit(undoRedoContainer, end, this.getDrawModeString());
+    			chemModelRelay.getUndoRedoHandler().postEdit(undoredo);
+    		}
+    	}
         type = Type.NONE;
         atom = null;
         bond = null;
@@ -141,7 +160,6 @@ public class MoveModule extends ControllerModuleAdapter {
                 default:
                     return;
             }
-
             chemModelRelay.updateView();
 
         } else {

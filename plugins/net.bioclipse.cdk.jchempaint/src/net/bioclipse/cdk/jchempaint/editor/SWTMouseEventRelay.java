@@ -11,16 +11,20 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.editor;
 
+import java.awt.event.MouseWheelEvent;
+
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.openscience.cdk.controller.IMouseEventRelay;
 
-public class SWTMouseEventRelay implements MouseListener,MouseMoveListener,Listener{
+public class SWTMouseEventRelay implements MouseListener, MouseMoveListener,
+        MouseWheelListener, Listener {
 
     Logger logger = Logger.getLogger( SWTMouseEventRelay.class );
 
@@ -78,5 +82,14 @@ public class SWTMouseEventRelay implements MouseListener,MouseMoveListener,Liste
     	}else
     		relay.mouseMove(event.x, event.y);
 	}
+
+    public void mouseScrolled(MouseEvent e) {
+        int clicks = e.count;
+        if (clicks > 0) {
+            relay.mouseWheelMovedForward(clicks);
+        } else {
+            relay.mouseWheelMovedBackward(clicks);
+        }
+    }
 
 }

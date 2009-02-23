@@ -25,7 +25,7 @@
 package org.openscience.cdk.controller;
 
 /**
- * @cdk.module render
+ * @cdk.module control
  */
 public interface IChemModelEventRelayHandler {
 

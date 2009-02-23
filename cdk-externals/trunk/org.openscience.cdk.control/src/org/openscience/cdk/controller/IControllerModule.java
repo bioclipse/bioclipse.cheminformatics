@@ -39,56 +39,61 @@ import javax.vecmath.Point2d;
  */
 public interface IControllerModule {
 
-	public abstract void setChemModelRelay(IChemModelRelay relay);
-	//public abstract void setEventRelay(IViewEventRelay relay);
+	public void setChemModelRelay(IChemModelRelay relay);
+	
+	public void mouseWheelMovedBackward(int clicks);
+
+	public void mouseWheelMovedForward(int clicks);
+
+	
 	/**
 	 * @param Point2d worldCoord
 	 */
-	public abstract void mouseClickedUp(Point2d worldCoord);
+	public void mouseClickedUp(Point2d worldCoord);
 
 	/**
 	 * @param Point2d worldCoord
 	 */
-	public abstract void mouseClickedDown(Point2d worldCoord);
+	public void mouseClickedDown(Point2d worldCoord);
 
 	/**
 	 * @param Point2d worldCoord
 	 */
-	public abstract void mouseClickedUpRight(Point2d worldCoord);
+	public void mouseClickedUpRight(Point2d worldCoord);
 
 	/**
 	 * @param Point2d worldCoord
 	 */
-	public abstract void mouseClickedDownRight(Point2d worldCoord);
+	public void mouseClickedDownRight(Point2d worldCoord);
 
 	/**
 	 * @param Point2d worldCoord
 	 */
-	public abstract void mouseClickedDouble(Point2d worldCoord);
+	public void mouseClickedDouble(Point2d worldCoord);
 
 	/**
 	 * @param Point2d worldCoord
 	 */
-	public abstract void mouseMove(Point2d worldCoord);
+	public void mouseMove(Point2d worldCoord);
 
 	/**
 	 * @param Point2d worldCoord
 	 */
-	public abstract void mouseEnter(Point2d worldCoord);
+	public void mouseEnter(Point2d worldCoord);
 
 	/**
 	 * @param Point2d worldCoord
 	 */
-	public abstract void mouseExit(Point2d worldCoord);
+	public void mouseExit(Point2d worldCoord);
 
 	/**
 	 * @param Point2d worldCoordFrom
 	 * @param Point2d worldCoordTo
 	 */
-	public abstract void mouseDrag(Point2d worldCoordFrom, Point2d worldCoordTo);
+	public void mouseDrag(Point2d worldCoordFrom, Point2d worldCoordTo);
 
 	/**
 	 * @return A string describing this module e. g. for the status bar
 	 */
-	public abstract String getDrawModeString();
+	public String getDrawModeString();
 }

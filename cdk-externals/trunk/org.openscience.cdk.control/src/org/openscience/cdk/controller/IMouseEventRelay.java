@@ -1,4 +1,4 @@
-/* $Revision$ $Author$ $Date$
+/* $Revision: 14238 $ $Author: gilleain $ $Date: 2009-02-23 16:38:04 +0000 (Mon, 23 Feb 2009) $
  * 
  * Copyright (C) 2007  Niels Out <nielsout@users.sf.net>
  * 
@@ -29,54 +29,67 @@ package org.openscience.cdk.controller;
  * @cdk.module control
  */
 public interface IMouseEventRelay {
+    
+    public void mouseWheelMovedBackward(int clicks);
+    
+    public void mouseWheelMovedForward(int clicks);
+    
 	/**
 	 * 
 	 * @param screenCoordX
 	 * @param screenCoordY
 	 */
-	public abstract void mouseClickedUp(int screenCoordX, int screenCoordY);
+	public void mouseClickedUp(int screenCoordX, int screenCoordY);
+    
 	/**
 	 * 
 	 * @param screenCoordX
 	 * @param screenCoordY
 	 */
-	public abstract void mouseClickedDown(int screenCoordX, int screenCoordY);
+	public void mouseClickedDown(int screenCoordX, int screenCoordY);
+	
 	/**
 	 * 
 	 * @param screenCoordX
 	 * @param screenCoordY
 	 */
-	public abstract void mouseClickedUpRight(int screenCoordX, int screenCoordY);
+	public void mouseClickedUpRight(int screenCoordX, int screenCoordY);
+	
 	/**
 	 * 
 	 * @param screenCoordX
 	 * @param screenCoordY
 	 */
-	public abstract void mouseClickedDownRight(int screenCoordX, int screenCoordY);
+	public void mouseClickedDownRight(int screenCoordX, int screenCoordY);
+	
 	/**
 	 * 
 	 * @param screenCoordX
 	 * @param screenCoordY
 	 */
-	public abstract void mouseClickedDouble(int screenCoordX, int screenCoordY);
+	public void mouseClickedDouble(int screenCoordX, int screenCoordY);
+	
 	/**
 	 * 
 	 * @param screenCoordX
 	 * @param screenCoordY
 	 */
-	public abstract void mouseMove(int screenCoordX, int screenCoordY);
+	public void mouseMove(int screenCoordX, int screenCoordY);
+	
 	/**
 	 * 
 	 * @param screenCoordX
 	 * @param screenCoordY
 	 */
-	public abstract void mouseEnter(int screenCoordX, int screenCoordY);
+	public void mouseEnter(int screenCoordX, int screenCoordY);
+	
 	/**
 	 * 
 	 * @param screenCoordX
 	 * @param screenCoordY
 	 */
-	public abstract void mouseExit(int screenCoordX, int screenCoordY);
+	public void mouseExit(int screenCoordX, int screenCoordY);
+	
 	/**
 	 * 
 	 * @param screenCoordXFrom
@@ -84,7 +97,8 @@ public interface IMouseEventRelay {
 	 * @param screenCoordXTo
 	 * @param screenCoordYTo
 	 */
-	public abstract void mouseDrag(int screenCoordXFrom, int screenCoordYFrom, int screenCoordXTo, int screenCoordYTo);
+	public void mouseDrag(int screenCoordXFrom, int screenCoordYFrom, 
+	        int screenCoordXTo, int screenCoordYTo);
 	
 	
 }

@@ -1,7 +1,7 @@
 /* $RCSfile$
- * $Author$
- * $Date$
- * $Revision$
+ * $Author: shk3 $
+ * $Date: 2009-02-19 15:59:30 +0000 (Thu, 19 Feb 2009) $
+ * $Revision: 14200 $
  * 
  * Copyright (C) 1997-2007  The Chemistry Development Kit (CDK) project
  * 
@@ -38,7 +38,7 @@ import org.openscience.cdk.interfaces.IBond;
 
 /**
  * @cdk.module control
- * @cdk.svnrev $Revision$
+ * @cdk.svnrev $Revision: 14200 $
  */
 public class ControllerModel implements Serializable, Cloneable, IControllerModel {
 
@@ -46,18 +46,10 @@ public class ControllerModel implements Serializable, Cloneable, IControllerMode
 
     private ControllerParameters parameters;
 
-    private UndoManager undoManager;
-    
-    private UndoableEditSupport undoSupport;
-    
     private HashMap<Object, Object> merge = new HashMap<Object, Object>();
     
     public ControllerModel() {
         this.parameters = new ControllerParameters();
-        undoManager = new UndoManager();
-        undoManager.setLimit(100);
-        undoSupport = new UndoableEditSupport();
-        undoSupport.addUndoableEditListener(new UndoAdapter(undoManager));
     }
     
     /**
@@ -289,46 +281,6 @@ public class ControllerModel implements Serializable, Cloneable, IControllerMode
      */
     public String getDrawElement() {
         return this.parameters.getDrawElement();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.openscience.cdk.controller.IController2DModel#getUndoSupport()
-     */
-    public UndoableEditSupport getUndoSupport() {
-        return undoSupport;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.openscience.cdk.controller.IController2DModel#setUndoSupport(javax
-     * .swing.undo.UndoableEditSupport)
-     */
-    public void setUndoSupport(UndoableEditSupport undoSupport) {
-        this.undoSupport = undoSupport;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.openscience.cdk.controller.IController2DModel#getUndoManager()
-     */
-    public UndoManager getUndoManager() {
-        return undoManager;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.openscience.cdk.controller.IController2DModel#setUndoManager(javax
-     * .swing.undo.UndoManager)
-     */
-    public void setUndoManager(UndoManager undoManager) {
-        this.undoManager = undoManager;
     }
 
     /*

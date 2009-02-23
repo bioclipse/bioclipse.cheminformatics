@@ -252,7 +252,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                         updateSelection();
                         JChemPaintEditorWidget.this.redraw();
                     }
-                }
+                }, null, null
         );
 
         hub.setEventHandler(
@@ -300,6 +300,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         addMouseListener(relay);
         addMouseMoveListener(relay);
+        addMouseWheelListener(relay);
         addListener(SWT.MouseEnter, relay);
         addListener(SWT.MouseExit, relay);
 

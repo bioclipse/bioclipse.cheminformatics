@@ -1,6 +1,7 @@
 /* $Revision: $ $Author:  $ $Date$
  *
  * Copyright (C) 2007  Gilleain Torrance <gilleain.torrance@gmail.com>
+ * Copyright (C) 2008  Stefan Kuhn (undo redo)
  *
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -27,11 +28,19 @@ package org.openscience.cdk.controller;
 
 import static org.openscience.cdk.CDKConstants.STEREO_BOND_NONE;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.vecmath.Point2d;
 
+import org.openscience.cdk.controller.undoredo.IUndoRedoFactory;
+import org.openscience.cdk.controller.undoredo.IUndoRedoable;
+import org.openscience.cdk.controller.undoredo.UndoRedoHandler;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.tools.manipulator.BondManipulator;
+import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 /**
  * Adds a bond on clicking an atom, or cycles the order of clicked bonds. 
@@ -40,42 +49,82 @@ import org.openscience.cdk.tools.manipulator.BondManipulator;
  */
 public class AddBondModule extends ControllerModuleAdapter {
 
+	IUndoRedoFactory undoredofactory;
+	UndoRedoHandler undoredohandler;
+	 
 	public AddBondModule(IChemModelRelay relay) {
 		super(relay);
+		this.undoredohandler=relay.getUndoRedoHandler();
+		this.undoredofactory=relay.getUndoRedoFactory();
 	}
 	
 	private void cycleBondValence(IBond bond) {
+		IBond.Order[] orders=new IBond.Order[2];
+		Integer[] stereos=new Integer[2];
+		orders[1]=bond.getOrder();
+		stereos[1]=bond.getStereo();
 	    // special case : reset stereo bonds
 	    if (bond.getStereo() != STEREO_BOND_NONE) {
 	        bond.setStereo(STEREO_BOND_NONE);
-	        chemModelRelay.updateView();
-	        return;
+	    }else{
+	        // cycle the bond order up to maxOrder
+		    IBond.Order maxOrder = 
+		        super.chemModelRelay.getController2DModel().getMaxOrder();
+	        if (BondManipulator.isLowerOrder(bond.getOrder(), maxOrder)) {
+	            BondManipulator.increaseBondOrder(bond);
+	        } else {
+	            bond.setOrder(IBond.Order.SINGLE);
+	        }
 	    }
-	    
-        // cycle the bond order up to maxOrder
-	    IBond.Order maxOrder = 
-	        super.chemModelRelay.getController2DModel().getMaxOrder();
-        if (BondManipulator.isLowerOrder(bond.getOrder(), maxOrder)) {
-            BondManipulator.increaseBondOrder(bond);
-        } else {
-            bond.setOrder(IBond.Order.SINGLE);
-        }
+        orders[0]=bond.getOrder();
+        stereos[0]=bond.getStereo();
+		Map<IBond, IBond.Order[]> changedBonds = new HashMap<IBond, IBond.Order[]>();
+		Map<IBond, Integer[]> changedBondsStereo = new HashMap<IBond, Integer[]>();
+		changedBonds.put(bond,orders);
+		changedBondsStereo.put(bond, stereos);
+	    if(undoredofactory!=null && undoredohandler!=null){
+	    	IUndoRedoable undoredo = undoredofactory.getAdjustBondOrdersEdit(changedBonds, changedBondsStereo, "Adjust Bond Order");
+		    undoredohandler.postEdit(undoredo);
+	    }
         chemModelRelay.updateView();
 	}
 	
 	private void addBondToAtom(IAtom atom) {
+		IAtomContainer undoRedoContainer = chemModelRelay.getIChemModel().getBuilder().newAtomContainer();
 	    String atomType = 
 	        chemModelRelay.getController2DModel().getDrawElement();
-	    chemModelRelay.addAtom(atomType, atom);
+	    IAtom newAtom = chemModelRelay.addAtom(atomType, atom);
+	    undoRedoContainer.addAtom(newAtom);
+	    IAtomContainer atomContainer = 
+        ChemModelManipulator.getRelevantAtomContainer(
+                    chemModelRelay.getIChemModel(), newAtom);
+        IBond newBond = atomContainer.getBond(atom, newAtom);
+        undoRedoContainer.addBond(newBond);
 	    chemModelRelay.updateView();
+	    if(undoredofactory!=null && undoredohandler!=null){
+		    IUndoRedoable undoredo = undoredofactory.getAddAtomsAndBondsEdit(chemModelRelay.getIChemModel(), undoRedoContainer, "Add Bond",chemModelRelay.getController2DModel());
+		    undoredohandler.postEdit(undoredo);
+	    }
 	}
 	
 	private void addNewBond(Point2d worldCoordinate) {
+		IAtomContainer undoRedoContainer = chemModelRelay.getIChemModel().getBuilder().newAtomContainer();
 	    String atomType = 
 	        chemModelRelay.getController2DModel().getDrawElement();
-	    chemModelRelay.addAtom(atomType, 
-	            chemModelRelay.addAtom(atomType, worldCoordinate));
+	    IAtom atom = chemModelRelay.addAtom(atomType, worldCoordinate);
+	    undoRedoContainer.addAtom(atom);
+	    IAtom newAtom = chemModelRelay.addAtom(atomType, atom);
+	    undoRedoContainer.addAtom(newAtom);
+	    IAtomContainer atomContainer = 
+        ChemModelManipulator.getRelevantAtomContainer(
+                    chemModelRelay.getIChemModel(), newAtom);
+        IBond newBond = atomContainer.getBond(atom, newAtom);
+        undoRedoContainer.addBond(newBond);
 	    chemModelRelay.updateView();
+	    if(undoredofactory!=null && undoredohandler!=null){
+		    IUndoRedoable undoredo = undoredofactory.getAddAtomsAndBondsEdit(chemModelRelay.getIChemModel(), undoRedoContainer, "Add Bond",chemModelRelay.getController2DModel());
+		    undoredohandler.postEdit(undoredo);
+	    }
 	}
 	
 	public void mouseClickedDown(Point2d worldCoordinate) {

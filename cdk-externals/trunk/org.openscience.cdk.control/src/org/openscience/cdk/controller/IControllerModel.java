@@ -30,7 +30,7 @@ import javax.swing.undo.UndoableEditSupport;
 import org.openscience.cdk.interfaces.IBond;
 
 /**
- * @cdk.module render
+ * @cdk.module control
  */
 public interface IControllerModel {
 
@@ -154,14 +154,6 @@ public interface IControllerModel {
 	 * Element symbol that <b>new</b> atoms get by default.
 	 */
 	public abstract String getDrawElement();
-
-	public abstract UndoableEditSupport getUndoSupport();
-
-	public abstract void setUndoSupport(UndoableEditSupport undoSupport);
-
-	public abstract UndoManager getUndoManager();
-
-	public abstract void setUndoManager(UndoManager undoManager);
 
 	/**
 	 * To retrieve the value of the isMovingAllowed flag
