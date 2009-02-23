@@ -154,54 +154,13 @@ public class Renderer {
         this.setup();
     }
 	
-	public void reset() {
-	    modelCenter = new Point2d(0, 0);
-	    drawCenter = new Point2d(200, 200);
-	    drawCenter = new Point2d(200, 200);
-	    zoom = 1.0;
-	    setup();
-	}
-	
-	/**
-	 * Calculate and set the zoom factor needed to completely fit the diagram
-	 * onto the screen bounds.
-	 * 
-	 * @param diagramBounds
-	 * @param drawBounds
-	 */
-	public void setZoomToFit(
-	        Rectangle2D diagramBounds, Rectangle2D drawBounds) {
-	    
-	      // determine the zoom needed to fit the diagram to the screen
-        double widthRatio  = diagramBounds.getWidth() / drawBounds.getWidth();
-        double heightRatio = diagramBounds.getHeight() / drawBounds.getHeight();
-
-        // the area is contained completely within the target
-        if (widthRatio > 1 && heightRatio > 1) {
-            this.zoom = Math.min(widthRatio, heightRatio);
-        }
-
-        // the area is wider than the target, but fits the height
-        else if (widthRatio < 1 && heightRatio > 1) {
-            this.zoom = widthRatio;
-        }
-
-        // the area is taller than the target, but fits the width
-        else if (widthRatio > 1 && heightRatio < 1) {
-            this.zoom = heightRatio;
-        }
-
-        // the target is completely contained by the area
-        else if (widthRatio > 1 && heightRatio > 1) {
-            this.zoom = Math.max(heightRatio, widthRatio);
-        }
-
-        else {
-            // the bounds are equal
-            this.zoom = widthRatio; // either is fine
-        }
-	    
-	}
+    public void reset() {
+        modelCenter = new Point2d(0, 0);
+        drawCenter = new Point2d(200, 200);
+        drawCenter = new Point2d(200, 200);
+        zoom = 1.0;
+        setup();
+    }
 	
 	/**
 	 * Set the scale for an IChemModel. It calculates the average bond length of  
@@ -775,6 +734,57 @@ public class Renderer {
 	}
 
     /**
+     * Calculate and set the zoom factor needed to completely fit the diagram
+     * onto the screen bounds.
+     * 
+     * @param diagramBounds
+     * @param drawBounds
+     */
+    public void setZoomToFit(double drawWidth,
+                             double drawHeight,
+                             double diagramWidth,
+                             double diagramHeight) {
+        
+        double m = this.rendererModel.getMargin();
+        
+        // determine the zoom needed to fit the diagram to the screen
+        double widthRatio  = drawWidth  / (diagramWidth  + (2 * m)); 
+        double heightRatio = drawHeight / (diagramHeight + (2 * m));
+    
+        // the area is contained completely within the target
+        if (widthRatio > 1 && heightRatio > 1) {
+            this.zoom = Math.min(widthRatio, heightRatio);
+        }
+    
+        // the area is wider than the target, but fits the height
+        else if (widthRatio < 1 && heightRatio > 1) {
+            this.zoom = widthRatio;
+        }
+    
+        // the area is taller than the target, but fits the width
+        else if (widthRatio > 1 && heightRatio < 1) {
+            this.zoom = heightRatio;
+        }
+    
+        // the target is completely contained by the area
+        else if (widthRatio > 1 && heightRatio > 1) {
+            this.zoom = Math.max(heightRatio, widthRatio);
+        }
+    
+        else {
+            // the bounds are equal
+            this.zoom = widthRatio; // either is fine
+        }
+        
+        
+        this.fontManager.setFontForZoom(zoom);
+        
+        // record the zoom in the model, so that generators can use it 
+        this.rendererModel.setZoomFactor(zoom);
+        
+    }
+
+    /**
      * The target method for paintChemModel, paintReaction, and paintMolecule.
      * 
      * @param drawVisitor
@@ -831,48 +841,18 @@ public class Renderer {
 	    
 	    if (screenBounds == null) return;
 	    
-        double drawWidth = screenBounds.getWidth();
-        double drawHeight = screenBounds.getHeight();
-
-        this.scale = this.calculateScaleForBondLength(bondLength);
-        
         this.setDrawCenter(
                 screenBounds.getCenterX(), screenBounds.getCenterY());
-
         
-        // determine the zoom needed to fit the diagram to the screen
-        double widthRatio  = drawWidth / (modelBounds.getWidth() * scale);
-        double heightRatio = drawHeight / (modelBounds.getHeight() * scale);
-
-        // the area is contained completely within the target
-        if (widthRatio > 1 && heightRatio > 1) {
-            this.zoom = Math.min(widthRatio, heightRatio);
-        }
-
-        // the area is wider than the target, but fits the height
-        else if (widthRatio < 1 && heightRatio > 1) {
-            this.zoom = widthRatio;
-        }
-
-        // the area is taller than the target, but fits the width
-        else if (widthRatio > 1 && heightRatio < 1) {
-            this.zoom = heightRatio;
-        }
-
-        // the target is completely contained by the area
-        else if (widthRatio > 1 && heightRatio > 1) {
-            this.zoom = Math.max(heightRatio, widthRatio);
-        }
-
-        else {
-            // the bounds are equal
-            this.zoom = widthRatio; // either is fine
-        }
+        this.scale = this.calculateScaleForBondLength(bondLength);
         
-        this.fontManager.setFontForZoom(zoom);
+        double drawWidth = screenBounds.getWidth();
+        double drawHeight = screenBounds.getHeight();
         
-        // record the zoom in the model, so that generators can use it 
-        this.rendererModel.setZoomFactor(zoom);
+        double diagramWidth = modelBounds.getWidth() * scale;
+        double diagramHeight = modelBounds.getHeight() * scale;
+
+        this.setZoomToFit(drawWidth, drawHeight, diagramWidth, diagramHeight);
 	    
 	    // this controls whether editing a molecule causes it to re-center
 	    // with each change or not
