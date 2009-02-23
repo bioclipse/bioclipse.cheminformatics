@@ -167,7 +167,7 @@ public class CDKManagerTest extends AbstractManagerTest {
     
     @Test
     public void testloadMoleculesFromSMILESCheck() throws BioclipseException {
-        String[] input = {"CC","CCC(CC)C","CC"};
+        String[] input = {"CC","CCC(CC)CC","CCC"};
         
         StringBuilder sb = new StringBuilder();
         for(String s: input) {
@@ -185,6 +185,7 @@ public class CDKManagerTest extends AbstractManagerTest {
                 file, (IProgressMonitor)null
             );
             Assert.assertNotNull( molecules );
+            Assert.assertEquals(3, molecules.size());
             List<String> inputList = new ArrayList<String>(Arrays.asList( input ));
             
             for(ICDKMolecule molecule:molecules) {
