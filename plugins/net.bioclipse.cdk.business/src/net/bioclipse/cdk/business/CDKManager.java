@@ -570,10 +570,28 @@ public class CDKManager implements ICDKManager {
 
   	public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
   	            throws BioclipseException, CDKException, CoreException {
+
+        IChemFormat format = null;
+
+        // are we really overwriting an old file?
+        if (mol.getResource() != null &&
+            (mol.getResource() instanceof IFile)) {
+            IFile oldFile = (IFile)mol.getResource();
+            format = determineFormat(
+                oldFile.getContentDescription().getContentType()
+            );
+        }
+
+        if (overwrite && format == null)
+            throw new BioclipseException(
+                "Molecule does not have an old File, and cannot determine" +
+                "save format, nor overwrite." );
+
+        // OK, not overwriting, but unknown format: default to CML
+        if (format == null) format = (IChemFormat)CMLFormat.getInstance();
+
   	    saveMolecule(
-  	            mol, file,
-  	            determineFormat(file.getContentDescription().getContentType()),
-  	            overwrite
+            mol, file, format, overwrite
   	    );
   	}
 
