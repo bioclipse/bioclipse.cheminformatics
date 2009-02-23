@@ -477,7 +477,7 @@ public class CDKManagerPluginTest {
     }
 
     @Test
-    public void testMoreSaveMolecule() throws Exception {
+    public void testSaveAsSameResource() throws Exception {
         URI uri = getClass().getResource("/testFiles/atp.mol").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
@@ -485,6 +485,14 @@ public class CDKManagerPluginTest {
 
         //Save mol to same resource read from with overwrite=true
         cdk.saveMolecule(mol, mol.getResource().getLocation().toOSString(), true);
+    }
+
+    @Test
+    public void testSaveAsSameTypeDifferentFile() throws Exception {
+        URI uri = getClass().getResource("/testFiles/atp.mol").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        ICDKMolecule mol = cdk.loadMolecule( path);
 
         //Save mol to other location (virtual) without specifying file extension
         cdk.saveMolecule(mol, "/Virtual/atp0.mol");
