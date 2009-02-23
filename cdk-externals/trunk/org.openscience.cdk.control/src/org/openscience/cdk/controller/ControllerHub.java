@@ -493,10 +493,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     }
 
     public void zap() {
-        for (IAtomContainer container :
-            ChemModelManipulator.getAllAtomContainers(chemModel)) {
-            container.removeAllElements();
-        }
+        chemModel = chemModel.getBuilder().newChemModel();
         structureChanged();
     }
 
