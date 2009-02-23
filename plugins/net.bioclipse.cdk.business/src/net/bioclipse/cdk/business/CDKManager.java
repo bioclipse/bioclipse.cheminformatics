@@ -83,6 +83,7 @@ import org.openscience.cdk.io.WriterFactory;
 import org.openscience.cdk.io.formats.CIFFormat;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
+import org.openscience.cdk.io.formats.IChemFormatMatcher;
 import org.openscience.cdk.io.formats.IResourceFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
 import org.openscience.cdk.io.formats.Mol2Format;
@@ -1716,5 +1717,31 @@ public class CDKManager implements ICDKManager {
 
         // OK, no clue...
         return null;
+    }
+
+    public IChemFormat getFormat(String type) {
+        List<IChemFormatMatcher> formats = formatsFactory.getFormats();
+        for (IChemFormatMatcher format : formats) {
+            if (format.getClass().getName().substring(
+                    "org.openscience.cdk.io.formats.".length()
+                ).equals(type)) return format;
+        }
+        return null;
+    }
+
+    public String getFormats() {
+        StringBuffer buffer = new StringBuffer();
+        List<IChemFormatMatcher> formats = formatsFactory.getFormats();
+        for (IChemFormatMatcher format : formats) {
+            buffer.append(
+                format.getClass().getName().substring(
+                    "org.openscience.cdk.io.formats.".length()
+                )
+            );
+            buffer.append(": ");
+            buffer.append(format.getFormatName());
+            buffer.append('\n');
+        }
+        return buffer.toString();
     }
 }

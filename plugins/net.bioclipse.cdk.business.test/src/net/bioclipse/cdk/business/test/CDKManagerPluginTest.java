@@ -53,6 +53,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.NoSuchAtomException;
 import org.openscience.cdk.geometry.GeometryTools;
@@ -63,6 +64,7 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
+import org.openscience.cdk.io.Mol2Reader;
 import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
@@ -72,6 +74,7 @@ import org.openscience.cdk.io.formats.SDFFormat;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.templates.MoleculeFactory;
 import org.openscience.cdk.tools.diff.AtomContainerDiff;
+import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 
 public class CDKManagerPluginTest {
 
@@ -870,9 +873,11 @@ public class CDKManagerPluginTest {
 
         IFile target=new MockIFile();
         cdk.saveMolecule(propane, target, (IChemFormat)Mol2Format.getInstance());
-        
-        ICDKMolecule mol = cdk.loadMolecule(target);
-        assertNotNull(mol);
+
+        Mol2Reader reader = new Mol2Reader(target.getContents());
+        IChemFile file = (IChemFile)reader.read(new ChemFile());
+        assertNotNull(file);
+        Assert.assertNotSame(0, ChemFileManipulator.getAtomCount(file));
     }
 
     @Test

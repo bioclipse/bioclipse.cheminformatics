@@ -712,4 +712,16 @@ public interface ICDKManager extends IBioclipseManager {
              "content type")
     public IChemFormat determineFormat(IContentType type);
 
+    @Recorded
+    @PublishedMethod(
+         params = "String type",
+         methodSummary = "Returns the IChemFormat for the given type")
+    @TestMethods("testGetFormat")
+    public IChemFormat getFormat(String type);
+
+    @Recorded
+    @PublishedMethod(
+         methodSummary = "Returns all available IChemFormats")
+    public String getFormats();
+
 }

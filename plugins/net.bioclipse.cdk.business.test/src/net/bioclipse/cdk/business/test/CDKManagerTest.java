@@ -691,4 +691,32 @@ public class CDKManagerTest extends AbstractManagerTest {
         Assert.assertEquals( 2,mol.size() );
     }
 
+    @Test
+    public void testGetFormat() {
+        Assert.assertEquals(
+                MDLV2000Format.getInstance(),
+                cdk.getFormat("MDLV2000Format")
+        );
+        Assert.assertEquals(
+                Mol2Format.getInstance(),
+                cdk.getFormat("Mol2Format")
+        );
+        Assert.assertEquals(
+                CMLFormat.getInstance(),
+                cdk.getFormat("CMLFormat")
+        );
+        Assert.assertEquals(
+                SDFFormat.getInstance(),
+                cdk.getFormat("SDFFormat")
+        );
+    }
+
+    @Test
+    public void testGetFormats() {
+        String formats = cdk.getFormats();
+        Assert.assertTrue(formats.contains("Mol2Format"));
+        Assert.assertTrue(formats.contains("CMLFormat"));
+        Assert.assertTrue(formats.contains("MDLV2000Format"));
+        Assert.assertTrue(formats.contains("SDFFormat"));
+    }
 }
