@@ -429,10 +429,9 @@ public class CDKManagerPluginTest {
         target.getContents().read(bytes);
         Assert.assertArrayEquals(new byte[]{10,32,32,67,68,75}, bytes);
     }
-    
-    @Test
-    public void testLoadSaveSingleMol() throws Exception {
 
+    @Test
+    public void testResourceIsSet() throws Exception {
         URI uri = getClass().getResource("/testFiles/atp.mol").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
@@ -442,15 +441,36 @@ public class CDKManagerPluginTest {
         IFile resourceFile=(IFile)mol.getResource();
         assertNotNull(resourceFile);
         assertTrue(resourceFile.getFullPath().toOSString().endsWith("atp.mol"));
+    }
+
+    @Test(expected=BioclipseException.class)
+    public void testUnwantedOverWrite() throws Exception {
+        URI uri = getClass().getResource("/testFiles/atp.mol").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        ICDKMolecule mol = cdk.loadMolecule( path);
 
         //Save to the molecules resource, should throw exception (file exists)
-        try{
-            cdk.saveMolecule(mol);
-            fail("cdk.saveMolecule(mol) did not throw exception for overwrite");
-        }catch (BioclipseException e){}
+        cdk.saveMolecule(mol);
+    }
+
+    @Test
+    public void testSaveMoleculeOverwrite() throws Exception {
+        URI uri = getClass().getResource("/testFiles/atp.mol").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        ICDKMolecule mol = cdk.loadMolecule( path);
         
         //Save to the molecules resource with overwrite =true
         cdk.saveMolecule(mol, true);
+    }
+
+    @Test(expected=BioclipseException.class)
+    public void testUnwantedOverWrite2() throws Exception {
+        URI uri = getClass().getResource("/testFiles/atp.mol").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        ICDKMolecule mol = cdk.loadMolecule( path);
         
         //Save mol to same resource read from, should throw exc (file exists)
         try{
@@ -458,25 +478,42 @@ public class CDKManagerPluginTest {
             fail("cdk.saveMolecule(mol, mol.getResource().getLocation().toOSString()) " +
             		"did not throw exception for overwrite");
         }catch (BioclipseException e){}
+    }
+
+    @Test
+    public void testMoreSaveMolecule() throws Exception {
+        URI uri = getClass().getResource("/testFiles/atp.mol").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        ICDKMolecule mol = cdk.loadMolecule( path);
 
         //Save mol to same resource read from with overwrite=true
         cdk.saveMolecule(mol, mol.getResource().getLocation().toOSString(), true);
 
         //Save mol to other location (virtual) without specifying file extension
         cdk.saveMolecule(mol, "/Virtual/atp0.mol");
-        ICDKMolecule mol2 = cdk.loadMolecule("/Virtual/atp0.mol");
+    }
+
+    @Test
+    public void testSaveAsMDLV2000() throws Exception {
+        ICDKMolecule mol2 = cdk.loadMolecule("/testFiles/atp.mol");
         assertNotNull(mol2);
 
         //Save mol to other location (virtual) with extension specified
-        cdk.saveMolecule(mol, "/Virtual/atp2.mol", (IChemFormat)MDLV2000Format.getInstance());
+        cdk.saveMolecule(mol2, "/Virtual/atp2.mol", (IChemFormat)MDLV2000Format.getInstance());
         mol2 = cdk.loadMolecule("/Virtual/atp2.mol");
+        assertNotNull(mol2);
+    }
+
+    @Test
+    public void testSaveAsCML() throws Exception {
+        ICDKMolecule mol2 = cdk.loadMolecule("/testFiles/atp.mol");
         assertNotNull(mol2);
 
         //Save as CML
-        cdk.saveMolecule(mol, "/Virtual/atp3.cml", (IChemFormat)CMLFormat.getInstance());
+        cdk.saveMolecule(mol2, "/Virtual/atp3.cml", (IChemFormat)CMLFormat.getInstance());
         mol2 = cdk.loadMolecule("/Virtual/atp3.cml");
         assertNotNull(mol2);
-
     }
 
     @Test public void testSaveMolecule_IMolecule() throws Exception {
