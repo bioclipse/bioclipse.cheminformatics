@@ -1027,10 +1027,14 @@ public class CDKManagerPluginTest {
         String path=url.getFile();
         int nomols = cdk.getNoMolecules( path );
         assertEquals( 1, nomols);
-        uri = getClass().getResource("/testFiles/nprods.smi").toURI();
-        url=FileLocator.toFileURL(uri.toURL());
-        path=url.getFile();
-        nomols = cdk.getNoMolecules( path );
+    }
+
+    @Test
+    public void testNoMolecules_String_SMILESFile() throws Exception{
+        URI uri = getClass().getResource("/testFiles/nprods.smi").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        int nomols = cdk.getNoMolecules( path );
         assertEquals( 1, nomols);
     }
 }
