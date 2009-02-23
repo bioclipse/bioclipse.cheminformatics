@@ -51,8 +51,8 @@ public class JChemPaintWidget extends Canvas {
     /**
      * A new model has to reset the center
      */
-    private boolean isNew = true;
-
+    protected boolean isNew = true;
+   
     public JChemPaintWidget(Composite parent, int style) {
 
         super( parent, style );
@@ -73,16 +73,19 @@ public class JChemPaintWidget extends Canvas {
         rendererModel.setShowEndCarbons( true );
         rendererModel.setShowExplicitHydrogens( true );
         rendererModel.setHighlightShapeFilled( true );
-
+        setupPaintListener();
+    }
+    
+    public void setupPaintListener() {
         addPaintListener( new PaintListener() {
-
+            
             public void paintControl( PaintEvent event ) {
-
+                
                 JChemPaintWidget.this.paintControl( event );
             }
         } );
     }
-
+    
     protected List<IGenerator> createGenerators() {
         List<IGenerator> generatorList = new ArrayList<IGenerator>();
         generatorList.add( new AtomContainerBoundsGenerator() );
@@ -110,12 +113,11 @@ public class JChemPaintWidget extends Canvas {
             renderer.setScale(atomContainer);
         }
 
-        if (renderer.getRenderer2DModel().isFitToScreen()) {
-            renderer.paintMolecule(atomContainer, visitor, clientArea, isNew);
-        } else {
-            renderer.paintMolecule(atomContainer, visitor);
+        renderer.paintMolecule(atomContainer, visitor, clientArea, isNew);
+        
+        if (!(atomContainer.getAtomCount() == 0)) {
+            isNew = false;
         }
-        isNew = false;
     }
 
     public void setAtomContainer( IAtomContainer atomContainer ) {

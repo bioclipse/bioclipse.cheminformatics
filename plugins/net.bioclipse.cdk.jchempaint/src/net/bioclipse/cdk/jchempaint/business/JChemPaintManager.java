@@ -279,6 +279,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         if (editor != null) {
             IChemModelRelay relay = editor.getControllerHub();
             relay.zap();
+            editor.getWidget().reset();
         } else {
             Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
         }

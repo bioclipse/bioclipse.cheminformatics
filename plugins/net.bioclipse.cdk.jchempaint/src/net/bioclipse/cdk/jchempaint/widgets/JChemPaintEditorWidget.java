@@ -14,6 +14,7 @@ package net.bioclipse.cdk.jchempaint.widgets;
 
 import static net.bioclipse.cdk.jchempaint.outline.StructureContentProvider.createCDKChemObject;
 
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -25,6 +26,7 @@ import net.bioclipse.cdk.jchempaint.Activator;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager;
 import net.bioclipse.cdk.jchempaint.editor.SWTMouseEventRelay;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
+import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
 import net.bioclipse.core.business.BioclipseException;
 
 import org.eclipse.core.runtime.IAdaptable;
@@ -36,6 +38,8 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -56,8 +60,10 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
+import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.ExternalHighlightGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
@@ -93,9 +99,16 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     private boolean isdirty = false;
     
     private final Point origin = new Point(0, 0); 
+    
+    private boolean isScrolling = false;
+
 
     public JChemPaintEditorWidget(Composite parent, int style) {
-        super( parent, style | SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_BACKGROUND);
+        super( parent, style | 
+                SWT.H_SCROLL | 
+                SWT.V_SCROLL | 
+//                SWT.NO_BACKGROUND |
+                SWT.DOUBLE_BUFFERED);
         
         final ScrollBar hBar = getHorizontalBar(); 
         hBar.setEnabled(true);
@@ -105,9 +118,11 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 int d = bar.getSelection();
                 int dx = -d - origin.x;
                 Rectangle rect = getDiagramBounds();
+                setIsScrolling(true);
                 scroll(dx, 0, 0, 0, rect.width, rect.height, false);
+                setIsScrolling(false);
                 origin.x = -d;
-
+                update();
             }
         });
 
@@ -119,8 +134,11 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 int d = bar.getSelection();
                 int dy = -d - origin.y;
                 Rectangle rect = getDiagramBounds();
+                setIsScrolling(true);
                 scroll(0, dy, 0, 0, rect.width, rect.height, false);
+                setIsScrolling(false);
                 origin.y = -d;
+                update();
             }
         });
         
@@ -159,6 +177,62 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         
         prevHighlightedAtom=null;
         prevHighlightedBond=null;
+    }
+    
+    public void setIsScrolling(boolean isScrolling) {
+        this.isScrolling = isScrolling;
+    }
+    
+    public void setupPaintListener() {
+        addPaintListener( new PaintListener() {
+            
+            public void paintControl( PaintEvent event ) {
+                
+                JChemPaintEditorWidget.this.paintControl( event );
+            }
+        } );
+
+    }
+    
+    private void paintControl( PaintEvent event ) {
+        drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
+        IChemModel chemModel = hub.getIChemModel();
+        
+        int atomCount = ChemModelManipulator.getAtomCount(chemModel);
+        if ( chemModel == null || atomCount == 0) {
+            setBackground( getParent().getBackground() );
+            return;
+        } else setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
+        
+        Rectangle c = getClientArea();
+        Rectangle2D clientArea =
+            new Rectangle2D.Double(c.x, c.y, c.width, c.height); 
+        SWTRenderer visitor = new SWTRenderer( event.gc );
+        
+        Renderer renderer = getRenderer();
+        
+        if (isScrolling) {
+            renderer.repaint(visitor);
+//            isScrolling = false;
+            return;
+        }
+        
+        if (isNew) {
+            renderer.setScale(chemModel);
+        }
+
+        if (renderer.getRenderer2DModel().isFitToScreen()) {
+            renderer.paintChemModel(chemModel, visitor, clientArea, isNew);
+        } else {
+            java.awt.Rectangle diagramBounds = 
+                renderer.paintChemModel(chemModel, visitor);
+        }
+        
+        isNew = false;
+    }
+    
+    public void reset() {
+        this.isNew = true;
     }
     
     private Rectangle getDiagramBounds() {
