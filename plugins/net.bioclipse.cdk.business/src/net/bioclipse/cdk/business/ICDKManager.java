@@ -544,7 +544,8 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod( params = "String path",
-                      methodSummary = "" )
+                      methodSummary = "Returns an iterator to the molecules" +
+                          " in an IFile that might contain conformers." )
     public Iterator<ICDKMolecule> createConformerIterator( String path );
 
     @PublishedMethod ( params = "IMolecule molecule",
