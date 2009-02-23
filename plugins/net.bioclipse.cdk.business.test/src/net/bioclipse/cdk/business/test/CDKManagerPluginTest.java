@@ -96,8 +96,12 @@ public class CDKManagerPluginTest {
         // can be loaded too. Otherwise, it will fail with a time out.
         net.bioclipse.ui.Activator.getDefault();
 
-        cdk = net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
-        cdkdebug= net.bioclipse.cdkdebug.Activator.getDefault().getManager();
+        try {
+            cdk = net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
+            cdkdebug= net.bioclipse.cdkdebug.Activator.getDefault().getManager();
+        } catch (RuntimeException exception) {
+            fail("Failed to instantiate the CDK managers.");
+        }
     }
 
     @Test
