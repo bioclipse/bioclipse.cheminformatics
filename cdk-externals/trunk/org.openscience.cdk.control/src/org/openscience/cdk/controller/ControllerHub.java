@@ -549,7 +549,24 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     }
 
     public IRing addPhenyl(Point2d worldcoord) {
-        return addPhenyl(addAtom("C", worldcoord));
+        IRing ring = chemModel.getBuilder().newRing(6, "C");
+        ring.getBond(0).setOrder(IBond.Order.DOUBLE);
+        ring.getBond(2).setOrder(IBond.Order.DOUBLE);
+        ring.getBond(4).setOrder(IBond.Order.DOUBLE);
+        makeRingAromatic(ring);
+        
+        double bondLength = 1.4;
+        ringPlacer.placeRing(ring, worldcoord, bondLength);
+        IMoleculeSet set = chemModel.getMoleculeSet();
+        
+        // the molecule set should not be null, but just in case...
+        if (set == null) {
+            set = chemModel.getBuilder().newMoleculeSet();
+            chemModel.setMoleculeSet(set);
+        }
+        set.addAtomContainer(ring);
+        structureChanged();
+        return ring;
     }
 
     public IRing addRing(IAtom atom, int ringSize) {
@@ -593,7 +610,8 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         makeRingAromatic(newRing);
         
         double bondLength;
-        if (sourceContainer.getBondCount() == 0) {
+//        if (sourceContainer.getBondCount() == 0) {
+        if (false) {
             /*
              * Special case of adding a ring to a single, unconnected atom
              * - places the ring centered on the place where the atom was.
