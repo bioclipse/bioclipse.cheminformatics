@@ -608,7 +608,7 @@ public interface ICDKManager extends IBioclipseManager {
                       methodSummary = "Loads molecules from a SMILES file at " +
                       		          "a given path into a list of " +
                       		          "molecules")
-    @TestMethods("testLoadMoleculeFromSMILESFileDirectly,testLoadMoleculeFromSMILESFile")
+    @TestMethods("testLoadMoleculeFromSMILESFile")
     public List<ICDKMolecule> loadSMILESFile(String path) throws CoreException, IOException;
 
 	public List<ICDKMolecule> loadSMILESFile(IFile file) throws CoreException,
