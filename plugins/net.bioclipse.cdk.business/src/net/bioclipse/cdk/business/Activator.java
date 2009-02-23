@@ -11,14 +11,12 @@
  ******************************************************************************/
 package net.bioclipse.cdk.business;
 
+import net.bioclipse.core.util.LogUtils;
+
+import org.apache.log4j.Logger;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
-
-import org.apache.log4j.Logger;
-
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.util.LogUtils;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -77,15 +75,6 @@ public class Activator extends AbstractUIPlugin {
      * @return the shared instance
      */
     public static Activator getDefault() {
-        if (plugin == null) {
-            RuntimeException exception = new RuntimeException();
-            exception.initCause(
-                new BioclipseException(
-                    "The CDK plugin has not started yet."
-                )
-            );
-            throw exception;
-        }
         return plugin;
     }
 
