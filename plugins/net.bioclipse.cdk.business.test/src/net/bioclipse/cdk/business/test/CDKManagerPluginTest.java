@@ -569,6 +569,7 @@ public class CDKManagerPluginTest {
 
         // try overwrite
         ICDKMolecule coc  = cdk.fromSMILES("COC");
+        coc.setResource(mol.getResource());
         cdk.saveMolecule(coc, "/Virtual/testSaveMoleculeZZZ.mol", true);
         mol = cdk.loadMolecule("/Virtual/testSaveMoleculeZZZ.mol");
         assertEquals("COC", mol.getSMILES());
@@ -584,9 +585,10 @@ public class CDKManagerPluginTest {
 
         // try overwrite
         ICDKMolecule coc  = cdk.fromSMILES("COC");
+        coc.setResource(mol.getResource());
         cdk.saveMolecule(coc, target, true);
         mol = cdk.loadMolecule("/Virtual/testSaveMoleculeXXX.mol");
-        assertEquals("COC", mol.getSMILES());
+        assertEquals("O(C)C", mol.getSMILES());
     }
 
     @Test(expected=java.lang.Exception.class)
