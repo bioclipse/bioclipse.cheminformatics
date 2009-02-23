@@ -18,12 +18,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -41,6 +43,7 @@ import net.bioclipse.core.tests.AbstractManagerTest;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openscience.cdk.exception.CDKException;
@@ -119,6 +122,20 @@ public class CDKManagerTest extends AbstractManagerTest {
 
     
     @Test
+    public void testLoadMoleculeFromSMILESFileDirectly() throws IOException, 
+                                          BioclipseException, 
+                                          CoreException {
+
+        String path = getClass().getResource("/testFiles/nprods.smi").getPath();
+        List<ICDKMolecule> mol = cdk.loadSMILESFile(
+            new MockIFile(path), (IProgressMonitor)null
+        );
+        assertNotNull( mol );
+        System.out.println("SMILES file size: " + mol.size());
+        assertEquals(30, mol.size());
+    }
+
+    @Test
     public void testLoadMoleculeFromSMILESFile() throws IOException, 
                                           BioclipseException, 
                                           CoreException {
@@ -146,6 +163,41 @@ public class CDKManagerTest extends AbstractManagerTest {
         	}
         }
 
+    }
+    
+    @Test
+    public void testloadMoleculesFromSMILESCheck() throws BioclipseException {
+        String[] input = {"CC","CCC(CC)C","CC"};
+        
+        StringBuilder sb = new StringBuilder();
+        for(String s: input) {
+            sb.append( s );
+            sb.append( "\n" );
+        }
+        
+        IFile file = new MockIFile(
+                           new ByteArrayInputStream(sb.toString().getBytes()))
+                            .extension( "smi" );
+        
+        
+        try {
+            List<ICDKMolecule> molecules = cdk.loadSMILESFile(
+                file, (IProgressMonitor)null
+            );
+            Assert.assertNotNull( molecules );
+            List<String> inputList = new ArrayList<String>(Arrays.asList( input ));
+            
+            for(ICDKMolecule molecule:molecules) {
+                String smiles = molecule.getSMILES();
+                if(inputList.contains( smiles ))
+                    inputList.remove( smiles );
+            }
+            Assert.assertEquals( 0, inputList.size() );
+        } catch ( CoreException e ) {
+            Assert.fail( e.getMessage() );
+        } catch ( IOException e ) {
+            Assert.fail( e.getMessage());
+        }
     }
     
     @Test
