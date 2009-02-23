@@ -31,7 +31,8 @@ public class NewFromPubChemWizardPage extends WizardPage {
 	public NewFromPubChemWizardPage() {
 		super("Query PubChem");
 		setTitle("Query PubChem");
-		setDescription("Give a query. For example a name like 'aspirin', a CAS registry number like '50-00-0' or an InChI.");
+		setDescription("Give a query. For example a name like 'aspirin', a CAS " +
+				"registry number like '50-00-0' or a Standard InChI.");
 	}
 
 	public void createControl(Composite parent) {
@@ -84,7 +85,7 @@ public class NewFromPubChemWizardPage extends WizardPage {
 	}
 	
 	public String getQuery() {
-		this.query = txtName.getText();
+	    query = txtName.getText();
 		return this.query;
 	}
 	

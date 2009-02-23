@@ -10,27 +10,24 @@
  ******************************************************************************/
 package net.bioclipse.pubchem.wizards;
 
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
+import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.pubchem.business.IPubChemManager;
 import net.bioclipse.scripting.ui.Activator;
 import net.bioclipse.scripting.ui.business.IJsConsoleManager;
-import nu.xom.Builder;
-import nu.xom.Document;
-import nu.xom.Nodes;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 
-public class NewFromPubChemWizard extends Wizard implements INewWizard{
+public class NewFromPubChemWizard extends BasicNewResourceWizard {
 	
-	private final static String utilsURLBase = "http://www.ncbi.nlm.nih.gov/entrez/eutils";
-	private final static String pubchemURLBase = "http://pubchem.ncbi.nlm.nih.gov/";
-	
-	private final static String TOOL = "bioclipse.net";
-
 	private NewFromPubChemWizardPage newMolPage;
 	protected String molecule;
 	
@@ -50,6 +47,7 @@ public class NewFromPubChemWizard extends Wizard implements INewWizard{
 	}
 	
 	public String getQuery() {
+	    if (newMolPage != null) this.query = newMolPage.getQuery();
 		return this.query;
 	}
 	
@@ -59,166 +57,61 @@ public class NewFromPubChemWizard extends Wizard implements INewWizard{
 	}
 	
 	public boolean canFinish() {
+	    getQuery();
 		if (query == null || query.length() == 0) {
 			// make sure we have the latest
 			this.query = newMolPage.getQuery();
 		}
 		return (query != null && query.compareTo("") != 0);
 	}
-	
+
 	public boolean performFinish() {
-		
-        IJsConsoleManager js = Activator.getDefault().getJsConsoleManager();
-        
-		try {
-//			do the PubChem magic here
-			String db = "pccompound";
-			String query = replaceSpaces(molecule);
-
-			String esearch = utilsURLBase + "/esearch.fcgi?" +
-				"db=" + db + "&retmax=50&usehistory=y&tool=" + TOOL + "&term=" + query;
-
-			URL queryURL = new URL(esearch);
-			URLConnection connection = queryURL.openConnection();
-			
-	        Builder parser = new Builder();
-			Document doc = parser.build(connection.getInputStream());
-			
-			int count = 0;
-			Nodes countNodes = doc.query("/eSearchResult/Count");
-			if (countNodes.size() > 0) {
-				System.out.println(countNodes.get(0).toString());
-				count = Integer.parseInt(countNodes.get(0).getValue());
-				js.print("PubChem: #compounds found -> " + count);
-			} else {
-			    js.print("No results found");
-				return false;
-			}
-		
-			Nodes cidNodes = doc.query("/eSearchResult/IdList/Id");
-			
-			int max = cidNodes.size();
-			if (max > 15) {
-			    js.print("Found more than 15 molecules, only downloading the first 15");
-				max = 15;
-			}
-			
-			for (int cidCount=0; cidCount<max; cidCount++) {
-				String cid = cidNodes.get(cidCount).getValue();
-				js.print("Downloading CID: " + cid);
-				String efetch = pubchemURLBase + "summary/summary.cgi?cid=" + cid + "&disopt=DisplaySDF";
-			
-//				URL fetchURL = new URL(efetch);
-//				Job downloadJobs = new FetchURLContentJob(
-//					fetchURL, new DownloadListener(folder, cid)
-//				);
-//				downloadJobs.schedule();
-			}
-
-		} catch (Exception e) {
-		    js.print("Downloading the search results failed: " + e.getMessage());
-			e.printStackTrace();
-			return false;
-		}
-		
-		return true;
+	    try {
+            getContainer().run(true, true, new FinishRunnable());
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            return false;
+        } catch (InterruptedException exception) {
+            return false; // return, but keep wizard
+        }
+        return true;
 	}
-	
-	private String replaceSpaces(String molecule2) {
-		StringBuffer result = new StringBuffer();
-		for (int i=0; i<molecule2.length(); i++) {
-			if (Character.isWhitespace(molecule2.charAt(i))) {
-				result.append("+");
-			} else {
-				result.append(molecule2.charAt(i));
-			}
-		}
-		return result.toString();
-	}
-	
-//	public IBioResource createVirtualFolder() {
-//		final IBioResource root = BioResourceView.getRootFolder();
-//		BioResourceType virtualFolderType = folderUtils.getVirtualFolderType();
-//		// find a folder name which is not used yet
-//		int counter = 1;
-//		String folderName = PUBCHEM_FOLDER_NAME + " " + counter;
-//		while (existsFolder(BioResourceView.getRootFolder(), folderName)) {
-//			counter++;
-//			folderName = PUBCHEM_FOLDER_NAME + " " + counter;
-//		}
-//		BioclipseConsole.writeToConsole("New virtual folder name: " + folderName);
-//		
-//		// OK, no SENECA virtual folder created yet...
-//		final IBioResource virtualFolder = virtualFolderType.newResource(
-//			folderName, folderName
-//		);
-//		Display.getDefault().syncExec(new Runnable() {
-//			public void run() {
-//				root.addChild(virtualFolder);
-//			}
-//		});
-//		return virtualFolder;
-//	}
-//
-//	private boolean existsFolder(IBioResource root, String folderName) {
-//		Iterator children = root.getChildren().iterator();
-//		while (children.hasNext()) {
-//			Object child = children.next();
-//			if (child instanceof IBioResource &&
-//				((IBioResource)child).isFolder() &&
-//				((IBioResource)child).getName().equals(folderName)) {
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
-//
-//	class DownloadListener implements IFetchURLContentDoneListener {
-//
-//		private IBioResource parent;
-//		private String cid;
-//		
-//		public DownloadListener(IBioResource parent, String cid) {
-//			this.parent = parent;
-//			this.cid = cid;
-//		}
-//		
-//		public void processDownloadedContent(byte[] content) {
-//			// need to clean up the MOL format
-//			BufferedReader reader = new BufferedReader(
-//				new InputStreamReader(
-//					new ByteArrayInputStream(content)
-//				)
-//			);
-//			boolean done = false;
-//			StringBuffer result = new StringBuffer();
-//			String line = null;
-//			while (!done) {
-//				try {
-//					line = reader.readLine();
-//				} catch (IOException e) {
-//					// just ignore
-//					done = true;
-//				}
-//				if (line == null || line.startsWith("$$$$")) done = true;
-//				if (!done) {
-//					result.append(line);
-//					result.append('\n');
-//				}
-//			}
-//			
-//			// then create a new resource
-//			try {
-//				IBioResource newResource = StringResource.createResourceFromObject(
-//					result.toString(), cid + ".mol"
-//				);
-//				newResource.setParent(parent);
-//				parent.addChild(newResource);
-//			} catch (Exception exception) {
-//				parent.setParsed(false);
-//			}
-//		}
-//		
-//	}
 
+    class FinishRunnable implements IRunnableWithProgress {
+
+        public FinishRunnable() {}
+
+        public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+            downloadGist(monitor);
+        }
+
+        private void downloadGist(IProgressMonitor monitor) throws InvocationTargetException {
+            IJsConsoleManager js = Activator.getDefault().getJsConsoleManager();
+            IPubChemManager pubchem = net.bioclipse.pubchem.Activator.getDefault()
+                .getManager();
+
+            try {
+                System.out.println("query: " + query);
+                List<Integer> searchResults = pubchem.search(query);
+                js.print("Found hits: " + searchResults.size() + "\n");
+
+                int max = Math.min(15, searchResults.size());
+                for (int i=0; i<max; i++) {
+                  int cid = searchResults.get(i);
+                  String filename = "/Virtual/" + query.replace(" ", "") + "." + cid + ".xml";
+                  js.print("downloading CID " + cid + "...\n");
+                  pubchem.loadCompound(cid, filename);
+                }
+            } catch (IOException e) {
+                js.print("Downloading the search results failed: " + e.getMessage());
+                e.printStackTrace();
+            } catch (BioclipseException e) {
+                js.print("Downloading the search results failed: " + e.getMessage());
+                e.printStackTrace();
+            } catch (CoreException e) {
+                js.print("Downloading the search results failed: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
 }

@@ -130,6 +130,7 @@ public class PubChemManager implements IPubChemManager {
         String esearch = EUTILS_URL_BASE + "/esearch.fcgi?" +
             "db=" + db + "&retmax=50&usehistory=y&tool=" + TOOL + "&term=" + query;
 
+        System.out.println("URL: " + esearch);
         URL queryURL = new URL(esearch);
         URLConnection connection = queryURL.openConnection();
 
