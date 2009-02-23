@@ -154,6 +154,14 @@ public class Renderer {
         this.setup();
     }
 	
+	public void reset() {
+	    modelCenter = new Point2d(0, 0);
+	    drawCenter = new Point2d(200, 200);
+	    drawCenter = new Point2d(200, 200);
+	    zoom = 1.0;
+	    setup();
+	}
+	
 	/**
 	 * Calculate and set the zoom factor needed to completely fit the diagram
 	 * onto the screen bounds.
