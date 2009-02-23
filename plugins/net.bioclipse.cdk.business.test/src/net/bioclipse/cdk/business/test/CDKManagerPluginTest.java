@@ -473,11 +473,7 @@ public class CDKManagerPluginTest {
         ICDKMolecule mol = cdk.loadMolecule( path);
         
         //Save mol to same resource read from, should throw exc (file exists)
-        try{
-            cdk.saveMolecule(mol, mol.getResource().getLocation().toOSString());
-            fail("cdk.saveMolecule(mol, mol.getResource().getLocation().toOSString()) " +
-            		"did not throw exception for overwrite");
-        }catch (BioclipseException e){}
+        cdk.saveMolecule(mol, mol.getResource().getLocation().toOSString());
     }
 
     @Test
