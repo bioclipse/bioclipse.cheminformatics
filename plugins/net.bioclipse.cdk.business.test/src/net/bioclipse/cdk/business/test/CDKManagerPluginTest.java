@@ -49,6 +49,7 @@ import net.bioclipse.core.domain.IMolecule;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -209,7 +210,9 @@ public class CDKManagerPluginTest {
         
         
         try {
-            List<ICDKMolecule> molecules = cdk.loadSMILESFile( file );
+            List<ICDKMolecule> molecules = cdk.loadSMILESFile(
+                file, (IProgressMonitor)null
+            );
             Assert.assertNotNull( molecules );
             List<String> inputList = new ArrayList<String>(Arrays.asList( input ));
             
@@ -963,8 +966,12 @@ public class CDKManagerPluginTest {
         String path=url.getFile();
         
         assertEquals( "There should be two entries in the file",
-                      2,
-                      cdk.numberOfEntriesInSDF( path ) );
+            2,
+            cdk.numberOfEntriesInSDF(
+               ResourcePathTransformer.getInstance().transform(path),
+               (IProgressMonitor)null
+            )
+        );
     }
 
     @Test public void testGetInfo() throws Exception {

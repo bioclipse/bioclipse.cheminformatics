@@ -1242,8 +1242,10 @@ public class CDKManager implements ICDKManager {
   	public List<ICDKMolecule> loadSMILESFile(String path)
   	                          throws CoreException,
   	                                 IOException {
-  	    return loadSMILESFile( ResourcePathTransformer.getInstance()
-  	                                                  .transform(path) );
+        return loadSMILESFile(
+             ResourcePathTransformer.getInstance().transform(path),
+             (IProgressMonitor)null
+        );
   	}
 
   	public List<ICDKMolecule> loadSMILESFile( IFile file,
