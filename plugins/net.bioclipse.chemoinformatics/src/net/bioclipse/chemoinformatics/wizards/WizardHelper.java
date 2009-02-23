@@ -68,8 +68,8 @@ public class WizardHelper {
                         i++;
                         path = path.removeLastSegments( 1 );
                         path = path.append( prefix+i+suffix );
-                        path = path.removeFirstSegments( 1 );
-                        file = selectedResource.getProject().getFile( path );
+                        IPath copy = path.removeFirstSegments( 1 );
+                        file = selectedResource.getProject().getFile( copy );
                     }
                     fileName = path.lastSegment();
                 }
