@@ -265,7 +265,7 @@ public class CDKManagerPluginTest {
         assertNotNull(mol);
     }
 
-    @Test
+    @Test @Ignore("Loading PDB with the CDK is not yet supported")
     public void testLoadPDB() throws IOException, 
                                             BioclipseException, 
                                             CoreException, URISyntaxException {
