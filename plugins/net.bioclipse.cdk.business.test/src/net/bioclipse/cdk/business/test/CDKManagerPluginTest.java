@@ -500,7 +500,10 @@ public class CDKManagerPluginTest {
 
     @Test
     public void testSaveAsMDLV2000() throws Exception {
-        ICDKMolecule mol2 = cdk.loadMolecule("/testFiles/atp.mol");
+        URI uri = getClass().getResource("/testFiles/atp.mol").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        ICDKMolecule mol2 = cdk.loadMolecule(path);
         assertNotNull(mol2);
 
         //Save mol to other location (virtual) with extension specified
@@ -511,7 +514,10 @@ public class CDKManagerPluginTest {
 
     @Test
     public void testSaveAsCML() throws Exception {
-        ICDKMolecule mol2 = cdk.loadMolecule("/testFiles/atp.mol");
+        URI uri = getClass().getResource("/testFiles/atp.mol").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        ICDKMolecule mol2 = cdk.loadMolecule(path);
         assertNotNull(mol2);
 
         //Save as CML
