@@ -56,6 +56,7 @@ import org.openscience.cdk.ChemModel;
 import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.Molecule;
+import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.config.Elements;
 import org.openscience.cdk.exception.CDKException;
@@ -473,14 +474,29 @@ public class CDKManager implements ICDKManager {
   	        StringWriter writer = new StringWriter();
 
             writerFactory.registerWriter(CMLWriter.class);
-  	        IChemObjectWriter chemWriter = writerFactory.createWriter(filetype);
-  	        if (chemWriter == null) {
-                throw new BioclipseException("No writer available for this format: " +
-  	                filetype.getFormatName());
-  	        }
-            chemWriter.setWriter(writer);
+            // OK, CDK does not properly save SDF files, using the WriterFactory
+            // approach... so work around that...
+            IChemObjectWriter chemWriter = null;
+            if (filetype == SDFFormat.getInstance()) {
+                chemWriter = new SDFWriter(writer);
+            } else {
+                chemWriter = writerFactory.createWriter(filetype);
+                if (chemWriter == null) {
+                    throw new BioclipseException("No writer available for this format: " +
+                        filetype.getFormatName());
+                }
+                chemWriter.setWriter(writer);
+            }
             if (chemWriter.accepts(ChemModel.class)) {
                 chemWriter.write(model);
+            } else if (chemWriter.accepts(MoleculeSet.class)){
+                IMoleculeSet list =
+                    model.getBuilder().newMoleculeSet();
+                for (IAtomContainer container :
+                     ChemModelManipulator.getAllAtomContainers(model)) {
+                    list.addAtomContainer(container);
+                }
+                chemWriter.write(list);
             } else if (chemWriter.accepts(Molecule.class)){
                 org.openscience.cdk.interfaces.IMolecule smashedContainer =
                     model.getBuilder().newMolecule();
