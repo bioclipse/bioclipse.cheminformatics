@@ -117,7 +117,7 @@ public class NewSDFileWizardPage extends WizardPage {
                 gd = new GridData(GridData.FILL_HORIZONTAL);
                 fileText.setLayoutData(gd);
                 if(selectedFolder!=null)
-                    fileText.setText( WizardHelper.findUnusedFileName( new StructuredSelection(selectedFolder), "unnamed", ".sd" ) );
+                    fileText.setText( WizardHelper.findUnusedFileName( new StructuredSelection(selectedFolder), "unnamed", ".sdf" ) );
                 fileText.addModifyListener(new ModifyListener() {
                         public void modifyText(ModifyEvent e) {
                                 dialogChanged();
