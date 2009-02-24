@@ -39,11 +39,8 @@ public class NewCMLFileWizard extends BasicNewResourceWizard {
 	private static final String FILE_CONTENT =
 		"<molecule xmlns=\"http://www.xml-cml.org/schema\">" + System.getProperty("line.separator") +
 		"  <atomArray>" + System.getProperty("line.separator") +
-        "    <atom id=\"a1\" elementType=\"C\" x2=\"0.0\" y2=\"0.0\"/>" + System.getProperty("line.separator") +
-        "    <atom id=\"a2\" elementType=\"C\" x2=\"1.0\" y2=\"0.0\"/>" + System.getProperty("line.separator") +
         "  </atomArray>" + System.getProperty("line.separator") +
 		"  <bondArray>" + System.getProperty("line.separator") +
-        "    <bond id=\"b1\" atomRefs2=\"a1 a2\"/>" + System.getProperty("line.separator") +
         "  </bondArray>" + System.getProperty("line.separator") +
 		"</molecule>" + System.getProperty("line.separator");
 	
