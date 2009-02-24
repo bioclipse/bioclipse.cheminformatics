@@ -37,6 +37,11 @@ public class CDKDebugManagerPluginTest {
     public CDKDebugManagerPluginTest() {}
 
     @BeforeClass public static void setup() {
+        // the next line is needed to ensure the OSGI loader properly start
+        // the org.springframework.bundle.osgi.extender, so that the manager
+        // can be loaded too. Otherwise, it will fail with a time out.
+        net.bioclipse.ui.Activator.getDefault();
+
         debug = Activator.getDefault().getManager();
         cdk = net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
     }
