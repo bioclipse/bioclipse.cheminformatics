@@ -86,53 +86,18 @@ public class Create3dHandler extends AbstractHandler {
                                             .getFirstElement())
                                             .getFileExtension() );
                         try {
-                            if ( ((IFile) ssel.getFirstElement())
-                                    .getWorkspace().getRoot().getFile( result )
-                                    .exists() ) {
-                                new Shell().getDisplay()
-                                        .syncExec( new Runnable() {
-
-                                            public void run() {
-
-                                                MessageBox mb =
-                                                        new MessageBox(
-                                                                        new Shell(),
-                                                                        SWT.YES
-                                                                                | SWT.NO
-                                                                                | SWT.ICON_QUESTION );
-                                                mb.setText( "File exists" );
-                                                mb
-                                                        .setMessage( "This file already exists. Do you want to overwrite it?" );
-                                                Create3dHandler.this.answer =
-                                                        mb.open();
-                                            }
-                                        } );
-                                if ( answer == SWT.YES )
-                                    Activator
-                                            .getDefault()
-                                            .getCDKManager()
-                                            .saveMolecule(
-                                                           mol,
-                                                           ((IFile) ssel
-                                                                   .getFirstElement())
-                                                                   .getWorkspace()
-                                                                   .getRoot()
-                                                                   .getFile(
-                                                                             result ),
-                                                           true );
-                            } else {
-                                Activator
-                                        .getDefault()
-                                        .getCDKManager()
-                                        .saveMolecule(
-                                                       mol,
-                                                       ((IFile) ssel
-                                                               .getFirstElement())
-                                                               .getWorkspace()
-                                                               .getRoot()
-                                                               .getFile( result ),
-                                                       false );
-                            }
+                            Activator
+                                    .getDefault()
+                                    .getCDKManager()
+                                    .saveMolecule(
+                                                   mol,
+                                                   ((IFile) ssel
+                                                           .getFirstElement())
+                                                           .getWorkspace()
+                                                           .getRoot()
+                                                           .getFile(
+                                                                     result ),
+                                                   true );
                         } catch ( Exception e ) {
                             throw new RuntimeException( e.getMessage() );
                         }
