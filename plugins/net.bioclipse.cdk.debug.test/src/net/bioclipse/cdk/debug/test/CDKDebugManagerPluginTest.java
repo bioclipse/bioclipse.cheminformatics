@@ -19,20 +19,26 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
-import net.bioclipse.cdk.business.CDKManager;
+import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdkdebug.business.CDKDebugManager;
+import net.bioclipse.cdkdebug.Activator;
 import net.bioclipse.cdkdebug.business.ICDKDebugManager;
 import net.bioclipse.core.business.IBioclipseManager;
+
 import org.eclipse.core.runtime.FileLocator;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class CDKDebugManagerPluginTest {
 
-    ICDKDebugManager debug;
+    private static ICDKDebugManager debug;
+    private static ICDKManager cdk;
 
-    public CDKDebugManagerPluginTest() {
-        debug = new CDKDebugManager();
+    public CDKDebugManagerPluginTest() {}
+
+    @BeforeClass public static void setup() {
+        debug = Activator.getDefault().getManager();
+        cdk = net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
     }
 
     public IBioclipseManager getManager() {
@@ -40,14 +46,12 @@ public class CDKDebugManagerPluginTest {
     }
 
     @Test public void testDebug() throws Exception {
-        CDKManager cdk = new CDKManager();
         ICDKMolecule mol = (ICDKMolecule)cdk.fromSMILES("C");
         debug.debug(mol);
         // would like to test more, but the method does not return anything
     }
 
     @Test public void testDiff() throws Exception {
-        CDKManager cdk = new CDKManager();
         ICDKMolecule mol1 = (ICDKMolecule)cdk.fromSMILES("C");
         ICDKMolecule mol2 = (ICDKMolecule)cdk.fromSMILES("C");
         debug.diff(mol1, mol2);
@@ -55,7 +59,6 @@ public class CDKDebugManagerPluginTest {
     }
 
     @Test public void testDepictSybylAtomTypes() throws Exception {
-        CDKManager cdk = new CDKManager();
         ICDKMolecule mol = (ICDKMolecule)cdk.fromSMILES("CNCO");
         debug.perceiveSybylAtomTypes(mol);
         // would like to test more, but the method does not return anything
@@ -67,13 +70,11 @@ public class CDKDebugManagerPluginTest {
      * @throws Exception
      */
     @Test public void testDepictSybylAtomTypesFromSDF() throws Exception {
-        CDKManager cdk = new CDKManager();
-        
         URI uri = getClass().getResource("/testFiles/m2d_ref_232.sdf").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
         List<ICDKMolecule> mols = cdk.loadMolecules( path);
-        
+
         int cnt=0;
         for (ICDKMolecule mol : mols){
             try {
