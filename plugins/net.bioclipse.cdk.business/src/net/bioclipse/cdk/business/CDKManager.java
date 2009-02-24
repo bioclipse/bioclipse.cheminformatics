@@ -582,10 +582,9 @@ public class CDKManager implements ICDKManager {
             );
         }
 
-        if (overwrite && format == null)
-            throw new BioclipseException(
-                "Molecule does not have an old File, and cannot determine" +
-                "save format, nor overwrite." );
+        if (overwrite && format == null) {
+            format = guessFormatFromExtension(file);
+        }
 
         // OK, not overwriting, but unknown format: default to CML
         if (format == null) format = (IChemFormat)CMLFormat.getInstance();
@@ -595,7 +594,16 @@ public class CDKManager implements ICDKManager {
   	    );
   	}
 
-  	public void saveMolecule( IMolecule mol_in,
+    private IChemFormat guessFormatFromExtension(IFile file) {
+        for (IChemFormat aFormat : formatsFactory.getFormats()) {
+            if (file.getFileExtension().equals(aFormat.getPreferredNameExtension())) {
+                return aFormat;
+            }
+        }
+        return null;
+    }
+
+    public void saveMolecule( IMolecule mol_in,
   	                          String filename,
   	                        IChemFormat filetype )
                 throws BioclipseException, CDKException, CoreException {
