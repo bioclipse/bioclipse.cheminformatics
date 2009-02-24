@@ -204,7 +204,7 @@ public class CDKManagerPluginTest {
     
     @Test
     public void testloadMoleculesFromSMILESCheck() throws Exception {
-        String[] input = {"CC","CCC(CC)C","CC"};
+        String[] input = {"CC","CCC(CC)CC","CCC"};
         
         StringBuilder sb = new StringBuilder();
         for(String s: input) {
