@@ -342,7 +342,7 @@ public class CDKManager implements ICDKManager {
   	        if (reader == null) {
 
   	            // Try SMILES
-                List<ICDKMolecule> moleculesList2 = loadSMILESFile(file);
+                List<ICDKMolecule> moleculesList2 = loadSMILESFile(file, monitor);
   	            if (moleculesList2 != null && moleculesList2.size() > 0)
   	                return moleculesList2;
 
