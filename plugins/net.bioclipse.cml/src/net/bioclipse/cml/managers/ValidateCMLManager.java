@@ -8,13 +8,8 @@
  *******************************************************************************/
 package net.bioclipse.cml.managers;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.ui.contenttypes.CmlFileDescriber;
@@ -25,14 +20,11 @@ import nu.xom.ParsingException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
-import org.osgi.framework.Bundle;
 import org.xmlcml.cml.base.CMLBuilder;
 import org.xmlcml.cml.base.CMLElement;
 import org.xmlcml.cml.base.CMLUtil;
@@ -40,20 +32,8 @@ import org.xmlcml.cml.base.CMLUtil;
 
 public class ValidateCMLManager implements IValidateCMLManager {
 
-	private boolean succeeded = true;
-	private List<String> errorList = new ArrayList<String>();
-	private static File simpleDir = null;
-	private static File unitsDir = null;
-	private static File dictDir = null;
-//	private static DictionaryMap simpleMap = null;
-//	private static UnitListMap unitListMap = null;
-//	private static DictionaryMap dictListMap = null;
-	CMLElement cmlElement = null;
-	static String result;
-	
 	
     public String validate(String filename) throws IOException, BioclipseException {
-		initDicts();
 		IFile file=ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(filename));
 		if(!file.exists())
 			throw new BioclipseException("File "+filename+" does not exist");
@@ -61,14 +41,13 @@ public class ValidateCMLManager implements IValidateCMLManager {
 	}
 
     public void validate(IFile input) throws IOException {
-		initDicts();
-		result=validateCMLFile(input);
+		final String result=validateCMLFile(input);
 	    Display.getDefault().syncExec(
 			      new Runnable() {
 			        public void run(){
 				        MessageBox mb = new MessageBox(new Shell(), SWT.OK);
 				        mb.setText("CML checked");
-				        mb.setMessage(ValidateCMLManager.result);
+				        mb.setMessage(result);
 				        mb.open();
 			        }
 			      });
@@ -88,48 +67,9 @@ public class ValidateCMLManager implements IValidateCMLManager {
 		}
 	}
 	
-	private void initDicts() throws IOException {
-		if (simpleDir == null || unitsDir == null) {
-			Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
-
-			URL simpleURL = FileLocator.resolve(FileLocator.find(bundle, new Path("/dict10/simple/catalog.cml"),null));
-			URL unitsURL = FileLocator.resolve(FileLocator.find(bundle, new Path("/dict10/units/catalog.cml"),null));
-			URL dictURL = FileLocator.resolve(FileLocator.find(bundle, new Path("/dict10/dict/catalog.cml"),null));
-			
-			try {
-				unitsDir = new File(unitsURL.toURI().getPath());				
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
-			}
-			// FIXME: reinstate the below once we have a Jubmo plugin
-//	    if (simpleMap  == null) {
-//	        try {
-//	          simpleMap = new DictionaryMap(simpleURL, new CMLDictionary());
-//	        } catch (Exception e) {
-//	        	e.printStackTrace();
-//	          throw new CMLRuntimeException("dictionaryMap could not be created "+e);
-//	        }
-//	      }
-//	    if (dictListMap == null) {
-//	        try {
-//	          dictListMap  = new DictionaryMap(dictURL, new CMLDictionary());
-//	        } catch (Exception e) {
-//	          throw new CMLRuntimeException("dictListMap could not be created "+e);
-//	        }
-//	      }
-		}
-//		if (unitListMap == null) {
-//			try {
-//				unitListMap  = new UnitListMap(unitsDir, true);
-//			} catch (Exception e) {
-//				throw new CMLRuntimeException("unitListMap could not be created "+e);
-//			}
-//		}
-	}
-
     
 	private String validateCMLFile(IFile input) {
-		succeeded = true;
+		boolean succeeded = true;
 		StringBuffer returnString=new StringBuffer();
 		InputStream is=null;
 		try {
@@ -139,13 +79,12 @@ public class ValidateCMLManager implements IValidateCMLManager {
           returnString.append( "Namespace is not " + CmlFileDescriber.NS_CML+"; ");
       is.close();
       is=input.getContents();
-			cmlElement = (CMLElement) new CMLBuilder().build(is).getRootElement() ;
 		} catch (ParsingException e) {
 			returnString.append(e);
-			this.succeeded = false;
+			succeeded = false;
 		} catch (Exception e) {
 			returnString.append(e);
-			this.succeeded = false;
+			succeeded = false;
 		}
 		finally{
 			try {
@@ -155,38 +94,10 @@ public class ValidateCMLManager implements IValidateCMLManager {
 			}
 		}
 		if (succeeded) {
-//			errorList.clear();
-//			errorList = new DictRefAttribute().checkAttribute(cmlElement, simpleMap);
-//			if (errorList.size() > 0) {
-//				for (String error : errorList) {
-//					returnString.append("warning: " + error);
-//				}
-//			}
-//			errorList.clear();
-//			errorList = new MetadataNameAttribute().checkAttribute(cmlElement, simpleMap);
-//			if (errorList.size() > 0) {
-//				for (String error : errorList) {
-//					returnString.append("warning: " + error);
-//				}
-//			}
-//			errorList.clear();
-//			errorList = new UnitsAttribute().checkAttribute(cmlElement, unitListMap);
-//			if (errorList.size() > 0) {
-//				for (String error : errorList) {
-//					returnString.append("warning: " + error);
-//				}
-//			}
+		    //here attribute validation could follow
 	        return("Input is valid CML. "+returnString.toString());
 		}else{
 			return("Input is not valid CML: "+returnString.toString());
 		}
-	}
-
-	public boolean getSuceeded() {
-		return succeeded;
-	}
-
-	public CMLElement getCMLElement() {
-		return cmlElement;
 	}
 }
