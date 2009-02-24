@@ -337,18 +337,10 @@ public class CDKManager implements ICDKManager {
   	            reader = readerFactory.createReader(format);
   	        }
 
-  	        try {
-  	            reader.setReader( file.getContents() );
-  	        }
-  	        catch (CDKException e1) {
-  	            throw new BioclipseException(
-                    "Could not set the reader's input." );
-  	        }
-
   	        if (reader == null) {
 
   	            // Try SMILES
-  	            List<ICDKMolecule> moleculesList2 = loadSMILESFile(file);
+                List<ICDKMolecule> moleculesList2 = loadSMILESFile(file);
   	            if (moleculesList2 != null && moleculesList2.size() > 0)
   	                return moleculesList2;
 
@@ -356,6 +348,14 @@ public class CDKManager implements ICDKManager {
   	            throw new BioclipseException(
   	                "Could not create reader in CDK." );
   	        }
+
+            try {
+                reader.setReader( file.getContents() );
+            }
+            catch (CDKException e1) {
+                throw new BioclipseException(
+                    "Could not set the reader's input." );
+            }
 
   	        IChemFile chemFile = new org.openscience.cdk.ChemFile();
 
