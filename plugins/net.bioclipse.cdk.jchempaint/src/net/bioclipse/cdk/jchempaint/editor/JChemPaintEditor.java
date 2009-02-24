@@ -60,16 +60,15 @@ import org.openscience.cdk.renderer.selection.LogicalSelection.Type;
 
 public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
-    Logger                 logger = Logger.getLogger( JChemPaintEditor.class );
+    private Logger logger = Logger.getLogger(JChemPaintEditor.class);
 
     private JCPOutlinePage fOutlinePage;
 
-    ICDKMolecule           model;
-    JChemPaintEditorWidget widget;
-    IControllerModel       c2dm;
-    SWTMouseEventRelay     relay;
-    Menu                   menu;
-
+    private ICDKMolecule           model;
+    private JChemPaintEditorWidget widget;
+    private IControllerModel       c2dm;
+    private Menu                   menu;
+    
     public JChemPaintEditorWidget getWidget() {
 
         return widget;
