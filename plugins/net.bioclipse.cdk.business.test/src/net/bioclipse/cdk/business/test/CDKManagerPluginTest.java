@@ -50,6 +50,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ui.internal.ResetPerspectiveAction;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -1051,9 +1052,10 @@ public class CDKManagerPluginTest {
         IMolecule[] mol=new IMolecule[2];
         mol[0] = cdk.fromSMILES("CCCBr");
         mol[1] = cdk.fromSMILES("CCCCl");
-        cdk.createSDFile( "/Virtual/test.sdf", mol);
+        cdk.createSDFile("/Virtual/testFFF.sdf", mol);
         byte[] bytes=new byte[1000];
-        IFile file=new MockIFile("/Virtual/test.sdf");
+        IFile file= ResourcePathTransformer.getInstance()
+           .transform("/Virtual/testFFF.sdf");
         file.getContents().read(bytes);
         StringBuffer sb=new StringBuffer();
           for(int i=0;i<bytes.length;i++){
