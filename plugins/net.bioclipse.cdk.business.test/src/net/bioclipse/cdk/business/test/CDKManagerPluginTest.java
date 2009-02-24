@@ -203,7 +203,7 @@ public class CDKManagerPluginTest {
     }
     
     @Test
-    public void testloadMoleculesFromSMILESCheck() throws BioclipseException {
+    public void testloadMoleculesFromSMILESCheck() throws Exception {
         String[] input = {"CC","CCC(CC)C","CC"};
         
         StringBuilder sb = new StringBuilder();
@@ -217,24 +217,18 @@ public class CDKManagerPluginTest {
                             .extension( "smi" );
         
         
-        try {
-            List<ICDKMolecule> molecules = cdk.loadSMILESFile(
+        List<ICDKMolecule> molecules = cdk.loadSMILESFile(
                 file, (IProgressMonitor)null
-            );
-            Assert.assertNotNull( molecules );
-            List<String> inputList = new ArrayList<String>(Arrays.asList( input ));
-            
-            for(ICDKMolecule molecule:molecules) {
-                String smiles = molecule.getSMILES();
-                if(inputList.contains( smiles ))
-                    inputList.remove( smiles );
-            }
-            Assert.assertEquals( 0, inputList.size() );
-        } catch ( CoreException e ) {
-            Assert.fail( e.getMessage() );
-        } catch ( IOException e ) {
-            Assert.fail( e.getMessage());
+        );
+        Assert.assertNotNull( molecules );
+        List<String> inputList = new ArrayList<String>(Arrays.asList( input ));
+
+        for(ICDKMolecule molecule:molecules) {
+            String smiles = molecule.getSMILES();
+            if(inputList.contains( smiles ))
+                inputList.remove( smiles );
         }
+        Assert.assertEquals( 0, inputList.size() );
     }
     
     @Test
