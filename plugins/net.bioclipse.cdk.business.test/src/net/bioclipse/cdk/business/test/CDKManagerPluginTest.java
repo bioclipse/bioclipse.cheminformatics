@@ -1100,4 +1100,10 @@ public class CDKManagerPluginTest {
         int nomols = cdk.getNoMolecules( path );
         assertEquals( 1, nomols);
     }
+
+    @Test
+    public  void testBug583() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("CC");
+        cdk.saveMolecule(mol,"/Virtual/bug583.cml", true);
+    }
 }
