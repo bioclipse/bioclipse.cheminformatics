@@ -30,14 +30,6 @@ Require-Bundle: org.openscience.cdk.interfaces,
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.log4j
 Export-Package: net.bioclipse.cdk.jchempaint.business,
- net.bioclipse.cdk.jchempaint.editor;
-  uses:="org.eclipse.ui.part,
-   org.eclipse.swt.events,
-   org.openscience.cdk.controller,
-   net.bioclipse.cdk.jchempaint.widgets,
-   org.eclipse.swt.widgets,
-   org.eclipse.core.runtime,
-   org.eclipse.ui,
-   net.bioclipse.cdk.domain",
+ net.bioclipse.cdk.jchempaint.editor,
  net.bioclipse.cdk.jchempaint.widgets
 Bundle-Vendor: The Bioclipse Team
