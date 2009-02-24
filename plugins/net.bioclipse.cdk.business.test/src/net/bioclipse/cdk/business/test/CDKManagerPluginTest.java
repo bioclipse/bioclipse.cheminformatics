@@ -535,23 +535,23 @@ public class CDKManagerPluginTest {
         // try overwrite
         ICDKMolecule coc  = cdk.fromSMILES("COC");
         coc.setResource(mol.getResource());
-        cdk.saveMolecule(coc);
+        cdk.saveMolecule(coc,true);
         mol = cdk.loadMolecule("/Virtual/testSaveMoleculeBBB.mol");
-        assertEquals("COC", mol.getSMILES());
+        assertEquals("O(C)C", mol.getSMILES());
     }
 
     @Test public void testSaveMolecule_IMolecule_boolean() throws Exception {
         // set up a file to load, edit and then save
         ICDKMolecule propane  = cdk.fromSMILES("CCC");
-        cdk.saveMolecule(propane, "/Virtual/testSaveMoleculeBBB.mol", false);
-        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMoleculeBBB.mol");
+        cdk.saveMolecule(propane, "/Virtual/testSaveMoleculeBCD.mol", false);
+        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMoleculeBCD.mol");
 
         // try overwrite
         ICDKMolecule coc  = cdk.fromSMILES("COC");
         coc.setResource(mol.getResource());
         cdk.saveMolecule(coc, true);
-        mol = cdk.loadMolecule("/Virtual/testSaveMoleculeBBB.mol");
-        assertEquals("COC", mol.getSMILES());
+        mol = cdk.loadMolecule("/Virtual/testSaveMoleculeBCD.mol");
+        assertEquals("O(C)C", mol.getSMILES());
     }
 
     @Test public void testSaveMolecule_IMolecule_String() throws Exception {
@@ -588,7 +588,8 @@ public class CDKManagerPluginTest {
         coc.setResource(mol.getResource());
         cdk.saveMolecule(coc, target, true);
         mol = cdk.loadMolecule("/Virtual/testSaveMoleculeXXX.mol");
-        assertEquals("O(C)C", mol.getSMILES());
+        assertTrue("O(C)C".equals(mol.getSMILES()) ||
+                   "COC".equals(mol.getSMILES()));
     }
 
     @Test(expected=java.lang.Exception.class)
