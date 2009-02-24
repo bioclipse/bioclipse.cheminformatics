@@ -1,10 +1,8 @@
 /*******************************************************************************
- *Copyright (c) 2008 The Bioclipse Team and others.
- *All rights reserved. This program and the accompanying materials
- *are made available under the terms of the Eclipse Public License v1.0
- *which accompanies this distribution, and is available at
- *http://www.eclipse.org/legal/epl-v10.html
- *
+ *Copyright (c) 2008 The Bioclipse Team and others. All rights reserved. This
+ * program and the accompanying materials are made available under the terms of
+ * the Eclipse Public License v1.0 which accompanies this distribution, and is
+ * available at http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 package net.bioclipse.cml.managers;
 
@@ -29,75 +27,83 @@ import org.xmlcml.cml.base.CMLBuilder;
 import org.xmlcml.cml.base.CMLElement;
 import org.xmlcml.cml.base.CMLUtil;
 
-
 public class ValidateCMLManager implements IValidateCMLManager {
 
-	
-    public String validate(String filename) throws IOException, BioclipseException {
-		IFile file=ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(filename));
-		if(!file.exists())
-			throw new BioclipseException("File "+filename+" does not exist");
-		return validateCMLFile(file);
-	}
+    public String validate( String filename ) throws IOException,
+                                             BioclipseException {
 
-    public void validate(IFile input) throws IOException {
-		final String result=validateCMLFile(input);
-	    Display.getDefault().syncExec(
-			      new Runnable() {
-			        public void run(){
-				        MessageBox mb = new MessageBox(new Shell(), SWT.OK);
-				        mb.setText("CML checked");
-				        mb.setMessage(result);
-				        mb.open();
-			        }
-			      });
-	}
+        IFile file =
+                ResourcesPlugin.getWorkspace().getRoot()
+                        .getFile( new Path( filename ) );
+        if ( !file.exists() )
+            throw new BioclipseException( "File " + filename
+                                          + " does not exist" );
+        return validateCMLFile( file );
+    }
+
+    public void validate( IFile input ) throws IOException {
+
+        final String result = validateCMLFile( input );
+        Display.getDefault().syncExec( new Runnable() {
+
+            public void run() {
+
+                MessageBox mb = new MessageBox( new Shell(), SWT.OK );
+                mb.setText( "CML checked" );
+                mb.setMessage( result );
+                mb.open();
+            }
+        } );
+    }
 
     public String getNamespace() {
+
         return "cml";
     }
-    
-	public void namespaceThemAll(Elements elements) {
-		for (int i = 0; i < elements.size(); i++) {
-			Element elem = elements.get(i);
-			elem.setNamespaceURI(CMLUtil.CML_NS);
-			if (elem.getChildCount() != 0) {
-				namespaceThemAll(elem.getChildElements());
-			}
-		}
-	}
-	
-    
-	private String validateCMLFile(IFile input) {
-		boolean succeeded = true;
-		StringBuffer returnString=new StringBuffer();
-		InputStream is=null;
-		try {
-			is=input.getContents();
-      Element element = (Element) new Builder().build(is).getRootElement() ;
-      if(!element.getNamespaceURI().equals(CmlFileDescriber.NS_CML))
-          returnString.append( "Namespace is not " + CmlFileDescriber.NS_CML+"; ");
-      is.close();
-      is=input.getContents();
-		} catch (ParsingException e) {
-			returnString.append(e);
-			succeeded = false;
-		} catch (Exception e) {
-			returnString.append(e);
-			succeeded = false;
-		}
-		finally{
-			try {
-				is.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		if (succeeded) {
-		    //here attribute validation could follow
-	        return("Input is valid CML. "+returnString.toString());
-		}else{
-			return("Input is not valid CML: "+returnString.toString());
-		}
-	}
+
+    public void namespaceThemAll( Elements elements ) {
+
+        for ( int i = 0; i < elements.size(); i++ ) {
+            Element elem = elements.get( i );
+            elem.setNamespaceURI( CMLUtil.CML_NS );
+            if ( elem.getChildCount() != 0 ) {
+                namespaceThemAll( elem.getChildElements() );
+            }
+        }
+    }
+
+    private String validateCMLFile( IFile input ) {
+
+        boolean succeeded = true;
+        StringBuffer returnString = new StringBuffer();
+        InputStream is = null;
+        try {
+            is = input.getContents();
+            Element element =
+                    (Element) new Builder().build( is ).getRootElement();
+            if ( !element.getNamespaceURI().equals( CmlFileDescriber.NS_CML ) )
+                returnString.append( "Namespace is not "
+                                     + CmlFileDescriber.NS_CML + "; " );
+            is.close();
+            is = input.getContents();
+        } catch ( ParsingException e ) {
+            returnString.append( e );
+            succeeded = false;
+        } catch ( Exception e ) {
+            returnString.append( e );
+            succeeded = false;
+        } finally {
+            try {
+                is.close();
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            }
+        }
+        if ( succeeded ) {
+            // here attribute validation could follow
+            return ("Input is valid CML. " + returnString.toString());
+        } else {
+            return ("Input is not valid CML: " + returnString.toString());
+        }
+    }
 }
