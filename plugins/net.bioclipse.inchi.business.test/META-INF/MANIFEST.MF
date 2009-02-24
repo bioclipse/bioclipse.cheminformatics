@@ -12,6 +12,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources,
  net.bioclipse.core.tests;bundle-version="0.1.0",
  net.bioclipse.inchi;bundle-version="2.0.0",
- net.bioclipse.cdk.business
+ net.bioclipse.cdk.business,
+ net.bioclipse.ui
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.inchi.business.test
