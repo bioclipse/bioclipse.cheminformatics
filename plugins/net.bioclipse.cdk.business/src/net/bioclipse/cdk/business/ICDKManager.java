@@ -209,9 +209,10 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(params = "IMolecule mol, String filename, boolean overwrite",
             methodSummary="saves mol to a file (filename must be a relative to workspace root and "+
-            "folder must exist), filetype must be one of the constants given by " +
-            "getPossibleFiletypes, " +
-            "overwrite determines if existing file shall be overwritten.")
+            "folder must exist), with a given filename and " +
+            "overwrites determined by the given boolean. File type is taken" +
+            "from the mol object, if available. If not, then the file extension " +
+            "is used to make a somewhat educated guess.")
     @TestMethods("testSaveMolecule_IMolecule_String_boolean")
     public void saveMolecule(IMolecule mol, String filename, boolean overwrite)
     	throws BioclipseException, CDKException, CoreException;
