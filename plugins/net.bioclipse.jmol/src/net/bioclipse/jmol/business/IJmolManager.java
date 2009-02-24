@@ -27,9 +27,11 @@ public interface IJmolManager extends IBioclipseManager{
      * In the future, if JmolView active, there too.
      * @param script The script command to run
      */
-    @PublishedMethod( methodSummary = "Execute the given String as a " +
-    		                              "script in Jmol.",
-                      params = "String script" )
+    @PublishedMethod(
+        methodSummary = "Execute the given String as a " +
+            "script in the active Jmol editor.",
+        params = "String script"
+    )
     @Recorded
     public void run(String script);
 
@@ -39,7 +41,7 @@ public interface IJmolManager extends IBioclipseManager{
      * @param path Path to file, relative workspace
      * @throws CoreException 
      */
-    @PublishedMethod( methodSummary = "Load jmol with a file", 
+    @PublishedMethod( methodSummary = "Load a file into the active Jmol editor.",
                       params = "Path to file" )
     @Recorded
     public void load(String path) throws CoreException;
