@@ -13,7 +13,6 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.ui.contenttypes.CmlFileDescriber;
 import nu.xom.Builder;
 import nu.xom.Element;
-import nu.xom.Elements;
 import nu.xom.ParsingException;
 
 import org.eclipse.core.resources.IFile;
@@ -23,9 +22,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
-import org.xmlcml.cml.base.CMLBuilder;
-import org.xmlcml.cml.base.CMLElement;
-import org.xmlcml.cml.base.CMLUtil;
 
 public class ValidateCMLManager implements IValidateCMLManager {
 
@@ -59,17 +55,6 @@ public class ValidateCMLManager implements IValidateCMLManager {
     public String getNamespace() {
 
         return "cml";
-    }
-
-    public void namespaceThemAll( Elements elements ) {
-
-        for ( int i = 0; i < elements.size(); i++ ) {
-            Element elem = elements.get( i );
-            elem.setNamespaceURI( CMLUtil.CML_NS );
-            if ( elem.getChildCount() != 0 ) {
-                namespaceThemAll( elem.getChildElements() );
-            }
-        }
     }
 
     private String validateCMLFile( IFile input ) {
