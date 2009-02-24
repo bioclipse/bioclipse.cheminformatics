@@ -38,6 +38,7 @@ import net.bioclipse.cdk.business.CDKManagerHelper;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.domain.MoleculesInfo;
 import net.bioclipse.cdkdebug.business.ICDKDebugManager;
 import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.ResourcePathTransformer;
@@ -50,7 +51,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ui.internal.ResetPerspectiveAction;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -62,8 +62,6 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
-import org.openscience.cdk.interfaces.IChemModel;
-import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.Mol2Reader;
@@ -1032,8 +1030,15 @@ public class CDKManagerPluginTest {
     }
 
     @Test public void testGetInfo() throws Exception {
-        String path = getClass().getResource("/testFiles/cs2a.cml").getPath();
-        Assert.assertNotNull(cdk.getInfo(path));
+        ICDKMolecule mol = cdk.fromSMILES("CCCCl");
+        cdk.saveMolecule((IMolecule)mol, "/Virtual/testGetInfo.mol",
+                (IChemFormat)MDLV2000Format.getInstance(), true);
+
+        MoleculesInfo info = cdk.getInfo("/Virtual/testGetInfo.mol");
+        Assert.assertNotNull(info);
+        Assert.assertEquals(1, info.getNoMols());
+        Assert.assertEquals(0, info.getNoMols2d());
+        Assert.assertEquals(0, info.getNoMols3d());
     }
 
     
