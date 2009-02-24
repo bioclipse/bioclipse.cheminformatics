@@ -1089,7 +1089,7 @@ public class CDKManagerPluginTest {
         URL url=FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
         int nomols = cdk.getNoMolecules( path );
-        assertEquals( 1, nomols);
+        assertEquals(30, nomols);
     }
 
     @Test
