@@ -11,11 +11,14 @@
  ******************************************************************************/
 package net.bioclipse.jmol.business;
 
+import net.bioclipse.core.Activator;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.jmol.editors.JmolEditor;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
@@ -47,6 +50,10 @@ public class JmolManager implements IJmolManager {
     }
     
     public void load(IFile file) throws CoreException {
+        if (jmolEditor == null) {
+            throw new CoreException(new Status(SWT.ERROR,Activator.PLUGIN_ID,
+            "Cannot load a file into active Jmol editor."));
+        }
     	jmolEditor.load(file);
     }
     
