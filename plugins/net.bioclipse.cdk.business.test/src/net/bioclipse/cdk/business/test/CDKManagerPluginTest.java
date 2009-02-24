@@ -398,14 +398,9 @@ public class CDKManagerPluginTest {
         String propaneSmiles = "CCC"; 
         
         ICDKMolecule propane  = cdk.fromSMILES( propaneSmiles  );
-        IChemModel chemmodel=propane.getAtomContainer().getBuilder().newChemModel();
-        IMoleculeSet setOfMolecules=chemmodel.getBuilder().newMoleculeSet();
-        setOfMolecules.addAtomContainer(propane.getAtomContainer());
-        chemmodel.setMoleculeSet(setOfMolecules);
         
         IFile target=new MockIFile();
-        cdk.save(chemmodel, target.getProjectRelativePath().toPortableString(),
-            (IChemFormat)MDLV2000Format.getInstance());
+        cdk.saveMolecule(propane, target, (IChemFormat)MDLV2000Format.getInstance());
         byte[] bytes=new byte[6];
         target.getContents().read(bytes);
         Assert.assertArrayEquals(new byte[]{10,32,32,67,68,75}, bytes);
