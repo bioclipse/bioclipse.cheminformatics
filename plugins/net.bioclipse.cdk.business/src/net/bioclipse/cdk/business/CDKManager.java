@@ -314,6 +314,8 @@ public class CDKManager implements ICDKManager {
   	                          throws IOException,
   	                                 BioclipseException,
   	                                 CoreException {
+        if (file == null)
+            throw new BioclipseException("Cannot load molecules: file was null");
 
   	    if (monitor == null) {
   	        monitor = new NullProgressMonitor();
