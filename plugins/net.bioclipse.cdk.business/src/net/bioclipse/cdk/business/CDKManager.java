@@ -434,9 +434,11 @@ public class CDKManager implements ICDKManager {
   	            moleculesList.add(mol);
   	            monitor.worked( (int) (ticks / nuMols) );
 
-  	            monitor.subTask( "Loaded molecule:" +
-  	                             ++currentMolecule + "/" + nuMols );
-
+  	            if ( ++currentMolecule % 100 == 0 ) {
+      	            monitor.subTask( "Loaded molecule:" +
+      	                             currentMolecule + "/" + nuMols );
+  	            }
+  	            
   	            if ( monitor.isCanceled() ) {
   	                throw new OperationCanceledException();
   	            }
