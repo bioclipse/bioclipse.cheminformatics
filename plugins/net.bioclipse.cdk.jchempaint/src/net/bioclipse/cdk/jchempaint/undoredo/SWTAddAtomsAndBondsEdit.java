@@ -16,19 +16,21 @@ import org.openscience.cdk.interfaces.IChemModel;
 public class SWTAddAtomsAndBondsEdit extends AddAtomsAndBondsEdit 
                                      implements IUndoableOperation {
     
-    private AddAtomsAndBondsEdit innerEdit;
+    private IUndoContext context;
 
     public SWTAddAtomsAndBondsEdit(IChemModel chemModel,
                                    IAtomContainer undoRedoContainer, 
                                    String type, 
-                                   IControllerModel c2dm) {
+                                   IControllerModel c2dm,
+                                   IUndoContext context) {
         super(chemModel, undoRedoContainer, type, c2dm);
+        this.context = context;
     }
 
 
     public IStatus redo(IProgressMonitor monitor, IAdaptable info)
             throws ExecutionException {
-        innerEdit.redo();
+        super.redo();
         return null;
     }
 
@@ -39,7 +41,7 @@ public class SWTAddAtomsAndBondsEdit extends AddAtomsAndBondsEdit
 
     public IStatus undo(IProgressMonitor monitor, IAdaptable info)
             throws ExecutionException {
-        innerEdit.undo();
+        super.undo();
         return Status.OK_STATUS;
     }
 
@@ -52,7 +54,6 @@ public class SWTAddAtomsAndBondsEdit extends AddAtomsAndBondsEdit
 
 
     public void addContext(IUndoContext context) {
-        // TODO Auto-generated method stub
         
     }
 
@@ -70,20 +71,19 @@ public class SWTAddAtomsAndBondsEdit extends AddAtomsAndBondsEdit
 
 
     public IUndoContext[] getContexts() {
-        // TODO Auto-generated method stub
-        return null;
+        return new IUndoContext[] { this.context };
     }
 
 
     public String getLabel() {
         // TODO Auto-generated method stub
-        return null;
+        return "label";
     }
 
 
     public boolean hasContext(IUndoContext context) {
         // TODO Auto-generated method stub
-        return false;
+        return context.matches(this.context);
     }
 
 }

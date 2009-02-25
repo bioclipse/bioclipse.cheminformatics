@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
+import org.eclipse.core.commands.operations.IUndoContext;
 import org.openscience.cdk.controller.IControllerModel;
 import org.openscience.cdk.controller.undoredo.IUndoRedoFactory;
 import org.openscience.cdk.controller.undoredo.IUndoRedoable;
@@ -15,11 +16,17 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IBond.Order;
 
 public class SWTUndoRedoFactory implements IUndoRedoFactory {
+    
+    private IUndoContext context;
+    
+    public SWTUndoRedoFactory(IUndoContext context) {
+        this.context = context;
+    }
 
     public IUndoRedoable getAddAtomsAndBondsEdit(IChemModel chemModel,
             IAtomContainer undoRedoContainer, String type, IControllerModel c2dm) {
         return new SWTAddAtomsAndBondsEdit(
-                chemModel, undoRedoContainer, type, c2dm);
+                chemModel, undoRedoContainer, type, c2dm, this.context);
     }
 
     public IUndoRedoable getAdjustBondOrdersEdit(

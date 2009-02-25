@@ -114,7 +114,19 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     private IOperationHistory operationHistory = 
         OperationHistoryFactory.getOperationHistory();
     
-    private IUndoContext undoContext;
+    private final IUndoContext undoContext = new IUndoContext() {
+        
+        public final String label = "JChemPaintEditorWidget";
+
+        public String getLabel() {
+            return label;
+        }
+
+        public boolean matches(IUndoContext context) {
+            return context.getLabel().equals(label);
+        }
+        
+    };
 
     public JChemPaintEditorWidget(Composite parent, int style) {
         super( parent, style | 
@@ -150,7 +162,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                                 chemModel, 
                                 this, 
                                 undoRedoHandler, 
-                                new SWTUndoRedoFactory()
+                                new SWTUndoRedoFactory(this.undoContext)
         );
     
         hub.setEventHandler(
@@ -503,14 +515,14 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 	}
 	
 	public void undo() throws ExecutionException {
-	    if (this.operationHistory.canUndo(null)) {
-	        this.operationHistory.undo(null, null, null);
+	    if (this.operationHistory.canUndo(this.undoContext)) {
+	        this.operationHistory.undo(undoContext, null, null);
 	    }
 	}
 	
 	public void redo() throws ExecutionException {
-	    if (this.operationHistory.canRedo(null)) {
-            this.operationHistory.redo(null, null, null);
+	    if (this.operationHistory.canRedo(this.undoContext)) {
+            this.operationHistory.redo(undoContext, null, null);
         }
 	}
 

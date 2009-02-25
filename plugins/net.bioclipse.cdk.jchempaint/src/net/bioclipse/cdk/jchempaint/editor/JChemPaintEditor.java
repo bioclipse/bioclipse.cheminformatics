@@ -154,8 +154,9 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
         setSite( site );
         setInput( input );
-        ICDKMolecule cModel = (ICDKMolecule) input
-        .getAdapter( ICDKMolecule.class );
+        ICDKMolecule cModel = 
+            (ICDKMolecule) input.getAdapter( ICDKMolecule.class );
+        
         if ( cModel == null ) {
             IFile file = (IFile) input.getAdapter( IFile.class );
             if ( file != null )
@@ -197,11 +198,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         MenuManager menuMgr = new MenuManager();
         menuMgr.add( new GroupMarker( IWorkbenchActionConstants.MB_ADDITIONS ) );
         getSite().registerContextMenu( menuMgr, widget );
-        // getSite().registerContextMenu(
-        // "net.bioclipse.cdk.ui.editors.jchempaint.menu",
-        // menuMgr, widget);
-
-        // Control control = lViewer.getControl();
+   
         menu = menuMgr.createContextMenu( widget );
         widget.setMenu( menu );
 
@@ -272,7 +269,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         logger.debug( "Executing 'Add atom' action" );
     }
 
-    public void doChageAtom() {
+    public void doChangeAtom() {
 
         logger.debug( "Executing 'Chage atom' action" );
     }
