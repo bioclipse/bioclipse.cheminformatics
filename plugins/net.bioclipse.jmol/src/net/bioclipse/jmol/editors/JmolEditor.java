@@ -13,6 +13,7 @@ package net.bioclipse.jmol.editors;
 
 import java.awt.Image;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.BufferedReader;
@@ -173,6 +174,26 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         jmolPanel.addMouseListener((MouseListener) new
                 JmolCompMouseListener(composite,this));
 
+        final float scaleFactor = 0.3f;
+        jmolPanel.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                int clicks = e.getWheelRotation();
+                float z = jmolPanel.getViewer().getZoomPercentFloat();
+                if (clicks > 0) {
+                    float newZ = z * (1 - scaleFactor);
+                    if (newZ > 5.0) {
+                        runScriptSilently("zoom " + newZ);
+                    }
+                } else {
+                    float newZ = z * (1 + scaleFactor);
+                    if (newZ < 5000.0) {
+                        runScriptSilently("zoom " + newZ);
+                    }
+                }
+            }
+            
+        });
 
 
         content=getContentsFromEditor();
