@@ -17,5 +17,6 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.nonotify,
  javax.vecmath,
  org.eclipse.core.runtime
-Export-Package: org.openscience.cdk.controller,
- org.openscience.cdk.control
+Export-Package: org.openscience.cdk.control,
+ org.openscience.cdk.controller,
+ org.openscience.cdk.controller.undoredo
