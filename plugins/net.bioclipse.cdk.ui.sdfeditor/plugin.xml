@@ -54,7 +54,7 @@
             hasPages="true"
             icon="icons/many_molecules.png"
             id="net.bioclipse.cdk.ui.wizards.NewSdfWizard"
-            name="New SD File">
+            name="SD File (from existing structures)">
          <description>
          Create a new SD file.
          </description>

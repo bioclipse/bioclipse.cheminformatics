@@ -211,13 +211,13 @@
     <extension point="org.eclipse.ui.newWizards">
       <category
             id="net.bioclipse.cdk.ChemistryFiles"
-            name="Chemistry Files"/>
+            name="Chemistry"/>
       <wizard
             category="net.bioclipse.cdk.ChemistryFiles"
             class="net.bioclipse.cdk.ui.wizards.NewFromSMILESWizard"
             id="net.bioclipse.cdk.ui.wizards.NewFromSMILESWizard"
             icon="icons/molecule3D.png"
-            name="Create Resource from SMILES">
+            name="Molecule from SMILES">
       </wizard>
    </extension>
 
