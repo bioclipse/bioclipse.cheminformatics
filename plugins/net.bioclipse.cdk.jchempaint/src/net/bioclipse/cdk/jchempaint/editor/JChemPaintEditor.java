@@ -51,14 +51,12 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
 import org.openscience.cdk.renderer.selection.LogicalSelection;
 import org.openscience.cdk.renderer.selection.LogicalSelection.Type;
-import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
@@ -81,7 +79,6 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         ICDKManager cdk = Activator.getDefault().getCDKManager();
 
         try {
-            synchronizeModelWithHub();
             IFile resource = (IFile)model.getResource();
             IChemFormat chemFormat = cdk.determineFormat(
                 resource.getContentDescription().getContentType()
@@ -109,23 +106,6 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         }
     }
 
-    /**
-     * Upon things like .zap, the {@link ControllerHub} will recreate atom
-     * containers. This means that upon saving, to not loose information, we
-     * have to synchronize the CDKMolecule model with the model used by the hub.
-     * This is done by adding all IAtomContainers found in the hub's ChemModel
-     * to the {@link IAtomContainer} of the CDKMolecule.
-     */
-    private void synchronizeModelWithHub() {
-        IChemModel cdkModel = widget.getControllerHub().getIChemModel();
-        IAtomContainer bcModel = model.getAtomContainer();
-        bcModel.removeAllElements();
-        for (IAtomContainer container :
-             ChemModelManipulator.getAllAtomContainers(cdkModel)) {
-            bcModel.add(container);
-        }
-    }
-
     @Override
     public void doSaveAs() {
 
@@ -147,7 +127,6 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                 .guessFormatFromExtension(path.toString());
             if (format == null) format = (IChemFormat)CMLFormat.getInstance();
 
-            synchronizeModelWithHub();
             Activator.getDefault().getCDKManager().saveMolecule(
                 model, path.toPortableString(), format, true
             );
