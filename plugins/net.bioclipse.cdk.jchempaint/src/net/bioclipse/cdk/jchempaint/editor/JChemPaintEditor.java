@@ -120,9 +120,16 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
         IPath path = saveAsDialog.getResult();
         try {
+            // do a nasty trick... the SaveAs dialog does not allow us to
+            // ask for a format (yet), so guess something from the file
+            // extension
+            IChemFormat format = Activator.getDefault().getCDKManager()
+                .guessFormatFromExtension(path.toString());
+            if (format == null) format = (IChemFormat)CMLFormat.getInstance();
 
-            Activator.getDefault().getCDKManager()
-            .saveMolecule( model, path.toPortableString(), true );
+            Activator.getDefault().getCDKManager().saveMolecule(
+                model, path.toPortableString(), format, true
+            );
         } catch ( BioclipseException e ) {
             logger.warn( "Failed to save molecule. " + e.getMessage() );
         } catch ( CDKException e ) {
