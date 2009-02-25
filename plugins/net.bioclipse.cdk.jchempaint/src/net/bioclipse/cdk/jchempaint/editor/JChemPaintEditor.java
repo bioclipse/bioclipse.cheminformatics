@@ -22,6 +22,7 @@ import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.business.BioclipseException;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -70,8 +71,15 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     private Menu                   menu;
     
     public JChemPaintEditorWidget getWidget() {
-
         return widget;
+    }
+    
+    public void undo() throws ExecutionException {
+        widget.undo();
+    }
+    
+    public void redo() throws ExecutionException {
+        widget.redo();
     }
 
     @Override

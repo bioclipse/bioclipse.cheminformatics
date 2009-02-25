@@ -46,6 +46,11 @@
        name="JChemPaintToolbarCommands"
        point="org.eclipse.ui.commands">
     <command
+          defaultHandler="net.bioclipse.cdk.jchempaint.handlers.AddBondHandler"
+          id="net.bioclipse.cdk.ui.editors.jchempaint.command.addbond"
+          name="Add Bond">
+    </command>
+    <command
           defaultHandler="net.bioclipse.cdk.jchempaint.handlers.ChangeAtomHandler"
           id="net.bioclipse.cdk.jchempaint.command.change.element"
           name="Change element">
@@ -79,6 +84,16 @@
           defaultHandler="net.bioclipse.cdk.jchempaint.handlers.MoveHandler"
           id="net.bioclipse.cdk.ui.editors.jchempaint.command.move"
           name="Move">
+    </command>
+    <command
+          defaultHandler="net.bioclipse.cdk.jchempaint.handlers.UndoHandler"
+          id="net.bioclipse.cdk.ui.editors.jchempaint.command.undo"
+          name="Undo">
+    </command>
+    <command
+          defaultHandler="net.bioclipse.cdk.jchempaint.handlers.RedoHandler"
+          id="net.bioclipse.cdk.ui.editors.jchempaint.command.redo"
+          name="Redo">
     </command>
     <command
           defaultHandler="net.bioclipse.cdk.jchempaint.handlers.ManagerHandler"
@@ -122,6 +137,20 @@
           locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
        <toolbar
              id="net.bioclipse.cdk.ui.jchempaint.toolbar">
+        <command
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.addbond"
+                icon="icons/jcp/bond.png"
+                label="Add Bond"
+                style="push"
+                tooltip="Add Bond">
+             <visibleWhen
+                   checkEnabled="true">
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
+             </visibleWhen>
+          </command>
+             <!--
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
                 icon="icons/jcp/bond.png"
@@ -139,6 +168,7 @@
                    value="AddBondModule">
              </parameter>
           </command>
+          -->
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
                 icon="icons/jcp/symbol.png"
@@ -499,6 +529,32 @@
                    name="jcp.manager.method"
                    value="cleanup">
              </parameter>
+          </command>
+          <command
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.undo"
+                icon="icons/jcp/undo.png"
+                label="Undo"
+                style="push"
+                tooltip="Undo last change">
+             <visibleWhen
+                   checkEnabled="true">
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
+             </visibleWhen>
+          </command>
+           <command
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.redo"
+                icon="icons/jcp/redo.png"
+                label="Redo"
+                style="push"
+                tooltip="Redo last change">
+             <visibleWhen
+                   checkEnabled="true">
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
+             </visibleWhen>
           </command>
        </toolbar>
     </menuContribution>

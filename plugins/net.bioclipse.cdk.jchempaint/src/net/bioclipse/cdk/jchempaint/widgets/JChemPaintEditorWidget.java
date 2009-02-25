@@ -25,10 +25,16 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.Activator;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager;
 import net.bioclipse.cdk.jchempaint.editor.SWTMouseEventRelay;
+import net.bioclipse.cdk.jchempaint.undoredo.SWTUndoRedoFactory;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
 import net.bioclipse.core.business.BioclipseException;
 
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.operations.IOperationHistory;
+import org.eclipse.core.commands.operations.IUndoContext;
+import org.eclipse.core.commands.operations.IUndoableOperation;
+import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.util.SafeRunnable;
@@ -48,19 +54,22 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
+
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.ControllerModel;
 import org.openscience.cdk.controller.IChemModelEventRelayHandler;
 import org.openscience.cdk.controller.IControllerModule;
 import org.openscience.cdk.controller.IViewEventRelay;
 import org.openscience.cdk.controller.MoveModule;
+import org.openscience.cdk.controller.undoredo.IUndoListener;
+import org.openscience.cdk.controller.undoredo.IUndoRedoable;
+import org.openscience.cdk.controller.undoredo.UndoRedoHandler;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.renderer.Renderer;
@@ -73,7 +82,7 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 
 public class JChemPaintEditorWidget extends JChemPaintWidget 
-                                    implements ISelectionProvider {
+    implements ISelectionProvider, IViewEventRelay, IUndoListener {
     
     private final static StructureDiagramGenerator sdg = new
                                                     StructureDiagramGenerator();
@@ -102,14 +111,83 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     
     private boolean isScrolling = false;
 
+    private IOperationHistory operationHistory = 
+        OperationHistoryFactory.getOperationHistory();
+    
+    private IUndoContext undoContext;
 
     public JChemPaintEditorWidget(Composite parent, int style) {
         super( parent, style | 
                 SWT.H_SCROLL | 
                 SWT.V_SCROLL | 
-//                SWT.NO_BACKGROUND |
                 SWT.DOUBLE_BUFFERED);
         
+        setupScrollbars();
+        
+        java.awt.Color color = 
+            createFromSWT(
+                    getDisplay().getSystemColor(SWT.COLOR_LIST_SELECTION )); 
+        getRenderer().getRenderer2DModel().setSelectedPartColor(color);
+        
+        setupControllerHub();
+    }
+    
+    private void setAtomContainerInHub(IAtomContainer atomContainer) {
+        IChemModel chemModel = ChemModelManipulator.newChemModel(atomContainer);
+        hub.setChemModel(chemModel);
+        this.applyGlobalProperties();
+    }
+    
+    private void setupControllerHub( ) {
+        IChemModel chemModel = 
+            NoNotificationChemObjectBuilder.getInstance().newChemModel();
+        
+        c2dm = new ControllerModel();
+        UndoRedoHandler undoRedoHandler = new UndoRedoHandler();
+        undoRedoHandler.addIUndoListener(this);
+        hub = new ControllerHub(c2dm, 
+                                getRenderer(), 
+                                chemModel, 
+                                this, 
+                                undoRedoHandler, 
+                                new SWTUndoRedoFactory()
+        );
+    
+        hub.setEventHandler(
+                new IChemModelEventRelayHandler() {
+    
+                    public void coordinatesChanged() {
+                        setDirty(true);
+                    }
+    
+                    public void selectionChanged() {
+                        setSelection(getSelection());
+                    }
+    
+                    public void structureChanged() {
+                        setDirty(true);
+                    }
+    
+                    public void structurePropertiesChanged() {
+                        setDirty(true);
+                    }
+    
+                }
+        );
+    
+        relay = new SWTMouseEventRelay(hub);
+        hub.setActiveDrawModule(new MoveModule(hub));
+    
+        applyGlobalProperties();
+        
+        addMouseListener(relay);
+        addMouseMoveListener(relay);
+        addMouseWheelListener(relay);
+        addListener(SWT.MouseEnter, relay);
+        addListener(SWT.MouseExit, relay);
+    }
+
+    private void setupScrollbars() {
         final ScrollBar hBar = getHorizontalBar(); 
         hBar.setEnabled(true);
         hBar.addSelectionListener(new SelectionAdapter() {
@@ -166,19 +244,85 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 redraw();
             }
         });
-
-        
-        RendererModel model = getRenderer().getRenderer2DModel(); 
-
-        java.awt.Color color = 
-            createFromSWT(
-                    getDisplay().getSystemColor(SWT.COLOR_LIST_SELECTION )); 
-        model.setSelectedPartColor(color);
-        
-        prevHighlightedAtom=null;
-        prevHighlightedBond=null;
     }
     
+    private void paintControl( PaintEvent event ) {
+            drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
+            IChemModel chemModel = hub.getIChemModel();
+            
+            int atomCount = ChemModelManipulator.getAtomCount(chemModel);
+            if ( chemModel == null || atomCount == 0) {
+                setBackground( getParent().getBackground() );
+                return;
+            } else setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
+            
+            Rectangle c = getClientArea();
+            Rectangle2D clientArea =
+                new Rectangle2D.Double(c.x, c.y, c.width, c.height); 
+            SWTRenderer visitor = new SWTRenderer( event.gc );
+            
+            Renderer renderer = getRenderer();
+            
+            if (isScrolling) {
+                renderer.repaint(visitor);
+    //            isScrolling = false;
+                return;
+            }
+            
+            if (isNew) {
+                renderer.setScale(chemModel);
+            }
+    
+            if (renderer.getRenderer2DModel().isFitToScreen()) {
+                renderer.paintChemModel(chemModel, visitor, clientArea, isNew);
+            } else {
+                java.awt.Rectangle diagramBounds = 
+                    renderer.paintChemModel(chemModel, visitor);
+            }
+            
+            isNew = false;
+        }
+
+    private Rectangle getDiagramBounds() {
+        java.awt.Rectangle r = 
+            getRenderer().calculateDiagramBounds(hub.getIChemModel());
+        return new Rectangle(r.x, r.y, r.width, r.height); 
+    }
+
+    private void applyGlobalProperties() {
+        // apply the global JCP properties
+        IJChemPaintGlobalPropertiesManager jcpprop = 
+            Activator.getDefault().getJCPPropManager();
+        try {
+            jcpprop.applyProperties(hub.getRenderer().getRenderer2DModel());
+        } catch (BioclipseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    private void updateSelection() {
+        RendererModel rendererModel = getRenderer2DModel();
+        IAtom atom = rendererModel.getHighlightedAtom();
+        IBond bond = rendererModel.getHighlightedBond();
+        
+        if (atom != prevHighlightedAtom || bond != prevHighlightedBond) {
+            prevHighlightedAtom = atom;
+            prevHighlightedBond = bond;
+            if (prevHighlightedAtom != null) {
+                setToolTipText(
+                        rendererModel.getToolTipText(prevHighlightedAtom));
+            } else if (prevHighlightedBond != null) {
+             // put getToolTipText(prevHighlightedBond) here
+                setToolTipText( null ); 
+            } else {
+                setToolTipText( "" );
+            }
+            setSelection( getSelection() );
+        }
+    
+    }
+
     public void setIsScrolling(boolean isScrolling) {
         this.isScrolling = isScrolling;
     }
@@ -194,116 +338,13 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     }
     
-    private void paintControl( PaintEvent event ) {
-        drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
-        IChemModel chemModel = hub.getIChemModel();
-        
-        int atomCount = ChemModelManipulator.getAtomCount(chemModel);
-        if ( chemModel == null || atomCount == 0) {
-            setBackground( getParent().getBackground() );
-            return;
-        } else setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
-        
-        Rectangle c = getClientArea();
-        Rectangle2D clientArea =
-            new Rectangle2D.Double(c.x, c.y, c.width, c.height); 
-        SWTRenderer visitor = new SWTRenderer( event.gc );
-        
-        Renderer renderer = getRenderer();
-        
-        if (isScrolling) {
-            renderer.repaint(visitor);
-//            isScrolling = false;
-            return;
-        }
-        
-        if (isNew) {
-            renderer.setScale(chemModel);
-        }
-
-        if (renderer.getRenderer2DModel().isFitToScreen()) {
-            renderer.paintChemModel(chemModel, visitor, clientArea, isNew);
-        } else {
-            java.awt.Rectangle diagramBounds = 
-                renderer.paintChemModel(chemModel, visitor);
-        }
-        
-        isNew = false;
-    }
-    
     public void reset() {
         this.isNew = true;
     }
     
-    private Rectangle getDiagramBounds() {
-        java.awt.Rectangle r = 
-            getRenderer().calculateDiagramBounds(hub.getIChemModel());
-        return new Rectangle(r.x, r.y, r.width, r.height); 
-    }
-
-    private void setupControllerHub( IAtomContainer atomContainer ) {
-
-        IChemModel chemModel = ChemModelManipulator.newChemModel(atomContainer);
-        c2dm = new ControllerModel();
-        hub = new ControllerHub(
-                c2dm, getRenderer(), chemModel, 
-                new IViewEventRelay() {
-                    public void updateView() {
-                        updateSelection();
-                        JChemPaintEditorWidget.this.redraw();
-                    }
-                }, null, null
-        );
-
-        hub.setEventHandler(
-                new IChemModelEventRelayHandler() {
-
-                    public void coordinatesChanged() {
-                        setDirty(true);
-                    }
-
-                    public void selectionChanged() {
-                        setSelection(getSelection());
-                    }
-
-                    public void structureChanged() {
-                        setDirty(true);
-                    }
-
-                    public void structurePropertiesChanged() {
-                        setDirty(true);
-                    }
-
-                }
-        );
-
-        if (relay != null) {
-
-            removeMouseListener(relay);
-            removeMouseMoveListener(relay);
-            removeListener(SWT.MouseEnter, (Listener) relay);
-            removeListener(SWT.MouseExit, (Listener) relay);
-        }
-        
-        relay = new SWTMouseEventRelay(hub);
-        hub.setActiveDrawModule(new MoveModule(hub));
-
-        // apply the global JCP properties
-        IJChemPaintGlobalPropertiesManager jcpprop = 
-            Activator.getDefault().getJCPPropManager();
-        try {
-            jcpprop.applyProperties(hub.getRenderer().getRenderer2DModel());
-        } catch (BioclipseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        addMouseListener(relay);
-        addMouseMoveListener(relay);
-        addMouseWheelListener(relay);
-        addListener(SWT.MouseEnter, relay);
-        addListener(SWT.MouseExit, relay);
-
+    public void updateView() {
+        updateSelection();
+        redraw();
     }
 
     @Override
@@ -331,7 +372,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         	atomContainer = NoNotificationChemObjectBuilder.getInstance()
         	    .newAtomContainer();
         }
-        setupControllerHub( atomContainer );
+        setAtomContainerInHub( atomContainer );
         super.setAtomContainer( atomContainer );
         setDirty( false );
     }
@@ -443,29 +484,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     }
 
-    private void updateSelection() {
-        RendererModel rendererModel = getRenderer2DModel();
-        IAtom atom = rendererModel.getHighlightedAtom();
-        IBond bond = rendererModel.getHighlightedBond();
-        
-        if (atom != prevHighlightedAtom || bond != prevHighlightedBond) {
-            prevHighlightedAtom = atom;
-            prevHighlightedBond = bond;
-            if (prevHighlightedAtom != null) {
-                setToolTipText(
-                        rendererModel.getToolTipText(prevHighlightedAtom));
-            } else if (prevHighlightedBond != null) {
-             // put getToolTipText(prevHighlightedBond) here
-                setToolTipText( null ); 
-            } else {
-                setToolTipText( "" );
-            }
-            setSelection( getSelection() );
-        }
-
-    }
-
-	public void setActiveDrawModule(IControllerModule activeDrawModule){
+    public void setActiveDrawModule(IControllerModule activeDrawModule){
 		hub.setActiveDrawModule(activeDrawModule);
 	}
 
@@ -482,4 +501,21 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 	                               color.getGreen(),
 	                               color.getBlue());
 	}
+	
+	public void undo() throws ExecutionException {
+	    if (this.operationHistory.canUndo(null)) {
+	        this.operationHistory.undo(null, null, null);
+	    }
+	}
+	
+	public void redo() throws ExecutionException {
+	    if (this.operationHistory.canRedo(null)) {
+            this.operationHistory.redo(null, null, null);
+        }
+	}
+
+
+    public void doUndo(IUndoRedoable undoredo) {
+        operationHistory.add((IUndoableOperation)undoredo);
+    }
 }
