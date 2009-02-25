@@ -85,6 +85,7 @@ import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.IChemFormatMatcher;
 import org.openscience.cdk.io.formats.IResourceFormat;
+import org.openscience.cdk.io.formats.MDLFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
 import org.openscience.cdk.io.formats.Mol2Format;
 import org.openscience.cdk.io.formats.PDBFormat;
@@ -597,8 +598,14 @@ public class CDKManager implements ICDKManager {
   	}
 
     private IChemFormat guessFormatFromExtension(IFile file) {
+        return guessFormatFromExtension(file.getName());
+    }
+
+    public IChemFormat guessFormatFromExtension(String file) {
         for (IChemFormat aFormat : formatsFactory.getFormats()) {
-            if (file.getFileExtension().equals(aFormat.getPreferredNameExtension())) {
+            if (aFormat == MDLFormat.getInstance()) {
+                // never match this one
+            } else if (file.endsWith("."+aFormat.getPreferredNameExtension())) {
                 return aFormat;
             }
         }

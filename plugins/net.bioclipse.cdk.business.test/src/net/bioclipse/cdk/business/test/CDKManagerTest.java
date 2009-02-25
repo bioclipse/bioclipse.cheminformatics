@@ -712,6 +712,26 @@ public class CDKManagerTest extends AbstractManagerTest {
     }
 
     @Test
+    public void testGuessFormatFromExtension() {
+        Assert.assertEquals(
+                MDLV2000Format.getInstance(),
+                cdk.guessFormatFromExtension("file.mol")
+        );
+        Assert.assertEquals(
+                Mol2Format.getInstance(),
+                cdk.guessFormatFromExtension("file.mol2")
+        );
+        Assert.assertEquals(
+                CMLFormat.getInstance(),
+                cdk.guessFormatFromExtension("file.cml")
+        );
+        Assert.assertEquals(
+                SDFFormat.getInstance(),
+                cdk.guessFormatFromExtension("file.sdf")
+        );
+    }
+
+    @Test
     public void testGetFormats() {
         String formats = cdk.getFormats();
         Assert.assertTrue(formats.contains("Mol2Format"));
