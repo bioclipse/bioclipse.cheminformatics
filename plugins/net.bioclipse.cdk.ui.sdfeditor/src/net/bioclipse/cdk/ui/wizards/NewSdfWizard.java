@@ -30,13 +30,14 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 /**
  * A wizard to create a new sd file from existing structure files.
  *
  */
 public class NewSdfWizard extends Wizard implements INewWizard {
         private SelectFilesWizardPage specPage;
-        private NewSDFileWizardPage newsdPage;
+        private WizardNewFileCreationPage newsdPage;
         private static final Logger logger = Logger.getLogger(NewSdfWizard.class);
         public NewSdfWizard() {
                 super();
@@ -46,49 +47,49 @@ public class NewSdfWizard extends Wizard implements INewWizard {
          * Adding the pages to the wizard.
          */
         public void addPages() {
-                newsdPage = new NewSDFileWizardPage();
-                ISelection sel=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
-                if (sel instanceof IStructuredSelection) {
-                  Object element = ((IStructuredSelection) sel).getFirstElement();
-                  if (element instanceof IContainer) {
-                      newsdPage.setSelectedFolder( (IContainer)element);
-                  }
-                }
-                specPage = new SelectFilesWizardPage(true);
-                addPage(newsdPage);
-                addPage(specPage);
+            ISelection sel=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
+            newsdPage = new WizardNewFileCreationPage("newFilePage1", (IStructuredSelection) sel);
+            newsdPage.setTitle("Choose name and location for new file");
+            newsdPage.setDescription("Extension will be .sdf if none is given");
+            addPage(newsdPage);
+            specPage = new SelectFilesWizardPage(true);
+            addPage(specPage);
+
         }
         @Override
         public boolean performFinish() {
-                IFile newFile= ((IContainer)newsdPage.getSelectedFolder()).getFile(new Path(newsdPage.getFileName() + (newsdPage.getFileName().indexOf(".")==-1 ? ".sdf" : "")));
-                Iterator it=specPage.getSelectedRes().iterator();
-                List<IMolecule> entries=new ArrayList<IMolecule>();
-                List<IFile> failures=new ArrayList<IFile>();
-                while(it.hasNext()){
-                        Object selection=it.next();
-                        if(selection instanceof IFile){
-                                try {
-                                        entries.add(Activator.getDefault().getCDKManager().loadMolecules((IFile)selection).get(0));
-                                } catch (Exception e) {
-                                        failures.add((IFile)selection);
-                                }
-                        }
-                        if(selection instanceof IContainer && specPage.doRecursive()){
-                                try {
-                                        doRecursion((IContainer)selection,entries,failures);
-                                } catch (CoreException e) {
-                                        LogUtils.handleException(e, logger);
-                                }
-                        }
-                }
-                if(failures.size()>0){
-                        StringBuffer sb=new StringBuffer();
-                        for(int i=0;i<failures.size();i++){
-                                sb.append(failures.get(i).getName()+"; ");
-                        }
-                        MessageDialog.openError(this.getShell(), "Problems parsings files", "Some of the files you selected could not be read ("+sb.toString().substring(0, sb.toString().length()-2)+"). We will still use the rest!");
-                }
-                try {
+            try {
+                  if(newsdPage.getFileExtension()==null || newsdPage.getFileExtension().equals( "" ))
+                      newsdPage.setFileExtension( "sdf" );
+                  IFile newFile= newsdPage.createNewFile();
+                  newFile.delete( true, null );
+                  Iterator it=specPage.getSelectedRes().iterator();
+                  List<IMolecule> entries=new ArrayList<IMolecule>();
+                  List<IFile> failures=new ArrayList<IFile>();
+                  while(it.hasNext()){
+                          Object selection=it.next();
+                          if(selection instanceof IFile){
+                                  try {
+                                          entries.add(Activator.getDefault().getCDKManager().loadMolecules((IFile)selection).get(0));
+                                  } catch (Exception e) {
+                                          failures.add((IFile)selection);
+                                  }
+                          }
+                          if(selection instanceof IContainer && specPage.doRecursive()){
+                                  try {
+                                          doRecursion((IContainer)selection,entries,failures);
+                                  } catch (CoreException e) {
+                                          LogUtils.handleException(e, logger);
+                                  }
+                          }
+                  }
+                  if(failures.size()>0){
+                          StringBuffer sb=new StringBuffer();
+                          for(int i=0;i<failures.size();i++){
+                                  sb.append(failures.get(i).getName()+"; ");
+                          }
+                          MessageDialog.openError(this.getShell(), "Problems parsings files", "Some of the files you selected could not be read ("+sb.toString().substring(0, sb.toString().length()-2)+"). We will still use the rest!");
+                  }
                         Activator.getDefault().getCDKManager().createSDFile(newFile, (IMolecule[])entries.toArray(new IMolecule[entries.size()]));
                 } catch (Exception e) {
                         LogUtils.handleException(e, logger);
