@@ -19,6 +19,7 @@ import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.view.SWTFontManager;
 import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
+import net.bioclipse.core.util.LogUtils;
 import net.sourceforge.nattable.NatTable;
 import net.sourceforge.nattable.model.INatTableModel;
 import net.sourceforge.nattable.painter.cell.ICellPainter;
@@ -29,7 +30,13 @@ import net.sourceforge.nattable.util.GUIHelper;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -73,6 +80,7 @@ public class JCPCellPainter implements ICellPainter {
 
         List<IGenerator> generators = new ArrayList<IGenerator>();
 
+        generators.add(getGeneratorsFromExtensionPoint());
         generators.add(new BasicBondGenerator());
         generators.add(new BasicAtomGenerator());
         generators.add(new RingGenerator());
@@ -194,5 +202,31 @@ public class JCPCellPainter implements ICellPainter {
 
         getColumnImage( gc, rectangle, cellRenderer.getValue( row, col ) );
 
+    }
+
+    public static final String EP_GENERATOR = "net.bioclipse.cdk.ui.sdf.generator";
+
+    private IGenerator getGeneratorsFromExtensionPoint() {
+
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        IExtensionPoint generatorExtensionPoint = registry
+        .getExtensionPoint(EP_GENERATOR);
+
+        IExtension[] generatorExtensions
+                            = generatorExtensionPoint.getExtensions();
+
+        for(IExtension extension : generatorExtensions) {
+
+            for( IConfigurationElement element
+                    : extension.getConfigurationElements() ) {
+                try {
+                    IGenerator generator = (IGenerator) element.createExecutableExtension("class");
+                    return generator;
+                } catch (CoreException e) {
+                    LogUtils.debugTrace( logger, e );
+                }
+            }
+        }
+        return null;
     }
 }
