@@ -27,6 +27,7 @@ import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer.Row;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.ui.jobs.BioclipseUIJob;
+import net.sourceforge.nattable.data.IDataProvider;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -53,7 +54,7 @@ import org.openscience.cdk.io.random.RandomAccessSDFReader;
  * @author arvid
  */
 public class MoleculeTableContentProvider implements IRowContentProvider,
-        ILazyContentProvider {
+        ILazyContentProvider, IDataProvider {
 
     Logger logger = Logger.getLogger( MoleculeTableContentProvider.class );
 
@@ -108,7 +109,7 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
             return;
         }
 
-        Assert.isTrue( viewer instanceof MoleculeTableViewer );
+//        Assert.isTrue( viewer instanceof MoleculeTableViewer );
         Assert.isTrue( newInput instanceof IAdaptable );
 
         final IFile file = ( IFile )( ( IAdaptable )newInput )
@@ -156,6 +157,7 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
             getCompositeTable( viewer ).addRowContentProvider( this );
         }
 
+        if(this.viewer != null)
         updateSize( (model!=null?model.getNumberOfMolecules():0) );
 
         // fill properties with elements from availableProperties
@@ -449,13 +451,6 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
                     if(jFile == null) return;
                     reader = new RandomAccessSDFReader( jFile, builder );
                     provider.model = SDFileMoleculesEditorModel.this;
-                    CompositeTable cTable = provider
-                                        .getCompositeTable( provider.viewer );
-
-                    int firstVisibleRow = cTable.getTopRow();
-                    cTable.setNumRowsInCollection(
-                                                  getNumberOfMolecules() );
-                    cTable.setTopRow( firstVisibleRow );
                     } catch (IOException e ) {
                         LogUtils.debugTrace( logger, e );
                     }
@@ -476,5 +471,34 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
         properties.clear();
         properties.addAll( visibleProperties );
         updateHeaders();
+    }
+
+    public int getColumnCount() {
+        return properties.size()+2;
+    }
+
+    public int getRowCount() {
+        IMoleculesEditorModel tModel = model;
+        return tModel.getNumberOfMolecules();
+    }
+
+    public Object getValue( int row, int col ) {
+        IMoleculesEditorModel tModel = model;
+        ICDKMolecule molecule =  (ICDKMolecule) tModel.getMoleculeAt( row );
+        if(col == 0) {
+            return ""+(row+1);
+        }
+        if(col == 1) {
+            Image image;
+            image = melp.getColumnImage( molecule ,1);
+            return image;
+        }
+        int i = col;
+        if( properties != null && i<properties.size()+2) {
+            Object value = molecule.getAtomContainer()
+            .getProperty( properties.get(i-2));
+            return  value!=null?value.toString():"";
+        } else
+            return "";
     }
 }

@@ -39,5 +39,6 @@ Export-Package: net.bioclipse.cdk.ui.sdfeditor,
  org.eclipse.swt.nebula.widgets.compositetable.month.internal,
  org.eclipse.swt.nebula.widgets.compositetable.timeeditor
 Bundle-ClassPath: nebula_compositetable.jar,
+ nattable-core-1.6.5.jar,
  .
 Bundle-Vendor: The Bioclipse Team

@@ -22,12 +22,19 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.ui.sdfeditor.MoleculesOutlinePage;
+import net.sourceforge.nattable.NatTable;
+import net.sourceforge.nattable.config.DefaultBodyConfig;
+import net.sourceforge.nattable.config.DefaultRowHeaderConfig;
+import net.sourceforge.nattable.config.SizeConfig;
+import net.sourceforge.nattable.editor.EditorSelectionEnum;
+import net.sourceforge.nattable.editor.ICellEditor;
+import net.sourceforge.nattable.editor.IEditController;
+import net.sourceforge.nattable.model.DefaultNatTableModel;
+import net.sourceforge.nattable.renderer.AbstractCellRenderer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -38,15 +45,15 @@ import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorInputTransfer;
@@ -130,41 +137,46 @@ public class MoleculesEditor extends EditorPart implements
 
     @Override
     public void createPartControl( Composite parent ) {
+        DefaultNatTableModel model = new DefaultNatTableModel();
+
+        contentProvider= new MoleculeTableContentProvider();
+           contentProvider.inputChanged( null, null, getEditorInput() );
+
+
+
+           DefaultRowHeaderConfig rowHeaderConfig = new DefaultRowHeaderConfig();
+                rowHeaderConfig.setRowHeaderColumnCount(1);
+                rowHeaderConfig.setCellRenderer(new AbstractCellRenderer() {
+
+
+
+                  public String getDisplayText(int row, int col) {
+                    return String.valueOf(row);
+                  }
+
+                  public Object getValue(int row, int col) {
+                    return null;
+                  }
+
+                });
+           model.setBodyConfig(new DefaultBodyConfig(contentProvider));
+          model.setRowHeaderConfig(rowHeaderConfig);
+
+                // Row heights
+                SizeConfig rowHeightConfig = model.getBodyConfig().getRowHeightConfig();
+                rowHeightConfig.setDefaultSize(STRUCTURE_COLUMN_WIDTH);
+                rowHeightConfig.setDefaultResizable(true);
+                rowHeightConfig.setIndexResizable(1, false);
+
+
+
+              // NatTable
+                new NatTable(parent,
+                   SWT.NO_BACKGROUND | SWT.NO_REDRAW_RESIZE | SWT.DOUBLE_BUFFERED | SWT.V_SCROLL | SWT.H_SCROLL,
+                    model
+               );
 
         labelProvider = new MoleculesEditorLabelProvider(STRUCTURE_COLUMN_WIDTH);
-        contentProvider= new MoleculeTableContentProvider();
-
-
-        molTableViewer =
-            new MoleculeTableViewer(parent,SWT.NONE);
-
-        molTableViewer.setLabelProvider( labelProvider );
-        molTableViewer.setContentProvider(contentProvider);
-
-        molTableViewer.setInput(getEditorInput());
-
-        MenuManager menuMgr = new MenuManager("Molecuels table","net.bioclipse.cdk.ui.sdfeditor.menu");
-        menuMgr.add( new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-        getSite().registerContextMenu( "net.bioclipse.cdk.ui.sdfeditor.menu",menuMgr, molTableViewer);
-        Menu menu = menuMgr.createContextMenu(molTableViewer.getControl());
-        molTableViewer.getControl().setMenu(menu);
-        //(new TableViewer(parent,SWT.NONE)).setInput( input )
-        logger.debug( "Menu id for SDFEditor " +menuMgr.getId());
-
-
-//
-//        // See what's currently selected and select it
-//        ISelection selection =
-//                PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-//                        .getSelectionService().getSelection();
-//        if ( selection instanceof IStructuredSelection ) {
-//            IStructuredSelection stSelection = (IStructuredSelection) selection;
-//            //reactOnSelection( stSelection );
-//        }
-//
-//        setupDragSource();
-//        //getEditorSite().getPage().addSelectionListener( this );
-        getSite().setSelectionProvider(molTableViewer);
 
     }
 
@@ -255,7 +267,7 @@ public class MoleculesEditor extends EditorPart implements
     @Override
     public void setFocus() {
 
-      molTableViewer.getControl().setFocus();
+//      molTableViewer.getControl().setFocus();
 
     }
 
