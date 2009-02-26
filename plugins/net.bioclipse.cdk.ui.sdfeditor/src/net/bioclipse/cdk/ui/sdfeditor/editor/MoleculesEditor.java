@@ -17,9 +17,12 @@ import java.util.List;
 
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
+import net.sourceforge.nattable.NatTable;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -31,9 +34,11 @@ import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorInputTransfer;
@@ -107,13 +112,14 @@ public class MoleculesEditor extends EditorPart implements
         
         molTableViewer.setInput(getEditorInput());
         
-//        -        MenuManager menuMgr = new MenuManager("Molecuels table","net.bioclipse.cdk.ui.sdfeditor.menu");
-//        -        menuMgr.add( new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-//        -        getSite().registerContextMenu( "net.bioclipse.cdk.ui.sdfeditor.menu",menuMgr, molTableViewer);
-//        -        Menu menu = menuMgr.createContextMenu(molTableViewer.getControl());
-//        -        molTableViewer.getControl().setMenu(menu);
-//        -        //(new TableViewer(parent,SWT.NONE)).setInput( input )
-//        -        logger.debug( "Menu id for SDFEditor " +menuMgr.getId());
+                MenuManager menuMgr = new MenuManager("Molecuels table","net.bioclipse.cdk.ui.sdfeditor.menu");
+                menuMgr.add( new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+                getSite().registerContextMenu( "net.bioclipse.cdk.ui.sdfeditor.menu",menuMgr, molTableViewer);
+                Menu menu = menuMgr.createContextMenu(molTableViewer.getControl());
+                molTableViewer.getControl().setMenu(menu);
+                //(new TableViewer(parent,SWT.NONE)).setInput( input )
+                logger.debug( "Menu id for SDFEditor " +menuMgr.getId());
+//        ((NatTable)molTableViewer.getControl()).get
         
         getSite().setSelectionProvider( molTableViewer );
     }
