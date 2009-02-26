@@ -485,18 +485,18 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
     public Object getValue( int row, int col ) {
         IMoleculesEditorModel tModel = model;
         ICDKMolecule molecule =  (ICDKMolecule) tModel.getMoleculeAt( row );
+//        if(col == 0) {
+//            return ""+(row+1);
+//        }
         if(col == 0) {
-            return ""+(row+1);
-        }
-        if(col == 1) {
             Image image;
             image = melp.getColumnImage( molecule ,1);
             return image;
         }
         int i = col;
-        if( properties != null && i<properties.size()+2) {
+        if( properties != null && i<properties.size()+1) {
             Object value = molecule.getAtomContainer()
-            .getProperty( properties.get(i-2));
+            .getProperty( properties.get(i-1));
             return  value!=null?value.toString():"";
         } else
             return "";

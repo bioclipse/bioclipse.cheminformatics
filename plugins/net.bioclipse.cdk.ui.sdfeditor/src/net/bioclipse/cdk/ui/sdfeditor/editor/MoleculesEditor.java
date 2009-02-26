@@ -24,11 +24,11 @@ import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.ui.sdfeditor.MoleculesOutlinePage;
 import net.sourceforge.nattable.NatTable;
 import net.sourceforge.nattable.config.DefaultBodyConfig;
+import net.sourceforge.nattable.config.DefaultColumnHeaderConfig;
 import net.sourceforge.nattable.config.DefaultRowHeaderConfig;
 import net.sourceforge.nattable.config.SizeConfig;
-import net.sourceforge.nattable.editor.EditorSelectionEnum;
-import net.sourceforge.nattable.editor.ICellEditor;
-import net.sourceforge.nattable.editor.IEditController;
+import net.sourceforge.nattable.data.ColumnHeaderLabelProvider;
+import net.sourceforge.nattable.data.IColumnHeaderLabelProvider;
 import net.sourceforge.nattable.model.DefaultNatTableModel;
 import net.sourceforge.nattable.renderer.AbstractCellRenderer;
 
@@ -45,10 +45,8 @@ import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
@@ -73,7 +71,7 @@ public class MoleculesEditor extends EditorPart implements
     Collection<ISelectionChangedListener> selectionListeners =
                                  new LinkedHashSet<ISelectionChangedListener>();
     MoleculesEditorLabelProvider labelProvider;
-    public List<String>                          propertyHeaders;
+    public List<String> propertyHeaders = new ArrayList<String>();
 
     private MoleculesOutlinePage outlinePage;
     private MoleculeTableContentProvider contentProvider;
@@ -143,6 +141,22 @@ public class MoleculesEditor extends EditorPart implements
            contentProvider.inputChanged( null, null, getEditorInput() );
 
 
+           
+           
+           
+           IColumnHeaderLabelProvider columnHeaderLabelProvider = new IColumnHeaderLabelProvider() {
+
+            public String getColumnHeaderLabel( int col ) {
+                List<Object> prop = contentProvider.getProperties();
+                if(col == 0)
+                    return "2D-structure";
+                if(col+1>=0 && col+1 < prop.size())
+                    return prop.get( col+1 ).toString();
+                else
+                    return "";
+            }
+              
+           };
 
            DefaultRowHeaderConfig rowHeaderConfig = new DefaultRowHeaderConfig();
                 rowHeaderConfig.setRowHeaderColumnCount(1);
@@ -159,9 +173,17 @@ public class MoleculesEditor extends EditorPart implements
                   }
 
                 });
-           model.setBodyConfig(new DefaultBodyConfig(contentProvider));
-          model.setRowHeaderConfig(rowHeaderConfig);
+                model.setBodyConfig(new DefaultBodyConfig(contentProvider));
+                model.setRowHeaderConfig(rowHeaderConfig);
+                model.setColumnHeaderConfig( new DefaultColumnHeaderConfig(columnHeaderLabelProvider));
 
+                
+                SizeConfig columnWidthConfig = model.getBodyConfig().getColumnWidthConfig();
+//              columnWidthConfig.setDefaultSize(100);
+//              columnWidthConfig.setDefaultSize(150);
+              columnWidthConfig.setDefaultResizable(true);
+              columnWidthConfig.setIndexResizable(1, false);
+              
                 // Row heights
                 SizeConfig rowHeightConfig = model.getBodyConfig().getRowHeightConfig();
                 rowHeightConfig.setDefaultSize(STRUCTURE_COLUMN_WIDTH);
