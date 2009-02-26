@@ -401,6 +401,9 @@ public class CDKManager implements ICDKManager {
   	            }
 
   	            CDKMolecule mol = new CDKMolecule(ac);
+  	            
+  	            //Associate molecule with the file it comes from
+  	            mol.setResource( file );
 
   	            // Set up name for molecule
   	            String moleculeName = file.getName() + "-" + i;

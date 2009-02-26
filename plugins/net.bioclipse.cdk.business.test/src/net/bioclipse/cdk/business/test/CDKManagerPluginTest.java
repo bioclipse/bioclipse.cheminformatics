@@ -136,6 +136,7 @@ public class CDKManagerPluginTest {
         for (ICDKMolecule mol : mols) {
             Assert.assertNotNull(mol);
             Assert.assertNotSame(0, mol.getAtomContainer().getAtomCount());
+            Assert.assertEquals( "dbsmallconf.sdf", mol.getResource().getName() );
         }
     }
 
@@ -151,6 +152,8 @@ public class CDKManagerPluginTest {
 
         System.out.println("mol: " + mol.toString());
         assertNotNull(mol);
+        Assert.assertEquals( "cs2a.cml", mol.getResource().getName() );
+
     }
 
     
