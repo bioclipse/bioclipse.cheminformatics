@@ -29,7 +29,7 @@ public class ControllerParameters {
     
     private String drawElement = "C";
     
-    private String[] commonElements = { "C", "O", "N", "H", "P", "S" };
+    private String[] commonElements = { "C", "O", "N", "P", "S", "Br", "Cl", "F", "I" };
 
     private boolean snapToGridAngle = true;
     
