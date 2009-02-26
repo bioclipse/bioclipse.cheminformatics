@@ -23,10 +23,10 @@ import java.util.Map;
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer.Row;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.ui.jobs.BioclipseUIJob;
+import net.sourceforge.nattable.NatTable;
 import net.sourceforge.nattable.data.IDataProvider;
 
 import org.apache.log4j.Logger;
@@ -35,11 +35,10 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
-import org.eclipse.swt.nebula.widgets.compositetable.IRowContentProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -53,7 +52,7 @@ import org.openscience.cdk.io.random.RandomAccessSDFReader;
 /**
  * @author arvid
  */
-public class MoleculeTableContentProvider implements IRowContentProvider,
+public class MoleculeTableContentProvider implements
         ILazyContentProvider, IDataProvider {
 
     Logger logger = Logger.getLogger( MoleculeTableContentProvider.class );
@@ -65,8 +64,6 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
     IMoleculesEditorModel   model       = null;
     List<Object> properties = new ArrayList<Object>(NUMBER_OF_PROPERTIES);
     Collection<Object> availableProperties = new HashSet<Object>();
-
-    Control headerControl=null;
 
     MoleculesEditorLabelProvider melp = new MoleculesEditorLabelProvider(
                                     MoleculeTableViewer.STRUCTURE_COLUMN_WIDTH);
@@ -105,7 +102,6 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
     public void inputChanged( final Viewer viewer, Object oldInput, Object newInput ) {
 
         if(newInput == null) {
-            getCompositeTable( this.viewer ).removeRowContentProvider( this );
             return;
         }
 
@@ -152,13 +148,11 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
             this.viewer = (MoleculeTableViewer)viewer;
             if(oldInput != null) {
 
-                getCompositeTable( oldViewer ).removeRowContentProvider( this );
             }
-            getCompositeTable( viewer ).addRowContentProvider( this );
         }
 
         if(this.viewer != null)
-        updateSize( (model!=null?model.getNumberOfMolecules():0) );
+            updateSize( (model!=null?model.getNumberOfMolecules():0) );
 
         // fill properties with elements from availableProperties
         Iterator<Object> iter = availableProperties.iterator();
@@ -186,54 +180,13 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
     }
 
     void updateHeaders() {
-        if(headerControl == null) return;
 
-        Control[] columns = ((Composite)headerControl).getChildren();
-
-        for(int i=2;i<columns.length;i++) {
-            Label label = ((Label)columns[i]);
-            String text ="";
-            if(properties!=null && i<properties.size()+2)
-                text = properties.get(i-2).toString();
-            label.setText( text );
-            label.setToolTipText( text );
-        }
-        ((CompositeTable)viewer.getControl()).getHeaderControl().redraw();
+        viewer.getControl().redraw();
     }
 
-    private CompositeTable getCompositeTable(Viewer viewer) {
+    private NatTable getCompositeTable(Viewer viewer) {
 
-        return (CompositeTable)(viewer).getControl();
-    }
-
-    public void refresh( CompositeTable sender, int currentObjectOffset,
-                         Control rowControl ) {
-
-        Row row = (Row) rowControl;
-        Control[] columns = row.getChildren();
-        ((Label)columns[0]).setText( ""+(currentObjectOffset+1 ));
-        ICDKMolecule molecule = null;
-        try {
-            molecule = getMoleculeAt( currentObjectOffset );
-            Image image;
-            image = melp.getColumnImage( molecule ,1);
-            ((Label)columns[1]).setImage( image );
-
-
-        } catch ( Exception e ) {
-            ((Label)columns[1]).setImage( null );
-            ((Label)columns[1]).setText( "no structure" );
-            logger.debug( "Failed to generate iamge" );
-        }
-
-        for(int i=2;i<columns.length ;i++) {
-            if( properties != null && i<properties.size()+2) {
-                Object value = molecule.getAtomContainer()
-                .getProperty( properties.get(i-2));
-                ((Label)columns[i]).setText( value!=null?value.toString():"");
-            } else
-                ((Label)columns[i]).setText("");
-        }
+        return (NatTable)viewer.getControl();
     }
 
     enum FileType {
@@ -269,10 +222,8 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
 
                 };
 
-                CompositeTable cTable = getCompositeTable( viewer );
-                int firstVisibleRow = cTable.getTopRow();
-                cTable.setNumRowsInCollection(bioList.size());
-                cTable.setTopRow( firstVisibleRow );
+                NatTable cTable = getCompositeTable( viewer );
+                cTable.redraw();// TODO selection when size changes?
 
             }
 
@@ -387,7 +338,7 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
     }
 
     private void updateSize(int size) {
-        getCompositeTable( viewer ).setNumRowsInCollection( size );
+        getCompositeTable( viewer ).redraw();
     }
 
 
@@ -437,30 +388,37 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
         }
 
         private void createIndex(final IFile file) {
-            Activator.getDefault().getCDKManager()
-            .createSDFileIndex( file, new BioclipseUIJob<Integer>() {
-                @Override
-                public void runInUI() {
+            try {
+                Activator.getDefault().getCDKManager()
+                .createSDFileIndex( file, new BioclipseUIJob<Integer>() {
+                    @Override
+                    public void runInUI() {
 
-                    IChemObjectBuilder builder = DefaultChemObjectBuilder
-                    .getInstance();
+                        IChemObjectBuilder builder = DefaultChemObjectBuilder
+                        .getInstance();
 
-                    IPath location = file.getLocation();
-                    try {
-                    java.io.File jFile = (location!=null?location.toFile():null);
-                    if(jFile == null) return;
-                    reader = new RandomAccessSDFReader( jFile, builder );
-                    provider.model = SDFileMoleculesEditorModel.this;
-                    } catch (IOException e ) {
-                        LogUtils.debugTrace( logger, e );
+                        IPath location = file.getLocation();
+                        try {
+                            java.io.File jFile = (location!=null?location.toFile():null);
+                            if(jFile == null) return;
+                            reader = new RandomAccessSDFReader( jFile, builder );
+                            provider.model = SDFileMoleculesEditorModel.this;
+
+                        } catch (IOException e ) {
+                            LogUtils.debugTrace( logger, e );
+                        }
                     }
-                }
 
-                @Override
-                public boolean runInBackground() {
-                    return true;
-                }
-            });
+                    @Override
+                    public boolean runInBackground() {
+                        return true;
+                    }
+                });
+
+            }catch( OperationCanceledException e) {
+                logger.error("Failed to create inded because, "+e.getMessage());
+                LogUtils.debugTrace( logger, e );
+            }
         }
     }
     public void dispose() {
@@ -489,9 +447,10 @@ public class MoleculeTableContentProvider implements IRowContentProvider,
 //            return ""+(row+1);
 //        }
         if(col == 0) {
-            Image image;
-            image = melp.getColumnImage( molecule ,1);
-            return image;
+//            Image image;
+//            image = melp.getColumnImage( molecule ,1);
+//            return image;
+            return molecule;
         }
         int i = col;
         if( properties != null && i<properties.size()+1) {

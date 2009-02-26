@@ -1,69 +1,136 @@
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.sourceforge.nattable.NatTable;
+import net.sourceforge.nattable.config.DefaultBodyConfig;
+import net.sourceforge.nattable.config.DefaultColumnHeaderConfig;
+import net.sourceforge.nattable.config.DefaultRowHeaderConfig;
+import net.sourceforge.nattable.config.SizeConfig;
+import net.sourceforge.nattable.data.IColumnHeaderLabelProvider;
+import net.sourceforge.nattable.data.IDataProvider;
+import net.sourceforge.nattable.model.DefaultNatTableModel;
+import net.sourceforge.nattable.painter.cell.ICellPainter;
+import net.sourceforge.nattable.renderer.AbstractCellRenderer;
+
 import org.eclipse.jface.viewers.ContentViewer;
-import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.nebula.widgets.compositetable.AbstractSelectableRow;
-import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
-import org.eclipse.swt.nebula.widgets.compositetable.GridRowLayout;
-import org.eclipse.swt.nebula.widgets.compositetable.IRowFocusListener;
-import org.eclipse.swt.nebula.widgets.compositetable.RowConstructionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 
 public class MoleculeTableViewer extends ContentViewer {
 
     public final static int STRUCTURE_COLUMN_WIDTH = 200;
 
-    CompositeTable table;
+    NatTable table;
     Control headerControl;
 
     public MoleculeTableViewer(Composite parent, int style) {
+        DefaultNatTableModel model = new DefaultNatTableModel();
 
-        table = new CompositeTable(parent,style);
-        new Header(table, SWT.NULL);
-        new Row(table,SWT.NULL);
+        IColumnHeaderLabelProvider columnHeaderLabelProvider = new IColumnHeaderLabelProvider() {
 
-        table.addRowFocusListener( new IRowFocusListener() {
+            public String getColumnHeaderLabel( int col ) {
+                List<Object> prop = getMolContentProvider().getProperties();
+                if(col == 0)
+                    return "2D-structure";
+                if(col<prop.size()+1 )
+                    return prop.get(col-1).toString();
+                return "";
+            }
+        };
 
-            public void arrive( CompositeTable sender, int currentObjectOffset,
-                                Control newRow ) {
-                updateSelection( getSelection() );
+        DefaultRowHeaderConfig rowHeaderConfig = new DefaultRowHeaderConfig();
+        rowHeaderConfig.setRowHeaderColumnCount(1);
+
+        DefaultBodyConfig bodyConfig = new DefaultBodyConfig(new IDataProvider() {
+
+            public int getColumnCount() {
+                if(getMolContentProvider()==null) return 0;
+                return getMolContentProvider().getColumnCount();
             }
 
-            public void depart( CompositeTable sender, int currentObjectOffset,
-                                Control row ) {
-                updateSelection( getSelection() );
+            public int getRowCount() {
+                if(getMolContentProvider()==null) return 0;
+                return getMolContentProvider().getRowCount();
             }
 
-            public boolean requestRowChange( CompositeTable sender,
-                                             int currentObjectOffset,
-                                             Control row ) {
-                return true;
+            public Object getValue( int row, int col ) {
+                if(getMolContentProvider()==null) return null;
+                return getMolContentProvider().getValue( row, col );
             }
 
         });
-        table.addRowConstructionListener( new RowConstructionListener() {
-            @Override
-            public void headerConstructed( Control arg0 ) {
-                headerControl = arg0;
-            }
+
+        bodyConfig.setCellRenderer( new AbstractCellRenderer() {
+            ICellPainter structurePainter = new JCPCellPainter();
 
             @Override
-            public void rowConstructed( Control arg0 ) {
-                arg0.setMenu( table.getMenu() );
+            public ICellPainter getCellPainter( int row, int col ) {
+
+                if(col == 0)
+                    return structurePainter;
+                return super.getCellPainter( row, col );
+            }
+
+            public String getDisplayText( int row, int col ) {
+
+                return getMolContentProvider().getValue( row, col ).toString();
+            }
+
+            public Object getValue( int row, int col ) {
+
+                // TODO Auto-generated method stub
+                return getMolContentProvider().getValue( row, col );
             }
 
         });
 
-        table.setRunTime( true );
+        model.setBodyConfig(bodyConfig);
+        model.setRowHeaderConfig(rowHeaderConfig);
+        model.setColumnHeaderConfig( new DefaultColumnHeaderConfig(columnHeaderLabelProvider));
+
+        model.setSingleCellSelection( false );
+//        model.setMultipleSelection( true );
+//        model.
+
+
+        SizeConfig columnWidthConfig = model.getBodyConfig().getColumnWidthConfig();
+        columnWidthConfig.setDefaultSize(STRUCTURE_COLUMN_WIDTH/5);
+        columnWidthConfig.setInitialSize( 0, STRUCTURE_COLUMN_WIDTH );
+        //              columnWidthConfig.setDefaultSize(150);
+        columnWidthConfig.setDefaultResizable(true);
+        //columnWidthConfig.setIndexResizable(0, false);
+
+        // Row heights
+        SizeConfig rowHeightConfig = model.getBodyConfig().getRowHeightConfig();
+        rowHeightConfig.setDefaultSize(STRUCTURE_COLUMN_WIDTH);
+        rowHeightConfig.setDefaultResizable(true);
+        //                rowHeightConfig.setIndexResizable(1, false);
+
+        // NatTable
+        table = new NatTable(parent,
+                     SWT.NO_BACKGROUND | SWT.NO_REDRAW_RESIZE
+                     | SWT.DOUBLE_BUFFERED | SWT.V_SCROLL | SWT.H_SCROLL,
+                     model
+        );
+        Listener listener = new Listener() {
+
+            public void handleEvent( Event event ) {
+
+                updateSelection( getSelection() );
+            }
+        };
+        table.addListener( SWT.SELECTED, listener);
+        table.addListener( SWT.MouseUp, listener );
     }
 
     @Override
@@ -77,26 +144,30 @@ public class MoleculeTableViewer extends ContentViewer {
 
         if(getContentProvider() instanceof MoleculeTableContentProvider) {
 
-            int selectedIndex = table.getSelection().y+table.getTopRow();
+            int[] selected = table.getSelectionModel().getSelectedRows();
+
+            if(selected.length==0) return StructuredSelection.EMPTY;
+
             MoleculeTableContentProvider contentProvider =
                             (MoleculeTableContentProvider)getContentProvider();
 
-            if(selectedIndex >=0 ) {
-                Object o = contentProvider.getMoleculeAt( selectedIndex );
-                if ( o != null ) {
-                  IStructuredSelection selection = new StructuredSelection( o );
-                  return selection;
-                }
+            List<ICDKMolecule> mols = new ArrayList<ICDKMolecule>(selected.length);
+            for(int i:selected) {
+                mols.add( contentProvider.getMoleculeAt( i ));
             }
+            return new StructuredSelection(mols);
         }
 
         return StructuredSelection.EMPTY;
     }
 
+    private MoleculeTableContentProvider getMolContentProvider() {
+        return (MoleculeTableContentProvider)getContentProvider();
+    }
+
     @Override
     public void refresh() {
-
-        table.refreshAllRows();
+        table.redraw();
     }
 
     @Override
@@ -109,52 +180,5 @@ public class MoleculeTableViewer extends ContentViewer {
     protected void updateSelection(ISelection selection) {
         SelectionChangedEvent event = new SelectionChangedEvent(this, selection);
         fireSelectionChanged(event);
-      }
-
-    @Override
-    public void setContentProvider( IContentProvider contentProvider ) {
-
-       if(contentProvider instanceof MoleculeTableContentProvider) {
-           ((MoleculeTableContentProvider)contentProvider)
-               .headerControl = headerControl;
-       }
-        super.setContentProvider( contentProvider );
-    }
-
-    public static class Header extends Composite {
-
-        public Header(Composite parent, int style) {
-
-            super( parent, style );
-            setLayout( new GridRowLayout( new int[] { 10,
-                    STRUCTURE_COLUMN_WIDTH,
-                    20,20,20,20,20,20,20,20,20,20}, false ) );
-            new Label( this, SWT.NULL ).setText( "Index" );
-            new Label( this, SWT.NULL ).setText( "2D-Structure" );
-            for(int i=0;i<10;i++) {
-                new Label(this, SWT.NULL).setText( "P"+(i+1) );
-            }
-        }
-    }
-
-    public static class Row extends AbstractSelectableRow {
-
-        public Row(Composite parent, int style) {
-
-            super( parent, style );
-            setLayout( new GridRowLayout( new int[]
-                       { 10,
-                         STRUCTURE_COLUMN_WIDTH,
-                         20,20,20,20,20,20,20,20,20,20
-                         },
-                    false ) );
-            this.setColumnCount( 2+10 );
-        }
-        @Override
-        public Point computeSize( int hint, int hint2 ) {
-            Point p =super.computeSize( hint, hint2 );
-            p.y = STRUCTURE_COLUMN_WIDTH;
-            return p;
-        }
     }
 }

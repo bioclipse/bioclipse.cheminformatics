@@ -13,30 +13,23 @@
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
-import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
-import net.bioclipse.cdk.ui.sdfeditor.MoleculesOutlinePage;
 import net.sourceforge.nattable.NatTable;
 import net.sourceforge.nattable.config.DefaultBodyConfig;
 import net.sourceforge.nattable.config.DefaultColumnHeaderConfig;
 import net.sourceforge.nattable.config.DefaultRowHeaderConfig;
 import net.sourceforge.nattable.config.SizeConfig;
-import net.sourceforge.nattable.data.ColumnHeaderLabelProvider;
 import net.sourceforge.nattable.data.IColumnHeaderLabelProvider;
 import net.sourceforge.nattable.model.DefaultNatTableModel;
+import net.sourceforge.nattable.painter.cell.ICellPainter;
 import net.sourceforge.nattable.renderer.AbstractCellRenderer;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
@@ -47,8 +40,6 @@ import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.ISelectionListener;
@@ -58,7 +49,6 @@ import org.eclipse.ui.part.EditorInputTransfer;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.EditorInputTransfer.EditorInputData;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
-import org.openscience.cdk.interfaces.IAtomContainer;
 
 public class MoleculesEditor extends EditorPart implements
         //ISelectionProvider,
@@ -68,12 +58,8 @@ public class MoleculesEditor extends EditorPart implements
 
     Logger logger = Logger.getLogger( MoleculesEditor.class );
 
-    Collection<ISelectionChangedListener> selectionListeners =
-                                 new LinkedHashSet<ISelectionChangedListener>();
-    MoleculesEditorLabelProvider labelProvider;
     public List<String> propertyHeaders = new ArrayList<String>();
 
-    private MoleculesOutlinePage outlinePage;
     private MoleculeTableContentProvider contentProvider;
     private MoleculeTableViewer molTableViewer;
 
@@ -83,10 +69,6 @@ public class MoleculesEditor extends EditorPart implements
     public MoleculeTableContentProvider getContentProvider() {
         return contentProvider;
     }
-    public MoleculesEditorLabelProvider getLabelProvider() {
-        return labelProvider;
-    }
-
 
     public MoleculeTableViewer getMolTableViewer() {
         return molTableViewer;
@@ -94,16 +76,12 @@ public class MoleculesEditor extends EditorPart implements
 
     @Override
     public void doSave( IProgressMonitor monitor ) {
-
-        // TODO Auto-generated method stub
-
+        // TODO Use a SDF-iterator and a appending writer to create a SDfile from the file and index.
     }
 
     @Override
     public void doSaveAs() {
-
-        // TODO Auto-generated method stub
-
+        // TODO see doSave(...)
     }
 
     @Override
@@ -115,91 +93,92 @@ public class MoleculesEditor extends EditorPart implements
         setPartName(input.getName() );
         // TODO listen to selections check and focus on selected element from
         // common navigator, load it and get columns
-
     }
 
     @Override
     public boolean isDirty() {
-
-        // TODO Auto-generated method stub
+        // TODO Check the index
         return false;
     }
 
     @Override
     public boolean isSaveAsAllowed() {
-
-        // TODO Auto-generated method stub
         return false;
     }
 
-
     @Override
     public void createPartControl( Composite parent ) {
-        DefaultNatTableModel model = new DefaultNatTableModel();
 
-        contentProvider= new MoleculeTableContentProvider();
-           contentProvider.inputChanged( null, null, getEditorInput() );
+        molTableViewer = new MoleculeTableViewer(parent,SWT.NONE);
+        molTableViewer.setContentProvider( contentProvider =
+                                        new MoleculeTableContentProvider() );
+        molTableViewer.setInput( getEditorInput() );
+        getSite().setSelectionProvider( molTableViewer );
+    }
 
+    void reactOnSelection( ISelection selection ) {
 
-           
-           
-           
-           IColumnHeaderLabelProvider columnHeaderLabelProvider = new IColumnHeaderLabelProvider() {
+        //if ( element instanceof ICDKMolecule )
+//            if (((IStructuredSelection)viewer.getSelection()).toList()
+//                                            .containsAll( selection.toList() ))
+//                return;
+//            else
+//        if(viewer != null)
+//                setSelectedRows(selection);
+    }
 
-            public String getColumnHeaderLabel( int col ) {
-                List<Object> prop = contentProvider.getProperties();
-                if(col == 0)
-                    return "2D-structure";
-                if(col+1>=0 && col+1 < prop.size())
-                    return prop.get( col+1 ).toString();
-                else
-                    return "";
-            }
-              
-           };
+    @Override
+    public void setFocus() {
 
-           DefaultRowHeaderConfig rowHeaderConfig = new DefaultRowHeaderConfig();
-                rowHeaderConfig.setRowHeaderColumnCount(1);
-                rowHeaderConfig.setCellRenderer(new AbstractCellRenderer() {
+//      molTableViewer.getControl().setFocus();
 
+    }
 
+    public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
+        logger.debug( "Selection has chaged" + this.getClass().getName() );
+        logger.debug( part.toString() + this.getSite().getPart().toString());
+        if(part != null && part.equals( this )) return;
+            setSelectedRows( selection );
+//        if( part != null && part.equals( this )) return;
+//        if( selection == null || selection.isEmpty() ) {
+//            if(!viewer.getSelection().isEmpty())
+//                viewer.setSelection( selection );
+//            return;
+//        }
+//        if(selection instanceof IStructuredSelection)
+//            reactOnSelection( (IStructuredSelection) selection );
+        //viewer.setSelection( selection );
+    }
 
-                  public String getDisplayText(int row, int col) {
-                    return String.valueOf(row);
-                  }
+    @SuppressWarnings("unchecked")
+    @Override
+    public Object getAdapter( Class adapter ) {
 
-                  public Object getValue(int row, int col) {
-                    return null;
-                  }
+//        if(IContentOutlinePage.class.equals( adapter )) {
+//            if(outlinePage == null) {
+//                outlinePage = new MoleculesOutlinePage();
+//                outlinePage.setInput(getEditorInput());
+//            }
+//            return outlinePage;
+//        }
+        return super.getAdapter( adapter );
+    }
 
-                });
-                model.setBodyConfig(new DefaultBodyConfig(contentProvider));
-                model.setRowHeaderConfig(rowHeaderConfig);
-                model.setColumnHeaderConfig( new DefaultColumnHeaderConfig(columnHeaderLabelProvider));
+    public ISelection getSelection() {
 
-                
-                SizeConfig columnWidthConfig = model.getBodyConfig().getColumnWidthConfig();
-//              columnWidthConfig.setDefaultSize(100);
-//              columnWidthConfig.setDefaultSize(150);
-              columnWidthConfig.setDefaultResizable(true);
-              columnWidthConfig.setIndexResizable(1, false);
-              
-                // Row heights
-                SizeConfig rowHeightConfig = model.getBodyConfig().getRowHeightConfig();
-                rowHeightConfig.setDefaultSize(STRUCTURE_COLUMN_WIDTH);
-                rowHeightConfig.setDefaultResizable(true);
-                rowHeightConfig.setIndexResizable(1, false);
+            return StructuredSelection.EMPTY;
+    }
 
+    private ISelection getSelectedRows() {
+//        viewer.getSelection();
+//        viewer.getTopRow();
 
+        return StructuredSelection.EMPTY;
 
-              // NatTable
-                new NatTable(parent,
-                   SWT.NO_BACKGROUND | SWT.NO_REDRAW_RESIZE | SWT.DOUBLE_BUFFERED | SWT.V_SCROLL | SWT.H_SCROLL,
-                    model
-               );
-
-        labelProvider = new MoleculesEditorLabelProvider(STRUCTURE_COLUMN_WIDTH);
-
+    }
+    private void setSelectedRows(ISelection selection) {
+        // mapping between selections and index
+        //viewer.setSelection(  );
     }
 
     protected void setupDragSource() {
@@ -218,10 +197,6 @@ public class MoleculesEditor extends EditorPart implements
                if(!getSelectedRows().isEmpty()) {
                    LocalSelectionTransfer.getTransfer()
                            .setSelection( getSelectedRows() );
-                   event.image = labelProvider
-                           .getColumnImage(
-                                            ((IStructuredSelection)getSelectedRows())
-                                            .getFirstElement(), 1 );
                    event.doit = true;
                } else
                    event.doit = false;
@@ -259,131 +234,5 @@ public class MoleculesEditor extends EditorPart implements
             }
 
         });
-    }
-
-    private List<String> createHeaderFromSelection( IAdaptable element ) {
-
-        ICDKMolecule molecule = null;
-
-        // try and get molecule
-        if ( element != null ) {
-            molecule = (ICDKMolecule) element.getAdapter( ICDKMolecule.class );
-            // create headers
-            createPropertyHeaders( molecule.getAtomContainer() );
-        }
-        return propertyHeaders;
-    }
-
-    void reactOnSelection( ISelection selection ) {
-
-
-        //if ( element instanceof ICDKMolecule )
-//            if (((IStructuredSelection)viewer.getSelection()).toList()
-//                                            .containsAll( selection.toList() ))
-//                return;
-//            else
-//        if(viewer != null)
-//                setSelectedRows(selection);
-    }
-
-    @Override
-    public void setFocus() {
-
-//      molTableViewer.getControl().setFocus();
-
-    }
-
-//    public void addSelectionChangedListener( ISelectionChangedListener listener ) {
-//
-//        selectionListeners.add(listener );
-//
-//    }
-//
-//    public ISelection getSelection() {
-//
-//        return viewer.getSelection();
-//
-//    }
-//
-//    public void removeSelectionChangedListener( ISelectionChangedListener listener ) {
-//
-//        selectionListeners.remove(listener );
-//
-//    }
-//
-//    public void setSelection( ISelection selection ) {
-//
-//        viewer.setSelection( selection );
-//
-//    }
-
-    @SuppressWarnings("unchecked")
-    private List<String> createPropertyHeaders( IAtomContainer ac ) {
-
-        // property keys not Strings but i assume they are
-        Set<Object> propterties = ac.getProperties().keySet();
-        propertyHeaders =
-                new ArrayList<String>( new LinkedHashSet( propterties ) );
-        Table tree = null;//viewer.getTable();
-        int oldCount = tree.getColumnCount();
-        // creates missing columns so that column count is
-        // proptertyHeaders.size()+2
-        for ( int i = propertyHeaders.size() - (oldCount - 2); i > 0; i-- ) {
-            new TableColumn( tree, SWT.NONE );
-        }
-        // set property name as column text
-        for ( int i = 0; i < (propertyHeaders.size()); i++ ) {
-            TableColumn tc = tree.getColumn( i + 2 );
-            tc.setText( propertyHeaders.get( i ) );
-            tc.setWidth( 100 );
-            tc.setResizable( true );
-        }
-        return propertyHeaders;
-    }
-
-    public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
-        logger.debug( "Selection has chaged" + this.getClass().getName() );
-        logger.debug( part.toString() + this.getSite().getPart().toString());
-        if(part != null && part.equals( this )) return;
-            setSelectedRows( selection );
-//        if( part != null && part.equals( this )) return;
-//        if( selection == null || selection.isEmpty() ) {
-//            if(!viewer.getSelection().isEmpty())
-//                viewer.setSelection( selection );
-//            return;
-//        }
-//        if(selection instanceof IStructuredSelection)
-//            reactOnSelection( (IStructuredSelection) selection );
-        //viewer.setSelection( selection );
-    }
-
-    @Override
-    public Object getAdapter( Class adapter ) {
-
-//        if(IContentOutlinePage.class.equals( adapter )) {
-//            if(outlinePage == null) {
-//                outlinePage = new MoleculesOutlinePage();
-//                outlinePage.setInput(getEditorInput());
-//            }
-//            return outlinePage;
-//        }
-        return super.getAdapter( adapter );
-    }
-    public ISelection getSelection() {
-
-            return StructuredSelection.EMPTY;
-    }
-
-
-    private ISelection getSelectedRows() {
-//        viewer.getSelection();
-//        viewer.getTopRow();
-
-        return StructuredSelection.EMPTY;
-
-    }
-    private void setSelectedRows(ISelection selection) {
-        // mapping between selections and index
-        //viewer.setSelection(  );
     }
 }

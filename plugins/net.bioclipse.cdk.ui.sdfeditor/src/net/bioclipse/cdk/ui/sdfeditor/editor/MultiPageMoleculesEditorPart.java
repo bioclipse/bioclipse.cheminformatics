@@ -33,7 +33,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
-
 public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                                                     ISelectionListener {
 
@@ -157,7 +156,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                if(lastPage == Pages.Headers) {
                    moleculesPage.getContentProvider()
                            .setVisibleProperties( ps.getVisibleProperties() );
-                   moleculesPage.getMolTableViewer().refresh();
+                   moleculesPage.getContentProvider().updateHeaders();
                }break;
            case Headers:
                MoleculeTableContentProvider contentProvider =
