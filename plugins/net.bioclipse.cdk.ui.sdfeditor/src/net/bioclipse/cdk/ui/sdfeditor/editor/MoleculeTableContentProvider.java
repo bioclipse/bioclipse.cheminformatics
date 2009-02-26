@@ -38,9 +38,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -155,6 +152,7 @@ public class MoleculeTableContentProvider implements
             updateSize( (model!=null?model.getNumberOfMolecules():0) );
 
         // fill properties with elements from availableProperties
+        properties.clear();
         Iterator<Object> iter = availableProperties.iterator();
         for(int i=0;i<NUMBER_OF_PROPERTIES;i++) {
             if(iter.hasNext())
@@ -314,28 +312,6 @@ public class MoleculeTableContentProvider implements
             }
         };
     }
-    private void setProperties( Label properties, IAtomContainer ac ) {
-
-        if(ac == null) {
-            properties.setText( "No properties found");
-            return;
-        }
-        StringBuilder b = new StringBuilder();
-        int count = 0;
-        Map<Object, Object> proper = ac.getProperties();
-        for ( Object o : proper.keySet() ) {
-            // b = new StringBuilder();
-            String key = o.toString();
-            String value = proper.get( o ).toString();
-            b.append( key ).append( ": " ).append( value ).append( ", \n" );
-            // properties.add( b.toString() );
-            // FIXME dirty hack to make it look good
-            if ( count++ >= 5 )
-                break;
-
-        }
-        properties.setText( b.toString() );
-    }
 
     private void updateSize(int size) {
         getCompositeTable( viewer ).redraw();
@@ -432,7 +408,7 @@ public class MoleculeTableContentProvider implements
     }
 
     public int getColumnCount() {
-        return properties.size()+2;
+        return properties.size()+1;
     }
 
     public int getRowCount() {
