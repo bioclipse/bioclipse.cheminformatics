@@ -17,15 +17,6 @@ import java.util.List;
 
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
-import net.sourceforge.nattable.NatTable;
-import net.sourceforge.nattable.config.DefaultBodyConfig;
-import net.sourceforge.nattable.config.DefaultColumnHeaderConfig;
-import net.sourceforge.nattable.config.DefaultRowHeaderConfig;
-import net.sourceforge.nattable.config.SizeConfig;
-import net.sourceforge.nattable.data.IColumnHeaderLabelProvider;
-import net.sourceforge.nattable.model.DefaultNatTableModel;
-import net.sourceforge.nattable.painter.cell.ICellPainter;
-import net.sourceforge.nattable.renderer.AbstractCellRenderer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -113,6 +104,17 @@ public class MoleculesEditor extends EditorPart implements
         molTableViewer.setContentProvider( contentProvider =
                                         new MoleculeTableContentProvider() );
         molTableViewer.setInput( getEditorInput() );
+        
+        molTableViewer.setInput(getEditorInput());
+        
+//        -        MenuManager menuMgr = new MenuManager("Molecuels table","net.bioclipse.cdk.ui.sdfeditor.menu");
+//        -        menuMgr.add( new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+//        -        getSite().registerContextMenu( "net.bioclipse.cdk.ui.sdfeditor.menu",menuMgr, molTableViewer);
+//        -        Menu menu = menuMgr.createContextMenu(molTableViewer.getControl());
+//        -        molTableViewer.getControl().setMenu(menu);
+//        -        //(new TableViewer(parent,SWT.NONE)).setInput( input )
+//        -        logger.debug( "Menu id for SDFEditor " +menuMgr.getId());
+        
         getSite().setSelectionProvider( molTableViewer );
     }
 
