@@ -515,19 +515,19 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 	}
 	
 	public void undo() throws ExecutionException {
-	    if (this.operationHistory.canUndo(this.undoContext)) {
-	        this.operationHistory.undo(undoContext, null, null);
-	    }
+//	    if (this.operationHistory.canUndo(this.undoContext)) {
+//	        this.operationHistory.undo(undoContext, null, null);
+//	    }
 	}
 	
 	public void redo() throws ExecutionException {
-	    if (this.operationHistory.canRedo(this.undoContext)) {
-            this.operationHistory.redo(undoContext, null, null);
-        }
+//	    if (this.operationHistory.canRedo(this.undoContext)) {
+//            this.operationHistory.redo(undoContext, null, null);
+//        }
 	}
 
 
     public void doUndo(IUndoRedoable undoredo) {
-        operationHistory.add((IUndoableOperation)undoredo);
+//        operationHistory.add((IUndoableOperation)undoredo);
     }
 }
