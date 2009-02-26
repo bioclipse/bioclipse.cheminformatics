@@ -261,7 +261,7 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    @PublishedMethod(params = "IMolecule mol, String filename, String filetype, boolean overwrite",
+    @PublishedMethod(params = "IMolecule mol, String filename, IChemFormat filetype, boolean overwrite",
             methodSummary="saves mol to a file (filename must be a relative to workspace root and "+
             "folder must exist), filetype must be a IChemFormat. " +
             "If overwrite=true then file will be overwritten if exists.")
