@@ -55,7 +55,7 @@ public class JChemPaintWidget extends Canvas {
    
     public JChemPaintWidget(Composite parent, int style) {
 
-        super( parent, style );
+        super( parent, style|SWT.DOUBLE_BUFFERED );
         parent.addDisposeListener( new DisposeListener() {
             public void widgetDisposed( DisposeEvent e ) {
                 disposeView();
