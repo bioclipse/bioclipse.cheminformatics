@@ -171,7 +171,9 @@ public class MoleculeTableViewer extends ContentViewer {
 
     @Override
     public void refresh() {
+        table.reset();
         table.redraw();
+        table.update();
     }
 
     @Override

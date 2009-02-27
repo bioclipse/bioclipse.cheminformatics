@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.CDKMolecule;
@@ -38,9 +37,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.widgets.Label;
 import org.openscience.cdk.DefaultChemObjectBuilder;
-import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecule;
@@ -78,6 +75,12 @@ public class MoleculeTableContentProvider implements
         return new HashSet<Object>(availableProperties);
     }
 
+
+    private void setModel(IMoleculesEditorModel model) {
+        this.model = model;
+        if(model != null)
+            viewer.refresh();
+    }
 
     public ICDKMolecule getMoleculeAt( int index ) {
         ICDKMolecule molecule = null;
@@ -118,7 +121,7 @@ public class MoleculeTableContentProvider implements
                     if ( file.getContentDescription().getContentType().getId()
                             .equals( "net.bioclipse.contenttypes.sdf" ) ) {
                         (new SDFileMoleculesEditorModel( this )).init( file );
-                        model = createSDFTemporaryModel( file );
+                        setModel( createSDFTemporaryModel( file ));
 
                     } else {
                         if(file.getContentDescription().getContentType().getId()
@@ -135,8 +138,8 @@ public class MoleculeTableContentProvider implements
                 LogUtils.debugTrace( logger, e );
             }
         } else {
-            model = (IMoleculesEditorModel)
-            ((IAdaptable)newInput).getAdapter( IMoleculesEditorModel.class );
+            setModel( (IMoleculesEditorModel)
+            ((IAdaptable)newInput).getAdapter( IMoleculesEditorModel.class ));
             readProperties( model );
         }
         if(viewer != this.viewer) {
@@ -199,7 +202,7 @@ public class MoleculeTableContentProvider implements
             public void runInUI() {
                 final List<ICDKMolecule> bioList = getReturnValue();
 
-                model = new IMoleculesEditorModel() {
+                setModel( new IMoleculesEditorModel() {
                     List<ICDKMolecule> molecules;
                     {
                         molecules = bioList;
@@ -218,7 +221,7 @@ public class MoleculeTableContentProvider implements
                         throw new UnsupportedOperationException();
                     }
 
-                };
+                });
 
                 NatTable cTable = getCompositeTable( viewer );
                 cTable.redraw();// TODO selection when size changes?
@@ -378,7 +381,7 @@ public class MoleculeTableContentProvider implements
                             java.io.File jFile = (location!=null?location.toFile():null);
                             if(jFile == null) return;
                             reader = new RandomAccessSDFReader( jFile, builder );
-                            provider.model = SDFileMoleculesEditorModel.this;
+                            provider.setModel( SDFileMoleculesEditorModel.this);
 
                         } catch (IOException e ) {
                             LogUtils.debugTrace( logger, e );
@@ -413,7 +416,9 @@ public class MoleculeTableContentProvider implements
 
     public int getRowCount() {
         IMoleculesEditorModel tModel = model;
-        return tModel.getNumberOfMolecules();
+        if(tModel != null)
+            return tModel.getNumberOfMolecules();
+        return 0;
     }
 
     public Object getValue( int row, int col ) {
