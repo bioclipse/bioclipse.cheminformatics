@@ -140,7 +140,7 @@ public class JCPCellPainter implements ICellPainter {
 
         if (renderer2DConfigurator!=null){
             renderer2DConfigurator.configure( renderer.getRenderer2DModel(),
-                                              mol );
+                                              mol.getAtomContainer() );
         }
         // If no 2D coordinates
         if ( !GeometryTools.has2DCoordinates( mol.getAtomContainer() ) ) {
