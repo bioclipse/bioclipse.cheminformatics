@@ -78,7 +78,7 @@ public class MoleculeTableContentProvider implements
 
     private void setModel(IMoleculesEditorModel model) {
         this.model = model;
-        if(model != null)
+        if(viewer !=null)
             viewer.refresh();
     }
 
@@ -103,6 +103,10 @@ public class MoleculeTableContentProvider implements
 
         if(newInput == null) {
             return;
+        }
+
+        if(viewer != this.viewer) {
+            this.viewer = (MoleculeTableViewer)viewer;
         }
 
 //        Assert.isTrue( viewer instanceof MoleculeTableViewer );
@@ -142,14 +146,7 @@ public class MoleculeTableContentProvider implements
             ((IAdaptable)newInput).getAdapter( IMoleculesEditorModel.class ));
             readProperties( model );
         }
-        if(viewer != this.viewer) {
 
-            Viewer oldViewer = this.viewer;
-            this.viewer = (MoleculeTableViewer)viewer;
-            if(oldInput != null) {
-
-            }
-        }
 
         if(this.viewer != null)
             updateSize( (model!=null?model.getNumberOfMolecules():0) );
@@ -225,6 +222,8 @@ public class MoleculeTableContentProvider implements
 
                 NatTable cTable = getCompositeTable( viewer );
                 cTable.redraw();// TODO selection when size changes?
+                cTable.reset();
+                cTable.updateResize();
 
             }
 
