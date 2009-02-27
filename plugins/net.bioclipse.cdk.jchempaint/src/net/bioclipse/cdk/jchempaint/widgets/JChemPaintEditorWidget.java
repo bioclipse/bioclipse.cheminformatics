@@ -17,6 +17,7 @@ import static net.bioclipse.cdk.jchempaint.outline.StructureContentProvider.crea
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -423,6 +424,10 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         	System.out.println("Could not create 3D coordinates: " + e.getMessage());
             return atomContainer;
 		}
+      //FIXME work-around for bug 613
+        container.setProperties( new HashMap<Object, Object>(
+                atomContainer.getProperties()) );
+
         return container;
 
     }
