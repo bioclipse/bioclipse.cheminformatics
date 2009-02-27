@@ -14,15 +14,25 @@
  *******************************************************************************/
 package net.bioclipse.cdk.jchempaint.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.AtomIndexSelection;
 import net.bioclipse.core.domain.IChemicalSelection;
+import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -43,6 +53,10 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
+import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.elements.ElementGroup;
+import org.openscience.cdk.renderer.elements.IRenderingElement;
+import org.openscience.cdk.renderer.generators.IGenerator;
 
 /**
  * 2D Rendering widget using the new SWT based JChemPaint renderer.
@@ -51,6 +65,8 @@ public class JChemPaintView extends ViewPart
     implements ISelectionListener {
 
     private static final Logger logger = Logger.getLogger(JChemPaintView.class);
+    
+    public static final String EP_GENERATOR = "net.bioclipse.cdk.jchempaint.view.generator";
 
     private JChemPaintWidget canvasView;
     private IMolecule molecule;
@@ -71,7 +87,15 @@ public class JChemPaintView extends ViewPart
      * to create the viewer and initialize it.
      */
     public void createPartControl(Composite parent) {
-        canvasView = new JChemPaintWidget(parent, SWT.NONE );
+        canvasView = new JChemPaintWidget(parent, SWT.NONE ) {
+            @Override
+            protected List<IGenerator> createGenerators() {
+                List<IGenerator> genList = new ArrayList<IGenerator>();
+                genList.addAll( super.createGenerators() );
+                genList.add(getGeneratorsFromExtensionPoint());
+                return genList;
+            }
+        };
         canvasView.setSize( 200, 200 );
 
         // Register this page as a listener for selections
@@ -302,5 +326,38 @@ public class JChemPaintView extends ViewPart
         getViewSite().getPage().removeSelectionListener(this);
         getSite().getPage().removePartListener( partListener );
         canvasView.dispose();
+    }
+    
+    private IGenerator getGeneratorsFromExtensionPoint() {
+
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        IExtensionPoint generatorExtensionPoint = registry
+        .getExtensionPoint(EP_GENERATOR);
+
+        IExtension[] generatorExtensions
+                            = generatorExtensionPoint.getExtensions();
+
+        for(IExtension extension : generatorExtensions) {
+
+            for( IConfigurationElement element
+                    : extension.getConfigurationElements() ) {
+                try {
+                    IGenerator generator = (IGenerator) element.createExecutableExtension("class");
+                    return generator;
+                } catch (CoreException e) {
+                    LogUtils.debugTrace( logger, e );
+                }
+            }
+        }
+        return new IGenerator() {
+
+            public IRenderingElement generate( IAtomContainer ac,
+                                               RendererModel model ) {
+
+                // empty nothing generator;
+                return new ElementGroup();
+            }
+
+        };
     }
 }

@@ -29,13 +29,20 @@ import net.bioclipse.cdk.jchempaint.undoredo.SWTUndoRedoFactory;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.util.LogUtils;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.core.commands.operations.IUndoContext;
-import org.eclipse.core.commands.operations.IUndoableOperation;
 import org.eclipse.core.commands.operations.OperationHistoryFactory;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ISelection;
@@ -54,7 +61,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
-
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.ControllerModel;
 import org.openscience.cdk.controller.IChemModelEventRelayHandler;
@@ -74,6 +80,8 @@ import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.elements.ElementGroup;
+import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.generators.ExternalHighlightGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.SelectionGenerator;
@@ -81,41 +89,45 @@ import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 
-public class JChemPaintEditorWidget extends JChemPaintWidget 
+public class JChemPaintEditorWidget extends JChemPaintWidget
     implements ISelectionProvider, IViewEventRelay, IUndoListener {
-    
+
+    Logger logger = Logger.getLogger( JChemPaintEditorWidget.class );
+
+    public static final String EP_GENERATOR = "net.bioclipse.cdk.jchempaint.generator";
+
     private final static StructureDiagramGenerator sdg = new
                                                     StructureDiagramGenerator();
     private Collection<ISelectionChangedListener> listeners =
                                     new ArrayList<ISelectionChangedListener>();
 
     private ISelection currentSelection = StructuredSelection.EMPTY;
-    
+
     private IAtom prevHighlightedAtom;
-    
+
     private IBond prevHighlightedBond;
 
     private ICDKMolecule cdkMolecule;
 
     private ControllerHub hub;
-    
+
     private ControllerModel c2dm;
-    
+
     private SWTMouseEventRelay relay;
-    
+
     private boolean generated = false;
 
     private boolean isdirty = false;
-    
-    private final Point origin = new Point(0, 0); 
-    
+
+    private final Point origin = new Point(0, 0);
+
     private boolean isScrolling = false;
 
-    private IOperationHistory operationHistory = 
+    private IOperationHistory operationHistory =
         OperationHistoryFactory.getOperationHistory();
-    
+
     private final IUndoContext undoContext = new IUndoContext() {
-        
+
         public final String label = "JChemPaintEditorWidget";
 
         public String getLabel() {
@@ -125,73 +137,73 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         public boolean matches(IUndoContext context) {
             return context.getLabel().equals(label);
         }
-        
+
     };
 
     public JChemPaintEditorWidget(Composite parent, int style) {
-        super( parent, style | 
-                SWT.H_SCROLL | 
-                SWT.V_SCROLL | 
+        super( parent, style |
+                SWT.H_SCROLL |
+                SWT.V_SCROLL |
                 SWT.DOUBLE_BUFFERED);
-        
+
         setupScrollbars();
-        
-        java.awt.Color color = 
+
+        java.awt.Color color =
             createFromSWT(
-                    getDisplay().getSystemColor(SWT.COLOR_LIST_SELECTION )); 
+                    getDisplay().getSystemColor(SWT.COLOR_LIST_SELECTION ));
         getRenderer().getRenderer2DModel().setSelectedPartColor(color);
-        
+
         setupControllerHub();
     }
-    
+
     private void setAtomContainerInHub(IAtomContainer atomContainer) {
         IChemModel chemModel = ChemModelManipulator.newChemModel(atomContainer);
         hub.setChemModel(chemModel);
         this.applyGlobalProperties();
     }
-    
+
     private void setupControllerHub( ) {
-        IChemModel chemModel = 
+        IChemModel chemModel =
             NoNotificationChemObjectBuilder.getInstance().newChemModel();
-        
+
         c2dm = new ControllerModel();
         UndoRedoHandler undoRedoHandler = new UndoRedoHandler();
         undoRedoHandler.addIUndoListener(this);
-        hub = new ControllerHub(c2dm, 
-                                getRenderer(), 
-                                chemModel, 
-                                this, 
-                                undoRedoHandler, 
+        hub = new ControllerHub(c2dm,
+                                getRenderer(),
+                                chemModel,
+                                this,
+                                undoRedoHandler,
                                 new SWTUndoRedoFactory(this.undoContext)
         );
-    
+
         hub.setEventHandler(
                 new IChemModelEventRelayHandler() {
-    
+
                     public void coordinatesChanged() {
                         setDirty(true);
                     }
-    
+
                     public void selectionChanged() {
                         setSelection(getSelection());
                     }
-    
+
                     public void structureChanged() {
                         setDirty(true);
                     }
-    
+
                     public void structurePropertiesChanged() {
                         setDirty(true);
                     }
-    
+
                 }
         );
-    
+
         relay = new SWTMouseEventRelay(hub);
         hub.setActiveDrawModule(new MoveModule(hub));
-    
+
         applyGlobalProperties();
-        
+
         addMouseListener(relay);
         addMouseMoveListener(relay);
         addMouseWheelListener(relay);
@@ -200,7 +212,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     }
 
     private void setupScrollbars() {
-        final ScrollBar hBar = getHorizontalBar(); 
+        final ScrollBar hBar = getHorizontalBar();
         hBar.setEnabled(true);
         hBar.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
@@ -231,7 +243,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 update();
             }
         });
-        
+
         addListener (SWT.Resize,  new Listener () {
             public void handleEvent (Event e) {
                 Rectangle rect = getDiagramBounds();
@@ -240,7 +252,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 vBar.setMaximum(rect.height);
                 hBar.setThumb(Math.min(rect.width, client.width));
                 vBar.setThumb(Math.min(rect.height, client.height));
-                
+
                 int hPage = rect.width - client.width;
                 int vPage = rect.height - client.height;
                 int hSelection = hBar.getSelection();
@@ -257,53 +269,53 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             }
         });
     }
-    
+
     private void paintControl( PaintEvent event ) {
             drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
             IChemModel chemModel = hub.getIChemModel();
-            
+
             int atomCount = ChemModelManipulator.getAtomCount(chemModel);
             if ( chemModel == null || atomCount == 0) {
                 setBackground( getParent().getBackground() );
                 return;
             } else setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
-            
+
             Rectangle c = getClientArea();
             Rectangle2D clientArea =
-                new Rectangle2D.Double(c.x, c.y, c.width, c.height); 
+                new Rectangle2D.Double(c.x, c.y, c.width, c.height);
             SWTRenderer visitor = new SWTRenderer( event.gc );
-            
+
             Renderer renderer = getRenderer();
-            
+
             if (isScrolling) {
                 renderer.repaint(visitor);
     //            isScrolling = false;
                 return;
             }
-            
+
             if (isNew) {
                 renderer.setScale(chemModel);
             }
-    
+
             if (renderer.getRenderer2DModel().isFitToScreen()) {
                 renderer.paintChemModel(chemModel, visitor, clientArea, isNew);
             } else {
-                java.awt.Rectangle diagramBounds = 
+                java.awt.Rectangle diagramBounds =
                     renderer.paintChemModel(chemModel, visitor);
             }
-            
+
             isNew = false;
         }
 
     private Rectangle getDiagramBounds() {
-        java.awt.Rectangle r = 
+        java.awt.Rectangle r =
             getRenderer().calculateDiagramBounds(hub.getIChemModel());
-        return new Rectangle(r.x, r.y, r.width, r.height); 
+        return new Rectangle(r.x, r.y, r.width, r.height);
     }
 
     private void applyGlobalProperties() {
         // apply the global JCP properties
-        IJChemPaintGlobalPropertiesManager jcpprop = 
+        IJChemPaintGlobalPropertiesManager jcpprop =
             Activator.getDefault().getJCPPropManager();
         try {
             jcpprop.applyProperties(hub.getRenderer().getRenderer2DModel());
@@ -317,7 +329,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         RendererModel rendererModel = getRenderer2DModel();
         IAtom atom = rendererModel.getHighlightedAtom();
         IBond bond = rendererModel.getHighlightedBond();
-        
+
         if (atom != prevHighlightedAtom || bond != prevHighlightedBond) {
             prevHighlightedAtom = atom;
             prevHighlightedBond = bond;
@@ -326,34 +338,34 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                         rendererModel.getToolTipText(prevHighlightedAtom));
             } else if (prevHighlightedBond != null) {
              // put getToolTipText(prevHighlightedBond) here
-                setToolTipText( null ); 
+                setToolTipText( null );
             } else {
                 setToolTipText( "" );
             }
             setSelection( getSelection() );
         }
-    
+
     }
 
     public void setIsScrolling(boolean isScrolling) {
         this.isScrolling = isScrolling;
     }
-    
+
     public void setupPaintListener() {
         addPaintListener( new PaintListener() {
-            
+
             public void paintControl( PaintEvent event ) {
-                
+
                 JChemPaintEditorWidget.this.paintControl( event );
             }
         } );
 
     }
-    
+
     public void reset() {
         this.isNew = true;
     }
-    
+
     public void updateView() {
         updateSelection();
         redraw();
@@ -362,6 +374,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     @Override
     protected List<IGenerator> createGenerators() {
         List<IGenerator> generatorList = new ArrayList<IGenerator>();
+
+        generatorList.add( getGeneratorsFromExtensionPoint() );
+
         generatorList.add(new ExternalHighlightGenerator());
         generatorList.addAll( super.createGenerators() );
         generatorList.add(new SelectionGenerator());
@@ -392,10 +407,10 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     public void setInput( Object element ) {
 
         if(element instanceof IAdaptable) {
-            ICDKMolecule molecule = 
+            ICDKMolecule molecule =
                 (ICDKMolecule)
                 ((IAdaptable)element).getAdapter( ICDKMolecule.class );
-            
+
             if (molecule != null) {
                 cdkMolecule = molecule;
                 setAtomContainer(molecule.getAtomContainer());
@@ -403,7 +418,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             else setAtomContainer( null );
         }
     }
-    
+
     /*
      * Utility method for copying 3D x,y to 2D coordinates
      */
@@ -439,35 +454,35 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         RendererModel rendererModel = getRenderer2DModel();
         if (rendererModel == null && cdkMolecule != null)
             return new StructuredSelection(cdkMolecule);
-        
+
         List<CDKChemObject> selection = new LinkedList<CDKChemObject>();
 
         IAtom highlightedAtom = rendererModel.getHighlightedAtom();
         IBond highlightedBond = rendererModel.getHighlightedBond();
-        
+
         if (highlightedBond != null)
             selection.add(createCDKChemObject(highlightedBond));
-        
+
         if (highlightedAtom != null)
             selection.add(createCDKChemObject(highlightedAtom));
 
         IChemObjectSelection sel = rendererModel.getSelection();
         IAtomContainer modelSelection = sel.getConnectedAtomContainer();
-        
+
         if (modelSelection != null) {
             for (IAtom atom : modelSelection.atoms()) {
                 selection.add(createCDKChemObject(atom));
             }
-            
+
             for (IBond bond : modelSelection.bonds()) {
                 selection.add(createCDKChemObject(bond));
             }
         }
-        
+
         if (selection.size() == 0 && cdkMolecule != null) {
             return new StructuredSelection(cdkMolecule);
         }
-        
+
         return new StructuredSelection(selection);
     }
 
@@ -480,7 +495,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     public void setSelection( ISelection selection ) {
         currentSelection = selection;
-        final SelectionChangedEvent e = 
+        final SelectionChangedEvent e =
             new SelectionChangedEvent(this, selection);
         Object[] listenersArray = listeners.toArray();
 
@@ -513,13 +528,13 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 	                               color.getGreen(),
 	                               color.getBlue());
 	}
-	
+
 	public void undo() throws ExecutionException {
 //	    if (this.operationHistory.canUndo(this.undoContext)) {
 //	        this.operationHistory.undo(undoContext, null, null);
 //	    }
 	}
-	
+
 	public void redo() throws ExecutionException {
 //	    if (this.operationHistory.canRedo(this.undoContext)) {
 //            this.operationHistory.redo(undoContext, null, null);
@@ -529,5 +544,38 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     public void doUndo(IUndoRedoable undoredo) {
 //        operationHistory.add((IUndoableOperation)undoredo);
+    }
+
+    private IGenerator getGeneratorsFromExtensionPoint() {
+
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        IExtensionPoint generatorExtensionPoint = registry
+        .getExtensionPoint(EP_GENERATOR);
+
+        IExtension[] generatorExtensions
+                            = generatorExtensionPoint.getExtensions();
+
+        for(IExtension extension : generatorExtensions) {
+
+            for( IConfigurationElement element
+                    : extension.getConfigurationElements() ) {
+                try {
+                    IGenerator generator = (IGenerator) element.createExecutableExtension("class");
+                    return generator;
+                } catch (CoreException e) {
+                    LogUtils.debugTrace( logger, e );
+                }
+            }
+        }
+        return new IGenerator() {
+
+            public IRenderingElement generate( IAtomContainer ac,
+                                               RendererModel model ) {
+
+                // empty nothing generator;
+                return new ElementGroup();
+            }
+
+        };
     }
 }
