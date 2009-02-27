@@ -17,7 +17,6 @@ import java.util.List;
 
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
-import net.sourceforge.nattable.NatTable;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -109,9 +108,9 @@ public class MoleculesEditor extends EditorPart implements
         molTableViewer.setContentProvider( contentProvider =
                                         new MoleculeTableContentProvider() );
         molTableViewer.setInput( getEditorInput() );
-        
+
         molTableViewer.setInput(getEditorInput());
-        
+
                 MenuManager menuMgr = new MenuManager("Molecuels table","net.bioclipse.cdk.ui.sdfeditor.menu");
                 menuMgr.add( new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
                 getSite().registerContextMenu( "net.bioclipse.cdk.ui.sdfeditor.menu",menuMgr, molTableViewer);
@@ -120,7 +119,7 @@ public class MoleculesEditor extends EditorPart implements
                 //(new TableViewer(parent,SWT.NONE)).setInput( input )
                 logger.debug( "Menu id for SDFEditor " +menuMgr.getId());
 //        ((NatTable)molTableViewer.getControl()).get
-        
+
         getSite().setSelectionProvider( molTableViewer );
     }
 
@@ -188,6 +187,16 @@ public class MoleculesEditor extends EditorPart implements
         // mapping between selections and index
         //viewer.setSelection(  );
     }
+
+    public IRenderer2DConfigurator getRenderer2DConfigurator() {
+        return molTableViewer.getRenderer2DConfigurator();
+    }
+
+    public void setRenderer2DConfigurator(
+                             IRenderer2DConfigurator renderer2DConfigurator ) {
+        molTableViewer.setRenderer2DConfigurator( renderer2DConfigurator );
+    }
+
 
     protected void setupDragSource() {
         int operations = DND.DROP_COPY | DND.DROP_MOVE;

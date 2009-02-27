@@ -69,11 +69,31 @@ public class JCPCellPainter implements ICellPainter {
     private Font generatedFont;
     private Renderer renderer;
 
+    private  IRenderer2DConfigurator renderer2DConfigurator;
+
 
 
     public JCPCellPainter() {
         setupRenderer();
     }
+
+
+
+
+    IRenderer2DConfigurator getRenderer2DConfigurator() {
+
+        return renderer2DConfigurator;
+    }
+
+
+
+
+    void setRenderer2DConfigurator(
+                                           IRenderer2DConfigurator renderer2DConfigurator ) {
+
+        this.renderer2DConfigurator = renderer2DConfigurator;
+    }
+
 
 
     private void setupRenderer() {
@@ -117,6 +137,10 @@ public class JCPCellPainter implements ICellPainter {
         ICDKMolecule mol = (ICDKMolecule)element.getAdapter( ICDKMolecule.class);
         if(mol == null) return false;
 
+        if (renderer2DConfigurator!=null){
+            renderer2DConfigurator.configure( renderer.getRenderer2DModel(),
+                                              mol );
+        }
         // If no 2D coordinates
         if ( !GeometryTools.has2DCoordinates( mol.getAtomContainer() ) ) {
             // Test if 3D coordinates
@@ -149,10 +173,7 @@ public class JCPCellPainter implements ICellPainter {
             if(acArray[0] == null) return;
 
 
-//            if (renderer2DConfigurator!=null){
-//                renderer2DConfigurator.configure( renderer.getRenderer2DModel(),
-//                                                  mol );
-//            }
+
 
             if(generated) {
                 gc.setFont( generatedFont );

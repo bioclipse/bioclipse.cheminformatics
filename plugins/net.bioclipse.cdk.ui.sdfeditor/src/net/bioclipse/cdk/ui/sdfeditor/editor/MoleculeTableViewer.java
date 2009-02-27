@@ -32,8 +32,12 @@ public class MoleculeTableViewer extends ContentViewer {
 
     NatTable table;
     Control headerControl;
+    JCPCellPainter cellPainter;
 
     public MoleculeTableViewer(Composite parent, int style) {
+
+        cellPainter = new JCPCellPainter();
+
         DefaultNatTableModel model = new DefaultNatTableModel();
 
         IColumnHeaderLabelProvider columnHeaderLabelProvider = new IColumnHeaderLabelProvider() {
@@ -71,13 +75,13 @@ public class MoleculeTableViewer extends ContentViewer {
         });
 
         bodyConfig.setCellRenderer( new AbstractCellRenderer() {
-            ICellPainter structurePainter = new JCPCellPainter();
+
 
             @Override
             public ICellPainter getCellPainter( int row, int col ) {
 
                 if(col == 0)
-                    return structurePainter;
+                    return cellPainter;
                 return super.getCellPainter( row, col );
             }
 
@@ -176,6 +180,16 @@ public class MoleculeTableViewer extends ContentViewer {
         // TODO Auto-generated method stub
 
     }
+
+     IRenderer2DConfigurator getRenderer2DConfigurator() {
+        return cellPainter.getRenderer2DConfigurator();
+    }
+
+     void setRenderer2DConfigurator(
+                             IRenderer2DConfigurator renderer2DConfigurator ) {
+        cellPainter.setRenderer2DConfigurator( renderer2DConfigurator);
+    }
+
 
     protected void updateSelection(ISelection selection) {
         SelectionChangedEvent event = new SelectionChangedEvent(this, selection);
