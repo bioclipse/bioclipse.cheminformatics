@@ -51,6 +51,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.content.IContentType;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -998,6 +999,29 @@ public class CDKManagerPluginTest {
         String path=url.getFile();
         String format = cdk.determineFormat(path);
         assertEquals(CMLFormat.getInstance().getFormatName(), format);
+    }
+
+    @Test public void testDetermineFormat_FromWSResource() throws Exception {
+        ICDKMolecule propane  = cdk.fromSMILES("CCC");
+        cdk.saveMDLMolfile(propane, "/Virtual/testDetermineFormat.mol");
+        String format = cdk.determineFormat("/Virtual/testDetermineFormat.mol");
+        assertEquals(MDLV2000Format.getInstance().getFormatName(), format);
+    }
+
+    @Test public void testDetermineFormat_IContentType() throws Exception {
+        ICDKMolecule propane  = cdk.fromSMILES("CCC");
+        cdk.saveMDLMolfile(propane, "/Virtual/testBug607.mol");
+
+        propane = cdk.loadMolecule("/Virtual/testBug607.mol");
+        Assert.assertNotNull(propane.getResource());
+        Assert.assertTrue(propane.getResource() instanceof IFile);
+        IFile resource = (IFile)propane.getResource();
+        Assert.assertNotNull(resource.getContentDescription());
+        IContentType type = resource.getContentDescription().getContentType();
+        Assert.assertNotNull(type);
+        IChemFormat format = cdk.determineFormat(type);
+        Assert.assertNotNull(format);
+        assertEquals(MDLV2000Format.getInstance(), format);
     }
 
     @Test
