@@ -529,7 +529,8 @@ public class CDKManagerPluginTest {
         coc.setResource(mol.getResource());
         cdk.saveMolecule(coc,true);
         mol = cdk.loadMolecule("/Virtual/testSaveMoleculeBBB.mol");
-        assertEquals("O(C)C", mol.getSMILES());
+        assertTrue("O(C)C".equals(mol.getSMILES()) ||
+                   "COC".equals(mol.getSMILES()));
     }
 
     @Test public void testSaveMolecule_IMolecule_boolean() throws Exception {
@@ -543,7 +544,8 @@ public class CDKManagerPluginTest {
         coc.setResource(mol.getResource());
         cdk.saveMolecule(coc, true);
         mol = cdk.loadMolecule("/Virtual/testSaveMoleculeBCD.mol");
-        assertEquals("O(C)C", mol.getSMILES());
+        assertTrue("O(C)C".equals(mol.getSMILES()) ||
+                "COC".equals(mol.getSMILES()));
     }
 
     @Test public void testSaveMolecule_IMolecule_String() throws Exception {
@@ -564,7 +566,8 @@ public class CDKManagerPluginTest {
         coc.setResource(mol.getResource());
         cdk.saveMolecule(coc, "/Virtual/testSaveMoleculeZZZ.mol", true);
         mol = cdk.loadMolecule("/Virtual/testSaveMoleculeZZZ.mol");
-        assertEquals("COC", mol.getSMILES());
+        assertTrue("O(C)C".equals(mol.getSMILES()) ||
+                "COC".equals(mol.getSMILES()));
     }
 
     @Test public void testSaveMolecule_IMolecule_IFile_boolean() throws Exception {
@@ -599,7 +602,8 @@ public class CDKManagerPluginTest {
             .transform("/Virtual/testSaveMoleculeYYY.mol");
         cdk.saveMolecule(coc, target, false);
         mol = cdk.loadMolecule("/Virtual/testSaveMoleculeYYY.mol");
-        assertEquals("COC", mol.getSMILES());
+        assertTrue("O(C)C".equals(mol.getSMILES()) ||
+                "COC".equals(mol.getSMILES()));
     }
 
     @Test
