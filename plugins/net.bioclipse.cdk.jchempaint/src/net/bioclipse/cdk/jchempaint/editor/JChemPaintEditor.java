@@ -89,7 +89,6 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         ICDKManager cdk = Activator.getDefault().getCDKManager();
 
         try {
-            synchronizeModelWithHub();
             IFile resource = (IFile)model.getResource();
             IChemFormat chemFormat = cdk.determineFormat(
                 resource.getContentDescription().getContentType()
@@ -114,23 +113,6 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         } catch ( CoreException e ) {
             monitor.isCanceled();
             logger.debug( "Failed to save file: " + e.getMessage() );
-        }
-    }
-
-    /**
-     * Upon things like .zap, the {@link ControllerHub} will recreate atom
-     * containers. This means that upon saving, to not loose information, we
-     * have to synchronize the CDKMolecule model with the model used by the hub.
-     * This is done by adding all IAtomContainers found in the hub's ChemModel
-     * to the {@link IAtomContainer} of the CDKMolecule.
-     */
-    private void synchronizeModelWithHub() {
-        IChemModel cdkModel = widget.getControllerHub().getIChemModel();
-        IAtomContainer bcModel = model.getAtomContainer();
-        bcModel.removeAllElements();
-        for (IAtomContainer container :
-             ChemModelManipulator.getAllAtomContainers(cdkModel)) {
-            bcModel.add(container);
         }
     }
 
