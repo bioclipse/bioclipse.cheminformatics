@@ -66,9 +66,8 @@ public class JChemPaintView extends ViewPart
 
     private static final Logger logger = Logger.getLogger(JChemPaintView.class);
     
-    public static final String EP_GENERATOR = "net.bioclipse.cdk.ui.sdf.generator";
-
     private JChemPaintWidget canvasView;
+    private ChoiceGenerator extensionGenerator;
     private IMolecule molecule;
     private final static StructureDiagramGenerator sdg = new StructureDiagramGenerator();
     private IPartListener2 partListener;
@@ -91,7 +90,8 @@ public class JChemPaintView extends ViewPart
             @Override
             protected List<IGenerator> createGenerators() {
                 List<IGenerator> genList = new ArrayList<IGenerator>();
-                genList.add(getGeneratorsFromExtensionPoint());
+                genList.add(extensionGenerator
+                            =ChoiceGenerator.getGeneratorsFromExtensionPoint());
                 genList.addAll( super.createGenerators() );
                 return genList;
             }
@@ -328,36 +328,8 @@ public class JChemPaintView extends ViewPart
         canvasView.dispose();
     }
     
-    private IGenerator getGeneratorsFromExtensionPoint() {
-
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtensionPoint generatorExtensionPoint = registry
-        .getExtensionPoint(EP_GENERATOR);
-
-        IExtension[] generatorExtensions
-                            = generatorExtensionPoint.getExtensions();
-
-        for(IExtension extension : generatorExtensions) {
-
-            for( IConfigurationElement element
-                    : extension.getConfigurationElements() ) {
-                try {
-                    IGenerator generator = (IGenerator) element.createExecutableExtension("class");
-                    return generator;
-                } catch (CoreException e) {
-                    LogUtils.debugTrace( logger, e );
-                }
-            }
-        }
-        return new IGenerator() {
-
-            public IRenderingElement generate( IAtomContainer ac,
-                                               RendererModel model ) {
-
-                // empty nothing generator;
-                return new ElementGroup();
-            }
-
-        };
+    public void showExternalGenerators(boolean show) {
+        extensionGenerator.setUse( show );
+        canvasView.redraw();
     }
 }

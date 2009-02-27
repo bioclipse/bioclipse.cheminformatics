@@ -56,19 +56,22 @@ public class ChoiceGenerator implements IGenerator {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IExtensionPoint generatorExtensionPoint = registry
         .getExtensionPoint(EP_GENERATOR);
+        if(generatorExtensionPoint != null ) {
+            IExtension[] generatorExtensions
+            = generatorExtensionPoint.getExtensions();
 
-        IExtension[] generatorExtensions
-                            = generatorExtensionPoint.getExtensions();
+            for(IExtension extension : generatorExtensions) {
 
-        for(IExtension extension : generatorExtensions) {
-
-            for( IConfigurationElement element
-                    : extension.getConfigurationElements() ) {
-                try {
-                    final IGenerator generator = (IGenerator) element.createExecutableExtension("class");
-                    return new ChoiceGenerator(generator);
-                } catch (CoreException e) {
-                    LogUtils.debugTrace( Logger.getLogger( ChoiceGenerator.class) ,e);
+                for( IConfigurationElement element
+                        : extension.getConfigurationElements() ) {
+                    try {
+                        final IGenerator generator = (IGenerator) 
+                                     element.createExecutableExtension("class");
+                        return new ChoiceGenerator(generator);
+                    } catch (CoreException e) {
+                        LogUtils.debugTrace( Logger.getLogger( 
+                                                     ChoiceGenerator.class) ,e);
+                    }
                 }
             }
         }
@@ -80,6 +83,5 @@ public class ChoiceGenerator implements IGenerator {
         public void accept( IRenderingVisitor v ) {
 
         }
-
     };
 }
