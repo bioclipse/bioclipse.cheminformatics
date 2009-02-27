@@ -537,6 +537,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     public void doUndo(IUndoRedoable undoredo) {
 //        operationHistory.add((IUndoableOperation)undoredo);
     }
-
+ 
+    public IAtomContainer getAtomContainer() {
+        return atomContainer;
+    }
 
 }
