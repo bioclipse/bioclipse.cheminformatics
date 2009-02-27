@@ -1327,6 +1327,7 @@ public class CDKManager implements ICDKManager {
   	    "This manager method should not be called");
   	}
 
+  	
   	public List<ICDKMolecule> loadSMILESFile(IFile file,IProgressMonitor monitor)
   	                          throws CoreException, IOException {
 
@@ -1344,13 +1345,22 @@ public class CDKManager implements ICDKManager {
   	                              + " is not ready to read.");
   	    }
 
+  	    class StringPair {
+  	        final String first;
+  	        final String second;
+  	        StringPair(String first,String second) {
+  	            this.first = first;
+  	            this.second = second;
+  	        }
+  	    };
+  	    
   	    String line = br.readLine();
 
   	    if (line == null)
   	        throw new IOException("File: " + file.getName()
   	                              + " has null contents");
   	    int cnt = 0;
-  	    Map<String, String> entries = new HashMap<String, String>();
+  	    List<StringPair> list = new LinkedList<StringPair>();
   	    while (line != null) {
   	        //			System.out.println("Line " + cnt + ": " + line);
   	        Scanner smilesScanner = new Scanner(line).useDelimiter("\\s+");
@@ -1364,9 +1374,9 @@ public class CDKManager implements ICDKManager {
   	        }
   	        if (part1 != null) {
   	            if (part2 != null) {
-  	                entries.put(part1, part2);
+  	                list.add( new StringPair(part1,part2) );
   	            }else{
-  	                entries.put(part1, "entry-" + cnt);
+  	                list.add( new StringPair(part1,"entry-" + cnt) );
   	            }
   	            //				System.out
   	            //						.println("  - " + part1 + " -> " + entries.get(part1));
@@ -1377,8 +1387,8 @@ public class CDKManager implements ICDKManager {
   	    }
   	    // Depict where the smiles are, in first or second
   	    boolean smilesInFirst = true;
-  	    String firstKey = (String) entries.keySet().toArray()[0];
-  	    String firstVal = (String) entries.get(firstKey);
+  	    String firstKey = list.get( 0 ).first;
+  	    String firstVal = list.get( 0 ).second;
   	    ICDKMolecule mol = null;
   	    try {
   	        mol = fromSMILES(firstKey);
@@ -1392,18 +1402,18 @@ public class CDKManager implements ICDKManager {
   	        }
   	    }
   	    List<ICDKMolecule> mols = new ArrayList<ICDKMolecule>();
-  	    for (String part1 : entries.keySet()) {
+  	    for (StringPair part : list) {
   	        if (smilesInFirst) {
   	            try {
-  	                mol = fromSMILES(part1);
-  	                mol.setName(entries.get(part1));
+  	                mol = fromSMILES(part.first);
+  	                mol.setName(part.second);
   	                mols.add(mol);
   	            } catch (BioclipseException e) {
   	            }
   	        } else {
   	            try {
-  	                mol = fromSMILES(entries.get(part1));
-  	                mol.setName(part1);
+  	                mol = fromSMILES(part.second);
+  	                mol.setName(part.first);
   	                mols.add(mol);
   	            } catch (BioclipseException e) {
   	            }
