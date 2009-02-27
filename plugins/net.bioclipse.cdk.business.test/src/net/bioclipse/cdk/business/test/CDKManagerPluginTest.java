@@ -1178,4 +1178,16 @@ public class CDKManagerPluginTest {
                 (IChemFormat)CMLFormat.getInstance(), true);
         Assert.assertNotNull(mol.getResource());
     }
+
+    @Test
+    public  void testStoresResource_ContentType()
+    throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("CC");
+        cdk.saveMolecule(mol,"/Virtual/testResource4.cml",
+                (IChemFormat)CMLFormat.getInstance(), true);
+        Assert.assertNotNull(mol.getResource());
+        Assert.assertTrue(mol.getResource() instanceof IFile);
+        IFile ifile = (IFile)mol.getResource();
+        Assert.assertNotNull(ifile.getContentDescription());
+    }
 }
