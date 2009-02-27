@@ -1148,24 +1148,6 @@ public class CDKManagerPluginTest {
     }
 
     @Test
-    public  void testGenerate2D() throws Exception {
-        
-        ICDKMolecule mol = cdk.fromSMILES("CC");
-        Assert.assertFalse( cdk.has2d( mol ));
-        
-        mol.getAtomContainer().getAtom( 0 ).getProperties().put( "wee", "how" );
-        Assert.assertEquals( "how", mol.getAtomContainer().getAtom( 0 )
-                             .getProperties().get( "wee" ) );
-        
-        ICDKMolecule mol2 = (ICDKMolecule)cdk.generate2dCoordinates( mol );
-        Assert.assertTrue( cdk.has2d( mol2 ));
-        
-        //Make sure properties are copied to new molecule
-        Assert.assertEquals( "how", mol2.getAtomContainer().getAtom( 0 )
-                             .getProperties().get( "wee" ) );
-    }
-
-    @Test
     public  void testStoresResource_Save_IMolecule_String_Boolean() throws Exception {
         ICDKMolecule mol = cdk.fromSMILES("CC");
         cdk.saveMolecule(mol,"/Virtual/testResource1.cml", true);
