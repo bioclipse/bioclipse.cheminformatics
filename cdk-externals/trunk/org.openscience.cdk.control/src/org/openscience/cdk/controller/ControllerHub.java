@@ -640,7 +640,12 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
             set = chemModel.getBuilder().newMoleculeSet();
             chemModel.setMoleculeSet(set);
         }
-        set.addAtomContainer(ring);
+        IAtomContainer container = set.getAtomContainer(0);
+        if (container == null) {
+            container = set.getBuilder().newAtomContainer();
+            set.addAtomContainer(container);
+        }
+        container.add(ring);
         structureChanged();
         return ring;
     }
@@ -661,7 +666,12 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
             set = chemModel.getBuilder().newMoleculeSet();
             chemModel.setMoleculeSet(set);
         }
-        set.addAtomContainer(ring);
+        IAtomContainer container = set.getAtomContainer(0);
+        if (container == null) {
+            container = set.getBuilder().newAtomContainer();
+            set.addAtomContainer(container);
+        }
+        container.add(ring);
         structureChanged();
         return ring;
     }
