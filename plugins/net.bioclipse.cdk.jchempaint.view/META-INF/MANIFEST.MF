@@ -13,7 +13,7 @@ Require-Bundle: javax.vecmath;bundle-version="1.2.1",
  org.openscience.cdk.smiles;bundle-version="1.1.2",
  net.bioclipse.core;bundle-version="2.0.0"
 Bundle-SymbolicName: net.bioclipse.cdk.jchempaint.view;singleton:=true
-Bundle-Version: 2.0.0.B20090214
+Bundle-Version: 2.0.0.B20090227
 Bundle-Name: JChemPaintView
 Bundle-ManifestVersion: 2
 Export-Package: net.bioclipse.cdk.jchempaint.view
