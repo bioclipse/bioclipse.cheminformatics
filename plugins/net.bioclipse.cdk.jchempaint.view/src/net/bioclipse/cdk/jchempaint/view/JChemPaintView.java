@@ -66,7 +66,7 @@ public class JChemPaintView extends ViewPart
 
     private static final Logger logger = Logger.getLogger(JChemPaintView.class);
     
-    public static final String EP_GENERATOR = "net.bioclipse.cdk.jchempaint.view.generator";
+    public static final String EP_GENERATOR = "net.bioclipse.cdk.ui.sdf.generator";
 
     private JChemPaintWidget canvasView;
     private IMolecule molecule;

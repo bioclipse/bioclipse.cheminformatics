@@ -94,7 +94,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     Logger logger = Logger.getLogger( JChemPaintEditorWidget.class );
 
-    public static final String EP_GENERATOR = "net.bioclipse.cdk.jchempaint.generator";
+    public static final String EP_GENERATOR = "net.bioclipse.cdk.ui.sdf.generator";
 
     private final static StructureDiagramGenerator sdg = new
                                                     StructureDiagramGenerator();
@@ -122,6 +122,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     private final Point origin = new Point(0, 0);
 
     private boolean isScrolling = false;
+
+    private boolean useExtensionGenerators = false;
 
     private IOperationHistory operationHistory =
         OperationHistoryFactory.getOperationHistory();
@@ -578,4 +580,12 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         };
     }
+
+
+    public void setUseExtensionGenerators( boolean useExtensionGenerators ) {
+
+        this.useExtensionGenerators = useExtensionGenerators;
+    }
+
+
 }
