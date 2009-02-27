@@ -1129,7 +1129,24 @@ public class CDKManagerPluginTest {
         ICDKMolecule mol = cdk.fromSMILES("CC");
         cdk.saveMolecule(mol,"/Virtual/bug583.cml", true);
     }
-    
+
+    @Test
+    public  void testGenerate2D() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("CC");
+        Assert.assertFalse( cdk.has2d( mol ));
+
+        mol.getAtomContainer().getAtom( 0 ).getProperties().put( "wee", "how" );
+        Assert.assertEquals( "how", mol.getAtomContainer().getAtom( 0 )
+                             .getProperties().get( "wee" ) );
+
+        ICDKMolecule mol2 = (ICDKMolecule)cdk.generate2dCoordinates( mol );
+        Assert.assertTrue( cdk.has2d( mol2 ));
+
+        //Make sure properties are copied to new molecule
+        Assert.assertEquals( "how", mol2.getAtomContainer().getAtom( 0 )
+                             .getProperties().get( "wee" ) );
+    }
+
     @Test
     public  void testGenerate2D() throws Exception {
         
@@ -1146,7 +1163,37 @@ public class CDKManagerPluginTest {
         //Make sure properties are copied to new molecule
         Assert.assertEquals( "how", mol2.getAtomContainer().getAtom( 0 )
                              .getProperties().get( "wee" ) );
-
     }
-    
+
+    @Test
+    public  void testStoresResource_Save_IMolecule_String_Boolean() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("CC");
+        cdk.saveMolecule(mol,"/Virtual/testResource1.cml", true);
+        Assert.assertNotNull(mol.getResource());
+    }
+
+    @Test
+    public  void testStoresResource_Save_IMolecule_String() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("CC");
+        cdk.saveMolecule(mol,"/Virtual/testResource2.cml");
+        Assert.assertNotNull(mol.getResource());
+    }
+
+    @Test
+    public  void testStoresResource_Save_IMolecule_IChemFormat()
+    throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("CC");
+        cdk.saveMolecule(mol,"/Virtual/testResource3.cml",
+                (IChemFormat)CMLFormat.getInstance());
+        Assert.assertNotNull(mol.getResource());
+    }
+
+    @Test
+    public  void testStoresResource_Save_IMolecule_IChemFormat_Boolean()
+    throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("CC");
+        cdk.saveMolecule(mol,"/Virtual/testResource4.cml",
+                (IChemFormat)CMLFormat.getInstance(), true);
+        Assert.assertNotNull(mol.getResource());
+    }
 }
