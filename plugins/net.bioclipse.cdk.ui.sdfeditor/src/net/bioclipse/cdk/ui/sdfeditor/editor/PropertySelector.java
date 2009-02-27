@@ -94,8 +94,7 @@ public class PropertySelector extends Composite{
         createButtonBar( centerComposite );
 
         Composite comp = new Composite(parent,SWT.NONE);
-        comp.setBackground( comp.getDisplay().getSystemColor( SWT.COLOR_CYAN ) );
-        gridData = new GridData(SWT.FILL, SWT.FILL, true,true);
+        gridData = new GridData(SWT.FILL, SWT.BOTTOM, true,false);
         gridData.heightHint = 20;
         comp.setLayoutData( gridData );
 

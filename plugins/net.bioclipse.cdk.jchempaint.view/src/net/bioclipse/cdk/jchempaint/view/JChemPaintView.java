@@ -91,8 +91,8 @@ public class JChemPaintView extends ViewPart
             @Override
             protected List<IGenerator> createGenerators() {
                 List<IGenerator> genList = new ArrayList<IGenerator>();
-                genList.addAll( super.createGenerators() );
                 genList.add(getGeneratorsFromExtensionPoint());
+                genList.addAll( super.createGenerators() );
                 return genList;
             }
         };

@@ -156,8 +156,8 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                if(lastPage == Pages.Headers) {
                    moleculesPage.getContentProvider()
                            .setVisibleProperties( ps.getVisibleProperties() );
-                   moleculesPage.getContentProvider().updateHeaders();
                    moleculesPage.setUseExtensionGenerators(ps.isUseGenerators());
+                   moleculesPage.getContentProvider().updateHeaders();
                }break;
            case Headers:
                MoleculeTableContentProvider contentProvider =
