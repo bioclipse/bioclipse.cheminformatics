@@ -31,6 +31,28 @@ import org.openscience.cdk.interfaces.IMoleculeSet;
 @SuppressWarnings("serial")
 public class StructureContentProvider implements ITreeContentProvider {
 
+    public static class CDKAtomChemObject extends CDKChemObject {
+
+        public CDKAtomChemObject(String name, IChemObject chemobj) {
+            super( name, chemobj );
+        }
+
+        public CDKAtomChemObject(IChemObject chemObject) {
+            super(chemObject);
+        }
+
+    }
+
+    public static class CDKBondChemObject extends CDKChemObject {
+
+        public CDKBondChemObject(String name, IChemObject chemobj) {
+            super( name, chemobj );
+        }
+
+        public CDKBondChemObject(IChemObject chemObject) {
+            super(chemObject);
+        }
+    }
     //Use logging
     private static final Logger logger = Logger.getLogger(StructureContentProvider.class);
 
@@ -102,7 +124,7 @@ public class StructureContentProvider implements ITreeContentProvider {
                           ? elementNames.get( symbol )
                           : "unknown";
         CDKChemObject co
-          = new CDKChemObject( name + " (" + symbol + ")", atom );
+          = new CDKAtomChemObject( name + " (" + symbol + ")", atom );
         return co;
     }
 
@@ -126,7 +148,7 @@ public class StructureContentProvider implements ITreeContentProvider {
                    : bond.getFlag(CDKConstants.ISAROMATIC)
                        ? " (aromatic)"
                        : "" );
-        CDKChemObject co=new CDKChemObject(sb.toString(), bond);
+        CDKChemObject co=new CDKBondChemObject(sb.toString(), bond);
         return co;
     }
 

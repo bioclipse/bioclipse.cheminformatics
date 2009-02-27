@@ -770,7 +770,7 @@
            <iterate
                  ifEmpty="false">
               <instanceof
-                    value="org.openscience.cdk.interfaces.IAtom">
+                    value="net.bioclipse.cdk.jchempaint.outline.StructureContentProvider$CDKAtomChemObject">
               </instanceof>
            </iterate>
         </with>
@@ -782,7 +782,7 @@
            <iterate
                  ifEmpty="false">
               <instanceof
-                    value="org.openscience.cdk.interfaces.IBond">
+                    value="net.bioclipse.cdk.jchempaint.outline.StructureContentProvider$CDKBondChemObject">
               </instanceof>
            </iterate>
         </with>
