@@ -108,7 +108,7 @@ public class MoleculeTableViewer extends ContentViewer {
 
 
         SizeConfig columnWidthConfig = model.getBodyConfig().getColumnWidthConfig();
-        columnWidthConfig.setDefaultSize(STRUCTURE_COLUMN_WIDTH/5);
+        columnWidthConfig.setDefaultSize(STRUCTURE_COLUMN_WIDTH/2);
         columnWidthConfig.setInitialSize( 0, STRUCTURE_COLUMN_WIDTH );
         //              columnWidthConfig.setDefaultSize(150);
         columnWidthConfig.setDefaultResizable(true);
