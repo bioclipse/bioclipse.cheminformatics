@@ -49,7 +49,7 @@ public class ChoiceGenerator implements IGenerator {
             return EMPTY_ELEMENT;
     }
 
-    public static final String EP_GENERATOR = "net.bioclipse.cdk.ui.sdf.generator";
+    public static final String EP_GENERATOR = "net.bioclipse.cdk.jchempaint.generator";
 
     public static ChoiceGenerator getGeneratorsFromExtensionPoint() {
 
