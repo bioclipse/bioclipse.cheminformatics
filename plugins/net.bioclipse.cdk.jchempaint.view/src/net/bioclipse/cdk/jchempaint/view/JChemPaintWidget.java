@@ -128,9 +128,14 @@ public class JChemPaintWidget extends Canvas {
 
     public void setAtomContainer( IAtomContainer atomContainer ) {
 
-        this.atomContainer = atomContainer;
-        updateView( (atomContainer!=null)
-                    && (GeometryTools.has2DCoordinates( atomContainer )) );
+        if( (atomContainer!=null)
+                    && (GeometryTools.has2DCoordinates( atomContainer ))) {
+            this.atomContainer = atomContainer;
+            updateView( true );
+        }else {
+            this.atomContainer = null;
+            updateView( false );
+        }
     }
 
     public void setRenderer2DModel( RendererModel renderer2DModel ) {

@@ -128,13 +128,10 @@ public class JCPCellPainter implements ICellPainter {
     private boolean retriveAtomContainer(IAdaptable element,IAtomContainer[] result) {
 
         Assert.isTrue( result!=null && result.length >0);
+        boolean generated = false;
         ICDKMolecule mol = (ICDKMolecule)element.getAdapter( ICDKMolecule.class);
         if(mol == null) return false;
 
-        if (renderer2DConfigurator!=null){
-            renderer2DConfigurator.configure( renderer.getRenderer2DModel(),
-                                              mol.getAtomContainer() );
-        }
         // If no 2D coordinates
         if ( !GeometryTools.has2DCoordinates( mol.getAtomContainer() ) ) {
             // Test if 3D coordinates
@@ -149,10 +146,16 @@ public class JCPCellPainter implements ICellPainter {
             } catch ( Exception e ) {
                 logger.info( "Failed to generate 2D-coordinates" );
             }
-            return true;
+            generated =  true;
         }else
             result[0]= mol.getAtomContainer();
-        return false;
+        generated =  false;
+
+        if (renderer2DConfigurator!=null){
+            renderer2DConfigurator.configure( renderer.getRenderer2DModel(),
+                                              result[0] );
+        }
+        return generated;
     }
 
     public void getColumnImage( GC gc, Rectangle rect,
