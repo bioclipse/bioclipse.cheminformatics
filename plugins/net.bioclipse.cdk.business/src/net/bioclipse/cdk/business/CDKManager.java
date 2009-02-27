@@ -599,9 +599,16 @@ public class CDKManager implements ICDKManager {
         if (mol.getResource() != null &&
             (mol.getResource() instanceof IFile)) {
             IFile oldFile = (IFile)mol.getResource();
-            format = determineFormat(
-                oldFile.getContentDescription().getContentType()
-            );
+            if (oldFile.getContentDescription() == null) {
+                logger.error("Hej, you are running OS/X! You just encountered " +
+                        "a known bug: contentDesc == null for who-knows-what" +
+                        "reason... it works on Linux... So, I am guessing" +
+                        "from the file name. Blah, yuck...");
+            } else {
+                format = determineFormat(
+                    oldFile.getContentDescription().getContentType()
+                );
+            }
         }
 
         if (overwrite && format == null) {
