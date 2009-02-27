@@ -155,7 +155,9 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         parent.setLayoutData(layoutData);
 
         //Add the Jmol composite to the top
-        Composite composite = new Composite(parent, SWT.NO_BACKGROUND | SWT.EMBEDDED);
+        Composite composite = new Composite( parent, SWT.NO_BACKGROUND 
+                                            | SWT.EMBEDDED
+                                            | SWT.DOUBLE_BUFFERED);
         layout = new GridLayout();
         composite.setLayout(layout);
         layoutData = new GridData(GridData.FILL_BOTH);
