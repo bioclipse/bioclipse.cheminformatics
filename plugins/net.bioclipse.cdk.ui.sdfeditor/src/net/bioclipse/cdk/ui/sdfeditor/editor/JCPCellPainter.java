@@ -112,6 +112,7 @@ public class JCPCellPainter implements ICellPainter {
         renderer = new Renderer(generators, fontManager);
 
         RendererModel rModel = renderer.getRenderer2DModel();
+        rModel.setMargin( 30 );
         rModel.setDrawNumbers( false );
         rModel.setIsCompact( true );
 //        rModel.setUseAntiAliasing(true );
