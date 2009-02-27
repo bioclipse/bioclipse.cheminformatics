@@ -252,4 +252,9 @@ public class MoleculesEditor extends EditorPart implements
 
         });
     }
+
+    public void setUseExtensionGenerators( boolean useGenerators ) {
+
+        molTableViewer.cellPainter.setUseExtensionGenerators( useGenerators );
+    }
 }

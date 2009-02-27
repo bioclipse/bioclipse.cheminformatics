@@ -37,6 +37,8 @@ public class PropertySelector extends Composite{
     List<Object> viewProperties = new ArrayList<Object>(10);
     Collection<Object> moleculeTableProperties = new HashSet<Object>();
 
+    boolean useGenerators = false;
+
     TableViewer pTable;
     TableViewer vTable;
 
@@ -90,6 +92,24 @@ public class PropertySelector extends Composite{
         vTable.refresh(true);
 
         createButtonBar( centerComposite );
+
+        Composite comp = new Composite(parent,SWT.NONE);
+        comp.setBackground( comp.getDisplay().getSystemColor( SWT.COLOR_CYAN ) );
+        gridData = new GridData(SWT.FILL, SWT.FILL, true,true);
+        gridData.heightHint = 20;
+        comp.setLayoutData( gridData );
+
+        final Button generatorButton = new Button(parent, SWT.CHECK);
+        generatorButton.setLayoutData( new GridData(SWT.FILL,SWT.BOTTOM,true,false) );
+        generatorButton.setText( "Use external generators" );
+        generatorButton.setSelection( useGenerators);
+
+        generatorButton.addSelectionListener( new SelectionAdapter() {
+            @Override
+            public void widgetSelected( SelectionEvent e ) {
+                useGenerators = generatorButton.getSelection();
+            }
+        });
 
         pTable.getTable().setFocus();
     }
@@ -288,4 +308,12 @@ public class PropertySelector extends Composite{
     public List<Object> getVisibleProperties() {
         return new ArrayList<Object>(viewProperties);
     }
+
+
+    public boolean isUseGenerators() {
+
+        return useGenerators;
+    }
+
+
 }

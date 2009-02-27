@@ -179,7 +179,7 @@ public class MoleculeTableContentProvider implements
 
     void updateHeaders() {
 
-        viewer.getControl().redraw();
+        viewer.refresh();
     }
 
     private NatTable getCompositeTable(Viewer viewer) {

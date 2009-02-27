@@ -49,6 +49,7 @@ import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
+import org.openscience.cdk.renderer.elements.IRenderingVisitor;
 import org.openscience.cdk.renderer.font.IFontManager;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator;
@@ -68,9 +69,10 @@ public class JCPCellPainter implements ICellPainter {
     private Color generatedColor;
     private Font generatedFont;
     private Renderer renderer;
+    private ChoiceGenerator extensionGenerator;
 
     private  IRenderer2DConfigurator renderer2DConfigurator;
-
+    private boolean useExtensionGenerators = false;
 
 
     public JCPCellPainter() {
@@ -102,7 +104,7 @@ public class JCPCellPainter implements ICellPainter {
 
         List<IGenerator> generators = new ArrayList<IGenerator>();
 
-        generators.add(getGeneratorsFromExtensionPoint());
+        generators.add(extensionGenerator = getGeneratorsFromExtensionPoint());
         generators.add(new BasicBondGenerator());
         generators.add(new BasicAtomGenerator());
         generators.add(new RingGenerator());
@@ -230,7 +232,7 @@ public class JCPCellPainter implements ICellPainter {
 
     public static final String EP_GENERATOR = "net.bioclipse.cdk.ui.sdf.generator";
 
-    private IGenerator getGeneratorsFromExtensionPoint() {
+    private  ChoiceGenerator getGeneratorsFromExtensionPoint() {
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IExtensionPoint generatorExtensionPoint = registry
@@ -244,22 +246,58 @@ public class JCPCellPainter implements ICellPainter {
             for( IConfigurationElement element
                     : extension.getConfigurationElements() ) {
                 try {
-                    IGenerator generator = (IGenerator) element.createExecutableExtension("class");
-                    return generator;
+                    final IGenerator generator = (IGenerator) element.createExecutableExtension("class");
+                    return new ChoiceGenerator(generator);
                 } catch (CoreException e) {
                     LogUtils.debugTrace( logger, e );
                 }
             }
         }
-        return new IGenerator() {
-
-            public IRenderingElement generate( IAtomContainer ac,
-                                               RendererModel model ) {
-
-                // empty nothing generator;
-                return new ElementGroup();
-            }
-
-        };
+        return new ChoiceGenerator(null);
     }
+
+    public static class ChoiceGenerator implements IGenerator {
+
+        boolean use = false;
+        IGenerator generator;
+
+        public ChoiceGenerator(IGenerator generator) {
+            this.generator = generator;
+        }
+
+        public void setUse(boolean use) {
+            this.use = use;
+        }
+        public IRenderingElement generate( IAtomContainer ac,
+                                           RendererModel model ) {
+            if(generator == null) return EMPTY_ELEMENT;
+
+            if(use)
+                return generator.generate( ac, model );
+            else
+                return EMPTY_ELEMENT;
+        }
+
+    }
+
+    public static IRenderingElement EMPTY_ELEMENT = new IRenderingElement() {
+
+        public void accept( IRenderingVisitor v ) {
+
+        }
+
+    };
+
+
+    public boolean isUseExtensionGenerators() {
+
+        return useExtensionGenerators;
+    }
+
+
+    public void setUseExtensionGenerators( boolean useExtensionGenerators ) {
+
+        extensionGenerator.setUse( useExtensionGenerators );
+    }
+
 }
