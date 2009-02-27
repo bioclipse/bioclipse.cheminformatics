@@ -49,6 +49,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentType;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ChemFile;
@@ -561,13 +562,26 @@ public class CDKManager implements ICDKManager {
   	        throw new BioclipseException(
   	            "Molecule does not have an associated File." );
 
-  	    IFile file = (IFile)mol.getResource();
-  	    saveMolecule(
-  	        mol, file,
-  	        determineFormat(file.getContentDescription().getContentType()),
-  	        overwrite
-  	    );
-  	}
+        IFile file = (IFile)mol.getResource();
+        IContentDescription contentDesc = file.getContentDescription();
+        if (contentDesc == null) {
+            logger.error("Hej, you are running OS/X! You just encountered a" +
+                "known bug: contentDesc == null for who-knows-what" +
+                "reason... it works on Linux... So, I am guessing from" +
+                "the file name. Blah, yuck...");
+            saveMolecule(
+                mol, file,
+                guessFormatFromExtension(file.getName()),
+                overwrite
+            );
+        } else {
+            saveMolecule(
+                mol, file,
+                determineFormat(contentDesc.getContentType()),
+                overwrite
+            );
+        }
+    }
 
   	public void saveMolecule(IMolecule mol, String filename, boolean overwrite)
   	            throws BioclipseException, CDKException, CoreException {
