@@ -751,30 +751,7 @@ public class Renderer {
         double widthRatio  = drawWidth  / (diagramWidth  + (2 * m)); 
         double heightRatio = drawHeight / (diagramHeight + (2 * m));
     
-        // the area is contained completely within the target
-        if (widthRatio > 1 && heightRatio > 1) {
-            this.zoom = Math.min(widthRatio, heightRatio);
-        }
-    
-        // the area is wider than the target, but fits the height
-        else if (widthRatio < 1 && heightRatio > 1) {
-            this.zoom = widthRatio;
-        }
-    
-        // the area is taller than the target, but fits the width
-        else if (widthRatio > 1 && heightRatio < 1) {
-            this.zoom = heightRatio;
-        }
-    
-        // the target is completely contained by the area
-        else if (widthRatio > 1 && heightRatio > 1) {
-            this.zoom = Math.max(heightRatio, widthRatio);
-        }
-    
-        else {
-            // the bounds are equal
-            this.zoom = widthRatio; // either is fine
-        }
+        this.zoom = Math.min( widthRatio, heightRatio );
         
         
         this.fontManager.setFontForZoom(zoom);
