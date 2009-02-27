@@ -17,9 +17,9 @@ import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.jchempaint.view.ChoiceGenerator;
 import net.bioclipse.cdk.jchempaint.view.SWTFontManager;
 import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
-import net.bioclipse.core.util.LogUtils;
 import net.sourceforge.nattable.NatTable;
 import net.sourceforge.nattable.model.INatTableModel;
 import net.sourceforge.nattable.painter.cell.ICellPainter;
@@ -30,13 +30,7 @@ import net.sourceforge.nattable.util.GUIHelper;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -47,9 +41,6 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
-import org.openscience.cdk.renderer.elements.ElementGroup;
-import org.openscience.cdk.renderer.elements.IRenderingElement;
-import org.openscience.cdk.renderer.elements.IRenderingVisitor;
 import org.openscience.cdk.renderer.font.IFontManager;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator;
@@ -104,7 +95,7 @@ public class JCPCellPainter implements ICellPainter {
 
         List<IGenerator> generators = new ArrayList<IGenerator>();
 
-        generators.add(extensionGenerator = getGeneratorsFromExtensionPoint());
+        generators.add(extensionGenerator = ChoiceGenerator.getGeneratorsFromExtensionPoint());
         generators.add(new BasicBondGenerator());
         generators.add(new BasicAtomGenerator());
         generators.add(new RingGenerator());
@@ -229,65 +220,6 @@ public class JCPCellPainter implements ICellPainter {
         getColumnImage( gc, rectangle, cellRenderer.getValue( row, col ) );
 
     }
-
-    public static final String EP_GENERATOR = "net.bioclipse.cdk.ui.sdf.generator";
-
-    private  ChoiceGenerator getGeneratorsFromExtensionPoint() {
-
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtensionPoint generatorExtensionPoint = registry
-        .getExtensionPoint(EP_GENERATOR);
-
-        IExtension[] generatorExtensions
-                            = generatorExtensionPoint.getExtensions();
-
-        for(IExtension extension : generatorExtensions) {
-
-            for( IConfigurationElement element
-                    : extension.getConfigurationElements() ) {
-                try {
-                    final IGenerator generator = (IGenerator) element.createExecutableExtension("class");
-                    return new ChoiceGenerator(generator);
-                } catch (CoreException e) {
-                    LogUtils.debugTrace( logger, e );
-                }
-            }
-        }
-        return new ChoiceGenerator(null);
-    }
-
-    public static class ChoiceGenerator implements IGenerator {
-
-        boolean use = false;
-        IGenerator generator;
-
-        public ChoiceGenerator(IGenerator generator) {
-            this.generator = generator;
-        }
-
-        public void setUse(boolean use) {
-            this.use = use;
-        }
-        public IRenderingElement generate( IAtomContainer ac,
-                                           RendererModel model ) {
-            if(generator == null) return EMPTY_ELEMENT;
-
-            if(use)
-                return generator.generate( ac, model );
-            else
-                return EMPTY_ELEMENT;
-        }
-
-    }
-
-    public static IRenderingElement EMPTY_ELEMENT = new IRenderingElement() {
-
-        public void accept( IRenderingVisitor v ) {
-
-        }
-
-    };
-
 
     public boolean isUseExtensionGenerators() {
 

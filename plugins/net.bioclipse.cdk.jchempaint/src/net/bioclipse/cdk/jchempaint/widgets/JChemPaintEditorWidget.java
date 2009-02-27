@@ -29,20 +29,13 @@ import net.bioclipse.cdk.jchempaint.undoredo.SWTUndoRedoFactory;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.core.commands.operations.OperationHistoryFactory;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ISelection;
@@ -80,8 +73,6 @@ import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
-import org.openscience.cdk.renderer.elements.ElementGroup;
-import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.generators.ExternalHighlightGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.SelectionGenerator;
@@ -93,8 +84,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     implements ISelectionProvider, IViewEventRelay, IUndoListener {
 
     Logger logger = Logger.getLogger( JChemPaintEditorWidget.class );
-
-    public static final String EP_GENERATOR = "net.bioclipse.cdk.ui.sdf.generator";
 
     private final static StructureDiagramGenerator sdg = new
                                                     StructureDiagramGenerator();
@@ -122,8 +111,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     private final Point origin = new Point(0, 0);
 
     private boolean isScrolling = false;
-
-    private boolean useExtensionGenerators = false;
 
     private IOperationHistory operationHistory =
         OperationHistoryFactory.getOperationHistory();
@@ -377,8 +364,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     protected List<IGenerator> createGenerators() {
         List<IGenerator> generatorList = new ArrayList<IGenerator>();
 
-        generatorList.add( getGeneratorsFromExtensionPoint() );
-
         generatorList.add(new ExternalHighlightGenerator());
         generatorList.addAll( super.createGenerators() );
         generatorList.add(new SelectionGenerator());
@@ -546,45 +531,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     public void doUndo(IUndoRedoable undoredo) {
 //        operationHistory.add((IUndoableOperation)undoredo);
-    }
-
-    private IGenerator getGeneratorsFromExtensionPoint() {
-
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtensionPoint generatorExtensionPoint = registry
-        .getExtensionPoint(EP_GENERATOR);
-
-        IExtension[] generatorExtensions
-                            = generatorExtensionPoint.getExtensions();
-
-        for(IExtension extension : generatorExtensions) {
-
-            for( IConfigurationElement element
-                    : extension.getConfigurationElements() ) {
-                try {
-                    IGenerator generator = (IGenerator) element.createExecutableExtension("class");
-                    return generator;
-                } catch (CoreException e) {
-                    LogUtils.debugTrace( logger, e );
-                }
-            }
-        }
-        return new IGenerator() {
-
-            public IRenderingElement generate( IAtomContainer ac,
-                                               RendererModel model ) {
-
-                // empty nothing generator;
-                return new ElementGroup();
-            }
-
-        };
-    }
-
-
-    public void setUseExtensionGenerators( boolean useExtensionGenerators ) {
-
-        this.useExtensionGenerators = useExtensionGenerators;
     }
 
 

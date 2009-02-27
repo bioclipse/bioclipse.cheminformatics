@@ -41,18 +41,20 @@ import org.openscience.cdk.renderer.generators.RingGenerator;
 public class JChemPaintWidget extends Canvas {
 
     protected IAtomContainer  atomContainer;
-    
+
     protected RendererModel rendererModel = new RendererModel();
-    
+
+    protected ChoiceGenerator extensionGenerator;
+
     private Renderer renderer;
-    
+
     private SWTFontManager fontManager;
-    
+
     /**
      * A new model has to reset the center
      */
     protected boolean isNew = true;
-   
+
     public JChemPaintWidget(Composite parent, int style) {
 
         super( parent, style|SWT.DOUBLE_BUFFERED );
@@ -67,7 +69,7 @@ public class JChemPaintWidget extends Canvas {
         renderer = new Renderer(createGenerators(), fontManager);
 
         rendererModel = renderer.getRenderer2DModel();
-      
+
         rendererModel.setFitToScreen( true );
         rendererModel.setShowImplicitHydrogens( true );
         rendererModel.setShowEndCarbons( true );
@@ -75,19 +77,23 @@ public class JChemPaintWidget extends Canvas {
         rendererModel.setHighlightShapeFilled( true );
         setupPaintListener();
     }
-    
+
     public void setupPaintListener() {
         addPaintListener( new PaintListener() {
-            
+
             public void paintControl( PaintEvent event ) {
-                
+
                 JChemPaintWidget.this.paintControl( event );
             }
         } );
     }
-    
+
     protected List<IGenerator> createGenerators() {
         List<IGenerator> generatorList = new ArrayList<IGenerator>();
+
+        generatorList.add( extensionGenerator
+                           = ChoiceGenerator.getGeneratorsFromExtensionPoint());
+
         generatorList.add( new AtomContainerBoundsGenerator() );
         generatorList.add( new HighlightAtomGenerator() );
         generatorList.add( new HighlightBondGenerator() );
@@ -103,18 +109,18 @@ public class JChemPaintWidget extends Canvas {
             setBackground( getParent().getBackground() );
             return;
         } else setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
-        
+
         Rectangle c = getClientArea();
         Rectangle2D clientArea =
-            new Rectangle2D.Double(c.x, c.y, c.width, c.height); 
+            new Rectangle2D.Double(c.x, c.y, c.width, c.height);
         SWTRenderer visitor = new SWTRenderer( event.gc );
-        
+
         if (isNew) {
             renderer.setScale(atomContainer);
         }
 
         renderer.paintMolecule(atomContainer, visitor, clientArea, isNew);
-        
+
         if (!(atomContainer.getAtomCount() == 0)) {
             isNew = false;
         }
@@ -163,4 +169,9 @@ public class JChemPaintWidget extends Canvas {
         return new Point(width + 2, height + 2);
 
      }
+
+    public void setUseExtensionGenerators( boolean useExtensionGenerators ) {
+        extensionGenerator.setUse( useExtensionGenerators);
+        this.redraw();
+    }
 }
