@@ -646,6 +646,8 @@ public class CDKManager implements ICDKManager {
   	    chemModel.getMoleculeSet().addAtomContainer( mol.getAtomContainer() );
 
   	    this.save(chemModel, target, filetype, null);
+
+        mol.setResource(target);
   	}
 
   	public void saveMolecule( IMolecule mol,
