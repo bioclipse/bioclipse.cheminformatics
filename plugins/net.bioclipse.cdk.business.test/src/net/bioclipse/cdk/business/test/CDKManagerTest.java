@@ -665,11 +665,11 @@ public class CDKManagerTest extends AbstractManagerTest {
     }
 
     @Test public void testCreateSDFile_File_IMoleculeArray() throws Exception{
-    	IMolecule[] mol=new IMolecule[2];
-    	mol[0] = cdk.fromSMILES("CCCBr");
-    	mol[1] = cdk.fromSMILES("CCCCl");
+    	List<IMolecule> mol = new ArrayList<IMolecule>();
+    	mol.add(cdk.fromSMILES("CCCBr"));
+    	mol.add(cdk.fromSMILES("CCCCl"));
     	IFile file=new MockIFile();
-    	cdk.createSDFile(file, mol);
+    	cdk.createSDFile(file, mol, null);
     	byte[] bytes=new byte[1000];
     	file.getContents().read(bytes);
     	StringBuffer sb=new StringBuffer();

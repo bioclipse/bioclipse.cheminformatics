@@ -682,14 +682,19 @@ public interface ICDKManager extends IBioclipseManager {
    	public IMolecule addImplicitHydrogens(IMolecule molecule) throws BioclipseException, InvocationTargetException;
 
     @Recorded
+    @PublishedMethod(methodSummary="Creates an empty molecule list.")
+    public List<IMolecule> createMoleculeList()
+        throws BioclipseException, InvocationTargetException;
+
+    @Recorded
     @TestMethods("testCreateSDFile_IFile_IMoleculeArray")
-   	public void createSDFile(IFile file, IMolecule[] entries) throws BioclipseException, InvocationTargetException;
+   	public void createSDFile(IFile file, List<IMolecule> entries, IProgressMonitor monitor) throws BioclipseException, InvocationTargetException;
 
     @Recorded
     @PublishedMethod(params = "String file, IMolecule[] entries", 
                      methodSummary="Creates an sd file from a number of molecules")
     @TestMethods("testCreateSDFile_String_IMoleculeArray")
-    public void createSDFile(String file, IMolecule[] entries) throws BioclipseException, InvocationTargetException;
+    public void createSDFile(String file, List<IMolecule> entries) throws BioclipseException, InvocationTargetException;
 
     @Recorded
     @TestMethods("testExtractFromSDFile_IFile_int_int")

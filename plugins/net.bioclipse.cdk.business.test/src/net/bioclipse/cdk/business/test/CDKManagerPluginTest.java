@@ -1085,9 +1085,9 @@ public class CDKManagerPluginTest {
     
     @Test 
     public void testCreateSDFile_String_IMoleculeArray() throws Exception{
-        IMolecule[] mol=new IMolecule[2];
-        mol[0] = cdk.fromSMILES("CCCBr");
-        mol[1] = cdk.fromSMILES("CCCCl");
+        List<IMolecule> mol = new ArrayList<IMolecule>();
+        mol.add(cdk.fromSMILES("CCCBr"));
+        mol.add(cdk.fromSMILES("CCCCl"));
         cdk.createSDFile("/Virtual/testFFF.sdf", mol);
         byte[] bytes=new byte[1000];
         IFile file= ResourcePathTransformer.getInstance()

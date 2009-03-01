@@ -1593,25 +1593,28 @@ public class CDKManager implements ICDKManager {
         return format == null ? "Unknown" : format.getFormatName();
     }
 
-  	public void createSDFile(IFile file, IMolecule[] entries)
+  	public void createSDFile(IFile file, List<IMolecule> entries,
+  	        IProgressMonitor monitor)
   	            throws BioclipseException, InvocationTargetException {
 
   	    if ( file.exists() )
   	        throw new BioclipseException("File " + file.getName()
   	                                     + " already exists");
 
-  	    IProgressMonitor monitor = new NullProgressMonitor();
+  	    if (monitor == null) {
+  	        monitor = new NullProgressMonitor();
+  	    }
   	    int ticks = 10000;
   	    try {
 
   	        monitor.beginTask( "Writing file", ticks );
   	        StringBuffer sb = new StringBuffer();
 
-  	        for (int i=0;i<entries.length;i++) {
+  	        for (int i=0;i<entries.size();i++) {
 
   	            CMLReader reader
   	                = new CMLReader(
-  	                    new ByteArrayInputStream(entries[i].getCML().getBytes())
+  	                    new ByteArrayInputStream(entries.get(i).getCML().getBytes())
   	            );
 
   	            IAtomContainer ac
@@ -1686,12 +1689,14 @@ public class CDKManager implements ICDKManager {
         return extractFromSDFile( ResourcePathTransformer.getInstance().transform(file), startenty, endentry );
     }
 
-    public void createSDFile( String file, IMolecule[] entries )
+    public void createSDFile( String file, List<IMolecule> entries )
                                                                 throws BioclipseException,
                                                                 InvocationTargetException {
-
-        createSDFile( ResourcePathTransformer.getInstance().transform(file), entries );
-        
+        createSDFile(
+            ResourcePathTransformer.getInstance().transform(file),
+            entries,
+            null
+        );
     }
 
     public String molecularFormula( ICDKMolecule m ) {
@@ -1816,5 +1821,10 @@ public class CDKManager implements ICDKManager {
             buffer.append('\n');
         }
         return buffer.toString();
+    }
+
+    public List<IMolecule> createMoleculeList() throws BioclipseException,
+            InvocationTargetException {
+        return new ArrayList<IMolecule>();
     }
 }

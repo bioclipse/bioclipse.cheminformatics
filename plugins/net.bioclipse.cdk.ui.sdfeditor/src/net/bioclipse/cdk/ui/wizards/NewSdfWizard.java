@@ -22,7 +22,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -90,7 +89,9 @@ public class NewSdfWizard extends Wizard implements INewWizard {
                           }
                           MessageDialog.openError(this.getShell(), "Problems parsings files", "Some of the files you selected could not be read ("+sb.toString().substring(0, sb.toString().length()-2)+"). We will still use the rest!");
                   }
-                        Activator.getDefault().getCDKManager().createSDFile(newFile, (IMolecule[])entries.toArray(new IMolecule[entries.size()]));
+                        Activator.getDefault().getCDKManager().createSDFile(
+                            newFile, entries, null
+                        );
                 } catch (Exception e) {
                         LogUtils.handleException(e, logger);
                 }
