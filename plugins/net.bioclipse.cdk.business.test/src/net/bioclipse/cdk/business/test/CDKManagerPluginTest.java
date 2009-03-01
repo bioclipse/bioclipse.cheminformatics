@@ -1103,6 +1103,27 @@ public class CDKManagerPluginTest {
       }
 
     @Test
+    public void testCreateSDFile_PropagateAtomContainerProperties()
+        throws Exception{
+        List<IMolecule> mols = new ArrayList<IMolecule>();
+        ICDKMolecule mol = cdk.fromSMILES("CCCBr");
+        mol.getAtomContainer().setProperty("whoopsie", "daisy");
+        mols.add(mol);
+        cdk.createSDFile("/Virtual/testPropateProps.sdf", mols);
+        byte[] bytes=new byte[1000];
+        IFile file= ResourcePathTransformer.getInstance()
+           .transform("/Virtual/testPropateProps.sdf");
+        file.getContents().read(bytes);
+        StringBuffer sb=new StringBuffer();
+        for(int i=0;i<bytes.length;i++){
+            sb.append((char)bytes[i]);
+        }
+        System.out.println(sb.toString());
+        assertTrue(sb.toString().contains("whoopsie"));
+        assertTrue(sb.toString().contains("daisy"));
+    }
+
+    @Test
     public void testMolecularFormula() throws BioclipseException {
         ICDKMolecule m = cdk.fromSMILES( "C" );
         assertEquals( "CH4", cdk.molecularFormula(m) );
