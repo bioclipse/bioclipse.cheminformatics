@@ -1118,7 +1118,6 @@ public class CDKManagerPluginTest {
         for(int i=0;i<bytes.length;i++){
             sb.append((char)bytes[i]);
         }
-        System.out.println(sb.toString());
         assertTrue(sb.toString().contains("whoopsie"));
         assertTrue(sb.toString().contains("daisy"));
     }
