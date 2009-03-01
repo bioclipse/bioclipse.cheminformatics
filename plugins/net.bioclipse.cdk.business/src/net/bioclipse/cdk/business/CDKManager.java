@@ -1610,22 +1610,25 @@ public class CDKManager implements ICDKManager {
   	        monitor.beginTask( "Writing file", ticks );
   	        StringBuffer sb = new StringBuffer();
 
-  	        for (int i=0;i<entries.size();i++) {
+           for (IMolecule molecule : entries) {
 
-  	            CMLReader reader
-  	                = new CMLReader(
-  	                    new ByteArrayInputStream(entries.get(i).getCML().getBytes())
-  	            );
-
-  	            IAtomContainer ac
-  	                = ((IChemFile)reader.read(
-  	                    DefaultChemObjectBuilder.getInstance()
-  	                                            .newChemFile() ))
-  	                  .getChemSequence(0).getChemModel(0)
-  	                                     .getMoleculeSet().getAtomContainer(0);
+                IAtomContainer ac = null;
+                if (molecule.getClass().isAssignableFrom(CDKMolecule.class)) {
+                    ac = ((CDKMolecule)molecule).getAtomContainer();
+                } else {
+                    CMLReader reader = new CMLReader(
+                        new ByteArrayInputStream(molecule.getCML().getBytes())
+                    );
+                    ac = ((IChemFile)reader.read(
+                            DefaultChemObjectBuilder.getInstance()
+                            .newChemFile() ))
+                            .getChemSequence(0).getChemModel(0)
+                            .getMoleculeSet().getAtomContainer(0);
+                }
 
   	            StringWriter writer = new StringWriter();
   	            MDLWriter mdlwriter = new MDLWriter(writer);
+                mdlwriter.setSdFields(ac.getProperties());
   	            mdlwriter.write(ac);
   	            sb.append(writer.toString());
   	            sb.append("$$$$"+System.getProperty("line.separator"));
