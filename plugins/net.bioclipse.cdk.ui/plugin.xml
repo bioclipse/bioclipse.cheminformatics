@@ -121,6 +121,8 @@
 				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule3d"/>
 					   		    <test property="org.eclipse.core.resources.contentTypeId" 
 				       	        	value="net.bioclipse.contenttypes.mdlMolFile3D"/>
+				                <test property="org.eclipse.core.resources.contentTypeId" 
+				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule5d"/>
 				            </or>
 			      		</adapt>
 			   		</iterate>
@@ -161,6 +163,8 @@
 				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule2d"/>
 					   		    <test property="org.eclipse.core.resources.contentTypeId" 
 				       	        	value="net.bioclipse.contenttypes.mdlMolFile2D"/>
+				                <test property="org.eclipse.core.resources.contentTypeId" 
+				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule5d"/>
 				            </or>
 			      		</adapt>
 			   		</iterate>
