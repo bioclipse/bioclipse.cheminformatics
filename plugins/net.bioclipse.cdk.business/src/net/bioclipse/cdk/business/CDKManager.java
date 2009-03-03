@@ -1254,9 +1254,6 @@ public class CDKManager implements ICDKManager {
   	                               .getBuilder().newMolecule(mol) );
   	        sdg.generateCoordinates();
   	        IAtomContainer ac = sdg.getMolecule();
-  	        for (IAtom a : ac.atoms()) {
-  	            a.setPoint3d(null);
-  	        }
   	        newmolecule.add(ac);
   	    }
   	    return new CDKMolecule(newmolecule);
@@ -1465,11 +1462,6 @@ public class CDKManager implements ICDKManager {
   	        org.openscience.cdk.interfaces.IMolecule ac
   	            = mb3d.generate3DCoordinates(
   	                  (org.openscience.cdk.interfaces.IMolecule)mol, false);
-
-  	        for (IAtom a : ac.atoms()) {
-  	            a.setPoint2d(null);
-  	        }
-
   	        newmolecule.add(ac);
   	    }
   	    return new CDKMolecule(newmolecule);
