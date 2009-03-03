@@ -29,6 +29,9 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.vecmath.Point2d;
+import javax.vecmath.Point3d;
+
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.CDKManagerHelper;
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -625,17 +628,22 @@ public class CDKManagerTest extends AbstractManagerTest {
         ICDKMolecule molecule = cdk.fromSMILES("CCC");
         assertEquals(3, molecule.getAtomContainer().getAtomCount());
         Assert.assertNull(molecule.getAtomContainer().getAtom(0).getPoint3d());
+        molecule.getAtomContainer().getAtom( 0 ).setPoint2d( new Point2d(0,0) );
         cdk.generate3dCoordinates(molecule);
         assertNotNull(molecule.getAtomContainer().getAtom(0).getPoint3d());
+        assertNotNull(molecule.getAtomContainer().getAtom(0).getPoint2d());
     }
 
     @Test public void testGenerate2DCoordinates() throws Exception {
         ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
         assertEquals(4, molecule.getAtomContainer().getAtomCount());
         Assert.assertNull(molecule.getAtomContainer().getAtom(0).getPoint2d());
+        //3d coords should stay, we test that.
+        molecule.getAtomContainer().getAtom( 0 ).setPoint3d( new Point3d(0,0,0) );
         IMolecule cdkMolecule = cdk.generate2dCoordinates(molecule);
         Assert.assertTrue(cdkMolecule instanceof ICDKMolecule);
         assertNotNull(((ICDKMolecule)cdkMolecule).getAtomContainer().getAtom(0).getPoint2d());
+        assertNotNull(((ICDKMolecule)cdkMolecule).getAtomContainer().getAtom(0).getPoint3d());
     }
     
     @Test public void testHas2d() throws Exception {
