@@ -1062,6 +1062,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     }
 
     private void structureChanged() {
+        select( renderer.getRenderer2DModel().getSelection() );
         if (changeHandler != null) changeHandler.structureChanged();
     }
 
