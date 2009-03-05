@@ -7,6 +7,7 @@ public class RedoHandler extends AbstractJChemPaintHandler {
 
     public Object execute(ExecutionEvent event) throws ExecutionException {
         getEditor(event).redo();
+        getEditor(event).update();
         return null;
     }
 

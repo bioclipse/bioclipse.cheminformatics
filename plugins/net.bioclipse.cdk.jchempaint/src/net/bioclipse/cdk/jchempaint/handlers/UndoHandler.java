@@ -7,6 +7,7 @@ public class UndoHandler extends AbstractJChemPaintHandler {
 
     public Object execute(ExecutionEvent event) throws ExecutionException {
         getEditor(event).undo();
+        getEditor(event).update();
         return null;
     }
 

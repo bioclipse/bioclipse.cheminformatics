@@ -35,6 +35,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.core.commands.operations.IUndoContext;
+import org.eclipse.core.commands.operations.IUndoableOperation;
 import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.SafeRunner;
@@ -530,20 +531,20 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 	}
 
 	public void undo() throws ExecutionException {
-//	    if (this.operationHistory.canUndo(this.undoContext)) {
-//	        this.operationHistory.undo(undoContext, null, null);
-//	    }
+	    if (this.operationHistory.canUndo(this.undoContext)) {
+	        this.operationHistory.undo(undoContext, null, null);
+	    }
 	}
 
 	public void redo() throws ExecutionException {
-//	    if (this.operationHistory.canRedo(this.undoContext)) {
-//            this.operationHistory.redo(undoContext, null, null);
-//        }
+	    if (this.operationHistory.canRedo(this.undoContext)) {
+            this.operationHistory.redo(undoContext, null, null);
+        }
 	}
 
 
     public void doUndo(IUndoRedoable undoredo) {
-//        operationHistory.add((IUndoableOperation)undoredo);
+        operationHistory.add((IUndoableOperation)undoredo);
     }
 
     public IAtomContainer getAtomContainer() {
