@@ -69,15 +69,15 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     private JChemPaintEditorWidget widget;
     private IControllerModel       c2dm;
     private Menu                   menu;
-    
+
     public JChemPaintEditorWidget getWidget() {
         return widget;
     }
-    
+
     public void undo() throws ExecutionException {
         widget.undo();
     }
-    
+
     public void redo() throws ExecutionException {
         widget.redo();
     }
@@ -154,9 +154,9 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
         setSite( site );
         setInput( input );
-        ICDKMolecule cModel = 
+        ICDKMolecule cModel =
             (ICDKMolecule) input.getAdapter( ICDKMolecule.class );
-        
+
         if ( cModel == null ) {
             IFile file = (IFile) input.getAdapter( IFile.class );
             if ( file != null )
@@ -193,12 +193,27 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                 super.setDirty( dirty );
                 firePropertyChange( IEditorPart.PROP_DIRTY );
             }
+            @Override
+            protected void structureChanged() {
+                super.structureChanged();
+                if(fOutlinePage!=null) {
+                    fOutlinePage.setInput( getControllerHub().getIChemModel() );
+                }
+            }
+
+            @Override
+            protected void structurePropertiesChanged() {
+                super.structurePropertiesChanged();
+                if(fOutlinePage!=null) {
+                    fOutlinePage.setInput( getControllerHub().getIChemModel() );
+                }
+            }
         };
 
         MenuManager menuMgr = new MenuManager();
         menuMgr.add( new GroupMarker( IWorkbenchActionConstants.MB_ADDITIONS ) );
         getSite().registerContextMenu( menuMgr, widget );
-   
+
         menu = menuMgr.createContextMenu( widget );
         widget.setMenu( menu );
 
@@ -254,7 +269,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
         if ( IContentOutlinePage.class.equals( adapter ) ) {
             if ( fOutlinePage == null ) {
-                fOutlinePage = new JCPOutlinePage( getEditorInput(), this );
+                fOutlinePage = new JCPOutlinePage(this);
+                fOutlinePage.setInput( getControllerHub().getIChemModel() );
             }
             return fOutlinePage;
         }

@@ -15,12 +15,14 @@ import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
+import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
@@ -33,13 +35,11 @@ public class JCPOutlinePage extends ContentOutlinePage
     private JChemPaintEditor editor;
     private TreeViewer treeViewer;
 
-    IChemModel chemModel;
 
-    public JCPOutlinePage(IEditorInput editorInput,
-                          JChemPaintEditor editor) {
-        super();
+    public JCPOutlinePage(JChemPaintEditor editor) {
         this.editor = editor;
     }
+    IChemModel chemModel;
 
     /**
      * Set up the TreeViewer for the outline with Providers for JCPEditor.
@@ -53,11 +53,9 @@ public class JCPOutlinePage extends ContentOutlinePage
         //viewer.setSorter(new NameSorter());
         treeViewer.addSelectionChangedListener(this);
 
-        if (editor.getCDKMolecule() == null) return;
+        if (editor.getControllerHub()==null) return;
 
-        chemModel = ChemModelManipulator.newChemModel(
-            editor.getCDKMolecule().getAtomContainer()
-        );
+        chemModel= editor.getControllerHub().getIChemModel();
 
         treeViewer.setInput(chemModel);
         treeViewer.expandToLevel(2);
@@ -82,6 +80,15 @@ public class JCPOutlinePage extends ContentOutlinePage
      */
     public String getContributorId() {
         return CONTRIBUTOR_ID;
+    }
+
+    public void setInput(IChemModel model) {
+        this.chemModel = model;
+        if(treeViewer!=null) {
+            treeViewer.refresh();
+            treeViewer.setSelection( editor.getWidget().getSelection() );
+            treeViewer.expandAll();// FIXME This should restore the expanded state
+        }
     }
 
     @SuppressWarnings("unchecked")

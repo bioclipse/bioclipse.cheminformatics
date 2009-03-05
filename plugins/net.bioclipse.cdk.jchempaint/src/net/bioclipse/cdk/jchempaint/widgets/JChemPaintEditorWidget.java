@@ -179,10 +179,12 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                     }
 
                     public void structureChanged() {
+                        JChemPaintEditorWidget.this.structureChanged();
                         setDirty(true);
                     }
 
                     public void structurePropertiesChanged() {
+                        JChemPaintEditorWidget.this.structurePropertiesChanged();
                         setDirty(true);
                     }
 
@@ -507,6 +509,12 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 		hub.setActiveDrawModule(activeDrawModule);
 	}
 
+    protected void structureChanged() {
+    }
+
+    protected void structurePropertiesChanged() {
+    }
+
 	public void setDirty( boolean dirty) {
 	    this.isdirty = dirty;
 	}
@@ -537,7 +545,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     public void doUndo(IUndoRedoable undoredo) {
 //        operationHistory.add((IUndoableOperation)undoredo);
     }
- 
+
     public IAtomContainer getAtomContainer() {
         return atomContainer;
     }
