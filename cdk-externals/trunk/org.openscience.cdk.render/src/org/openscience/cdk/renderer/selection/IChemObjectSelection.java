@@ -19,8 +19,6 @@ public interface IChemObjectSelection {
      */
     public void select(IChemModel chemModel);
     
-    public void select(IAtomContainer atomContainer);
-    
     /**
      * Remove everything from this selection.
      */

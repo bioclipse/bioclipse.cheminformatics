@@ -104,8 +104,8 @@ public abstract class ShapeSelection implements IChemObjectSelection {
         return ac;
     }
     
-    public void select(IAtomContainer atomContainer) {
-    	clear();
+    private void select(IAtomContainer atomContainer) {
+    	
         for (IAtom atom : atomContainer.atoms()) {
             if (contains(atom.getPoint2d()) && !atoms.contains(atom)) {
                 atoms.add(atom); 
@@ -120,6 +120,7 @@ public abstract class ShapeSelection implements IChemObjectSelection {
     }
     
     public void select(IChemModel chemModel) {
+        clear();
         for (IAtomContainer atomContainer : 
             ChemModelManipulator.getAllAtomContainers(chemModel)) {
             select(atomContainer);
