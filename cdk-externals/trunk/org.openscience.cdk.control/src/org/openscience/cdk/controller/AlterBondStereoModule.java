@@ -68,10 +68,12 @@ public class AlterBondStereoModule extends ControllerModuleAdapter {
 	 * @param stereo the current stereo of that bond
 	 */
 	private void flipDirection(IBond bond, int stereo) {
-	    if (stereo == STEREO_BOND_UP) bond.setStereo(STEREO_BOND_UP_INV);
-	    else if (stereo == STEREO_BOND_UP_INV) bond.setStereo(STEREO_BOND_UP);
-	    else if (stereo == STEREO_BOND_DOWN_INV) bond.setStereo(STEREO_BOND_DOWN);
-	    else if (stereo == STEREO_BOND_DOWN) bond.setStereo(STEREO_BOND_DOWN_INV);
+	    int stereoDir = STEREO_BOND_UNDEFINED;
+	    if (stereo == STEREO_BOND_UP) stereoDir=STEREO_BOND_UP_INV;
+	    else if (stereo == STEREO_BOND_UP_INV) stereoDir=STEREO_BOND_UP;
+	    else if (stereo == STEREO_BOND_DOWN_INV) stereoDir=STEREO_BOND_DOWN;
+	    else if (stereo == STEREO_BOND_DOWN) stereoDir=STEREO_BOND_DOWN_INV;
+	    chemModelRelay.setWedgeType(bond,stereoDir);
 	}
 	
 	/**
@@ -80,10 +82,12 @@ public class AlterBondStereoModule extends ControllerModuleAdapter {
 	 * @param stereo the current stereo of the bond
 	 */
 	private void flipOrientation(IBond bond, int stereo) {
-	    if (stereo == STEREO_BOND_UP) bond.setStereo(STEREO_BOND_DOWN_INV);
-        else if (stereo == STEREO_BOND_UP_INV) bond.setStereo(STEREO_BOND_DOWN);
-        else if (stereo == STEREO_BOND_DOWN_INV) bond.setStereo(STEREO_BOND_UP);
-        else if (stereo == STEREO_BOND_DOWN) bond.setStereo(STEREO_BOND_UP_INV);
+	    int stereoDir = STEREO_BOND_UNDEFINED;
+	    if (stereo == STEREO_BOND_UP) stereoDir=STEREO_BOND_DOWN_INV;
+        else if (stereo == STEREO_BOND_UP_INV) stereoDir=STEREO_BOND_DOWN;
+        else if (stereo == STEREO_BOND_DOWN_INV) stereoDir=STEREO_BOND_UP;
+        else if (stereo == STEREO_BOND_DOWN) stereoDir=STEREO_BOND_UP_INV;
+	    chemModelRelay.setWedgeType(bond,stereoDir);
 	}
 	
 	private boolean isUp(int stereo) {
@@ -111,9 +115,9 @@ public class AlterBondStereoModule extends ControllerModuleAdapter {
         IBond newBond = atomContainer.getBond(atom, newAtom);
 
         if (desiredDirection == Direction.UP) {
-            newBond.setStereo(STEREO_BOND_UP);
+            chemModelRelay.setWedgeType( newBond, STEREO_BOND_UP);
         } else {
-            newBond.setStereo(STEREO_BOND_DOWN);
+            chemModelRelay.setWedgeType(newBond, STEREO_BOND_DOWN);
         }
         undoRedoContainer.addAtom(newAtom);
         undoRedoContainer.addBond(newBond);
@@ -137,9 +141,9 @@ public class AlterBondStereoModule extends ControllerModuleAdapter {
         } else if (isDown && desiredDirection == Direction.DOWN) {
             flipDirection(bond, stereo);
         } else if (noStereo && desiredDirection == Direction.UP) {
-            bond.setStereo(STEREO_BOND_UP);
+            chemModelRelay.setWedgeType(bond, STEREO_BOND_UP);
         } else if (noStereo && desiredDirection == Direction.DOWN) {
-            bond.setStereo(STEREO_BOND_DOWN);
+            chemModelRelay.setWedgeType(bond, STEREO_BOND_DOWN);
         }
         Integer[] stereos=new Integer[2];
         stereos[1]=stereo;
