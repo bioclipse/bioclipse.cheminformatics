@@ -26,16 +26,18 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
+import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 /**
  * A wizard to create a new sd file from existing structure files.
  *
  */
-public class NewSdfWizard extends Wizard implements INewWizard {
+public class NewSdfWizard extends BasicNewResourceWizard{
         private SelectFilesWizardPage specPage;
         private WizardNewFileCreationPage newsdPage;
         private static final Logger logger = Logger.getLogger(NewSdfWizard.class);
@@ -48,10 +50,14 @@ public class NewSdfWizard extends Wizard implements INewWizard {
          */
         public void addPages() {
             ISelection sel=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
-            newsdPage = new WizardNewFileCreationPage("newFilePage1", (IStructuredSelection) sel);
+            if(sel instanceof IStructuredSelection){
+                newsdPage = new WizardNewFileCreationPage("newFilePage1", (IStructuredSelection) sel);
+                newsdPage.setFileName( WizardHelper.findUnusedFileName((IStructuredSelection)sel, "unnamed", ".sdf") );
+            }else{
+                newsdPage = new WizardNewFileCreationPage("newFilePage1", StructuredSelection.EMPTY);
+            }
             newsdPage.setTitle("Choose name and location for new file");
             newsdPage.setDescription("Extension will be .sdf if none is given");
-            newsdPage.setFileName( WizardHelper.findUnusedFileName((IStructuredSelection)sel, "unnamed", ".sdf") );
             addPage(newsdPage);
             specPage = new SelectFilesWizardPage(true);
             addPage(specPage);
