@@ -141,7 +141,7 @@
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.addbond"
                 icon="icons/jcp/bond.png"
                 label="Add Bond"
-                style="push"
+                style="radio"
                 tooltip="Add Bond">
              <visibleWhen
                    checkEnabled="true">
