@@ -62,6 +62,7 @@ public class MoleculeFileContentProvider implements ITreeContentProvider {
                                 || contentType.getId().equals( "net.bioclipse.contenttypes.mdlMolFile3D" )
                                 || contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleMolecule2d" )
                                 || contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleMolecule3d" )
+                                || contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleMolecule5d" )
                                 || contentType.getId().equals( "net.bioclipse.contenttypes.pdb" ))
                         ){
                                childElements.add(resource);
