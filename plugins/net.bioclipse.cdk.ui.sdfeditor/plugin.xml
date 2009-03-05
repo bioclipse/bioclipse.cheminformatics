@@ -79,7 +79,7 @@
 	<extension 
   		point="org.eclipse.ui.menus">
 		<menuContribution
-			locationURI="popup:net.bioclipse.cdk.ui.sdfeditor.menu">
+			locationURI="popup:org.eclipse.ui.popup.any?after=additions">
 		    <command
 		    	commandId="net.bioclipse.cdk.sdfeditor.handlers.extractEntries"
 		    	label="Extract Entries"
@@ -90,10 +90,6 @@
 			      			<or>
 				                <test property="org.eclipse.core.resources.contentTypeId" 
 				           	    	value="net.bioclipse.contenttypes.sdf"/>
-					   		    <test property="org.eclipse.core.resources.contentTypeId" 
-				       	        	value="net.bioclipse.contenttypes.cml.multipleMolecule2d"/>
-				                <test property="org.eclipse.core.resources.contentTypeId" 
-				           	    	value="net.bioclipse.contenttypes.cml.multipleMolecule3d"/>
 				            </or>
 			      		</adapt>
 			   		</iterate>

@@ -30,6 +30,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.io.formats.IChemFormat;
+import org.openscience.cdk.io.formats.MDLFormat;
 import org.openscience.cdk.io.formats.SDFFormat;
 
 public class ExtractWizard extends Wizard implements INewWizard {
@@ -61,10 +62,11 @@ public class ExtractWizard extends Wizard implements INewWizard {
           IStructuredSelection ssel = (IStructuredSelection) sel;
           IFile toExtract=(IFile) ssel.getFirstElement();
           List<IMolecule> result=Activator.getDefault().getCDKManager().extractFromSDFile( toExtract, Integer.parseInt( selectFilePage.getFrom() ), selectFilePage.getTo().equals( "" ) ? Integer.parseInt( selectFilePage.getFrom() ) : Integer.parseInt( selectFilePage.getTo() ) );
-          String filename=selectFilePage.getPathStr()+Path.SEPARATOR+selectFilePage.getFileName()+"."+SDFFormat.getInstance().getPreferredNameExtension();
           if(result.size()==1){
+              String filename=selectFilePage.getPathStr()+Path.SEPARATOR+selectFilePage.getFileName()+"."+MDLFormat.getInstance().getPreferredNameExtension();
               Activator.getDefault().getCDKManager().saveMDLMolfile( (ICDKMolecule)result.get( 0 ), filename );
           }else{
+              String filename=selectFilePage.getPathStr()+Path.SEPARATOR+selectFilePage.getFileName()+"."+SDFFormat.getInstance().getPreferredNameExtension();
               Activator.getDefault().getCDKManager().saveMolecules( result, filename, (IChemFormat)SDFFormat.getInstance());
           }
 	      }

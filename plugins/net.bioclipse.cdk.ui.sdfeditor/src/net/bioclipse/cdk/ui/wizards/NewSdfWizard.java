@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.chemoinformatics.wizards.WizardHelper;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 
@@ -50,6 +51,7 @@ public class NewSdfWizard extends Wizard implements INewWizard {
             newsdPage = new WizardNewFileCreationPage("newFilePage1", (IStructuredSelection) sel);
             newsdPage.setTitle("Choose name and location for new file");
             newsdPage.setDescription("Extension will be .sdf if none is given");
+            newsdPage.setFileName( WizardHelper.findUnusedFileName((IStructuredSelection)sel, "unnamed", ".sdf") );
             addPage(newsdPage);
             specPage = new SelectFilesWizardPage(true);
             addPage(specPage);

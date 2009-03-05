@@ -8,11 +8,12 @@
  *****************************************************************************/
 package net.bioclipse.cdk.ui.wizards;
 
+import net.bioclipse.chemoinformatics.wizards.WizardHelper;
 import net.bioclipse.ui.contentlabelproviders.FolderContentProvider;
 import net.bioclipse.ui.contentlabelproviders.FolderLabelProvider;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -81,6 +82,8 @@ public class SelectFileWithLimitsWizardPage extends WizardPage {
 		dirLabel.setLayoutData(gd);
 	
 		dirText = new Text(container, SWT.BORDER | SWT.SINGLE);
+    ISelection sel=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
+    dirText.setText( ((IResource)((IStructuredSelection)sel).getFirstElement()).getParent().getFullPath().toOSString());
 		dirText.setLayoutData(gd);
 		dirText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -130,6 +133,7 @@ public class SelectFileWithLimitsWizardPage extends WizardPage {
 		fileText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 3;
+    fileText.setText( WizardHelper.findUnusedFileName((IStructuredSelection)sel, "unnamed", "") );
 		fileText.setLayoutData(gd);
 		fileText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
