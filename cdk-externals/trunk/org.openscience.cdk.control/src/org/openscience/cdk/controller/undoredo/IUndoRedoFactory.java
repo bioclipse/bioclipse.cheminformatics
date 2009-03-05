@@ -39,6 +39,9 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IElectronContainer;
+import org.openscience.cdk.interfaces.IMoleculeSet;
+import org.openscience.cdk.interfaces.IReactionSet;
 
 /**
  * This interface needs to be implemented in an application to return instances of classes 
@@ -54,5 +57,13 @@ public interface IUndoRedoFactory {
 	public IUndoRedoable getChangeChargeEdit(IAtom atomInRange, int formerCharge, int newCharge, String type);
 	public IUndoRedoable getMoveAtomEdit(IAtomContainer undoRedoContainer, Vector2d offset, String type);
 	public IUndoRedoable getRemoveAtomsAndBondsEdit(IChemModel chemModel, IAtomContainer undoRedoContainer, String type);
-	public IUndoRedoable getCleanUpEdit(Map<IAtom, Point2d[]> atomCoordsMap, String type);
+	public IUndoRedoable getReplaceAtomEdit(IChemModel chemModel, IAtom oldAtom, IAtom newAtom, String type);
+	public IUndoRedoable getConvertToRadicalEdit(IAtomContainer relevantContainer, IElectronContainer electronContainer, String type);
+	public IUndoRedoable getChangeIsotopeEdit(IAtom atom, Integer formerIsotopeNumber, Integer newIstopeNumber, String type);
+	public IUndoRedoable getClearAllEdit(IChemModel chemModel, IMoleculeSet som, IReactionSet sor, String type);
+	public IUndoRedoable getChangeCoordsEdit(Map<IAtom, Point2d[]> atomCoordsMap, String type);
+	public IUndoRedoable getMakeReactantOrProductInNewReactionEdit(IChemModel chemModel, IAtomContainer ac, IAtomContainer oldcontainer, boolean reactantOrProduct, String type);
+	public IUndoRedoable getMakeReactantOrProductInExistingReactionEdit(
+			IChemModel chemModel, IAtomContainer newContainer,
+			IAtomContainer oldcontainer, String s, boolean reactantOrProduct, String string);
 }

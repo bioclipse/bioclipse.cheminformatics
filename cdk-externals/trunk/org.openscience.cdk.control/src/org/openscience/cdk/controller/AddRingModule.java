@@ -26,8 +26,10 @@ package org.openscience.cdk.controller;
 
 import javax.vecmath.Point2d;
 
+import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IRing;
 
 /**
  * Adds an atom on the given location on mouseclick
@@ -47,28 +49,36 @@ public class AddRingModule extends ControllerModuleAdapter {
         this.addingBenzene = addingBenzene;
     }
     
-    private void addRingToEmptyCanvas(Point2d p) {
+    private IRing addRingToEmptyCanvas(Point2d p) {
         if (this.addingBenzene) {
-            chemModelRelay.addPhenyl(p);
+            return chemModelRelay.addPhenyl(p);
         } else {
-            chemModelRelay.addRing(ringSize, p);
+            return chemModelRelay.addRing(ringSize, p);
         }
     }
     
-    private void addRingToAtom(IAtom closestAtom) {
+    private IRing addRingToAtom(IAtom closestAtom) {
+    	IRing newring;
         if (addingBenzene) {
-            chemModelRelay.addPhenyl(closestAtom);
+            newring = chemModelRelay.addPhenyl(closestAtom);
         } else {
-            chemModelRelay.addRing(closestAtom, ringSize);
+            newring = chemModelRelay.addRing(closestAtom, ringSize);
         }
+        newring.removeAtom(closestAtom);
+        return newring;
     }
     
-    private void addRingToBond(IBond bond) {
+    private IRing addRingToBond(IBond bond) {
+    	IRing newring;
         if (addingBenzene) {
-            chemModelRelay.addPhenyl(bond);
+            newring = chemModelRelay.addPhenyl(bond);
         } else {
-            chemModelRelay.addRing(bond, ringSize);
+            newring = chemModelRelay.addRing(bond, ringSize);
         }
+        newring.removeAtom(bond.getAtom(0));
+        newring.removeAtom(bond.getAtom(1));
+        newring.removeBond(bond);
+        return newring;
     }
 
     public void mouseClickedDown(Point2d worldCoord) {
@@ -79,16 +89,21 @@ public class AddRingModule extends ControllerModuleAdapter {
         double dA = super.distanceToAtom(closestAtom, worldCoord);
         double dB = super.distanceToBond(closestBond, worldCoord);
         
+        IRing newring;
         if (noSelection(dA, dB, dH)) {
-            this.addRingToEmptyCanvas(worldCoord);
+            newring = this.addRingToEmptyCanvas(worldCoord);
         } else if (isAtomOnlyInHighlightDistance(dA, dB, dH) || dA < dB) {
-            this.addRingToAtom(closestAtom);
+        	newring = this.addRingToAtom(closestAtom);
         } else if (isBondOnlyInHighlightDistance(dA, dB, dH) || dB < dA) {
-            this.addRingToBond(closestBond);
+        	newring = this.addRingToBond(closestBond);
         } else {
             // the closest bond and closest atom are equidistant
-            this.addRingToAtom(closestAtom);
+        	newring = this.addRingToAtom(closestAtom);
         }
+	    if(chemModelRelay.getUndoRedoFactory()!=null && chemModelRelay.getUndoRedoHandler()!=null){
+		    IUndoRedoable undoredo = chemModelRelay.getUndoRedoFactory().getAddAtomsAndBondsEdit(chemModelRelay.getIChemModel(), newring.getBuilder().newAtomContainer(newring), this.getDrawModeString(),chemModelRelay.getController2DModel());
+		    chemModelRelay.getUndoRedoHandler().postEdit(undoredo);
+	    }
         chemModelRelay.updateView();
     }
 
