@@ -55,9 +55,9 @@ public class CycleSymbolModule extends ControllerModuleAdapter {
             for (int i = 0; i < elements.length; i++) {
                 if (elements[i].equals(symbol)) {
                 	if (i < elements.length - 2) {
-                        closestAtom.setSymbol(elements[i + 1]);
+                        chemModelRelay.setSymbol( closestAtom,elements[i + 1]);
                     } else {
-                        closestAtom.setSymbol(elements[0]);
+                        chemModelRelay.setSymbol( closestAtom, elements[0]);
                     }
                     changed = true;
                     break;
@@ -69,14 +69,7 @@ public class CycleSymbolModule extends ControllerModuleAdapter {
 			    IUndoRedoable undoredo = chemModelRelay.getUndoRedoFactory().getChangeAtomSymbolEdit(closestAtom,symbol,closestAtom.getSymbol(),this.getDrawModeString());
 			    chemModelRelay.getUndoRedoHandler().postEdit(undoredo);
 		    }
-            // configure the atom, so that the atomic number matches the symbol
-            try {
-                IsotopeFactory.getInstance(
-                        closestAtom.getBuilder()).configure(closestAtom);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-            chemModelRelay.updateView();
+                        chemModelRelay.updateView();
         }
     }
 

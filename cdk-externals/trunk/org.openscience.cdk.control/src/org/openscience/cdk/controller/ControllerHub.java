@@ -38,6 +38,7 @@ import javax.vecmath.Vector2d;
 
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
+import org.openscience.cdk.config.IsotopeFactory;
 import org.openscience.cdk.controller.undoredo.IUndoRedoFactory;
 import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.controller.undoredo.UndoRedoHandler;
@@ -490,6 +491,14 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
     public void setSymbol(IAtom atom, String symbol) {
         atom.setSymbol(symbol);
+     // configure the atom, so that the atomic number matches the symbol
+        try {
+            IsotopeFactory.getInstance(
+                    atom.getBuilder()).configure(atom);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
         structurePropertiesChanged();
     }
 
