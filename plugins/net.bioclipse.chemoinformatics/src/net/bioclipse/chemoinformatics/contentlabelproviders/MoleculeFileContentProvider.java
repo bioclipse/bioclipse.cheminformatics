@@ -68,7 +68,7 @@ public class MoleculeFileContentProvider implements ITreeContentProvider {
                         }
                     }
                     if ( resource instanceof IContainer 
-                         && resource.isAccessible() && resource.getName().indexOf( "." )!=0 ) {
+                         && resource.isAccessible() && resource.getName().charAt(0) != '.' ) {
                         childElements.add(resource);
                     }
                 }
