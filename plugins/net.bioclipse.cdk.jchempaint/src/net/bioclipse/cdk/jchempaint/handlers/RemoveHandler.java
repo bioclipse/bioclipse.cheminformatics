@@ -22,6 +22,8 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.renderer.selection.LogicalSelection;
+import org.openscience.cdk.renderer.selection.LogicalSelection.Type;
 
 public class RemoveHandler extends AbstractJChemPaintHandler {
     Logger logger = Logger.getLogger(RemoveHandler.class);
@@ -37,13 +39,13 @@ public class RemoveHandler extends AbstractJChemPaintHandler {
                                         .getAdapter( IAtom.class );
                         if(atom != null) {
                             getManager().removeAtom( atom );
-                            return null;
+                            continue;
                         }
                         IBond bond = (IBond)((IAdaptable)o)
                                         .getAdapter( IBond.class );
                         if(bond != null) {
                             getManager().removeBond( bond );
-                            return null;
+                            continue;
                         }
                     }
                     if(o instanceof IAtom) {
@@ -57,6 +59,9 @@ public class RemoveHandler extends AbstractJChemPaintHandler {
                     logger.debug( o.toString() );
                 }
             }
+            relay.getRenderer()
+            .getRenderer2DModel()
+            .setSelection(new LogicalSelection(Type.NONE));
         }
         return null;
     }
