@@ -26,8 +26,8 @@ public class SmartsMatchingPrefsHelper {
     private static final Logger logger = Logger.getLogger(SmartsMatchingPrefsHelper.class);
 
     public static final String SMARTSMATCHING_PREFS_SMARTS = "SmartsMatchingSmarts";
-    public static final String PREFS_DELIMITER = "¤";
-    public static final String PREFS_PART_DELIMITER = "£";
+    public static final String PREFS_DELIMITER = "-SP-";
+    public static final String PREFS_PART_DELIMITER = "-SPSP-";
 
     public static List<SmartsWrapper> getPreferences(){
 
@@ -37,10 +37,15 @@ public class SmartsMatchingPrefsHelper {
 
         List<SmartsWrapper> retlist=new ArrayList<SmartsWrapper>();
         
+        logger.debug("Read Smarts prefs string: " + entireString);
+        
         //Split in parts
         String[] ret=entireString.split(PREFS_DELIMITER);
         for (int i = 0; i < ret.length; i++) {
-          String[] subparts = ret[i].split(PREFS_PART_DELIMITER);
+            logger.debug("Part " + i + " extracted: " + ret[i]);
+
+            String[] subparts = ret[i].split(PREFS_PART_DELIMITER);
+
           if (subparts.length==2){
               SmartsWrapper sw=new SmartsWrapper(subparts[0], subparts[1]);
               retlist.add(sw);
