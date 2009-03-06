@@ -50,9 +50,13 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
@@ -131,11 +135,18 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     };
 
+    private Color generatedColor;
+
+    private Font generatedFont;
+
     public JChemPaintEditorWidget(Composite parent, int style) {
         super( parent, style |
                 SWT.H_SCROLL |
                 SWT.V_SCROLL |
                 SWT.DOUBLE_BUFFERED);
+
+        generatedColor = new Color(Display.getCurrent(),200,100,100);
+        generatedFont =new Font(Display.getCurrent(),"Arial",16,SWT.BOLD);
 
         setupScrollbars();
 
@@ -267,15 +278,15 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
             IChemModel chemModel = hub.getIChemModel();
 
-            int atomCount = ChemModelManipulator.getAtomCount(chemModel);
-            if ( chemModel == null || atomCount == 0) {
-                setBackground( getParent().getBackground() );
-                return;
-            } else setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
+            setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
+
 
             Rectangle c = getClientArea();
             Rectangle2D clientArea =
                 new Rectangle2D.Double(c.x, c.y, c.width, c.height);
+
+            paintDitry( event.gc, c.width,c.height );
+
             SWTRenderer visitor = new SWTRenderer( event.gc );
 
             Renderer renderer = getRenderer();
@@ -293,12 +304,22 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             if (renderer.getRenderer2DModel().isFitToScreen()) {
                 renderer.paintChemModel(chemModel, visitor, clientArea, isNew);
             } else {
-                java.awt.Rectangle diagramBounds =
-                    renderer.paintChemModel(chemModel, visitor);
+                renderer.paintChemModel(chemModel, visitor);
             }
 
             isNew = false;
         }
+
+    void paintDitry(GC gc,int width, int height) {
+        if(isdirty) {
+            gc.setFont( generatedFont );
+            int h = height-gc.getFontMetrics().getHeight();
+
+//            int w = width-gc.stringExtent( "Changed" ).x; // for right side
+            gc.setForeground( generatedColor);
+            gc.drawText( "Changed", 0, h );
+        }
+    }
 
     private Rectangle getDiagramBounds() {
         java.awt.Rectangle r =
@@ -377,7 +398,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     @Override
     public void setAtomContainer( IAtomContainer atomContainer ) {
-
         if( atomContainer != null) {
             generated = false;
             if(atomContainer.getAtomCount() > 0 &&
@@ -518,6 +538,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
 	public void setDirty( boolean dirty) {
 	    this.isdirty = dirty;
+	    if(!this.isDisposed())
+	        redraw();
 	}
 
 	public boolean getDirty() {
