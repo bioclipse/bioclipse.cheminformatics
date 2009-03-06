@@ -22,7 +22,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.controller.IControllerModule;
-import org.openscience.cdk.controller.AlterBondStereoModule.Direction;
+import org.openscience.cdk.controller.ControllerHub.Direction;
 
 
 /**
