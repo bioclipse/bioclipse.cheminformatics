@@ -26,7 +26,6 @@ package org.openscience.cdk.controller;
 
 import javax.vecmath.Point2d;
 
-import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IRing;
@@ -89,21 +88,16 @@ public class AddRingModule extends ControllerModuleAdapter {
         double dA = super.distanceToAtom(closestAtom, worldCoord);
         double dB = super.distanceToBond(closestBond, worldCoord);
         
-        IRing newring;
         if (noSelection(dA, dB, dH)) {
-            newring = this.addRingToEmptyCanvas(worldCoord);
+            this.addRingToEmptyCanvas(worldCoord);
         } else if (isAtomOnlyInHighlightDistance(dA, dB, dH) || dA < dB) {
-        	newring = this.addRingToAtom(closestAtom);
+        	this.addRingToAtom(closestAtom);
         } else if (isBondOnlyInHighlightDistance(dA, dB, dH) || dB < dA) {
-        	newring = this.addRingToBond(closestBond);
+        	this.addRingToBond(closestBond);
         } else {
             // the closest bond and closest atom are equidistant
-        	newring = this.addRingToAtom(closestAtom);
+        	this.addRingToAtom(closestAtom);
         }
-	    if(chemModelRelay.getUndoRedoFactory()!=null && chemModelRelay.getUndoRedoHandler()!=null){
-		    IUndoRedoable undoredo = chemModelRelay.getUndoRedoFactory().getAddAtomsAndBondsEdit(chemModelRelay.getIChemModel(), newring.getBuilder().newAtomContainer(newring), this.getDrawModeString(),chemModelRelay.getController2DModel());
-		    chemModelRelay.getUndoRedoHandler().postEdit(undoredo);
-	    }
         chemModelRelay.updateView();
     }
 

@@ -47,7 +47,7 @@ public class CycleSymbolModule extends ControllerModuleAdapter {
         IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoord);
         double dA = super.distanceToAtom(closestAtom, worldCoord);
         double dH = super.getHighlightDistance();
-        if (dA < dH) {
+        if (closestAtom!=null && dA < dH) {
             String symbol = closestAtom.getSymbol();
             boolean changed = false;
             String[] elements = 
@@ -55,9 +55,9 @@ public class CycleSymbolModule extends ControllerModuleAdapter {
             for (int i = 0; i < elements.length; i++) {
                 if (elements[i].equals(symbol)) {
                 	if (i < elements.length - 2) {
-                        chemModelRelay.setSymbol( closestAtom,elements[i + 1]);
+                		chemModelRelay.setSymbol( closestAtom,elements[i + 1]);
                     } else {
-                        chemModelRelay.setSymbol( closestAtom, elements[0]);
+                    	chemModelRelay.setSymbol( closestAtom, elements[0]);
                     }
                     changed = true;
                     break;
@@ -65,11 +65,7 @@ public class CycleSymbolModule extends ControllerModuleAdapter {
             }
             if (!changed)
                 closestAtom.setSymbol("C");
-		    if(!symbol.equals(closestAtom.getSymbol()) && chemModelRelay.getUndoRedoFactory()!=null && chemModelRelay.getUndoRedoHandler()!=null){
-			    IUndoRedoable undoredo = chemModelRelay.getUndoRedoFactory().getChangeAtomSymbolEdit(closestAtom,symbol,closestAtom.getSymbol(),this.getDrawModeString());
-			    chemModelRelay.getUndoRedoHandler().postEdit(undoredo);
-		    }
-                        chemModelRelay.updateView();
+            chemModelRelay.updateView();
         }
     }
 

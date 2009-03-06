@@ -31,6 +31,7 @@ import org.openscience.cdk.config.IsotopeFactory;
 import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.renderer.RendererModel;
 
 /**
@@ -55,29 +56,11 @@ public class AddAtomModule extends ControllerModuleAdapter {
 		String atomType = 
 			chemModelRelay.getController2DModel().getDrawElement();
 		
-		// if we are outside the highlight radius
-		if (closestAtom.getPoint2d().distance(worldCoord) > dH) {
-			IAtomContainer undoredocontainer=chemModelRelay.getIChemModel().getBuilder().newAtomContainer();
-			undoredocontainer.addAtom(chemModelRelay.addAtom(atomType, worldCoord));
-		    if(chemModelRelay.getUndoRedoFactory()!=null && chemModelRelay.getUndoRedoHandler()!=null){
-			    IUndoRedoable undoredo = chemModelRelay.getUndoRedoFactory().getAddAtomsAndBondsEdit(chemModelRelay.getIChemModel(), undoredocontainer, "Add Atom",chemModelRelay.getController2DModel());
-			    chemModelRelay.getUndoRedoHandler().postEdit(undoredo);
-		    }
+		if (closestAtom == null || 
+		        closestAtom.getPoint2d().distance(worldCoord) > dH) {
+		    chemModelRelay.addAtom(atomType, worldCoord);
 		} else {
-			String oldsymbol=closestAtom.getSymbol();
-			closestAtom.setSymbol(atomType);
-		    if(chemModelRelay.getUndoRedoFactory()!=null && chemModelRelay.getUndoRedoHandler()!=null){
-			    IUndoRedoable undoredo = chemModelRelay.getUndoRedoFactory().getChangeAtomSymbolEdit(closestAtom,oldsymbol,closestAtom.getSymbol(),"Change atom symbol to "+closestAtom.getSymbol());
-			    chemModelRelay.getUndoRedoHandler().postEdit(undoredo);
-		    }
-		    // configure the atom, so that the atomic number matches the symbol
-			try {
-				IsotopeFactory.getInstance(
-						closestAtom.getBuilder()).configure(closestAtom);
-			} catch (Exception exception) {
-				// logger.error("Error while configuring atom");
-				// logger.debug(exception);
-			}
+			chemModelRelay.setSymbol(closestAtom, atomType);
 		}
 		chemModelRelay.updateView();
 	}

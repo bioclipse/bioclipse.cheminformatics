@@ -2,6 +2,9 @@ package org.openscience.cdk.controller;
 
 import org.openscience.cdk.renderer.RendererModel;
 
+/**
+ * @cdk.module control
+ */
 public class ZoomModule extends ControllerModuleAdapter {
     
     public ZoomModule(IChemModelRelay chemModelRelay) {
@@ -10,15 +13,15 @@ public class ZoomModule extends ControllerModuleAdapter {
     
     public void mouseWheelMovedForward(int clicks) {
         RendererModel model = chemModelRelay.getRenderer().getRenderer2DModel();
-        model.setFitToScreen(false);
-        model.setZoomFactor(model.getZoomFactor() * 0.9);
+        if (model.getZoomFactor()*.9 > .1) 
+        	model.setZoomFactor(model.getZoomFactor() * 0.9);
         chemModelRelay.updateView();
     }
     
     public void mouseWheelMovedBackward(int clicks) {
         RendererModel model = chemModelRelay.getRenderer().getRenderer2DModel();
-        model.setFitToScreen(false);
-        model.setZoomFactor(model.getZoomFactor() * 1.1);
+        if (model.getZoomFactor()*1.1 < 10) 
+        	model.setZoomFactor(model.getZoomFactor() * 1.1);
         chemModelRelay.updateView();
     }
 

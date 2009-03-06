@@ -28,6 +28,7 @@ import java.io.IOException;
 
 import javax.vecmath.Point2d;
 
+import org.openscience.cdk.controller.ControllerHub.Direction;
 import org.openscience.cdk.controller.undoredo.IUndoRedoFactory;
 import org.openscience.cdk.controller.undoredo.UndoRedoHandler;
 import org.openscience.cdk.exception.CDKException;
@@ -91,7 +92,19 @@ public interface IChemModelRelay {
     public IRing addPhenyl(Point2d worldcoord);
     public IRing addRing(IBond bond, int size);
     public IRing addPhenyl(IBond bond);
+    public void addFragment(IAtomContainer toPaste);
+    public IAtomContainer deleteFragment(IAtomContainer toDelete);
     public void cleanup();
+    public void flip(boolean horizontal);
+    //These methods require changes in other modules and are not used
+    //in bc-jcp right now, so we leave them out
+    /*public void makeReactantInNewReaction(IAtomContainer newContainer, IAtomContainer oldcontainer);
+	    public void makeReactantInExistingReaction(String s,
+			IAtomContainer newContainer, IAtomContainer container);
+	    public void makeProductInNewReaction(IAtomContainer newContainer,
+			IAtomContainer container);
+	    public void makeProductInExistingReaction(String s,
+			IAtomContainer newContainer, IAtomContainer container);*/
     /**
      * Adjusts all bond orders to fit valency
      */
@@ -104,9 +117,13 @@ public interface IChemModelRelay {
 //    public abstract void cleanupSelection(Selector sectionIdentifier);
 
     /* Editing actions for atoms */
-    public abstract void removeAtom(IAtom atom);
+    public abstract IAtomContainer removeAtom(IAtom atom);
+    public abstract IAtomContainer removeAtomWithoutUndo(IAtom atom);
     public abstract IAtom addAtom(String element, Point2d worldcoord);
+    public abstract IAtom addAtomWithoutUndo(String element, Point2d worldcoord);
     public abstract IAtom addAtom(String element, IAtom atom);
+    public abstract IAtom addAtomWithoutUndo(String element, IAtom atom);
+    public abstract void moveToWithoutUndo(IAtom atom, Point2d point);
     public abstract void moveTo(IAtom atom, Point2d point);
     public abstract void setSymbol(IAtom atom, String symbol);
     public abstract void setCharge(IAtom atom, int charge);
@@ -116,11 +133,17 @@ public interface IChemModelRelay {
 
     /* Editing actions for bonds */
     public abstract IBond addBond(IAtom fromAtom, IAtom toAtom);
+    public abstract void removeBondWithoutUndo(IBond bond);
     public abstract void removeBond(IBond bond);
+    public abstract void moveToWithoutUndo(IBond bond, Point2d point);
     public abstract void moveTo(IBond bond, Point2d point);
     public abstract void setOrder(IBond bond, IBond.Order order);
     public abstract void setWedgeType(IBond bond, int type);
-    
+    public abstract void addNewBond(Point2d worldCoordinate);
+    public void cycleBondValence(IBond bond);
+    public void makeBondStereo(IBond bond, Direction desiredDirection);
+    public void makeNewStereoBond(IAtom atom, Direction desiredDirection);
+    		
     public IUndoRedoFactory getUndoRedoFactory();
     public UndoRedoHandler getUndoRedoHandler();
 	

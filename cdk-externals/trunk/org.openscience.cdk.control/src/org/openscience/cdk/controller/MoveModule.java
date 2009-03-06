@@ -144,10 +144,10 @@ public class MoveModule extends ControllerModuleAdapter {
             atomCoord.add(worldCoordTo, offset);
             switch (type) {
                 case ATOM:
-                	chemModelRelay.moveTo(atom, atomCoord);
+                	chemModelRelay.moveToWithoutUndo(atom, atomCoord);
                     break;
                 case BOND:
-                	chemModelRelay.moveTo(bond, atomCoord);
+                	chemModelRelay.moveToWithoutUndo(bond, atomCoord);
                     break;
                 case SELECTION:
                     Point2d d = new Point2d();

@@ -51,15 +51,11 @@ public class ChangeFormalChargeModule extends ControllerModuleAdapter {
 		double dA = super.distanceToAtom(atom, worldCoord);
 		double dH = super.getHighlightDistance();
 		if (dA < dH) {
-			Integer newCharge = Integer.valueOf(change);
+			Integer newCharge = new Integer(change);
 			if (atom.getFormalCharge() != null) {
 				newCharge += atom.getFormalCharge();
 			}
-		    if(chemModelRelay.getUndoRedoFactory()!=null && chemModelRelay.getUndoRedoHandler()!=null){
-		    	IUndoRedoable undoredo = chemModelRelay.getUndoRedoFactory().getChangeChargeEdit(atom,atom.getFormalCharge(),newCharge, this.getDrawModeString());
-			    chemModelRelay.getUndoRedoHandler().postEdit(undoredo);
-		    }
-			chemModelRelay.setCharge( atom, newCharge );
+			chemModelRelay.setCharge(atom,newCharge);
 			chemModelRelay.updateView();
 		} 
 	}
