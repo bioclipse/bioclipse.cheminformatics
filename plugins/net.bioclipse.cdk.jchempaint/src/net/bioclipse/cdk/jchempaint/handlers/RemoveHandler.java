@@ -38,37 +38,32 @@ public class RemoveHandler extends AbstractJChemPaintHandler {
             Collection<?> selection = getSelection( event );
             IAtomContainer removedStuff=relay.getIChemModel().getBuilder().newAtomContainer();
             for(Object o:selection) {
-                try {
-                    if( o instanceof IAdaptable) {
-                        IAtom atom = (IAtom)((IAdaptable)o)
-                                        .getAdapter( IAtom.class );
-                        if(atom != null) {
-                            Iterator<IBond> it = ChemModelManipulator.getRelevantAtomContainer( relay.getIChemModel(), atom ).getConnectedBondsList( atom ).iterator();
-                            while(it.hasNext())
-                                removedStuff.addBond(it.next());
-                            removedStuff.addAtom( atom );
-                            getManager().removeAtom( atom );
-                            continue;
-                        }
-                        IBond bond = (IBond)((IAdaptable)o)
-                                        .getAdapter( IBond.class );
-                        if(bond != null) {
-                            getManager().removeBond( bond );
-                            removedStuff.addBond( bond );
-                            continue;
-                        }
+                if( o instanceof IAdaptable) {
+                    IAtom atom = (IAtom)((IAdaptable)o)
+                                    .getAdapter( IAtom.class );
+                    if(atom != null && ChemModelManipulator.getRelevantAtomContainer( relay.getIChemModel(), atom )!=null) {
+                        Iterator<IBond> it = ChemModelManipulator.getRelevantAtomContainer( relay.getIChemModel(), atom ).getConnectedBondsList( atom ).iterator();
+                        while(it.hasNext())
+                            removedStuff.addBond(it.next());
+                        removedStuff.addAtom( atom );
+                        relay.removeAtomWithoutUndo( atom );
+                        continue;
                     }
-                    if(o instanceof IAtom) {
-                        getManager().removeAtom( (IAtom )o);
-                        removedStuff.addAtom( (IAtom )o );
+                    IBond bond = (IBond)((IAdaptable)o)
+                                    .getAdapter( IBond.class );
+                    if(bond != null) {
+                        relay.removeBondWithoutUndo(  bond );
+                        removedStuff.addBond( bond );
+                        continue;
                     }
-                    else if(o instanceof IBond) {
-                        getManager().removeBond((IBond)o);
-                        removedStuff.addBond( (IBond)o );
-                    }
-                } catch (BioclipseException e) {
-                    logger.warn( "Failed to remove bond or atom" );
-                    logger.debug( o.toString() );
+                }
+                if(o instanceof IAtom) {
+                    relay.removeAtomWithoutUndo( (IAtom )o);
+                    removedStuff.addAtom( (IAtom )o );
+                }
+                else if(o instanceof IBond) {
+                    relay.removeBondWithoutUndo( (IBond)o);
+                    removedStuff.addBond( (IBond)o );
                 }
             }
             relay.getRenderer()
@@ -81,3 +76,4 @@ public class RemoveHandler extends AbstractJChemPaintHandler {
         return null;
     }
 }
+
