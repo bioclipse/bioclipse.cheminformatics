@@ -86,9 +86,7 @@ public class SWTClearAllEdit extends ClearAllEdit implements IUndoableOperation 
     }
 
     public String getLabel() {
-
-        // TODO Auto-generated method stub
-        return "label";
+        return super.getPresentationName();
     }
 
     public boolean hasContext( IUndoContext context ) {

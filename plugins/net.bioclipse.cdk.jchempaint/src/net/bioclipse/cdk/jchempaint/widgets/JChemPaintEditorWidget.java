@@ -558,6 +558,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 	    }
 	}
 
+
 	public void redo() throws ExecutionException {
 	    if (this.operationHistory.canRedo(this.undoContext)) {
             this.operationHistory.redo(undoContext, null, null);

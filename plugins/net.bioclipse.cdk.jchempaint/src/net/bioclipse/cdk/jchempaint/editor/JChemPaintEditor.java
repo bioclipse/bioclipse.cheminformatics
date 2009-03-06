@@ -17,6 +17,8 @@ import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.jchempaint.handlers.RedoHandler;
+import net.bioclipse.cdk.jchempaint.handlers.UndoHandler;
 import net.bioclipse.cdk.jchempaint.outline.JCPOutlinePage;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.business.BioclipseException;
@@ -36,6 +38,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -43,6 +46,7 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -77,7 +81,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     public void undo() throws ExecutionException {
         widget.undo();
     }
-
+    
     public void redo() throws ExecutionException {
         widget.redo();
     }
@@ -229,7 +233,12 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                 disposeControll( e );
             }
         } );
-
+        // set up action handlers
+        UndoHandler undoAction = new UndoHandler();
+        RedoHandler redoAction = new RedoHandler();
+        IActionBars actionBars = this.getEditorSite().getActionBars();
+        actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(),undoAction);
+        actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), redoAction);
     }
 
     @Override

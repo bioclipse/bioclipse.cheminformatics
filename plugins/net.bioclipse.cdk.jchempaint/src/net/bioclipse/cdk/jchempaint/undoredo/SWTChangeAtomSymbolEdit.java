@@ -88,9 +88,7 @@ public class SWTChangeAtomSymbolEdit extends ChangeAtomSymbolEdit implements
     }
 
     public String getLabel() {
-
-        // TODO Auto-generated method stub
-        return "label";
+        return super.getPresentationName();
     }
 
     public boolean hasContext( IUndoContext context ) {

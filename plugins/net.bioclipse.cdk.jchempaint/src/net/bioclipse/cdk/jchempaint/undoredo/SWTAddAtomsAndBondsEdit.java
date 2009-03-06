@@ -87,8 +87,7 @@ public class SWTAddAtomsAndBondsEdit extends AddAtomsAndBondsEdit
 
 
     public String getLabel() {
-        // TODO Auto-generated method stub
-        return "label";
+        return super.getPresentationName();
     }
 
 

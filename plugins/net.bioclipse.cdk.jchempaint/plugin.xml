@@ -86,16 +86,6 @@
           name="Move">
     </command>
     <command
-          defaultHandler="net.bioclipse.cdk.jchempaint.handlers.UndoHandler"
-          id="net.bioclipse.cdk.ui.editors.jchempaint.command.undo"
-          name="Undo">
-    </command>
-    <command
-          defaultHandler="net.bioclipse.cdk.jchempaint.handlers.RedoHandler"
-          id="net.bioclipse.cdk.ui.editors.jchempaint.command.redo"
-          name="Redo">
-    </command>
-    <command
           defaultHandler="net.bioclipse.cdk.jchempaint.handlers.ManagerHandler"
           id="net.bioclipse.cdk.jchempaint.manager.action"
           name="Manager action">
@@ -529,32 +519,6 @@
                    name="jcp.manager.method"
                    value="cleanup">
              </parameter>
-          </command>
-          <command
-                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.undo"
-                icon="icons/jcp/undo.png"
-                label="Undo"
-                style="push"
-                tooltip="Undo last change">
-             <visibleWhen
-                   checkEnabled="true">
-                <reference
-                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
-                </reference>
-             </visibleWhen>
-          </command>
-           <command
-                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.redo"
-                icon="icons/jcp/redo.png"
-                label="Redo"
-                style="push"
-                tooltip="Redo last change">
-             <visibleWhen
-                   checkEnabled="true">
-                <reference
-                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
-                </reference>
-             </visibleWhen>
           </command>
        </toolbar>
     </menuContribution>
