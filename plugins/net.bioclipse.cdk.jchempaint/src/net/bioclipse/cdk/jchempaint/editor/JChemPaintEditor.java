@@ -312,6 +312,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                     container.addAtom( (IAtom) o );
                 } else if ( o instanceof IBond ) {
                     container.addBond( (IBond) o );
+                } else if (o instanceof IAtomContainer) {
+                    container.add( (IAtomContainer )o);
                 }
             }
 
