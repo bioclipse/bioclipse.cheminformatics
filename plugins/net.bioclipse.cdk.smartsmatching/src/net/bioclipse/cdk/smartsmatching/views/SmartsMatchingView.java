@@ -1,0 +1,452 @@
+/*******************************************************************************
+ * Copyright (c) 2009 Ola Spjuth.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Ola Spjuth - initial API and implementation
+ ******************************************************************************/
+package net.bioclipse.cdk.smartsmatching.views;
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import net.bioclipse.cdk.domain.CDKChemObject;
+import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
+import net.bioclipse.cdk.smartsmatching.Activator;
+import net.bioclipse.cdk.smartsmatching.AddEditSmartsDialog;
+import net.bioclipse.cdk.smartsmatching.model.SmartsWrapper;
+import net.bioclipse.cdk.smartsmatching.prefs.SmartsMatchingPrefsHelper;
+
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.part.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.action.*;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.*;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.SWT;
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
+
+
+/**
+ * A view for matching smarts in open editors and views
+ * @author ola
+ *
+ */
+public class SmartsMatchingView extends ViewPart implements IPartListener{
+
+    public static final String COLOR_PROP = "SMARTS_MATCHING_COLOR";
+
+    private TreeViewer viewer;
+    private Action addSmartsAction;
+    private Action removeSmartsAction;
+
+    private Action runAction;
+
+    private Map<IWorkbenchPart,List<SmartsWrapper>> editorSmartsMap;
+    private List<SmartsWrapper> smartsInView;
+
+    private Action clearAction;
+
+    //Used to handle the case with no open editor
+    private EditorPart bogusWBPart=new EditorPart(){
+        @Override
+        public void doSave( IProgressMonitor monitor ) {
+        }
+        @Override
+        public void doSaveAs() {
+        }
+        @Override
+        public void init( IEditorSite site, IEditorInput input )
+                                                                throws PartInitException {
+        }
+        @Override
+        public boolean isDirty() {
+            return false;
+        }
+        @Override
+        public boolean isSaveAsAllowed() {
+            return false;
+        }
+
+        @Override
+        public void createPartControl( Composite parent ) {
+        }
+
+        @Override
+        public void setFocus() {
+        }
+    };
+
+    private Action expandAllAction;
+
+    private Action collapseAllAction;
+
+
+    /**
+     * The constructor.
+     */
+    public SmartsMatchingView() {
+    }
+
+    /**
+     * This is a callback that will allow us
+     * to create the viewer and initialize it.
+     */
+    public void createPartControl(Composite parent) {
+        viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+        viewer.setContentProvider(new SmartsMatchingContentProvider());
+        viewer.setLabelProvider(new SmartsMatchingLabelProvider());
+        viewer.setSorter(new ViewerSorter());
+        
+        //Read prefs for stored smarts
+        smartsInView = SmartsMatchingPrefsHelper.getPreferences();
+        viewer.setInput(smartsInView);
+        editorSmartsMap=new HashMap<IWorkbenchPart, List<SmartsWrapper>>();
+        editorSmartsMap.put( bogusWBPart, smartsInView);
+
+//        viewer.addSelectionChangedListener( new ISelectionChangedListener(){
+//
+//            public void selectionChanged( SelectionChangedEvent event ) {
+//
+//                if ( event.getSelection() instanceof IStructuredSelection ) {
+//                    IStructuredSelection ssel = (IStructuredSelection) event.getSelection();
+//                    handleSelected(ssel);
+//                }
+//            }
+//
+//        } );
+
+        // Create the help context id for the viewer's control
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "net.bioclipse.cdk.smartsmatching.viewer");
+        makeActions();
+        hookContextMenu();
+        contributeToActionBars();
+
+        //Listen for part lifecycle events to react on editors
+        getSite().getWorkbenchWindow().getPartService().addPartListener(this);
+
+        //Post selections to Eclipse
+        getSite().setSelectionProvider(viewer); 
+    }
+
+
+    private void hookContextMenu() {
+        MenuManager menuMgr = new MenuManager("#PopupMenu");
+        menuMgr.setRemoveAllWhenShown(true);
+        menuMgr.addMenuListener(new IMenuListener() {
+            public void menuAboutToShow(IMenuManager manager) {
+                SmartsMatchingView.this.fillContextMenu(manager);
+            }
+        });
+        Menu menu = menuMgr.createContextMenu(viewer.getControl());
+        viewer.getControl().setMenu(menu);
+        getSite().registerContextMenu(menuMgr, viewer);
+    }
+
+    private void contributeToActionBars() {
+        IActionBars bars = getViewSite().getActionBars();
+        //        fillLocalPullDown(bars.getMenuManager());
+        fillLocalToolBar(bars.getToolBarManager());
+    }
+
+    //    private void fillLocalPullDown(IMenuManager manager) {
+    //        manager.add(addSmartsAction);
+    //        manager.add(new Separator());
+    //        manager.add(removeSmartsAction);
+    //    }
+
+    private void fillContextMenu(IMenuManager manager) {
+        manager.add(runAction);
+        manager.add(clearAction);
+        manager.add(new Separator());
+        manager.add(addSmartsAction);
+        manager.add(removeSmartsAction);
+
+        // Other plug-ins can contribute there actions here
+        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+    }
+
+    private void fillLocalToolBar(IToolBarManager manager) {
+        manager.add(runAction);
+        manager.add(clearAction);
+        manager.add(new Separator());
+        manager.add(expandAllAction);
+        manager.add(collapseAllAction);
+        manager.add(new Separator());
+        manager.add(addSmartsAction);
+        manager.add(removeSmartsAction);
+    }
+
+    private void makeActions() {
+
+        collapseAllAction = new Action() {
+            public void run() {
+                viewer.collapseAll();
+            }
+        };
+        collapseAllAction.setText("Collapse all");
+        collapseAllAction.setToolTipText("Collapse all SMARTS");
+        collapseAllAction.setImageDescriptor(Activator.getImageDecriptor( "icons/collapseall.gif" ));
+
+        expandAllAction = new Action() {
+            public void run() {
+                viewer.expandAll();
+            }
+        };
+        expandAllAction.setText("Expand all");
+        expandAllAction.setToolTipText("Expand all SMARTS to reveal hits");
+        expandAllAction.setImageDescriptor(Activator.getImageDecriptor( "icons/expandall.gif" ));
+
+        
+        runAction = new Action() {
+            public void run() {
+                runSmartsMatching();
+            }
+        };
+        runAction.setText("Run matching");
+        runAction.setToolTipText("Run SMARTS matching for the active aditor");
+        runAction.setImageDescriptor(Activator.getImageDecriptor( "icons/smallRun.gif" ));
+
+        clearAction = new Action() {
+            public void run() {
+                //Re-read from prefs, creates new objects
+                smartsInView = SmartsMatchingPrefsHelper.getPreferences();
+                viewer.setInput(smartsInView);
+            }
+        };
+        clearAction.setText("Clear matches");
+        clearAction.setToolTipText("Clear all SMARTS matches");
+        clearAction.setImageDescriptor(Activator.getImageDecriptor( "icons/clear_co.gif" ));
+
+        addSmartsAction = new Action() {
+            public void run() {
+                
+                
+                AddEditSmartsDialog dlg=new AddEditSmartsDialog(getSite().getShell());
+                dlg.open();
+
+                SmartsWrapper wrapper = dlg.getSmartsWrapper();
+
+                //Add to current list
+                smartsInView.add( wrapper );
+                
+                //Write list to preferences
+                SmartsMatchingPrefsHelper.setPreferences( smartsInView );
+
+                //Clear all editors matches, they are now invalid
+                editorSmartsMap.clear();
+                editorSmartsMap.put( bogusWBPart, SmartsMatchingPrefsHelper.getPreferences());
+
+                //Update current editor, if open
+                IEditorPart part=getSite().getWorkbenchWindow().getActivePage().getActiveEditor();
+                if ((isSupportedEditor( part ))){
+                    partActivated( part );
+                }
+                
+                viewer.refresh();
+                
+            }
+        };
+        addSmartsAction.setText("Add SMARTS");
+        addSmartsAction.setToolTipText("Add a SMARTS entry");
+        addSmartsAction.setImageDescriptor(Activator.getImageDecriptor( "icons/add_obj.gif" ));
+
+        removeSmartsAction = new Action() {
+            public void run() {
+                
+                if (!( viewer.getSelection() instanceof IStructuredSelection )) {
+                    showError("Please select one or more SMARTS to remove");
+                    return;
+                }
+                IStructuredSelection ssel = (IStructuredSelection) viewer.getSelection();
+
+                boolean prefsChanged=false;
+                for (Object obj : ssel.toList()){
+                    if ( obj instanceof SmartsWrapper ) {
+                        prefsChanged=true;
+                        SmartsWrapper swToRemove = (SmartsWrapper) obj;
+                        //For all lists, remove this smart
+                        for (Iterator<IWorkbenchPart> it=editorSmartsMap.keySet().iterator(); it.hasNext();){
+                            IWorkbenchPart part=it.next();
+                            editorSmartsMap.get( part ).remove( swToRemove );
+                        }
+                        smartsInView.remove( swToRemove );
+                    }
+                }
+                
+                if (prefsChanged){
+                    //Write list to preferences
+                    SmartsMatchingPrefsHelper.setPreferences( smartsInView );
+                    viewer.refresh();
+                }
+                
+            }
+        };
+        removeSmartsAction.setText("Remove SMARTS");
+        removeSmartsAction.setToolTipText("Remove the selected SMARTS");
+        removeSmartsAction.setImageDescriptor(Activator.getImageDecriptor( "icons/delete_obj.gif" ));
+    }
+
+    protected void runSmartsMatching() {
+
+        IEditorPart part=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        if (!( part instanceof JChemPaintEditor )) {
+            showMessage( "You must have an open 2D editor to run SmartsMatching on." );
+            return;
+        }
+
+        JChemPaintEditor jcp=(JChemPaintEditor)part;
+
+        IAtomContainer ac = jcp.getCDKMolecule().getAtomContainer();
+        
+        //For each smarts...
+        for (SmartsWrapper sw : smartsInView){
+            if (sw.getMatches()!=null){
+                sw.getMatches().clear();
+            }
+            processSmarts(sw, ac);
+        }
+        
+        viewer.refresh();
+
+    }
+
+
+    private void processSmarts( SmartsWrapper sw, IAtomContainer ac ) {
+
+        //Clear old matches
+        sw.setMatches( new ArrayList<CDKChemObject>() );
+
+        try {
+            SMARTSQueryTool querytool = new SMARTSQueryTool(sw.getSmartsString());
+            boolean status = querytool.matches(ac);
+            if (status) {
+                int nmatch = querytool.countMatches();
+                System.out.println("Found " + nmatch + " smarts matches");
+
+                List<List<Integer>> mappings = querytool.getMatchingAtoms();
+                for (int i = 0; i < nmatch; i++) {
+                    System.out.println("Match no: " + i);
+                    List<Integer> atomIndices = (List<Integer>) mappings.get(i);
+                    IAtomContainer match=ac.getBuilder().newAtomContainer();
+                    for (Integer aindex : atomIndices){
+                        IAtom atom=ac.getAtom( aindex );
+                        match.addAtom( atom );
+                    }
+                    CDKChemObject matchwrapper=new CDKChemObject("Hit " + i , match);
+                    sw.getMatches().add( matchwrapper );
+                    
+                }
+
+            }
+
+        } catch ( Exception e ) {
+        }
+
+    }
+
+    private void showMessage(String message) {
+        MessageDialog.openInformation(
+                                      viewer.getControl().getShell(),
+                                      "Smarts Matching",
+                                      message);
+    }
+
+    private void showError(String message) {
+        MessageDialog.openError( 
+                                      viewer.getControl().getShell(),
+                                      "Smarts Matching",
+                                      message);
+    }
+
+    /**
+     * Passing the focus request to the viewer's control.
+     */
+    public void setFocus() {
+        viewer.getControl().setFocus();
+    }
+
+    
+    public void partActivated( IWorkbenchPart part ) {
+        System.out.println("Part:" + part.getTitle() + " activated");
+        updateViewContent(part);
+    }
+
+    public void partBroughtToTop( IWorkbenchPart part ) {
+        System.out.println("Part:" + part.getTitle() + " brought to top");
+        updateViewContent(part);
+    }
+
+    /**
+     * When editor closed, remove entry in map
+     */
+    public void partClosed( IWorkbenchPart part ) {
+        System.out.println("Part:" + part.getTitle() + " closed");
+        if (!(isSupportedEditor(part))) return;
+
+        if (editorSmartsMap.keySet().contains( part )){
+            //Remove entry
+            editorSmartsMap.remove( part );
+        }
+        IEditorReference[] editors=getSite().getWorkbenchWindow().getActivePage().getEditorReferences();
+        if (editors.length<=0){
+            partActivated( bogusWBPart );
+        }
+    }
+
+    public void partDeactivated( IWorkbenchPart part ) {
+        System.out.println("Part:" + part.getTitle() + " deactivated");
+    }
+
+    public void partOpened( IWorkbenchPart part ) {
+        System.out.println("Part:" + part.getTitle() + " opened");
+        updateViewContent(part);
+    }
+
+    private void updateViewContent( IWorkbenchPart part ) {
+        
+        if (!(isSupportedEditor(part))) return;
+
+        if (editorSmartsMap.keySet().contains( part )){
+            //Use existing
+            smartsInView=editorSmartsMap.get( part );
+        }else {
+            //Create new
+            List<SmartsWrapper> newSmartsInView = SmartsMatchingPrefsHelper.getPreferences();
+            editorSmartsMap.put( part, newSmartsInView );
+            smartsInView=newSmartsInView;
+        }
+        
+        viewer.setInput(smartsInView);
+        
+    }
+
+    private boolean isSupportedEditor( IWorkbenchPart part ) {
+        if ( part instanceof JChemPaintEditor ) {
+            return true;
+        }
+        if ( part==bogusWBPart ) {
+            return true;
+        }
+
+        
+        //TODO: update here to support MolTable as well
+
+        //Not supported
+        return false;
+    }
+
+
+
+}
