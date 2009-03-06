@@ -47,19 +47,19 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
 
     public static final String COLOR_PROP = "SMARTS_MATCHING_COLOR";
 
-    private TreeViewer viewer;
+    private static TreeViewer viewer;
     private Action addSmartsAction;
     private Action removeSmartsAction;
 
     private Action runAction;
 
-    private Map<IWorkbenchPart,List<SmartsWrapper>> editorSmartsMap;
-    private List<SmartsWrapper> smartsInView;
+    private static Map<IWorkbenchPart,List<SmartsWrapper>> editorSmartsMap;
+    private static List<SmartsWrapper> smartsInView;
 
     private Action clearAction;
 
     //Used to handle the case with no open editor
-    private EditorPart bogusWBPart=new EditorPart(){
+    private static EditorPart bogusWBPart=new EditorPart(){
         @Override
         public void doSave( IProgressMonitor monitor ) {
         }
@@ -241,20 +241,7 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
                 //Add to current list
                 smartsInView.add( wrapper );
                 
-                //Write list to preferences
-                SmartsMatchingPrefsHelper.setPreferences( smartsInView );
-
-                //Clear all editors matches, they are now invalid
-                editorSmartsMap.clear();
-                editorSmartsMap.put( bogusWBPart, SmartsMatchingPrefsHelper.getPreferences());
-
-                //Update current editor, if open
-                IEditorPart part=getSite().getWorkbenchWindow().getActivePage().getActiveEditor();
-                if ((isSupportedEditor( part ))){
-                    partActivated( part );
-                }
-                
-                viewer.refresh();
+                savePrefsAndUpdate();
                 
             }
         };
@@ -399,9 +386,15 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
             //Remove entry
             editorSmartsMap.remove( part );
         }
-        IEditorReference[] editors=getSite().getWorkbenchWindow().getActivePage().getEditorReferences();
-        if (editors.length<=0){
-            partActivated( bogusWBPart );
+        if (getSite()!=null){
+            if (getSite().getWorkbenchWindow()!=null){
+                if (getSite().getWorkbenchWindow().getActivePage()!=null){
+                    IEditorReference[] editors=getSite().getWorkbenchWindow().getActivePage().getEditorReferences();
+                    if (editors.length<=0){
+                        partActivated( bogusWBPart );
+                    }
+                }
+            }
         }
     }
 
@@ -414,7 +407,7 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         updateViewContent(part);
     }
 
-    private void updateViewContent( IWorkbenchPart part ) {
+    private static void updateViewContent( IWorkbenchPart part ) {
         
         if (!(isSupportedEditor(part))) return;
 
@@ -432,7 +425,7 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         
     }
 
-    private boolean isSupportedEditor( IWorkbenchPart part ) {
+    private static boolean isSupportedEditor( IWorkbenchPart part ) {
         if ( part instanceof JChemPaintEditor ) {
             return true;
         }
@@ -445,6 +438,30 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
 
         //Not supported
         return false;
+    }
+
+    private static void savePrefsAndUpdate() {
+
+        //Write list to preferences
+        SmartsMatchingPrefsHelper.setPreferences( smartsInView );
+
+        //Clear all editors matches, they are now invalid
+        editorSmartsMap.clear();
+        editorSmartsMap.put( bogusWBPart, SmartsMatchingPrefsHelper.getPreferences());
+
+        //Update current editor, if open
+        IEditorPart part=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        if ((isSupportedEditor( part ))){
+            updateViewContent(part);
+        }
+        
+        viewer.refresh();
+    }
+
+    
+    public static void firePropertyChanged() {
+        savePrefsAndUpdate();
+        
     }
 
 

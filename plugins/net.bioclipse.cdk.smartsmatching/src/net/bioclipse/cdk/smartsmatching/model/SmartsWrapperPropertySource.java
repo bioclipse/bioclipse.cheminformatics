@@ -11,6 +11,8 @@
 package net.bioclipse.cdk.smartsmatching.model;
 
 import java.util.ArrayList;
+
+import net.bioclipse.cdk.smartsmatching.views.SmartsMatchingView;
 import net.bioclipse.core.domain.props.BioObjectPropertySource;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -84,6 +86,22 @@ public class SmartsWrapperPropertySource extends BioObjectPropertySource {
         }
         
         return super.getPropertyValue(id);
+    }
+    
+    @Override
+    public void setPropertyValue( Object id, Object value ) {
+
+        if (PROPERTY_NAME.equals( id )){
+            String newval=String.valueOf( value );
+            sw.setName( newval );
+        }
+        else if (PROPERTY_SMARTS.equals( id )){
+            String newval=String.valueOf( value );
+            sw.setSmartsString( newval );
+        }
+        
+        SmartsMatchingView.firePropertyChanged();
+
     }
 
     public ArrayList<IPropertyDescriptor> getProperties() {
