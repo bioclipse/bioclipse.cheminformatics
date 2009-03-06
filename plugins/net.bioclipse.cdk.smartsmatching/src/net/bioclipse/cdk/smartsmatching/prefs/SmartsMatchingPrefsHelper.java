@@ -35,10 +35,32 @@ public class SmartsMatchingPrefsHelper {
 
         String entireString=store.getString( SMARTSMATCHING_PREFS_SMARTS );
 
-        List<SmartsWrapper> retlist=new ArrayList<SmartsWrapper>();
-        
         logger.debug("Read Smarts prefs string: " + entireString);
         
+        List<SmartsWrapper> retlist = splitPrefsString( entireString);
+
+        //If no hits, initialize default ones.
+        if (retlist.size()<=0){
+            logger.debug( "No SMARTS could be read, initializing default prefs." );
+            entireString=store.getDefaultString( SMARTSMATCHING_PREFS_SMARTS );
+            logger.debug("Read default Smarts prefs string: " + entireString);
+
+            //Store def val
+            store.setValue( SMARTSMATCHING_PREFS_SMARTS, entireString );
+
+            //Try again
+            retlist = splitPrefsString( entireString);
+
+        }
+        
+        return retlist;
+
+    }
+
+    private static List<SmartsWrapper> splitPrefsString( String entireString) {
+
+        List<SmartsWrapper> rtlst=new ArrayList<SmartsWrapper>();
+
         //Split in parts
         String[] ret=entireString.split(PREFS_DELIMITER);
         for (int i = 0; i < ret.length; i++) {
@@ -48,15 +70,14 @@ public class SmartsMatchingPrefsHelper {
 
           if (subparts.length==2){
               SmartsWrapper sw=new SmartsWrapper(subparts[0], subparts[1]);
-              retlist.add(sw);
+              rtlst.add(sw);
           }else{
               logger.error( "SmartsMatchingPrefs part: " + ret[i] + "could not " +
                   "be parsed into name and smartsstring. Skipped.");
           }
         }
         
-        return retlist;
-
+        return rtlst;
     }
     
     public static void setPreferences(List<SmartsWrapper> smartsList){
@@ -80,7 +101,8 @@ public class SmartsMatchingPrefsHelper {
         }
         
         //Remove trailing delimiter
-        prefsToSave=prefsToSave.substring( 0, prefsToSave.length()-1);
+        if (prefsToSave.length()>4)
+            prefsToSave=prefsToSave.substring( 0, prefsToSave.length()-(PREFS_DELIMITER.length()));
         
         logger.debug( "Saving smartsmatching prefs: " + prefsToSave );
 
