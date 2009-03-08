@@ -19,6 +19,7 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IMonomer;
@@ -48,6 +49,10 @@ public class ChemObjectPropertySource extends BasicPropertySource {
         //PseudoAtom specific
         protected static final String ATOM_LABEL = "Label";
 
+        //AtomContainer specific
+        protected static final String AC_NO_ATOMS = "Atoms";
+        protected static final String AC_NO_BONDS = "Bonds";
+
         //PDB specific
         protected static final String PDB_RES_NAME = "Residue Name";
         protected static final String PDB_CHAIN_ID = "Chain ID";
@@ -74,6 +79,13 @@ public class ChemObjectPropertySource extends BasicPropertySource {
         {
             { ATOM_LABEL, new TextPropertyDescriptor(ATOM_LABEL,"Label")},
         };
+        
+        private Object AtomContainerPropertiesTable[][] =
+        {
+            { AC_NO_ATOMS, new TextPropertyDescriptor(AC_NO_ATOMS,AC_NO_ATOMS)},
+            { AC_NO_BONDS, new TextPropertyDescriptor(AC_NO_BONDS,AC_NO_BONDS)},
+        };
+
         
         private Object AtomPropertiesTable[][] = 
         {
@@ -197,7 +209,24 @@ public class ChemObjectPropertySource extends BasicPropertySource {
             addToValueMap(PDB_CHAIN_ID,atom.getChainID());
             addToValueMap(PDB_RES_SEQ,atom.getResSeq());
           }
-          
+
+          if (chemobj instanceof IAtomContainer) {
+              IAtomContainer ac = (IAtomContainer)chemobj;
+
+              //Build the arraylist of propertydescriptors
+              for (int i=0;i<AtomContainerPropertiesTable.length;i++) {       
+                // Add each property supported.
+                PropertyDescriptor descriptor;
+                descriptor = (PropertyDescriptor)AtomContainerPropertiesTable[i][1];
+                descriptor.setCategory("Atom Container");
+                getProperties().add((IPropertyDescriptor)descriptor);
+              }
+
+              //Build the hashmap of property->value pair
+              addToValueMap(AC_NO_ATOMS,""+ac.getAtomCount());
+              addToValueMap(AC_NO_BONDS,""+ac.getBondCount());
+            }
+
           
           //======
           //IBond
