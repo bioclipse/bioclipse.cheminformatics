@@ -88,6 +88,8 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         }
     };
 
+    private static IWorkbenchPart currentPart;
+
     private Action expandAllAction;
 
     private Action collapseAllAction;
@@ -114,6 +116,7 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         viewer.setInput(smartsInView);
         editorSmartsMap=new HashMap<IWorkbenchPart, List<SmartsWrapper>>();
         editorSmartsMap.put( bogusWBPart, smartsInView);
+        
 
 //        viewer.addSelectionChangedListener( new ISelectionChangedListener(){
 //
@@ -146,6 +149,19 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
             public void menuAboutToShow(IMenuManager manager) {
+//                if ( viewer.getSelection() instanceof IStructuredSelection ) {
+//                    IStructuredSelection ssel = (IStructuredSelection) viewer.getSelection();
+//                    boolean foundSW=false;
+//                    for (Object obj : ssel.toList()){
+//                        if ( obj instanceof SmartsWrapper ) {
+//                            foundSW=true;
+//                        }
+//                    }
+//                    if (!foundSW){
+//                        runAction.setEnabled( false );
+//                    }
+//                }
+                
                 SmartsMatchingView.this.fillContextMenu(manager);
             }
         });
@@ -410,6 +426,7 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
     private static void updateViewContent( IWorkbenchPart part ) {
         
         if (!(isSupportedEditor(part))) return;
+        if (part==currentPart) return;
 
         if (editorSmartsMap.keySet().contains( part )){
             //Use existing
@@ -420,6 +437,8 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
             editorSmartsMap.put( part, newSmartsInView );
             smartsInView=newSmartsInView;
         }
+
+        currentPart=part;
         
         viewer.setInput(smartsInView);
         
