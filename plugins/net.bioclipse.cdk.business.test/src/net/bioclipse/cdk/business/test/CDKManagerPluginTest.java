@@ -372,6 +372,31 @@ public class CDKManagerPluginTest {
         
         assertTrue( cdk.smartsMatches(propane, propaneSmiles) );
     }
+    
+    @Test
+    public void testSMARTSonFile() throws IOException, 
+                                          BioclipseException, 
+                                          CoreException, URISyntaxException {
+
+        URI uri = getClass().getResource("/testFiles/0037.cml").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        ICDKMolecule mol = cdk.loadMolecule( path);
+        assertNotNull(mol);
+        
+        String SMARTS="[N](*(*(O)))";
+        assertTrue( cdk.isValidSmarts( SMARTS ) );
+        assertTrue( cdk.smartsMatches( mol, SMARTS ) );
+        
+        List<IAtomContainer> aclist = cdk.getSmartsMatches( mol, SMARTS );
+        assertNotNull("Smarts matching returned NULL", aclist );
+        assertTrue( aclist.size()==1 );
+        
+        IAtomContainer ac=aclist.get( 0 );
+        assertEquals( 4, ac.getAtomCount() );
+    }
+
+    
 
     @Test
     public void testLoadConformers() throws BioclipseException, IOException, URISyntaxException {
@@ -1154,7 +1179,7 @@ public class CDKManagerPluginTest {
         cdk.saveMolecule(mol,"/Virtual/bug583.cml", true);
     }
 
-    @Test
+    @Test @Ignore("See bug #613")
     public  void testGenerate2D() throws Exception {
         ICDKMolecule mol = cdk.fromSMILES("CC");
         Assert.assertFalse( cdk.has2d( mol ));
