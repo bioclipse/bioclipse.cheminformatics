@@ -42,19 +42,19 @@ public class JmolManager implements IJmolManager {
         if (editor != null){
             editor.runScript(script);
         }
-
     }
 
     public void load(String path) throws CoreException {
-        load(ResourcePathTransformer.getInstance().transform(path));
+        throw new IllegalStateException( "This manager method should " +
+        		                             "not have been called" );
     }
     
     public void load(IFile file) throws CoreException {
         if (jmolEditor == null) {
-            throw new CoreException(new Status(SWT.ERROR,Activator.PLUGIN_ID,
-            "Cannot load a file into active Jmol editor."));
+            throw new CoreException( new Status(SWT.ERROR, Activator.PLUGIN_ID,
+                "Cannot load a file into active Jmol editor.") );
         }
-    	jmolEditor.load(file);
+        jmolEditor.load(file);
     }
     
     /**
@@ -77,10 +77,8 @@ public class JmolManager implements IJmolManager {
                 }
             }
         });
-
         return jmolEditor;
     }
-    
 
     protected void setActiveJmolEditor( JmolEditor activeEditor ) {
         jmolEditor = activeEditor;
@@ -98,8 +96,8 @@ public class JmolManager implements IJmolManager {
         run("minimize");
     }
 
-	public void snapshot(String filepath) {
-		IFile file = ResourcePathTransformer.getInstance().transform(filepath);
-		this.findActiveJmolEditor().snapshot(file);
-	}
+  	public void snapshot(String filepath) {
+    		IFile file = ResourcePathTransformer.getInstance().transform(filepath);
+    		this.findActiveJmolEditor().snapshot(file);
+  	}
 }
