@@ -71,7 +71,7 @@ public class JmolManager implements IJmolManager {
                                 .getActiveWorkbenchWindow()
                                 .getActivePage()
                                 .getActiveEditor();
-
+                
                 if (activeEditor instanceof JmolEditor) {
                     setActiveJmolEditor( (JmolEditor)activeEditor );
                 }

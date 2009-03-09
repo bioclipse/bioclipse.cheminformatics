@@ -33,6 +33,20 @@
       </editor>
    </extension>
 
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="Jmol Script"
+            extensions="jmol,scr"
+            icon="icons/molecule3D.png"
+            class="net.bioclipse.jmol.editors.script.JmolScriptEditor"
+            id="net.bioclipse.jmol.editors.script.JmolScriptEditor"
+            default="true">
+      </editor>
+   </extension>
+   
+   
+
 <extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
       <propertyContributor contributorId="net.bioclipse.jmol.views.outline.JmolContentOutlinePage">
 			<propertyCategory category="Chain"/>
@@ -72,298 +86,7 @@
          </propertySection-->
       </propertySections>
    </extension>
-
- <extension
-       point="org.eclipse.ui.perspectiveExtensions"
-       id="jmolPerspectiveExtension">
-    <perspectiveExtension
-          targetID="net.bioclipse.pcore.PcorePerspective">
-    </perspectiveExtension>
- </extension>
-
-
    
-
-   <!--extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            label="Jmol Action Set"
-            visible="true"
-            id="net.bioclipse.plugins.bc_jmol.actionSet">
-         <menu
-               label="Jmol"
-               id="JmolMenu">
-            <separator name="selectSub" />
-         </menu>
-
-
-         <menu
-               label="Background"
-               id="Background"
-               path="JmolMenu/selectSub">
-            <separator
-                  name="BackgroundGroup">
-            </separator>         
-         </menu>
-         <action
-               label="&amp;White"
-               class="net.bioclipse.jmol.actions.impl.BGWhiteAction"
-               tooltip="Set background to White"
-               menubarPath="JmolMenu/Background/BackgroundGroup"
-               id="net.bioclipse.jmol.actions.impl.BGWhiteAction">
-         </action>
-         <action
-               label="&amp;Black"
-               class="net.bioclipse.jmol.actions.impl.BGBlackAction"
-               tooltip="Set background to Black"
-               menubarPath="JmolMenu/Background/BackgroundGroup"
-               id="net.bioclipse.jmol.actions.impl.BGBlackAction">
-         </action>
-
-         <menu
-               label="Surface"
-               id="surface"
-               path="JmolMenu/selectSub">
-            <separator
-                  name="SurfaceGroup">
-            </separator>         
-         </menu>
-         <action
-               label="&amp;Dots on"
-               class="net.bioclipse.jmol.actions.impl.DotsOnAction"
-               tooltip="Turn dotted surface on for van der Waals radii"
-               menubarPath="JmolMenu/surface/SurfaceGroup"
-               id="net.bioclipse.jmol.actions.impl.DotsOnAction">
-         </action>
-         <action
-               label="&amp;Dots off"
-               class="net.bioclipse.jmol.actions.impl.DotsOffAction"
-               tooltip="Turn dotted surface off for van der Waals radii"
-               menubarPath="JmolMenu/surface/SurfaceGroup"
-               id="net.bioclipse.jmol.actions.impl.DotsOffAction">
-         </action>
-
-
-         <menu
-               label="Label"
-               id="label"
-               path="JmolMenu/selectSub">
-            <separator
-                  name="LabelGroup">
-            </separator>         
-         </menu>
-         <action
-               label="&amp;Label none"
-               class="net.bioclipse.jmol.actions.impl.LabelNoneAction"
-               tooltip="Label none"
-               menubarPath="JmolMenu/label/LabelGroup"
-               id="net.bioclipse.jmol.actions.impl.LabelNoneAction">
-         </action>
-         <action
-               label="&amp;Label symbol"
-               class="net.bioclipse.jmol.actions.impl.LabelSymbolAction"
-               tooltip="Label symbol"
-               menubarPath="JmolMenu/label/LabelGroup"
-               id="net.bioclipse.jmol.actions.impl.LabelSymbolAction">
-         </action>
-         <action
-               label="&amp;Label name"
-               class="net.bioclipse.jmol.actions.impl.LabelNameAction"
-               tooltip="Label name"
-               menubarPath="JmolMenu/label/LabelGroup"
-               id="net.bioclipse.jmol.actions.impl.LabelNameAction">
-         </action>
-         <action
-               label="&amp;Label number"
-               class="net.bioclipse.jmol.actions.impl.LabelNumberAction"
-               tooltip="Label number"
-               menubarPath="JmolMenu/label/LabelGroup"
-               id="net.bioclipse.jmol.actions.impl.LabelNumberAction">
-         </action>
-         <action
-               label="&amp;Label centered"
-               class="net.bioclipse.jmol.actions.impl.LabelCenteredAction"
-               tooltip="Label centered"
-               menubarPath="JmolMenu/label/LabelGroup"
-               id="net.bioclipse.jmol.actions.impl.LabelCenteredAction">
-         </action>
-         <action
-               label="&amp;Label upper right"
-               class="net.bioclipse.jmol.actions.impl.LabelUpperRightAction"
-               tooltip="Label upper right"
-               menubarPath="JmolMenu/label/LabelGroup"
-               id="net.bioclipse.jmol.actions.impl.LabelUpperRightAction">
-         </action>
-         
-
-
-         <menu
-               label="BioPolymer"
-               id="biopolymer"
-               path="JmolMenu/selectSub">
-            <separator
-                  name="biopolymerGroup">
-            </separator>         
-         </menu>
-         <action
-               class="net.bioclipse.jmol.actions.impl.CartoonOnAction"
-               id="net.bioclipse.jmol.actions.impl.CartoonOnAction"
-               label="&amp;Cartoon on"
-               menubarPath="JmolMenu/biopolymer/biopolymerGroup"
-               tooltip="Turn cartoons on for selected atoms"/>
-         <action
-               class="net.bioclipse.jmol.actions.impl.CartoonOffAction"
-               id="net.bioclipse.jmol.actions.impl.CartoonOffAction"
-               label="&amp;Cartoon off"
-               menubarPath="JmolMenu/biopolymer/biopolymerGroup"
-               tooltip="Turn cartoons off on for selected atoms"/>
-         <action
-               label="&amp;Ribbons on"
-               class="net.bioclipse.jmol.actions.impl.RibbonsOnAction"
-               tooltip="Turn ribbons on for selected atoms"
-               menubarPath="JmolMenu/biopolymer/biopolymerGroup"
-               id="net.bioclipse.jmol.actions.impl.RibbonsOnAction"/>
-         <action
-               label="&amp;Ribbons off"
-               class="net.bioclipse.jmol.actions.impl.RibbonsOffAction"
-               tooltip="Turn ribbons off for selected atoms"
-               menubarPath="JmolMenu/biopolymer/biopolymerGroup"
-               id="net.bioclipse.jmol.actions.impl.RibbonsOffAction"/>
-
-
-         <menu
-               label="Bond style"
-               id="bondStyle"
-               path="JmolMenu/selectSub">
-            <separator
-                  name="BondGroup">
-            </separator>         
-         </menu>
-         <action
-               label="&amp;20 Å"
-               class="net.bioclipse.jmol.actions.impl.Bonds20Action"
-               tooltip="Set bond size to 20 Å"
-               menubarPath="JmolMenu/bondStyle/BondGroup"
-               id="net.bioclipse.jmol.actions.impl.Bonds20Action">
-         </action>
-         <action
-               label="&amp;15 Å"
-               class="net.bioclipse.jmol.actions.impl.Bonds15Action"
-               tooltip="Set bond size to 15 Å"
-               menubarPath="JmolMenu/bondStyle/BondGroup"
-               id="net.bioclipse.jmol.actions.impl.Bonds15Action">
-         </action>
-         <action
-               label="&amp;10 Å"
-               class="net.bioclipse.jmol.actions.impl.Bonds10Action"
-               tooltip="Set bond size to 10 Å"
-               menubarPath="JmolMenu/bondStyle/BondGroup"
-               id="net.bioclipse.jmol.actions.impl.Bonds10Action">
-         </action>
-         <action
-               label="&amp;Wireframe"
-               class="net.bioclipse.jmol.actions.impl.WireframeAction"
-               tooltip="Show bonds as wireframe"
-               menubarPath="JmolMenu/bondStyle/BondGroup"
-               id="net.bioclipse.jmol.actions.impl.WireframeAction">
-         </action>
-         <action
-               label="&amp;None"
-               class="net.bioclipse.jmol.actions.impl.BondsNoneAction"
-               tooltip="Do not show bonds"
-               menubarPath="JmolMenu/bondStyle/BondGroup"
-               id="net.bioclipse.jmol.actions.impl.BondsNoneAction">
-         </action>
-
-
-         <menu
-               label="Atom style"
-               id="spacefill"
-               path="JmolMenu/selectSub">
-            <separator
-                  name="SpacefillGroup">
-            </separator>         
-         </menu>
-         <action
-               label="&amp;100% vanderWaals"
-               class="net.bioclipse.jmol.actions.impl.Spacefill100Action"
-               tooltip="100% vanderWaals"
-               menubarPath="JmolMenu/spacefill/SpacefillGroup"
-               id="net.bioclipse.jmol.actions.impl.Spacefill100Action">
-         </action>
-         <action
-               label="&amp;25% vanderWaals"
-               class="net.bioclipse.jmol.actions.impl.Spacefill25Action"
-               tooltip="Spacefill 25%"
-               menubarPath="JmolMenu/spacefill/SpacefillGroup"
-               id="net.bioclipse.jmol.actions.impl.Spacefill25Action">
-         </action>
-         <action
-               label="&amp;20% vanderWaals"
-               class="net.bioclipse.jmol.actions.impl.Spacefill20Action"
-               tooltip="Spacefill 20%"
-               menubarPath="JmolMenu/spacefill/SpacefillGroup"
-               id="net.bioclipse.jmol.actions.impl.Spacefill20Action">
-         </action>
-         <action
-               label="&amp;None"
-               class="net.bioclipse.jmol.actions.impl.Spacefill0Action"
-               tooltip="Spacefill 0%"
-               menubarPath="JmolMenu/spacefill/SpacefillGroup"
-               id="net.bioclipse.jmol.actions.impl.Spacefill0Action">
-         </action>
-
-         <menu
-               label="Select"
-               id="select"
-               path="JmolMenu/selectSub">
-            <separator
-                  name="SelectGroup">
-            </separator>         
-         </menu>
-         <action
-               label="&amp;Deselect all"
-               class="net.bioclipse.jmol.actions.impl.DeselectAllAction"
-               tooltip="Select all"
-               menubarPath="JmolMenu/select/SelectGroup"
-               id="net.bioclipse.jmol.actions.impl.DeselectAllAction">
-         </action>
-         <action
-               label="&amp;Select all"
-               class="net.bioclipse.jmol.actions.impl.SelectAllAction"
-               tooltip="Select all"
-               menubarPath="JmolMenu/select/SelectGroup"
-               id="net.bioclipse.jmol.actions.impl.SelectAllAction">
-         </action>
-         <action
-               class="net.bioclipse.jmol.actions.impl.SelectProteinAction"
-               id="net.bioclipse.jmol.actions.impl.SelectProteinAction"
-               label="Select &amp;protein"
-               menubarPath="JmolMenu/select/SelectGroup"
-               tooltip="Select protein"/>
-         <action
-               class="net.bioclipse.jmol.actions.impl.SelectNucleicAction"
-               id="net.bioclipse.jmol.actions.impl.SelectNucleicAction"
-               label="Select &amp;nucleic"
-               menubarPath="JmolMenu/select/SelectGroup"
-               tooltip="Select nucleic"/>
-         <action
-               class="net.bioclipse.jmol.actions.impl.SelectWaterAction"
-               id="net.bioclipse.jmol.actions.impl.SelectWaterAction"
-               label="Select &amp;water"
-               menubarPath="JmolMenu/select/SelectGroup"
-               tooltip="Select water"/>
-         <action
-               class="net.bioclipse.jmol.actions.impl.SelectHeteroAction"
-               id="net.bioclipse.jmol.actions.impl.SelectHeteroAction"
-               label="Select &amp;hetero"
-               menubarPath="JmolMenu/select/SelectGroup"
-               tooltip="Select hetero"/>
-
-
-      </actionSet>
-   </extension-->
-
 
  <extension
          point="org.eclipse.ui.commands">
@@ -382,6 +105,11 @@
             description="Export as image"
             name="Export">
       </command>
+      <command
+            id="net.bioclipse.jmol.actions.runEditorScript"
+            description="Run the Jmol script in the activeeditor"
+            name="Run Script">
+      </command>
       
 </extension>
 
@@ -395,6 +123,10 @@
             class="net.bioclipse.jmol.actions.ExportHandler"
             commandId="net.bioclipse.jmol.actions.export">
       </handler>
+		<handler
+            class="net.bioclipse.jmol.actions.RunEditorScriptHandler"
+            commandId="net.bioclipse.jmol.actions.runEditorScript">
+      </handler>
       
 </extension>
 
@@ -407,6 +139,15 @@
                variable="activeEditorId">
             <equals
                   value="net.bioclipse.jmol.editors.JmolEditor">
+            </equals>
+         </with>
+      </definition>
+      <definition
+            id="net.bioclipse.definitions.activeJmolScriptEditor">
+         <with
+               variable="activeEditorId">
+            <equals
+                  value="net.bioclipse.jmol.editors.script.JmolScriptEditor">
             </equals>
          </with>
       </definition>
@@ -904,6 +645,16 @@
                <visibleWhen>
                   <reference
                         definitionId="net.bioclipse.definitions.activeJmolEditor">
+                  </reference>
+               </visibleWhen>
+             </command>
+            <command
+                  commandId="net.bioclipse.jmol.actions.runEditorScript"
+                  tooltip="Run script in editor"
+                  icon="icons/smallRun.gif">
+               <visibleWhen>
+                  <reference
+                        definitionId="net.bioclipse.definitions.activeJmolScriptEditor">
                   </reference>
                </visibleWhen>
              </command>
