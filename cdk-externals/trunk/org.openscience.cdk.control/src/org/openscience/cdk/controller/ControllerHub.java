@@ -60,8 +60,6 @@ import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.interfaces.IPseudoAtom;
-import org.openscience.cdk.interfaces.IReaction;
-import org.openscience.cdk.interfaces.IReactionSet;
 import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.interfaces.ISingleElectron;
 import org.openscience.cdk.interfaces.IBond.Order;
@@ -77,7 +75,6 @@ import org.openscience.cdk.tools.SaturationChecker;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.BondManipulator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
-import org.openscience.cdk.tools.manipulator.ReactionSetManipulator;
 import org.openscience.cdk.validate.ProblemMarker;
 
 /**
@@ -1197,7 +1194,8 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         makeRingAromatic(newRing);
         ringPlacer.placeFusedRing(newRing, sharedAtoms, sharedAtomsCenter,
                                   ringCenterVector, bondLength);
-        if (bond.getOrder() == IBond.Order.SINGLE) {
+        if (sourceContainer.getMaximumBondOrder(bond.getAtom(0)) == IBond.Order.SINGLE &&
+            sourceContainer.getMaximumBondOrder(bond.getAtom(1)) == IBond.Order.SINGLE) {
             newRing.getBond(1).setOrder(IBond.Order.DOUBLE);
             newRing.getBond(3).setOrder(IBond.Order.DOUBLE);
             newRing.getBond(5).setOrder(IBond.Order.DOUBLE);
