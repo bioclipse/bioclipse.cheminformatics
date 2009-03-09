@@ -78,9 +78,14 @@ import org.jmol.modelset.Model;
 /**
  * A Multi Page Editor with Jmol embedded on foremost page.
  */
-public class JmolEditor extends MultiPageEditorPart implements IResourceChangeListener, IAdaptable, ISelectionListener, ISelectionProvider{
+public class JmolEditor extends MultiPageEditorPart 
+                        implements IResourceChangeListener, 
+                                   IAdaptable, 
+                                   ISelectionListener, 
+                                   ISelectionProvider {
 
-    public static final String EDITOR_ID="net.bioclipse.jmol.editors.JmolEditor";
+    public static final String EDITOR_ID 
+        = "net.bioclipse.jmol.editors.JmolEditor";
 
     private static final Logger logger = Logger.getLogger(JmolEditor.class);
 
@@ -90,7 +95,10 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
     /** The ContentOutlinePage for the Outline View */
     JmolContentOutlinePage fOutlinePage;
 
-    /** The JmolPanel that we can get the JmolViewer from to e.g. call scripts */
+    /** 
+     * The JmolPanel that we can get the JmolViewer 
+     * from to e.g. call scripts 
+     */
     JmolPanel jmolPanel;
 
     /** Registered listeners */
@@ -99,13 +107,12 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
     /** Store last selection */
     private JmolSelection selection;
 
-
-    //Should we hold the model as a string (read from file) or let it be the actual file?
+    //Should we hold the model as a string (read from file) or let 
+    //it be the actual file?
     //Not yet decided. Will start by having as String.
     //Must check how react on resource changes works.
     //Ola 2007-11-20
     String content;        //Read from EditorInput
-
 
     /**
      * Creates a multi-page editor example.
@@ -113,7 +120,7 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
     public JmolEditor() {
         super();
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-        selectionListeners=new ArrayList<ISelectionChangedListener>();
+        selectionListeners = new ArrayList<ISelectionChangedListener>();
     }
 
     /**
@@ -128,12 +135,10 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
          * property and cannot be scoped. It might not be suitable for your
          * application.
          */
-    	try {
-    		System.setProperty("sun.awt.noerasebackground", "true");
-    	} catch (NoSuchMethodError error) {
-    	}
-    	
-
+        try {
+        	System.setProperty("sun.awt.noerasebackground", "true");
+        } catch (NoSuchMethodError error) {
+        }
 
         Composite parent = new Composite(getContainer(), SWT.NONE);
 
@@ -147,13 +152,13 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
 
         GridData layoutData = new GridData();
         layoutData.grabExcessHorizontalSpace = true;
-        layoutData.grabExcessVerticalSpace=true;
+        layoutData.grabExcessVerticalSpace = true;
         parent.setLayoutData(layoutData);
 
         //Add the Jmol composite to the top
         Composite composite = new Composite( parent, SWT.NO_BACKGROUND 
-                                            | SWT.EMBEDDED
-                                            | SWT.DOUBLE_BUFFERED);
+                                                   | SWT.EMBEDDED
+                                                   | SWT.DOUBLE_BUFFERED );
         layout = new GridLayout();
         composite.setLayout(layout);
         layoutData = new GridData(GridData.FILL_BOTH);
@@ -162,7 +167,8 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
 
 
         java.awt.Frame awtFrame = SWT_AWT.new_Frame(composite);
-        java.awt.Panel awtPanel = new java.awt.Panel(new java.awt.BorderLayout());
+        java.awt.Panel awtPanel 
+            = new java.awt.Panel(new java.awt.BorderLayout());
         awtFrame.add(awtPanel);
 
         jmolPanel = new JmolPanel(this);
@@ -173,29 +179,28 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
                 JmolCompMouseListener(composite,this));
 
         final float scaleFactor = 0.3f;
-        jmolPanel.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
-
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                int clicks = e.getWheelRotation();
-                float z = jmolPanel.getViewer().getZoomPercentFloat();
-                if (clicks > 0) {
-                    float newZ = z * (1 - scaleFactor);
-                    if (newZ > 5.0) {
-                        runScriptSilently("zoom " + newZ);
-                    }
-                } else {
-                    float newZ = z * (1 + scaleFactor);
-                    if (newZ < 5000.0) {
-                        runScriptSilently("zoom " + newZ);
+        jmolPanel.addMouseWheelListener(
+            new java.awt.event.MouseWheelListener() {
+                public void mouseWheelMoved(MouseWheelEvent e) {
+                    int clicks = e.getWheelRotation();
+                    float z = jmolPanel.getViewer().getZoomPercentFloat();
+                    if (clicks > 0) {
+                        float newZ = z * (1 - scaleFactor);
+                        if (newZ > 5.0) {
+                            runScriptSilently("zoom " + newZ);
+                        }
+                    } else {
+                        float newZ = z * (1 + scaleFactor);
+                        if (newZ < 5000.0) {
+                            runScriptSilently("zoom " + newZ);
+                        }
                     }
                 }
             }
-            
-        });
+        );
 
-
-        content=getContentsFromEditor();
-        if (content==null){
+        content = getContentsFromEditor();
+        if (content == null) {
             logger.error("Could not get FILE in jmol editor");
             content = "";//return;
         }
@@ -204,9 +209,9 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
 
         //Initialize jmol
         //===============
-        //Use halos as selction marker
+        //Use halos as selection marker
         jmolPanel.getViewer().setSelectionHalos(true);
-
+        
         //display all frames, then use 'display'
         runScript("frame 0.0");
         runScript("display 1.1");
@@ -215,7 +220,6 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
 
         //End Initialize jmol
         //===============
-
 
         int index = addPage(parent);
         setPageText(index, "Jmol");
@@ -244,7 +248,6 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         }
     }
 
-
     /**
      * Creates the pages of the multi-page editor.
      */
@@ -266,45 +269,44 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
     }
     
     public void load(IFile file) throws CoreException {
-    	BufferedReader contentStream = 
-    		new BufferedReader(new InputStreamReader(file.getContents()));
-    	StringBuffer stringModel = new StringBuffer();
-    	try {
-    		String line;
-			while ((line = contentStream.readLine()) != null) {
-				stringModel.append(line);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    	jmolPanel.getViewer().loadInline(stringModel.toString());
+        BufferedReader contentStream = 
+            new BufferedReader(new InputStreamReader(file.getContents()));
+        StringBuffer stringModel = new StringBuffer();
+        try {
+            String line;
+            while ((line = contentStream.readLine()) != null) {
+                stringModel.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        jmolPanel.getViewer().loadInline(stringModel.toString());
     }
     
     /**
      * Take a snapshot of the editor contents and save as a png file
      */
     public void snapshot(IFile file) {
-		Image image = new BufferedImage(
-				jmolPanel.getWidth(),
-				jmolPanel.getHeight(),
-				BufferedImage.TYPE_INT_RGB);
-		jmolPanel.paint(image.getGraphics());
-		
-		try {
-		    // this seems like a convoluted way to do things...
-		    ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); 
-			ImageIO.write((RenderedImage) image, "PNG", outputStream);
-			ByteArrayInputStream input = 
-			    new ByteArrayInputStream(outputStream.toByteArray());
-			if (file.exists()) {
-    			file.setContents(input, false, true, null);
-			} else {
-			    file.create(input, false, null);
-			}
-		} catch (IOException ioe) {
-			//logger.error("Problem with the path " + result);
-		} catch (CoreException e) {
-            e.printStackTrace();
+        Image image = new BufferedImage(jmolPanel.getWidth(),
+                                        jmolPanel.getHeight(),
+                                        BufferedImage.TYPE_INT_RGB);
+        jmolPanel.paint(image.getGraphics());
+
+        try {
+            // this seems like a convoluted way to do things...
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); 
+            ImageIO.write((RenderedImage) image, "PNG", outputStream);
+            ByteArrayInputStream input = 
+                new ByteArrayInputStream(outputStream.toByteArray());
+            if (file.exists()) {
+                file.setContents(input, false, true, null);
+            } else {
+                file.create(input, false, null);
+            }
+        } catch (IOException ioe) {
+            LogUtils.debugTrace( logger, ioe );
+        } catch (CoreException e) {
+            LogUtils.debugTrace( logger, e );
         }
     }
     
@@ -317,15 +319,15 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
     
     /**
      * Saves the multi-page editor's document as another file.
-     * Also updates the text for page 0's tab, and updates this multi-page editor's input
-     * to correspond to the nested editor's.
+     * Also updates the text for page 0's tab, and updates this multi-page 
+     * editor's input to correspond to the nested editor's.
      */
     public void doSaveAs() {
         IEditorPart editor = getActiveEditor();
         if (editor != null) {
-        	editor.doSaveAs();
-        	setPageText(0, editor.getTitle());
-        	setInput(editor.getEditorInput());
+            editor.doSaveAs();
+            setPageText(0, editor.getTitle());
+            setInput(editor.getEditorInput());
         }
     }
     
@@ -337,24 +339,20 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         IDE.gotoMarker(getEditor(0), marker);
     }
     
-    /**
-     * The <code>MultiPageEditorExample</code> implementation of this method
-     * checks that the input is an instance of <code>IFileEditorInput</code>.
-     */
     public void init(IEditorSite site, IEditorInput editorInput)
                                                     throws PartInitException {
-//        if (!(editorInput instanceof IFileEditorInput))
-//            throw new PartInitException("Invalid Input: Must be IFileEditorInput");
         super.init(site, editorInput);
         setPartName(editorInput.getName());
 
     }
+
     /* (non-Javadoc)
      * Method declared on IEditorPart.
      */
     public boolean isSaveAsAllowed() {
         return true;
     }
+    
     /**
      * Calculates the contents of page 2 when the it is activated.
      */
@@ -364,18 +362,26 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
             //TODO
         }
     }
+    
     /**
      * Closes all project files on project close.
      */
     public void resourceChanged(final IResourceChangeEvent event){
-        if(event.getType() == IResourceChangeEvent.PRE_CLOSE){
-            Display.getDefault().asyncExec(new Runnable(){
-                public void run(){
-                	if (getSite()==null) return;
-                	if (getSite().getWorkbenchWindow()==null) return;
-                    IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
-                    for (int i = 0; i<pages.length; i++){
-                        if(((FileEditorInput)editor.getEditorInput()).getFile().getProject().equals(event.getResource())){
+        if (event.getType() == IResourceChangeEvent.PRE_CLOSE) {
+            Display.getDefault().asyncExec(new Runnable() {
+                public void run() {
+                    if (getSite()==null) 
+                        return;
+                    if (getSite().getWorkbenchWindow()==null) 
+                        return;
+                    
+                    IWorkbenchPage[] pages = getSite().getWorkbenchWindow()
+                                                      .getPages();
+                    for (int i = 0; i<pages.length; i++) {
+                        if ( ( (FileEditorInput)editor.getEditorInput() )
+                                .getFile()
+                                .getProject()
+                                .equals( event.getResource() ) ) {
                             IEditorPart editorPart = pages[i].findEditor(editor.getEditorInput());
                             pages[i].closeEditor(editorPart,true);
                         }
@@ -385,7 +391,7 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         }
     }
 
-    private String getContentsFromEditor(){
+    private String getContentsFromEditor() {
 
         IEditorInput input=getEditorInput();
         ResourcePathTransformer transformer 
@@ -452,15 +458,19 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         //Adapter for Outline
         if (IContentOutlinePage.class.equals(required)) {
             if (fOutlinePage == null) {
-                fOutlinePage= new JmolContentOutlinePage(getEditorInput(), this);
+                fOutlinePage
+                    = new JmolContentOutlinePage(getEditorInput(), this);
 //                if (getEditorInput() != null)
 //                fOutlinePage.setInput(getEditorInput());
             }
             return fOutlinePage;
         }
         
-        if (required==JmolModelString.class){
-        	String jms=(String) jmolPanel.getViewer().getProperty("String", "stateinfo", "");
+        if (required == JmolModelString.class) {
+            String jms = (String) jmolPanel.getViewer()
+                                           .getProperty( "String", 
+                                                         "stateinfo", 
+                                                         "" );
             JmolModelString jmso = new JmolModelString(jms);
             return jmso;
         }
@@ -470,10 +480,11 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
 
     public void runScript(String script){
         logger.debug("Running jmol script: '" + script + "'");
-        String res=jmolPanel.getViewer().evalString(script);
+        String res = jmolPanel.getViewer().evalString(script);
         if (res!=null)
             logger.debug("Jmol said: '" + res + "'");
     }
+    
     public void runScriptSilently(String script){
         logger.debug("Running jmol script: '" + script + "'");
         jmolPanel.getViewer().evalString(script);
@@ -486,7 +497,6 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
     public void setJmolPanel(JmolPanel jmolPanel) {
         this.jmolPanel = jmolPanel;
     }
-
 
     @SuppressWarnings("unchecked")
     public void selectionChanged(IWorkbenchPart part, ISelection selection) {
@@ -503,7 +513,6 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
 
         if (selection instanceof IStructuredSelection) {
             IStructuredSelection selection2 = (IStructuredSelection) selection;
-//            System.out.println("JmolEditor caught selection: " + selection2.getFirstElement());
 
             if (selection2==null){
                 runScript("select all; halos off;");
@@ -522,7 +531,8 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
                     Model model=(Model) jmodel.getObject();
 
                     //Add +1 as jmol uses base 1 and arrays 0
-                    selectedModelsList.add(String.valueOf(model.getModelIndex()+1));
+                    selectedModelsList.add(
+                        String.valueOf(model.getModelIndex()+1) );
                 }
 
                 else if (element instanceof JmolObject) {
@@ -605,20 +615,24 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
 
             //Handle selection of Frames by DISPLAY in Jmol
             if (selectedModelsList.size() > 0) {
-                if (selectedModelsList.get(0) !=null) {
+                if (selectedModelsList.get(0) != null) {
 
                     selectedModelsList=removeDuplicates(selectedModelsList);
 
                     //Collect all Select commands into one string
                     String collectedSelects="Display ";
-                    for (Iterator<String> it = selectedModelsList.iterator(); it.hasNext();) {
+                    for ( Iterator<String> it = selectedModelsList.iterator(); 
+                          it.hasNext(); ) {
                         String sel = it.next();
                         collectedSelects+="1." +sel+",";
                     }
 
                     //Remove last comma
-                    collectedSelects=collectedSelects.substring(0, collectedSelects.length()-1);
-                    logger.debug("Collected display string: '" + collectedSelects + "'");
+                    collectedSelects = 
+                        collectedSelects
+                            .substring( 0, collectedSelects.length() - 1 );
+                    logger.debug("Collected display string: '" 
+                                 + collectedSelects + "'");
 
                     runScript(collectedSelects);
                 }
@@ -633,25 +647,24 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
 
                     //Collect all Select commands into one string
                     String collectedSelects="Select ";
-                    for (Iterator<String> it = selectedObjects.iterator(); it.hasNext();) {
+                    for (Iterator<String> it = selectedObjects.iterator(); 
+                          it.hasNext();) {
                         String sel = it.next();
                         collectedSelects+=sel+",";
                     }
 
                     //Remove last comma
-                    collectedSelects=collectedSelects.substring(0, collectedSelects.length()-1);
-                    logger.debug("Collected select string: '" + collectedSelects + "'");
+                    collectedSelects 
+                        = collectedSelects
+                          .substring( 0, collectedSelects.length()-1);
+                    logger.debug("Collected select string: '" 
+                                 + collectedSelects + "'");
 
                     runScript(collectedSelects);
                 }
             } // else: nothing to select
-
-
         }
-
     }
-
-
 
     /**
      * Convenience method to remove duplicates in a list
@@ -665,14 +678,12 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         return new ArrayList(set);
     }
 
-
     /* Below are for setting selections in Bioclipse from Jmol, e.g when
      clicked on an Atom*/
 
-
-    public void addSelectionChangedListener(ISelectionChangedListener listener) {
-        if(!selectionListeners.contains(listener))
-        {
+    public void addSelectionChangedListener(
+                    ISelectionChangedListener listener) {
+        if ( !selectionListeners.contains(listener) ) {
             selectionListeners.add(listener);
         }
     }
@@ -683,7 +694,7 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
 
     public void removeSelectionChangedListener(
             ISelectionChangedListener listener) {
-        if(selectionListeners.contains(listener))
+        if (selectionListeners.contains(listener))
             selectionListeners.remove(listener);
     }
 
@@ -701,15 +712,19 @@ public class JmolEditor extends MultiPageEditorPart implements IResourceChangeLi
         this.selection = (JmolSelection)selection;
 
         //Issue select string
-        String selStr="Select " + ((JmolSelection)selection).getFirstElement().toString();
+        String selStr 
+            = "Select " 
+                + ((JmolSelection)selection).getFirstElement().toString();
         runScript(selStr);
 
-        if (selectionListeners==null) return;
-        java.util.Iterator<ISelectionChangedListener> iter = selectionListeners.iterator();
-        while( iter.hasNext() )
-        {
+        if (selectionListeners==null) 
+            return;
+        java.util.Iterator<ISelectionChangedListener> iter 
+            = selectionListeners.iterator();
+        while ( iter.hasNext() ) {
             final ISelectionChangedListener listener = iter.next();
-            final SelectionChangedEvent e = new SelectionChangedEvent(this, this.selection);
+            final SelectionChangedEvent e 
+                = new SelectionChangedEvent(this, this.selection);
             //Does SWT stuff so this has to be called on SWT's thread
             PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
                 public void run() {
