@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -977,6 +978,58 @@ public class CDKManager implements ICDKManager {
   	                                     + "to match SMARTS query", e);
   	    }
   	}
+  	
+  	public boolean isValidSmarts(String smarts){
+        try {
+            new SMARTSQueryTool(smarts);
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
+
+  	}
+
+  	public List<IAtomContainer> getSmartsMatches(ICDKMolecule molecule, String smarts)
+  	throws BioclipseException {
+
+  	    SMARTSQueryTool querytool;
+
+  	    try {
+  	        querytool = new SMARTSQueryTool(smarts);
+  	    }
+  	    catch (CDKException e) {
+  	        throw new BioclipseException("Could not parse SMARTS query", e);
+  	    }
+
+  	    try {
+  	        IAtomContainer ac=molecule.getAtomContainer();
+  	        if (querytool.matches(ac)){
+  	            List<IAtomContainer> retac=new ArrayList<IAtomContainer>();
+                int nmatch = querytool.countMatches();
+                logger.debug("Found " + nmatch + " smarts matches");
+
+                List<List<Integer>> mappings = querytool.getMatchingAtoms();
+                for (int i = 0; i < nmatch; i++) {
+                    List<Integer> atomIndices = (List<Integer>) mappings.get(i);
+                    IAtomContainer match=ac.getBuilder().newAtomContainer();
+                    for (Integer aindex : atomIndices){
+                        IAtom atom=ac.getAtom( aindex );
+                        match.addAtom( atom );
+                    }
+                    retac.add( match );
+                    
+                }
+                return retac;
+  	        }
+  	        return null;
+  	    }
+  	    catch (CDKException e) {
+  	        throw new BioclipseException("A problem occured trying "
+  	                                     + "to match SMARTS query", e);
+  	    }
+  	}
+
 
   	public int numberOfEntriesInSDF(IFile file, IProgressMonitor monitor) {
 

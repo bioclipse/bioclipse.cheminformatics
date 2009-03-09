@@ -35,6 +35,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.content.IContentType;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.io.formats.IChemFormat;
 
@@ -737,4 +738,20 @@ public interface ICDKManager extends IBioclipseManager {
               "on the file extension alone.")
     @TestMethods("testGuessFormatFromExtension")
     public IChemFormat guessFormatFromExtension(String type);
+
+    @Recorded
+    @PublishedMethod(
+         params = "String SMARTS",
+         methodSummary = "Determines if a SMARTS string cane be interpreted by CDK.")
+    @TestMethods("testSMARTSonFile")
+    boolean isValidSmarts( String SMARTS );
+
+    @Recorded
+    @PublishedMethod(
+         params = "IMolecule molecule: Molecule to query, String SMARTS",
+         methodSummary = "Query a molecule for a SMARTS string and return a list " +
+         		"of IAtomCOntainers with the matches.")
+    @TestMethods("testSMARTSonFile")
+    List<IAtomContainer> getSmartsMatches( ICDKMolecule molecule, String SMARTS )
+    throws BioclipseException;
 }
