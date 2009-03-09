@@ -99,6 +99,8 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
 
     private Action collapseAllAction;
 
+    private Action showPropertiesViewAction;
+
 
     /**
      * The constructor.
@@ -163,6 +165,8 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         manager.add(new Separator());
         manager.add(addSmartsAction);
         manager.add(removeSmartsAction);
+        manager.add(new Separator());
+        manager.add(showPropertiesViewAction);
 
         // Other plug-ins can contribute there actions here
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -276,6 +280,22 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         removeSmartsAction.setText("Remove SMARTS");
         removeSmartsAction.setToolTipText("Remove the selected SMARTS");
         removeSmartsAction.setImageDescriptor(Activator.getImageDecriptor( "icons/delete_obj.gif" ));
+        
+        showPropertiesViewAction = new Action() {
+            public void run() {
+                IWorkbenchPage page=getSite().getWorkbenchWindow().getActivePage();
+                try {
+                    page.showView( IPageLayout.ID_PROP_SHEET);
+                } catch ( PartInitException e ) {
+                    showError( "Could not show Properties View: " + e.getMessage() );
+                }
+            }
+        };
+        showPropertiesViewAction.setText("Show Properties");
+        showPropertiesViewAction.setToolTipText("Show the Properties View");
+        showPropertiesViewAction.setImageDescriptor(Activator.getImageDecriptor( "icons/table_row_props.gif" ));
+
+        
     }
 
     protected void runSmartsMatching() {
