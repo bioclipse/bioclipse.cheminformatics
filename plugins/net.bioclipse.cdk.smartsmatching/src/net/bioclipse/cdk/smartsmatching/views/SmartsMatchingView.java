@@ -125,18 +125,6 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         editorSmartsMap.put( bogusWBPart, smartsInView);
         
 
-//        viewer.addSelectionChangedListener( new ISelectionChangedListener(){
-//
-//            public void selectionChanged( SelectionChangedEvent event ) {
-//
-//                if ( event.getSelection() instanceof IStructuredSelection ) {
-//                    IStructuredSelection ssel = (IStructuredSelection) event.getSelection();
-//                    handleSelected(ssel);
-//                }
-//            }
-//
-//        } );
-
         // Create the help context id for the viewer's control
         PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "net.bioclipse.cdk.smartsmatching.viewer");
         makeActions();
@@ -156,19 +144,6 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
             public void menuAboutToShow(IMenuManager manager) {
-//                if ( viewer.getSelection() instanceof IStructuredSelection ) {
-//                    IStructuredSelection ssel = (IStructuredSelection) viewer.getSelection();
-//                    boolean foundSW=false;
-//                    for (Object obj : ssel.toList()){
-//                        if ( obj instanceof SmartsWrapper ) {
-//                            foundSW=true;
-//                        }
-//                    }
-//                    if (!foundSW){
-//                        runAction.setEnabled( false );
-//                    }
-//                }
-                
                 SmartsMatchingView.this.fillContextMenu(manager);
             }
         });
@@ -179,15 +154,8 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
 
     private void contributeToActionBars() {
         IActionBars bars = getViewSite().getActionBars();
-        //        fillLocalPullDown(bars.getMenuManager());
         fillLocalToolBar(bars.getToolBarManager());
     }
-
-    //    private void fillLocalPullDown(IMenuManager manager) {
-    //        manager.add(addSmartsAction);
-    //        manager.add(new Separator());
-    //        manager.add(removeSmartsAction);
-    //    }
 
     private void fillContextMenu(IMenuManager manager) {
         manager.add(runAction);
@@ -383,12 +351,10 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
 
     
     public void partActivated( IWorkbenchPart part ) {
-//        System.out.println("Part:" + part.getTitle() + " activated");
         updateViewContent(part);
     }
 
     public void partBroughtToTop( IWorkbenchPart part ) {
-//        System.out.println("Part:" + part.getTitle() + " brought to top");
         updateViewContent(part);
     }
 
@@ -416,11 +382,9 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
     }
 
     public void partDeactivated( IWorkbenchPart part ) {
-//        System.out.println("Part:" + part.getTitle() + " deactivated");
     }
 
     public void partOpened( IWorkbenchPart part ) {
-//        System.out.println("Part:" + part.getTitle() + " opened");
         updateViewContent(part);
     }
 
