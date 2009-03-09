@@ -108,7 +108,8 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void visit( LineElement element ) {
-        Color colorOld = gc.getBackground();
+        Color bColorOld = gc.getBackground();
+        Color fColorOld = gc.getForeground();
         int oldLineWidth = gc.getLineWidth();
         // init recursion with background to get the first draw with foreground
         gc.setForeground( toSWTColor( gc, element.color ));
@@ -116,7 +117,8 @@ public class SWTRenderer implements IDrawVisitor{
         drawLine( element );
 
         gc.setLineWidth( oldLineWidth );
-        gc.setBackground( colorOld);
+        gc.setBackground( bColorOld);
+        gc.setForeground( fColorOld );
     }
 
     public void visit( WedgeLineElement element) {
