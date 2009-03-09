@@ -59,6 +59,7 @@ import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.MoleculeSet;
+import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.config.Elements;
 import org.openscience.cdk.exception.CDKException;
@@ -1874,5 +1875,21 @@ public class CDKManager implements ICDKManager {
     public List<IMolecule> createMoleculeList() throws BioclipseException,
             InvocationTargetException {
         return new ArrayList<IMolecule>();
+    }
+
+    public IMolecule perceiveAromaticity( IMolecule mol ) throws BioclipseException {
+        IAtomContainer todealwith;
+        if(mol instanceof ICDKMolecule){
+            todealwith = ((ICDKMolecule) mol).getAtomContainer();
+        }else{
+            todealwith = create( mol ).getAtomContainer();
+        }
+        try{
+            AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(todealwith);
+            CDKHueckelAromaticityDetector.detectAromaticity(todealwith);
+        }catch(CDKException ex){
+            throw new BioclipseException("Problems perceiving aromaticity: "+ex.getMessage());
+        }
+        return new CDKMolecule( ((ICDKMolecule) mol).getAtomContainer() );
     }
 }

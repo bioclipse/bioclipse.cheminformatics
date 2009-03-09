@@ -62,6 +62,21 @@ public interface ICDKManager extends IBioclipseManager {
        "testSave")
     public ICDKMolecule fromSMILES(String SMILES)
         throws BioclipseException;
+    
+
+    /**
+     * Perceives aromaticity on an IMolecule
+     * @param mol
+     * @return
+     * @throws BioclipseException
+     */
+    @Recorded
+    @PublishedMethod( params = "IMolecule mol",
+                      methodSummary = "Perceives aromaticity on an IMolecule. The molecule will be unchanged " +
+                                    "and a new molecule created. Uses the org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector class from CDK.")
+    @TestMethods(
+       "testPerceiveAromaticity,")
+    public IMolecule perceiveAromaticity(IMolecule mol) throws BioclipseException;
 
     /**
      * Loads a molecule from file using CDK.
@@ -76,7 +91,7 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @Recorded
     @PublishedMethod( params = "String path",
-                      methodSummary = "Loads a molecule from file. " +
+                      methodSummary = "Loads a molecule from file. Does not do aromaticity detection (use perceiveAromaticity). " +
                                       "Returns the first if multiple " +
                       		          "molecules exists in the file ")
     @TestMethods("testLoadMoleculeFromCMLFile,testLoadCMLFromFile2")
