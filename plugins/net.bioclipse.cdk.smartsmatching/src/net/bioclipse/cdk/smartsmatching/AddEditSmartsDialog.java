@@ -10,12 +10,18 @@
  ******************************************************************************/
 package net.bioclipse.cdk.smartsmatching;
 
+import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.smartsmatching.model.SmartsWrapper;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -32,115 +38,163 @@ public class AddEditSmartsDialog extends TitleAreaDialog{
     private Text txtSmarts;
     private String name;
     private String smarts;
+    private ICDKManager cdk;
 
 
     public AddEditSmartsDialog(Shell parentShell) {
-      this(parentShell,null);
+        this(parentShell,null);
     }
 
     public AddEditSmartsDialog(Shell shell, SmartsWrapper sw) {
-      super(shell);
-      if (sw!=null){
-          this.smartsWrapper=sw;
-          this.name=sw.getName();
-          this.smarts=sw.getSmartsString();
-      }
-      else{
-          this.smartsWrapper=new SmartsWrapper();
-      }
+        super(shell);
+        if (sw!=null){
+            this.smartsWrapper=sw;
+            this.name=sw.getName();
+            this.smarts=sw.getSmartsString();
+        }
+        else{
+            this.smartsWrapper=new SmartsWrapper();
+        }
+        
+        cdk=Activator.getDefault().getCDKManager();
+
     }
 
     protected Control createDialogArea(Composite parent) {
 
-      setTitle("Add/Edit SMARTS");
-      setMessage("Enter name and SMARTS string");
+        setTitle("Add/Edit SMARTS");
+        setMessage("Enter name and SMARTS string");
 
-      Composite area = (Composite) super.createDialogArea(parent);
-      Composite container = new Composite(area, SWT.NONE);
-      container.setLayoutData(new GridData(GridData.FILL_BOTH));
+        Composite area = (Composite) super.createDialogArea(parent);
+        Composite container = new Composite(area, SWT.NONE);
+        container.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      txtName = new Text(container, SWT.BORDER);
-      txtName.setBounds(20, 30, 180, 30);
-      if (name!=null)
-          txtName.setText(name);
-      
-      txtSmarts = new Text(container, SWT.BORDER);
-      txtSmarts.setBounds(235, 30, 350, 30);
-      if (smarts!=null)
-          txtSmarts.setText(smarts);
-      
-      final Label lblName = new Label(container, SWT.NONE);
-      lblName.setBounds(20, 10, 185, 20);
-      lblName.setText("Name");
+        txtName = new Text(container, SWT.BORDER);
+        txtName.setBounds(20, 30, 180, 30);
+        if (name!=null)
+            txtName.setText(name);
+        txtName.addKeyListener( new KeyListener(){
 
-      final Label lblFileExtension = new Label(container, SWT.NONE);
-      lblFileExtension.setBounds(235, 10, 220, 20);
-      lblFileExtension.setText("SMARTS String");
+            public void keyPressed( KeyEvent e ) {
+            }
 
-      return area;
+            public void keyReleased( KeyEvent e ) {
+                updateStatus();
+            }
+            
+        });
+        
+        txtSmarts = new Text(container, SWT.BORDER);
+        txtSmarts.setBounds(235, 30, 350, 30);
+        if (smarts!=null)
+            txtSmarts.setText(smarts);
+        txtSmarts.addKeyListener( new KeyListener(){
+
+            public void keyPressed( KeyEvent e ) {
+            }
+
+            public void keyReleased( KeyEvent e ) {
+                updateStatus();
+            }
+            
+        });
+
+
+        final Label lblName = new Label(container, SWT.NONE);
+        lblName.setBounds(20, 10, 185, 20);
+        lblName.setText("Name");
+
+        final Label lblFileExtension = new Label(container, SWT.NONE);
+        lblFileExtension.setBounds(235, 10, 220, 20);
+        lblFileExtension.setText("SMARTS String");
+
+        return area;
     }
 
     protected void createButtonsForButtonBar(Composite parent) {
-      createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
-          true);
-      createButton(parent, IDialogConstants.CANCEL_ID,
-          IDialogConstants.CANCEL_LABEL, false);
+        createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
+                     true);
+        createButton(parent, IDialogConstants.CANCEL_ID,
+                     IDialogConstants.CANCEL_LABEL, false);
     }
 
     protected void buttonPressed(int buttonId) {
-      if (buttonId == IDialogConstants.OK_ID) {
+        if (buttonId == IDialogConstants.OK_ID) {
 
+            if (txtName.getText().length()<=0){
+                showMessage("Name cannot be empty");
+                return;
+            }
+            if (txtSmarts.getText().length()<=0){
+                showMessage("URL cannot be empty");
+                return;
+            }
+
+            updateStatus();
+
+
+            smartsWrapper.setName( txtName.getText() );
+            smartsWrapper.setSmartsString( txtSmarts.getText() );
+
+            okPressed();
+            return;
+        }
+        super.buttonPressed(buttonId);
+    }
+
+    private void updateStatus(){
+
+        setErrorMessage( null );
         if (txtName.getText().length()<=0){
-          showMessage("Name cannot be empty");
-          return;
+            setErrorMessage("Name must not be empty");
+            return;
         }
         if (txtSmarts.getText().length()<=0){
-          showMessage("URL cannot be empty");
-          return;
+            setErrorMessage("SMARTS string must not be empty");
+            return;
+        }
+
+        if (!(cdk.isValidSmarts( txtSmarts.getText() ))){
+            setErrorMessage( "SMARTS string is not valid. " );
         }
         
-        smartsWrapper.setName( txtName.getText() );
-        smartsWrapper.setSmartsString( txtSmarts.getText() );
+        getButtonBar().update();
 
-        okPressed();
-        return;
-      }
-      super.buttonPressed(buttonId);
     }
-    
+
     private void showMessage(String message) {
-      MessageDialog.openInformation(
-          PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-          "Update Site",
-          message);
+        MessageDialog.openInformation(
+                                      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                                      "Update Site",
+                                      message);
     }
 
     public Text getTxtFileExtension() {
-      return txtSmarts;
+        return txtSmarts;
     }
 
     public void setTxtFileExtension(String filext) {
-      this.txtSmarts.setText(filext);
+        this.txtSmarts.setText(filext);
     }
 
     public Text getTxtName() {
-      return txtName;
+        return txtName;
     }
 
     public void setTxtName(String name) {
-      this.txtName.setText(name);
+        this.txtName.setText(name);
     }
 
-    
+
     public SmartsWrapper getSmartsWrapper() {
-    
+
         return smartsWrapper;
     }
 
-    
+
     public void setSmartsWrapper( SmartsWrapper smartsWrapper ) {
-    
+
         this.smartsWrapper = smartsWrapper;
     }
 
-  }
+}

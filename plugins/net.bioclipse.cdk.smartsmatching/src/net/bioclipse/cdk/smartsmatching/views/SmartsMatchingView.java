@@ -17,25 +17,29 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import net.bioclipse.cdk.business.CDKManager;
+import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKChemObject;
+import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import net.bioclipse.cdk.smartsmatching.Activator;
 import net.bioclipse.cdk.smartsmatching.AddEditSmartsDialog;
 import net.bioclipse.cdk.smartsmatching.model.SmartsWrapper;
 import net.bioclipse.cdk.smartsmatching.prefs.SmartsMatchingPrefsHelper;
+import net.bioclipse.core.business.BioclipseException;
 
+import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.*;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.*;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
-import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 
 
 /**
@@ -45,7 +49,7 @@ import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
  */
 public class SmartsMatchingView extends ViewPart implements IPartListener{
 
-    public static final String COLOR_PROP = "SMARTS_MATCHING_COLOR";
+    private static final Logger logger = Logger.getLogger(CDKManager.class);
 
     private static TreeViewer viewer;
     private Action addSmartsAction;
@@ -57,6 +61,7 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
     private static List<SmartsWrapper> smartsInView;
 
     private Action clearAction;
+    ICDKManager cdk;
 
     //Used to handle the case with no open editor
     private static EditorPart bogusWBPart=new EditorPart(){
@@ -110,6 +115,8 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         viewer.setContentProvider(new SmartsMatchingContentProvider());
         viewer.setLabelProvider(new SmartsMatchingLabelProvider());
         viewer.setSorter(new ViewerSorter());
+        
+        cdk=net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
         
         //Read prefs for stored smarts
         smartsInView = SmartsMatchingPrefsHelper.getPreferences();
@@ -250,7 +257,9 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
                 
                 
                 AddEditSmartsDialog dlg=new AddEditSmartsDialog(getSite().getShell());
-                dlg.open();
+                int ret=dlg.open();
+                if (ret==Window.CANCEL)
+                    return;
 
                 SmartsWrapper wrapper = dlg.getSmartsWrapper();
 
@@ -311,51 +320,43 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
 
         JChemPaintEditor jcp=(JChemPaintEditor)part;
 
-        IAtomContainer ac = jcp.getCDKMolecule().getAtomContainer();
+        ICDKMolecule mol = jcp.getCDKMolecule();
         
         //For each smarts...
         for (SmartsWrapper sw : smartsInView){
             if (sw.getMatches()!=null){
                 sw.getMatches().clear();
             }
-            processSmarts(sw, ac);
+            processSmarts2(sw, mol);
         }
         
         viewer.refresh();
 
     }
 
-
-    private void processSmarts( SmartsWrapper sw, IAtomContainer ac ) {
+    private void processSmarts2( SmartsWrapper sw, ICDKMolecule mol ) {
 
         //Clear old matches
         sw.setMatches( new ArrayList<CDKChemObject>() );
+        if (!cdk.isValidSmarts( sw.getSmartsString() )) return;
 
+        List<IAtomContainer> lst;
         try {
-            SMARTSQueryTool querytool = new SMARTSQueryTool(sw.getSmartsString());
-            boolean status = querytool.matches(ac);
-            if (status) {
-                int nmatch = querytool.countMatches();
-                System.out.println("Found " + nmatch + " smarts matches");
+            lst = cdk.getSmartsMatches( mol, sw.getSmartsString() );
 
-                List<List<Integer>> mappings = querytool.getMatchingAtoms();
-                for (int i = 0; i < nmatch; i++) {
-                    System.out.println("Match no: " + i);
-                    List<Integer> atomIndices = (List<Integer>) mappings.get(i);
-                    IAtomContainer match=ac.getBuilder().newAtomContainer();
-                    for (Integer aindex : atomIndices){
-                        IAtom atom=ac.getAtom( aindex );
-                        match.addAtom( atom );
-                    }
-                    CDKChemObject matchwrapper=new CDKChemObject("Hit " + i , match);
+            int i=1;
+            if (lst!=null){
+
+                for (IAtomContainer ac : lst){
+                    CDKChemObject matchwrapper=new CDKChemObject("Hit " + i , ac);
                     sw.getMatches().add( matchwrapper );
-                    
+                    i++;
                 }
-
             }
-
-        } catch ( Exception e ) {
+        } catch ( BioclipseException e ) {
+            logger.equals("Error matching smiles: " + e.getMessage() );
         }
+
 
     }
 
