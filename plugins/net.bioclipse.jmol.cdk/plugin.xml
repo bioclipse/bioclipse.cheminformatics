@@ -14,5 +14,15 @@
     </view>
  </extension>
 
+   <extension
+         point="net.bioclipse.ui.bioobjectDescriber">
+		<BioObject
+	        describer="net.bioclipse.jmol.cdk.describer.JmolEditorDescriber"
+    	    id="net.bioclipse.jmol.cdk.describer"
+    	    objectClass="net.bioclipse.cdk.domain.ICDKMolecule">
+		</BioObject>         
+   
+   </extension>
+
    
 </plugin>
