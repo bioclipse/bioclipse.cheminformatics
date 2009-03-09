@@ -394,6 +394,11 @@ public class CDKManagerPluginTest {
         
         IAtomContainer ac=aclist.get( 0 );
         assertEquals( 4, ac.getAtomCount() );
+
+        //Test an invalid SMARTS
+        SMARTS="[RTE](*( QQ*(O )))";
+        assertTrue( !cdk.isValidSmarts( SMARTS ) );
+
     }
 
     
