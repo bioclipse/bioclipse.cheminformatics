@@ -1,13 +1,15 @@
 package net.bioclipse.jmol.views;
 
 import net.bioclipse.scripting.ui.views.ScriptingConsoleView;
+import net.bioclipse.jmol.Activator;
 
 
 public class JmolConsoleView extends ScriptingConsoleView {
 
     @Override
     protected String executeCommand( String command ) {
-        return "Not implemented yet";
+        Activator.getDefault().getJmolManager().run( command );
+        return null;
     }
 
 }

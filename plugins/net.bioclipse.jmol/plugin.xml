@@ -666,6 +666,19 @@
       </menuContribution>
       
 </extension>
-   
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+         name="Jmol Console"
+         icon="icons/source.gif"
+         category="net.bioclipse.ScriptingCategory"
+         class="net.bioclipse.jmol.views.JmolConsoleView"
+         id="net.bioclipse.jmol.views.JmolConsoleView">
+         <description>
+            Javascript Console View
+         </description>
+      </view>
+    </extension>
    
 </plugin>
