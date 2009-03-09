@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -46,9 +48,11 @@ import net.bioclipse.core.tests.AbstractManagerTest;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.junit.Assert;
 import org.junit.Test;
+import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IChemFile;
@@ -644,6 +648,17 @@ public class CDKManagerTest extends AbstractManagerTest {
         Assert.assertTrue(cdkMolecule instanceof ICDKMolecule);
         assertNotNull(((ICDKMolecule)cdkMolecule).getAtomContainer().getAtom(0).getPoint2d());
         assertNotNull(((ICDKMolecule)cdkMolecule).getAtomContainer().getAtom(0).getPoint3d());
+    }
+    
+    
+    @Test 
+    public void testPerceiveAromaticity() throws Exception{
+        String path = getClass().getResource("/testFiles/aromatic.mol").getPath();
+        MockIFile mf=new MockIFile(path);
+        ICDKMolecule mol = cdk.loadMolecule( mf);
+        Assert.assertFalse( mol.getAtomContainer().getAtom( 6 ).getFlag( CDKConstants.ISAROMATIC ) );
+        ICDKMolecule molwitharomaticity = (ICDKMolecule)cdk.perceiveAromaticity( mol );
+        Assert.assertTrue( molwitharomaticity.getAtomContainer().getAtom( 6 ).getFlag( CDKConstants.ISAROMATIC ) );
     }
     
     @Test public void testHas2d() throws Exception {
