@@ -33,7 +33,7 @@ public class CDKManagerFactory implements IExecutableExtension,
         cdkManager = Activator.getDefault().getJSCDKManager();
         
         if (cdkManager == null ) {
-            cdkManager = new Object();
+            throw new IllegalStateException("Could not get the JS-CDKManager");
         }
     }
 
