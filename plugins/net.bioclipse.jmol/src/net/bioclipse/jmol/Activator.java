@@ -12,6 +12,7 @@
 package net.bioclipse.jmol;
 
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.jmol.business.IJSJmolManager;
 import net.bioclipse.jmol.business.IJmolManager;
 
 import org.apache.log4j.Logger;
@@ -34,10 +35,10 @@ public class Activator extends AbstractUIPlugin {
     private static final Logger logger = Logger.getLogger(Activator.class);
 
     private ServiceTracker finderTracker;
+    private ServiceTracker jsFinderTracker;
     
     // The shared instance
     private static Activator plugin;
-
 
     /**
      * Returns an image descriptor for the image file at the given
@@ -56,10 +57,13 @@ public class Activator extends AbstractUIPlugin {
         plugin = this;
 
         finderTracker = new ServiceTracker( context, 
-                IJmolManager.class.getName(), 
-                null );
+                                            IJmolManager.class.getName(), 
+                                            null );
         finderTracker.open();
-
+        jsFinderTracker = new ServiceTracker( context, 
+                                              IJSJmolManager.class.getName(), 
+                                              null );
+        jsFinderTracker.open();
     }
     
     public void stop(BundleContext context) throws Exception {
@@ -82,6 +86,20 @@ public class Activator extends AbstractUIPlugin {
             manager = (IJmolManager) finderTracker.waitForService(1000*10);
         } catch (InterruptedException e) {
             logger.warn("Exception occurred while attempting to get the JmolManager" + e);
+            LogUtils.debugTrace(logger, e);
+        }
+        if (manager == null) {
+            throw new IllegalStateException("Could not get the jmol manager");
+        }
+        return manager;
+    }
+    
+    public IJSJmolManager getJSJmolManager() {
+        IJSJmolManager manager = null;
+        try {
+            manager = (IJSJmolManager) jsFinderTracker.waitForService(1000*10);
+        } catch (InterruptedException e) {
+            logger.warn("Exception occurred while attempting to get the JSJmolManager" + e);
             LogUtils.debugTrace(logger, e);
         }
         if(manager == null) {

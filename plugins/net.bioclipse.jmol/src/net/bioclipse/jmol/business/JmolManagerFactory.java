@@ -24,21 +24,20 @@ import org.eclipse.core.runtime.IExecutableExtensionFactory;
  * @author ola
  */
 public class JmolManagerFactory implements IExecutableExtension, 
-                                              IExecutableExtensionFactory {
-
+                                           IExecutableExtensionFactory {
     private Object biojavaManager;
     
-    public void setInitializationData(IConfigurationElement config,
-            String propertyName, Object data) throws CoreException {
+    public void setInitializationData( IConfigurationElement config,
+                                       String propertyName, 
+                                       Object data) throws CoreException {
         
-        biojavaManager = Activator.getDefault().getJmolManager();
-        if(biojavaManager==null) {
-            biojavaManager = new Object();
+        biojavaManager = Activator.getDefault().getJSJmolManager();
+        if (biojavaManager == null) {
+            throw new IllegalStateException("Could not get the JSJmolManager");
         }
     }
 
     public Object create() throws CoreException {
         return biojavaManager;
-//        return new Object();
     }
 }
