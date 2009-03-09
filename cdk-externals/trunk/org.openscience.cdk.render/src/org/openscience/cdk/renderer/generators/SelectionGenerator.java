@@ -26,10 +26,12 @@ import javax.vecmath.Point2d;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.RenderingParameters.AtomShape;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
+import org.openscience.cdk.renderer.elements.LineElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
 import org.openscience.cdk.renderer.elements.RectangleElement;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
@@ -77,13 +79,20 @@ public class SelectionGenerator implements IGenerator {
                     }
                     selectionElements.add(element);
                 }
+
+                for(IBond bond:selectedAC.bonds()) {
+                    Point2d p1 = bond.getAtom( 0 ).getPoint2d();
+                    Point2d p2 = bond.getAtom( 1 ).getPoint2d();
+                    selectionElements.add( new LineElement( p1.x, p1.y,
+                                                            p2.x, p2.y, d*60,
+                                                            selectionColor));
+                }
             }
         }
-        
+
         if (!selection.isFinished()) {
            selectionElements.add(selection.generate(selectionColor));
         }
-        return selectionElements; 
+        return selectionElements;
     }
-
 }
