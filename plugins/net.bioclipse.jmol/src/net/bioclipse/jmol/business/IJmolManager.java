@@ -14,12 +14,14 @@ package net.bioclipse.jmol.business;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 
+import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.TestClasses;
 import net.bioclipse.core.business.IBioclipseManager;
 
 @TestClasses("net.bioclipse.jmol.test.JmolManagerTest")
+@PublishedClass("This manager contains methods for controlling jmol")
 public interface IJmolManager extends IBioclipseManager{
 
     /**
