@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
+
+   <extension
+         point="net.bioclipse.ui.bioobjectDescriber">
+		<BioObject
+	        describer="net.bioclipse.cdk.jchempaint.describer.JCPEditorDescriber"
+    	    id="net.bioclipse.cdk.jchempaint.describer"
+    	    objectClass="net.bioclipse.cdk.domain.ICDKMolecule"
+        	name="wee">
+        	<Editor
+               id="net.bioclipse.cdk.ui.editors.jchempaint"
+               alias="jcp,2d">
+        	</Editor>
+		</BioObject>         
+   
+   </extension>
 <extension
          point="org.eclipse.ui.editors">
       <editor
