@@ -383,12 +383,12 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
 
     
     public void partActivated( IWorkbenchPart part ) {
-        System.out.println("Part:" + part.getTitle() + " activated");
+//        System.out.println("Part:" + part.getTitle() + " activated");
         updateViewContent(part);
     }
 
     public void partBroughtToTop( IWorkbenchPart part ) {
-        System.out.println("Part:" + part.getTitle() + " brought to top");
+//        System.out.println("Part:" + part.getTitle() + " brought to top");
         updateViewContent(part);
     }
 
@@ -416,11 +416,11 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
     }
 
     public void partDeactivated( IWorkbenchPart part ) {
-        System.out.println("Part:" + part.getTitle() + " deactivated");
+//        System.out.println("Part:" + part.getTitle() + " deactivated");
     }
 
     public void partOpened( IWorkbenchPart part ) {
-        System.out.println("Part:" + part.getTitle() + " opened");
+//        System.out.println("Part:" + part.getTitle() + " opened");
         updateViewContent(part);
     }
 
