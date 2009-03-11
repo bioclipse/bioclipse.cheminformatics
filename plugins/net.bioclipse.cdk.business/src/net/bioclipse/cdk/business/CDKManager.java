@@ -12,6 +12,7 @@
  *
  ******************************************************************************/
 package net.bioclipse.cdk.business;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -30,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -109,12 +109,14 @@ import org.openscience.cdk.nonotify.NNMolecule;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
+import org.openscience.cdk.smiles.smarts.parser.TokenMgrError;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
+
 /**
  * The manager class for CDK. Contains CDK related methods.
  *
@@ -984,8 +986,9 @@ public class CDKManager implements ICDKManager {
         try {
             new SMARTSQueryTool(smarts);
             return true;
-        }
-        catch (Exception e) {
+        } catch (CDKException e) {
+            return false;
+        } catch (TokenMgrError error) {
             return false;
         }
 
