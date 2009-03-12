@@ -16,7 +16,7 @@
          point="org.eclipse.ui.editors">
       <editor
             name="Jmol Editor"
-          icon="icons/molecule3D.png"
+          icon="icons/jmol.png"
             contributorClass="net.bioclipse.jmol.editors.JmolEditorContributor"
             class="net.bioclipse.jmol.editors.JmolEditor"
             default="true"
@@ -671,7 +671,7 @@
          point="org.eclipse.ui.views">
       <view
          name="Jmol Console"
-         icon="icons/source.gif"
+         icon="icons/jmol.png"
          category="net.bioclipse.ScriptingCategory"
          class="net.bioclipse.jmol.views.JmolConsoleView"
          id="net.bioclipse.jmol.views.JmolConsoleView">
