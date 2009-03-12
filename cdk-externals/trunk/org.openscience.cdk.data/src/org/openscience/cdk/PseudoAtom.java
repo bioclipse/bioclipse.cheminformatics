@@ -76,12 +76,9 @@ public class PseudoAtom extends Atom
         super.fractionalPoint3d = null;
         super.point3d = null;
         super.point2d = null;
+
         // set these default, unchangeable values
-        super.hydrogenCount = 0;
         super.stereoParity = 0;
-        super.exactMass = 0.0;
-        super.formalCharge = 0;
-        super.charge = 0.0;
     }
 
     /**
@@ -142,33 +139,7 @@ public class PseudoAtom extends Atom
 	notifyChanged();
     }
 
-    /**
-     * Dummy method: the exact mass is 0, final. 
-     */
-    public void setExactMass(Double mass) {
-        // exact mass = 0, always
-    }
-
-    /**
-     * Dummy method: the hydrogen count is 0, final. 
-     */
-    public void setHydrogenCount(Integer hydrogenCount) {
-        // hydrogen count = 0, always
-    }
-
-    /**
-     * Dummy method: the formal charge is 0, final. 
-     */
-    public void setFormalCharge(Integer charge) {
-        // formal charge = 0, always
-    }
-
-    /**
-     * Dummy method: the partial charge is 0, final. 
-     */
-    public void setCharge(Double charge) {
-        // partial charge = 0, always
-    }
+  
     /**
      * Dummy method: the stereo parity is undefined, final.
      */

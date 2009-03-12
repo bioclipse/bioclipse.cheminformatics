@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -48,7 +46,6 @@ import net.bioclipse.core.tests.AbstractManagerTest;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.junit.Assert;
 import org.junit.Test;
@@ -699,6 +696,7 @@ public class CDKManagerTest extends AbstractManagerTest {
         for(int i=0;i<bytes.length;i++){
         	sb.append((char)bytes[i]);
         }
+        System.out.println(sb.toString());
         assertTrue(sb.toString().contains("$$$$"));
         assertTrue(sb.toString().contains("Cl"));
         assertTrue(sb.toString().contains("Br"));
