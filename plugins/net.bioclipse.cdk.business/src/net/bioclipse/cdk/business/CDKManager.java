@@ -80,8 +80,8 @@ import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.FormatFactory;
 import org.openscience.cdk.io.IChemObjectWriter;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
-import org.openscience.cdk.io.MDLWriter;
 import org.openscience.cdk.io.ReaderFactory;
+import org.openscience.cdk.io.SDFWriter;
 import org.openscience.cdk.io.WriterFactory;
 import org.openscience.cdk.io.formats.CIFFormat;
 import org.openscience.cdk.io.formats.CMLFormat;
@@ -1657,9 +1657,10 @@ public class CDKManager implements ICDKManager {
   	    try {
 
   	        monitor.beginTask( "Writing file", ticks );
-  	        StringBuffer sb = new StringBuffer();
 
-           for (IMolecule molecule : entries) {
+            StringWriter writer = new StringWriter();
+            SDFWriter mdlwriter = new SDFWriter(writer);
+            for (IMolecule molecule : entries) {
 
                 IAtomContainer ac = null;
                 if (molecule.getClass().isAssignableFrom(CDKMolecule.class)) {
@@ -1675,15 +1676,11 @@ public class CDKManager implements ICDKManager {
                             .getMoleculeSet().getAtomContainer(0);
                 }
 
-  	            StringWriter writer = new StringWriter();
-  	            MDLWriter mdlwriter = new MDLWriter(writer);
-                mdlwriter.setSdFields(ac.getProperties());
   	            mdlwriter.write(ac);
-  	            sb.append(writer.toString());
-  	            sb.append("$$$$"+System.getProperty("line.separator"));
   	        }
+            mdlwriter.close();
 
-  	        file.create( new ByteArrayInputStream(sb.toString().getBytes()),
+            file.create( new ByteArrayInputStream(writer.toString().getBytes()),
   	                     false,
   	                     monitor );
   	        monitor.worked(ticks);
