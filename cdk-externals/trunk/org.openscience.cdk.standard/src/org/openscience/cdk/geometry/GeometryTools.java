@@ -1004,7 +1004,7 @@ public class GeometryTools {
 	 *@return            The bestAlignmentForLabel value
 	 */
 	public static int getBestAlignmentForLabel(IAtomContainer container, IAtom atom) {
-	    double overallDiffX = 0;
+		double overallDiffX = 0;
 		for (IAtom connectedAtom : container.getConnectedAtomsList(atom)) {
 			overallDiffX += connectedAtom.getPoint2d().x - atom.getPoint2d().x;
 		}

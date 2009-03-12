@@ -51,9 +51,6 @@ org/openscience/cdk/io/CrystClustWriter.java
 org/openscience/cdk/io/CrystClustReader.java
 org/openscience/cdk/io/inchi/INChIContentProcessorTool.java
 org/openscience/cdk/io/inchi/INChIHandler.java
-org/openscience/cdk/io/random/RandomAccessReader.java
-org/openscience/cdk/io/random/IRandomAccessChemObjectReader.java
-org/openscience/cdk/io/random/RandomAccessSDFReader.java
 org/openscience/cdk/io/INChIReader.java
 org/openscience/cdk/modeling/forcefield/ForceFieldTools.java
 org/openscience/cdk/PhysicalConstants.java

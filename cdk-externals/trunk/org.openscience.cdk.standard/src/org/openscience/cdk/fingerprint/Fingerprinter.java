@@ -28,11 +28,13 @@ import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
+import org.openscience.cdk.config.Symbols;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.graph.PathTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IPseudoAtom;
 import org.openscience.cdk.ringsearch.AllRingsFinder;
 import org.openscience.cdk.tools.LoggingTool;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
@@ -54,7 +56,9 @@ import java.util.*;
  *   fingerprint.length(); // returns the highest set bit
  * </pre> <p>
  *
- *  The FingerPrinter assumes that hydrogens are explicitly given! <p>
+ *  The FingerPrinter assumes that hydrogens are explicitly given! Furthermore, if
+ *  pseudo atoms or atoms with malformed symbols are present, their atomic number is
+ *  taken as one more than the last element currently supported in {@link org.openscience.cdk.config.Symbols}. 
  *
  *  <font color="#FF0000">Warning: The aromaticity detection for this
  *  FingerPrinter relies on AllRingsFinder, which is known to take very long
@@ -154,12 +158,11 @@ public class Fingerprinter implements IFingerprinter {
 		long after = System.currentTimeMillis();
 		logger.debug("time for aromaticity calculation: " + (after - before) + " milliseconds");
 		logger.debug("Finished Aromaticity Detection");
-		Map<String,String> paths = findPathes(container, searchDepth);
 		BitSet bitSet = new BitSet(size);
 
-        for (String path : paths.values()) {
-            position = new java.util.Random(path.hashCode()).nextInt(size);
-            logger.debug("Setting bit " + position + " for " + path);
+        int[] hashes = findPathes(container, searchDepth);
+        for (int hash : hashes) {
+            position = new java.util.Random(hash).nextInt(size);
             bitSet.set(position);
         }
 
@@ -178,17 +181,16 @@ public class Fingerprinter implements IFingerprinter {
 	}
 
     /**
-     * Get all paths of lengths 1 to the specified length.
+     * Get all paths of lengths 0 to the specified length.
      *
-     * This method will find all paths of length N starting from each
+     * This method will find all paths upto length N starting from each
      * atom in the molecule and return the unique set of such paths.
      *
      * @param container The molecule to search
      * @param searchDepth The maximum path length desired
      * @return A Map of path strings, keyed on themselves
      */
-    protected Map<String,String> findPathes(IAtomContainer container, int searchDepth) {
-        Map<String,String> paths = new HashMap<String,String>();
+    protected int[] findPathes(IAtomContainer container, int searchDepth) {
 
         List<StringBuffer> allPaths = new ArrayList<StringBuffer>();
 
@@ -196,12 +198,20 @@ public class Fingerprinter implements IFingerprinter {
             = new HashMap<IAtom, Map<IAtom,IBond>>();
         
         for (IAtom startAtom : container.atoms()) {
-            for (int pathLength = 0; pathLength <= searchDepth; pathLength++) {
-                List<List<IAtom>> p = PathTools.getPathsOfLength(container, startAtom, pathLength);
+                List<List<IAtom>> p = PathTools.getPathsOfLengthUpto(container, startAtom, searchDepth);
                 for (List<IAtom> path : p) {
                     StringBuffer sb = new StringBuffer();
                     IAtom x = path.get(0);
-                    sb.append(convertSymbol(x.getSymbol()));
+
+                    // TODO if we ever get more than 255 elements, this will fail
+                    // maybe we should use 0 for pseudo atoms and malformed symbols?
+                    if (x instanceof IPseudoAtom)
+                        sb.append((char) Symbols.byAtomicNumber.length + 1);
+                    else {
+                        Integer atnum = Symbols.getAtomicNumber(x.getSymbol());
+                        if (atnum != null) sb.append((char) atnum.intValue());
+                        else sb.append((char) Symbols.byAtomicNumber.length + 1);
+                    }
 
                     for (int i = 1; i < path.size(); i++) {
                         final IAtom[] y = {path.get(i)};
@@ -227,7 +237,6 @@ public class Fingerprinter implements IFingerprinter {
                         allPaths.add(sb);
                     else allPaths.add(revForm);
                 }
-            }
         }
         // now lets clean stuff up
         Set<String> cleanPath = new HashSet<String>();
@@ -237,8 +246,13 @@ public class Fingerprinter implements IFingerprinter {
             if (cleanPath.contains(s2)) continue;
             cleanPath.add(s2);
         }
-        for (String s : cleanPath) paths.put(s, s);
-        return paths;
+
+        // convert paths to hashes
+        int[] hashes = new int[cleanPath.size()];
+        int i= 0;
+        for (String s: cleanPath) hashes[i++] = s.hashCode();
+
+        return hashes;
     }
 
     private String convertSymbol(String symbol) {

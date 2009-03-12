@@ -63,7 +63,6 @@ import org.openscience.cdk.io.setting.BooleanIOSetting;
 import org.openscience.cdk.io.setting.IOSetting;
 import org.openscience.cdk.io.setting.StringIOSetting;
 import org.openscience.cdk.libio.cml.Convertor;
-import org.openscience.cdk.libio.cml.CustomSerializer;
 import org.openscience.cdk.libio.cml.ICMLCustomizer;
 import org.openscience.cdk.tools.LoggingTool;
 
@@ -120,7 +119,6 @@ public class CMLWriter extends DefaultChemObjectWriter {
     private BooleanIOSetting schemaInstanceOutput;
     private StringIOSetting instanceLocation;
     private BooleanIOSetting indent;
-    private BooleanIOSetting xmlDeclaration;
     
     private LoggingTool logger;
     
@@ -270,12 +268,7 @@ public class CMLWriter extends DefaultChemObjectWriter {
 
         Document doc = new Document(root);
         try {
-            Serializer serializer = null;
-            if (xmlDeclaration.isSet()) {
-                serializer = new Serializer(output, "ISO-8859-1");
-            } else {
-                serializer = new CustomSerializer(output, "ISO-8859-1");
-            }
+            Serializer serializer = new Serializer(output, "ISO-8859-1");
             if (indent.isSet()) {
                 logger.info("Indenting XML output");
                 serializer.setIndent(2);
@@ -320,10 +313,6 @@ public class CMLWriter extends DefaultChemObjectWriter {
         indent = new BooleanIOSetting("Indenting", IOSetting.LOW,
           "Should the output be indented?", 
           "true");
-
-        xmlDeclaration = new BooleanIOSetting("XMLDeclaration", IOSetting.LOW,
-                "Should the output contain an XML declaration?",
-                "true");
     }
     
     private void customizeJob() {
@@ -337,18 +326,16 @@ public class CMLWriter extends DefaultChemObjectWriter {
             fireIOSettingQuestion(instanceLocation);
         }
         fireIOSettingQuestion(indent);
-        fireIOSettingQuestion(xmlDeclaration);
     }
 
     public IOSetting[] getIOSettings() {
-        IOSetting[] settings = new IOSetting[7];
+        IOSetting[] settings = new IOSetting[6];
         settings[0] = cmlIds;
         settings[1] = namespacedOutput;
         settings[2] = namespacePrefix;
         settings[3] = schemaInstanceOutput;
         settings[4] = instanceLocation;
         settings[5] = indent;
-        settings[6] = xmlDeclaration;
         return settings;
     }
 

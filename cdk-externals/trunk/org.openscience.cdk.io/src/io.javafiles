@@ -28,6 +28,7 @@ org/openscience/cdk/io/DefaultChemObjectReader.java
 org/openscience/cdk/io/HINReader.java
 org/openscience/cdk/io/pubchemxml/PubChemXMLHelper.java
 org/openscience/cdk/io/HINWriter.java
+org/openscience/cdk/io/SDFWriter.java
 org/openscience/cdk/io/ShelXReader.java
 org/openscience/cdk/io/PCSubstanceXMLReader.java
 org/openscience/cdk/io/XYZWriter.java
@@ -71,4 +72,8 @@ org/openscience/cdk/io/listener/IReaderListener.java
 org/openscience/cdk/io/PCCompoundASNReader.java
 org/openscience/cdk/io/GhemicalMMReader.java
 org/openscience/cdk/io/Mol2Writer.java
+org/openscience/cdk/io/random/DefaultRandomAccessChemObjectReader.java
+org/openscience/cdk/io/random/RandomAccessReader.java
+org/openscience/cdk/io/random/IRandomAccessChemObjectReader.java
+org/openscience/cdk/io/random/RandomAccessSDFReader.java
 org/openscience/cdk/io/Gaussian98Reader.java
