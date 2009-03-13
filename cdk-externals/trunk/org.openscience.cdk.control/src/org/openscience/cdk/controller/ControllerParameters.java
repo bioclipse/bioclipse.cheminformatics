@@ -43,7 +43,7 @@ public class ControllerParameters {
     
     private double ringPointerLength = 20;
     
-    private boolean autoUpdateImplicitHydrogens = false;
+    private boolean autoUpdateImplicitHydrogens = true;
     
     private String defaultElementSymbol = "C";
     

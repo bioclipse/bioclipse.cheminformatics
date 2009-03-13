@@ -29,6 +29,7 @@ import java.util.Set;
 
 import javax.swing.undo.CannotUndoException;
 
+import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.interfaces.IBond;
 
 /**
@@ -46,16 +47,19 @@ public class AdjustBondOrdersEdit implements IUndoRedoable {
     private Map<IBond, Integer[]> changedBondsStereo;
     
     private String type;
+    
+    private IChemModelRelay chemModelRelay=null;
 
 	/**
 	 * @param changedBonds
 	 *            A HashMap containing the changed atoms as key and an Array
 	 *            with the former and the changed bondOrder
 	 */
-	public AdjustBondOrdersEdit(Map<IBond, IBond.Order[]> changedBondsOrder, Map<IBond, Integer[]> changedBondsStereo, String type) {
+	public AdjustBondOrdersEdit(Map<IBond, IBond.Order[]> changedBondsOrder, Map<IBond, Integer[]> changedBondsStereo, String type, IChemModelRelay chemModelRelay) {
 		this.changedBondOrders = changedBondsOrder;
 		this.changedBondsStereo = changedBondsStereo;
 		this.type=type;
+		this.chemModelRelay=chemModelRelay;
 	}
 
 	public void redo() {
@@ -65,13 +69,15 @@ public class AdjustBondOrdersEdit implements IUndoRedoable {
 			IBond bond = (IBond) it.next();
 			IBond.Order[] bondOrders = changedBondOrders.get(bond);
 			bond.setOrder(bondOrders[0]);
+			chemModelRelay.updateAtom(bond.getAtom(0));
+			chemModelRelay.updateAtom(bond.getAtom(1));
 		}
 		Set<IBond> keysstereo = changedBondsStereo.keySet();
 		Iterator<IBond> itint = keysstereo.iterator();
 		while (itint.hasNext()) {
 			IBond bond = (IBond) itint.next();
-			Integer[] bondOrders = changedBondsStereo.get(bond);
-			bond.setStereo(bondOrders[0]);
+			Integer[] bondStereos = changedBondsStereo.get(bond);
+			bond.setStereo(bondStereos[0]);
 		}
 	}
 
@@ -82,6 +88,8 @@ public class AdjustBondOrdersEdit implements IUndoRedoable {
 			IBond bond = (IBond) it.next();
 			IBond.Order[] bondOrders = (IBond.Order[]) changedBondOrders.get(bond);
 			bond.setOrder(bondOrders[1]);
+			chemModelRelay.updateAtom(bond.getAtom(0));
+			chemModelRelay.updateAtom(bond.getAtom(1));
 		}
 		Set<IBond> keysstereo = changedBondsStereo.keySet();
 		Iterator<IBond> itint = keysstereo.iterator();

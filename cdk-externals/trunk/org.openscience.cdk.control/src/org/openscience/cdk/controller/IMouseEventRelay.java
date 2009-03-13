@@ -1,4 +1,4 @@
-/* $Revision: 14238 $ $Author: gilleain $ $Date: 2009-02-23 16:38:04 +0000 (Mon, 23 Feb 2009) $
+/* $Revision$ $Author$ $Date$
  * 
  * Copyright (C) 2007  Niels Out <nielsout@users.sf.net>
  * 

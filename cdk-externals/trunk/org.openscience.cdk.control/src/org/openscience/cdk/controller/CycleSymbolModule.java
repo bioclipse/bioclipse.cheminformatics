@@ -1,6 +1,7 @@
 /* $Revision: 7636 $ $Author: nielsout $ $Date: 2007-01-04 18:46:10 +0100 (Thu, 04 Jan 2007) $
  *
  * Copyright (C) 2007  Stefan Kuhn
+ * Copyright (C) 2009  Arvid Berg
  *
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -26,9 +27,10 @@ package org.openscience.cdk.controller;
 
 import javax.vecmath.Point2d;
 
-import org.openscience.cdk.config.IsotopeFactory;
-import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IChemObject;
+import org.openscience.cdk.renderer.selection.AbstractSelection;
+import org.openscience.cdk.renderer.selection.SingleSelection;
 
 /**
  * Adds an atom on the given location on mouseclick
@@ -44,29 +46,37 @@ public class CycleSymbolModule extends ControllerModuleAdapter {
     }
 
     public void mouseClickedDown(Point2d worldCoord) {
-        IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoord);
-        double dA = super.distanceToAtom(closestAtom, worldCoord);
-        double dH = super.getHighlightDistance();
-        if (closestAtom!=null && dA < dH) {
-            String symbol = closestAtom.getSymbol();
-            boolean changed = false;
-            String[] elements = 
-                chemModelRelay.getController2DModel().getCommonElements(); 
-            for (int i = 0; i < elements.length; i++) {
-                if (elements[i].equals(symbol)) {
-                	if (i < elements.length - 2) {
-                		chemModelRelay.setSymbol( closestAtom,elements[i + 1]);
-                    } else {
-                    	chemModelRelay.setSymbol( closestAtom, elements[0]);
-                    }
-                    changed = true;
-                    break;
-                }
-            }
-            if (!changed)
-                closestAtom.setSymbol("C");
-            chemModelRelay.updateView();
+        
+        IChemObject singleSelected = getHighlighted( worldCoord, 
+                                                     chemModelRelay.getClosestAtom(worldCoord) );
+        IAtom closestAtom; 
+        if(singleSelected instanceof IAtom) {
+            closestAtom = (IAtom) singleSelected;
+        }else {
+            setSelection( AbstractSelection.EMPTY_SELECTION );
+            return;
         }
+
+
+        String symbol = closestAtom.getSymbol();
+        boolean changed = false;
+        String[] elements = 
+            chemModelRelay.getController2DModel().getCommonElements(); 
+        for (int i = 0; i < elements.length; i++) {
+            if (elements[i].equals(symbol)) {
+                if (i < elements.length - 2) {
+                    chemModelRelay.setSymbol( closestAtom,elements[i + 1]);
+                } else {
+                    chemModelRelay.setSymbol( closestAtom, elements[0]);
+                }
+                changed = true;
+                break;
+            }
+        }
+        if (!changed)
+            closestAtom.setSymbol("C");
+        setSelection( new SingleSelection<IAtom>(closestAtom) );
+        chemModelRelay.updateView();
     }
 
     public void setChemModelRelay(IChemModelRelay relay) {

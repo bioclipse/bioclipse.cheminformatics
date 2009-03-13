@@ -29,12 +29,13 @@
  */
 package org.openscience.cdk.controller.undoredo;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
-import org.openscience.cdk.controller.IControllerModel;
+import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -51,12 +52,12 @@ import org.openscience.cdk.interfaces.IReactionSet;
  * @cdk.module control
  */
 public interface IUndoRedoFactory {
-	public IUndoRedoable getAddAtomsAndBondsEdit(IChemModel chemModel, IAtomContainer undoRedoContainer, String type, IControllerModel c2dm);
-	public IUndoRedoable getAdjustBondOrdersEdit(Map<IBond, IBond.Order[]> changedBonds, Map<IBond, Integer[]> changedBondsStereo, String type);
-	public IUndoRedoable getChangeAtomSymbolEdit(IAtom atom, String formerSymbol, String symbol, String type);
-	public IUndoRedoable getChangeChargeEdit(IAtom atomInRange, int formerCharge, int newCharge, String type);
+	public IUndoRedoable getAddAtomsAndBondsEdit(IChemModel chemModel, IAtomContainer undoRedoContainer, String type, IChemModelRelay c2dm);
+	public IUndoRedoable getAdjustBondOrdersEdit(Map<IBond, IBond.Order[]> changedBonds, Map<IBond, Integer[]> changedBondsStereo, String type, IChemModelRelay chemModelRelay);
+	public IUndoRedoable getChangeAtomSymbolEdit(IAtom atom, String formerSymbol, String symbol, String type, IChemModelRelay chemModelRelay);
+	public IUndoRedoable getChangeChargeEdit(IAtom atomInRange, int formerCharge, int newCharge, String type, IChemModelRelay chemModelRelay);
 	public IUndoRedoable getMoveAtomEdit(IAtomContainer undoRedoContainer, Vector2d offset, String type);
-	public IUndoRedoable getRemoveAtomsAndBondsEdit(IChemModel chemModel, IAtomContainer undoRedoContainer, String type);
+	public IUndoRedoable getRemoveAtomsAndBondsEdit(IChemModel chemModel, IAtomContainer undoRedoContainer, String type, IChemModelRelay chemModelRelay);
 	public IUndoRedoable getReplaceAtomEdit(IChemModel chemModel, IAtom oldAtom, IAtom newAtom, String type);
 	public IUndoRedoable getConvertToRadicalEdit(IAtomContainer relevantContainer, IElectronContainer electronContainer, String type);
 	public IUndoRedoable getChangeIsotopeEdit(IAtom atom, Integer formerIsotopeNumber, Integer newIstopeNumber, String type);
@@ -66,4 +67,6 @@ public interface IUndoRedoFactory {
 	public IUndoRedoable getMakeReactantOrProductInExistingReactionEdit(
 			IChemModel chemModel, IAtomContainer newContainer,
 			IAtomContainer oldcontainer, String s, boolean reactantOrProduct, String string);
+	public IUndoRedoable getMergeMoleculesEdit(IAtom deletedAtom, IAtomContainer containerWhereAtomWasIn, List<IBond> deletedBonds, Map<IBond, Integer> bondsWithReplacedAtom, Vector2d offset, IAtom atomwhichwasmoved, String type, IChemModelRelay c2dm);
+	public IUndoRedoable getChangeHydrogenCountEdit(Map<IAtom, int[]> atomHydrogenCountsMap, String type);
 }

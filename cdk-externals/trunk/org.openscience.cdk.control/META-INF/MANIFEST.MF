@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDK plugin
 Bundle-SymbolicName: org.openscience.cdk.control;singleton:=true
-Bundle-Version: 1.1.5.20090306
+Bundle-Version: 1.2.0.20090313
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openscience.cdk.control.Activator
@@ -17,6 +17,6 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.nonotify,
  javax.vecmath,
  org.eclipse.core.runtime
-Export-Package: org.openscience.cdk.control,
- org.openscience.cdk.controller,
- org.openscience.cdk.controller.undoredo
+Export-Package: org.openscience.cdk.controller,
+ org.openscience.cdk.controller.undoredo,
+ org.openscience.cdk.control

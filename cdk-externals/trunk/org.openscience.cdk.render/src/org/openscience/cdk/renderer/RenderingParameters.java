@@ -92,7 +92,7 @@ public class RenderingParameters {
      * highlight an element. 
      */
     private double highlightDistance = 8;
-
+    
     private boolean highlightShapeFilled = false;
     
     private Color mappingColor = Color.gray;

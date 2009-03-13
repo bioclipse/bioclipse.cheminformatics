@@ -22,7 +22,11 @@ package org.openscience.cdk.renderer.selection;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.vecmath.Point2d;
 
@@ -30,13 +34,14 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 /**
  * @cdk.module render
  */
-public abstract class ShapeSelection implements IChemObjectSelection {
+public abstract class ShapeSelection implements IncrementalSelection {
     
     public final List<IAtom> atoms = new ArrayList<IAtom>();
     
@@ -59,6 +64,22 @@ public abstract class ShapeSelection implements IChemObjectSelection {
     
     public boolean isFinished() {
         return this.finished;
+    }
+    
+    public boolean contains( IChemObject obj ) {
+        if(obj instanceof IAtom) {
+            for(IChemObject selected:atoms) {
+                if(selected == obj)
+                    return true;
+            }
+        }
+        if(obj instanceof IBond) {
+            for(IChemObject selected:bonds) {
+                if(selected == obj)
+                    return true;
+            } 
+        }
+        return false;
     }
     
     /**
@@ -125,5 +146,24 @@ public abstract class ShapeSelection implements IChemObjectSelection {
             ChemModelManipulator.getAllAtomContainers(chemModel)) {
             select(atomContainer);
         }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public <E extends IChemObject> Collection<E> elements(Class<E> clazz){
+        Set<E> set = new HashSet<E>();
+        if(clazz.isAssignableFrom( IChemObject.class )) {
+            set.addAll( (Collection<? extends E>) atoms );
+            set.addAll( (Collection<? extends E>) bonds );
+            return set;
+        }
+        if(clazz.isAssignableFrom( IAtom.class )) {
+            set.addAll( (Collection<? extends E>) atoms );
+            return set;
+        }
+        if(clazz.isAssignableFrom( IBond.class )) {
+            set.addAll( (Collection<? extends E>) bonds );
+            return set;
+        }
+        return Collections.emptySet();
     }
 }

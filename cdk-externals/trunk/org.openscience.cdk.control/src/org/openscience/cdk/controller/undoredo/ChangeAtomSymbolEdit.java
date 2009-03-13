@@ -30,6 +30,7 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
 import org.openscience.cdk.config.IsotopeFactory;
+import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.interfaces.IAtom;
 
 /**
@@ -49,6 +50,7 @@ public class ChangeAtomSymbolEdit implements IUndoRedoable {
 
 	private String symbol;
 	private String type;
+	private IChemModelRelay chemModelRelay=null;
 
 	/**
 	 * @param atomInRange
@@ -59,11 +61,12 @@ public class ChangeAtomSymbolEdit implements IUndoRedoable {
 	 *            The atom symbol past change
 	 */
 	public ChangeAtomSymbolEdit(IAtom atomInRange, String formerSymbol,
-			String symbol, String type) {
+			String symbol, String type, IChemModelRelay chemModelRelay) {
 		this.atom = atomInRange;
 		this.formerSymbol = formerSymbol;
 		this.symbol = symbol;
 		this.type=type;
+		this.chemModelRelay=chemModelRelay;
 	}
 
 	/*
@@ -75,6 +78,7 @@ public class ChangeAtomSymbolEdit implements IUndoRedoable {
 		this.atom.setSymbol(symbol);
 		try {
 			IsotopeFactory.getInstance(atom.getBuilder()).configure(atom);
+			chemModelRelay.updateAtom(atom);
 		} catch (OptionalDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -92,6 +96,7 @@ public class ChangeAtomSymbolEdit implements IUndoRedoable {
 	 */
 	public void undo() throws CannotUndoException {
 		this.atom.setSymbol(formerSymbol);
+		chemModelRelay.updateAtom(atom);
 		try {
 			IsotopeFactory.getInstance(atom.getBuilder()).configure(atom);
 		} catch (OptionalDataException e) {

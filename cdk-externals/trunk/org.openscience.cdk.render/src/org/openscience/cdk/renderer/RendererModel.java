@@ -66,6 +66,9 @@ public class RendererModel implements Serializable, Cloneable {
    
     /** Determines how much the image is zoomed into on. */
     private double zoomFactor = 1.0;
+    
+    //this is used for the size of the arrowhead, might become configurable
+    public static final int arrowHeadWidth = 10;
 
     /**
      * The color hash is used to color substructures.
@@ -88,21 +91,23 @@ public class RendererModel implements Serializable, Cloneable {
     private IAtomContainer clipboardContent = null;
     
     private IChemObjectSelection selection = new LassoSelection();
+    
+	private Map<IAtom, IAtom> merge=new HashMap<IAtom, IAtom>();
 
     public RendererModel() {
         this.parameters = new RenderingParameters();
     }
     
+    public RendererModel(RenderingParameters parameters) {
+        this.parameters = parameters;
+    }
+    
     public boolean getHighlightShapeFilled() {
         return this.parameters.isHighlightShapeFilled();
     }
-
+    
     public void setHighlightShapeFilled(boolean highlightShapeFilled) {
         this.parameters.setHighlightShapeFilled(highlightShapeFilled);
-    }
-
-    public RendererModel(RenderingParameters parameters) {
-        this.parameters = parameters;
     }
     
     public boolean getShowAromaticityCDKStyle() {    
@@ -161,6 +166,17 @@ public class RendererModel implements Serializable, Cloneable {
     public void setSelectionShape(RenderingParameters.AtomShape selectionShape) {
         this.parameters.setSelectionShape(selectionShape);
     }
+    
+	/**
+	 * This is the central facility for handling "merges" of atoms. A merge occures if during moving atoms an atom is in Range of another atom.
+	 * These atoms are then put into the merge map as a key-value pair. During the move, the atoms are then marked by a circle and on releasing the mouse
+	 * they get actually merged, meaning one atom is removed and bonds pointing to this atom are made to point to the atom it has been marged with.
+	 * 
+	 * @return Returns the merge.map
+	 */
+	public Map<IAtom, IAtom> getMerge() {
+		return merge;
+	}
 
     /**
      * Get the name of the font family (Arial, etc).
@@ -310,6 +326,12 @@ public class RendererModel implements Serializable, Cloneable {
     public void setZoomFactor(double zoomFactor) {
         this.zoomFactor = zoomFactor;
         fireChange();
+        if (getNotification() && listeners != null) {
+            EventObject event = new EventObject(this);
+            for (int i = 0; i < listeners.size(); i++) {
+                listeners.get(i).zoomFactorChanged(event);
+            }
+        }
     }
     
     public boolean isFitToScreen() {

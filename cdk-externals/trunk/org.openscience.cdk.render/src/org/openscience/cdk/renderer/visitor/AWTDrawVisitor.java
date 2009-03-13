@@ -22,16 +22,20 @@
 package org.openscience.cdk.renderer.visitor;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.elements.ArrowElement;
 import org.openscience.cdk.renderer.elements.AtomSymbolElement;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
@@ -62,6 +66,9 @@ public class AWTDrawVisitor extends AbstractAWTDrawVisitor {
      */
 	private RendererModel rendererModel;
 	
+	private final Map<Integer, BasicStroke> strokeMap = 
+	    new HashMap<Integer, BasicStroke>();
+	
 	private final Graphics2D g;
 	
 	public AWTDrawVisitor(Graphics2D g) {
@@ -78,11 +85,55 @@ public class AWTDrawVisitor extends AbstractAWTDrawVisitor {
         elementGroup.visitChildren(this);
     }
 
-    public void visit(LineElement line) {
+    public void visit(ArrowElement line) {
+        Stroke savedStroke = this.g.getStroke();
+        
+        int w = (int) (line.width * this.rendererModel.getScale());
+        if (strokeMap.containsKey(w)) {
+            this.g.setStroke(strokeMap.get(w));
+        } else {
+            BasicStroke stroke = new BasicStroke(w);
+            this.g.setStroke(stroke);
+            strokeMap.put(w, stroke);
+        }
+        
         this.g.setColor(line.color);
         int[] a = this.transformPoint(line.x1, line.y1);
         int[] b = this.transformPoint(line.x2, line.y2);
         this.g.drawLine(a[0], a[1], b[0], b[1]);
+        if(line.direction){
+	        int[] c = this.transformPoint(line.x1-rendererModel.arrowHeadWidth / this.rendererModel.getScale(), line.y1-rendererModel.arrowHeadWidth / this.rendererModel.getScale());
+	        int[] d = this.transformPoint(line.x1-rendererModel.arrowHeadWidth / this.rendererModel.getScale(), line.y1+rendererModel.arrowHeadWidth / this.rendererModel.getScale());
+	        this.g.drawLine(a[0], a[1], c[0], c[1]);
+	        this.g.drawLine(a[0], a[1], d[0], d[1]);
+        }else{
+	        int[] c = this.transformPoint(line.x2+rendererModel.arrowHeadWidth / this.rendererModel.getScale(), line.y2-rendererModel.arrowHeadWidth / this.rendererModel.getScale());
+	        int[] d = this.transformPoint(line.x2+rendererModel.arrowHeadWidth / this.rendererModel.getScale(), line.y2+rendererModel.arrowHeadWidth / this.rendererModel.getScale());
+	        this.g.drawLine(b[0], b[1], c[0], c[1]);
+	        this.g.drawLine(b[0], b[1], d[0], d[1]);
+        }        
+        this.g.setStroke(savedStroke);
+    }
+    
+    
+    public void visit(LineElement line) {
+        Stroke savedStroke = this.g.getStroke();
+        
+        int w = (int) (line.width * this.rendererModel.getScale());
+        if (strokeMap.containsKey(w)) {
+            this.g.setStroke(strokeMap.get(w));
+        } else {
+            BasicStroke stroke = new BasicStroke(w);
+            this.g.setStroke(stroke);
+            strokeMap.put(w, stroke);
+        }
+        
+        this.g.setColor(line.color);
+        int[] a = this.transformPoint(line.x1, line.y1);
+        int[] b = this.transformPoint(line.x2, line.y2);
+        this.g.drawLine(a[0], a[1], b[0], b[1]);
+        
+        this.g.setStroke(savedStroke);
     }
 
     public void visit(OvalElement oval) {
@@ -221,6 +272,7 @@ public class AWTDrawVisitor extends AbstractAWTDrawVisitor {
             this.g.drawString(
                     chargeString, x, y + offset);
         }
+        
     }
     
     public void visit(RectangleElement rectangle) {
@@ -247,12 +299,15 @@ public class AWTDrawVisitor extends AbstractAWTDrawVisitor {
     }
 
     public void visit(IRenderingElement element) {
+        Color savedColor = this.g.getColor();
         if (element instanceof ElementGroup)
             visit((ElementGroup) element);
         else if (element instanceof WedgeLineElement)
             visit((WedgeLineElement) element);
         else if (element instanceof LineElement)
             visit((LineElement) element);
+        else if (element instanceof ArrowElement)
+            visit((ArrowElement) element);
         else if (element instanceof OvalElement)
             visit((OvalElement) element);
         else if (element instanceof AtomSymbolElement)
@@ -266,6 +321,7 @@ public class AWTDrawVisitor extends AbstractAWTDrawVisitor {
         else
             System.err.println("Visitor method for "
                     + element.getClass().getName() + " is not implemented");
+        this.g.setColor(savedColor);
     }
 
     /**
@@ -280,7 +336,7 @@ public class AWTDrawVisitor extends AbstractAWTDrawVisitor {
         if (rendererModel.getUseAntiAliasing()) {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-            g.setStroke(new BasicStroke((int)rendererModel.getBondWidth()));
+//            g.setStroke(new BasicStroke((int)rendererModel.getBondWidth()));
         }
     }
 }

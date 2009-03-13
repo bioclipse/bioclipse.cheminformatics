@@ -25,6 +25,7 @@
 package org.openscience.cdk.controller;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import javax.vecmath.Point2d;
 
@@ -38,7 +39,7 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.renderer.Renderer;
-import org.openscience.cdk.renderer.selection.IChemObjectSelection;
+import org.openscience.cdk.renderer.selection.IncrementalSelection;
 
 /**
  * @cdk.module control
@@ -52,8 +53,9 @@ public interface IChemModelRelay {
     public void setChemModel(IChemModel model);
     public IAtom getClosestAtom(Point2d worldCoord);
     public IBond getClosestBond(Point2d worldCoord);
+    public IAtom getAtomInRange(Point2d worldCoord, Collection<IAtom> toignore, IAtom atomtoignore);
     public void updateView();
-    public void select(IChemObjectSelection selection);
+    public void select(IncrementalSelection selection);
     
     /* Event model */
     public void setEventHandler(IChemModelEventRelayHandler handler);
@@ -96,15 +98,13 @@ public interface IChemModelRelay {
     public IAtomContainer deleteFragment(IAtomContainer toDelete);
     public void cleanup();
     public void flip(boolean horizontal);
-    //These methods require changes in other modules and are not used
-    //in bc-jcp right now, so we leave them out
-    /*public void makeReactantInNewReaction(IAtomContainer newContainer, IAtomContainer oldcontainer);
-	    public void makeReactantInExistingReaction(String s,
+	public void makeReactantInNewReaction(IAtomContainer newContainer, IAtomContainer oldcontainer);
+	public void makeReactantInExistingReaction(String s,
 			IAtomContainer newContainer, IAtomContainer container);
-	    public void makeProductInNewReaction(IAtomContainer newContainer,
+	public void makeProductInNewReaction(IAtomContainer newContainer,
 			IAtomContainer container);
-	    public void makeProductInExistingReaction(String s,
-			IAtomContainer newContainer, IAtomContainer container);*/
+	public void makeProductInExistingReaction(String s,
+			IAtomContainer newContainer, IAtomContainer container);
     /**
      * Adjusts all bond orders to fit valency
      */
@@ -114,6 +114,8 @@ public interface IChemModelRelay {
      */
     public void resetBondOrders();
     public void clearValidation();
+    public void makeAllImplicitExplicit();
+    public void makeAllExplicitImplicit();
 //    public abstract void cleanupSelection(Selector sectionIdentifier);
 
     /* Editing actions for atoms */
@@ -128,8 +130,11 @@ public interface IChemModelRelay {
     public abstract void setSymbol(IAtom atom, String symbol);
     public abstract void setCharge(IAtom atom, int charge);
     public abstract void setMassNumber(IAtom atom, int charge);
+    public void setHydrogenCount(IAtom atom, int intValue);
     public void replaceAtom(IAtom atomnew, IAtom atomold);
     public void addSingleElectron(IAtom atom);
+    public void updateAtoms(IAtomContainer container, Iterable<IAtom> atoms);
+    public void updateAtom(IAtom atom);
 
     /* Editing actions for bonds */
     public abstract IBond addBond(IAtom fromAtom, IAtom toAtom);
@@ -145,6 +150,5 @@ public interface IChemModelRelay {
     public void makeNewStereoBond(IAtom atom, Direction desiredDirection);
     		
     public IUndoRedoFactory getUndoRedoFactory();
-    public UndoRedoHandler getUndoRedoHandler();
-	
+    public UndoRedoHandler getUndoRedoHandler();	
 }

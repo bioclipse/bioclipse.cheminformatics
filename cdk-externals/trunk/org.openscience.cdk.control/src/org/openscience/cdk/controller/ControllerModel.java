@@ -1,7 +1,7 @@
 /* $RCSfile$
- * $Author: shk3 $
- * $Date: 2009-02-19 15:59:30 +0000 (Thu, 19 Feb 2009) $
- * $Revision: 14200 $
+ * $Author$
+ * $Date$
+ * $Revision$
  * 
  * Copyright (C) 1997-2007  The Chemistry Development Kit (CDK) project
  * 
@@ -38,7 +38,7 @@ import org.openscience.cdk.interfaces.IBond;
 
 /**
  * @cdk.module control
- * @cdk.svnrev $Revision: 14200 $
+ * @cdk.svnrev $Revision$
  */
 public class ControllerModel implements Serializable, Cloneable, IControllerModel {
 

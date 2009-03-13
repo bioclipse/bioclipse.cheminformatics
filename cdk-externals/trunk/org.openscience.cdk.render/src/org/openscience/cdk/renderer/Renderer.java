@@ -41,6 +41,11 @@ import org.openscience.cdk.renderer.font.IFontManager;
 import org.openscience.cdk.renderer.generators.BoundsGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.MappingGenerator;
+import org.openscience.cdk.renderer.generators.ProductsBoxGenerator;
+import org.openscience.cdk.renderer.generators.ReactantsBoxGenerator;
+import org.openscience.cdk.renderer.generators.ReactionArrowGenerator;
+import org.openscience.cdk.renderer.generators.ReactionBoxGenerator;
+import org.openscience.cdk.renderer.generators.ReactionPlusGenerator;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 
 /**
@@ -246,33 +251,42 @@ public class Renderer {
      */
     public Rectangle paintChemModel(
             IChemModel chemModel, IDrawVisitor drawVisitor) {
-        
+
         IMoleculeSet moleculeSet = chemModel.getMoleculeSet();
         IReactionSet reactionSet = chemModel.getReactionSet();
-        
-        if (moleculeSet == null || reactionSet != null) {
-            if (reactionSet != null) {
-                return paintMoleculeSet(moleculeSet, drawVisitor);
-            }
-        }
-        
-        Rectangle2D modelBounds = Renderer.calculateBounds(moleculeSet);
 
-        // setup and draw
-        this.setupTransformNatural(modelBounds);
-        IRenderingElement diagram = this.generateDiagram(moleculeSet);
-        this.paint(drawVisitor, diagram); 
-        
-        // the size of the painted diagram is returned
-        return this.convertToDiagramBounds(modelBounds);
+        if (moleculeSet == null && reactionSet != null) {
+            return paintReactionSet(reactionSet, drawVisitor);
+        }
+
+        if (moleculeSet != null && reactionSet == null) {
+            return paintMoleculeSet(moleculeSet, drawVisitor);
+        }
+
+        if (moleculeSet != null && reactionSet != null) {
+            Rectangle2D totalBounds = Renderer.calculateBounds(reactionSet);
+            totalBounds = totalBounds.createUnion(
+                    Renderer.calculateBounds(moleculeSet));
+            this.setupTransformNatural(totalBounds);
+            ElementGroup diagram = new ElementGroup();
+            for (IReaction reaction : reactionSet.reactions()) {
+                diagram.add(this.generateDiagram(reaction));
+            }
+            diagram.add(this.generateDiagram(moleculeSet));
+            this.paint(drawVisitor, diagram);
+
+            // the size of the painted diagram is returned
+            return this.convertToDiagramBounds(totalBounds);
+        }
+        return new Rectangle(0, 0, 0, 0);
     }
 	
 	public Rectangle paintReactionSet(
-	        IReactionSet reactionSet, IDrawVisitor drawVisitor) {
-	    // total up the bounding boxes
+            IReactionSet reactionSet, IDrawVisitor drawVisitor) {
+        // total up the bounding boxes
         Rectangle2D totalBounds = null;
         for (IReaction reaction : reactionSet.reactions()) {
-            Rectangle2D modelBounds = Renderer.calculateBounds(reaction);  
+            Rectangle2D modelBounds = Renderer.calculateBounds(reaction);
             if (totalBounds == null) {
                 totalBounds = modelBounds;
             } else {
@@ -287,7 +301,7 @@ public class Renderer {
             diagram.add(this.generateDiagram(reaction));
         }
         this.paint(drawVisitor, diagram);
-        
+
         // the size of the painted diagram is returned
         return this.convertToDiagramBounds(totalBounds);
     }
@@ -307,18 +321,18 @@ public class Renderer {
     }
 	
 	public Rectangle paintMoleculeSet(
-	        IMoleculeSet moleculeSet, IDrawVisitor drawVisitor) {
-	    // total up the bounding boxes
+            IMoleculeSet moleculeSet, IDrawVisitor drawVisitor) {
+        // total up the bounding boxes
         Rectangle2D totalBounds = null;
         for (IAtomContainer molecule : moleculeSet.molecules()) {
-            Rectangle2D modelBounds = Renderer.calculateBounds(molecule);  
+            Rectangle2D modelBounds = Renderer.calculateBounds(molecule);
             if (totalBounds == null) {
                 totalBounds = modelBounds;
             } else {
                 totalBounds = totalBounds.createUnion(modelBounds);
             }
         }
-        
+
         // setup and draw
         this.setupTransformNatural(totalBounds);
         ElementGroup diagram = new ElementGroup();
@@ -326,7 +340,7 @@ public class Renderer {
             diagram.add(this.generateDiagram(molecule));
         }
         this.paint(drawVisitor, diagram);
-        
+
         return this.convertToDiagramBounds(totalBounds);
     }
 	
@@ -751,8 +765,7 @@ public class Renderer {
         double widthRatio  = drawWidth  / (diagramWidth  + (2 * m)); 
         double heightRatio = drawHeight / (diagramHeight + (2 * m));
     
-        this.zoom = Math.min( widthRatio, heightRatio );
-        
+        this.zoom = Math.min(widthRatio, heightRatio);
         
         this.fontManager.setFontForZoom(zoom);
         
@@ -936,9 +949,23 @@ public class Renderer {
 	    // generate the bounds first, so that they are to the back
 	    BoundsGenerator boundsGenerator = new BoundsGenerator();
 	    diagram.add(boundsGenerator.generate(reaction, this.rendererModel));
+	    ReactionBoxGenerator boxGenerator = new ReactionBoxGenerator();
+	    diagram.add(boxGenerator.generate(reaction, this.rendererModel));
+	    ReactionArrowGenerator arrowGenerator = new ReactionArrowGenerator();
+	    diagram.add(arrowGenerator.generate(reaction, this.rendererModel));
+	    ReactionPlusGenerator plusGenerator = new ReactionPlusGenerator();
+	    diagram.add(plusGenerator.generate(reaction, this.rendererModel));
 	    
 	    // now make the molecules
+	    if(reaction.getReactantCount()>0){
+		    ReactantsBoxGenerator reactantsBoxGenerator = new ReactantsBoxGenerator();
+		    diagram.add(reactantsBoxGenerator.generate(reaction, this.rendererModel));
+	    }
 	    diagram.add(generateDiagram(reaction.getReactants()));
+	    if(reaction.getProductCount()>0){
+		    ProductsBoxGenerator productsBoxGenerator = new ProductsBoxGenerator();
+		    diagram.add(productsBoxGenerator.generate(reaction, this.rendererModel));
+	    }
 	    diagram.add(generateDiagram(reaction.getProducts()));
 	    
 	    // specialised reaction-specific generators

@@ -34,6 +34,7 @@ import static org.openscience.cdk.CDKConstants.STEREO_BOND_UP_INV;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -60,6 +61,8 @@ import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.interfaces.IPseudoAtom;
+import org.openscience.cdk.interfaces.IReaction;
+import org.openscience.cdk.interfaces.IReactionSet;
 import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.interfaces.ISingleElectron;
 import org.openscience.cdk.interfaces.IBond.Order;
@@ -71,10 +74,14 @@ import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
+import org.openscience.cdk.renderer.selection.IncrementalSelection;
+import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.SaturationChecker;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
+import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
 import org.openscience.cdk.tools.manipulator.BondManipulator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
+import org.openscience.cdk.tools.manipulator.ReactionSetManipulator;
 import org.openscience.cdk.validate.ProblemMarker;
 
 /**
@@ -111,6 +118,8 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     private IUndoRedoFactory undoredofactory;
     
     private UndoRedoHandler undoredohandler;
+    
+	CDKAtomTypeMatcher matcher;
 	
 	public ControllerHub(IControllerModel controllerModel,
 		                   Renderer renderer,
@@ -130,6 +139,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		
 		registerGeneralControllerModule(new HighlightModule(this));
 		registerGeneralControllerModule(new ZoomModule(this));
+		matcher = CDKAtomTypeMatcher.getInstance(chemModel.getBuilder());
 	}
 	
 	public IControllerModel getController2DModel() {
@@ -146,6 +156,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
   public void setChemModel(IChemModel model) {
       this.chemModel = model;
+      //updateAtoms(ring, ring.atoms());
       structureChanged();
     }
 
@@ -374,6 +385,12 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		while(connbonds.hasNext())
 			ac.addBond(connbonds.next());
 		ChemModelManipulator.removeAtomAndConnectedElectronContainers(chemModel, atom);
+		for(IBond bond : ac.bonds()){
+			if(bond.getAtom(0)==atom)
+				updateAtom(bond.getAtom(1));
+			else
+				updateAtom(bond.getAtom(0));
+		}
 		structureChanged();
 		return ac;
 	}
@@ -381,7 +398,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	public IAtomContainer removeAtom(IAtom atom) {
 		IAtomContainer ac = removeAtomWithoutUndo(atom);
 	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
-		    IUndoRedoable undoredo = getUndoRedoFactory().getRemoveAtomsAndBondsEdit(getIChemModel(), ac, "Remove Atom");
+		    IUndoRedoable undoredo = getUndoRedoFactory().getRemoveAtomsAndBondsEdit(getIChemModel(), ac, "Remove Atom",this);
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
 		return ac;
@@ -391,14 +408,13 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		IAtomContainer undoRedoContainer = chemModel.getBuilder().newAtomContainer();
 		undoRedoContainer.addAtom(addAtomWithoutUndo(atomType, worldCoord));
 		if (getUndoRedoFactory() != null && getUndoRedoHandler() != null) {
-            IUndoRedoable undoredo = getUndoRedoFactory().getAddAtomsAndBondsEdit(chemModel, undoRedoContainer, "Add Atom", getController2DModel());
+            IUndoRedoable undoredo = getUndoRedoFactory().getAddAtomsAndBondsEdit(chemModel, undoRedoContainer, "Add Atom", this);
             getUndoRedoHandler().postEdit(undoredo);
         }
 		return undoRedoContainer.getAtom(0);
 	}
 	
 	public IAtom addAtomWithoutUndo(String atomType, Point2d worldCoord) {
-		//FIXME: update atoms for implicit H's or so
 		IAtom newAtom = chemModel.getBuilder().newAtom(atomType, worldCoord);
 		
 		//FIXME : there should be an initial hierarchy?
@@ -413,6 +429,9 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		    // FIXME : always add to the first container?
 		    molSet.getAtomContainer(0).addAtom(newAtom);
 		}
+		updateAtom(newAtom);
+       	if(getAtomInRange(newAtom.getPoint2d(), null, newAtom)!=null)
+        	newAtom.getPoint2d().x+=this.getRenderer().getRenderer2DModel().getHighlightDistance()/this.getRenderer().getRenderer2DModel().getScale();
         structureChanged();
 		return newAtom;
 	}
@@ -426,7 +445,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	        IBond newBond = atomContainer.getBond(atom, undoRedoContainer.getAtom(0));
 	        undoRedoContainer.addBond(newBond);
 		if (getUndoRedoFactory() != null && getUndoRedoHandler() != null) {
-            IUndoRedoable undoredo = getUndoRedoFactory().getAddAtomsAndBondsEdit(chemModel, undoRedoContainer, "Add Atom", getController2DModel());
+            IUndoRedoable undoredo = getUndoRedoFactory().getAddAtomsAndBondsEdit(chemModel, undoRedoContainer, "Add Atom", this);
             getUndoRedoHandler().postEdit(undoredo);
         }
 		return undoRedoContainer.getAtom(0);
@@ -488,6 +507,10 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
         atomCon.addAtom(newAtom);
         atomCon.addBond(newBond);
+        updateAtom(newBond.getAtom(0));
+        updateAtom(newBond.getAtom(1));
+        if(getAtomInRange(newAtom.getPoint2d(), null, newAtom)!=null)
+        	newAtom.getPoint2d().x+=this.getRenderer().getRenderer2DModel().getHighlightDistance()/this.getRenderer().getRenderer2DModel().getScale();
         structureChanged();
         return newAtom;
     }
@@ -505,9 +528,11 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
                     getIChemModel(), newAtom);
         IBond newBond = atomContainer.getBond(atom, newAtom);
         undoRedoContainer.addBond(newBond);
+        updateAtom(newBond.getAtom(0));
+        updateAtom(newBond.getAtom(1));
 	    structureChanged();
 	    if(undoredofactory!=null && undoredohandler!=null){
-		    IUndoRedoable undoredo = undoredofactory.getAddAtomsAndBondsEdit(getIChemModel(), undoRedoContainer, "Add Bond",getController2DModel());
+		    IUndoRedoable undoredo = undoredofactory.getAddAtomsAndBondsEdit(getIChemModel(), undoRedoContainer, "Add Bond",this);
 		    undoredohandler.postEdit(undoredo);
 	    }
 	}
@@ -536,8 +561,11 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		Map<IBond, Integer[]> changedBondsStereo = new HashMap<IBond, Integer[]>();
 		changedBonds.put(bond,orders);
 		changedBondsStereo.put(bond, stereos);
+        updateAtom(bond.getAtom(0));
+        updateAtom(bond.getAtom(1));
+		structureChanged();
 	    if(undoredofactory!=null && undoredohandler!=null){
-	    	IUndoRedoable undoredo = undoredofactory.getAdjustBondOrdersEdit(changedBonds, changedBondsStereo, "Adjust Bond Order");
+	    	IUndoRedoable undoredo = undoredofactory.getAdjustBondOrdersEdit(changedBonds, changedBondsStereo, "Adjust Bond Order",this);
 		    undoredohandler.postEdit(undoredo);
 	    }
 	}
@@ -562,7 +590,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         undoRedoContainer.addAtom(newAtom);
         undoRedoContainer.addBond(newBond);
 	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
-		    IUndoRedoable undoredo = getUndoRedoFactory().getAddAtomsAndBondsEdit(getIChemModel(), undoRedoContainer, "Add Stereo Bond",getController2DModel());
+		    IUndoRedoable undoredo = getUndoRedoFactory().getAddAtomsAndBondsEdit(getIChemModel(), undoRedoContainer, "Add Stereo Bond",this);
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
 	}
@@ -622,16 +650,19 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     public IBond addBond(IAtom fromAtom, IAtom toAtom) {
         IBond newBond = chemModel.getBuilder().newBond(fromAtom, toAtom);
         chemModel.getMoleculeSet().getAtomContainer(0).addBond(newBond);
+        updateAtom(newBond.getAtom(0));
+        updateAtom(newBond.getAtom(1));
         structureChanged();
         return newBond;
     }
 
     public void setCharge(IAtom atom, int charge) {
 	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
-	    	IUndoRedoable undoredo = getUndoRedoFactory().getChangeChargeEdit(atom,atom.getFormalCharge(),charge, "Change charge to "+charge);
+	    	IUndoRedoable undoredo = getUndoRedoFactory().getChangeChargeEdit(atom,atom.getFormalCharge(),charge, "Change charge to "+charge,this);
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
         atom.setFormalCharge(charge);
+        updateAtom(atom);
         structurePropertiesChanged();
     }
 
@@ -645,13 +676,21 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     }
 
     public void setOrder(IBond bond, Order order) {
+    	Map<IBond, IBond.Order[]> changedBonds= new HashMap<IBond, IBond.Order[]>();
+    	changedBonds.put(bond,new Order[]{order,bond.getOrder()});
         bond.setOrder(order);
+        updateAtom(bond.getAtom(0));
+        updateAtom(bond.getAtom(1));
         structurePropertiesChanged();
+	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
+		    IUndoRedoable undoredo = getUndoRedoFactory().getAdjustBondOrdersEdit(changedBonds, new HashMap<IBond, Integer[]>(), "Changed Bond Order to "+order, this);
+		    getUndoRedoHandler().postEdit(undoredo);
+	    }
     }
 
     public void setSymbol(IAtom atom, String symbol) {
 	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
-		    IUndoRedoable undoredo = getUndoRedoFactory().getChangeAtomSymbolEdit(atom,atom.getSymbol(),symbol,"Change Atom Symbol to "+symbol);
+		    IUndoRedoable undoredo = getUndoRedoFactory().getChangeAtomSymbolEdit(atom,atom.getSymbol(),symbol,"Change Atom Symbol to "+symbol,this);
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
         atom.setSymbol(symbol);
@@ -662,6 +701,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+        updateAtom(atom);
         structurePropertiesChanged();
     }
 
@@ -671,8 +711,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     }
 
     public void updateImplicitHydrogenCounts() {
-        CDKAtomTypeMatcher matcher = CDKAtomTypeMatcher
-            .getInstance(chemModel.getBuilder());
+    	Map<IAtom, int[]> atomHydrogenCountsMap= new HashMap<IAtom, int[]>();
         for (IAtomContainer container :
              ChemModelManipulator.getAllAtomContainers(chemModel)) {
             for (IAtom atom : container.atoms()) {
@@ -683,6 +722,8 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
                         );
                         if (type != null &&
                             type.getFormalNeighbourCount() != null) {
+                        	atomHydrogenCountsMap.put(atom, new int[]{type.getFormalNeighbourCount() -
+                                container.getConnectedAtomsCount(atom), atom.getHydrogenCount()});
                             atom.setHydrogenCount(
                                 type.getFormalNeighbourCount() -
                                 container.getConnectedAtomsCount(atom)
@@ -695,6 +736,10 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
                 }
             }
         }
+	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
+		    IUndoRedoable undoredo = getUndoRedoFactory().getChangeHydrogenCountEdit(atomHydrogenCountsMap, "Update implicit hydrogen count");
+		    getUndoRedoHandler().postEdit(undoredo);
+	    }
         structurePropertiesChanged();
     }
 
@@ -734,8 +779,11 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		Map<IBond, IBond.Order[]> changedBonds = new HashMap<IBond, IBond.Order[]>();
 		Map<IBond, Integer[]> changedBondsStereo = new HashMap<IBond, Integer[]>();
 		changedBondsStereo.put(bond, stereos);
+		updateAtom(bond.getAtom(0));
+		updateAtom(bond.getAtom(1));
+		structureChanged();
 	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
-	    	IUndoRedoable undoredo = getUndoRedoFactory().getAdjustBondOrdersEdit(changedBonds, changedBondsStereo, "Adjust Bond Stereo");
+	    	IUndoRedoable undoredo = getUndoRedoFactory().getAdjustBondOrdersEdit(changedBonds, changedBondsStereo, "Adjust Bond Stereo",this);
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
     }
@@ -779,15 +827,15 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     }
 
     public void cleanup() {
-        Map<IAtom, Point2d[]> coords=new HashMap<IAtom, Point2d[]>();
+        Map<IAtom, Point2d[]> coords = new HashMap<IAtom, Point2d[]>();
         for (IAtomContainer container :
             ChemModelManipulator.getAllAtomContainers(chemModel)) {
             
             for (IAtom atom : container.atoms()){
-            	Point2d[] coordsforatom=new Point2d[2];
-            	coordsforatom[1]=atom.getPoint2d();
-            	coords.put(atom,coordsforatom);
-            	atom.setPoint2d(null);
+            	Point2d[] coordsforatom = new Point2d[2];
+                coordsforatom[1] = atom.getPoint2d();
+                coords.put(atom, coordsforatom);
+                atom.setPoint2d(null);
             }
             
             if (ConnectivityChecker.isConnected(container)) {
@@ -796,30 +844,34 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
                 // deal with disconnected atom containers
                 IMoleculeSet molecules = 
                     ConnectivityChecker.partitionIntoMolecules(container);
-                Rectangle2D lastBounds = null;
+                Rectangle2D usedBounds = null;
                 for (IAtomContainer subContainer : molecules.molecules()) {
                     generateNewCoordinates(subContainer);
                     
                     // now move it so that they don't overlap
                     Rectangle2D bounds = Renderer.calculateBounds(subContainer);
-                    if (lastBounds != null) {
-                        shiftContainer(subContainer, bounds, lastBounds);
+                    if (usedBounds != null) {
+                        Rectangle2D shiftedBounds = 
+                            shiftContainer(subContainer, bounds, usedBounds);
+                        usedBounds = usedBounds.createUnion(shiftedBounds);
+                    } else {
+                        usedBounds = bounds;
                     }
-                    lastBounds = bounds;
                 }
                 
             }
-            for(IAtom atom : container.atoms()){
-            	Point2d[] coordsforatom=coords.get(atom);
-            	coordsforatom[0]=atom.getPoint2d();
-            	coords.put(atom, coordsforatom);
+            
+            for (IAtom atom : container.atoms()) {
+                Point2d[] coordsforatom = coords.get(atom);
+                coordsforatom[0] = atom.getPoint2d();
             }
         }
         coordinatesChanged();
-	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
-		    IUndoRedoable undoredo = getUndoRedoFactory().getChangeCoordsEdit(coords, "Clean Up");
-		    getUndoRedoHandler().postEdit(undoredo);
-	    }
+	    if (getUndoRedoFactory() != null && getUndoRedoHandler() != null) {
+            IUndoRedoable undoredo = 
+                getUndoRedoFactory().getChangeCoordsEdit(coords, "Clean Up");
+            getUndoRedoHandler().postEdit(undoredo);
+        }
     }
     
     /**
@@ -829,7 +881,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
      * @param bounds the bounds of the atom container to shift
      * @param last the bounds of the last atom container
      */
-    private void shiftContainer(
+    private Rectangle2D shiftContainer(
             IAtomContainer container, Rectangle2D bounds, Rectangle2D last) {
         
         RendererModel model = renderer.getRenderer2DModel(); 
@@ -842,6 +894,12 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
             
             Point2d p = new Point2d(last.getCenterX() + d, last.getCenterY());
             GeometryTools.translate2DCenterTo(container, p);
+            return new Rectangle2D.Double(bounds.getX() + d,
+                                          bounds.getY(),
+                                          bounds.getWidth(),
+                                          bounds.getHeight());
+        } else {
+            return bounds;
         }
     }
     
@@ -893,9 +951,10 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
             set.addAtomContainer(container);
         }
         container.add(ring);
+	    updateAtoms(ring, ring.atoms());
         structureChanged();
 	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
-		    IUndoRedoable undoredo = getUndoRedoFactory().getAddAtomsAndBondsEdit(getIChemModel(), ring.getBuilder().newAtomContainer(ring), "Ring" + " " + ringSize,getController2DModel());
+		    IUndoRedoable undoredo = getUndoRedoFactory().getAddAtomsAndBondsEdit(getIChemModel(), ring.getBuilder().newAtomContainer(ring), "Ring" + " " + ringSize,this);
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
 	    return ring;
@@ -923,9 +982,10 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
             set.addAtomContainer(container);
         }
         container.add(ring);
+        updateAtoms(ring, ring.atoms());
         structureChanged();
 	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
-		    IUndoRedoable undoredo = getUndoRedoFactory().getAddAtomsAndBondsEdit(getIChemModel(), ring.getBuilder().newAtomContainer(ring), "Benzene",getController2DModel());
+		    IUndoRedoable undoredo = getUndoRedoFactory().getAddAtomsAndBondsEdit(getIChemModel(), ring.getBuilder().newAtomContainer(ring), "Benzene",this);
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
 	    return ring;
@@ -953,6 +1013,11 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         
         for (IBond ringBond : newRing.bonds()) {
             sourceContainer.addBond(ringBond);
+        }
+        updateAtoms(newRing, newRing.atoms());
+        for(IAtom newatom : newRing.atoms()){
+        	if(atom!=newatom && getAtomInRange(atom.getPoint2d(), null, atom)!=null)
+        		atom.getPoint2d().x+=this.getRenderer().getRenderer2DModel().getHighlightDistance()/this.getRenderer().getRenderer2DModel().getScale();
         }
         structureChanged();
         return newRing;
@@ -1002,6 +1067,11 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         for (IBond ringBond : newRing.bonds()) {
             sourceContainer.addBond(ringBond);
         }
+        updateAtoms(newRing, newRing.atoms());
+        for(IAtom newatom : newRing.atoms()){
+        	if(atom!=newatom && getAtomInRange(atom.getPoint2d(), null, atom)!=null)
+        		atom.getPoint2d().x+=this.getRenderer().getRenderer2DModel().getHighlightDistance()/this.getRenderer().getRenderer2DModel().getScale();
+        }
         structureChanged();
         return newRing;
     }
@@ -1048,7 +1118,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	    		undoRedoContainer.removeAtom(atom);
 	    	for(IBond bond : sharedAtoms.bonds())
 	    		undoRedoContainer.removeBond(bond);
-		    IUndoRedoable undoredo = getUndoRedoFactory().getAddAtomsAndBondsEdit(getIChemModel(), undoRedoContainer, "Ring" + " " + ringSize,getController2DModel());
+		    IUndoRedoable undoredo = getUndoRedoFactory().getAddAtomsAndBondsEdit(getIChemModel(), undoRedoContainer, "Ring" + " " + ringSize,this);
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
         return newRing;
@@ -1138,8 +1208,40 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
                 sourceContainer.addBond(ringBond);
             }
         }
+        updateAtoms(newRing, newRing.atoms());
+        for(IAtom atom : newRing.atoms()){
+        	if(atom!=firstAtom && atom!=secondAtom && getAtomInRange(atom.getPoint2d(), null, atom)!=null)
+        		atom.getPoint2d().x+=this.getRenderer().getRenderer2DModel().getHighlightDistance()/this.getRenderer().getRenderer2DModel().getScale();
+        }
         structureChanged();
         return newRing;
+    }
+    
+    public IAtom getAtomInRange(Point2d worldCoord, Collection<IAtom> toignore, IAtom atomtoignore) {
+        
+        IAtom superClosestAtom=null;
+        // TODO Use highlighted atom instead
+        for(IAtomContainer atomContainer:
+            ChemModelManipulator.getAllAtomContainers(getIChemModel())){
+
+            IAtom closestAtom = GeometryTools.getClosestAtom( worldCoord.x,worldCoord.y, 
+                                                              atomContainer, 
+                                                              atomtoignore);
+            if (closestAtom != null)
+            {
+                RendererModel rModel = this.getRenderer().getRenderer2DModel();
+
+                if ((closestAtom.getPoint2d().distance( worldCoord )
+                        > rModel.getHighlightDistance()/rModel.getScale()) 
+                        || (toignore!=null && toignore.contains(closestAtom)))
+                {
+                    closestAtom = null;
+                }
+            }
+            if(superClosestAtom==null)
+                superClosestAtom = closestAtom;
+        }
+        return superClosestAtom;
     }
 
     public IRing addPhenyl(IBond bond) {
@@ -1214,6 +1316,11 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
                 sourceContainer.addBond(ringBond);
             }
         }
+        updateAtoms(newRing, newRing.atoms());
+        for(IAtom atom : newRing.atoms()){
+        	if(atom!=firstAtom && atom!=secondAtom && getAtomInRange(atom.getPoint2d(), null, atom)!=null)
+        		atom.getPoint2d().x+=this.getRenderer().getRenderer2DModel().getHighlightDistance()/this.getRenderer().getRenderer2DModel().getScale();
+        }
         structureChanged();
         return newRing;
     }
@@ -1223,6 +1330,8 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
             .getRelevantAtomContainer(chemModel, bond);
         if(sourceContainer!=null)
         	sourceContainer.removeBond(bond);
+        updateAtom(bond.getAtom(0));
+        updateAtom(bond.getAtom(1));
         structureChanged();
     }
     
@@ -1231,7 +1340,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         IAtomContainer undAtomContainer = bond.getBuilder().newAtomContainer();
         undAtomContainer.addBond(bond);
 	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
-		    IUndoRedoable undoredo = getUndoRedoFactory().getRemoveAtomsAndBondsEdit(getIChemModel(), undAtomContainer,"Remove Bond");
+		    IUndoRedoable undoredo = getUndoRedoFactory().getRemoveAtomsAndBondsEdit(getIChemModel(), undAtomContainer,"Remove Bond",this);
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
     }
@@ -1253,6 +1362,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     }
 
 	public void adjustBondOrders()  throws IOException, ClassNotFoundException, CDKException {
+		//TODO also work on reactions ?!?
 		SaturationChecker satChecker = new SaturationChecker();
 		List<IAtomContainer> containersList = ChemModelManipulator.getAllAtomContainers(chemModel);
 		Iterator<IAtomContainer> iterator = containersList.iterator();
@@ -1272,13 +1382,16 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 				changedBonds.put(bond,orders);
 			}
 		}
+		if(this.getController2DModel().getAutoUpdateImplicitHydrogens())
+			updateImplicitHydrogenCounts();
 	    if(undoredofactory!=null && undoredohandler!=null){
-	    	IUndoRedoable undoredo = undoredofactory.getAdjustBondOrdersEdit(changedBonds, new HashMap<IBond, Integer[]>(), "Adjust Bond Order of Molecules");
+	    	IUndoRedoable undoredo = undoredofactory.getAdjustBondOrdersEdit(changedBonds, new HashMap<IBond, Integer[]>(), "Adjust Bond Order of Molecules",this);
 		    undoredohandler.postEdit(undoredo);
 	    }
 	}
 
 	public void resetBondOrders(){
+		//TODO also work on reactions ?!?
 		List<IAtomContainer> containersList = ChemModelManipulator.getAllAtomContainers(chemModel);
 		Iterator<IAtomContainer> iterator = containersList.iterator();
 		Map<IBond, IBond.Order[]> changedBonds = new HashMap<IBond, IBond.Order[]>();
@@ -1292,9 +1405,11 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 				changedBonds.put(bond,orders);
                 bond.setOrder(Order.SINGLE);
 			}
-		}		
+		}	
+		if(this.getController2DModel().getAutoUpdateImplicitHydrogens())
+			updateImplicitHydrogenCounts();
 	    if(undoredofactory!=null && undoredohandler!=null){
-	    	IUndoRedoable undoredo = undoredofactory.getAdjustBondOrdersEdit(changedBonds, new HashMap<IBond, Integer[]>(), "Reset Bond Order of Molecules");
+	    	IUndoRedoable undoredo = undoredofactory.getAdjustBondOrdersEdit(changedBonds, new HashMap<IBond, Integer[]>(), "Reset Bond Order of Molecules",this);
 		    undoredohandler.postEdit(undoredo);
 	    }
 	}
@@ -1303,6 +1418,8 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         IAtomContainer relevantContainer = ChemModelManipulator.getRelevantAtomContainer(chemModel, atomold);
         AtomContainerManipulator.replaceAtomByAtom(relevantContainer, 
             atomold, atomnew);
+        updateAtom(atomnew);
+        structureChanged();
 	    if(undoredofactory!=null && undoredohandler!=null){
 	    	IUndoRedoable undoredo = undoredofactory.getReplaceAtomEdit(chemModel, atomold, atomnew, "Replace Atom");
 		    undoredohandler.postEdit(undoredo);
@@ -1373,7 +1490,8 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     }
 
     private void structureChanged() {
-    	select( renderer.getRenderer2DModel().getSelection() );
+        if(renderer.getRenderer2DModel().getSelection() instanceof IncrementalSelection)
+            select( (IncrementalSelection)renderer.getRenderer2DModel().getSelection() );
         if (changeHandler != null) changeHandler.structureChanged();
     }
 
@@ -1401,8 +1519,9 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
      * Fill a selection by passing it to the hub, which uses its internal
      * chem model to do so.
      */
-    public void select(IChemObjectSelection selection) {
-        selection.select(this.chemModel);
+    public void select(IncrementalSelection selection) {
+        if(selection != null)
+            selection.select(this.chemModel);
         selectionChanged();
     }
 
@@ -1413,9 +1532,10 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         }
         moleculeSet.addAtomContainer(toPaste);
 	    if(undoredofactory!=null && undoredohandler!=null){
-		    IUndoRedoable undoredo = undoredofactory.getAddAtomsAndBondsEdit(getIChemModel(), toPaste.getBuilder().newAtomContainer(toPaste), "Paste", getController2DModel());
+		    IUndoRedoable undoredo = undoredofactory.getAddAtomsAndBondsEdit(getIChemModel(), toPaste.getBuilder().newAtomContainer(toPaste), "Paste", this);
 		    undoredohandler.postEdit(undoredo);
 	    }
+	    updateAtoms(toPaste, toPaste.atoms());
 	    structureChanged();
 	}
 
@@ -1432,15 +1552,14 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 			ChemModelManipulator.removeAtomAndConnectedElectronContainers(chemModel, selected.getAtom(i));
 		}
 	    if(undoredofactory!=null && undoredohandler!=null){
-		    IUndoRedoable undoredo = undoredofactory.getRemoveAtomsAndBondsEdit(chemModel, removed, "Cut");
+		    IUndoRedoable undoredo = undoredofactory.getRemoveAtomsAndBondsEdit(chemModel, removed, "Cut",this);
 		    undoredohandler.postEdit(undoredo);
 	    }
+	    structureChanged();
 	    return removed;
 	}
 
-	//These methods require changes in other modules and are not used
-	//in bc-jcp right now, so we leave them out
-	/*public void makeReactantInNewReaction(IAtomContainer newContainer, IAtomContainer oldcontainer) {
+	public void makeReactantInNewReaction(IAtomContainer newContainer, IAtomContainer oldcontainer) {
 		IReaction reaction = newContainer.getBuilder().newReaction();
 		reaction.setID("reaction-" + System.currentTimeMillis());
 		IMolecule mol=newContainer.getBuilder().newMolecule(newContainer);
@@ -1458,6 +1577,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		    IUndoRedoable undoredo = getUndoRedoFactory().getMakeReactantOrProductInNewReactionEdit(chemModel, newContainer, oldcontainer, true, "Make Reactant in new Reaction");
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
+	    structureChanged();
 	}
 
 	public void makeReactantInExistingReaction(String s,
@@ -1471,6 +1591,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		    IUndoRedoable undoredo = getUndoRedoFactory().getMakeReactantOrProductInExistingReactionEdit(chemModel, newContainer, oldcontainer, s, true, "Make Reactant in "+s);
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
+	    structureChanged();
 	}
 
 	public void makeProductInNewReaction(IAtomContainer newContainer,
@@ -1492,6 +1613,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		    IUndoRedoable undoredo = getUndoRedoFactory().getMakeReactantOrProductInNewReactionEdit(chemModel, newContainer, oldcontainer, false, "Make Reactant in new Reaction");
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
+	    structureChanged();
 	}
 
 	public void makeProductInExistingReaction(String s,
@@ -1505,5 +1627,120 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		    IUndoRedoable undoredo = getUndoRedoFactory().getMakeReactantOrProductInExistingReactionEdit(chemModel, newContainer, oldcontainer, s, false, "Make Reactant in "+s);
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
-	}*/
+	    structureChanged();
+	}
+	
+	/**
+	 *  Updates an array of atoms with respect to its hydrogen count
+	 *
+	 *@param  container  The AtomContainer to work on
+	 *@param  atoms       The Atoms to update
+	 */
+	public void updateAtoms(IAtomContainer container, Iterable<IAtom> atoms)
+	{
+		for(IAtom atom: atoms)
+		{
+			updateAtom(container, atom);
+		}
+	}
+
+
+	/**
+	 *  Updates an atom with respect to its hydrogen count
+	 *
+	 *@param  container  The AtomContainer to work on
+	 *@param  atom       The Atom to update
+	 */
+	public void updateAtom(IAtom atom)
+	{
+		IAtomContainer container=ChemModelManipulator.getRelevantAtomContainer(chemModel, atom);
+		if(container != null)
+		    updateAtom(container, atom);
+	}
+	
+	/**
+	 *  Updates an atom with respect to its hydrogen count
+	 *
+	 *@param  container  The AtomContainer to work on
+	 *@param  atom       The Atom to update
+	 */
+	private void updateAtom(IAtomContainer container, IAtom atom)
+	{
+		if (this.getController2DModel().getAutoUpdateImplicitHydrogens())
+		{
+			atom.setHydrogenCount(0);
+            try {
+                IAtomType type = matcher.findMatchingAtomType(
+                    container, atom
+                );
+                if (type != null &&
+                    type.getFormalNeighbourCount() != null) {
+                    atom.setHydrogenCount(
+                        type.getFormalNeighbourCount() -
+                        container.getConnectedAtomsCount(atom)
+                    );
+                }
+            } catch ( CDKException e ) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+		}
+	}
+
+	public void makeAllExplicitImplicit() {
+		IAtomContainer undoRedoContainer = chemModel.getBuilder().newAtomContainer();
+		List<IAtomContainer> containers = ChemModelManipulator.getAllAtomContainers(chemModel);
+		for(int i=0;i<containers.size();i++){
+			IAtomContainer removeatoms = chemModel.getBuilder().newAtomContainer();
+			for(IAtom atom : containers.get(i).atoms()){
+				if(atom.getSymbol().equals("H")){
+					removeatoms.addAtom(atom);
+					removeatoms.addBond(containers.get(i).getConnectedBondsList(atom).get(0));
+					containers.get(i).getConnectedAtomsList(atom).get(0).setHydrogenCount(containers.get(i).getConnectedAtomsList(atom).get(0).getHydrogenCount()+1);
+				}
+			}
+			containers.get(i).remove(removeatoms);
+			undoRedoContainer.add(removeatoms);
+		}
+	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
+		    IUndoRedoable undoredo = getUndoRedoFactory().getRemoveAtomsAndBondsEdit(chemModel, undoRedoContainer, "Make explicit Hs implicit",this);
+		    getUndoRedoHandler().postEdit(undoredo);
+	    }
+		structureChanged();
+	}
+
+	public void makeAllImplicitExplicit() {
+		IAtomContainer undoRedoContainer = chemModel.getBuilder().newAtomContainer();
+		List<IAtomContainer> containers = ChemModelManipulator.getAllAtomContainers(chemModel);
+		for(int i=0;i<containers.size();i++){
+			for(IAtom atom : containers.get(i).atoms()){
+				int hcount=atom.getHydrogenCount();
+				for(int k=0;k<hcount;k++){
+					IAtom newAtom = this.addAtomWithoutUndo("H", atom);
+			        IAtomContainer atomContainer = 
+			            ChemModelManipulator.getRelevantAtomContainer(
+			                    getIChemModel(), newAtom);
+			        IBond newBond = atomContainer.getBond(atom, newAtom);
+			        undoRedoContainer.addAtom(newAtom);
+			        undoRedoContainer.addBond(newBond);
+				}				
+			}
+		}
+	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
+		    IUndoRedoable undoredo = getUndoRedoFactory().getAddAtomsAndBondsEdit(chemModel, undoRedoContainer, "Make implicit Hs explicit", this);
+		    getUndoRedoHandler().postEdit(undoredo);
+	    }
+		structureChanged();
+	}
+
+	public void setHydrogenCount(IAtom atom, int intValue) {
+	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
+	    	HashMap<IAtom, int[]> atomhydrogenmap = new HashMap<IAtom, int[]>();
+	    	atomhydrogenmap.put(atom, new int[]{intValue, atom.getHydrogenCount()});
+		    IUndoRedoable undoredo = getUndoRedoFactory().getChangeHydrogenCountEdit(atomhydrogenmap, "Change hydrogen count to "+intValue);
+		    getUndoRedoHandler().postEdit(undoredo);
+	    }
+		atom.setHydrogenCount(intValue);	
+		structureChanged();
+	}
 }

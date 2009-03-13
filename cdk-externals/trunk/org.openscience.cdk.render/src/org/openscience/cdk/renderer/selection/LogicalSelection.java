@@ -1,9 +1,15 @@
 package org.openscience.cdk.renderer.selection;
 
 import java.awt.Color;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
@@ -67,4 +73,23 @@ public class LogicalSelection implements IChemObjectSelection {
         this.chemModel.setMoleculeSet(molSet);
     }
 
+    public boolean contains( IChemObject obj ) {
+        if(type == Type.NONE)
+            return false;
+        
+        for(IAtomContainer other:
+                    ChemModelManipulator.getAllAtomContainers( chemModel )) {
+            if(other == obj) return true;
+            
+            if(obj instanceof IBond)
+                if( other.contains( (IBond) obj)) return true;
+            if(obj instanceof IAtom)
+                if( other.contains( (IAtom) obj)) return true;
+        }
+        return false;
+    }
+    
+    public <E extends IChemObject> Collection<E> elements(Class<E> clazz){
+        throw new UnsupportedOperationException();
+    }
 }

@@ -27,6 +27,7 @@ import javax.vecmath.Point2d;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IPseudoAtom;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.RenderingParameters.AtomShape;
 import org.openscience.cdk.renderer.elements.AtomSymbolElement;
@@ -75,11 +76,11 @@ public class BasicAtomGenerator implements IGenerator {
 		    return this.generateCompactElement(atom, model);
 		}
 
-		int alignment = 0;
+		int alignment=0;
 		if(isCarbon( atom ))
-		    alignment = GeometryTools.getBestAlignmentForLabel(ac, atom);
-		else
-		    alignment = GeometryTools.getBestAlignmentForLabelXY(ac, atom);
+        alignment = GeometryTools.getBestAlignmentForLabel(ac, atom);
+    else
+        alignment = GeometryTools.getBestAlignmentForLabelXY(ac, atom);
 
 		return generateElements(atom, alignment, model);
 	}
@@ -100,10 +101,16 @@ public class BasicAtomGenerator implements IGenerator {
 
 	public IRenderingElement generateElements(
 	        IAtom atom, int alignment, RendererModel model) {
+	    String text;
+	    if (atom instanceof IPseudoAtom) {
+	        text = ((IPseudoAtom) atom).getLabel();
+	    } else {
+	        text = atom.getSymbol();
+	    }
 		return new AtomSymbolElement(
 				atom.getPoint2d().x,
 				atom.getPoint2d().y,
-				atom.getSymbol(),
+				text,
 				atom.getFormalCharge(),
 				atom.getHydrogenCount(),
 				alignment, getColorForAtom(atom, model));

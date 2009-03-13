@@ -2,6 +2,7 @@
  *
  * Copyright (C) 2007  Niels Out <nielsout@users.sf.net>
  * Copyright (C) 2008  Stefan Kuhn (undo redo)
+ * Copyright (C) 2008  Arvid Berg <goglepox@users.sf.net>
  *
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -25,10 +26,14 @@
  */
 package org.openscience.cdk.controller;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.vecmath.Point2d;
 
-import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.renderer.selection.MultiSelection;
 
 /**
  * Changes (Increases or Decreases) Formal Charge of an atom
@@ -47,17 +52,19 @@ public class ChangeFormalChargeModule extends ControllerModuleAdapter {
 	}
 
 	public void mouseClickedDown(Point2d worldCoord) {
-		IAtom atom = chemModelRelay.getClosestAtom(worldCoord);
-		double dA = super.distanceToAtom(atom, worldCoord);
-		double dH = super.getHighlightDistance();
-		if (dA < dH) {
-			Integer newCharge = new Integer(change);
-			if (atom.getFormalCharge() != null) {
-				newCharge += atom.getFormalCharge();
-			}
-			chemModelRelay.setCharge(atom,newCharge);
-			chemModelRelay.updateView();
-		} 
+	    
+	    IAtomContainer selectedAC = getSelectedAtomContainer( worldCoord );
+	    if(selectedAC == null) return;
+	    Set<IAtom> newSelection = new HashSet<IAtom>();
+	    for(IAtom atom:selectedAC.atoms()) {
+	        newSelection.add( atom );
+	        int newCharge = change;
+	        if( atom.getFormalCharge() != null)
+	            newCharge += atom.getFormalCharge();
+	        chemModelRelay.setCharge( atom, newCharge );
+	    }
+	    setSelection( new MultiSelection<IAtom>(newSelection) );
+	    chemModelRelay.updateView();// FIXME do you really need to call it here?
 	}
 
 	public void setChemModelRelay(IChemModelRelay relay) {

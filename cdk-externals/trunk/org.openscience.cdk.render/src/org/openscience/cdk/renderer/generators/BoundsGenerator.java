@@ -70,7 +70,7 @@ public class BoundsGenerator {
                                     model.getBoundsColor());
     }
     
-    private Rectangle2D calculateBounds(IAtomContainer ac) {
+    public static Rectangle2D calculateBounds(IAtomContainer ac) {
         // this is essential, otherwise a rectangle
         // of (+INF, -INF, +INF, -INF) is returned!
         if (ac.getAtomCount() == 0) {

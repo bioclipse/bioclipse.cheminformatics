@@ -25,6 +25,7 @@ package org.openscience.cdk.controller.undoredo;
 
 import java.util.Iterator;
 
+import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -49,9 +50,11 @@ public class RemoveAtomsAndBondsEdit implements IUndoRedoable {
 	private IChemModel chemModel;
 
 	private IAtomContainer container;
+	
+	private IChemModelRelay chemModelRelay=null;
 
 	public RemoveAtomsAndBondsEdit(IChemModel chemModel,
-			IAtomContainer undoRedoContainer, String type) {
+			IAtomContainer undoRedoContainer, String type, IChemModelRelay chemModelRelay) {
 		this.chemModel = chemModel;
 		this.undoRedoContainer = undoRedoContainer;
 		this.container = chemModel.getBuilder().newAtomContainer();
@@ -60,6 +63,7 @@ public class RemoveAtomsAndBondsEdit implements IUndoRedoable {
     		container.add((IAtomContainer)containers.next());
     	}
 		this.type = type;
+		this.chemModelRelay=chemModelRelay;
 	}
 
 	public void redo() {
@@ -71,6 +75,7 @@ public class RemoveAtomsAndBondsEdit implements IUndoRedoable {
 			IAtom atom = undoRedoContainer.getAtom(i);
 			container.removeAtom(atom);
 		}
+		chemModelRelay.updateAtoms(container, container.atoms());
 		IMolecule molecule = container.getBuilder().newMolecule(container);
 		IMoleculeSet moleculeSet = ConnectivityChecker
 				.partitionIntoMolecules(molecule);
@@ -86,6 +91,7 @@ public class RemoveAtomsAndBondsEdit implements IUndoRedoable {
 			IAtom atom = undoRedoContainer.getAtom(i);
 			container.addAtom(atom);
 		}
+		chemModelRelay.updateAtoms(container, container.atoms());
 		IMolecule molecule = container.getBuilder().newMolecule(container);
 		IMoleculeSet moleculeSet = ConnectivityChecker
 				.partitionIntoMolecules(molecule);

@@ -23,6 +23,12 @@
  */
 package org.openscience.cdk.controller.undoredo;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import javax.vecmath.Point2d;
+
 import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.interfaces.IAtom;
 
@@ -33,19 +39,13 @@ import org.openscience.cdk.interfaces.IAtom;
  * @cdk.module control
  * @cdk.svnrev  $Revision: 10979 $
  */
-public class ChangeChargeEdit implements IUndoRedoable {
+public class ChangeHydrogenCountEdit implements IUndoRedoable {
 
     private static final long serialVersionUID = 1237756549190508501L;
 
-    private IAtom atom;
+    private Map<IAtom, int[]> atomHydrogenCountsMap;
 
-	private int formerCharge;
-
-	private int newCharge;
-	
-	private String type;
-	
-	private IChemModelRelay chemModelRelay=null;
+    private String type;
 
 	/**
 	 * @param atomInRange
@@ -55,24 +55,32 @@ public class ChangeChargeEdit implements IUndoRedoable {
 	 * @param newCharge
 	 *            The new charge of this atom
 	 */
-	public ChangeChargeEdit(IAtom atomInRange, int formerCharge,
-			int newCharge, String type, IChemModelRelay chemModelRelay) {
-		this.atom = atomInRange;
-		this.formerCharge = formerCharge;
-		this.newCharge = newCharge;
+	public ChangeHydrogenCountEdit(Map<IAtom, int[]> atomHydrogenCountsMap, String type) {
+		this.atomHydrogenCountsMap = atomHydrogenCountsMap;
 		this.type = type;
-		this.chemModelRelay=chemModelRelay;
 	}
 
-	public void redo() {
-		this.atom.setFormalCharge(newCharge);
-		chemModelRelay.updateAtom(atom);
-	}
+    public void redo() {
+        Set<IAtom> keys = atomHydrogenCountsMap.keySet();
+        Iterator<IAtom> it = keys.iterator();
+        while (it.hasNext()) {
+            IAtom atom = it.next();
+            int[] counts = atomHydrogenCountsMap.get(atom);
+            atom.setNotification(false);
+            atom.setHydrogenCount(counts[0]);
+            atom.setNotification(true);
+        }
+    }
 
-	public void undo() {
-		this.atom.setFormalCharge(formerCharge);
-		chemModelRelay.updateAtom(atom);
-	}
+    public void undo() {
+        Set<IAtom> keys = atomHydrogenCountsMap.keySet();
+        Iterator<IAtom> it = keys.iterator();
+        while (it.hasNext()) {
+            IAtom atom = (IAtom) it.next();
+            int[] counts = atomHydrogenCountsMap.get(atom);
+            atom.setHydrogenCount(counts[1]);
+        }
+    }
 
 	public boolean canRedo() {
 		return true;

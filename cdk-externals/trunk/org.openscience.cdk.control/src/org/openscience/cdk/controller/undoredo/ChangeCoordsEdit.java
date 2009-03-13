@@ -74,7 +74,7 @@ public class ChangeCoordsEdit implements IUndoRedoable {
         Iterator<IAtom> it = keys.iterator();
         while (it.hasNext()) {
             IAtom atom = (IAtom) it.next();
-            Point2d[] coords = (Point2d[]) atomCoordsMap.get(atom);
+            Point2d[] coords = atomCoordsMap.get(atom);
             atom.setPoint2d(coords[1]);
         }
     }

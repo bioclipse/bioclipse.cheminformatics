@@ -2,6 +2,7 @@
  *
  * Copyright (C) 2007  Niels Out <nielsout@users.sf.net>
  * Copyright (C) 2008  Stefan Kuhn (undo/redo)
+ * Copyright (C) 2009  Arvid Berg <goglepox@users.sf.net>
  *
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -25,15 +26,12 @@
  */
 package org.openscience.cdk.controller;
 
-import java.util.Iterator;
-
 import javax.vecmath.Point2d;
 
-import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
+import org.openscience.cdk.renderer.selection.AbstractSelection;
 
 
 /**
@@ -50,27 +48,18 @@ public class RemoveModule extends ControllerModuleAdapter {
 	}
 	
 	public void mouseClickedDown(Point2d worldCoordinate) {
-	    IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoordinate);
-		IBond closestBond = chemModelRelay.getClosestBond(worldCoordinate);
-		
-		double dH = super.getHighlightDistance();
-        double dA = super.distanceToAtom(closestAtom, worldCoordinate);
-        double dB = super.distanceToBond(closestBond, worldCoordinate);
-		
-		if (super.noSelection(dA, dB, dH)) {
-		    return;
-		} else if (super.isAtomOnlyInHighlightDistance(dA, dB, dH)) {
-		    chemModelRelay.removeAtom(closestAtom);
-		} else if (super.isBondOnlyInHighlightDistance(dA, dB, dH)) {
-		    chemModelRelay.removeBond(closestBond);
-		} else {
-            if (dA <= dB) {
-            	chemModelRelay.removeAtom(closestAtom);               
-            } else {
-                chemModelRelay.removeBond(closestBond);
-            }
-		}
-			
+	    
+	    IAtomContainer selectedAC = getSelectedAtomContainer( worldCoordinate );
+	    if(selectedAC == null)
+	        return;
+	    // FIXME do a bulk remove
+	    for(IAtom atom:selectedAC.atoms()) {
+	        chemModelRelay.removeAtom( atom );
+	    }
+	    for(IBond bond:selectedAC.bonds()) {
+          chemModelRelay.removeBond( bond );
+      }
+			setSelection( AbstractSelection.EMPTY_SELECTION );
 	}
 	
 	public String getDrawModeString() {

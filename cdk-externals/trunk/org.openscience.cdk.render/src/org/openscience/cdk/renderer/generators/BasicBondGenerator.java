@@ -90,8 +90,18 @@ public class BasicBondGenerator implements IGenerator {
 		}
 	}
 
+	/**
+	 * Determine the color of a bond, returning either the default color,
+	 * the override color or whatever is in the color hash for that bond.
+	 * 
+	 * @param bond the bond we are generating an element for
+	 * @param model the rendering model
+	 * @return the color to paint the bond
+	 */
 	public Color getColorForBond(IBond bond, RendererModel model) {
-	    if (this.overrideColor != null) return overrideColor;
+	    if (this.overrideColor != null) {
+	        return overrideColor;
+	    }
 	    
 	    Color color = model.getColorHash().get(bond);
 	    if (color == null) {

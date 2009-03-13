@@ -28,7 +28,10 @@ import javax.vecmath.Point2d;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IRing;
+import org.openscience.cdk.renderer.selection.AbstractSelection;
+import org.openscience.cdk.renderer.selection.SingleSelection;
 
 /**
  * Adds an atom on the given location on mouseclick
@@ -84,20 +87,23 @@ public class AddRingModule extends ControllerModuleAdapter {
         IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoord);
         IBond closestBond = chemModelRelay.getClosestBond(worldCoord);
         
-        double dH = getHighlightDistance();
-        double dA = super.distanceToAtom(closestAtom, worldCoord);
-        double dB = super.distanceToBond(closestBond, worldCoord);
-        
-        if (noSelection(dA, dB, dH)) {
+        IChemObject singleSelection = getHighlighted( worldCoord,
+                                                      closestAtom,closestBond );
+      
+        if(singleSelection==null) {
             this.addRingToEmptyCanvas(worldCoord);
-        } else if (isAtomOnlyInHighlightDistance(dA, dB, dH) || dA < dB) {
-        	this.addRingToAtom(closestAtom);
-        } else if (isBondOnlyInHighlightDistance(dA, dB, dH) || dB < dA) {
-        	this.addRingToBond(closestBond);
-        } else {
-            // the closest bond and closest atom are equidistant
-        	this.addRingToAtom(closestAtom);
-        }
+        }else
+            if( singleSelection instanceof IAtom) {
+                this.addRingToAtom((IAtom)singleSelection);
+            }else
+                if(singleSelection instanceof IBond) {
+                    this.addRingToBond((IBond)singleSelection);
+                }
+        if(singleSelection == null)
+            setSelection( AbstractSelection.EMPTY_SELECTION );
+        else
+            setSelection( new SingleSelection<IChemObject>(singleSelection) );
+        
         chemModelRelay.updateView();
     }
 
