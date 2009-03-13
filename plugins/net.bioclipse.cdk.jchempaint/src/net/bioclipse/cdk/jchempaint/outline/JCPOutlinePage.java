@@ -11,9 +11,11 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.outline;
 
+import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.viewers.IElementComparer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -56,6 +58,27 @@ public class JCPOutlinePage extends ContentOutlinePage
         if (editor.getControllerHub()==null) return;
 
         chemModel= editor.getControllerHub().getIChemModel();
+
+        treeViewer.setComparer( new IElementComparer() {
+
+            public boolean equals( Object a, Object b ) {
+
+                if(a instanceof CDKChemObject && b instanceof CDKChemObject) {
+                    return ((CDKChemObject)a).getChemobj().equals(
+                            ((CDKChemObject)b).getChemobj());
+                }
+                return a.equals( b );
+            }
+
+            public int hashCode( Object element ) {
+
+                if(element instanceof CDKChemObject) {
+                    return ((CDKChemObject)element).getChemobj().hashCode();
+                }
+                return element.hashCode();
+            }
+
+        });
 
         treeViewer.setInput(chemModel);
         treeViewer.expandToLevel(2);

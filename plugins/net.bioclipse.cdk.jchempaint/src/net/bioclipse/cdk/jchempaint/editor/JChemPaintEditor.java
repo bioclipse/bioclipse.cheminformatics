@@ -317,16 +317,16 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
             if(bcSelection.size()==0) { // do nothing jcpSelection already empty
             }else 
                 if(bcSelection.size()==1) {
-                    if(bcSelection.getFirstElement() instanceof IChemObject)
+                    if(bcSelection.getFirstElement() instanceof CDKChemObject)
                         jcpSelection = new SingleSelection<IChemObject>(
-                                (IChemObject)bcSelection.getFirstElement());
+                   ((CDKChemObject)bcSelection.getFirstElement()).getChemobj());
             }else {
 
                 Set<IChemObject> chemSelection = new HashSet<IChemObject>();
                 for(Iterator<?> iter = bcSelection.iterator();iter.hasNext();) {
                     Object o = iter.next();
-                    if(o instanceof IChemObject) {
-                        chemSelection.add( (IChemObject) o );
+                    if(o instanceof CDKChemObject) {
+                        chemSelection.add( ((CDKChemObject) o).getChemobj() );
                     }
                 }
                 jcpSelection = new MultiSelection<IChemObject>(chemSelection);

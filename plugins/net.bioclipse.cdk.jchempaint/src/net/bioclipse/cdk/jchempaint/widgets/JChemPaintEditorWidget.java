@@ -184,6 +184,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
                     public void coordinatesChanged() {
                         setDirty(true);
+                        setSelection(getSelection());
+                        //TODO update selection => properties changed
                     }
 
                     public void selectionChanged() {
@@ -472,14 +474,14 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         List<CDKChemObject> selection = new LinkedList<CDKChemObject>();
 
-        IAtom highlightedAtom = rendererModel.getHighlightedAtom();
-        IBond highlightedBond = rendererModel.getHighlightedBond();
-
-        if (highlightedBond != null)
-            selection.add(createCDKChemObject(highlightedBond));
-
-        if (highlightedAtom != null)
-            selection.add(createCDKChemObject(highlightedAtom));
+//        IAtom highlightedAtom = rendererModel.getHighlightedAtom();
+//        IBond highlightedBond = rendererModel.getHighlightedBond();
+//
+//        if (highlightedBond != null)
+//            selection.add(createCDKChemObject(highlightedBond));
+//
+//        if (highlightedAtom != null)
+//            selection.add(createCDKChemObject(highlightedAtom));
 
         IChemObjectSelection sel = rendererModel.getSelection();
         IAtomContainer modelSelection = sel.getConnectedAtomContainer();
@@ -494,7 +496,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             }
         }
 
-        if (selection.size() == 0 && cdkMolecule != null) {
+        if (selection.isEmpty() && cdkMolecule != null) {
             return new StructuredSelection(cdkMolecule);
         }
 
