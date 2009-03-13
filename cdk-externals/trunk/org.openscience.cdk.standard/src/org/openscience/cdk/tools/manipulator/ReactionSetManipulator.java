@@ -246,4 +246,25 @@ public class ReactionSetManipulator {
         return list;
     }
     
+    /**
+     * Gets a reaction from a ReactionSet by ID. If several exist,
+     * only the first one will be returned.
+     *
+     * @param reactionSet The reactionSet to search in
+     * @param id The id to search for.
+     * @return The Reaction or null;
+     */
+    @TestMethod("testGetRelevantReaction_IReactionSet_String")
+    public static IReaction getRelevantReaction(IReactionSet reactionSet, String id)
+    {
+        Iterable<IReaction> reactionIter = reactionSet.reactions();
+        for (IReaction reaction : reactionIter)
+        {
+            if (reaction.getID()!=null && reaction.getID().equals(id))
+            {
+                return reaction;
+            }
+        }
+        return null;
+    }
 }

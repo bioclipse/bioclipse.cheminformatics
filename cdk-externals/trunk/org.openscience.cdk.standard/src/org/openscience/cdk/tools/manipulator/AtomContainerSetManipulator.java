@@ -27,15 +27,20 @@
  *  */
 package org.openscience.cdk.tools.manipulator;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.graph.ConnectivityChecker;
-import org.openscience.cdk.interfaces.*;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtomContainerSet;
+import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemObject;
+import org.openscience.cdk.interfaces.IElectronContainer;
+import org.openscience.cdk.interfaces.IMoleculeSet;
 
 /**
  * @cdk.module standard
@@ -235,5 +240,22 @@ public class AtomContainerSetManipulator {
             atomContainerSet.addAtomContainer((IAtomContainer) anAtomContainerList);
     }
     
+    /**
+     * Tells if an AtomContainerSet contains at least one AtomContainer with the
+     * same ID as atomContainer. Note this checks getID() for equality, not pointers.
+     *
+     * @param relevantContainer The IAtomContainer to look for
+     * @param atomContainerSet The collection of IAtomContainer objects
+     */
+    @TestMethod("testContainsByID_IAtomContainerSet_IAtomContainer")
+    public static boolean containsByID(IAtomContainerSet atomContainerSet,
+            IAtomContainer relevantContainer) {
+        for(IAtomContainer ac : atomContainerSet.atomContainers()){
+            if(ac.getID()!=null && ac.getID().equals(relevantContainer.getID()))
+                return true;
+        }
+        return false;
+    }
+
 }
 
