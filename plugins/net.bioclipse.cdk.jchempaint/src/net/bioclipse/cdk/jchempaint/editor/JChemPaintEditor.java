@@ -11,7 +11,9 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.editor;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
@@ -60,7 +62,11 @@ import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
+import org.openscience.cdk.renderer.selection.AbstractSelection;
+import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.selection.LogicalSelection;
+import org.openscience.cdk.renderer.selection.MultiSelection;
+import org.openscience.cdk.renderer.selection.SingleSelection;
 import org.openscience.cdk.renderer.selection.LogicalSelection.Type;
 
 public class JChemPaintEditor extends EditorPart implements ISelectionListener {
@@ -303,36 +309,30 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
         if ( part != null && part.equals( this ) )
             return;
+        
         if ( selection instanceof IStructuredSelection ) {
+            IStructuredSelection bcSelection = 
+                (IStructuredSelection)selection;
+            IChemObjectSelection jcpSelection = AbstractSelection.EMPTY_SELECTION;
+            if(bcSelection.size()==0) { // do nothing jcpSelection already empty
+            }else 
+                if(bcSelection.size()==1) {
+                    if(bcSelection.getFirstElement() instanceof IChemObject)
+                        jcpSelection = new SingleSelection<IChemObject>(
+                                (IChemObject)bcSelection.getFirstElement());
+            }else {
 
-            IAtomContainer container = null;
-
-            for ( Iterator<?> iter = ((IStructuredSelection) selection)
-                    .iterator(); iter.hasNext(); ) {
-                Object c = iter.next();
-                if ( !(c instanceof CDKChemObject) ) {
-                    continue;
+                Set<IChemObject> chemSelection = new HashSet<IChemObject>();
+                for(Iterator<?> iter = bcSelection.iterator();iter.hasNext();) {
+                    Object o = iter.next();
+                    if(o instanceof IChemObject) {
+                        chemSelection.add( (IChemObject) o );
+                    }
                 }
-
-                IChemObject o = ((CDKChemObject) c).getChemobj();
-                if ( container == null )
-                    container = o.getBuilder().newAtomContainer();
-                if ( o instanceof IAtom ) {
-                    container.addAtom( (IAtom) o );
-                } else if ( o instanceof IBond ) {
-                    container.addBond( (IBond) o );
-                } else if (o instanceof IAtomContainer) {
-                    container.add( (IAtomContainer )o);
-                }
+                jcpSelection = new MultiSelection<IChemObject>(chemSelection);
             }
 
-            LogicalSelection sel = new LogicalSelection( Type.NONE );
-            if ( container != null ) {
-                sel.select( container );
-                widget.getRenderer2DModel().setSelection( sel );
-            } else {
-                widget.getRenderer2DModel().setSelection( sel );
-            }
+            widget.getRenderer2DModel().setSelection( jcpSelection );
             widget.redraw();
         }
     }
@@ -343,7 +343,6 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         // getSite().registerContextMenu(
         // "net.bioclipse.cdk.ui.editors.jchempaint.menu",
         // menuMgr, widget);
-
         getSite().setSelectionProvider( null );
         getSite().getPage().removeSelectionListener( this );
 
