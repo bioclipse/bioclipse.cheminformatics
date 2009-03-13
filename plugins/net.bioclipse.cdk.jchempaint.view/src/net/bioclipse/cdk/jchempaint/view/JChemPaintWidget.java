@@ -70,11 +70,13 @@ public class JChemPaintWidget extends Canvas {
 
         rendererModel = renderer.getRenderer2DModel();
 
-        rendererModel.setFitToScreen( true );
-        rendererModel.setShowImplicitHydrogens( true );
-        rendererModel.setShowEndCarbons( true );
-        rendererModel.setShowExplicitHydrogens( true );
-        rendererModel.setHighlightShapeFilled( true );
+//        rendererModel.setFitToScreen( true );
+//        rendererModel.setShowImplicitHydrogens( true );
+//        rendererModel.setShowEndCarbons( true );
+//        rendererModel.setShowExplicitHydrogens( true );
+//        rendererModel.setHighlightShapeFilled( true );
+//        rendererModel.setShowAromaticity( true );
+//        rendererModel.setShowAromaticityCDKStyle( false );
         setupPaintListener();
     }
 
