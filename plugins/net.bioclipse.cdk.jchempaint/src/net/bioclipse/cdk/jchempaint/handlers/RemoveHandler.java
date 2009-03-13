@@ -14,8 +14,6 @@ package net.bioclipse.cdk.jchempaint.handlers;
 import java.util.Collection;
 import java.util.Iterator;
 
-import net.bioclipse.core.business.BioclipseException;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -25,8 +23,7 @@ import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.renderer.selection.LogicalSelection;
-import org.openscience.cdk.renderer.selection.LogicalSelection.Type;
+import org.openscience.cdk.renderer.selection.AbstractSelection;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 public class RemoveHandler extends AbstractJChemPaintHandler {
@@ -35,12 +32,16 @@ public class RemoveHandler extends AbstractJChemPaintHandler {
 
         IChemModelRelay relay = getChemModelRelay( event );
         if ( relay != null ) {
+
             Collection<?> selection = getSelection( event );
+
             IAtomContainer removedStuff=relay.getIChemModel().getBuilder().newAtomContainer();
+
             for(Object o:selection) {
                 if( o instanceof IAdaptable) {
                     IAtom atom = (IAtom)((IAdaptable)o)
                                     .getAdapter( IAtom.class );
+
                     if(atom != null && ChemModelManipulator.getRelevantAtomContainer( relay.getIChemModel(), atom )!=null) {
                         Iterator<IBond> it = ChemModelManipulator.getRelevantAtomContainer( relay.getIChemModel(), atom ).getConnectedBondsList( atom ).iterator();
                         while(it.hasNext())
@@ -68,7 +69,8 @@ public class RemoveHandler extends AbstractJChemPaintHandler {
             }
             relay.getRenderer()
             .getRenderer2DModel()
-            .setSelection(new LogicalSelection(Type.NONE));
+            .setSelection(AbstractSelection.EMPTY_SELECTION);
+
             if(relay.getUndoRedoFactory()!=null && relay.getUndoRedoHandler()!=null){
                 IUndoRedoable undoredo = relay.getUndoRedoFactory().getRemoveAtomsAndBondsEdit( relay.getIChemModel(), removedStuff, "Delete");
                 relay.getUndoRedoHandler().postEdit(undoredo);
