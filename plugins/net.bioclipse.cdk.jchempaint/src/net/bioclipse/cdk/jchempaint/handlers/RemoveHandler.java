@@ -72,7 +72,7 @@ public class RemoveHandler extends AbstractJChemPaintHandler {
             .setSelection(AbstractSelection.EMPTY_SELECTION);
 
             if(relay.getUndoRedoFactory()!=null && relay.getUndoRedoHandler()!=null){
-                IUndoRedoable undoredo = relay.getUndoRedoFactory().getRemoveAtomsAndBondsEdit( relay.getIChemModel(), removedStuff, "Delete");
+                IUndoRedoable undoredo = relay.getUndoRedoFactory().getRemoveAtomsAndBondsEdit( relay.getIChemModel(), removedStuff, "Delete",relay);
                 relay.getUndoRedoHandler().postEdit(undoredo);
             }        }
         return null;
