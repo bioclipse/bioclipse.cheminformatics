@@ -349,7 +349,7 @@ public class MoleculeTableContentProvider implements
 
                 return (ret!=null?new CDKMolecule(ret):null);
             } catch ( Exception e ) {
-               logger.debug( "Failed to read molecule for SDFile." );
+               logger.warn("Failed to read molecule for SDFile.", e);
                return null;
             }
         }
