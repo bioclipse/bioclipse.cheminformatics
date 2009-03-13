@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
+import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.controller.IControllerModel;
 import org.openscience.cdk.controller.undoredo.AddAtomsAndBondsEdit;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -32,7 +33,7 @@ public class SWTAddAtomsAndBondsEdit extends AddAtomsAndBondsEdit
     public SWTAddAtomsAndBondsEdit(IChemModel chemModel,
                                    IAtomContainer undoRedoContainer, 
                                    String type, 
-                                   IControllerModel c2dm,
+                                   IChemModelRelay c2dm,
                                    IUndoContext context) {
         super(chemModel, undoRedoContainer, type, c2dm);
         this.context = context;

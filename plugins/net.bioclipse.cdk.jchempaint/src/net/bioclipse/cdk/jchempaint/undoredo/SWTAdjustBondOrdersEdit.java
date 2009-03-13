@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.controller.undoredo.AdjustBondOrdersEdit;
 import org.openscience.cdk.interfaces.IBond;
 
@@ -33,9 +34,9 @@ public class SWTAdjustBondOrdersEdit extends AdjustBondOrdersEdit implements
 
     public SWTAdjustBondOrdersEdit(Map<IBond, IBond.Order[]> changedBonds,
             Map<IBond, Integer[]> changedBondsStereo, String type,
-            IUndoContext context) {
+            IUndoContext context, IChemModelRelay relay) {
 
-        super( changedBonds, changedBondsStereo, type );
+        super( changedBonds, changedBondsStereo, type, relay );
         this.context = context;
     }
 

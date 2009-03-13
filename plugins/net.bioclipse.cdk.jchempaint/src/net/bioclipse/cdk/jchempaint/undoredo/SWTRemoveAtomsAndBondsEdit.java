@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.controller.undoredo.RemoveAtomsAndBondsEdit;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
@@ -31,9 +32,9 @@ public class SWTRemoveAtomsAndBondsEdit extends RemoveAtomsAndBondsEdit
     private IUndoContext context;
 
     public SWTRemoveAtomsAndBondsEdit(IChemModel chemModel,
-            IAtomContainer undoRedoContainer, String type, IUndoContext context) {
+            IAtomContainer undoRedoContainer, String type, IUndoContext context, IChemModelRelay relay) {
 
-        super( chemModel, undoRedoContainer, type );
+        super( chemModel, undoRedoContainer, type , relay);
         this.context = context;
     }
 

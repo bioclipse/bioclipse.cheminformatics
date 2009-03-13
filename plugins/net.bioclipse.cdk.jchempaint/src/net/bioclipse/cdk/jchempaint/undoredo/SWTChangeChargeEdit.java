@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.controller.undoredo.ChangeChargeEdit;
 import org.openscience.cdk.interfaces.IAtom;
 
@@ -30,9 +31,9 @@ public class SWTChangeChargeEdit extends ChangeChargeEdit implements
     private IUndoContext context;
 
     public SWTChangeChargeEdit(IAtom atomInRange, int formerCharge,
-            int newCharge, String type, IUndoContext context) {
+            int newCharge, String type, IUndoContext context, IChemModelRelay relay) {
 
-        super( atomInRange, formerCharge, newCharge, type );
+        super( atomInRange, formerCharge, newCharge, type ,relay);
         this.context = context;
     }
 

@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.controller.undoredo.ChangeAtomSymbolEdit;
 import org.openscience.cdk.interfaces.IAtom;
 
@@ -33,9 +34,9 @@ public class SWTChangeAtomSymbolEdit extends ChangeAtomSymbolEdit implements
     private IUndoContext context;
 
     public SWTChangeAtomSymbolEdit(IAtom atomInRange, String formerSymbol,
-            String symbol, String type, IUndoContext context) {
+            String symbol, String type, IUndoContext context,IChemModelRelay relay) {
 
-        super( atomInRange, formerSymbol, symbol, type );
+        super( atomInRange, formerSymbol, symbol, type ,relay);
         this.context = context;
     }
 

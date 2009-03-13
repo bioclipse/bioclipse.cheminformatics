@@ -11,12 +11,14 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.undoredo;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
 import org.eclipse.core.commands.operations.IUndoContext;
+import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.controller.IControllerModel;
 import org.openscience.cdk.controller.undoredo.IUndoRedoFactory;
 import org.openscience.cdk.controller.undoredo.IUndoRedoable;
@@ -38,25 +40,25 @@ public class SWTUndoRedoFactory implements IUndoRedoFactory {
     }
 
     public IUndoRedoable getAddAtomsAndBondsEdit(IChemModel chemModel,
-            IAtomContainer undoRedoContainer, String type, IControllerModel c2dm) {
+            IAtomContainer undoRedoContainer, String type, IChemModelRelay relay) {
         return new SWTAddAtomsAndBondsEdit(
-                chemModel, undoRedoContainer, type, c2dm, this.context);
+                chemModel, undoRedoContainer, type, relay, this.context);
     }
 
     public IUndoRedoable getAdjustBondOrdersEdit(
             Map<IBond, Order[]> changedBonds,
-            Map<IBond, Integer[]> changedBondsStereo, String type) {
-        return new SWTAdjustBondOrdersEdit(changedBonds, changedBondsStereo, type, this.context);
+            Map<IBond, Integer[]> changedBondsStereo, String type, IChemModelRelay relay) {
+        return new SWTAdjustBondOrdersEdit(changedBonds, changedBondsStereo, type, this.context,relay);
     }
 
     public IUndoRedoable getChangeAtomSymbolEdit(IAtom atom,
-            String formerSymbol, String symbol, String type) {
-        return new SWTChangeAtomSymbolEdit(atom, formerSymbol, symbol, type, this.context);
+            String formerSymbol, String symbol, String type, IChemModelRelay relay) {
+        return new SWTChangeAtomSymbolEdit(atom, formerSymbol, symbol, type, this.context,relay);
     }
 
     public IUndoRedoable getChangeChargeEdit(IAtom atomInRange,
-            int formerCharge, int newCharge, String type) {
-        return new SWTChangeChargeEdit(atomInRange, formerCharge, newCharge, type, this.context);
+            int formerCharge, int newCharge, String type, IChemModelRelay relay) {
+        return new SWTChangeChargeEdit(atomInRange, formerCharge, newCharge, type, this.context,relay);
     }
 
     public IUndoRedoable getMoveAtomEdit(IAtomContainer undoRedoContainer,
@@ -65,8 +67,8 @@ public class SWTUndoRedoFactory implements IUndoRedoFactory {
     }
 
     public IUndoRedoable getRemoveAtomsAndBondsEdit(IChemModel chemModel,
-            IAtomContainer undoRedoContainer, String type) {
-        return new SWTRemoveAtomsAndBondsEdit(chemModel, undoRedoContainer, type, this.context);
+            IAtomContainer undoRedoContainer, String type, IChemModelRelay relay) {
+        return new SWTRemoveAtomsAndBondsEdit(chemModel, undoRedoContainer, type, this.context,relay);
     }
 
     public IUndoRedoable getChangeCoordsEdit(Map<IAtom, Point2d[]> atomCoordsMap,
@@ -124,6 +126,28 @@ public class SWTUndoRedoFactory implements IUndoRedoFactory {
                                              IAtom oldAtom, IAtom newAtom,
                                              String type ) {
 
+        return null;
+    }
+
+    public IUndoRedoable getChangeHydrogenCountEdit(
+                                                     Map<IAtom, int[]> atomHydrogenCountsMap,
+                                                     String type ) {
+
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public IUndoRedoable getMergeMoleculesEdit(
+                                                IAtom deletedAtom,
+                                                IAtomContainer containerWhereAtomWasIn,
+                                                List<IBond> deletedBonds,
+                                                Map<IBond, Integer> bondsWithReplacedAtom,
+                                                Vector2d offset,
+                                                IAtom atomwhichwasmoved,
+                                                String type,
+                                                IChemModelRelay c2dm ) {
+
+        // TODO Auto-generated method stub
         return null;
     }
 
