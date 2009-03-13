@@ -684,7 +684,7 @@
        </command>
        <command
              commandId="net.bioclipse.cdk.jchempaint.manager.action"
-             label="Recalculate"
+             label="Clean Up"
              style="push">
           <parameter
                 name="jcp.manager.method"
