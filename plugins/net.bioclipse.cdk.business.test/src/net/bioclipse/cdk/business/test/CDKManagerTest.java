@@ -617,6 +617,14 @@ public class CDKManagerTest extends AbstractManagerTest {
         assertEquals(0, molecule.getAtomContainer().getAtom(0).getHydrogenCount());
     }
 
+    @Test public void testBug691() throws Exception {
+        ICDKMolecule molecule = cdk.fromSMILES("C(C1C(C(C(C(O1)O)O)O)O)O");
+        assertEquals(12, molecule.getAtomContainer().getAtomCount());
+        cdk.addExplicitHydrogens(molecule);
+        assertEquals(24, molecule.getAtomContainer().getAtomCount());
+        assertEquals(0, molecule.getAtomContainer().getAtom(0).getHydrogenCount());
+    }
+
     @Test public void testAddImplicitHydrogens() throws Exception {
         ICDKMolecule molecule = cdk.fromSMILES("C");
         assertEquals(1, molecule.getAtomContainer().getAtomCount());
