@@ -34,6 +34,7 @@ import javax.vecmath.Point3d;
 
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.CDKManagerHelper;
+import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdkdebug.business.ICDKDebugManager;
 import net.bioclipse.core.MockIFile;
@@ -767,5 +768,11 @@ public class CDKManagerTest extends AbstractManagerTest {
         Assert.assertTrue(formats.contains("CMLFormat"));
         Assert.assertTrue(formats.contains("MDLV2000Format"));
         Assert.assertTrue(formats.contains("SDFFormat"));
+    }
+
+    @Test public void testBug621() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("ClC(Cl)(Cl)Cl");
+        String mf = cdk.molecularFormula(mol);
+        Assert.assertFalse(mf.contains("H0"));
     }
 }
