@@ -1760,9 +1760,12 @@ public class CDKManager implements ICDKManager {
                                                         atom );
         }
 
-        mf.addIsotope( m.getAtomContainer().getBuilder()
-                                           .newIsotope( Elements.HYDROGEN),
-                       missingHCount );
+        if (missingHCount > 0) {
+            mf.addIsotope( m.getAtomContainer().getBuilder()
+                    .newIsotope( Elements.HYDROGEN),
+                    missingHCount
+            );
+        }
 
         return MolecularFormulaManipulator.getString( mf );
     }
