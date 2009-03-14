@@ -90,6 +90,14 @@
         </perspectiveShortcut>
      </perspectiveExtension>
   </extension>
-   
+
+  <extension point="org.eclipse.core.runtime.contentTypes">
+    <content-type base-type="org.eclipse.core.runtime.text"
+      id="net.bioclipse.contenttypes.smiles.singlemol"
+      name="SMILES value (Single Molecule)"
+      file-extensions="smiles,smi"
+      priority="normal">
+    </content-type>
+  </extension>
 
 </plugin>
