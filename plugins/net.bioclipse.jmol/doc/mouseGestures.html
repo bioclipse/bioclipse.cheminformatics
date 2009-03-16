@@ -1,0 +1,144 @@
+<html>
+<head>
+  <title>Mouse Gestures</title>
+  <link rel="stylesheet" href="../../PRODUCT_PLUGIN/narrow_book.css" type="text/css">
+</head>
+<body>
+<h2>Manual for manipulating the molecules using the mouse</h2>
+<p>Notes:
+</p>
+<ol><li> In the usual configuration, "main button" is the left button, and "secondary button" is the right button.
+</li><li> Reportedly, on single-button mice <b>Alt + drag</b> may be equivalent to <b>drag with middle button</b>.
+</li></ol>
+<hr /><br />
+<table border="1" cellspacing="0" width="100%">
+
+<tr bgcolor="yellow" align="center">
+<td></td>
+<td><b>main button</b></td>
+<td><b>middle button</b></td>
+<td><b>secondary button</b></td>
+</tr><tr bgcolor="yellow" align="center">
+<td></td>
+<td>(left)</td>
+<td>(middle)</td>
+<td>(right)</td>
+</tr><tr>
+<td colspan="4"></td>
+</tr><tr>
+<td><b>Open Jmol menu</b></td>
+<td>Ctrl + click<br />or click on 'Jmol' logo</td>
+<td></td>
+<td>click</td>
+</tr><tr>
+<td colspan="4"></td>
+</tr><tr>
+<td><b>Rotate around X,Y</b></td>
+<td>drag</td>
+<td></td>
+<td></td>
+</tr><tr>
+<td colspan="4"></td>
+</tr><tr>
+<td><b>Move along X,Y (= translate)</b></td>
+<td>Shift + double-click and drag</td>
+<td>double-click and drag</td>
+<td>Ctrl + drag</td>
+</tr><tr>
+<td></td>
+<td colspan="3" align="center"><i>works both when clicking on the molecule or away from it</i></td>
+</tr><tr>
+<td colspan="4"></td>
+</tr><tr>
+<td><b>Reset and centre</b></td>
+<td>Shift + double-click*</td>
+<td>double-click*</td>
+<td></td>
+</tr><tr>
+<td></td>
+<td colspan="3" align="center"><i>*only works if double-click is done away from the molecule</i></td>
+</tr><tr>
+<td colspan="4">
+</tr><tr>
+<td><b>Rotate around Z</b></td>
+<td>Shift + drag horizontally</td>
+<td>drag horizontally</td>
+<td>Shift + drag horizontally<br />(possibly fails in Mac's)</td>
+</tr><tr>
+<td colspan="4"></td>
+</tr><tr>
+<td><b>Zoom in / out</b></td>
+<td>Shift + drag vertically</td>
+<td>drag vertically</td>
+<td></td>
+</tr><tr>
+<td></td>
+<td colspan="3" align="center">or use mouse wheel</td>
+</tr><tr>
+<td colspan="4"></td>
+</tr><tr>
+<td></td>
+<td colspan="3" align="center"><i>Only work after a <tt>slab on</tt> command has been issued</i></td>
+</tr><tr>
+<td><b>Slab</b> (slab from front)</td>
+<td>Ctrl+Shift + drag (vertically) *</td>
+<td></td>
+<td></td>
+</tr><tr>
+<td><b>Depth</b> (slab from back)</td>
+<td>Ctrl+Shift + double-click and drag (vertically) *</td>
+<td></td>
+<td></td>
+</tr><tr>
+<td><b>Shift the slab</b> (change slab and depth maintaining constant thickness)</td>
+<td>Alt+Ctrl+Shift + drag (vertically) *</td>
+<td></td>
+<td></td>
+</tr><tr>
+<td></td>
+<td colspan="3" align="center"><i>*if this fails on a Mac, try pressing the mouse button first, then the Ctrl+Shift keys, then drag</i></td>
+</tr><tr>
+<td></td><td/>
+</tr></table>
+<p><br /><br />
+</p>
+<a name="How_to_select"></a><h2> How to select </h2>
+<ul><li> Use the appropriate picking command, e.g.
+</li></ul>
+<p><b>set picking group</b>
+</p>
+<dl><dd> to toggle selection for an entire amino acid by clicking on one of its atoms,
+</dd></dl>
+<ul><li> Click on an atom will toggle selection status.
+</li><li> Most useful while
+</li></ul>
+<p><b>set display selected</b>
+</p>
+<dl><dd> is set to monitor the selection status.
+</dd></dl>
+<p><br />
+</p>
+<a name="How_to_make_measurements"></a><h2> How to make measurements </h2>
+<ul><li> Distance (2 atoms):
+<ol><li> double-click on the starting atom
+</li><li> to fix a distance measurement, double-click on second atom
+</li></ol>
+</li><li> Angle (3 atoms):
+<ol><li> double-click on the starting atom
+</li><li> click on the second atom (central atom in angle)
+</li><li> to fix an angle measurement, double-click on third atom
+</li></ol>
+</li><li> Torsion angle or dihedral (4 atoms)
+<ol><li> double-click on the starting atom
+</li><li> click on the second atom
+</li><li> click on the third atom
+</li><li> to fix a dihedral angle measurement, double-click on fourth atom
+</li></ol>
+</li><li> In all cases:
+<ul><li> move pointer over destination atom in order to see measurement results without leaving a permanent measurement
+</li><li> move outside the window in order to cancel the measurement
+</li><li> make the same measurement again in order to delete the measurement
+</li></ul>
+</li></ul>
+</body>
+</html>

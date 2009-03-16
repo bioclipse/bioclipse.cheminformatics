@@ -1,0 +1,689 @@
+<html><!-- Last updated:  -->
+<!-- Automatically created from documentation on http://www.stolaf.edu/people/hansonr/jmol/docs/?xml
+     as described in the README in the JmolScriptDocumentation module in CVS. -->
+		
+		<a name="animation"/><h1>animation or anim</h1><ul><p>Sets selected animation parameters or turns animation on or off. Note that there are four distinct animation types that can be employed using Jmol: (1) files may contain multiple stuctures that are "played" sequencially, (2) Gaussian output files may contain vibrational modes that can be animated, (3) scripts may be run through with delays and loops, and (4) the model may spin or move in a predefined way. The "animation" command only refers to method (1). 
+			</p><h3>Syntax</h3><table><tr><td><b> animation ON/OFF{default: ON}
+					</b></td><td><ul><li><i>Turns on or off animation.
+					</i></li></ul></td></tr><tr><td><b> animation direction -1
+					</b></td><td><ul><li><i>Sets the animation direction to be from last frame to first frame.
+					</i></li></ul></td></tr><tr><td><b> animation direction +1
+					</b></td><td><ul><li><i>Sets the animation direction to be first frame to last frame.
+					</i></li></ul></td></tr><tr><td><b> animation fps [frames-per-second]
+					</b></td><td><ul><li><i>Sets the animation frames per second.
+					</i></li></ul></td></tr><tr><td><b> animation frame (integer &gt;= 1)
+					</b></td><td><ul><li><i>Go to a specific frame.
+					</i></li></ul></td></tr><tr><td><b> animation frame 0
+					</b></td><td><ul><li><i>Overlay all frames.
+					</i></li></ul></td></tr><tr><td><b> animation frame NEXT
+					</b></td><td><ul><li><i>Go to next frame
+					</i></li></ul></td></tr><tr><td><b> animation frame -1
+					</b></td><td><ul><li><i>Go to previous frame.
+					</i></li></ul></td></tr><tr><td><b> animation mode loop
+					</b></td><td><ul><li><i>Sets the animation mode to restart the sequence automatically when the last frame has played.
+					</i></li></ul></td></tr><tr><td><b> animation mode loop [time-delay1] [time-delay2]
+					</b></td><td><ul><li><i>Allows for a time delay at the start and end of the loop.
+					</i></li></ul></td></tr><tr><td><b> animation mode ONCE
+					</b></td><td><ul><li><i>Sets the animation to play once through and then stop (the default mode).
+					</i></li></ul></td></tr><tr><td><b> animation mode PALINDROME
+					</b></td><td><ul><li><i>Sets the animation to play forward and back endlessly.
+					</i></li></ul></td></tr><tr><td><b> animation mode PALINDROME [time-delay1] [time-delay2]
+					</b></td><td><ul><li><i>Allows for a time delay at the start and end of the palindrome.
+					</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[frames-per-second]</b></td><td><p>is the animation rate -- (integer)</p></td></tr><tr><td><b>[time-delay1]</b></td><td><p>is the time in seconds to pause on the first frame -- (integer|decimal, &gt;=0)</p></td></tr><tr><td><b>[time-delay2]</b></td><td><p>is the time in seconds to pause on the last frame -- (integer|decimal, &gt;=0)</p></td></tr></table><h3>See also</h3><a href="#delay">delay</a>, <a href="#exit">exit</a>, <a href="#frame">frame</a>, <a href="#loop">loop</a>, <a href="#model">model</a>, <a href="#moveto">moveto</a>, <a href="#quit">quit</a>, <a href="#script">script</a>, <a href="#setspin">setspin</a>, <a href="#show">show</a>, <a href="#spin">spin</a>, <a href="#translate">translate</a>, <a href="#zoom">zoom</a>, </ul>
+		
+		<a name="atomexpressions"/><h1>atom expressions</h1><ul><p>An increasing number of commands, including select, restrict, define, center, connect, and polyhedra take for parameters one or more expressions that represent collections of atoms in one or more models. While this documentation does not attempt to define these expressions completely, several examples are given here. Note that the substructure() function takes a quoted smiles string for its argument. The first parameter of the within() function can be a decimal distance in Angstroms or one of the words group, chain, or model. New in version 10.2 is connected([optional min # bonds], [optional max # bonds], [optional atom expression]) See examples/groups.txt for many examples of using connected() with define.
+			</p><h3>Examples</h3><pre>select atomno=1;color purple;spacefill 600
+select nitrogen;color yellow
+select [PRO];color green
+select within(5.0,[PRO]62) and not [PRO]62;color white
+select within(group,within(5.0,[PRO]));color yellow
+select substructure("[Fe][S]");wireframe 1.0
+select 95^a:L # selects chain L, residue 95, insertion code a
+</pre></ul>
+		
+		<a name="backbone"/><h1>backbone</h1><ul><p>Shows the backbone of a protein or nucleic acid macromolecule by connecting the alpha carbons. The selection of backbone units to display depends upon the currently selected atoms and the bondmode setting.
+			</p><h3>Syntax</h3><table><tr><td><b> backbone ON/OFF{default: ON}
+					</b></td><td><ul><li><i>Turns the backbone on or off
+					</i></li></ul></td></tr><tr><td><b> backbone [backbone-radius]
+					</b></td><td><ul><li><i>Backbone radius can be specified in angstroms using a decimal number (1.0, 2.0, etc.)
+					</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[backbone-radius]</b></td><td><p>is the radius of the backbone -- (decimal, &lt;=4.0)</p></td></tr></table><h3>See also</h3><a href="#background">background</a>, <a href="#cartoon">cartoon</a>, <a href="#dots">dots</a>, <a href="#measure">measure</a>, <a href="#meshribbon">meshribbon</a>, <a href="#restrict">restrict</a>, <a href="#ribbon">ribbon</a>, <a href="#rocket">rocket</a>, <a href="#select">select</a>, <a href="#sethighlights">sethighlights</a>, <a href="#setlightingandperspective">setlightingandperspective</a>, <a href="#setvisibility">setvisibility</a>, <a href="#spacefill">spacefill</a>, <a href="#strands">strands</a>, <a href="#trace">trace</a>, <a href="#vector">vector</a>, <a href="#wireframe">wireframe</a>, </ul>
+		
+		<a name="background"/><h1>background</h1><ul><p>Sets color of the background. For specifications, see color.
+			</p><h3>Syntax</h3><table><tr><td><b> background [RGB-color]
+					</b></td><td><ul><li><i>Sets the background of the applet window.
+					</i></li></ul></td></tr><tr><td><b> background HOVER [color-or-none]
+					</b></td><td><ul><li><i>Sets the background for the pop-up label box that appear when the mouse "hovers" over an atom. "NONE" results in there being no hover backgrounds. Operates globally, not on selected atoms.
+					</i></li></ul></td></tr><tr><td><b> background LABELS [color-or-none]
+					</b></td><td><ul><li><i>Sets the background of the atom labels that appear with the "label" command. "NONE" results in there being no label background. Operates globally, not on selected atoms.
+					</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[RGB-color]</b></td><td><p>is a name of a color or a red, green, blue color triple in decimal with commas, for example [255,0,255], or as a single hexadecimal number, for example [xFF00FF] (brackets included) -- (color name), [r, g, b], [xRRGGBB]</p></td></tr><tr><td><b>[color-or-none]</b></td><td><p>is _colorRGB, NONE</p></td></tr></table><h3>See also</h3><a href="#cartoon">cartoon</a>, <a href="#coloratomobject">coloratomobject</a>, <a href="#colorbondobject">colorbondobject</a>, <a href="#colorelement">colorelement</a>, <a href="#colormodelobject">colormodelobject</a>, <a href="#dots">dots</a>, <a href="#measure">measure</a>, <a href="#meshribbon">meshribbon</a>, <a href="#restrict">restrict</a>, <a href="#ribbon">ribbon</a>, <a href="#rocket">rocket</a>, <a href="#select">select</a>, <a href="#setdefaultcolorscheme">setdefaultcolorscheme</a>, <a href="#sethighlights">sethighlights</a>, <a href="#setlightingandperspective">setlightingandperspective</a>, <a href="#setvisibility">setvisibility</a>, <a href="#spacefill">spacefill</a>, <a href="#strands">strands</a>, <a href="#trace">trace</a>, <a href="#vector">vector</a>, <a href="#wireframe">wireframe</a>, </ul>
+		
+		<a name="cartoon"/><h1>cartoon or cartoons</h1><ul><p>Cartoons are the classic shapes the are used to depict alpha helices and beta-pleated sheets.
+			</p><h3>Syntax</h3><table><tr><td><b> cartoon ON/OFF{default: ON}
+					</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> cartoon [cartoon-radius]
+					</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[cartoon-radius]</b></td><td><p>is the radius of the cartoon elements -- (decimal, &lt;=4.0)</p></td></tr></table><h3>See also</h3><a href="#background">background</a>, <a href="#dots">dots</a>, <a href="#measure">measure</a>, <a href="#meshribbon">meshribbon</a>, <a href="#restrict">restrict</a>, <a href="#ribbon">ribbon</a>, <a href="#rocket">rocket</a>, <a href="#select">select</a>, <a href="#sethighlights">sethighlights</a>, <a href="#setlightingandperspective">setlightingandperspective</a>, <a href="#setvisibility">setvisibility</a>, <a href="#spacefill">spacefill</a>, <a href="#strands">strands</a>, <a href="#trace">trace</a>, <a href="#vector">vector</a>, <a href="#wireframe">wireframe</a>, </ul>
+		
+		<a name="center"/><h1>center or centre</h1><ul><p>Sets the center of rotation to be the center of the set of atoms defined by the atom expression. This is calculated as the mean value of the coordinates of the selected atoms along each of the respective axes. If no atoms are selected then the center is set to the center of the bounding box (the default).
+			</p><h3>Syntax</h3><table><tr><td><b> center [atom-expression]
+					</b></td><td><ul><li><i>Centers the model on the specified atom set. Along with show center, allows for the reading of the coordinated position of a specific atom using, for example, center [CYS]4.O;show center;center. See also centerAt
+					</i></li></ul></td></tr><tr><td><b> center [xyz-coordinate]
+					</b></td><td><ul><li><i>Centers the model on a specified model-frame coordinate
+					</i></li></ul></td></tr><tr><td><b> center [drawn-object]
+					</b></td><td><ul><li><i>Centers the model on a specified draw object
+					</i></li></ul></td></tr><tr><td><b> center
+					</b></td><td><ul><li><i>Recenters the model on the default center.
+					</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[atom-expression]</b></td><td><p>is any expression that evaluates to a set of atoms </p></td></tr><tr><td><b>[xyz-coordinate]</b></td><td><p>is an xyz coordinate -- three values, one for X, one for Y, and one for Z</p></td></tr><tr><td><b>[drawn-object]</b></td><td><p>is a drawn object -- $name</p></td></tr></table><h3>See also</h3><a href="#show">show</a>, <h3>Examples</h3><pre>select [CYS]32
+center selected
+</pre></ul>
+		
+		<a name="centerAt"/><h1>centerAt</h1><ul><p>The centerAt command allows centering of the model in one of three different ways: based on an absolute coordinate position, based on an offset relative to the center of the boundbox (the overall application default), or based on an offset relative to the average position of the currently selected atoms. Centering on a specific atom or atom set without first selecting it is also available using the center command. If the three numerical values are omitted, they default to 0.0 0.0 0.0.
+			</p><h3>Syntax</h3><table><tr><td><b> centerAt ABSOLUTE x y z {default: 0.0 0.0 0.0}
+					</b></td><td><ul><li><i>specifies an absolute coordinate for the center, in Angstroms
+					</i></li></ul></td></tr><tr><td><b> centerAt AVERAGE x y z {default: 0.0 0.0 0.0}
+					</b></td><td><ul><li><i>relative to the average atom position (also known as the "unweighted center of gravity")
+					</i></li></ul></td></tr><tr><td><b> centerAt BOUNDBOX x y z {default: 0.0 0.0 0.0}
+					</b></td><td><ul><li><i>relative to the center of the boundbox, which is defined by the minimum and maximum atom center coordinates along each of the cartesian axes
+					</i></li></ul></td></tr></table><h3>See also</h3><a href="#center">center</a>, <a href="#show">show</a>, <h3>Examples</h3><pre>centerAt absolute 1.0 2.0 3.0
+centerAt boundbox 1.0 2.0 -3.0
+centerAt average 0.0 0.0 0.0
+
+</pre></ul>
+		
+		<a name="color"/><h1>color or colour</h1><ul><p>In general, the color command takes the following syntax:color [object] [transparent/opaque] [color or color scheme][object] The color command takes several forms, depending upon the type of object being colored: an atom object, a bond object, a chemical element, or a model object. This section of the guide discusses each of these in turn:</p><h3>Syntax</h3><table><tr><td><b> color [color-scheme]
+					</b></td><td><ul><li><i>Sets the previously selected atom set to a color based on a particular color scheme. Note that to color a specific set of atoms, you MUST select that set first, then use use the color command. You cannot script, for example, "color *.N? green".
+					</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[color-scheme]</b></td><td><p>is to color based on a scheme. (CPK and NONE are synonymous here) -- (color name), [r, g, b], [xRRGGBB], AMINO, GROUP, CHAIN, FIXEDTEMPERATURE, FORMALCHARGE, MONOMER, PARTIALCHARGE, RELATIVETEMPERATURE, SHAPELY, STRUCTURE, CPK, NONE</p></td></tr></table><h3>See also</h3><a href="#coloratomobject">coloratomobject</a>, <a href="#colorbondobject">colorbondobject</a>, <a href="#colorelement">colorelement</a>, <a href="#colormodelobject">colormodelobject</a>, <a href="#setdefaultcolorscheme">setdefaultcolorscheme</a>, </ul>
+		
+		<a name="coloratomobject"/><h1>color (atom object)</h1><ul><p>Sets the color of atom-related objects (atoms, backbone, cartoons, dots, labels, meshribbon, polyhedra, rockets, stars, strands, trace, and vectors).
+			</p><h3>Syntax</h3><table><tr><td><b> color [atom-associated-object] [color-scheme]
+					</b></td><td><ul><li><i>Sets the color of atom-related objects based on a previously selected atom set to a specific color, a color scheme, or back to its default color (CPK), or to inherit the color of its associated atom (NONE). (In the case of "color atom", CPK and NONE both revert to the default color.)
+					</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[atom-associated-object]</b></td><td><p>is an object related to an atom -- ATOM, BACKBONE, CARTOON, DOTS, LABELS, MESHRIBBON, POLYHEDRA, RIBBONS, ROCKETS, STARS, STRANDS, TRACE, VECTORS</p></td></tr><tr><td><b>[color-scheme]</b></td><td><p>is to color based on a scheme. (CPK and NONE are synonymous here) -- (color name), [r, g, b], [xRRGGBB], AMINO, GROUP, CHAIN, FIXEDTEMPERATURE, FORMALCHARGE, MONOMER, PARTIALCHARGE, RELATIVETEMPERATURE, SHAPELY, STRUCTURE, CPK, NONE</p></td></tr></table><h3>See also</h3><a href="#colorbondobject">colorbondobject</a>, <a href="#colorelement">colorelement</a>, <a href="#colormodelobject">colormodelobject</a>, <a href="#setdefaultcolorscheme">setdefaultcolorscheme</a>, </ul>
+		
+		<a name="colorbondobject"/><h1>color (bond object)</h1><ul><p>Three types of bonds are distinguished by Jmol for coloring purposes: regular bonds, disulfide bonds, and hydrogen bonds. Each can be colored independently, and hydrogen bond colors in proteins can take on a special coloring scheme based on their connectivity.
+			</p><h3>Syntax</h3><table><tr><td><b> color BONDS [color-or-none]
+					</b></td><td><ul><li><i>Colors selected bonds a specific color or resets them to inherit the color of their associated atoms.
+					</i></li></ul></td></tr><tr><td><b> color SSBONDS [color-or-none]
+					</b></td><td><ul><li><i>Colors disulfide bonds a specific color or resets them to inherit their color from their associated atoms.
+					</i></li></ul></td></tr><tr><td><b> color HBONDS [color-or-none]
+					</b></td><td><ul><li><i>Colors hydrogen bonds a specific color or resets them to inherit their color from their associated atoms.
+					</i></li></ul></td></tr><tr><td><b> color HBONDS TYPE
+					</b></td><td><ul><li><i>Colors hydrogen bonds specifically in proteins based on how many residues one end is from the other. Note that to get this effect, one must first execute "hbonds ON" and then issue "color hbonds TYPE". The colors assigned are based on the number of redidues between the interacting H atoms. This TENDS to indicate secondary structure, but is not perfect.The correlation between color and offset are as follows:</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[color-or-none]</b></td><td><p>is _colorRGB, NONE</p></td></tr></table><h3>See also</h3><a href="#coloratomobject">coloratomobject</a>, <a href="#colorelement">colorelement</a>, <a href="#colormodelobject">colormodelobject</a>, <a href="#hbonds">hbonds</a>, <a href="#setdefaultcolorscheme">setdefaultcolorscheme</a>, </ul>
+		
+		<a name="colorelement"/><h1>color (element)</h1><ul><p>You can use the 'color' command to specify customized default colors that are used for elements. [default Jmol element colors] color carbon limegreencolor hydrogen [x32CD32];These changes are not molecule-specific; they will continue in effect even if new molecules are loaded. However, in a page with multiple applets, each applet will have its own set of element colors.If you choose to use this feature, you should consider encapsulating your favorite colors into a script and then executing that script as a subroutine. For example:script LoadMyFavoriteColors.txt;load foo.xyz;load bar.xyz;Note:Custom element colors are independent of and are not affected by the currently selected set of atoms.To reset custom element colors, use 'set defaultColors Jmol' or 'set defaultColors Rasmol'.'translucent' or 'opaque' cannot be specified as part of the element color specification. (You cannot 'color carbon transparent green', for instance.)At this time only elements can be custom colored. There is no support for customizing other color palettes such as those used for protein chains or groups.
+			</p><h3>Syntax</h3><table><tr><td><b> color [element-name] [RGB-color]
+					</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[element-name]</b></td><td><p>is to color specific elements such as CARBON or HYDROGEN -- (element name)</p></td></tr><tr><td><b>[RGB-color]</b></td><td><p>is a name of a color or a red, green, blue color triple in decimal with commas, for example [255,0,255], or as a single hexadecimal number, for example [xFF00FF] (brackets included) -- (color name), [r, g, b], [xRRGGBB]</p></td></tr></table><h3>See also</h3><a href="#coloratomobject">coloratomobject</a>, <a href="#colorbondobject">colorbondobject</a>, <a href="#colormodelobject">colormodelobject</a>, <a href="#setdefaultcolorscheme">setdefaultcolorscheme</a>, </ul>
+		
+		<a name="colormodelobject"/><h1>color (model object)</h1><ul><p>Sets the color of various objects (axes, boundbox, echo, hover, measurements, pmesh, polyhedra, and unitcell).
+			</p><h3>Syntax</h3><table><tr><td><b> color [model-object] [RGB-color]
+					</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[model-object]</b></td><td><p>is AXES, BOUNDBOX, ECHO, HOVER, ISOSURFACE, MEASUREMENTS, PMESH, POLYHEDRA, UNITCELL</p></td></tr><tr><td><b>[RGB-color]</b></td><td><p>is a name of a color or a red, green, blue color triple in decimal with commas, for example [255,0,255], or as a single hexadecimal number, for example [xFF00FF] (brackets included) -- (color name), [r, g, b], [xRRGGBB]</p></td></tr></table><h3>See also</h3><a href="#coloratomobject">coloratomobject</a>, <a href="#colorbondobject">colorbondobject</a>, <a href="#colorelement">colorelement</a>, <a href="#setdefaultcolorscheme">setdefaultcolorscheme</a>, <h3>Examples</h3><pre>select [CYS]32 ;label %a: %x %y %z;color labels white;
+set axes on;color axes green
+set axes on;color axes [xFF00FF];
+</pre></ul>
+		
+		<a name="comment"/><h1>comment (#)</h1><ul><p>Comments in Jmol are preceded by a number sign, '#'.# Anything following '#' up until the end of a statement is ignored by Jmol with the following two exceptions. (A statement is terminated by a semicolon ";" or a newline.)#jxCommands prefixed with #jx will be executed by Jmol#jc If the string '#jc' appears anywhere within a statement, then that entire statement will be assumed to be a comment and will be completely ignored by the Jmol interpreter.
+			
+			</p><h3>Examples</h3><pre># color by polarity
+color background [xffa0a0] # pink
+#jx set perspectiveDepth on; #executed only in Jmol, not Chime or Rasmol
+zoom 125 #jc; # zoom to 125% in Chime and Rasmol but not in Jmol
+</pre></ul>
+		
+		<a name="connect"/><h1>connect</h1><ul><p>The connect command allows real-time bond manipulation, allowing the user or application to connect and disconnect specific atom sets. The general syntax is as follows:  connect [minimum and maximum distances] [source and target atom sets] [bond type] [modify/create option]   (connect by itself deletes all bonds and then creates bonds based on Jmol default bond-generating algorithms, all as single bonds, without respect to what bonding patterns might have been indicated in the model file.)[minimum and maximum distances] Distances are given in Angstroms, either as decimals or integers. If only one distance parameter is given, it represents a maximum distance. If neither the minimum nor the maximum distance parameter is given, all connections between the two atom sets are made, regardless of distance. [source and target atom sets] The source and target atom sets are embedded atom expressions and therefore must be enclosed in parentheses. If the source atom set is not given, it is taken to be the currently selected atom set, "(selected)". If neither atom set is given, "(selected) (selected)" is assumed.[bond type] Unless otherwise specified, connections are automatically introduced as single bonds. Any one of the following bond types may be specified: SINGLE, DOUBLE, TRIPLE, AROMATIC, PARTIAL, PARTIALDOUBLE, or HBOND. (In appearance, AROMATIC and PARTIALDOUBLE are identical. PARTIAL and HBOND are both dashed, but they have different patterns, and newly created hydrogen bonds are only thin lines.)[modify/create option] Four additional mutually exclusive options relate to what sort of connections are made. These include: CreateOrModify (default) If the connection fits the parameters, it will be made. Bonds already present between these atoms will be replaced.Create Only new bonds will be created. If a bond of any type already exists between two matching atoms, it will not be affected.Modify Only pre-existing bonds will be modified. No new bonds will be created. Delete Delete the specified connections.
+			</p><h3>See also</h3><a href="#hbonds">hbonds</a>, <a href="#setbondstyles">setbondstyles</a>, <a href="#ssbonds">ssbonds</a>, <a href="#wireframe">wireframe</a>, <h3>Examples</h3><pre># two ways to link atom #1 with atom#2
+connect (atomno=1) (atomno=2) DOUBLE
+select atomno=1,atomno=2; connect (selected)
+
+# connect all carbons with hydrogens that are within the range 1.0 to 1.2 angstroms and are not already connected
+connect 1.0 1.2 (carbon) (hydrogen) PARTIAL CREATE
+
+# change all bonds to single bonds
+connect (all) (all) SINGLE MODIFY
+
+# connect every atom with every other atom that is within 1.5 angstroms whether it is connected already or not
+connect 1.5 (all) (all) ModifyOrCreate
+
+# delete all bonds WITHIN a selected atom set
+connect (selected) (selected) DELETE
+
+# delete all bonds TO a selected atom set
+connect (selected) (not selected) DELETE
+</pre></ul>
+			
+			<a name="console"/><h1>console</h1><ul><p>Throws up a console window from which a user can enter script commands and monitor the messages returned by Jmol. 
+				</p></ul>
+			
+			<a name="define"/><h1>define</h1><ul><p>Defines the specified variable to the the atoms selected by the atom expression.IMPORTANT NOTE: The define command should be used with some discretion. If you should define a term that later becomes a reserved keyword to any command in any future version of Jmol, your page may not be compatible with that future version. A simple way to avoid this situation is to put a tilde (~) in front of any definition you make. Do not use a leading underscore (_), as there are many "hidden" reserved definitions that start with that character. 
+				</p><h3>Syntax</h3><table><tr><td><b> define [variable-name] [atom-expression]
+						</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[variable-name]</b></td><td><p>is a (string)</p></td></tr><tr><td><b>[atom-expression]</b></td><td><p>is any expression that evaluates to a set of atoms </p></td></tr></table><h3>Examples</h3><pre>define ~mygroup within(5.0,[FS4]102)
+select ~mygroup
+color atoms white
+</pre></ul>
+			
+			<a name="delay"/><h1>delay</h1><ul><p>Causes the screen to refresh and the script to stop executing for the specified number of seconds. 
+				</p><h3>Syntax</h3><table><tr><td><b> delay [time-delay]
+						</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> delay on
+						</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[time-delay]</b></td><td><p>is in seconds -- (integer|decimal, &gt;=0)</p></td></tr></table><h3>See also</h3><a href="#exit">exit</a>, <a href="#frame">frame</a>, <a href="#loop">loop</a>, <a href="#model">model</a>, <a href="#moveto">moveto</a>, <a href="#quit">quit</a>, <a href="#script">script</a>, <a href="#setspin">setspin</a>, <a href="#show">show</a>, <a href="#spin">spin</a>, <a href="#translate">translate</a>, <a href="#zoom">zoom</a>, </ul>
+			
+			<a name="depth"/><h1>depth</h1><ul><p> Slab and Depth together control the percentage of the molecule to be displayed based on clipping planes. slab on turns slab/depth on. slab 50 shows the back 50% of the molecule. slab 25 show the back 25% of the molecule. Atoms appear solid; bonds appear hollow. 
+				</p><h3>Syntax</h3><table><tr><td><b> depth [slab-percent]
+						</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[slab-percent]</b></td><td><p>is an (integer, 0 to 100)</p></td></tr></table><h3>See also</h3><a href="#slab">slab</a>, <h3>Examples</h3><pre>slab 50; depth 0;slab on; # show the back half of the molecule
+slab 100;depth 50; slab on;# show the front half of the molecule
+slab 75; depth 25;slab on; # show middle 50% of the molecule
+slab 50;depth 50;slab on; # show a plane that is 1 pixel deep
+</pre></ul>
+			
+			<a name="dots"/><h1>dots</h1><ul><p>Turns dotted surface on or off for van der Waals radii or solvent probe (if in addition set solvent ON).
+				</p><h3>Syntax</h3><table><tr><td><b> dots ON/OFF{default: ON}
+						</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>See also</h3><a href="#background">background</a>, <a href="#cartoon">cartoon</a>, <a href="#measure">measure</a>, <a href="#meshribbon">meshribbon</a>, <a href="#restrict">restrict</a>, <a href="#ribbon">ribbon</a>, <a href="#rocket">rocket</a>, <a href="#select">select</a>, <a href="#sethighlights">sethighlights</a>, <a href="#setlightingandperspective">setlightingandperspective</a>, <a href="#setvisibility">setvisibility</a>, <a href="#spacefill">spacefill</a>, <a href="#strands">strands</a>, <a href="#trace">trace</a>, <a href="#vector">vector</a>, <a href="#wireframe">wireframe</a>, </ul>
+
+<a name="echo"/><h1>echo</h1><ul><p>Echos a string of text to the window at the location predefined by the "set echo" command as well as to the Java Console. "echo" by itself deletes the text at the selected position (top, middle, or bottom).
+	</p><h3>Syntax</h3><table><tr><td><b> echo (string)
+			</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>See also</h3><a href="#font">font</a>, <a href="#hover">hover</a>, <a href="#sethighlights">sethighlights</a>, <h3>Examples</h3><pre>set echo top left
+font echo 30 serif bolditalic
+color echo green
+echo "I am green top left 30 serif bolditalic"
+</pre></ul>
+
+<a name="exit"/><h1>exit</h1><ul><p> Stops execution of the script current script. In the case of a script that is running as a "child" (for example, from a "source" command, execution continues with the parent.
+	</p><h3>See also</h3><a href="#delay">delay</a>, <a href="#frame">frame</a>, <a href="#loop">loop</a>, <a href="#model">model</a>, <a href="#moveto">moveto</a>, <a href="#quit">quit</a>, <a href="#script">script</a>, <a href="#setspin">setspin</a>, <a href="#show">show</a>, <a href="#spin">spin</a>, <a href="#translate">translate</a>, <a href="#zoom">zoom</a>, </ul>
+
+<a name="font"/><h1>font</h1><ul><p>Sets font size and information in labels and other text-bearing elements.
+	</p><h3>Syntax</h3><table><tr><td><b> font [object-with-text] [font-size] [font-face]{default: SansSerif} [font-style]{default: Plain}
+			</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[object-with-text]</b></td><td><p>is AXES, ECHO, HOVER, or LABEL</p></td></tr><tr><td><b>[font-size]</b></td><td><p>is approximately the same as Rasmol -- (integer, 6 to 63)</p></td></tr><tr><td><b>[font-face]</b></td><td><p>is SERIF, SANSSERIF, or MONOSPACED </p></td></tr><tr><td><b>[font-style]</b></td><td><p>is PLAIN, BOLD, ITALIC, or BOLDITALIC</p></td></tr></table><h3>See also</h3><a href="#hover">hover</a>, <a href="#sethighlights">sethighlights</a>, </ul>
+
+<a name="frame"/><h1>frame</h1><ul><p>Sets the current animation frame (1 being the first). (Same as the model command.)
+	</p><h3>Syntax</h3><table><tr><td><b> frame (integer &gt;= 1)
+			</b></td><td><ul><li><i>Go to a specific frame.
+			</i></li></ul></td></tr><tr><td><b> frame 0
+			</b></td><td><ul><li><i>Overlay all frames.
+			</i></li></ul></td></tr><tr><td><b> frame NEXT
+			</b></td><td><ul><li><i>Go to next frame
+			</i></li></ul></td></tr><tr><td><b> frame -1
+			</b></td><td><ul><li><i>Go to previous frame.
+			</i></li></ul></td></tr></table><h3>See also</h3><a href="#delay">delay</a>, <a href="#exit">exit</a>, <a href="#loop">loop</a>, <a href="#model">model</a>, <a href="#moveto">moveto</a>, <a href="#quit">quit</a>, <a href="#script">script</a>, <a href="#setspin">setspin</a>, <a href="#show">show</a>, <a href="#spin">spin</a>, <a href="#translate">translate</a>, <a href="#zoom">zoom</a>, <h3>Examples</h3><pre>model 1
+model NEXT
+model -1
+model 0;select *;wireframe 0.1;spacefill 0.2
+anim on
+model 0;select *;wireframe off;spacefill off;
+select */1;wireframe 0.1;spacefill 0.2;color atoms red;
+select */35;wireframe 0.1;spacefill 0.2;color atoms blue
+</pre></ul>
+
+<a name="hbonds"/><h1>hbonds</h1><ul><p>Hydrogen bonds can be turned on or off, given custom widths in Angstroms, or colored (see color hbonds and set ). In addition, the positions of a restricted set of protein and nucleic acid hydrogen bonds can be calculated. 
+	</p><h3>Syntax</h3><table><tr><td><b> hbonds ON/OFF{default: ON}
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> hbonds [width-in-angstroms]
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> hbonds CALCULATE
+			</b></td><td><ul><li><i>Calculates hydrogen bonds involving atoms currently selected and displays them. This calculation is currently limited to hydrogen bonds (a) between protein amide NH and protein amide carbonyl oxygens and (b) between nucleic acid base pairs. The "hydrogen bond" is created and displayed as though between nitrogen and oxygen or between nitrogen and nitrogen. Hydrogen atom positions are calculated but not saved or displayed, and the actual hydrogen atoms involved in the hydrogen bonds, if present, are ignored.
+			</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[width-in-angstroms]</b></td><td><p>is a (decimal, 2.0)</p></td></tr></table><h3>See also</h3><a href="#connect">connect</a>, <a href="#setbondstyles">setbondstyles</a>, <a href="#ssbonds">ssbonds</a>, <a href="#wireframe">wireframe</a>, </ul>
+
+<a name="hover"/><h1>hover</h1><ul><p>Turns on and off pop-up labels that appear when the user "hovers" the mouse over the atom. If a string is given, it is used as the label. See also label.
+	</p><h3>Syntax</h3><table><tr><td><b> hover ON/OFF/string
+			</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>See also</h3><a href="#font">font</a>, <a href="#sethighlights">sethighlights</a>, </ul>
+
+<a name="isosurface"/><h1>isosurface</h1><ul><p>Jmol can generate isosurfaces from scalar field data in files of the gaussian .cube format, which contains both atom positions and scalar data. The load command reads only the atom position data from the .cube file.A separate isosurface command is used to read the scalar field data and construct the isosurface. This surface represents the points in space where scalar values cross a specified "cutoff" value. Inside the surface, values are greater or equal to a specified positive cutoff or less than or equal to a specified negative cutoff. The default cutoff is 0.02. Note that positive and negative surfaces are created separately. You can give them distinct names and control their display properties independently. Parameters to the isosurface command control the cutoff value and the display characteristics of the surface. Any number of display characteristics (such as "DOTS MESH NOFILL") may be included in a single isosurface command. By reading the same .cube file more than once with different parameters, or by reading different .cube files, you can construct different isosurfaces with different shapes and sizes. By naming these individual surfaces with unique identifiers you can control display settings and color for each of the surfaces independently. The isosurface command is similar to the pmesh command in terms of options. The isosurface command takes the overall format:isosurface surfaceID cutoff [option] "filename.cube".Starting in version 10.00.42, you can map a function (based on values in another .cube file) onto an isosurface. This is done by adding to the isosurface command the keywords COLOR ABSOLUTE followed by the negative cutoff, the positive cutoff, and the name of another .cube file. Surface are then colored using a red--&gt;orange--&gt;yellow--&gt;green--&gt;blue rainbow, where red represents minimum values and blue represents maximum values. If absolute cutoff values are not provided, then Jmol will calculate the range based upon the actual data values calculated for the surface points.(The filename must be in double quotes, but the extension '.cube' is not necessary.) The .cube file may be gzip-compressed. isosurfaceID is any name that you want to use later to refer to this particular surface.
+	</p><h3>Syntax</h3><table><tr><td><b> isosurface isosurfaceID{default: all isosurfaces}
+			</b></td><td><ul><li><i>Selects a specific isosurface (or all isosurfaces) for subsequent color commands.
+			</i></li></ul></td></tr><tr><td><b> isosurface isosurfaceID{default: all} ON/OFF{default: ON}
+			</b></td><td><ul><li><i>Turn on/off the specified isosurface.
+			</i></li></ul></td></tr><tr><td><b> isosurface isosurfaceID{default: all} DELETE
+			</b></td><td><ul><li><i>Delete the specified isosurface.
+			</i></li></ul></td></tr><tr><td><b> isosurface isosurfaceID(optional) cutoff{default: 0.02} xyz.cub.gz
+			</b></td><td><ul><li><i>Loads isosurface file "xyz.cub.gz", optionally assigned id isosurfaceID and 
+			</i></li></ul></td></tr><tr><td><b> isosurface isosurfaceID{default: all} cutoff{default: 0.02} xyz.cub.gz COLOR ABSOLUTE -cutoff +cutoff xyz-map.cub.gz
+			</b></td><td><ul><li><i>Maps the color values from one .cube file onto the cutoff values of another .cube file based on the range of values given.
+			</i></li></ul></td></tr><tr><td><b> isosurface isosurfaceID{default: all} cutoff{default: 0.02} xyz.cub.gz COLOR xyz-map.cub.gz
+			</b></td><td><ul><li><i>Maps the color values from one .cube file onto the cutoff values of another .cube file using the entire range of values given in the map file.
+			</i></li></ul></td></tr><tr><td><b> isosurface isosurfaceID{default: all} DOTS or NODOTS{default: NODOTS} cutoff{default: 0.02} xyz.cub.gz{default: current}
+			</b></td><td><ul><li><i>Controls whether or not dots are shown at the isosurface points.
+			</i></li></ul></td></tr><tr><td><b> isosurface isosurfaceID{default: all} FILL or NOFILL{default: FILL} cutoff{default: 0.02} xyz.cub.gz{default: current}
+			</b></td><td><ul><li><i>Controls whether the isosurface appears solid (the default).
+			</i></li></ul></td></tr><tr><td><b> isosurface isosurfaceID{default: all} MESH or NOMESH{default: NOMESH} cutoff{default: 0.02} xyz.cub.gz{default: current}
+			</b></td><td><ul><li><i>Controls whether lines between the isosurface points are drawn, given the appearance of a mesh.
+			</i></li></ul></td></tr></table><h3>Examples</h3><pre>isosurface pos05 0.05 "examples/ethene-HOMO.cub.gz";isosurface neg05 -0.05 "examples/ethene-HOMO.cub.gz";
+# now load some other surface further out;
+isosurface pos01 0.01 "examples/ethene-HOMO.cub.gz";isosurface neg01 -0.01 "examples/ethene-HOMO.cub.gz";color isosurface translucent; # make neg01 translucent
+isosurface pos01 nofill mesh; # make pos01 a mesh;
+color isosurface translucent; # make the pos01 mesh translucent, too
+isosurface neg01 dots; # make neg01 show dots, too
+isosurface neg01 nofill; # only dots
+isosurface nodots nomesh fill; #everybody is back to a solid ...;color isosurface opaque; # ... and opaque
+isosurface neg01; #select neg01;
+color isosurface green;
+isosurface pos01;color isosurface violet;
+slab on; slab 50; # slab in order to see the inside
+slab off; # all done!
+</pre></ul>
+
+<a name="label"/><h1>label or labels</h1><ul><p>Turns on and off atom labels based on a previous selection. If a string is given, it is used as the label. See also hover.
+	</p><h3>Syntax</h3><table><tr><td><b> label ON/OFF/string
+			</b></td><td><ul><li><i>Special characters include: </i></li></ul></td></tr></table><h3>Examples</h3><pre>select nitrogen
+label %a: %x %y %z
+</pre></ul>
+
+<a name="load"/><h1>load</h1><ul><p>Loads the specified file or URL. 
+	</p><h3>Syntax</h3><table><tr><td><b> load [file name]
+			</b></td><td><ul><li><i>Jmol automatically determines file type based upon the contents of the file. 
+			</i></li></ul></td></tr><tr><td><b> load [param-ignored] [file name]
+			</b></td><td><ul><li><i>The format parameter is ignored. This form is allowed for backward compatibility with RasMol/Chime. 
+			</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[file name]</b></td><td><p>is a model filename or URL -- (string)</p></td></tr><tr><td><b>[param-ignored]</b></td><td><p>is for Rasmol/chime compatibility; ignored -- (string)</p></td></tr></table><h3>See also</h3><a href="#zap">zap</a>, </ul>
+
+<a name="loop"/><h1>loop</h1><ul><p>Causes the script to restart at the beginning, with an optional time delay.
+	</p><h3>Syntax</h3><table><tr><td><b> loop [time-delay]
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> loop on
+			</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[time-delay]</b></td><td><p>is in seconds -- (integer|decimal, &gt;=0)</p></td></tr></table><h3>See also</h3><a href="#delay">delay</a>, <a href="#exit">exit</a>, <a href="#frame">frame</a>, <a href="#model">model</a>, <a href="#moveto">moveto</a>, <a href="#quit">quit</a>, <a href="#script">script</a>, <a href="#setspin">setspin</a>, <a href="#show">show</a>, <a href="#spin">spin</a>, <a href="#translate">translate</a>, <a href="#zoom">zoom</a>, <h3>Examples</h3><pre>color bonds red
+delay 3
+color bonds green
+loop 1
+</pre></ul>
+
+<a name="measure"/><h1>measure or monitor</h1><ul><p> Renders a measurement between the specified atoms. See also set measurement. The measure Two general syntaxes are available. In the older syntax, a series of two to four atom numbers are given, and the appropriate measure (distance, angle, or dihedral angle) is then displayed. The newer, more general syntax is as follows:  measure minValue&gt; maxValue&gt; (atom expression&gt;) (atom expression&gt;) ...  Using this syntax one can specify a set of measurements to define all at once. Note that these sets are embedded atom expressions that must be enclosed in parentheses. All matching measurements are displayed. Note that unless otherwise specified, all matching criteria in all frames are generated, thus allowing for "animated" measures. Measures can also be between two atoms in different frames (different models) as long as  frame all  has been specified so that the two models are visible. To specify a particular model, use /n, where n is a model number. By default only the FIRST MATCHING atom in each atom set is used for the measurement when atom sets are used. Adding the keyword ALL indicates that all matching atoms in all atom sets should be selected for measurement. (New in 10.1.)
+	</p><h3>Syntax</h3><table><tr><td><b> measure ON/OFF{default: ON}
+			</b></td><td><ul><li><i>Turns on and off the distance, angle, dihedral measurement labels and measurement lines. (To turn off just the labels, use set measurement OFF 
+			</i></li></ul></td></tr><tr><td><b> measure [atom-number] [atom-number]
+			</b></td><td><ul><li><i>Two atoms specify a distance measurement.
+			</i></li></ul></td></tr><tr><td><b> measure [atom-number] [atom-number] [atom-number]
+			</b></td><td><ul><li><i>Three atoms specify an angle measurement.
+			</i></li></ul></td></tr><tr><td><b> measure [atom-number] [atom-number] [atom-number] [atom-number]
+			</b></td><td><ul><li><i>Four atoms specify a dihedral angle measurement. 
+			</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[atom-number]</b></td><td><p>is the sequential number assigned to the atom -- (integer, &gt;=1)</p></td></tr></table><h3>See also</h3><a href="#background">background</a>, <a href="#cartoon">cartoon</a>, <a href="#dots">dots</a>, <a href="#meshribbon">meshribbon</a>, <a href="#restrict">restrict</a>, <a href="#ribbon">ribbon</a>, <a href="#rocket">rocket</a>, <a href="#select">select</a>, <a href="#sethighlights">sethighlights</a>, <a href="#setlightingandperspective">setlightingandperspective</a>, <a href="#setvisibility">setvisibility</a>, <a href="#spacefill">spacefill</a>, <a href="#strands">strands</a>, <a href="#trace">trace</a>, <a href="#vector">vector</a>, <a href="#wireframe">wireframe</a>, </ul>
+
+<a name="meshribbon"/><h1>meshribbon</h1><ul><p>A mesh ribbon is similar to a strand, but is more the quality of a loosely woven fabric. 
+	</p><h3>Syntax</h3><table><tr><td><b> meshribbon ON/OFF{default: ON}
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> meshribbon [mesh-ribbon-radius]
+			</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[mesh-ribbon-radius]</b></td><td><p>is the overall radius of the mesh ribbon -- (decimal, =4.0)</p></td></tr></table><h3>See also</h3><a href="#background">background</a>, <a href="#cartoon">cartoon</a>, <a href="#dots">dots</a>, <a href="#measure">measure</a>, <a href="#restrict">restrict</a>, <a href="#ribbon">ribbon</a>, <a href="#rocket">rocket</a>, <a href="#select">select</a>, <a href="#sethighlights">sethighlights</a>, <a href="#setlightingandperspective">setlightingandperspective</a>, <a href="#setvisibility">setvisibility</a>, <a href="#spacefill">spacefill</a>, <a href="#strands">strands</a>, <a href="#trace">trace</a>, <a href="#vector">vector</a>, <a href="#wireframe">wireframe</a>, </ul>
+
+<a name="model"/><h1>model</h1><ul><p>Same as the frame command, except the numbers referencing models are the numbers on the MODEL records, if a PDF file. 
+	</p><h3>See also</h3><a href="#delay">delay</a>, <a href="#exit">exit</a>, <a href="#frame">frame</a>, <a href="#loop">loop</a>, <a href="#moveto">moveto</a>, <a href="#quit">quit</a>, <a href="#script">script</a>, <a href="#setspin">setspin</a>, <a href="#show">show</a>, <a href="#spin">spin</a>, <a href="#translate">translate</a>, <a href="#zoom">zoom</a>, <h3>Examples</h3><pre>model 1
+model NEXT
+model -1
+model 0;select *;wireframe 0.1;spacefill 0.2
+anim on
+model 0;select *;wireframe off;spacefill off;
+select */1;wireframe 0.1;spacefill 0.2;color atoms red;
+select */35;wireframe 0.1;spacefill 0.2;color atoms blue
+</pre></ul>
+
+<a name="move"/><h1>move</h1><ul><p>The move command provides powerful animation capabilities. It allows you to specify rotations, zooming, and translations to be performed in a specified period of time. xRot, yRot, and zRot are rotations about the cartesian axes in degrees. Zoom specifies a zoom factor, xTrans, yTrans, and zTrans are translations in the range -100 to 100. If you do not know what slab is, just put in a zero. see the slab command for more information. 
+	</p><h3>Syntax</h3><table><tr><td><b> move [x-rotation] [y-rotation] [z-rotation] [zoom-factor] [x-translation] [y-translation] [z-translation] [slab-cutoff] [seconds-total] [move-frames-per-second]{default: 30} [maximum-acceleration]{default: 5}
+			</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[x-rotation]</b></td><td><p>is the degrees of rotation about x -- (integer)</p></td></tr><tr><td><b>[y-rotation]</b></td><td><p>is the degrees of rotation about y -- (integer)</p></td></tr><tr><td><b>[z-rotation]</b></td><td><p>is the degrees of rotation about z -- (integer)</p></td></tr><tr><td><b>[zoom-factor]</b></td><td><p>is a scaling factor -- (integer)</p></td></tr><tr><td><b>[x-translation]</b></td><td><p>is the distance offset along x -- (integer)</p></td></tr><tr><td><b>[y-translation]</b></td><td><p>is the distance offset along y -- (integer)</p></td></tr><tr><td><b>[z-translation]</b></td><td><p>is the distance offset along z -- (integer)</p></td></tr><tr><td><b>[slab-cutoff]</b></td><td><p>is the cutoff for the slab display -- (integer)</p></td></tr><tr><td><b>[seconds-total]</b></td><td><p>is the amount of time to wait -- (decimal)</p></td></tr><tr><td><b>[move-frames-per-second]</b></td><td><p>is the frames per second to move -- (integer)</p></td></tr><tr><td><b>[maximum-acceleration]</b></td><td><p>is the maximum acceleration -- (integer)</p></td></tr></table><h3>See also</h3><a href="#delay">delay</a>, <a href="#exit">exit</a>, <a href="#frame">frame</a>, <a href="#loop">loop</a>, <a href="#model">model</a>, <a href="#moveto">moveto</a>, <a href="#quit">quit</a>, <a href="#script">script</a>, <a href="#setspin">setspin</a>, <a href="#show">show</a>, <a href="#spin">spin</a>, <a href="#translate">translate</a>, <a href="#zoom">zoom</a>, </ul>
+
+<a name="moveto"/><h1>moveto</h1><ul><p>The moveto command rotates the molecule to a predefined orientation. The first parameter specifies the number of seconds during which the molecule should rotate smoothly from the current orientation to the new orientation. A 0 for this first parameter specifies an instantaneous reorientation. The next parameter is a coordinated {x, y, z defining the axis relative to the default orientation about which the molecule should be rotated. The next parameter defines the counterclockwise (right-hand) rotation in degrees about this axis. "moveto 0 0 0 0the model to the default orientation (equivalent to "reset"). If the angle parameter is 0 but any one of x, y, or z is nonzero, then no reorientation occurs (because the axis has been specified, but the rotation is 0 degrees). In conjunction with "show orientation" this command allows reading and restoring specific user-specified orientations. This command is deprecated in favor of " rel="_blank"&gt;#.moveto</p><h3>Syntax</h3><table><tr><td><b> moveto [time-in-seconds] [xyz-coordinate] [cw-rotation-deg] [percent-zoom]
+			</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[time-in-seconds]</b></td><td><p>is in (seconds)</p></td></tr><tr><td><b>[xyz-coordinate]</b></td><td><p>is an xyz coordinate -- three values, one for X, one for Y, and one for Z</p></td></tr><tr><td><b>[cw-rotation-deg]</b></td><td><p>is a (decimal)</p></td></tr><tr><td><b>[percent-zoom]</b></td><td><p>is an (integer, 5 to 5000)</p></td></tr></table><h3>See also</h3><a href="#delay">delay</a>, <a href="#exit">exit</a>, <a href="#frame">frame</a>, <a href="#loop">loop</a>, <a href="#model">model</a>, <a href="#move">move</a>, <a href="#quit">quit</a>, <a href="#script">script</a>, <a href="#setspin">setspin</a>, <a href="#show">show</a>, <a href="#spin">spin</a>, <a href="#translate">translate</a>, <a href="#zoom">zoom</a>, <h3>Examples</h3><pre>moveto 0 1 0 0 -90; #view from top
+moveto 0 0 1 0 90; #view from right
+moveto 0 0 1 0 -90; #view from left
+moveto 2 1 0 0 90; #view from bottom with smooth 2-second transition
+moveto 0 0 0 0 0 200; #default orientation with instantaneous transition and a zoom of 200%
+</pre></ul>
+
+<a name="pmesh"/><h1>pmesh</h1><ul><p>With the pmesh command you can add one or more surfaces to a model. The pmesh command is similar to the isosurface command in terms of options. The pmesh command takes the overall format:pmesh meshID [option] "filename.pmesh"(The filename must be in double quotes, but the extension '.pmesh' is not necessary.) The .pmesh file may be gzip-compressed. meshID is any name that you want to use later to refer to the mesh. The command also sets the 'current' mesh.Note: meshes are not currently model-specific and are limited to triangles and quadrilaterals.Format of the pmesh files required by Jmol:The format of a pmesh file is relatively simple (example file):100 3.0000 3.0000 1.0000 2.3333 3.0000 1.0000 ...(98 more like this) 81 5 0 10 11 1 0 ...(80 more sets like this)  The first line defines the number of grid points defining the surface (integer, n)The next n lines define the Cartesian coordinates of each of the grid points (n lines of x, y, z floating point data points)The next line specifies the number of polygons, m, to be drawn (81 in this case).The next m sets of numbers, one number per line, define the polygons. In each set, the first number, p, specifies the number of points in each set. Currently this number must be either 4 (for triangles) or 5 (for quadrilaterals). The next p numbers specify indexes into the list of data points (starting with 0). The first and last of these numbers must be identical in order to "close" the polygon.
+	</p><h3>Syntax</h3><table><tr><td><b> pmesh pmeshID{default: all pmeshes}
+			</b></td><td><ul><li><i>Selects a specific pmesh (or all pmeshes) for subsequent color commands.
+			</i></li></ul></td></tr><tr><td><b> pmesh pmeshID{default: all pmeshes} ON/OFF{default: ON}
+			</b></td><td><ul><li><i>Turn on/off the specified mesh.
+			</i></li></ul></td></tr><tr><td><b> pmesh pmeshID{default: all pmeshes} DELETE
+			</b></td><td><ul><li><i>Delete the specified mesh.
+			</i></li></ul></td></tr><tr><td><b> pmesh pmeshID(optional) xyz.pmesh.gz
+			</b></td><td><ul><li><i>Loads pmesh file "xyz.pmesh.gz", optionally assigned id pmeshID.
+			</i></li></ul></td></tr><tr><td><b> pmesh pmeshID{default: all pmeshes} DOTS or NODOTS{default: NODOTS} xyz.pmesh.gz{default: current}
+			</b></td><td><ul><li><i>Controls whether or not dots are shown at the polygon vertices.
+			</i></li></ul></td></tr><tr><td><b> pmesh pmeshID{default: all pmeshes} FILL or NOFILL{default: FILL} xyz.pmesh.gz{default: current}
+			</b></td><td><ul><li><i>Controls whether the polygons are filled (the default).
+			</i></li></ul></td></tr><tr><td><b> pmesh pmeshID{default: all pmeshes} MESH or NOMESH{default: NOMESH} xyz.pmesh.gz{default: current}
+			</b></td><td><ul><li><i>Controls whether the edges of the polygons are drawn.
+			</i></li></ul></td></tr></table><h3>Examples</h3><pre>pmesh myPlane "examples/10x10pmesh.txt"
+# load a pmesh with ID myPlane
+color pmesh translucent yellow
+# make it translucent yellow
+pmesh myWave "examples/wave.pmesh"
+# load another pmesh, with ID myWave
+pmesh dots
+# turn on dots on all loaded pmeshes
+pmesh myWave
+# select pmesh myWave
+color pmesh white
+# color it white
+pmesh myPlane mesh
+# only display the mesh for myPlane
+pmesh myPlane nodots
+# no dots for myPlane
+</pre></ul>
+
+<a name="polyhedra"/><h1>polyhedra</h1><ul><p>Jmol will form a wide variety of polyhedral structures. The polyhedra command can be used for either construction of new polyhedra or modification of existing polyhedra.Polyhedron construction Used for construction of new polyhedra, parameters fall into five subsets:polyhedra [number of vertices] [basis] [selection sets] [display options] [design parameters]In order to construct polyhedra, at least one of the first two of these subsets must be present -- the number of vertices or the basis. In addition, some display options (ON, OFF, DELETE -- see below) are incompatible with polyhedron construction.[number of vertices] Polyhedra involve a central atom and from 3 to 20 outer "vertex" atoms. The number of required vertex atoms is specified by an integer (polyhedra 6). More than one number can be specified, separated by a comma or space character (polyhedra 4,6). If no number of vertices is indicated, any number from 3 to 20 is assumed.[basis] Polyhedra can be formed based either upon the number of atoms bonded to the central atom (polyhedra 4 BONDS) or upon the number of atoms within a specified distance from the central atom (polyhedra 4,6 RADIUS 2.0). (The keyword "RADIUS" is optional, but if it is absent the radius must be indicated as a decimal number, not an integer, so as to distinguish it from a vertex count.) If no radius is indicated, BONDS is assumed.[selection sets] Potential polyhedra centers and vertex atoms are specified in the form of a standard Jmol embedded atom expression, such as (titanium) or (atomno12 and not nitrogen) and as such must be specified in parentheses. The first set specifies the centers; the second set specifies the vertex atoms. The optional keyword "TO" can preceed the vertex set for clarity, as in polyhedra 4,6 BONDS (titanium) TO (oxygen or nitrogen). If no atom sets are designated, the assumption is "(selected) TO (*)". A single designation indicates centers, with "TO (*)" implied. If only "TO" and an atom set is specified, then the centers are taken as the currently selected set of atoms.[display options] Two sets of display options can be included when constructing polyhedra.Polyhedra can be displayed either as traditional "FLAT" faces (the default) or as "COLLAPSED" faces, which display more clearly the central atom.Polyhedra can be displayed either with no edges (NOEDGES, the default), or with a thick line on all edges (EDGES), or on just the front edges (FRONTEDGES). The front-edge-only option is only meaninful when the polyhedra are translucent (see below). [design parameters] Faces are defined as being triangular, involving a central atom and three non-central "vertex" atoms. Two numeric parameters govern the formation of polyhedral faces:centerAngleMax Each of the central angles involving two vertex atoms must be no larger than a specified maximum (default 145o). faceNormalMax The angle between the sum of the three central-vertex vectors and the normal to the vertex-vertex-vertex plane must be no greater than a specified maximum (default 30o).These two empirical design parameters can be tweaked in order to produce desired polyhedra in oddly shaped structures. Getting the optimal value for these parameters in any given situation may take some experimentation. In addition, for collapsed polyhedra, the distance in angstroms from the central atom to the point of collapse can be specified using faceCenterOffset. To set design parameters, simply define a new number as, for example: polyhedra (copper) faceNormalMax=50. Polyhedron modification The polyhedra command can also be used to modify already-constructed polyhedra. Used in this way, the command can take only one atom set expression, and it must not indicate the number of vertices or the basis. If the atom set expression is omitted, "(selected)" is assumed. To turn on, turn off, or delete selected polyhedra, use polyhedra ON, polyhedra OFF, or polyhedra DELETE, respectively. Any of the display options (FLAT, COLLAPSED, EDGES, FRONTEDGES, or NOEDGES) can also be similarly modified. To color a set of polyhedra a particular color or to make them translucent, first select the set of centers of the polyhedra to modify, then use the color polyhedra command.
+	</p><h3>Examples</h3><pre>select *;polyhedra BONDS; color polyhedra grey
+select atomno=19; select hydrogen; polyhedra RADIUS 3.0 ;color polyhedra yellow
+polyhedra RADIUS 2.0 (*) COLLAPSED #all three
+polyhedra (*) DELETE
+polyhedra RADIUS 2.0 (*) TO (not within (1.1225, carbon)) #note how this disallows one of the three
+select *;color polyhedra translucent; # now we can see the carbons inside
+polyhedra (*) EDGES; # highlight the edges
+select *; color polyhedra translucent orange;
+polyhedra (*) OFF
+</pre><h3>Examples</h3><pre># build tetrahedrons around silicon
+polyhedra BONDS (silicon)
+# make some of them green
+select atomno50; color polyhedra translucent green
+
+# delete some of them
+polyhedra (atomno&gt;75 and atomno100) DELETE
+
+# now build octahedrons where oxygens are within 2.0 Angstroms of a central aluminum atoms
+polyhedra BONDS (atomno75) FRONTEDGES
+select aluminum and atomno &gt; 75; color polyhedra red
+</pre></ul>
+
+<a name="quit"/><h1>quit</h1><ul><p> In the current release of Jmol, quit is synonymous with exit. This is inconsistent with RasMol, where quit means to exit the program. 
+	</p><h3>See also</h3><a href="#delay">delay</a>, <a href="#exit">exit</a>, <a href="#frame">frame</a>, <a href="#loop">loop</a>, <a href="#model">model</a>, <a href="#moveto">moveto</a>, <a href="#script">script</a>, <a href="#setspin">setspin</a>, <a href="#show">show</a>, <a href="#spin">spin</a>, <a href="#translate">translate</a>, <a href="#zoom">zoom</a>, </ul>
+
+<a name="refresh"/><h1>refresh</h1><ul><p> Forces a screen repaint during script execution. (Unnecessary, and thus deprecated.)
+	</p><h3>See also</h3><a href="#reset">reset</a>, <a href="#rotate">rotate</a>, </ul>
+
+<a name="reset"/><h1>reset</h1><ul><p>Resets molecule to its original position: zoom 100; center; translate x 0; translate y 0;
+	</p><h3>See also</h3><a href="#rotate">rotate</a>, </ul>
+
+<a name="restrict"/><h1>restrict</h1><ul><p>Selects the atoms identified by the atom expression and hides all atoms and bonds which are outside the selection set. For wireframe and backbone, restrict unconditionally follows set bondmode OR, ignoring the current bondmode setting, and hiding any bonds or backbone rods involving any atoms in the restricted set.
+	</p><h3>Syntax</h3><table><tr><td><b> restrict {default: ALL}
+			</b></td><td><ul><li><i>Restricts to all atoms;possibly not H atoms.
+			</i></li></ul></td></tr><tr><td><b> restrict [atom-expression]
+			</b></td><td><ul><li><i>Restricts atoms based on an atom expression.
+			</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[atom-expression]</b></td><td><p>is any expression that evaluates to a set of atoms </p></td></tr></table><h3>See also</h3><a href="#background">background</a>, <a href="#cartoon">cartoon</a>, <a href="#dots">dots</a>, <a href="#measure">measure</a>, <a href="#meshribbon">meshribbon</a>, <a href="#ribbon">ribbon</a>, <a href="#rocket">rocket</a>, <a href="#select">select</a>, <a href="#sethighlights">sethighlights</a>, <a href="#setlightingandperspective">setlightingandperspective</a>, <a href="#setvisibility">setvisibility</a>, <a href="#spacefill">spacefill</a>, <a href="#strands">strands</a>, <a href="#trace">trace</a>, <a href="#vector">vector</a>, <a href="#wireframe">wireframe</a>, <h3>Examples</h3><pre>restrict protein
+restrict solvent
+restrict within(3.0,[FS4]102)
+</pre></ul>
+
+<a name="ribbon"/><h1>ribbon or ribbons</h1><ul><p> Ribbons offer a representation the protein backbone or nucleic acid helix using a flat band that smoothly traces the midpoints of adjacent alpha carbon atoms (or phosphorus atoms in nucleotide chains). The ribbon is perpendicular to the peptide plane. 
+	</p><h3>Syntax</h3><table><tr><td><b> ribbon ON/OFF{default: ON}
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> ribbon [ribbon-radius]
+			</b></td><td><ul><li><i>Normally, ribbons vary in width according to the amino acid atom positions. This command sets the width of the ribbon to be a connstant value (a decimal, in Angstroms).
+			</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[ribbon-radius]</b></td><td><p>is half of the overall width of the ribbon -- (decimal, =4.0)</p></td></tr></table><h3>See also</h3><a href="#background">background</a>, <a href="#cartoon">cartoon</a>, <a href="#dots">dots</a>, <a href="#measure">measure</a>, <a href="#meshribbon">meshribbon</a>, <a href="#restrict">restrict</a>, <a href="#rocket">rocket</a>, <a href="#select">select</a>, <a href="#sethighlights">sethighlights</a>, <a href="#setlightingandperspective">setlightingandperspective</a>, <a href="#setvisibility">setvisibility</a>, <a href="#spacefill">spacefill</a>, <a href="#strands">strands</a>, <a href="#trace">trace</a>, <a href="#vector">vector</a>, <a href="#wireframe">wireframe</a>, </ul>
+
+<a name="rocket"/><h1>rocket or rockets</h1><ul><p>Creates a "rocket" cartoon.
+	</p><h3>Syntax</h3><table><tr><td><b> rocket ON/OFF{default: ON}
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> rocket [rocket-radius]
+			</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[rocket-radius]</b></td><td><p>is half of the overall width of the rocket barrel -- (decimal, =4.0)</p></td></tr></table><h3>See also</h3><a href="#background">background</a>, <a href="#cartoon">cartoon</a>, <a href="#dots">dots</a>, <a href="#measure">measure</a>, <a href="#meshribbon">meshribbon</a>, <a href="#restrict">restrict</a>, <a href="#ribbon">ribbon</a>, <a href="#select">select</a>, <a href="#sethighlights">sethighlights</a>, <a href="#setlightingandperspective">setlightingandperspective</a>, <a href="#setvisibility">setvisibility</a>, <a href="#spacefill">spacefill</a>, <a href="#strands">strands</a>, <a href="#trace">trace</a>, <a href="#vector">vector</a>, <a href="#wireframe">wireframe</a>, </ul>
+
+<a name="rotate"/><h1>rotate</h1><ul><p>Rotates the model the specified angle about the specified axis. Integer values specify degrees.
+	</p><h3>Syntax</h3><table><tr><td><b> rotate
+			</b></td><td><ul><li><i>By itself, the rotate command rotates 10 degrees around the y (vertical) axis in a counterclockwise fashion.
+			</i></li></ul></td></tr><tr><td><b> rotate X/Y/Z [number-of-degrees]
+			</b></td><td><ul><li><i>Rotation about one of the six standard axes (x, y, z). The default angle of rotation is 10 degrees. 
+			</i></li></ul></td></tr><tr><td><b> rotate AXISANGLE [xyz-coordinate] [number-of-degrees]
+			</b></td><td><ul><li><i>Rotation about an axis defined as a vector from {0,0,0} to the specified {x,y,z} coordinate.
+			</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[number-of-degrees]</b></td><td><p>is the number of degrees -- (integer)</p></td></tr><tr><td><b>[xyz-coordinate]</b></td><td><p>is an xyz coordinate -- three values, one for X, one for Y, and one for Z</p></td></tr></table><h3>See also</h3><a href="#reset">reset</a>, <a href="#spin">spin</a>, </ul>
+
+<a name="script"/><h1>script or source</h1><ul><p> Loads and executes the specified script file/url. The hash/pound/sharp character (#) character marks a comment to the end of the line. The semicolon character (;) separates multiple statements on the same line. A script file may load another script file, up to 10 deep.
+	</p><h3>Syntax</h3><table><tr><td><b> script [file-name]
+			</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[file-name]</b></td><td><p>is any valid filename or URL -- (string)</p></td></tr></table><h3>See also</h3><a href="#delay">delay</a>, <a href="#exit">exit</a>, <a href="#frame">frame</a>, <a href="#loop">loop</a>, <a href="#model">model</a>, <a href="#moveto">moveto</a>, <a href="#quit">quit</a>, <a href="#setspin">setspin</a>, <a href="#show">show</a>, <a href="#spin">spin</a>, <a href="#translate">translate</a>, <a href="#zoom">zoom</a>, </ul>
+
+<a name="select"/><h1>select</h1><ul><p>Selects the atoms identified by the expression. If no expression is given then all atoms are selected. 
+	</p><h3>Syntax</h3><table><tr><td><b> select {default: ALL}
+			</b></td><td><ul><li><i>Selects all atoms (possibly not H atoms).
+			</i></li></ul></td></tr><tr><td><b> select [atom-expression]
+			</b></td><td><ul><li><i>Selects atoms based on an atom expression. To select atoms specific to a specific model when more than one model is present, use "/n" where "n" is the model number. For example, to select all atoms of model 3, use select */3. 
+			</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[atom-expression]</b></td><td><p>is any expression that evaluates to a set of atoms </p></td></tr></table><h3>See also</h3><a href="#background">background</a>, <a href="#cartoon">cartoon</a>, <a href="#dots">dots</a>, <a href="#measure">measure</a>, <a href="#meshribbon">meshribbon</a>, <a href="#restrict">restrict</a>, <a href="#ribbon">ribbon</a>, <a href="#rocket">rocket</a>, <a href="#sethighlights">sethighlights</a>, <a href="#setlightingandperspective">setlightingandperspective</a>, <a href="#setvisibility">setvisibility</a>, <a href="#spacefill">spacefill</a>, <a href="#strands">strands</a>, <a href="#trace">trace</a>, <a href="#vector">vector</a>, <a href="#wireframe">wireframe</a>, <h3>Examples</h3><pre>select carbon;color white
+select protein;ribbons on
+select *:D;color blue
+select [HIS]:D;spacefill 300
+select [HIS]92:D.N;spacefill 600
+select [HIS]92:D.C?;color orange
+select [HIS]92.N;color [255,196,196]
+select elemno7;spacefill 200
+select within(group, within(10.0, :a));color green;select :a;color red
+select within(chain, [HIS]92);color white;
+select within(chain, within(3.0,[HIS]92:D));color purple;
+select within(chain,within(5.0,[HIS]92));color white
+select 95^a:L # selects chain L, residue 95, insertion code a
+</pre></ul>
+
+<a name="setbondstyles"/><h1>set (bond styles)</h1><ul><p>This group of commands sets the appearance of various optional bond effects for the model.
+	</p><h3>Syntax</h3><table><tr><td><b> set autobond ON/OFF
+			</b></td><td><ul><li><i>Some file formats that Jmol reads, such as XYZ, do not contain bonding information. In these cases, the default action for Jmol is to generate bonds automatically based on an algorithm. When given prior to loading a model, the set autobond command determines whether Jmol should automatically generate bonds (set autobond ON, the default action) or not (set autobond OFF) when the model is loaded. 
+			</i></li></ul></td></tr><tr><td><b> set bonds ON/OFF
+			</b></td><td><ul><li><i>In some file formats (.mol files, for example) the connection data may indicate the bond type--single, double, triple, or quadruple. The set bonds command determines whether or not multiple bonds are displayed. Use set bonds OFF when you want all bonds to appear as single bonds. 
+			</i></li></ul></td></tr><tr><td><b> set bondmode AND
+			</b></td><td><ul><li><i>When script commands affect a set of atoms, BOTH atoms must be in the set for the bonds between them to also be affected. Similarly affects the display of backbone units in the selection of protein residues and nucleic acid bases.
+			</i></li></ul></td></tr><tr><td><b> set bondmode OR
+			</b></td><td><ul><li><i>When script commands affect a set of atoms, EITHER atom may be in the set for the bonds also to be affected. Similarly affects the display of backbone units in the selection of protein residues and nucleic acid bases.
+			</i></li></ul></td></tr><tr><td><b> set hbonds BACKBONE or SIDECHAIN
+			</b></td><td><ul><li><i>Hydrogen bonds between protein amino acid residues or nucleic acid base pairs are displayed as lines. These lines can be displayed whether or not the H atoms are present in the file, and can be drawn either between the two non-hydrogen atoms involved in the bond (O or N, typically, the default) or, alternatively, between the two backbone alpha-carbon atoms, depending upon the desired effect.
+			</i></li></ul></td></tr><tr><td><b> set ssbonds BACKBONE or SIDECHAIN
+			</b></td><td><ul><li><i>Sulfur-sulfur bonds in cysteine bridges of proteins are displayed as lines. These lines can either be between the two sidechain sulfur atoms (the default) or between the two backbone alpha-carbon atoms, depending upon the desired effect.
+			</i></li></ul></td></tr></table><h3>See also</h3><a href="#hbonds">hbonds</a>, <a href="#ssbonds">ssbonds</a>, <a href="#wireframe">wireframe</a>, </ul>
+
+<a name="setdefaultcolorscheme"/><h1>set (default color scheme)</h1><ul><p>Sets the default color scheme to be the traditional Rasmol/Chime scheme or the newer, more subtle, Jmol scheme. This command does not actually change the display for an object unless that object is currently being displayed using the default color scheme. See the Jmol Colors page for default color scheme details.
+	</p><h3>Syntax</h3><table><tr><td><b> set defaultColors JMOL
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> set defaultColors RASMOL
+			</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>See also</h3><a href="#coloratomobject">coloratomobject</a>, <a href="#colorbondobject">colorbondobject</a>, <a href="#colorelement">colorelement</a>, <a href="#colormodelobject">colormodelobject</a>, </ul>
+
+<a name="sethighlights"/><h1>set (highlights)</h1><ul><p>This command group allows for annotation and highlighting of atoms in terms of labels and "halos."
+	</p><h3>Syntax</h3><table><tr><td><b> set display SELECTED
+			</b></td><td><ul><li><i>Sets the option ON to dispay a "halo" around atoms when they are or become selected as a way of highlighting specific atoms.
+			</i></li></ul></td></tr><tr><td><b> set display NORMAL
+			</b></td><td><ul><li><i>Turns off selection halos
+			</i></li></ul></td></tr><tr><td><b> set echo [vertical-position] [horizontal-position]{default: center for top and middle; left for bottom}
+			</b></td><td><ul><li><i>Selects which of the three possible echo positions (top, middle, or bottom) will be written to by the next "echo" command and, optionally, sets the horizontal position of that text to left, center, or right.
+			</i></li></ul></td></tr><tr><td><b> set echo OFF
+			</b></td><td><ul><li><i>Turns off all three echo texts.
+			</i></li></ul></td></tr><tr><td><b> set fontsize [font-size]{default: 8}
+			</b></td><td><ul><li><i>Sets the font size for atom labels.
+			</i></li></ul></td></tr><tr><td><b> set frank ON/OFF
+			</b></td><td><ul><li><i>Determines whether or not "Jmol" is indicated in the bottom right corner of the window.
+			</i></li></ul></td></tr><tr><td><b> set labeloffset [x-offset] [y-offset]
+			</b></td><td><ul><li><i>Sets the label offset relative to the atom being labeled. A positive number indicates the number of pixels between the atom center and the beginning of the label. A negative number indicates the number of pixels between the atom center and the end of the label, with the entire label to the left of the atom. Zero indicates centered. 
+			</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[vertical-position]</b></td><td><p>is one of the following: -- TOP, MIDDLE, BOTTOM</p></td></tr><tr><td><b>[horizontal-position]</b></td><td><p>is one of the following: -- LEFT, CENTER, RIGHT</p></td></tr><tr><td><b>[font-size]</b></td><td><p>is approximately the same as Rasmol -- (integer, 6 to 63)</p></td></tr><tr><td><b>[x-offset]</b></td><td><p>is the x-offset -- (integer)</p></td></tr><tr><td><b>[y-offset]</b></td><td><p>is the y-offset -- (integer)</p></td></tr></table><h3>See also</h3><a href="#background">background</a>, <a href="#cartoon">cartoon</a>, <a href="#dots">dots</a>, <a href="#echo">echo</a>, <a href="#font">font</a>, <a href="#hover">hover</a>, <a href="#measure">measure</a>, <a href="#meshribbon">meshribbon</a>, <a href="#restrict">restrict</a>, <a href="#ribbon">ribbon</a>, <a href="#rocket">rocket</a>, <a href="#select">select</a>, <a href="#setlightingandperspective">setlightingandperspective</a>, <a href="#setvisibility">setvisibility</a>, <a href="#spacefill">spacefill</a>, <a href="#strands">strands</a>, <a href="#trace">trace</a>, <a href="#vector">vector</a>, <a href="#wireframe">wireframe</a>, </ul>
+
+<a name="setlightingandperspective"/><h1>set (lighting and perspective)</h1><ul><p>This commands in this group determine the overall lighting effects, size, and rotation for the model.
+	</p><h3>Syntax</h3><table><tr><td><b> set ambient [ambient-percent]
+			</b></td><td><ul><li><i>Sets the amount of "ambient" light filling the shadows created by the apparent light source. An ambient value of 0 creates an effect of a spotlight on a stage; a value of 100 removes the shadow entirely, creating a flat, nonrealistic effect.
+			</i></li></ul></td></tr><tr><td><b> set diffuse [diffuse-percent]
+			</b></td><td><ul><li><i>Sets the amount of "diffuse" light apparently emanating from the spotlight, but not hitting and reflecting off the model directly. Setting the diffuse value to 0 turns this effect off; giving the effect of the model in a black-walled room where no light reflection is possible, effectively turning off all shadows.
+			</i></li></ul></td></tr><tr><td><b> set perspectiveDepth ON/OFF
+			</b></td><td><ul><li><i>Sets perspective depth on or off. OFF is required for proper function of absolute scale (set scale3d x).
+			</i></li></ul></td></tr><tr><td><b> set scale3d [viewing-distance]
+			</b></td><td><ul><li><i>Sets the absolute scale of the model by setting the viewing distance from the user to the model in arbitrary units. The actual scale will depend upon the sizes of both the applet window and the screen. 
+			</i></li></ul></td></tr><tr><td><b> set specpower [specular-power]
+			</b></td><td><ul><li><i>Sets the density of dots in the specular reflection.
+			</i></li></ul></td></tr><tr><td><b> set specular [specular-percent]
+			</b></td><td><ul><li><i>Sets the size of the apparent reflection from a light source. set specular 0 turns off this effect.
+			</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[ambient-percent]</b></td><td><p>is an (integer, 0 to 100)</p></td></tr><tr><td><b>[diffuse-percent]</b></td><td><p>is an (integer, 0 to 100)</p></td></tr><tr><td><b>[viewing-distance]</b></td><td><p>is the apparent distance from the model to the user in arbitrary units -- (integer), (decimal)</p></td></tr><tr><td><b>[specular-power]</b></td><td><p>is an (integer)</p></td></tr><tr><td><b>[specular-percent]</b></td><td><p>is an (integer, 0 to 100)</p></td></tr></table><h3>See also</h3><a href="#background">background</a>, <a href="#cartoon">cartoon</a>, <a href="#dots">dots</a>, <a href="#measure">measure</a>, <a href="#meshribbon">meshribbon</a>, <a href="#restrict">restrict</a>, <a href="#ribbon">ribbon</a>, <a href="#rocket">rocket</a>, <a href="#select">select</a>, <a href="#sethighlights">sethighlights</a>, <a href="#setvisibility">setvisibility</a>, <a href="#spacefill">spacefill</a>, <a href="#strands">strands</a>, <a href="#trace">trace</a>, <a href="#vector">vector</a>, <a href="#wireframe">wireframe</a>, </ul>
+
+<a name="setvisibility"/><h1>set (visibility)</h1><ul><p>This command group turns on or off specific sets of atoms and axes/cell-related options.
+	</p><h3>Syntax</h3><table><tr><td><b> set axes [line-width-or-type]
+			</b></td><td><ul><li><i>Turns on or off displayed axes, and determines their line style and line width (as a decimal number, in Angstroms).
+			</i></li></ul></td></tr><tr><td><b> set axesInternal ON/OFF
+			</b></td><td><ul><li><i>Sets the axes to be based on the internal model {0,0,0} point rather than the center of the model. (Still requires set axes ON for viewing the axes.)
+			</i></li></ul></td></tr><tr><td><b> set boundbox [line-width-or-type]
+			</b></td><td><ul><li><i>Turns on or off a wire-frame box that contains the model, and determines the line style and line width (as a decimal number, in Angstroms) of that box.
+			</i></li></ul></td></tr><tr><td><b> set disablePopupMenu ON/OFF
+			</b></td><td><ul><li><i>Disables (set disablePopupMenu ON) or enables (set disablePopupMenu OFF) the pop-up menu.
+			</i></li></ul></td></tr><tr><td><b> set radius [probe-radius-in-angstroms]{default: 1.2}
+			</b></td><td><ul><li><i>Sets the radius of the solvent "ball" that would run around the structure defining its outline. After set radius, you must (re)issue dots ON for it to take effect, and the solvent probe option for dots must be set on using set solvent ON (below).
+			</i></li></ul></td></tr><tr><td><b> set greyScaleRendering ON/OFF
+			</b></td><td><ul><li><i>Displays all colors as grey scale values.
+			</i></li></ul></td></tr><tr><td><b> set hideNameInPopUp ON/OFF
+			</b></td><td><ul><li><i>Hides the file name and contents in the pop-up menu starting with the NEXT FILE LOADED.
+			</i></li></ul></td></tr><tr><td><b> set showHydrogens ON/OFF
+			</b></td><td><ul><li><i>Turns on and off display of hydrogen atoms.
+			</i></li></ul></td></tr><tr><td><b> set solvent ON/OFF
+			</b></td><td><ul><li><i>Turns on and off display of solvent "probe" that can be displayed using dots. After set solvent ON, a subsequent dots ON</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[line-width-or-type]</b></td><td><p>is a line width or type for a drawing object -- ON, OFF, DOTTED, (integer, 1 to 19), (decimal, 2.0)</p></td></tr><tr><td><b>[probe-radius-in-angstroms]</b></td><td><p>is a (decimal)</p></td></tr><tr><td><b>[strand-count]</b></td><td><p>is the number of strands -- (integer, 0 to 20)</p></td></tr></table><h3>See also</h3><a href="#background">background</a>, <a href="#cartoon">cartoon</a>, <a href="#dots">dots</a>, <a href="#measure">measure</a>, <a href="#meshribbon">meshribbon</a>, <a href="#restrict">restrict</a>, <a href="#ribbon">ribbon</a>, <a href="#rocket">rocket</a>, <a href="#select">select</a>, <a href="#sethighlights">sethighlights</a>, <a href="#setlightingandperspective">setlightingandperspective</a>, <a href="#spacefill">spacefill</a>, <a href="#strands">strands</a>, <a href="#trace">trace</a>, <a href="#vector">vector</a>, <a href="#wireframe">wireframe</a>, </ul>
+
+<a name="setchainCaseSensitive"/><h1>set chainCaseSensitive</h1><ul><p>Jmol can be set to read the chain designations in PDB, mmCIF, and related files either with or without case sensitivity. With set chainCaseSensitive OFF, the chain designations are interpreted as case-insensitive. With set chainCaseSensitive ON, the chain designation is read in a case-sensitive manner -- chain "A" is different than chain "a". This supports PDB format model files with more than 26 chains. The default startup up mode is OFF -- chain designation "a" in a SELECT command will refer to chain "A" in a file.
+	</p><h3>Syntax</h3><table><tr><td><b> set chainCaseSensitive ON/OFF
+			</b></td><td><ul><li><i></i></li></ul></td></tr></table></ul>
+
+<a name="setdebugScript"/><h1>set debugScript</h1><ul><p>Turns on and off debugging (going to a JavaScript message callback).
+	</p><h3>Syntax</h3><table><tr><td><b> set debugScript ON/OFF
+			</b></td><td><ul><li><i></i></li></ul></td></tr></table></ul>
+
+<a name="setmeasurement"/><h1>set measurement</h1><ul><p>Sets characteristics of the measurement labels and lines. See also measure.
+	</p><h3>Syntax</h3><table><tr><td><b> set measurement ON/OFF
+			</b></td><td><ul><li><i>Turns on and off the distance, angle, dihedral measurement labels while leaving the measurement line itself present.
+			</i></li></ul></td></tr><tr><td><b> set measurement [width-in-angstroms]
+			</b></td><td><ul><li><i>Sets the width of the measurement line in angstroms.
+			</i></li></ul></td></tr><tr><td><b> set measurement [linewidth-pixels]
+			</b></td><td><ul><li><i>Sets the width of the measurement line in pixels.
+			</i></li></ul></td></tr><tr><td><b> set measurement [distance-unit]
+			</b></td><td><ul><li><i>Sets the units for measurement display to be Angstroms, nanometers, or picometers.
+			</i></li></ul></td></tr><tr><td><b> set measurement -1
+			</b></td><td><ul><li><i>Sets the measurement line to be dotted.
+			</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[width-in-angstroms]</b></td><td><p>is a (decimal, 2.0)</p></td></tr><tr><td><b>[linewidth-pixels]</b></td><td><p>is an (integer)</p></td></tr><tr><td><b>[distance-unit]</b></td><td><p>is ANGSTROMS, NM, NANOMETERS, PM, or PICOMETERS</p></td></tr></table></ul>
+
+<a name="setpicking"/><h1>set picking</h1><ul><p>The set picking command determines the response to clicking of atoms by the user. 
+	</p><h3>Syntax</h3><table><tr><td><b> set picking ON/OFF{default: ON}
+			</b></td><td><ul><li><i>Turns picking on and off. When turned ON, picking information is sent both to the status line and to the pickcallback function, if defined.
+			</i></li></ul></td></tr><tr><td><b> set picking ANGLE
+			</b></td><td><ul><li><i>Turns picking on and returns atom identities and angle involving three atoms. Four messages are sent to the messagecallback function, if defined: Atom #1 (after the first click), Atom #2 (after the second click), and then Atom #3 and Angle (after the third click).
+			</i></li></ul></td></tr><tr><td><b> set picking ATOM
+			</b></td><td><ul><li><i>When the user clicks an atom, the selection of that atom is toggled on or off.
+			</i></li></ul></td></tr><tr><td><b> set picking CENTER
+			</b></td><td><ul><li><i>When the user clicks an atom, that atom is set to be the center of rotation.
+			</i></li></ul></td></tr><tr><td><b> set picking CHAIN
+			</b></td><td><ul><li><i>When the user clicks an atom, the selection of the chain associated with that atom is toggled on or off.
+			</i></li></ul></td></tr><tr><td><b> set picking DISTANCE
+			</b></td><td><ul><li><i>Turns picking on and returns atom identities and distance between two atoms. Three messages are sent to the messagecallback function, if defined: Atom #1 (after the first click) and then Atom #2 and Distance (after the second click).
+			</i></li></ul></td></tr><tr><td><b> set picking GROUP
+			</b></td><td><ul><li><i>When the user clicks an atom, the selection of the group associated with that atom is toggled on or off.
+			</i></li></ul></td></tr><tr><td><b> set picking LABEL
+			</b></td><td><ul><li><i>When the user clicks an atom, the label of that atom is toggled on or off.
+			</i></li></ul></td></tr><tr><td><b> set picking TORSION
+			</b></td><td><ul><li><i>Turns picking on and returns atom identities and torsion angle (dihedral angle) involving four atoms. Five messages are sent to the messagecallback function, if defined: Atom #1 (after the first click), Atom #2 (after the second click), Atom #3 (after the third click), and then Atom#4 and Torsion (after the fourth click).
+			</i></li></ul></td></tr></table></ul>
+
+<a name="setspin"/><h1>set spin</h1><ul><p>Sets the spin axis and rate. No actual spinning occurs until the spin ON command is issued or the user turns spinning on using the mouse menu. 
+	</p><h3>Syntax</h3><table><tr><td><b> set spin FPS [frames-per-second]
+			</b></td><td><ul><li><i>The spin rate, in degrees per second, determines how fast the model rotates; the number of frames per second determines how smoothly the model rotates. 
+			</i></li></ul></td></tr><tr><td><b> set spin X/Y/Z [degrees-per-second]
+			</b></td><td><ul><li><i>Note that the axes referred to are the fixed axes of the window, not the cartesian axes of the molecular coordinates. Thus, regardless of how the molecule has been rotated by the user or using the move command, x is always the horizontal axis, y is always the vertical axis, and z is always the axis directed toward the user. 
+			</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[frames-per-second]</b></td><td><p>is an (integer)</p></td></tr><tr><td><b>[degrees-per-second]</b></td><td><p>is an (integer)</p></td></tr></table><h3>See also</h3><a href="#delay">delay</a>, <a href="#exit">exit</a>, <a href="#frame">frame</a>, <a href="#loop">loop</a>, <a href="#model">model</a>, <a href="#moveto">moveto</a>, <a href="#quit">quit</a>, <a href="#script">script</a>, <a href="#show">show</a>, <a href="#spin">spin</a>, <a href="#translate">translate</a>, <a href="#zoom">zoom</a>, </ul>
+
+<a name="show"/><h1>show</h1><ul><p>show sends information about the model to the messageCallback function and to the Java Console
+	</p><h3>Syntax</h3><table><tr><td><b> show boundbox
+			</b></td><td><ul><li><i>Delivers the coordinates of the center coordinate and a directional vector defining a box just perfectly enclosing the model. The vector is determined by taking the min and max values for the atom along each cartesian axis. The center is the geometric center of the model, not the default center of rotation (which is the mean atom position). The eight corners of the boundbox are found by adding the center point to the vector, with all possible combinations of +/- component cectors. The length of a side of the boundbox is determined by doubling the appropriate component of the vector. So, for example, the length of the boundbox along the x-axis is (2*vectorX). Units are in Angstroms. Output is in the form boundbox: (centerX, centerY, centerZ) (vectorX, vectorY, vectorZ)
+			</i></li></ul></td></tr><tr><td><b> show center
+			</b></td><td><ul><li><i>Delivers the coordinates of the center of the model. Units are in Angstroms. Output is in the form center: (centerX, centerY, centerZ)
+			</i></li></ul></td></tr><tr><td><b> show file
+			</b></td><td><ul><li><i>Delivers the entire contents of the file for the current model. 
+			</i></li></ul></td></tr><tr><td><b> show file filepath
+			</b></td><td><ul><li><i>Delivers the entire contents of the specified file on the server from which the applet was loaded. The filename must be relative to the current page (not necessarily the directory containing the applet) and must be enclosed in quotation marks.
+			</i></li></ul></td></tr><tr><td><b> show model
+			</b></td><td><ul><li><i>Delivers properties associated with the currently loaded model. Output includes information about all of the models in the set. This command is still in development. The exact form and content of the output is subject to change (and suggestion).
+			</i></li></ul></td></tr><tr><td><b> show pdbheader
+			</b></td><td><ul><li><i>Delivers the PDB file header.
+			</i></li></ul></td></tr><tr><td><b> show transform
+			</b></td><td><ul><li><i>Delivers the current 3x3 transformation matrix (rotation only). 
+			</i></li></ul></td></tr><tr><td><b> show zoom
+			</b></td><td><ul><li><i>Delivers the current zoom setting. Output is in the form of the zoom command: "zoom n" where "n" is an integer percent of "normal" zoom.
+			</i></li></ul></td></tr><tr><td><b> show orientation
+			</b></td><td><ul><li><i>Delivers the orientation of the model. Output consists of both a "moveTo" command and an alternative sequence of "reset; rotate z; rotate y; rotate z" commands that would result in the current orientation. Thus, this command allows reading and restoring specific user-specified orientations.
+			</i></li></ul></td></tr></table><h3>See also</h3><a href="#centerAt">centerAt</a>, <a href="#delay">delay</a>, <a href="#exit">exit</a>, <a href="#frame">frame</a>, <a href="#loop">loop</a>, <a href="#model">model</a>, <a href="#moveto">moveto</a>, <a href="#quit">quit</a>, <a href="#script">script</a>, <a href="#setspin">setspin</a>, <a href="#spin">spin</a>, <a href="#translate">translate</a>, <a href="#zoom">zoom</a>, </ul>
+
+<a name="slab"/><h1>slab</h1><ul><p> Slab and Depth together control the percentage of the molecule to be displayed based on clipping planes. slab on turns slab/depth on. slab 50 shows the back 50% of the molecule. slab 25 show the back 25% of the molecule. Atoms appear solid; bonds appear hollow. 
+	</p><h3>Syntax</h3><table><tr><td><b> slab [slab-percent]
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> slab ON/OFF{default: ON}
+			</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[slab-percent]</b></td><td><p>is an (integer, 0 to 100)</p></td></tr></table><h3>Examples</h3><pre>slab 50; depth 0;slab on; # show the back half of the molecule
+slab 100;depth 50; slab on;# show the front half of the molecule
+slab 75; depth 25;slab on; # show middle 50% of the molecule
+slab 50;depth 50;slab on; # show a plane that is 1 pixel deep
+</pre></ul>
+
+<a name="spacefill"/><h1>spacefill</h1><ul><p>Renders selected atoms as shaded spheres. A boolean value renders the spheres with the van der Waals radius. A decimal value specifies the sphere radius in Angstroms. An integer followed by "%" specifies sphere radius as a percentage of the van der Waals radius. 
+	</p><h3>Syntax</h3><table><tr><td><b> spacefill [radius-in-angstroms]
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> spacefill [radius-percent-vdw]
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> spacefill [radius-Rasmol]
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> spacefill IONIC
+			</b></td><td><ul><li><i>Generates a sphere for each atom according to an approximation of its ionic radius.
+			</i></li></ul></td></tr><tr><td><b> spacefill ON/OFF{default: ON}
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> spacefill TEMPERATURE
+			</b></td><td><ul><li><i>Generates a sphere for eah atom according to its crystallographic B-factor
+			</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[radius-in-angstroms]</b></td><td><p>is a (decimal, =3.0)</p></td></tr><tr><td><b>[radius-percent-vdw]</b></td><td><p>is as a percent of the Van der Waals radius -- (integer, -100 to -1)</p></td></tr><tr><td><b>[radius-Rasmol]</b></td><td><p>is in 1/250ths of an Angstrom (deprecated) -- (integer, 1 to 749)</p></td></tr></table><h3>See also</h3><a href="#background">background</a>, <a href="#cartoon">cartoon</a>, <a href="#dots">dots</a>, <a href="#measure">measure</a>, <a href="#meshribbon">meshribbon</a>, <a href="#restrict">restrict</a>, <a href="#ribbon">ribbon</a>, <a href="#rocket">rocket</a>, <a href="#select">select</a>, <a href="#sethighlights">sethighlights</a>, <a href="#setlightingandperspective">setlightingandperspective</a>, <a href="#setvisibility">setvisibility</a>, <a href="#strands">strands</a>, <a href="#trace">trace</a>, <a href="#vector">vector</a>, <a href="#wireframe">wireframe</a>, </ul>
+
+<a name="spin"/><h1>spin</h1><ul><p>Starts and stops the molecule spinning around the axis determined by set spin.
+	</p><h3>Syntax</h3><table><tr><td><b> spin ON/OFF{default: ON}
+			</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>See also</h3><a href="#delay">delay</a>, <a href="#exit">exit</a>, <a href="#frame">frame</a>, <a href="#loop">loop</a>, <a href="#model">model</a>, <a href="#moveto">moveto</a>, <a href="#quit">quit</a>, <a href="#rotate">rotate</a>, <a href="#script">script</a>, <a href="#setspin">setspin</a>, <a href="#show">show</a>, <a href="#translate">translate</a>, <a href="#zoom">zoom</a>, </ul>
+
+<a name="ssbonds"/><h1>ssbonds</h1><ul><p>Cisteine disulfide bonds can be turned on or off, colored, and given customized widths in Angstroms.
+	</p><h3>Syntax</h3><table><tr><td><b> ssbonds ON/OFF{default: ON}
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> ssbonds [width-angstroms]
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> ssbonds [width-Rasmol]
+			</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[width-angstroms]</b></td><td><p>is a (decimal, 2.0)</p></td></tr><tr><td><b>[width-Rasmol]</b></td><td><p>is in 1/250ths of an Angstrom (deprecated) -- (integer, 500)</p></td></tr></table><h3>See also</h3><a href="#hbonds">hbonds</a>, <a href="#setbondstyles">setbondstyles</a>, <a href="#wireframe">wireframe</a>, </ul>
+
+<a name="star"/><h1>star</h1><ul><p>The star command places a set of crosshairs of a given size in Angstroms on the selected atoms. The default size of the star is, like spacefill, the nominal van der Waals radius for the atom. The default color for the star is that of the atom it is associated with. Use color star [colorname] to then color selected stars the color of your choice.
+	</p><h3>Syntax</h3><table><tr><td><b> star ON/OFF{default: ON}
+			</b></td><td><ul><li><i>Turn stars on or off.
+			</i></li></ul></td></tr><tr><td><b> star [length-in-angstroms]
+			</b></td><td><ul><li><i>Sets the length of the selected stars.
+			</i></li></ul></td></tr></table><h3>Examples</h3><pre>select *.S?;star ON
+select 40;star 1.0;color star red
+select *;color star NONE
+select *;star OFF
+</pre></ul>
+
+<a name="stereo"/><h1>stereo</h1><ul><p>Jmol supports two forms of stereo rendering for molecules. In the first form, the two images are placed side by side and rotated so as to appear from slightly different perspectives, creating the illusion of 3D when a practiced user trains one eye on one image and the other eye on the other image. A second form of stereo rendering, anaglyphic rendering, nearly superimposes two identical models that are slightly rotated relative to each other. These models are each of a different color (red and one of blue, cyan, or green). The illusion of depth can then be created when the user wears an inexpensive pair of "3D glasses" that have differently colored lenses. One should experiment with different background colors when using redcyan or redblue stereo rendering. For many users background grey looks better than background white or background black.
+	</p><h3>Syntax</h3><table><tr><td><b> stereo [stereo-viewing-angle]{default: 5}
+			</b></td><td><ul><li><i>Turns side-by-side stereo viewing on. (Note that if this form of stereo viewing is desired, you will probably want to have the applet width twice the applet height.) If a number of degrees is not given or has not already been specified in a previous command,, the default rotation is 5 degrees. Sets the number of degrees of counter-clockwise vertical-axis rotation of the RIGHT-hand image relative to the LEFT-hand image (which itself does not change rotation when stereo viewing is turned on and off). Positive values correspond to cross-eyed viewing, where the left eye is trained on the right image, and the right eye is trained on the left image. Negative values (clockwise rotation) correspond to "wall-eyed" viewing, where the right eye is trained on the right image and the left eye is trained on the left image. Note that stereo 90 may be useful, as it shows two views of a model that rotate synchronously, a "front view" on the left and a "right side view" on the right.
+			</i></li></ul></td></tr><tr><td><b> stereo {default: ON}
+			</b></td><td><ul><li><i>Turns side-by-side stereo viewing on with a previously defined rotation or, if no rotation has been defined, a rotation of 5 degrees.
+			</i></li></ul></td></tr><tr><td><b> stereo OFF
+			</b></td><td><ul><li><i>Turns stereo viewing off.
+			</i></li></ul></td></tr><tr><td><b> stereo REDBLUE [stereo-viewing-angle]{default: 3}
+			</b></td><td><ul><li><i>Turns red/blue analglyphic rendering on with a specific relative rotation, if desired. The default is 3 degrees.
+			</i></li></ul></td></tr><tr><td><b> stereo REDCYAN [stereo-viewing-angle]{default: 3}
+			</b></td><td><ul><li><i>Turns red/cyan analglyphic rendering on with a specific relative rotation, if desired. The default is 3 degrees.
+			</i></li></ul></td></tr><tr><td><b> stereo REDGREEN [stereo-viewing-angle]{default: 3}
+			</b></td><td><ul><li><i>Turns red/green analglyphic rendering on with a specific relative rotation, if desired. The default is 3 degrees.
+			</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[stereo-viewing-angle]</b></td><td><p>is angle of rotation for stereo viewing -- (integer|decimal)</p></td></tr></table><h3>Examples</h3><pre>zoom 50;background white;stereo ON
+stereo 90
+stereo 5
+stereo -5
+zoom 100;background grey;stereo REDCYAN
+stereo REDBLUE 3
+stereo REDGREEN;stereo OFF
+</pre></ul>
+
+<a name="strands"/><h1>strands</h1><ul><p>Strands offer a representation the protein backbone or nucleic acid helix using lines. For proteins, control points are chosen midway between adjacent alpha carbons (or phosphorus atoms in nucleic acids). The strands are arranged perpendicular to the peptide plane. A hermite cubic curve is used to smoothly connect the points.
+	</p><h3>Syntax</h3><table><tr><td><b> strands ON/OFF{default: ON}
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> strands [strand-radius]
+			</b></td><td><ul><li><i>Normally, strands vary in width according to the amino acid atom positions. This command sets the radius of the set of strands to be a constant value (a decimal, in Angstroms).
+			</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[strand-radius]</b></td><td><p>is half of the overall width of the set of strands -- (decimal, =4.0)</p></td></tr></table><h3>See also</h3><a href="#background">background</a>, <a href="#cartoon">cartoon</a>, <a href="#dots">dots</a>, <a href="#measure">measure</a>, <a href="#meshribbon">meshribbon</a>, <a href="#restrict">restrict</a>, <a href="#ribbon">ribbon</a>, <a href="#rocket">rocket</a>, <a href="#select">select</a>, <a href="#sethighlights">sethighlights</a>, <a href="#setlightingandperspective">setlightingandperspective</a>, <a href="#setvisibility">setvisibility</a>, <a href="#spacefill">spacefill</a>, <a href="#trace">trace</a>, <a href="#vector">vector</a>, <a href="#wireframe">wireframe</a>, </ul>
+
+<a name="trace"/><h1>trace</h1><ul><p>A "trace" is a smooth curve through the center of the carbonyl carbon-alpha carbon bonds of a peptide or the ribose 1-O-P bond. 
+	</p><h3>Syntax</h3><table><tr><td><b> trace ON/OFF{default: ON}
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> trace [trace-radius]
+			</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[trace-radius]</b></td><td><p>is the radius of the trace -- (decimal, =4.0)</p></td></tr></table><h3>See also</h3><a href="#background">background</a>, <a href="#cartoon">cartoon</a>, <a href="#dots">dots</a>, <a href="#measure">measure</a>, <a href="#meshribbon">meshribbon</a>, <a href="#restrict">restrict</a>, <a href="#ribbon">ribbon</a>, <a href="#rocket">rocket</a>, <a href="#select">select</a>, <a href="#sethighlights">sethighlights</a>, <a href="#setlightingandperspective">setlightingandperspective</a>, <a href="#setvisibility">setvisibility</a>, <a href="#spacefill">spacefill</a>, <a href="#strands">strands</a>, <a href="#vector">vector</a>, <a href="#wireframe">wireframe</a>, </ul>
+
+<a name="translate"/><h1>translate</h1><ul><p> Moves the molecule along the specified axes according to the amount specified by value. Value ranges from -100 to 100, and represents the percentage of the display window. Negative values move to the left (for the x axis) and down (for the y axis). A value of 100 will move the molecule completely out of the window. A value of 50 will move the center of the molecule to the edge of the window.
+	</p><h3>Syntax</h3><table><tr><td><b> translate X/Y/Z [percent-translation]
+			</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[percent-translation]</b></td><td><p>is an (integer, -100 to 100)</p></td></tr></table><h3>See also</h3><a href="#delay">delay</a>, <a href="#exit">exit</a>, <a href="#frame">frame</a>, <a href="#loop">loop</a>, <a href="#model">model</a>, <a href="#moveto">moveto</a>, <a href="#quit">quit</a>, <a href="#script">script</a>, <a href="#setspin">setspin</a>, <a href="#show">show</a>, <a href="#spin">spin</a>, <a href="#zoom">zoom</a>, </ul>
+
+<a name="vector"/><h1>vector or vectors</h1><ul><p>Draws vectors arising from vibrational mode data.
+	</p><h3>Syntax</h3><table><tr><td><b> vector [diameter-pixels]
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> vector [radius-in-angstroms]
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> vector ON/OFF{default: ON}
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> vector scale [vector-scale]
+			</b></td><td><ul><li><i>Adjusts the scale of the vector independently of the vibration motion.
+			</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[diameter-pixels]</b></td><td><p>is a scaling factor -- (integer, 1 to 19)</p></td></tr><tr><td><b>[radius-in-angstroms]</b></td><td><p>is a (decimal, =3.0)</p></td></tr><tr><td><b>[vector-scale]</b></td><td><p>is a (decimal, -10.0 to 10.0)</p></td></tr></table><h3>See also</h3><a href="#background">background</a>, <a href="#cartoon">cartoon</a>, <a href="#dots">dots</a>, <a href="#measure">measure</a>, <a href="#meshribbon">meshribbon</a>, <a href="#restrict">restrict</a>, <a href="#ribbon">ribbon</a>, <a href="#rocket">rocket</a>, <a href="#select">select</a>, <a href="#sethighlights">sethighlights</a>, <a href="#setlightingandperspective">setlightingandperspective</a>, <a href="#setvisibility">setvisibility</a>, <a href="#spacefill">spacefill</a>, <a href="#strands">strands</a>, <a href="#trace">trace</a>, <a href="#wireframe">wireframe</a>, </ul>
+
+<a name="vibration"/><h1>vibration</h1><ul><p>Provided information is present in the file (xyz format with columns 6-8 indicating dx, dy, and dz, or Gaussian harmonic frequency output), turns on and off display of vibration animation and allows setting of the time period for the vibration (in seconds) and the scale of the motion relative to the default (1). 
+	</p><h3>Syntax</h3><table><tr><td><b> vibration [time-period]
+			</b></td><td><ul><li><i>Adjusts the time period for one full vibration in seconds.
+			</i></li></ul></td></tr><tr><td><b> vibration scale [vibration-scale]
+			</b></td><td><ul><li><i>Adjusts the scale of the vibration motion independently of the vector length.
+			</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[time-period]</b></td><td><p>is number of seconds per vibration -- (positive number)</p></td></tr><tr><td><b>[vibration-scale]</b></td><td><p>is a (decimal, -10.0 to 10.0)</p></td></tr></table></ul>
+
+<a name="wireframe"/><h1>wireframe</h1><ul><p>Wireframe refers to the bonds drawn between the atoms. A boolean value of ON draws the selected bonds as lines. Alternatively, a numeric value may be used to specify the radius of the bonds. A decimal value such as 0.2 or 0.4 specifies Angstroms. The wireframe command operates on bonds either BETWEEN ANY TWO atoms in a previously selected atom set (having previously set bondmode AND) or TO ANY atoms in a previously selected atom set (having previously set bondmode OR). Note that the selected atoms must already be connected (based on information in the file, Jmol's autobonding algorithm, or from use of the connect or  command) in order to show any effect. 
+	</p><h3>Syntax</h3><table><tr><td><b> wireframe ON/OFF{default: ON}
+			</b></td><td><ul><li><i>Turn wireframe on or off
+			</i></li></ul></td></tr><tr><td><b> wireframe [radius-in-angstroms]
+			</b></td><td><ul><li><i>Show wireframe with the given cylinder diameter in Angstroms
+			</i></li></ul></td></tr><tr><td><b> wireframe [radius-Rasmol]
+			</b></td><td><ul><li><i>Show wireframe with the given cylinder diameter in Rasmol units (deprecated).
+			</i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[radius-in-angstroms]</b></td><td><p>is a (decimal, =3.0)</p></td></tr><tr><td><b>[radius-Rasmol]</b></td><td><p>is in 1/250ths of an Angstrom (deprecated) -- (integer, 1 to 749)</p></td></tr></table><h3>See also</h3><a href="#background">background</a>, <a href="#cartoon">cartoon</a>, <a href="#connect">connect</a>, <a href="#dots">dots</a>, <a href="#hbonds">hbonds</a>, <a href="#measure">measure</a>, <a href="#meshribbon">meshribbon</a>, <a href="#restrict">restrict</a>, <a href="#ribbon">ribbon</a>, <a href="#rocket">rocket</a>, <a href="#select">select</a>, <a href="#setbondstyles">setbondstyles</a>, <a href="#sethighlights">sethighlights</a>, <a href="#setlightingandperspective">setlightingandperspective</a>, <a href="#setvisibility">setvisibility</a>, <a href="#spacefill">spacefill</a>, <a href="#ssbonds">ssbonds</a>, <a href="#strands">strands</a>, <a href="#trace">trace</a>, <a href="#vector">vector</a>, <h3>Examples</h3><pre>wireframe 0.2
+wireframe off
+</pre></ul>
+
+<a name="zap"/><h1>zap</h1><ul><p> Clears the currently loaded molecule. RasMol forces you to zap prior to loading a new molecule. Jmol currently does not have this restriction and does not enforce it. 
+	</p></ul>
+
+<a name="zoom"/><h1>zoom</h1><ul><p> Allows enlarging or shrinking of the displayed model. A percentage value specifies the zoom relative to 100, the default value, which in Jmol is calculated so that all atoms are completely visible on the screen through all rotations using the default vanderWaals rendering percentage. The command "zoom OFF" disables mouse-based zooming and zooms to 100. The command "zoom ON" re-enables zooming at the current zoom setting. If the zoom has been turned off, setting the the zoom using, for example, "zoom 50," though it sets the "current zoom setting," has no effect until the next "zoom ON" command is given. 
+	</p><h3>Syntax</h3><table><tr><td><b> zoom [percent-zoom]
+			</b></td><td><ul><li><i></i></li></ul></td></tr><tr><td><b> zoom ON/OFF{default: ON}
+			</b></td><td><ul><li><i></i></li></ul></td></tr></table><h3>Definitions</h3><table><tr><td><b>[percent-zoom]</b></td><td><p>is an (integer, 5 to 5000)</p></td></tr></table><h3>See also</h3><a href="#delay">delay</a>, <a href="#exit">exit</a>, <a href="#frame">frame</a>, <a href="#loop">loop</a>, <a href="#model">model</a>, <a href="#moveto">moveto</a>, <a href="#quit">quit</a>, <a href="#script">script</a>, <a href="#setspin">setspin</a>, <a href="#show">show</a>, <a href="#spin">spin</a>, <a href="#translate">translate</a>, </ul>
+</html>

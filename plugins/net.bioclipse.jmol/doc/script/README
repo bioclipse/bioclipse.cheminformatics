@@ -1,0 +1,6 @@
+
+See the JmolScriptDocumentation README.
+
+XML that comes from Bob's website is still annoyingly broken, so it does need manual cleanup after the xmllint call.
+
+Egon, 2006-06-07
