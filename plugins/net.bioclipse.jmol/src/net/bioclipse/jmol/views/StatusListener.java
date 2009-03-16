@@ -40,13 +40,13 @@ public class StatusListener implements JmolStatusListener {
     }
 
     public void notifyAtomPicked(int atomIndex, String strInfo) {
-        Activator.getDefault().getJsConsoleManager().print("Jmol atom picked: " + atomIndex + ". Info: " + strInfo);
-    
-
+        Activator.getDefault()
+                 .getJsConsoleManager()
+                 .print("Jmol atom picked: " + atomIndex + ". " +
+                 		    "Info: " + strInfo);
         
 //        if (strInfo.charAt(0)=='['){
 //            if (strInfo.charAt(4)==']'){
-        
         
         //PolymerSelection
         if (strInfo.contains("[")){
@@ -108,7 +108,8 @@ public class StatusListener implements JmolStatusListener {
         		part.setSelection(selection);
 
         	} catch (Exception e){
-        		logger.debug("Could not create JmolSelecion, probably something unselectable selected in Jmol");
+        		logger.debug("Could not create JmolSelecion, " +
+        				         "probably something unselectable selected in Jmol");
         		LogUtils.debugTrace(logger, e);
         		return;
         	}
@@ -132,31 +133,51 @@ public class StatusListener implements JmolStatusListener {
         
     }
 
-    public void notifyFileLoaded(String fullPathName, String fileName, String modelName, Object clientFile, String errorMessage) {
-        logger.debug("Jmol file loaded: " + fullPathName + ". Modelname: " + modelName);
-        if ((errorMessage!=null) && (!(errorMessage.equals("")))){
+    public void notifyFileLoaded( String fullPathName, 
+                                  String fileName, 
+                                  String modelName, 
+                                  Object clientFile, 
+                                  String errorMessage ) {
+        logger.debug("Jmol file loaded: " + fullPathName 
+                     + ". Modelname: " + modelName);
+        if ((errorMessage!=null) && (!(errorMessage.equals("")))) {
             logger.error("JmolError: " + errorMessage);
         }
     }
 
     public void notifyFrameChanged(int frameNo) {
-        Activator.getDefault().getJsConsoleManager().print("Jmol frame changed to: " + frameNo);
+        Activator.getDefault()
+                 .getJsConsoleManager()
+                 .print("Jmol frame changed to: " + frameNo);
     }
 
     public void notityNewDefaultModeMeasurement(int count, String strInfo) {
-        Activator.getDefault().getJsConsoleManager().print("New default measurement mode: " + count + ". Info: " + strInfo);
+        Activator.getDefault()
+                 .getJsConsoleManager()
+                 .print("New default measurement mode: " 
+                        + count + ". Info: " + strInfo);
     }
 
     public void notifyNewPickingModeMeasurement(int iatom, String strMeasure) {
-        Activator.getDefault().getJsConsoleManager().print("Jmol atom picked: " + iatom + ". Measure: " + strMeasure);
+        Activator.getDefault()
+                 .getJsConsoleManager()
+                 .print("Jmol atom picked: " + iatom 
+                        + ". Measure: " + strMeasure);
     }
 
-    public void notifyScriptStart(String statusMessage, String additionalInfo) {
-        Activator.getDefault().getJsConsoleManager().print("JmolScript started. Status: " + statusMessage + ". Info: " + additionalInfo);
+    public void notifyScriptStart( String statusMessage, 
+                                   String additionalInfo ) {
+        Activator.getDefault()
+                 .getJsConsoleManager()
+                 .print("JmolScript started. Status: " + 
+                        statusMessage + ". Info: " + additionalInfo);
     }
 
     public void notifyScriptTermination(String statusMessage, int msWalltime) {
-        Activator.getDefault().getJsConsoleManager().print("JmolScript ended. Status: " + statusMessage + ". Time: " + msWalltime + " ms");
+        Activator.getDefault()
+                 .getJsConsoleManager()
+                 .print("JmolScript ended. Status: " + statusMessage 
+                        + ". Time: " + msWalltime + " ms");
     }
 
     public void sendConsoleEcho(String strEcho) {
@@ -178,21 +199,27 @@ public class StatusListener implements JmolStatusListener {
     }
 
     public void setStatusMessage(String statusMessage) {
-        Activator.getDefault().getJsConsoleManager().print("Jmol status message: " + statusMessage);
+        Activator.getDefault()
+                 .getJsConsoleManager()
+                 .print("Jmol status message: " + statusMessage);
     }
 
     public void scriptEcho(String strEcho) {
-        Activator.getDefault().getJsConsoleManager().print("Jmol ScriptEcho: " + strEcho);
+        Activator.getDefault()
+                 .getJsConsoleManager().print("Jmol ScriptEcho: " + strEcho);
     }
 
     public void scriptStatus(String strStatus) {
-        Activator.getDefault().getJsConsoleManager().print("Jmol ScriptStatus: " + strStatus);
+        Activator.getDefault()
+                 .getJsConsoleManager()
+                 .print("Jmol ScriptStatus: " + strStatus);
     }
 
     public void notifyMeasurementsChanged() {
-        Activator.getDefault().getJsConsoleManager().print("Jmol measurements have changed.");
+        Activator.getDefault()
+                 .getJsConsoleManager()
+                 .print("Jmol measurements have changed.");
     }
-
 
     public void notifyAtomHovered(int arg0, String arg1) {
     }
@@ -210,7 +237,8 @@ public class StatusListener implements JmolStatusListener {
         return null;
     }
 
-    public void notifyFrameChanged(int arg0, int arg1, int arg2, int arg3, int arg4) {
+    public void notifyFrameChanged( int arg0, int arg1, 
+                                    int arg2, int arg3, int arg4) {
     }
 
     public void notifyResized(int arg0, int arg1) {
@@ -224,7 +252,8 @@ public class StatusListener implements JmolStatusListener {
             int quality) {
     }
 
-    public String createImage( String arg0, String arg1, Object arg2, int arg3 ) {
+    public String createImage( String arg0, String arg1, 
+                               Object arg2, int arg3 ) {
         // TODO Auto-generated method stub
         return null;
     }
