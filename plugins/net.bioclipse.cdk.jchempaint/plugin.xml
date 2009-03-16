@@ -179,7 +179,7 @@
                 icon="icons/jcp/symbol.png"
                 label="Cycle Symbol"
                 style="radio"
-                tooltip="Draw Bond">
+                tooltip="Cycle Symbol">
              <visibleWhen
                    checkEnabled="true">
                 <reference
