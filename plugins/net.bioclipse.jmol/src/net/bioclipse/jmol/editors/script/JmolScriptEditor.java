@@ -61,7 +61,7 @@ public class JmolScriptEditor extends TextEditor {
 	@Override
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "net.bioclipse.jmol.editors.script.JmolScriptEditor");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "net.bioclipse.jmol.jmolScriptEditor");
 
 	}
 	public static String[] getSubStrings() {

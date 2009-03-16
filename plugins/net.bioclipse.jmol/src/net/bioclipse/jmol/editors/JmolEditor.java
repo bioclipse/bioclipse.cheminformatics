@@ -229,6 +229,9 @@ public class JmolEditor extends MultiPageEditorPart
 
         //Post selections in Jmol to Eclipse
         getSite().setSelectionProvider(this);
+        
+        //Register help context for this editor
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(this.getControl( 0 ), "net.bioclipse.jmol.jmolEditor");
 
     }
 

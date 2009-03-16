@@ -10,6 +10,18 @@
       </scriptContribution>
    </extension>
 
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true"/>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="helpContexts.xml"
+            />
+   </extension>
 
 
    <extension

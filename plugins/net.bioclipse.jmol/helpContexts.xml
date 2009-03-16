@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.contexts"?>
+
+<contexts>
+  <context id="jmolEditor">
+    <description>The Jmol Editor provides interactive visualization of molecular structures in 3D.</description>
+    <topic href="doc/jmolEditor.html" label="Jmol Editor"/>
+    <topic href="doc/mouseGestures.html" label="Jmol mouse gestures"/>
+    <topic href="doc/script/help.html" label="Jmol Script Reference"/>
+  </context>
+  <context id="jmolScriptEditor">
+    <description>The Jmol Script Editor allows editing of Jmol script files,
+      and offers syntax highlighting and autocompletion.</description>
+    <topic href="doc/jmolEditor.html" label="Jmol Script Editor"/>
+    <topic href="doc/script/help.html" label="Jmol Script Commands Reference"/>
+  </context>
+</contexts>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Jmol">
+  <topic label="About Jmol plugin" href="doc/jmol_about.html"/>
+  <topic label="Jmol Editor" href="doc/jmolEditor.html">
+    <topic label="Mouse Gestures in jmol" href="doc/mouseGestures.html"/>
+  </topic>
+  <topic label="JmolScript editor" href="doc/jmolScriptEditor.html"/>
+  <topic label="Scripting Language Reference" href="doc/script/help.html"/> 
+
+</toc>
