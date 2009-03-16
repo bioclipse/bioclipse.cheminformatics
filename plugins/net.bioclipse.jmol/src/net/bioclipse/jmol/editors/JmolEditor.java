@@ -217,6 +217,9 @@ public class JmolEditor extends MultiPageEditorPart
         runScript("display 1.1");
 
         runScript("select none");
+        
+        //make clicking on elemtents select those elements
+        runScript("set picking select");
 
         //End Initialize jmol
         //===============
