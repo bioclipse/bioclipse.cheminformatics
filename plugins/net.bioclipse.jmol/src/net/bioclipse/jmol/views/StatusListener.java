@@ -127,9 +127,6 @@ public class StatusListener implements JmolStatusListener {
                 
 //            }
 //        }
-
-        
-        
         
     }
 
