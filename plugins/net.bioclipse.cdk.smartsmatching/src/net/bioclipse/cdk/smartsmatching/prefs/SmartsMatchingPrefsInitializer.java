@@ -26,11 +26,19 @@ public class SmartsMatchingPrefsInitializer extends AbstractPreferenceInitialize
       
       IPreferenceStore store=Activator.getDefault().getPreferenceStore();
 
+//      store.setDefault(SmartsMatchingPrefsHelper.SMARTSMATCHING_PREFS_SMARTS, 
+//                       "Aromatic" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "[a]" 
+//                       + SmartsMatchingPrefsHelper.PREFS_DELIMITER + "Fragment 1" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "[CH2](*(N))" 
+//                       + SmartsMatchingPrefsHelper.PREFS_DELIMITER + "Fragment 2" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "[N](*(*(O)))"
+//                       );
+
       store.setDefault(SmartsMatchingPrefsHelper.SMARTSMATCHING_PREFS_SMARTS, 
-          "Aromatic" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "[a]" 
-          + SmartsMatchingPrefsHelper.PREFS_DELIMITER + "Fragment 1" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "[CH2](*(N))" 
-          + SmartsMatchingPrefsHelper.PREFS_DELIMITER + "Fragment 2" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "[N](*(*(O)))"
-          );
+                       "t-Butyl" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "[*][C]([CH3])([CH3])[CH3]" 
+                       + SmartsMatchingPrefsHelper.PREFS_DELIMITER 
+                       + "Epoxide" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "[*][C](O1)[C]1[*]" 
+                       + SmartsMatchingPrefsHelper.PREFS_DELIMITER 
+                       + "Amino acid" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "[*][C](C(=O)[OH])[NH2]"
+                       );
 
         logger.info("SmartsMatching default preferences initialized");
     }

@@ -21,5 +21,12 @@
    <extension point="org.eclipse.core.runtime.preferences">
 		<initializer class="net.bioclipse.cdk.smartsmatching.prefs.SmartsMatchingPrefsInitializer"/>
 	</extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+   </extension>
    
 </plugin>

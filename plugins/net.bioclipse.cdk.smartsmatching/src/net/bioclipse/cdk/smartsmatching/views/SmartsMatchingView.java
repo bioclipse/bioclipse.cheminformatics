@@ -32,6 +32,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.*;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.help.IContextProvider;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.action.*;
@@ -468,6 +469,14 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         
     }
 
+//    @Override
+//    public Object getAdapter( Class adapter ) {
+//        
+//        if (adapter.equals(IContextProvider.class)) {
+//            return new SmartsContextProvider();
+//          }
+//        return super.getAdapter( adapter );
+//    }
 
 
 }
