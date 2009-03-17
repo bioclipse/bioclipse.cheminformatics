@@ -33,13 +33,15 @@ public class SmartsMatchingPrefsInitializer extends AbstractPreferenceInitialize
 //                       );
 
       store.setDefault(SmartsMatchingPrefsHelper.SMARTSMATCHING_PREFS_SMARTS, 
-                       "t-Butyl" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "[*][C]([CH3])([CH3])[CH3]" 
+                       "t-Butyl" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "*[C]([CH3])([CH3])[CH3]" 
                        + SmartsMatchingPrefsHelper.PREFS_DELIMITER 
-                       + "Epoxide" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "[*][C](O1)[C]1[*]" 
+                       + "Epoxide" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "*[C](O1)[C]1*" 
                        + SmartsMatchingPrefsHelper.PREFS_DELIMITER 
-                       + "Amino acid" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "[*][C](C(=O)[OH])[NH2]"
+                       + "Amino acid" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "*[C](C(=O)[OH])[NH2]"
+                       + SmartsMatchingPrefsHelper.PREFS_DELIMITER 
+                       + "Ester" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "O=C(*)O*"
                        );
-
+      
         logger.info("SmartsMatching default preferences initialized");
     }
     
