@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc label="SMARTS matching" href="html/toc.html">
-	<topic label="SMARTS matching view"  href="html/smartsmatchingview.html" /> 
+<toc label="SMARTS matching">
+	<topic label="SMARTS matching view"  href="html/smartsmatchingview.html" />
+	<topic label="SMARTS theory"   href="html/smartstheory.html" /> 
 </toc>
