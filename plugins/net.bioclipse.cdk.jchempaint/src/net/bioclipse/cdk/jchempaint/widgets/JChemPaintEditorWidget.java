@@ -228,6 +228,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 Rectangle rect = getDiagramBounds();
                 setIsScrolling(true);
                 scroll(dx, 0, 0, 0, rect.width, rect.height, false);
+//                getRenderer().shiftDrawCenter( origin.x, origin.y );
                 setIsScrolling(false);
                 origin.x = -d;
                 update();
@@ -244,6 +245,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 Rectangle rect = getDiagramBounds();
                 setIsScrolling(true);
                 scroll(0, dy, 0, 0, rect.width, rect.height, false);
+//                getRenderer().shiftDrawCenter( origin.x, origin.y );
                 setIsScrolling(false);
                 origin.y = -d;
                 update();
@@ -277,39 +279,38 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     }
 
     private void paintControl( PaintEvent event ) {
-            drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
-            IChemModel chemModel = hub.getIChemModel();
 
             setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
-
+            drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
 
             Rectangle c = getClientArea();
-            Rectangle2D clientArea =
+            Rectangle2D drawArea =
                 new Rectangle2D.Double(c.x, c.y, c.width, c.height);
 
             paintDitry( event.gc, c.width,c.height );
 
             SWTRenderer visitor = new SWTRenderer( event.gc );
-
             Renderer renderer = getRenderer();
 
-            if (isScrolling) {
-                renderer.repaint(visitor);
-    //            isScrolling = false;
-                return;
-            }
-
             if (isNew) {
-                renderer.setScale(chemModel);
-            }
-
-            if (renderer.getRenderer2DModel().isFitToScreen()) {
-                renderer.paintChemModel(chemModel, visitor, clientArea, isNew);
-            } else {
-                renderer.paintChemModel(chemModel, visitor);
-            }
-
-            isNew = false;
+                renderer.setScale(atomContainer);
+                java.awt.Rectangle diagramBounds = renderer.
+                                          calculateDiagramBounds(atomContainer);
+                renderer.setZoomToFit( drawArea.getWidth(),
+                                       drawArea.getHeight(),
+                                       diagramBounds.getWidth(),
+                                       diagramBounds.getHeight());
+                renderer.paintMolecule(atomContainer, visitor,drawArea,true);
+                isNew = false;
+                } else {
+                    if(isScrolling) {
+                        renderer.repaint( visitor );
+                    }else {
+//                        java.awt.Rectangle diagramSize =
+                            renderer.paintMolecule(atomContainer, visitor);
+                // ...update scroll bars here
+                    }
+                }
         }
 
     void paintDitry(GC gc,int width, int height) {

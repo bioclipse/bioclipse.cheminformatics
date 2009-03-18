@@ -106,22 +106,22 @@ public class JChemPaintWidget extends Canvas {
     }
 
     private void paintControl( PaintEvent event ) {
-        drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
+
+        //drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
+
         if ( atomContainer == null ) {
             setBackground( getParent().getBackground() );
             return;
-        } else setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
+        } else
+            setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
 
         Rectangle c = getClientArea();
-        Rectangle2D clientArea =
-            new Rectangle2D.Double(c.x, c.y, c.width, c.height);
+        Rectangle2D drawArea = new Rectangle2D.Double( c.x, c.y,
+                                                         c.width, c.height);
+
         SWTRenderer visitor = new SWTRenderer( event.gc );
 
-        if (isNew) {
-            renderer.setScale(atomContainer);
-        }
-
-        renderer.paintMolecule(atomContainer, visitor, clientArea, isNew);
+        renderer.paintMolecule(atomContainer, visitor, drawArea,true);
 
         if (!(atomContainer.getAtomCount() == 0)) {
             isNew = false;
@@ -132,7 +132,10 @@ public class JChemPaintWidget extends Canvas {
 
         if( (atomContainer!=null)
                     && (GeometryTools.has2DCoordinates( atomContainer ))) {
+            if(this.atomContainer != atomContainer)
+                isNew = true;
             this.atomContainer = atomContainer;
+
             updateView( true );
         }else {
             this.atomContainer = null;
