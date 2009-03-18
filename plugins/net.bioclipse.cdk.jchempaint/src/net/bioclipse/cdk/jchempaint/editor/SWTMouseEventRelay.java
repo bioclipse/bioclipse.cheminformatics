@@ -86,9 +86,9 @@ public class SWTMouseEventRelay implements MouseListener, MouseMoveListener,
     public void mouseScrolled(MouseEvent e) {
         int clicks = e.count;
         if (clicks > 0) {
-            relay.mouseWheelMovedForward(clicks);
-        } else {
             relay.mouseWheelMovedBackward(clicks);
+        } else {
+            relay.mouseWheelMovedForward(clicks);
         }
     }
 
