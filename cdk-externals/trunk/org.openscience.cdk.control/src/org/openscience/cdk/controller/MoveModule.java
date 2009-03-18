@@ -43,6 +43,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IMoleculeSet;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.tools.LoggingTool;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
@@ -105,48 +106,74 @@ public class MoveModule extends ControllerModuleAdapter {
         selection = null;
         offset = null;
     }
-    
-	private void mergeMolecules(Vector2d start) {
-		Iterator<IAtom> it=chemModelRelay.getRenderer().getRenderer2DModel().getMerge().keySet().iterator();
-		IBond[] bondson2 = null;
-		IAtom atom2 = null;
-		IAtom atom1 = null;
-		while(it.hasNext()){
-			List<IBond> removedbonds = new ArrayList<IBond>();
-			Map<IBond, Integer> bondswithreplacedatoms = new HashMap<IBond, Integer>();
-			atom1=(IAtom)it.next();
-			atom2=(IAtom)chemModelRelay.getRenderer().getRenderer2DModel().getMerge().get(atom1);
-			IMoleculeSet som=chemModelRelay.getIChemModel().getMoleculeSet();
-			IAtomContainer container1 = ChemModelManipulator.getRelevantAtomContainer(chemModelRelay.getIChemModel(), atom1);
-			IAtomContainer container2 = ChemModelManipulator.getRelevantAtomContainer(chemModelRelay.getIChemModel(), atom2);
-			if (container1 != container2) {
-				container1.add(container2);
-				som.removeAtomContainer(container2);
-			}
-			bondson2=AtomContainerManipulator.getBondArray(container1.getConnectedBondsList(atom2));
-			for(int i=0;i<bondson2.length;i++){
-				if(bondson2[i].getAtom(0)==atom2){
-					bondson2[i].setAtom(atom1,0);
-					bondswithreplacedatoms.put(bondson2[i], 0);
-				}
-				if(bondson2[i].getAtom(1)==atom2){
-					bondson2[i].setAtom(atom1,1);
-					bondswithreplacedatoms.put(bondson2[i], 1);
-				}
-				if(bondson2[i].getAtom(0)==bondson2[i].getAtom(1)){
-					container1.removeBond(bondson2[i]);
-					removedbonds.add(bondson2[i]);
-				}
-			}
-			container1.removeAtom(atom2);
-			chemModelRelay.updateAtom(atom1);
-			if(chemModelRelay.getUndoRedoFactory()!=null && chemModelRelay.getUndoRedoHandler()!=null){
-				IUndoRedoable undoredo = chemModelRelay.getUndoRedoFactory().getMergeMoleculesEdit(atom2, container1, removedbonds, bondswithreplacedatoms, start, atom1, "Merge atom", chemModelRelay);
-				chemModelRelay.getUndoRedoHandler().postEdit(undoredo);
-			}
-		}
-		chemModelRelay.getRenderer().getRenderer2DModel().getMerge().clear();
-	}
+
+    private void mergeMolecules( Vector2d start ) {
+
+        RendererModel rModel = chemModelRelay.getRenderer()
+                .getRenderer2DModel();
+        Iterator<IAtom> it = rModel.getMerge().keySet().iterator();
+        IBond[] bondson2 = null;
+        IAtom atom2 = null;
+        IAtom atom1 = null;
+
+        while ( it.hasNext() ) {
+
+            List<IBond> removedBonds = new ArrayList<IBond>();
+            Map<IBond, Integer> bondsWithReplacedAtoms = new HashMap<IBond, Integer>();
+
+            atom1 = (IAtom) it.next();
+            atom2 = (IAtom) rModel.getMerge().get( atom1 );
+
+            IMoleculeSet som = chemModelRelay.getIChemModel().getMoleculeSet();
+            IAtomContainer atomContainer = ChemModelManipulator
+                    .getRelevantAtomContainer( chemModelRelay.getIChemModel(),
+                                               atom1 );
+            IAtomContainer tempAC = ChemModelManipulator
+                    .getRelevantAtomContainer( chemModelRelay.getIChemModel(),
+                                               atom2 );
+            // if in different atom containers merge them
+            if ( atomContainer != tempAC ) {
+                atomContainer.add( tempAC );
+                som.removeAtomContainer( tempAC );
+            }
+
+            bondson2 = AtomContainerManipulator.getBondArray( atomContainer
+                    .getConnectedBondsList( atom2 ) );
+
+            for(IBond bond:bondson2) {
+                IAtom a0 = bond.getAtom( 0 );
+                IAtom a1 = bond.getAtom( 1 );
+                if(a0 == atom2) {
+                    bond.setAtom( atom1,0);
+                    bondsWithReplacedAtoms.put( bond,  0   );
+                }
+                if( a1 == atom2) {
+                    bond.setAtom( atom1,1 );
+                    bondsWithReplacedAtoms.put( bond, 1 );
+                }
+
+                if(bond.getAtom( 0 ) == bond.getAtom( 1 )) {
+                    atomContainer.removeBond( bond );
+                    removedBonds.add(bond);
+                }
+            }
+
+            atomContainer.removeAtom( atom2 );
+            chemModelRelay.updateAtom( atom1 );
+
+            if ( chemModelRelay.getUndoRedoFactory() != null
+                 && chemModelRelay.getUndoRedoHandler() != null ) {
+                IUndoRedoable undoredo = chemModelRelay.getUndoRedoFactory()
+                        .getMergeMoleculesEdit( atom2, atomContainer,
+                                                removedBonds,
+                                                bondsWithReplacedAtoms, start,
+                                                atom1, "Merge atom",
+                                                chemModelRelay );
+                chemModelRelay.getUndoRedoHandler().postEdit( undoredo );
+            }
+        }
+        rModel.getMerge().clear();
+    }
 
 
     public void mouseDrag(Point2d worldCoordFrom, Point2d worldCoordTo) {
