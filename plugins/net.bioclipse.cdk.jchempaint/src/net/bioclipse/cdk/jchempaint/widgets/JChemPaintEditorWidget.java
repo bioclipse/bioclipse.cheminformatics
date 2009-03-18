@@ -289,29 +289,31 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
             paintDitry( event.gc, c.width,c.height );
 
-            SWTRenderer visitor = new SWTRenderer( event.gc );
-            Renderer renderer = getRenderer();
+            if(atomContainer != null) {
+                SWTRenderer visitor = new SWTRenderer( event.gc );
+                Renderer renderer = getRenderer();
 
-            if (isNew) {
-                renderer.setScale(atomContainer);
-                java.awt.Rectangle diagramBounds = renderer.
-                                          calculateDiagramBounds(atomContainer);
-                renderer.setZoomToFit( drawArea.getWidth(),
-                                       drawArea.getHeight(),
-                                       diagramBounds.getWidth(),
-                                       diagramBounds.getHeight());
-                renderer.paintMolecule(atomContainer, visitor,drawArea,true);
-                isNew = false;
+                if (isNew) {
+                    renderer.setScale(atomContainer);
+                    java.awt.Rectangle diagramBounds = renderer.
+                    calculateDiagramBounds(atomContainer);
+                    renderer.setZoomToFit( drawArea.getWidth(),
+                                           drawArea.getHeight(),
+                                           diagramBounds.getWidth(),
+                                           diagramBounds.getHeight());
+                    renderer.paintMolecule(atomContainer, visitor,drawArea,true);
+                    isNew = false;
                 } else {
                     if(isScrolling) {
                         renderer.repaint( visitor );
                     }else {
-//                        java.awt.Rectangle diagramSize =
-                            renderer.paintMolecule(atomContainer, visitor);
-                // ...update scroll bars here
+                        //                        java.awt.Rectangle diagramSize =
+                        renderer.paintMolecule(atomContainer, visitor);
+                        // ...update scroll bars here
                     }
                 }
-        }
+            }
+    }
 
     void paintDitry(GC gc,int width, int height) {
         if(isdirty) {
