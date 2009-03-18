@@ -478,5 +478,12 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
 //        return super.getAdapter( adapter );
 //    }
 
+    @Override
+    public void dispose() {
+
+        //Unregister listening on parts
+        getSite().getWorkbenchWindow().getPartService().removePartListener(this);
+        super.dispose();
+    }
 
 }
