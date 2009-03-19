@@ -98,6 +98,64 @@
       file-extensions="smiles,smi"
       priority="normal">
     </content-type>
-  </extension>
+    <content-type
+              base-type="org.eclipse.core.runtime.text"
+              file-extensions="pdb"
+              id="net.bioclipse.contenttypes.pdb"
+              name="Protein Brookhaven Database File"
+              priority="high">
+        </content-type>
+
+        <content-type
+              base-type="org.eclipse.core.runtime.text"
+              file-extensions="sdf"
+              id="net.bioclipse.contenttypes.sdf"
+              name="MDL SD file"
+              priority="high">
+        </content-type>
+        <content-type
+              base-type="org.eclipse.core.runtime.text"
+              file-extensions="smi"
+              id="net.bioclipse.contenttypes.smi"
+              name="SMILES (Multiple Molecules)"
+              priority="high">
+        </content-type>
+
+        <content-type
+              base-type="org.eclipse.core.runtime.text"
+              id="net.bioclipse.contenttypes.mdlMolFile"
+              name="MDL MolFile"
+              priority="high">
+        </content-type>
+
+        <content-type
+              base-type="net.bioclipse.contenttypes.mdlMolFile"
+              file-extensions="mdl,mol"
+              id="net.bioclipse.contenttypes.mdlMolFile2D"
+              name="MDL Molfile (2D)"
+              priority="high">
+		 <describer class="net.bioclipse.chemoinformatics.contenttypes.MdlMolFileCoordinatesDescriber">
+              <parameter
+                    name="type"
+                    value="2D">
+              </parameter>
+       	</describer>
+        </content-type>
+
+        <content-type
+              base-type="net.bioclipse.contenttypes.mdlMolFile"
+              file-extensions="mdl,mol"
+              id="net.bioclipse.contenttypes.mdlMolFile3D"
+              name="MDL molfile (3D)"
+              priority="high">
+		 <describer class="net.bioclipse.chemoinformatics.contenttypes.MdlMolFileCoordinatesDescriber">
+              <parameter
+                    name="type"
+                    value="3D">
+              </parameter>
+       	</describer>
+        </content-type>
+
+     </extension>  
 
 </plugin>
