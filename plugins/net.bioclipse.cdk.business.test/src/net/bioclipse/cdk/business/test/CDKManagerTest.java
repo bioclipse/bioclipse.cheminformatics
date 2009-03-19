@@ -778,7 +778,7 @@ public class CDKManagerTest extends AbstractManagerTest {
 
     @Test public void testFragmentate() throws Exception {
         ICDKMolecule mol = cdk.fromSMILES("O=C(CC)[O-].[Na+]");
-        List<IAtomContainer> fragments = cdk.fragmentate(mol);
+        List<IAtomContainer> fragments = cdk.partition(mol);
         Assert.assertEquals(2, fragments.size());
     }
 }

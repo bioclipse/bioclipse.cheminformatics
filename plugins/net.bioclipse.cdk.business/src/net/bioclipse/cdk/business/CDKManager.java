@@ -1896,7 +1896,7 @@ public class CDKManager implements ICDKManager {
         return new CDKMolecule( ((ICDKMolecule) mol).getAtomContainer() );
     }
 
-    public List<IAtomContainer> fragmentate(IMolecule molecule)
+    public List<IAtomContainer> partition(IMolecule molecule)
             throws BioclipseException {
         IAtomContainer todealwith;
         if (molecule instanceof ICDKMolecule) {
