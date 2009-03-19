@@ -781,4 +781,15 @@ public class CDKManagerTest extends AbstractManagerTest {
         List<IAtomContainer> fragments = cdk.partition(mol);
         Assert.assertEquals(2, fragments.size());
     }
+
+    @Test public void testTotalFormalCharge() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("O=C(CC)[O-].[Na+]");
+        Assert.assertEquals(0, cdk.totalFormalCharge(mol));
+
+        mol = cdk.fromSMILES("O=C(CC)[O-]");
+        Assert.assertEquals(-1, cdk.totalFormalCharge(mol));
+
+        mol = cdk.fromSMILES("O=C(CC(=O)[O-])[O-]");
+        Assert.assertEquals(-2, cdk.totalFormalCharge(mol));
+    }
 }

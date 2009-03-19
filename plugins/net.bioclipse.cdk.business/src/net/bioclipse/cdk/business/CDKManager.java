@@ -1913,4 +1913,20 @@ public class CDKManager implements ICDKManager {
         
         return result;
     }
+
+    public int totalFormalCharge(IMolecule molecule)
+            throws BioclipseException {
+        IAtomContainer todealwith;
+        if (molecule instanceof ICDKMolecule) {
+            todealwith = ((ICDKMolecule) molecule).getAtomContainer();
+        } else {
+            todealwith = create( molecule ).getAtomContainer();
+        }
+        
+        int totalCharge = 0;
+        for (IAtom atom : todealwith.atoms()) {
+            totalCharge += atom.getFormalCharge() == null ? 0 : atom.getFormalCharge();
+        }
+        return totalCharge;
+    }
 }

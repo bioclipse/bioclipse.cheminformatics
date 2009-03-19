@@ -777,4 +777,13 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testSMARTSonFile")
     public List<IAtomContainer> partition(IMolecule molecule) throws BioclipseException;
 
+    @Recorded
+    @PublishedMethod(
+         params = "IMolecule molecule: molecule to calculate the total formal" +
+         		" charge for.",
+         methodSummary = "Calculates the total formal charge.")
+    @TestMethods("testSMARTSonFile")
+    public int totalFormalCharge(IMolecule molecule)
+        throws BioclipseException;
+
 }
