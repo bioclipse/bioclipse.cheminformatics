@@ -38,6 +38,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.MenuDetectEvent;
+import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
@@ -53,6 +55,7 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.controller.ControllerHub;
+import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.controller.IControllerModel;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
@@ -62,12 +65,11 @@ import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
+import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.selection.AbstractSelection;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
-import org.openscience.cdk.renderer.selection.LogicalSelection;
 import org.openscience.cdk.renderer.selection.MultiSelection;
 import org.openscience.cdk.renderer.selection.SingleSelection;
-import org.openscience.cdk.renderer.selection.LogicalSelection.Type;
 
 public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
@@ -87,7 +89,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     public void undo() throws ExecutionException {
         widget.undo();
     }
-    
+
     public void redo() throws ExecutionException {
         widget.redo();
     }
@@ -226,6 +228,31 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
         menu = menuMgr.createContextMenu( widget );
         widget.setMenu( menu );
+        widget.addMenuDetectListener( new MenuDetectListener() {
+
+            public void menuDetected( MenuDetectEvent e ) {
+                IChemModelRelay chemModelRelay = widget.getControllerHub();
+                RendererModel rModel =chemModelRelay.getRenderer()
+                                                    .getRenderer2DModel();
+
+                IAtom atom = rModel.getHighlightedAtom();
+                IBond bond = rModel.getHighlightedBond();
+
+                IChemObjectSelection localSelection = rModel.getSelection();
+                IChemObject chemObject = atom!=null?atom:bond;
+
+                if(!localSelection.contains( chemObject )) {
+                    if(chemObject != null)
+                        localSelection = new SingleSelection<IChemObject>(chemObject);
+                    else
+                        localSelection = AbstractSelection.EMPTY_SELECTION;
+                }
+                rModel.setSelection( localSelection);
+                widget.setSelection( widget.getSelection() );
+                e.doit = true;
+            }
+
+        });
 
         // setup hub
         getSite().setSelectionProvider( widget );
@@ -309,13 +336,13 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
         if ( part != null && part.equals( this ) )
             return;
-        
+
         if ( selection instanceof IStructuredSelection ) {
-            IStructuredSelection bcSelection = 
+            IStructuredSelection bcSelection =
                 (IStructuredSelection)selection;
             IChemObjectSelection jcpSelection = AbstractSelection.EMPTY_SELECTION;
             if(bcSelection.size()==0) { // do nothing jcpSelection already empty
-            }else 
+            }else
                 if(bcSelection.size()==1) {
                     if(bcSelection.getFirstElement() instanceof CDKChemObject)
                         jcpSelection = new SingleSelection<IChemObject>(
