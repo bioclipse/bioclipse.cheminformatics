@@ -14,10 +14,12 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources,
  net.bioclipse.ui;bundle-version="2.0.0",
  org.xmlcml.cmlxom;bundle-version="2.0.0",
- net.bioclipse.xom;bundle-version="1.1.0"
+ net.bioclipse.xom;bundle-version="1.1.0",
+ org.xmlpull.xpp3;bundle-version="0.4.0"
 Bundle-ClassPath: .
 Bundle-Activator: net.bioclipse.cml.managers.Activator
 Eclipse-AutoStart: true
 Bundle-Vendor: The Bioclipse Team
 Export-Package: net.bioclipse.cml.handlers,
- net.bioclipse.cml.managers
+ net.bioclipse.cml.managers,
+ net.bioclipse.cml.contenttypes

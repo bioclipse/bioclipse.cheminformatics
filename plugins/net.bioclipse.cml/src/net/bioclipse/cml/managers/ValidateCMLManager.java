@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.ui.contenttypes.CmlFileDescriber;
+import net.bioclipse.cml.contenttypes.CmlFileDescriber;
 import nu.xom.Builder;
 import nu.xom.Element;
 import nu.xom.ParsingException;
