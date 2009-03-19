@@ -27,8 +27,9 @@ public class ExportHandler extends AbstractHandler implements IHandler {
 
 		if (returnValue == SaveAsDialog.OK) {
 		    IPath path = dialog.getResult();
-		    Activator.getDefault().getJmolManager().snapshot(
-		            path.toPortableString());
+		    String strPath = path.toPortableString();
+		    if (!strPath.endsWith(".png")) strPath += ".png";
+		    Activator.getDefault().getJmolManager().snapshot(strPath);
 		}
 
 		return null;
