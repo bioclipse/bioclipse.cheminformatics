@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
