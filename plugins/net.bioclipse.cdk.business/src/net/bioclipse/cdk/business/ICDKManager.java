@@ -769,4 +769,12 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testSMARTSonFile")
     List<IAtomContainer> getSmartsMatches( ICDKMolecule molecule, String SMARTS )
     throws BioclipseException;
+    
+    @Recorded
+    @PublishedMethod(
+         params = "IMolecule molecule: atom container to fragmentate",
+         methodSummary = "Splits up an atom container into fully connected molecules")
+    @TestMethods("testSMARTSonFile")
+    public List<IAtomContainer> fragmentate(IMolecule molecule) throws BioclipseException;
+
 }

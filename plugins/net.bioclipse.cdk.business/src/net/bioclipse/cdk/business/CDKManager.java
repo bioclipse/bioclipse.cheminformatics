@@ -1895,4 +1895,22 @@ public class CDKManager implements ICDKManager {
         }
         return new CDKMolecule( ((ICDKMolecule) mol).getAtomContainer() );
     }
+
+    public List<IAtomContainer> fragmentate(IMolecule molecule)
+            throws BioclipseException {
+        IAtomContainer todealwith;
+        if (molecule instanceof ICDKMolecule) {
+            todealwith = ((ICDKMolecule) molecule).getAtomContainer();
+        } else {
+            todealwith = create( molecule ).getAtomContainer();
+        }
+        
+        IMoleculeSet set = ConnectivityChecker.partitionIntoMolecules(todealwith);
+        List<IAtomContainer> result = new ArrayList<IAtomContainer>();
+        for (IAtomContainer container : set.atomContainers()) {
+            result.add(container);
+        }
+        
+        return result;
+    }
 }

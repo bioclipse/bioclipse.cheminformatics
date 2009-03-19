@@ -34,7 +34,6 @@ import javax.vecmath.Point3d;
 
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.CDKManagerHelper;
-import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdkdebug.business.ICDKDebugManager;
 import net.bioclipse.core.MockIFile;
@@ -53,6 +52,7 @@ import org.junit.Test;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMoleculeSet;
@@ -774,5 +774,11 @@ public class CDKManagerTest extends AbstractManagerTest {
         ICDKMolecule mol = cdk.fromSMILES("ClC(Cl)(Cl)Cl");
         String mf = cdk.molecularFormula(mol);
         Assert.assertFalse(mf.contains("H0"));
+    }
+
+    @Test public void testFragmentate() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("O=C(CC)[O-].[Na+]");
+        List<IAtomContainer> fragments = cdk.fragmentate(mol);
+        Assert.assertEquals(2, fragments.size());
     }
 }
