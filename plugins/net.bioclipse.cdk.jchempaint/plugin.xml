@@ -16,7 +16,7 @@
 		</BioObject>         
    
    </extension>
-<extension
+   <extension
          point="org.eclipse.ui.editors">
       <editor
             class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
@@ -43,6 +43,16 @@
             name="CMLfileEditor">
          <contentTypeBinding
                contentTypeId="net.bioclipse.contenttypes.cml.singleMolecule2d">
+         </contentTypeBinding>
+      </editor>
+      <editor
+            class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
+            default="true"
+            icon="icons/doc_mol_2d.png"
+            id="net.bioclipse.cdk.ui.editors.jchempaint"
+            name="CMLfileEditor">
+         <contentTypeBinding
+               contentTypeId="net.bioclipse.contenttypes.cml.singleMolecule5d">
          </contentTypeBinding>
       </editor>
       <editor
