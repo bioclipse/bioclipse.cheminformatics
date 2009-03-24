@@ -1495,6 +1495,10 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         if (changeHandler != null) changeHandler.structureChanged();
     }
 
+    public void fireZoomEvent() {
+        changeHandler.zoomChanged();
+    }
+    
     private void structurePropertiesChanged() {
         if (changeHandler != null) changeHandler.structurePropertiesChanged();
     }
