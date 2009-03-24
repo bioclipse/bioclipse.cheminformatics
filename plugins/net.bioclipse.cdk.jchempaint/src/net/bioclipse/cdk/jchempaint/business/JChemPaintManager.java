@@ -287,10 +287,15 @@ public class JChemPaintManager implements IJChemPaintManager {
     }
 
     public void cleanup() {
-        JChemPaintEditor editor = findActiveEditor();
+        final JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
-            IChemModelRelay relay = editor.getControllerHub();
-            relay.cleanup();
+            PlatformUI.getWorkbench().getDisplay().syncExec( new Runnable() {
+                public void run() {
+                    IChemModelRelay relay = editor.getControllerHub();
+                    relay.cleanup();
+                    editor.getWidget().reset();
+                }
+            });
         } else {
             Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
         }
