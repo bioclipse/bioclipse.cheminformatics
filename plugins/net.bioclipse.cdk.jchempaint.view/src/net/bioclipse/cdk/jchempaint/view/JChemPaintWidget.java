@@ -80,7 +80,7 @@ public class JChemPaintWidget extends Canvas {
         setupPaintListener();
     }
 
-    public void setupPaintListener() {
+    protected void setupPaintListener() {
         addPaintListener( new PaintListener() {
 
             public void paintControl( PaintEvent event ) {
