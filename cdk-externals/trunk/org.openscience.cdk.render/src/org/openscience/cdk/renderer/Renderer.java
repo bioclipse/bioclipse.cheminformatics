@@ -721,11 +721,19 @@ public class Renderer {
     
 	public void setModelCenter(double x, double y) {
 	    this.modelCenter = new Point2d(x, y);
+	    setup();
 	}
 
 	public void setDrawCenter(double x, double y) {
         this.drawCenter = new Point2d(x, y);
+        setup();
     }
+	
+	public void setZoom(double z) {
+	    getRenderer2DModel().setZoomFactor( z );
+	    zoom = z;
+	    setup();
+	}
 
     /**
      * Move the draw center by dx and dy.
@@ -735,10 +743,14 @@ public class Renderer {
      * @param dy
      *            the y shift
      */
-	public void shiftDrawCenter(int dx, int dy) {
+	public void shiftDrawCenter(double dx, double dy) {
 	    this.drawCenter.set(this.drawCenter.x + dx, this.drawCenter.y + dy);
+	    setup();
 	}
 
+	public Point2d getDrawCenter() {
+	    return new Point2d(drawCenter);
+	}
     /**
      * Calculate and set the zoom factor needed to completely fit the diagram
      * onto the screen bounds.
