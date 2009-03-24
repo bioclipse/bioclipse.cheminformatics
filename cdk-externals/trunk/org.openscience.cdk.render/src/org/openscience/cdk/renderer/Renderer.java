@@ -109,6 +109,10 @@ import org.openscience.cdk.renderer.visitor.IDrawVisitor;
  * @cdk.module render
  */
 public class Renderer {
+    /**
+     * The default scale is used when the model is empty.
+     */
+    public static final double DEFAULT_SCALE = 30.0;
 
 	private IFontManager fontManager;
 
@@ -119,26 +123,14 @@ public class Renderer {
 
 	private List<IGenerator> generators;
 
-	private AffineTransform transform;
 
-	/**
-	 * The center of the model coordinates 
-	 */
-	private Point2d modelCenter = new Point2d(0, 0);
-
-	/**
-	 * The center point of the diagram on screen
-	 */
-	private Point2d drawCenter = new Point2d(200, 200);
-
-	/**
-	 * The default scale is used when the model is empty.
-	 */
-	public static final double DEFAULT_SCALE = 30.0;
-
+	private AffineTransform transform; 
+	// fields that when changed leads to a update of the transform
+	private Point2d modelCenter = new Point2d(0, 0); // model
+	private Point2d drawCenter = new Point2d(200, 200); //diagram on screen
 	private double scale = DEFAULT_SCALE;
-	
 	private double zoom = 1.0;
+	// end transform fields
 
 	private IRenderingElement cachedDiagram;
 
