@@ -28,6 +28,7 @@ import javax.vecmath.Point2d;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.renderer.RendererModel;
 
 /**
@@ -48,6 +49,13 @@ public class HighlightModule extends ControllerModuleAdapter {
 	private IAtom prevHighlightAtom;
 	private IBond prevHighlightBond;
 	
+	private void update(IChemObject obj, RendererModel model) {
+	    if(obj instanceof IAtom)
+	        updateAtom((IAtom)obj,model);
+	    else
+	    if(obj instanceof IBond)
+	        updateBond((IBond)obj,model);
+	}
 	private void updateAtom(IAtom atom, RendererModel model) {
 	    if (prevHighlightAtom != atom) {
             model.setHighlightedAtom(atom);
@@ -83,23 +91,12 @@ public class HighlightModule extends ControllerModuleAdapter {
 		IBond bond = chemObjectRelay.getClosestBond(worldCoord);
 		RendererModel model = 
 		    chemObjectRelay.getRenderer().getRenderer2DModel();
-		double dA = super.distanceToAtom(atom, worldCoord);
-		double dB = super.distanceToBond(bond, worldCoord);
-		double dH = super.getHighlightDistance();
 		
-		if (super.noSelection(dA, dB, dH)) {
-		    unsetHighlights(model);
-		} else if (super.isAtomOnlyInHighlightDistance(dA, dB, dH)) {
-		    updateAtom(atom, model);
-		} else if (super.isBondOnlyInHighlightDistance(dA, dB, dH)) {
-		    updateBond(bond, model);
-		} else {
-		    if (dA < dB) {
-		        updateAtom(atom, model);
-		    } else {
-		        updateBond(bond, model);
-		    }
-		}
+		IChemObject obj = getHighlighted( worldCoord, atom,bond );
+		if(obj == null)
+		    unsetHighlights( model );
+		else
+		    update(obj,model);
 	}
 
 	public void setChemModelRelay(IChemModelRelay relay) {
