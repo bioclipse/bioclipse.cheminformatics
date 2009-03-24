@@ -53,4 +53,6 @@ public interface IChemModelEventRelayHandler {
      * Signals that a selection was added, removed or changed.
      */
     public void selectionChanged();
+    
+    public void zoomChanged();
 }
