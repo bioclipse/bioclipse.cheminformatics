@@ -401,7 +401,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     }
 
     public void updateView() {
-        updateSelection();
+        //updateSelection();
         redraw();
     }
 
