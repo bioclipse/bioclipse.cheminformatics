@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.vecmath.Point2d;
-
 import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.Activator;
