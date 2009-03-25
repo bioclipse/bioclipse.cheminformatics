@@ -98,6 +98,11 @@ public interface ICDKManager extends IBioclipseManager {
     public ICDKMolecule loadMolecule( String path )
         throws IOException, BioclipseException, CoreException;
 
+    public ICDKMolecule loadMolecule( IFile file, 
+                                      BioclipseUIJob<ICDKMolecule> uiJob) 
+                                             throws IOException,
+                                                    BioclipseException,
+                                                    CoreException;
     /**
      * Load molecule from an <code>IFile</code> using CDK.
      * If many molecules, just return first.

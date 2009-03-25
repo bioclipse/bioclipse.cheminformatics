@@ -153,14 +153,27 @@ public class CDKManager implements ICDKManager {
     public ICDKMolecule loadMolecule(String path) throws IOException,
                                                          BioclipseException,
                                                          CoreException {
-        return loadMolecule( ResourcePathTransformer.getInstance()
-                                                    .transform(path), null);
+        throw new UnsupportedOperationException(
+           "This manager method should not be called, " +
+           "loadMolecules(IFile, BioclipseUIJob)");
     }
 
   	public ICDKMolecule loadMolecule(IFile file) throws IOException,
   	                                                    BioclipseException,
   	                                                    CoreException {
-  	    return loadMolecule(file, null);
+  	    throw new UnsupportedOperationException(
+  	          "This manager method should not be called, " +
+  	          "loadMolecules(IFile, BioclipseUIJob)");
+  	}
+
+  	public ICDKMolecule loadMolecule( IFile file,
+  	                                  BioclipseUIJob<ICDKMolecule> uiJob)
+  	                                         throws IOException,
+  	                                                BioclipseException,
+  	                                                CoreException {
+  	    throw new UnsupportedOperationException(
+  	         "This manager method should not be called, " +
+  	         "loadMolecules(IFile, BioclipseUIJob)");
   	}
 
   	public ICDKMolecule loadMolecule(IFile file, IProgressMonitor monitor)

@@ -47,6 +47,7 @@ import net.bioclipse.core.tests.AbstractManagerTest;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openscience.cdk.CDKConstants;
@@ -103,7 +104,7 @@ public class CDKManagerTest extends AbstractManagerTest {
 //        InputStream atpFile = getClass().getResourceAsStream("/testFiles/polycarpol.mol");
 //        InputStream pdbFile = getClass().getResourceAsStream("/testFiles/1D66.pdb");
         String path = getClass().getResource("/testFiles/0037.cml").getPath();
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), new NullProgressMonitor() );
 
         Assert.assertNotNull(mol);
         Assert.assertNotSame(0, mol.getAtomContainer().getAtomCount());
@@ -118,7 +119,7 @@ public class CDKManagerTest extends AbstractManagerTest {
 //        InputStream atpFile = getClass().getResourceAsStream("/testFiles/polycarpol.mol");
 //        InputStream pdbFile = getClass().getResourceAsStream("/testFiles/1D66.pdb");
         String path = getClass().getResource("/testFiles/cs2a.cml").getPath();
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), new NullProgressMonitor() );
 
         Assert.assertNotNull(mol);
         Assert.assertNotSame(0, mol.getAtomContainer().getAtomCount());
@@ -214,7 +215,7 @@ public class CDKManagerTest extends AbstractManagerTest {
         String path = getClass().getResource("/testFiles/atp.mol")
                                 .getPath();
         
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), new NullProgressMonitor() );
 
         System.out.println("mol: " + mol.toString());
     }
@@ -227,7 +228,7 @@ public class CDKManagerTest extends AbstractManagerTest {
         String path = getClass().getResource("/testFiles/polycarpol.mol")
                                 .getPath();
         
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), new NullProgressMonitor() );
 
         System.out.println("mol: " + mol.toString());
     }
@@ -238,7 +239,7 @@ public class CDKManagerTest extends AbstractManagerTest {
                                           CoreException {
         String path = getClass().getResource("/testFiles/0037.cml").getPath();
         
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), new NullProgressMonitor() );
         String smiles = mol.getSMILES();
 
         assertEquals("N#CC1CCCC(C)N1C(CO[Si](C)(C)C)C2=CC=CC=C2", smiles);
@@ -661,7 +662,7 @@ public class CDKManagerTest extends AbstractManagerTest {
     public void testPerceiveAromaticity() throws Exception{
         String path = getClass().getResource("/testFiles/aromatic.mol").getPath();
         MockIFile mf=new MockIFile(path);
-        ICDKMolecule mol = cdk.loadMolecule( mf);
+        ICDKMolecule mol = cdk.loadMolecule( mf, new NullProgressMonitor());
         Assert.assertFalse( mol.getAtomContainer().getAtom( 6 ).getFlag( CDKConstants.ISAROMATIC ) );
         ICDKMolecule molwitharomaticity = (ICDKMolecule)cdk.perceiveAromaticity( mol );
         Assert.assertTrue( molwitharomaticity.getAtomContainer().getAtom( 6 ).getFlag( CDKConstants.ISAROMATIC ) );
