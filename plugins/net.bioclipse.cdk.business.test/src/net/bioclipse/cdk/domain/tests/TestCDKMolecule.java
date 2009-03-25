@@ -31,6 +31,7 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Before;
 import org.junit.Test;
 import org.openscience.cdk.io.IChemObjectReader;
@@ -38,18 +39,18 @@ import org.openscience.cdk.io.ReaderFactory;
 
 public class TestCDKMolecule {
 
-    //Needed to run these tests on some systems. If it breaks them on 
-    //other systems we need to do some sort of checking before 
+    //Needed to run these tests on some systems. If it breaks them on
+    //other systems we need to do some sort of checking before
     //setting them...
     static {
-        System.setProperty( "javax.xml.parsers.SAXParserFactory", 
-                            "com.sun.org.apache.xerces.internal." 
+        System.setProperty( "javax.xml.parsers.SAXParserFactory",
+                            "com.sun.org.apache.xerces.internal."
                                 + "jaxp.SAXParserFactoryImpl" );
-        System.setProperty( "javax.xml.parsers.DocumentBuilderFactory", 
+        System.setProperty( "javax.xml.parsers.DocumentBuilderFactory",
                             "com.sun.org.apache.xerces.internal."
                                 + "jaxp.DocumentBuilderFactoryImpl" );
     }
-    
+
     ICDKManager cdk;
 
     //Do not use SPRING OSGI for this manager
@@ -60,13 +61,14 @@ public class TestCDKMolecule {
     }
 
     @Test
-    public void testFingerprinter() throws IOException, 
-                                           BioclipseException, 
+    public void testFingerprinter() throws IOException,
+                                           BioclipseException,
                                            CoreException {
         String path = getClass().getResource("/testFiles/0037.cml")
                                 .getPath();
 
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path),
+                                             new NullProgressMonitor() );
         assertNotNull(mol);
         BitSet bs = mol.getFingerprint(false);
         assertNotNull(bs);
@@ -74,13 +76,14 @@ public class TestCDKMolecule {
     }
 
     @Test
-    public void testGetCML() throws IOException, 
-                                    BioclipseException, 
+    public void testGetCML() throws IOException,
+                                    BioclipseException,
                                     CoreException {
         String path = getClass().getResource("/testFiles/0037.cml")
                                 .getPath();
 
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path),
+                                             new NullProgressMonitor()  );
         assertNotNull(mol);
         String cmlString = mol.getCML();
         assertNotNull(cmlString);
@@ -88,23 +91,24 @@ public class TestCDKMolecule {
     }
 
     @Test
-    public void testGetSmiles() throws IOException, 
-                                       BioclipseException, 
+    public void testGetSmiles() throws IOException,
+                                       BioclipseException,
                                        CoreException {
         String path = getClass().getResource("/testFiles/0037.cml")
                                 .getPath();
 
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path),
+                                             new NullProgressMonitor()  );
         assertNotNull(mol);
         String smiles = mol.getSMILES();
         assertNotNull(smiles);
         System.out.println("Smiles: " + smiles);
     }
-    
+
     @Test
-    public void testCreateFromString() throws IOException, 
+    public void testCreateFromString() throws IOException,
                                               BioclipseException {
-        InputStream cmlFile 
+        InputStream cmlFile
             = getClass().getResourceAsStream("/testFiles/0037.cml");
         byte[] buf = new byte[60000];
         int a = cmlFile.read( buf );
@@ -112,7 +116,7 @@ public class TestCDKMolecule {
         String content = new String(buf);
         String cutcontent = content.substring( 0,a );
         System.out.println("Content: " + cutcontent.length());
-        
+
         ICDKMolecule mol = cdk.fromCml( cutcontent );
         assertNotNull(mol);
         String smiles = mol.getSMILES();
@@ -122,7 +126,7 @@ public class TestCDKMolecule {
 
     @Test
     public void testReadCML() throws IOException{
-            
+
         String cmlstring="<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>"
 +"<molecule id=\"m1\" xmlns=\"http://www.xml-cml.org/schema\">"
 +"  <atomArray>"
@@ -166,7 +170,7 @@ public class TestCDKMolecule {
 +"<scalar dictRef=\"cdk:molecularProperty\" title=\"ACCH\" dataType=\"xsd:string\">3</scalar>"
 +"<scalar dictRef=\"cdk:molecularProperty\" title=\"SALTID\" dataType=\"xsd:string\">0</scalar>"
 +"</molecule>";
-    	
+
         ByteArrayInputStream bais=new ByteArrayInputStream(cmlstring.getBytes());
 
         ReaderFactory readerFactory=new ReaderFactory();
@@ -175,7 +179,7 @@ public class TestCDKMolecule {
         //Create the reader
         IChemObjectReader reader= readerFactory.createReader(bais);
         reader.getFormat();
-        
-        
+
+
     }
 }

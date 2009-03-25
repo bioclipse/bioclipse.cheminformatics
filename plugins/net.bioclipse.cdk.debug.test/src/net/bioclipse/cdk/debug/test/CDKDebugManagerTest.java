@@ -53,15 +53,15 @@ public class CDKDebugManagerTest extends AbstractManagerTest {
     public IBioclipseManager getManager() {
         return debug;
     }
-    
+
 
     /**
      * Test that sybyl atom typing for 232 mols in an SDF does not
      * throw exception
-     * @throws CoreException 
-     * @throws BioclipseException 
-     * @throws IOException 
-     * @throws FileNotFoundException 
+     * @throws CoreException
+     * @throws BioclipseException
+     * @throws IOException
+     * @throws FileNotFoundException
      * @throws Exception
      */
     @Test public void testDepictSybylAtomTypesFromSDF() throws FileNotFoundException, IOException, BioclipseException, CoreException{
@@ -94,9 +94,9 @@ public class CDKDebugManagerTest extends AbstractManagerTest {
     public void testSybylAtomTypePerceptionFromSMILES() throws FileNotFoundException, IOException, BioclipseException, CoreException, InvocationTargetException{
 
         ICDKMolecule mol = cdk.fromSMILES("C1CCCCC1CCOC");
-        
+
         ICDKMolecule mol2 = debug.perceiveSybylAtomTypes(mol);
-        
+
         for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
             IAtom a=mol2.getAtomContainer().getAtom(i);
             System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
@@ -108,12 +108,13 @@ public class CDKDebugManagerTest extends AbstractManagerTest {
     public void testSybylAtomTypePerception() throws FileNotFoundException, IOException, BioclipseException, CoreException, InvocationTargetException{
 
         String path = getClass().getResource("/testFiles/atp.mol").getPath();
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path),
+                                             new NullProgressMonitor()  );
 
         System.out.println("mol: " + mol.toString());
-        
+
         ICDKMolecule mol2 = debug.perceiveSybylAtomTypes(mol);
-        
+
         for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
             IAtom a=mol2.getAtomContainer().getAtom(i);
             System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
@@ -127,33 +128,35 @@ public class CDKDebugManagerTest extends AbstractManagerTest {
         String path = getClass().getResource("/testFiles/polycarpol.mol")
         .getPath();
 
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path),
+                                             new NullProgressMonitor()  );
 
         System.out.println("mol: " + mol.toString());
-        
+
         ICDKMolecule mol2 = debug.perceiveSybylAtomTypes(mol);
-        
+
         for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
             IAtom a=mol2.getAtomContainer().getAtom(i);
             System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
         }
 
     }
-    
+
     @Test
     public void testSybylAtomTypePerception3() throws FileNotFoundException, IOException, BioclipseException, CoreException, InvocationTargetException{
 
         String path = getClass().getResource("/testFiles/aromatic.mol")
         .getPath();
 
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), null );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path),
+                                             new NullProgressMonitor()  );
 
         System.out.println("mol: " + mol.toString());
-        
+
         ICDKMolecule mol2 = debug.perceiveSybylAtomTypes(mol);
-        
+
         assertEquals("C.ar", mol2.getAtomContainer().getAtom(1).getAtomTypeName());
-        
+
         for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
             IAtom a=mol2.getAtomContainer().getAtom(i);
             System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
@@ -165,15 +168,15 @@ public class CDKDebugManagerTest extends AbstractManagerTest {
     public void testSybylAtomTypePerceptionBenzene() throws CDKException, FileNotFoundException, IOException, BioclipseException, CoreException, InvocationTargetException{
 
         IAtomContainer ac=MoleculeFactory.makeBenzene();
-        
+
         ICDKMolecule mol = new CDKMolecule(ac);
 
         ICDKMolecule mol2 = debug.perceiveSybylAtomTypes(mol);
-        
+
         System.out.println("** BENZENE **");
-        
+
         System.out.println(AtomContainerDiff.diff( ac, mol2.getAtomContainer()));
-        
+
         for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
             IAtom a=mol2.getAtomContainer().getAtom(i);
             System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
@@ -185,7 +188,7 @@ public class CDKDebugManagerTest extends AbstractManagerTest {
         assertEquals("C.ar", mol2.getAtomContainer().getAtom(3).getAtomTypeName());
         assertEquals("C.ar", mol2.getAtomContainer().getAtom(4).getAtomTypeName());
         assertEquals("C.ar", mol2.getAtomContainer().getAtom(5).getAtomTypeName());
-        
+
 
     }
 
