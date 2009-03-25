@@ -490,15 +490,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         List<CDKChemObject> selection = new LinkedList<CDKChemObject>();
 
-//        IAtom highlightedAtom = rendererModel.getHighlightedAtom();
-//        IBond highlightedBond = rendererModel.getHighlightedBond();
-//
-//        if (highlightedBond != null)
-//            selection.add(createCDKChemObject(highlightedBond));
-//
-//        if (highlightedAtom != null)
-//            selection.add(createCDKChemObject(highlightedAtom));
-
         IChemObjectSelection sel = rendererModel.getSelection();
         IAtomContainer modelSelection = sel.getConnectedAtomContainer();
 
