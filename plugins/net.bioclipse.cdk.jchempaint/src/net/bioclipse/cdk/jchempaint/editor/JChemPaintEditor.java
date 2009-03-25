@@ -381,6 +381,20 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         logger.debug( "Executing 'Chage atom' action" );
     }
 
+    private static boolean contains(Iterable<IAtomContainer> acIter,
+                                    IChemObject chemObject) {
+        boolean contains = false;
+        for(IAtomContainer ac:acIter) {
+
+            if(chemObject instanceof IAtom) {
+                contains = ac.contains( (IAtom )chemObject);
+            }else if(chemObject instanceof IBond){
+                contains = ac.contains( (IBond )chemObject);
+            }
+            if(contains) break;
+        }
+        return contains;
+    }
     public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
 
         if ( part != null && part.equals( this ) )
@@ -393,16 +407,35 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
             if(bcSelection.size()==0) { // do nothing jcpSelection already empty
             }else
                 if(bcSelection.size()==1) {
-                    if(bcSelection.getFirstElement() instanceof CDKChemObject)
-                        jcpSelection = new SingleSelection<IChemObject>(
-                   ((CDKChemObject)bcSelection.getFirstElement()).getChemobj());
+                    if(bcSelection.getFirstElement() instanceof CDKChemObject) {
+                        IChemObject chemObject= ((CDKChemObject)bcSelection
+                                               .getFirstElement()).getChemobj();
+
+                        if(contains(widget.getControllerHub()
+                                    .getIChemModel().getMoleculeSet()
+                                    .atomContainers(),
+                                    chemObject)) {
+
+                            jcpSelection = new SingleSelection<IChemObject>(
+                                    chemObject);
+                        }
+                    }
             }else {
 
                 Set<IChemObject> chemSelection = new HashSet<IChemObject>();
                 for(Iterator<?> iter = bcSelection.iterator();iter.hasNext();) {
                     Object o = iter.next();
                     if(o instanceof CDKChemObject) {
-                        chemSelection.add( ((CDKChemObject) o).getChemobj() );
+                        IChemObject chemObject= ((CDKChemObject)bcSelection
+                                .getFirstElement()).getChemobj();
+
+                        if(contains(widget.getControllerHub()
+                                    .getIChemModel().getMoleculeSet()
+                                    .atomContainers(),
+                                    chemObject)) {
+
+                            chemSelection.add( ((CDKChemObject) o).getChemobj() );
+                        }
                     }
                 }
                 jcpSelection = new MultiSelection<IChemObject>(chemSelection);
