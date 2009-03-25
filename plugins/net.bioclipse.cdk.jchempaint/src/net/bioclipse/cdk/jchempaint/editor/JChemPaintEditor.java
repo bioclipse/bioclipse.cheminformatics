@@ -11,6 +11,7 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.editor;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -24,6 +25,7 @@ import net.bioclipse.cdk.jchempaint.handlers.UndoHandler;
 import net.bioclipse.cdk.jchempaint.outline.JCPOutlinePage;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.ui.jobs.BioclipseUIJob;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionException;
@@ -166,19 +168,22 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
         setSite( site );
         setInput( input );
-        ICDKMolecule cModel =
-            (ICDKMolecule) input.getAdapter( ICDKMolecule.class );
 
-        if ( cModel == null ) {
-            IFile file = (IFile) input.getAdapter( IFile.class );
-            if ( file != null )
-                cModel = (ICDKMolecule) file.getAdapter( ICDKMolecule.class );
-        }
-        if ( cModel != null ) {
-
+        IFile file = (IFile) input.getAdapter( IFile.class );
+        if(file != null) {
+//            file.getContentDescription().getContentType()
             setPartName( input.getName() );
-            model = cModel;
+                return;
+        }else {
+            ICDKMolecule cModel = (ICDKMolecule)
+                                    input.getAdapter( ICDKMolecule.class );
+            if(cModel!=null) {
+                // FIXME resolve molecule name
+                setPartName( cModel.getName() );
+                return;
+            }
         }
+        throw new PartInitException("File not supported");
     }
 
     @Override
@@ -196,31 +201,64 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     @Override
     public void createPartControl( Composite parent ) {
 
-        // create widget
-        widget = new JChemPaintEditorWidget( parent, SWT.NONE ) {
+        createWidget(parent);
 
-            @Override
-            public void setDirty( boolean dirty ) {
+        createMenu();
 
-                super.setDirty( dirty );
-                firePropertyChange( IEditorPart.PROP_DIRTY );
-            }
-            @Override
-            protected void structureChanged() {
-                super.structureChanged();
-                if(fOutlinePage!=null) {
-                    fOutlinePage.setInput( getControllerHub().getIChemModel() );
+        getSite().getPage().addSelectionListener( this );
+
+        IEditorInput input = getEditorInput();
+        ICDKMolecule cdkModel = (ICDKMolecule) input
+                                .getAdapter( ICDKMolecule.class );
+        if(cdkModel!=null) {
+            model = cdkModel;
+            widget.setInput( model );
+        }else {
+            IFile file = (IFile) input.getAdapter( IFile.class );
+            if(file != null) {
+                try {
+                    Activator.getDefault().getCDKManager().loadMolecule( file,
+                         new BioclipseUIJob<ICDKMolecule>() {
+
+                        @Override
+                        public void runInUI() {
+                            model = getReturnValue();
+                            widget.setInput( model );
+                        }
+
+                    });
+                } catch ( IOException e1 ) {
+                    logger.warn( "Failed to load molecule "+e1.getMessage() );
+                    throw new RuntimeException(e1);
+                } catch ( BioclipseException e1 ) {
+                    logger.warn( "Failed to load molecule "+e1.getMessage() );
+                    throw new RuntimeException(e1);
+                } catch ( CoreException e1 ) {
+                    logger.warn( "Failed to load molecule "+e1.getMessage() );
+                    throw new RuntimeException(e1);
                 }
             }
+        }
 
-            @Override
-            protected void structurePropertiesChanged() {
-                super.structurePropertiesChanged();
-                if(fOutlinePage!=null) {
-                    fOutlinePage.setInput( getControllerHub().getIChemModel() );
-                }
+        parent.addDisposeListener( new DisposeListener() {
+            public void widgetDisposed( DisposeEvent e ) {
+                disposeControll( e );
             }
-        };
+        } );
+
+        createUndoRedoHangler();
+    }
+
+    private void createUndoRedoHangler() {
+     // set up action handlers
+        UndoHandler undoAction = new UndoHandler();
+        RedoHandler redoAction = new RedoHandler();
+        IActionBars actionBars = this.getEditorSite().getActionBars();
+        actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(),undoAction);
+        actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), redoAction);
+    }
+
+    private void createMenu() {
 
         MenuManager menuMgr = new MenuManager();
         menuMgr.add( new GroupMarker( IWorkbenchActionConstants.MB_ADDITIONS ) );
@@ -254,26 +292,37 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
         });
 
-        // setup hub
-        getSite().setSelectionProvider( widget );
-        getSite().getPage().addSelectionListener( this );
-        widget.setInput( model );
-
-        parent.addDisposeListener( new DisposeListener() {
-
-            public void widgetDisposed( DisposeEvent e ) {
-
-                disposeControll( e );
-            }
-        } );
-        // set up action handlers
-        UndoHandler undoAction = new UndoHandler();
-        RedoHandler redoAction = new RedoHandler();
-        IActionBars actionBars = this.getEditorSite().getActionBars();
-        actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(),undoAction);
-        actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), redoAction);
     }
 
+    private void createWidget(Composite parent) {
+     // create widget
+        widget = new JChemPaintEditorWidget( parent, SWT.NONE ) {
+
+            @Override
+            public void setDirty( boolean dirty ) {
+
+                super.setDirty( dirty );
+                firePropertyChange( IEditorPart.PROP_DIRTY );
+            }
+            @Override
+            protected void structureChanged() {
+                super.structureChanged();
+                if(fOutlinePage!=null) {
+                    fOutlinePage.setInput( getControllerHub().getIChemModel() );
+                }
+            }
+
+            @Override
+            protected void structurePropertiesChanged() {
+                super.structurePropertiesChanged();
+                if(fOutlinePage!=null) {
+                    fOutlinePage.setInput( getControllerHub().getIChemModel() );
+                }
+            }
+        };
+
+        getSite().setSelectionProvider( widget );
+    }
     @Override
     public void setFocus() {
 
