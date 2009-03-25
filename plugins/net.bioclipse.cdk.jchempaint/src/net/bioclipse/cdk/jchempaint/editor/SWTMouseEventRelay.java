@@ -11,8 +11,6 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.editor;
 
-import java.awt.event.MouseWheelEvent;
-
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
@@ -28,60 +26,60 @@ public class SWTMouseEventRelay implements MouseListener, MouseMoveListener,
 
     Logger logger = Logger.getLogger( SWTMouseEventRelay.class );
 
-	private int dragFromX = 0;
-	private int dragFromY = 0;
-	private boolean isDragging = false;
-	private IMouseEventRelay relay;
+    private int dragFromX = 0;
+    private int dragFromY = 0;
+    private boolean isDragging = false;
+    private IMouseEventRelay relay;
 
-	public SWTMouseEventRelay(IMouseEventRelay relay) {
-		this.relay=relay;
-	}
+    public SWTMouseEventRelay(IMouseEventRelay relay) {
+        this.relay=relay;
+    }
 
-	public void handleEvent(Event event) {
+    public void handleEvent(Event event) {
         switch (event.type) {
 
         case SWT.MouseEnter:
-        	relay.mouseEnter(event.x, event.y);
-        	break;
+            relay.mouseEnter(event.x, event.y);
+            break;
         case SWT.MouseExit:
           isDragging = false;
-        	relay.mouseExit(event.x, event.y);
-        	break;
-        	default:
-        	    logger.debug( "Event("+ event.type + ") not supportet" );
+            relay.mouseExit(event.x, event.y);
+            break;
+            default:
+                logger.debug( "Event("+ event.type + ") not supportet" );
         }
       }
 
-	public void mouseDoubleClick(MouseEvent event) {
-		relay.mouseClickedDouble(event.x, event.y);
-	}
+    public void mouseDoubleClick(MouseEvent event) {
+        relay.mouseClickedDouble(event.x, event.y);
+    }
 
-	public void mouseDown(MouseEvent event) {
+    public void mouseDown(MouseEvent event) {
 
-	    if( ((MouseEvent)event).button == 1 && (event.stateMask & SWT.CTRL) == 0){
-	        relay.mouseClickedDown(event.x, event.y);
-	        dragFromX=event.x;
-	        dragFromY=event.y;
-	        isDragging=true;
-	    }
-	}
+        if( ((MouseEvent)event).button == 1 && (event.stateMask & SWT.CTRL) == 0){
+            relay.mouseClickedDown(event.x, event.y);
+            dragFromX=event.x;
+            dragFromY=event.y;
+            isDragging=true;
+        }
+    }
 
-	public void mouseUp( MouseEvent event ) {
+    public void mouseUp( MouseEvent event ) {
 
-	    if( ((MouseEvent)event).button == 1 && (event.stateMask & SWT.CTRL) == 0){
-	        relay.mouseClickedUp( event.x, event.y );
-	    }
-	    isDragging = false;
-	}
+        if( ((MouseEvent)event).button == 1 && (event.stateMask & SWT.CTRL) == 0){
+            relay.mouseClickedUp( event.x, event.y );
+        }
+        isDragging = false;
+    }
 
-	public void mouseMove(MouseEvent event) {
-		if(isDragging){
-    		relay.mouseDrag(dragFromX,dragFromY, event.x, event.y);
-    		dragFromX=event.x;
-    		dragFromY=event.y;
-    	}else
-    		relay.mouseMove(event.x, event.y);
-	}
+    public void mouseMove(MouseEvent event) {
+        if(isDragging){
+            relay.mouseDrag(dragFromX,dragFromY, event.x, event.y);
+            dragFromX=event.x;
+            dragFromY=event.y;
+        }else
+            relay.mouseMove(event.x, event.y);
+    }
 
     public void mouseScrolled(MouseEvent e) {
         int clicks = e.count;
