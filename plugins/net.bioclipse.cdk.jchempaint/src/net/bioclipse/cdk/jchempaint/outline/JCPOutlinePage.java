@@ -104,8 +104,9 @@ public class JCPOutlinePage extends ContentOutlinePage
     public void setInput(IChemModel model) {
         this.chemModel = model;
         if(treeViewer!=null) {
-            treeViewer.refresh();
+            treeViewer.setInput( model );
             treeViewer.setSelection( editor.getWidget().getSelection() );
+            treeViewer.refresh();
             treeViewer.expandAll();// FIXME This should restore the expanded state
         }
     }
