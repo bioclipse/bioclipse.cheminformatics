@@ -18,13 +18,15 @@ public class ZoomModule extends ControllerModuleAdapter {
     }
 
     public void mouseWheelMovedForward(int clicks) {
-        doZoom( .9 );
+        double value = .1*clicks;
+        doZoom( 1+value );
         chemModelRelay.fireZoomEvent();
         chemModelRelay.updateView();
     }
 
     public void mouseWheelMovedBackward(int clicks) {
-        doZoom( 1.1 );
+        double value = .1 * clicks;
+        doZoom( 1+value );
         chemModelRelay.fireZoomEvent();
         chemModelRelay.updateView();
     }
