@@ -224,8 +224,11 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                         public void runInUI() {
                             model = getReturnValue();
                             widget.setInput( model );
+                            if(fOutlinePage!=null) {
+                                fOutlinePage.setInput(
+                                          getControllerHub().getIChemModel() );
+                            }
                         }
-
                     });
                 } catch ( IOException e1 ) {
                     logger.warn( "Failed to load molecule "+e1.getMessage() );
