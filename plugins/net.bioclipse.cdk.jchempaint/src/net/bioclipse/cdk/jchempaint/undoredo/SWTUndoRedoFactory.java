@@ -32,9 +32,9 @@ import org.openscience.cdk.interfaces.IReactionSet;
 import org.openscience.cdk.interfaces.IBond.Order;
 
 public class SWTUndoRedoFactory implements IUndoRedoFactory {
-    
+
     private IUndoContext context;
-    
+
     public SWTUndoRedoFactory(IUndoContext context) {
         this.context = context;
     }
@@ -84,7 +84,7 @@ public class SWTUndoRedoFactory implements IUndoRedoFactory {
 
     //The following methods are not needed in Bioclipse JCP right now.
     //Therefore they return null. If any methods in the hub using these
-    //will be implemented in Bioclipse, the method needs to become active 
+    //will be implemented in Bioclipse, the method needs to become active
     //and the required SWTBlaEdit created.
     public IUndoRedoable getChangeIsotopeEdit( IAtom atom,
                                                Integer formerIsotopeNumber,
@@ -133,8 +133,7 @@ public class SWTUndoRedoFactory implements IUndoRedoFactory {
                                                      Map<IAtom, int[]> atomHydrogenCountsMap,
                                                      String type ) {
 
-        // TODO Auto-generated method stub
-        return null;
+        return new SWTChangeHydrogenCountEdit(atomHydrogenCountsMap,type,this.context);
     }
 
     public IUndoRedoable getMergeMoleculesEdit(
@@ -147,8 +146,15 @@ public class SWTUndoRedoFactory implements IUndoRedoFactory {
                                                 String type,
                                                 IChemModelRelay c2dm ) {
 
-        // TODO Auto-generated method stub
-        return null;
+        return new SWTMergeMoleculesEdit(  deletedAtom,
+                                                 containerWhereAtomWasIn,
+                                                 deletedBonds,
+                                                 bondsWithReplacedAtom,
+                                                 offset,
+                                                 atomwhichwasmoved,
+                                                 type,
+                                                 c2dm,
+                                                this.context);
     }
 
 }
