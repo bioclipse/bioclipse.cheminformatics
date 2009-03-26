@@ -130,8 +130,9 @@ public class JChemPaintWidget extends Canvas {
 
     public void setAtomContainer( IAtomContainer atomContainer ) {
 
-        if( (atomContainer!=null)
-                    && (GeometryTools.has2DCoordinates( atomContainer ))) {
+        if( atomContainer!=null
+            && (atomContainer.getAtomCount() == 0
+            ||  GeometryTools.has2DCoordinates( atomContainer )) ) {
             if(this.atomContainer != atomContainer)
                 isNew = true;
             this.atomContainer = atomContainer;
