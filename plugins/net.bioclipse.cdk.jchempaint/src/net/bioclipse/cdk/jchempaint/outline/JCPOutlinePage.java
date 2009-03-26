@@ -17,16 +17,12 @@ import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IElementComparer;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
-import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.interfaces.IChemModel;
-import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 public class JCPOutlinePage extends ContentOutlinePage
                                     implements ISelectionListener, IAdaptable {
