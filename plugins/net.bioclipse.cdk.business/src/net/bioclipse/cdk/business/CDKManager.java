@@ -20,16 +20,21 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.io.PrintStream;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
@@ -46,6 +51,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -72,6 +78,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMoleculeSet;
@@ -101,6 +108,7 @@ import org.openscience.cdk.io.formats.SMILESFormat;
 import org.openscience.cdk.io.iterator.IteratingMDLConformerReader;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
 import org.openscience.cdk.io.random.RandomAccessReader;
+import org.openscience.cdk.io.random.RandomAccessSDFReader;
 import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
@@ -132,7 +140,7 @@ public class CDKManager implements ICDKManager {
 
     // ReaderFactory used solely to determine chemical file formats
     private static FormatFactory formatsFactory;
-    
+
     private static final WriterFactory writerFactory = new WriterFactory();
 
     static {
@@ -419,7 +427,7 @@ public class CDKManager implements ICDKManager {
   	            }
 
   	            CDKMolecule mol = new CDKMolecule(ac);
-  	            
+
   	            //Associate molecule with the file it comes from
   	            mol.setResource( file );
 
@@ -439,7 +447,7 @@ public class CDKManager implements ICDKManager {
   	                    = (org.openscience.cdk.interfaces.IMolecule) ac;
 
   	                String molName
-  	                    = (String) 
+  	                    = (String)
   	                imol.getProperty("PUBCHEM_IUPAC_TRADITIONAL_NAME");
 
                     if ( molName == null || ( molName.equals("") ) )
@@ -459,7 +467,7 @@ public class CDKManager implements ICDKManager {
       	            monitor.subTask( "Loaded molecule:" +
       	                             currentMolecule + "/" + nuMols );
   	            }
-  	            
+
   	            if ( monitor.isCanceled() ) {
   	                throw new OperationCanceledException();
   	            }
@@ -494,7 +502,7 @@ public class CDKManager implements ICDKManager {
   	        monitor = new NullProgressMonitor();
 
   	    if (filetype == null) filetype = (IChemFormat)CMLFormat.getInstance();
-  	    
+
   	    try {
   	        int ticks = 10000;
   	        monitor.beginTask("Writing file", ticks);
@@ -994,7 +1002,7 @@ public class CDKManager implements ICDKManager {
   	                                     + "to match SMARTS query", e);
   	    }
   	}
-  	
+
   	public boolean isValidSmarts(String smarts){
         try {
             new SMARTSQueryTool(smarts);
@@ -1035,7 +1043,7 @@ public class CDKManager implements ICDKManager {
                         match.addAtom( atom );
                     }
                     retac.add( match );
-                    
+
                 }
                 return retac;
   	        }
@@ -1394,7 +1402,7 @@ public class CDKManager implements ICDKManager {
   	    "This manager method should not be called");
   	}
 
-  	
+
   	public List<ICDKMolecule> loadSMILESFile(IFile file,IProgressMonitor monitor)
   	                          throws CoreException, IOException {
 
@@ -1420,7 +1428,7 @@ public class CDKManager implements ICDKManager {
   	            this.second = second;
   	        }
   	    };
-  	    
+
   	    String line = br.readLine();
 
   	    if (line == null)
@@ -1707,6 +1715,132 @@ public class CDKManager implements ICDKManager {
   	    }
   	}
 
+  	public List<ICDKMolecule> extractFromSDFile( String file, String property,
+  	                                             Collection<String> value ) {
+  	    throw new IllegalStateException("This method should not be calld, use the one with IFile");
+  	}
+
+  	public List<ICDKMolecule> extractFromSDFile( IFile file,
+  	                                             String property, Collection<String> value,
+  	                                             IProgressMonitor monitor) {
+  	    long timer = System.nanoTime();
+  	    monitor.beginTask( "Extracting molecules", 3000);
+  	    monitor.subTask( "Parsing properties" );
+  	    List<String> valueList = new LinkedList<String>(value);
+  	    List<Integer> extractedIndexList = new ArrayList<Integer>();
+  	    List<ICDKMolecule> molList = Collections.emptyList();
+  	    try {
+  	        Map<Integer,String> sdfToProperty = createSDFPropertyMap( file, property );
+  	        double work = 0;
+  	        double val = 1000d/sdfToProperty.size();
+  	        monitor.worked( 1000 );
+  	        monitor.subTask( "Searching for value" );
+  	        boolean found;
+  	        for(int i:sdfToProperty.keySet()) {
+  	            if(monitor.isCanceled()) {
+  	                throw new OperationCanceledException();
+  	            }
+
+  	            found = false;
+  	            String proper = sdfToProperty.get(i);
+  	            for(String searchValue:valueList) {
+  	                if(searchValue.equals( proper )) {
+  	                    found = true;
+  	                    break;
+  	                }
+  	            }
+  	            if(found) {
+  	                extractedIndexList.add( i );
+  	                valueList.remove( Integer.valueOf( i ) );
+  	            }
+
+  	            work+=val;
+  	            if(work >1) {
+  	                monitor.worked( (int)work );
+  	                work = work -(int)work;
+  	            }
+  	        }
+  	        Collections.sort( extractedIndexList );
+  	        createSDFileIndex( file, monitor );
+  	        molList = new BioList<ICDKMolecule>();
+
+  	        IChemObjectBuilder builder = DefaultChemObjectBuilder
+  	        .getInstance();
+  	        RandomAccessSDFReader reader;
+  	        IPath location = file.getLocation();
+  	        java.io.File jFile = (location!=null?location.toFile():null);
+  	        if(jFile == null) {
+  	            monitor.done();
+  	            throw new IllegalArgumentException("Not a local file");
+  	        }
+  	        reader = new RandomAccessSDFReader( jFile, builder );
+  	        for(int v:extractedIndexList) {
+  	            IChemObject obj =reader.readRecord( v );
+  	            molList.add( new CDKMolecule((IAtomContainer)obj));
+  	        }
+  	        reader.close();
+  	    } catch (IOException e ) {
+  	        monitor.done();
+  	        LogUtils.debugTrace( logger, e );
+  	        logger.error( "Failed to extract molecules from "+file.getName() );
+  	    } catch ( Exception e ) {
+  	        monitor.done();
+  	        LogUtils.debugTrace( logger, e );
+  	        logger.error( "Failed to extract molecules from "+file.getName() );
+  	    }
+  	    monitor.done();
+  	    logger.debug( "Created property map in "
+                      + (int) ((System.nanoTime() - timer) / 1e6)
+                      + "ms" );
+  	    return molList;
+  	}
+  	public Map<Integer,String> createSDFPropertyMap( String file,
+                                                     String property)
+                                                     throws CoreException,
+                                                     IOException{
+  	    throw new IllegalStateException("This method should not be calld, use the one with IFile");
+
+  	}
+  	public Map<Integer,String> createSDFPropertyMap( IFile file,
+  	                                                  String property)
+  	                                                  throws CoreException,
+  	                                                  IOException{
+  	    LineNumberReader input = new LineNumberReader(
+  	                             new InputStreamReader(file.getContents()));
+  	    Map<Integer,String> result = new HashMap<Integer, String >();
+  	    Pattern propertyPattern = Pattern.compile( "^>.*<"+property+">.*");
+        Pattern endOfEntry = Pattern.compile("\\${4}");
+        int start = 0;
+        String line;
+        int molIndex = 0;
+        String val;
+        long tStart = System.nanoTime();
+        while((line = input.readLine())!=null) {
+            Matcher match = propertyPattern.matcher( line );
+            if(match.matches()) {
+               val = input.readLine();
+               if(val==null) {
+                   input.close();
+                   throw new RuntimeException("Excpected a property value");
+               }
+               result.put( molIndex, val );
+            }
+            Matcher m2 = endOfEntry.matcher( line );
+            if(m2.matches()) {
+                molIndex++;
+                start = input.getLineNumber();
+            }
+        }
+        if(input.getLineNumber()!=start) {
+            molIndex++;
+        }
+        logger.debug( "Created property map in "
+                      + (int) ((System.nanoTime() - tStart) / 1e6)
+                      + "ms" );
+        input.close();
+        return result;
+  	}
+
   	public List<IMolecule> extractFromSDFile( IFile file, int startenty,
   	                                          int endentry )
   	                                          throws BioclipseException,
@@ -1917,13 +2051,13 @@ public class CDKManager implements ICDKManager {
         } else {
             todealwith = create( molecule ).getAtomContainer();
         }
-        
+
         IMoleculeSet set = ConnectivityChecker.partitionIntoMolecules(todealwith);
         List<IAtomContainer> result = new ArrayList<IAtomContainer>();
         for (IAtomContainer container : set.atomContainers()) {
             result.add(container);
         }
-        
+
         return result;
     }
 
@@ -1935,7 +2069,7 @@ public class CDKManager implements ICDKManager {
         } else {
             todealwith = create( molecule ).getAtomContainer();
         }
-        
+
         int totalCharge = 0;
         for (IAtom atom : todealwith.atoms()) {
             totalCharge += atom.getFormalCharge() == null ? 0 : atom.getFormalCharge();

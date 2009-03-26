@@ -15,8 +15,10 @@ package net.bioclipse.cdk.business;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesInfo;
@@ -62,7 +64,7 @@ public interface ICDKManager extends IBioclipseManager {
        "testSave")
     public ICDKMolecule fromSMILES(String SMILES)
         throws BioclipseException;
-    
+
 
     /**
      * Perceives aromaticity on an IMolecule
@@ -98,8 +100,8 @@ public interface ICDKManager extends IBioclipseManager {
     public ICDKMolecule loadMolecule( String path )
         throws IOException, BioclipseException, CoreException;
 
-    public ICDKMolecule loadMolecule( IFile file, 
-                                      BioclipseUIJob<ICDKMolecule> uiJob) 
+    public ICDKMolecule loadMolecule( IFile file,
+                                      BioclipseUIJob<ICDKMolecule> uiJob)
                                              throws IOException,
                                                     BioclipseException,
                                                     CoreException;
@@ -712,7 +714,7 @@ public interface ICDKManager extends IBioclipseManager {
    	public void createSDFile(IFile file, List<IMolecule> entries, IProgressMonitor monitor) throws BioclipseException, InvocationTargetException;
 
     @Recorded
-    @PublishedMethod(params = "String file, IMolecule[] entries", 
+    @PublishedMethod(params = "String file, List<IMolecule> entries",
                      methodSummary="Creates an sd file from a number of molecules")
     @TestMethods("testCreateSDFile_String_IMoleculeArray")
     public void createSDFile(String file, List<IMolecule> entries) throws BioclipseException, InvocationTargetException;
@@ -720,12 +722,34 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @TestMethods("testExtractFromSDFile_IFile_int_int")
     public List<IMolecule> extractFromSDFile(IFile file, int startentry, int endentry) throws BioclipseException, InvocationTargetException;
-    
+
     @Recorded
-    @PublishedMethod(params = "String file, int startentry, int endentry", 
+    @PublishedMethod(params = "String file, int startentry, int endentry",
                      methodSummary="Extracts a number of entries from an sd file. Does not read the complete file for this.")
     @TestMethods("testExtractFromSDFile_String_int_int")
     public List<IMolecule> extractFromSDFile(String file, int startentry, int endentry) throws BioclipseException, InvocationTargetException;
+
+    @PublishedMethod(params = "String file, String property, Collection values",
+                     methodSummary= "Extracts moleculs indicated by index in values to a list")
+    public List<ICDKMolecule> extractFromSDFile( String file,
+                                                 String property,
+                                                 Collection<String> value);
+    public List<ICDKMolecule> extractFromSDFile( IFile file,
+                                                 String property,
+                                                 Collection<String> value,
+                                                 IProgressMonitor monitor);
+
+    public Map<Integer,String> createSDFPropertyMap( IFile file,
+                                                     String property)
+                                                     throws CoreException,
+                                                     IOException;
+    @PublishedMethod(params = "String file, String property",
+                     methodSummary="Create a index for molecules that contains a certain property")
+
+    public Map<Integer,String> createSDFPropertyMap( String file,
+                                                     String property)
+                                                     throws CoreException,
+                                                     IOException;
 
     @Recorded
     @PublishedMethod(params = "ICDKMolecule m",
@@ -774,7 +798,7 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testSMARTSonFile")
     List<IAtomContainer> getSmartsMatches( ICDKMolecule molecule, String SMARTS )
     throws BioclipseException;
-    
+
     @Recorded
     @PublishedMethod(
          params = "IMolecule molecule: atom container to fragmentate",
