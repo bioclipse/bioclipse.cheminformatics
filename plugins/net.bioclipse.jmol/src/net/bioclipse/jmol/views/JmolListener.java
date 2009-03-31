@@ -123,7 +123,8 @@ public class JmolListener implements JmolStatusListener,
     }
 
     public void selectionChanged( BitSet selection ) {
-        if ( viewer.getPolymerCount() == 0 ) {
+        if ( viewer.getPolymerCount() == 0 &&
+             viewer.getChainCount() == 1 ) {
             part.setSelection( new JmolAtomSelection(selection) );
         }
     }
