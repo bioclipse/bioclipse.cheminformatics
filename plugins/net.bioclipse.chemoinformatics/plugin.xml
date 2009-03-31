@@ -157,5 +157,23 @@
         </content-type>
 
      </extension>  
+     
+     
+  <extension point="org.eclipse.ui.menus">  
+     
+     <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+		<menu label="Generate 2D"
+		      id="net.bioclipse.chemoinformatics.popup.gen2d">
+		</menu>
+		<menu label="Generate 3D"
+		      id="net.bioclipse.chemoinformatics.popup.gen3d">
+		</menu>
+		<menu label="Generate Conformers" 
+			  id="net.bioclipse.chemoinformatics.popup.genConformers">
+		</menu>
+      </menuContribution>
+ </extension>  
+     
 
 </plugin>
