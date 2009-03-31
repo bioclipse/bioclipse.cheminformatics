@@ -79,4 +79,9 @@ public interface IJmolManager extends IBioclipseManager{
     @PublishedMethod(methodSummary = "Optimizes the geometry of the structure" +
     		"in the active JmolEditor (but not back to file)" )
     public void minimize();
+ 
+    @PublishedMethod( params = "String s", 
+                      methodSummary = "Prints the given string to the Jmol " +
+                      		            "console" )
+    public void print(String s);
 }

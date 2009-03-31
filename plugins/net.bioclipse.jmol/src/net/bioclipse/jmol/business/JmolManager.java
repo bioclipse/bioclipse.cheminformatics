@@ -100,4 +100,9 @@ public class JmolManager implements IJmolManager {
     		IFile file = ResourcePathTransformer.getInstance().transform(filepath);
     		this.findActiveJmolEditor().snapshot(file);
   	}
+
+    public void print( String s ) {
+        //TODO FIXME
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 }
