@@ -108,10 +108,10 @@
 	<extension 
   		point="org.eclipse.ui.menus">
 		<menuContribution
-			locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+           locationURI="popup:net.bioclipse.chemoinformatics.popup.gen3d?after=additions">
 		    <command
 		    	commandId="net.bioclipse.cdk.ui.handlers.create3d"
-		    	label="Recreate 3D coordinates"
+		    	label="Recreate with CDK"
 		        icon="icons/molecule3D.png">
 		      	<visibleWhen>
 			   		<iterate operator="and" ifEmpty="false">
@@ -130,10 +130,10 @@
 	       </command>
 		</menuContribution>
 		<menuContribution
-			locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+           locationURI="popup:net.bioclipse.chemoinformatics.popup.gen3d?after=additions">
 		    <command
 		    	commandId="net.bioclipse.cdk.ui.handlers.create3d"
-		    	label="Create 3D coordinates"
+		    	label="Create with CDK"
 		        icon="icons/molecule3D.png">
 		      	<visibleWhen>
 			   		<iterate operator="and" ifEmpty="false">
@@ -150,10 +150,10 @@
 	       </command>
 		</menuContribution>
 		<menuContribution
-			locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+			locationURI="popup:net.bioclipse.chemoinformatics.popup.gen2d?after=additions">
 		    <command
 		    	commandId="net.bioclipse.cdk.ui.handlers.create2d"
-		    	label="Recreate 2D coordinates"
+		    	label="Recreate with CDK"
 		        icon="icons/molecule2D.png">
 		      	<visibleWhen>
 			   		<iterate operator="and" ifEmpty="false">
@@ -172,10 +172,10 @@
 	       </command>
 		</menuContribution>
 		<menuContribution
-			locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+			locationURI="popup:net.bioclipse.chemoinformatics.popup.gen2d?after=additions">
 		    <command
 		    	commandId="net.bioclipse.cdk.ui.handlers.create2d"
-		    	label="Create 2D coordinates"
+		    	label="Create with CDK"
 		        icon="icons/molecule2D.png">
 		      	<visibleWhen>
 			   		<iterate operator="and" ifEmpty="false">
