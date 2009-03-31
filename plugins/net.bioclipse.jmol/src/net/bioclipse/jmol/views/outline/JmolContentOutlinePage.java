@@ -11,6 +11,8 @@
  ******************************************************************************/
 package net.bioclipse.jmol.views.outline;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -231,21 +233,25 @@ public class JmolContentOutlinePage
 
         if (selection instanceof JmolSelection) {
             JmolSelection jmolSelection = (JmolSelection) selection;
-            System.out.println("** jmol selection caught in outline: " 
-                               + jmolSelection.getFirstElement().toString());
 
-            //Look up in tree and select it
-            JmolModelSet ms=(JmolModelSet) treeViewer.getInput();
+            IStructuredSelection sel;
+            if ( jmolSelection.isEmpty() ) {
+                sel = new StructuredSelection();
+                treeViewer.setSelection(sel);
+            }
+            else {
+                //Look up in tree and select it
+                JmolModelSet ms = (JmolModelSet) treeViewer.getInput();
 
-            JmolObject obj=findInModelSet(jmolSelection, ms);
+                List<JmolObject> objs = findInModelSet(jmolSelection, ms);
 
-            //If none found, just don't select anything
-            if (obj==null) return;
+                //If none found, just don't select anything
+                if (objs == null) return;
 
-            logger.debug("Found obj: " + obj.getName());
-            IStructuredSelection sel=new StructuredSelection(obj);
-            treeViewer.setSelection(sel);
-            treeViewer.reveal(obj);
+                sel = new StructuredSelection(objs);
+                treeViewer.setSelection(sel);
+                treeViewer.reveal(objs);
+            }
             fireSelectionChanged(sel);
         }
     }
@@ -257,76 +263,83 @@ public class JmolContentOutlinePage
      * @param ms
      * @return
      */
-    private JmolObject findInModelSet(JmolSelection jmolSelection,
-                                      JmolModelSet ms) {
-
-        //Still only one element at a time...
-        String str=(String)jmolSelection.getFirstElement();
-
-        if (jmolSelection instanceof JmolPolymerSelection) {
-            JmolPolymerSelection polymerSelection
-                = (JmolPolymerSelection) jmolSelection;
-
-            String monomerStr=polymerSelection.getMonomer();
-            String chainStr=polymerSelection.getChain();
-            if (chainStr==null) chainStr="";
-
-            //Locate chain in modelset via model
-            JmolChain chain=null;
-            for (IJmolObject jobj : ms.getChildren()){
-                if (jobj instanceof JmolModel) {
+    private List<JmolObject> findInModelSet( JmolSelection jmolSelection,
+                                             JmolModelSet ms ) {
+        
+        List<JmolObject> result = new ArrayList<JmolObject>();
+        
+        for ( String str : jmolSelection ) {
+            
+            if (jmolSelection instanceof JmolPolymerSelection) {
+                JmolPolymerSelection polymerSelection
+                    = (JmolPolymerSelection) jmolSelection;
+    
+                String monomerStr=polymerSelection.getMonomer();
+                String chainStr=polymerSelection.getChain();
+                if (chainStr==null) chainStr="";
+    
+                //Locate chain in modelset via model
+                JmolChain chain=null;
+                for (IJmolObject jobj : ms.getChildren()){
+                    if (jobj instanceof JmolModel) {
+                        JmolModel jmobj=(JmolModel)jobj;
+                        for (IJmolObject jmobjChild : jmobj.getChildren()){
+                            if (jmobjChild instanceof JmolChain) {
+                                JmolChain cobj = (JmolChain) jmobjChild;
+                                Chain c=(Chain) cobj.getObject();
+                                String cid=String.valueOf(c.getChainID());
+                                if (cid.equals(chainStr))
+                                    chain=cobj;
+                            }
+                        }
+                    }
+                }
+    
+                //If chain found, search for monomers in the chain
+                if (chain!=null){
+                    JmolMonomer monomer=null;
+                    for (IJmolObject jobj : chain.getChildren()){
+                        if (jobj instanceof JmolMonomer) {
+                            JmolMonomer mobj = (JmolMonomer) jobj;
+                            Monomer c=(Monomer) mobj.getObject();
+                            String mid=String.valueOf(c.getSeqNumber());
+                            if (mid.equals(monomerStr))
+                                monomer=mobj;
+                        }
+                    }
+    
+                    //If we have a monomer, return it
+                    if (monomer!=null){
+                        result.add( monomer ); 
+                        continue;
+                    }
+                }
+            }
+            else if (jmolSelection instanceof JmolAtomSelection) {
+                String[] parts=str.split("=");
+    
+                String atomno=parts[1];
+    
+                for (IJmolObject jobj : ms.getChildren()){
                     JmolModel jmobj=(JmolModel)jobj;
                     for (IJmolObject jmobjChild : jmobj.getChildren()){
                         if (jmobjChild instanceof JmolChain) {
                             JmolChain cobj = (JmolChain) jmobjChild;
-                            Chain c=(Chain) cobj.getObject();
-                            String cid=String.valueOf(c.getChainID());
-                            if (cid.equals(chainStr))
-                                chain=cobj;
-                        }
-                    }
-                }
-            }
-
-            //If chain found, search for monomers in the chain
-            if (chain!=null){
-                JmolMonomer monomer=null;
-                for (IJmolObject jobj : chain.getChildren()){
-                    if (jobj instanceof JmolMonomer) {
-                        JmolMonomer mobj = (JmolMonomer) jobj;
-                        Monomer c=(Monomer) mobj.getObject();
-                        String mid=String.valueOf(c.getSeqNumber());
-                        if (mid.equals(monomerStr))
-                            monomer=mobj;
-                    }
-                }
-
-                //If we have a monomer, return it
-                if (monomer!=null){
-                    return monomer;
-                }
-            }
-        }
-        else if (jmolSelection instanceof JmolAtomSelection) {
-            String[] parts=str.split("=");
-
-            String atomno=parts[1];
-
-            for (IJmolObject jobj : ms.getChildren()){
-                JmolModel jmobj=(JmolModel)jobj;
-                for (IJmolObject jmobjChild : jmobj.getChildren()){
-                    if (jmobjChild instanceof JmolChain) {
-                        JmolChain cobj = (JmolChain) jmobjChild;
-                        List<IJmolObject> objs=cobj.getChildren();
-                        for (IJmolObject o : objs){
-                            JmolGroup gr=(JmolGroup)o;
-                            List<IJmolObject> atoms=gr.getChildren();
-                            for (IJmolObject patom : atoms){
-                                JmolAtom atom=(JmolAtom)patom;
-                                Atom jmolAtom=(Atom) atom.getObject();
-                                if (Integer.valueOf(atomno).intValue()-1
-                                    == jmolAtom.getAtomIndex()){
-                                    return atom;
+                            List<IJmolObject> objs=cobj.getChildren();
+                            for (IJmolObject o : objs){
+                                if ( o instanceof JmolGroup ) {
+                                    JmolGroup gr=(JmolGroup)o;
+                                    List<IJmolObject> atoms=gr.getChildren();
+                                    for (IJmolObject patom : atoms){
+                                        JmolAtom atom=(JmolAtom)patom;
+                                        Atom jmolAtom=(Atom) atom.getObject();
+                                        if ( Integer.valueOf(atomno)
+                                                    .intValue()-1
+                                            == jmolAtom.getAtomIndex()){
+                                            result.add( atom );
+                                            continue;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -335,7 +348,7 @@ public class JmolContentOutlinePage
             }
         }
 
-        return null;
+        return result;
     }
 
     /**

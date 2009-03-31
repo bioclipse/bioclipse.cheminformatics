@@ -15,14 +15,19 @@ package net.bioclipse.jmol.views;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.BitSet;
 
 import javax.swing.JPanel;
+
+import net.bioclipse.jmol.views.outline.JmolModelSet;
 
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.jmol.adapter.smarter.AtomSetCollection;
 import org.jmol.adapter.smarter.SmarterJmolAdapter;
 import org.jmol.api.JmolAdapter;
+import org.jmol.api.JmolSelectionListener;
 import org.jmol.api.JmolViewer;
+import org.jmol.modelset.ModelSet;
 import org.jmol.viewer.Viewer;
 import org.apache.log4j.Logger;
 
@@ -66,7 +71,10 @@ public class JmolPanel extends JPanel {
         JmolViewer viewer = Viewer.allocateViewer(this, adapter);
         viewer.setColorBackground("white");
         viewer.setAutoBond(true);
-        viewer.setJmolStatusListener(new StatusListener(part));
+        
+        JmolListener listener = new JmolListener(part, viewer);
+        viewer.setJmolStatusListener(listener);
+        viewer.addSelectionListener(listener);
         viewer.setFrankOn(false);
         return viewer;
     }

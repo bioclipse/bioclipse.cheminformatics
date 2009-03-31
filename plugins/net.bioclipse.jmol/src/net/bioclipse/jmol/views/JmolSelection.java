@@ -12,7 +12,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  * @author ola
  *
  */
-public abstract class JmolSelection implements IStructuredSelection{
+public abstract class JmolSelection implements IStructuredSelection,
+                                               Iterable<String> {
 
     Set<String> selectionSet;
 	
@@ -20,8 +21,7 @@ public abstract class JmolSelection implements IStructuredSelection{
         return selectionSet.toArray()[0];
     }
 
-    @SuppressWarnings("unchecked")
-	public Iterator iterator() {
+	  public Iterator<String> iterator() {
         return selectionSet.iterator();
     }
 
@@ -46,4 +46,27 @@ public abstract class JmolSelection implements IStructuredSelection{
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        return selectionSet.hashCode();
+    }
+
+    @Override
+    public boolean equals( Object obj ) {
+
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        JmolSelection other = (JmolSelection) obj;
+        if ( selectionSet == null ) {
+            if ( other.selectionSet != null )
+                return false;
+        }
+        else if ( !( selectionSet.equals( other.selectionSet ) ) )
+            return false;
+        return true;
+    }
 }

@@ -11,6 +11,7 @@
  ******************************************************************************/
 package net.bioclipse.jmol.views;
 
+import java.util.BitSet;
 import java.util.HashSet;
 
 /**
@@ -27,5 +28,11 @@ public class JmolAtomSelection extends JmolSelection {
         selectionSet.add("atomno="+atomIndex);
     }
 
-
+    public JmolAtomSelection(BitSet selection) {
+        selectionSet=new HashSet<String>();
+        for ( int i = 0; i < selection.size(); i++ ) {
+            if ( selection.get( i ) )
+                selectionSet.add("atomno="+(i+1));
+        }
+    }
 }

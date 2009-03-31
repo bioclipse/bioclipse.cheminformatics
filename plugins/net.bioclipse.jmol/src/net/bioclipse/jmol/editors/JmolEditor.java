@@ -75,6 +75,8 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.ide.IDE;
 import org.jmol.modelset.Model;
 
+import com.sun.j3d.utils.universe.Viewer;
+
 /**
  * A Multi Page Editor with Jmol embedded on foremost page.
  */
@@ -102,10 +104,10 @@ public class JmolEditor extends MultiPageEditorPart
     JmolPanel jmolPanel;
 
     /** Registered listeners */
-    private List<ISelectionChangedListener> selectionListeners;
+    private volatile List<ISelectionChangedListener> selectionListeners;
 
     /** Store last selection */
-    private JmolSelection selection;
+    private volatile JmolSelection selection;
 
     //Should we hold the model as a string (read from file) or let 
     //it be the actual file?
@@ -218,8 +220,16 @@ public class JmolEditor extends MultiPageEditorPart
 
         runScript("select none");
         
-        //make clicking on elemtents select those elements
-        runScript("set picking select");
+      //make clicking on elemtents select those elements
+        if (jmolPanel.getViewer().getPolymerCount() == 0 ) {
+            runScript("set picking select atoms");
+        }
+        else {
+            runScript("set picking select group");
+        }
+        
+        
+        
 
         //End Initialize jmol
         //===============
@@ -705,7 +715,8 @@ public class JmolEditor extends MultiPageEditorPart
     }
 
     public void setSelection(ISelection selection) {
-        if (!(selection instanceof JmolSelection)) return;
+        if (!(selection instanceof JmolSelection)) 
+            return;
 
         //Mark this editor as active
 //        Display.getDefault().syncExec(new Runnable() {
@@ -715,16 +726,31 @@ public class JmolEditor extends MultiPageEditorPart
 //            }
 //        });
 
+        if ( this.selection != null && this.selection.equals( selection ) ) {
+            return; //The new selection is equal to the old one. We are done.
+        }
+        
         this.selection = (JmolSelection)selection;
 
-        //Issue select string
-        String selStr 
-            = "Select " 
-                + ((JmolSelection)selection).getFirstElement().toString();
+        String selStr;
+        if ( selection.isEmpty() ) {
+            selStr = "Select none";
+        }
+        else {
+            StringBuilder builder = new StringBuilder();
+            builder.append( "Select " );
+            for ( String s : this.selection) {
+                builder.append( s );
+                builder.append( ", " );
+            }
+            // -2 to get rid of last ", " part
+            selStr = builder.substring( 0, builder.length() - 2 );
+        }
         runScript(selStr);
 
         if (selectionListeners==null) 
             return;
+        
         java.util.Iterator<ISelectionChangedListener> iter 
             = selectionListeners.iterator();
         while ( iter.hasNext() ) {

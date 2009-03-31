@@ -13,17 +13,19 @@ package net.bioclipse.jmol.cdk.views;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.BitSet;
 
 import javax.swing.JPanel;
 
 import net.bioclipse.jmol.cdk.adapter.CdkJmolAdapter;
-import net.bioclipse.jmol.views.StatusListener;
+import net.bioclipse.jmol.views.JmolListener;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.jmol.adapter.smarter.AtomSetCollection;
 import org.jmol.adapter.smarter.SmarterJmolAdapter;
 import org.jmol.api.JmolAdapter;
+import org.jmol.api.JmolSelectionListener;
 import org.jmol.api.JmolViewer;
 import org.jmol.viewer.Viewer;
 import org.openscience.cdk.interfaces.IChemFile;
@@ -68,7 +70,16 @@ public class JmolPanel extends JPanel {
         JmolViewer viewer = Viewer.allocateViewer(this, adapter);
         viewer.setColorBackground("white");
         viewer.setAutoBond(true);
-        viewer.setJmolStatusListener(new StatusListener(part));
+        viewer.setJmolStatusListener(new JmolListener(part));
+        viewer.addSelectionListener( new JmolSelectionListener() {
+
+            public void selectionChanged( BitSet selection ) {
+
+                System.out.println( "HOHOHOHO" );
+                
+            }
+            
+        });
         return viewer;
     }
 
