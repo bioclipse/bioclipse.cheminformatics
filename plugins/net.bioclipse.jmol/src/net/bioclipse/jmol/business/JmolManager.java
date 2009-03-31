@@ -14,6 +14,7 @@ package net.bioclipse.jmol.business;
 import net.bioclipse.core.Activator;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.jmol.editors.JmolEditor;
+import net.bioclipse.jmol.views.JmolConsoleView;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -21,6 +22,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 public class JmolManager implements IJmolManager {
@@ -80,6 +82,20 @@ public class JmolManager implements IJmolManager {
         return jmolEditor;
     }
 
+    private JmolConsoleView getJmolConsoleView() {
+        try {
+            return (JmolConsoleView)
+                PlatformUI.getWorkbench()
+                          .getActiveWorkbenchWindow()
+                          .getActivePage()
+                          .showView("net.bioclipse.jmol.views.JmolConsoleView");
+        } catch ( PartInitException e ) {
+            throw new RuntimeException(
+                "The Jmol console could not be opened"
+            );
+        }
+    }
+
     protected void setActiveJmolEditor( JmolEditor activeEditor ) {
         jmolEditor = activeEditor;
     }
@@ -101,8 +117,9 @@ public class JmolManager implements IJmolManager {
     		this.findActiveJmolEditor().snapshot(file);
   	}
 
-    public void print( String s ) {
-        //TODO FIXME
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void print( final String message ) {
+        Display.getDefault().asyncExec( new Runnable() {
+            public void run() { getJmolConsoleView().printMessage( message ); }
+        } );
     }
 }
