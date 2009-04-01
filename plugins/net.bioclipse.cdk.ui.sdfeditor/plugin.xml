@@ -11,7 +11,10 @@
             id="net.bioclipse.cdk.ui.sdfeditor"
             name="MoleculeTableEditor">
          <contentTypeBinding
-               contentTypeId="net.bioclipse.contenttypes.sdf">
+               contentTypeId="net.bioclipse.contenttypes.sdf2d">
+         </contentTypeBinding>
+         <contentTypeBinding
+               contentTypeId="net.bioclipse.contenttypes.sdf3d">
          </contentTypeBinding>
          <contentTypeBinding
                contentTypeId="net.bioclipse.contenttypes.cml.multipleMolecule2d">
@@ -76,7 +79,7 @@
            name="extractEntries"/>
   	</extension>
 
-	<extension 
+	<extension
   		point="org.eclipse.ui.menus">
 		<menuContribution
 			locationURI="popup:org.eclipse.ui.popup.any?after=additions">
@@ -88,7 +91,7 @@
 			   		<iterate operator="and" ifEmpty="false">
 		      			<adapt type="org.eclipse.core.resources.IResource">
 			      			<or>
-				                <test property="org.eclipse.core.resources.contentTypeId" 
+				                <test property="org.eclipse.core.resources.contentTypeId"
 				           	    	value="net.bioclipse.contenttypes.sdf"/>
 				            </or>
 			      		</adapt>

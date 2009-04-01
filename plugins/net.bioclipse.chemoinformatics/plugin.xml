@@ -80,7 +80,7 @@
           icon="icons/molecule3D.png">
       </perspective>
    </extension>
-   
+
      <extension
         point="org.eclipse.ui.perspectiveExtensions">
      <perspectiveExtension
@@ -108,11 +108,32 @@
 
         <content-type
               base-type="org.eclipse.core.runtime.text"
-              file-extensions="sdf"
               id="net.bioclipse.contenttypes.sdf"
+              file-extensions="sdf"
               name="MDL SD file"
               priority="high">
         </content-type>
+        <content-type
+              base-type="net.bioclipse.contenttypes.sdf"
+              file-extensions="sdf"
+              id="net.bioclipse.contenttypes.sdf2d"
+              name="MDL SD file (2D)"
+              priority="high">
+		   <describer class="net.bioclipse.chemoinformatics.contenttypes.MdlMolFileCoordinatesDescriber">
+              <parameter name="type" value="2D"/>
+       	   </describer>
+        </content-type>
+        <content-type
+              base-type="net.bioclipse.contenttypes.sdf"
+              file-extensions="sdf"
+              id="net.bioclipse.contenttypes.sdf3d"
+              name="MDL SD file (3D)"
+              priority="high">
+		   <describer class="net.bioclipse.chemoinformatics.contenttypes.MdlMolFileCoordinatesDescriber">
+              <parameter name="type" value="3D"/>
+       	   </describer>
+        </content-type>
+
         <content-type
               base-type="org.eclipse.core.runtime.text"
               file-extensions="smi"
@@ -156,11 +177,11 @@
        	</describer>
         </content-type>
 
-     </extension>  
-     
-     
-  <extension point="org.eclipse.ui.menus">  
-     
+     </extension>
+
+
+  <extension point="org.eclipse.ui.menus">
+
      <menuContribution
             locationURI="popup:org.eclipse.ui.popup.any?after=additions">
 		<menu label="Generate 2D"
@@ -169,11 +190,11 @@
 		<menu label="Generate 3D"
 		      id="net.bioclipse.chemoinformatics.popup.gen3d">
 		</menu>
-		<menu label="Generate Conformers" 
+		<menu label="Generate Conformers"
 			  id="net.bioclipse.chemoinformatics.popup.genConformers">
 		</menu>
       </menuContribution>
- </extension>  
-     
+ </extension>
+
 
 </plugin>

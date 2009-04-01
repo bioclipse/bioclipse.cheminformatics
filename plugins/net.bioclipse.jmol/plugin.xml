@@ -54,6 +54,9 @@
             <contentTypeBinding
                   contentTypeId="net.bioclipse.contenttypes.cml.singleMolecule3d">
             </contentTypeBinding>
+            <contentTypeBinding
+                  contentTypeId="net.bioclipse.contenttypes.sdf3d">
+            </contentTypeBinding>
       </editor>
    </extension>
 
@@ -68,8 +71,8 @@
             default="true">
       </editor>
    </extension>
-   
-   
+
+
 
 <extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
       <propertyContributor contributorId="net.bioclipse.jmol.views.outline.JmolContentOutlinePage">
@@ -110,7 +113,7 @@
          </propertySection-->
       </propertySections>
    </extension>
-   
+
 
  <extension
          point="org.eclipse.ui.commands">
@@ -134,7 +137,7 @@
             description="Run the Jmol script in the activeeditor"
             name="Run Script">
       </command>
-      
+
 </extension>
 
  <extension
@@ -151,7 +154,7 @@
             class="net.bioclipse.jmol.actions.RunEditorScriptHandler"
             commandId="net.bioclipse.jmol.actions.runEditorScript">
       </handler>
-      
+
 </extension>
 
 
@@ -186,7 +189,7 @@
                label="Jmol">
 			<separator
       			name="additions">
-			</separator>               
+			</separator>
                <visibleWhen>
                   <reference
                         definitionId="net.bioclipse.definitions.activeJmolEditor">
@@ -614,7 +617,7 @@
                   </parameter>
             </command>
          </menu>
-         
+
           <menu
                id="net.bioclipse.jmol.editor.menu.rotate"
                label="Rotate">
@@ -646,9 +649,9 @@
                   </parameter>
             </command>
          </menu>
-         
 
-         <!-- It seems we need to have at least one command in top menu 
+
+         <!-- It seems we need to have at least one command in top menu
          for it to show-->
             <command
                   commandId="net.bioclipse.jmol.actions.export"
@@ -657,7 +660,7 @@
              </command>
       </menuContribution>
 
-      
+
       <menuContribution
             locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
          <toolbar
@@ -688,7 +691,7 @@
             </separator>
          </toolbar>
       </menuContribution>
-      
+
 </extension>
 
    <extension
@@ -704,5 +707,5 @@
          </description>
       </view>
     </extension>
-   
+
 </plugin>
