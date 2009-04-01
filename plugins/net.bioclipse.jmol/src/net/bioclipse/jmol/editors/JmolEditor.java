@@ -10,7 +10,6 @@
  *******************************************************************************/
 package net.bioclipse.jmol.editors;
 
-
 import java.awt.Image;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
@@ -74,8 +73,6 @@ import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.ide.IDE;
 import org.jmol.modelset.Model;
-
-import com.sun.j3d.utils.universe.Viewer;
 
 /**
  * A Multi Page Editor with Jmol embedded on foremost page.
