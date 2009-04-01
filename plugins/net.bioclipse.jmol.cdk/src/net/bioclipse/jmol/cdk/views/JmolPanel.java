@@ -70,7 +70,7 @@ public class JmolPanel extends JPanel {
         JmolViewer viewer = Viewer.allocateViewer(this, adapter);
         viewer.setColorBackground("white");
         viewer.setAutoBond(true);
-        viewer.setJmolStatusListener(new JmolListener(part));
+        viewer.setJmolStatusListener(new JmolListener(part,viewer));
         viewer.addSelectionListener( new JmolSelectionListener() {
 
             public void selectionChanged( BitSet selection ) {
