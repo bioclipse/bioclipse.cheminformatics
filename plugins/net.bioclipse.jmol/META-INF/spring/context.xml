@@ -1,16 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:osgi="http://www.springframework.org/schema/osgi"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                      http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
-  <!-- regular spring configuration file defining simple service
-       bean. We've kept the osgi definitions in a separate 
-       configuration file so that this file can easily be used
-       for testing outside of an OSGi environment -->
+  <!-- Export the bean (defined in a separate
+       config file in this case) as an OSGi service -->
 
+  <osgi:service id="jmolManagerOSGI" 
+                ref="jmolManager"
+                interface="net.bioclipse.jmol.business.IJmolManager" />
+                
+  <osgi:service id="jsjmolManagerOSGI" 
+                ref="jsjmolManager"
+                interface="net.bioclipse.jmol.business.IJSJmolManager" />
+
+  <osgi:reference id="recordingAdvice" 
+                  interface="net.bioclipse.recording.IRecordingAdvice" />
+
+  <osgi:reference id="createJobAdvice"
+                  interface="net.bioclipse.ui.jobs.ICreateJobAdvice" />
+
+  <osgi:reference id="wrapInProxyAdvice"
+                  interface="net.bioclipse.recording.IWrapInProxyAdvice" />
+  
+  <osgi:reference id="JSJobCreatorAdvice" 
+                  interface="net.bioclipse.scripting.business.IJSJobCreatorAdvice"/>
+
+  <bean id="recordingAdvisor"
+  		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+        <property name="advice"  ref="recordingAdvice" />
+  		<property name="pattern" value=".*" /> <!-- See also class implementation -->
+  </bean>
+  
   <bean id="jmolManagerTarget" 
         class="net.bioclipse.jmol.business.JmolManager">
+  </bean>
+  
+  <bean id="jmolManager"
+  		class="org.springframework.aop.framework.ProxyFactoryBean">
+  	<property name="target" 
+  	          ref="jmolManagerTarget" />
+  	<property name="proxyInterfaces" 
+  	          value="net.bioclipse.jmol.business.IJmolManager" />
+  	<property name="interceptorNames">
+  	    <list>
+  	        <value>recordingAdvisor</value>
+  	        <value>wrapInProxyAdvice</value>
+            <value>createJobAdvice</value>
+  	    </list>
+  	</property>
+  </bean>
+  
+  <bean id="jsjmolManager"
+        class="org.springframework.aop.framework.ProxyFactoryBean">
+    <property name="target" 
+              ref="jmolManagerTarget" />
+    <property name="proxyInterfaces" 
+              value="net.bioclipse.jmol.business.IJSJmolManager" />
+    <property name="interceptorNames">
+        <list>
+            <value>JSJobCreatorAdvice</value>
+        </list>
+    </property>
   </bean>
   
 </beans>
