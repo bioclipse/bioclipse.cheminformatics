@@ -109,16 +109,12 @@ public class MoleculesEditor extends EditorPart implements
                                         new MoleculeTableContentProvider() );
         molTableViewer.setInput( getEditorInput() );
 
-        molTableViewer.setInput(getEditorInput());
-
-                MenuManager menuMgr = new MenuManager("Molecuels table","net.bioclipse.cdk.ui.sdfeditor.menu");
-                menuMgr.add( new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-                getSite().registerContextMenu( "net.bioclipse.cdk.ui.sdfeditor.menu",menuMgr, molTableViewer);
-                Menu menu = menuMgr.createContextMenu(molTableViewer.getControl());
-                molTableViewer.getControl().setMenu(menu);
-                //(new TableViewer(parent,SWT.NONE)).setInput( input )
-                logger.debug( "Menu id for SDFEditor " +menuMgr.getId());
-//        ((NatTable)molTableViewer.getControl()).get
+        MenuManager menuMgr = new MenuManager("Molecuels table","net.bioclipse.cdk.ui.sdfeditor.menu");
+        menuMgr.add( new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+        getSite().registerContextMenu( "net.bioclipse.cdk.ui.sdfeditor.menu",menuMgr, molTableViewer);
+        Menu menu = menuMgr.createContextMenu(molTableViewer.getControl());
+        molTableViewer.getControl().setMenu(menu);
+        logger.debug( "Menu id for SDFEditor " +menuMgr.getId());
 
         getSite().setSelectionProvider( molTableViewer );
     }
