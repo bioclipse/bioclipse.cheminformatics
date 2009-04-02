@@ -55,6 +55,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentType;
@@ -1103,32 +1104,27 @@ public class CDKManager implements ICDKManager {
       }
 
       public SDFileIndex createSDFIndex(IFile file, IProgressMonitor monitor) {
-          boolean large = false;
-          int work = 1;
-          IProgressMonitor progress = monitor;
-          //SubMonitor progress = SubMonitor.convert( monitor ,100);
+
+          SubMonitor progress = SubMonitor.convert( monitor ,100);
+          long size = -1;
           try {
-              long size = EFS.getStore( file.getLocationURI() )
-                  .fetchInfo().getLength();
-              if(true) {//size > Integer.MAX_VALUE) {
-                  monitor.beginTask( "Generating index", (int)size );
-                  work = (int) (size/ 1000);
-                  large = true;
-              }
-              //else
-                  //progress.setWorkRemaining( (int) size );
+              size =EFS.getStore( file.getLocationURI() ).fetchInfo().getLength();
+              progress.beginTask( "Parsing SDFile",
+                                  (int)size);
 
           }catch (CoreException e) {
-            logger.debug( "Failed to get size of file" );
-        }
+              logger.debug( "Failed to get size of file" );
+              progress.beginTask( "Parsing SDFile", IProgressMonitor.UNKNOWN );
+          }
           long tStart = System.nanoTime();
           List<Long> values = new LinkedList<Long>();
           int num = 0;
-        long pos = 0;
-        long start = 0;
+          long pos = 0;
+          long start = 0;
+          int work = 0;
           try {
               BufferedInputStream counterStream
-                  = new BufferedInputStream( file.getContents() );
+              = new BufferedInputStream( file.getContents() );
               int c = 0;
               while (c != -1) {
                   c = counterStream.read();pos++;
@@ -1144,20 +1140,25 @@ public class CDKManager implements ICDKManager {
                                       c = counterStream.read();// only CR or CR+LF
                                   }else pos--;
                                   if( c == '\n') {
-                                      pos++;
+                                      pos++;work = (int) start;
                                       start = pos;
                                       counterStream.read();pos++;
                                       num++;
                                   }else { // next pos already read
+                                      work = (int) start;
                                       start = pos;
                                       pos++;
                                   }
-                                  values.add( start=pos );
-                                  if(!large)
-                                      progress.worked( (int) (pos-start) );
-                                  else {
-                                      if(pos%work == 0)
-                                          progress.worked( work );
+                                  values.add( start );
+                                  progress.worked( (int) (pos-work) );
+                                  if(size >-1) {
+                                      progress.subTask(
+                                            String.format( "Read: %dMB\\%dMB",
+                                              pos/(1048576),size/(1048576)));
+                                  }else {
+                                      progress.subTask(
+                                              String.format( "Read: %dMB",
+                                              pos/(1048576)));
                                   }
                                   if ( monitor.isCanceled() ) {
                                       throw new OperationCanceledException();
@@ -1171,20 +1172,19 @@ public class CDKManager implements ICDKManager {
                   values.add(pos);
                   num++;
               }
-              progress.worked( (int) (pos%work) );
               counterStream.close();
           }
           catch (Exception exception) {
               // ok, I give up...
               logger.debug( "Could not determine the number of molecules to " +
-                                  "read, because: "
-                              + exception.getClass().getSimpleName() + " : "
-                              + exception.getMessage(),
+                            "read, because: "
+                            + exception.getClass().getSimpleName() + " : "
+                            + exception.getMessage(),
                             exception );
           }
-          logger.debug( "numberOfEntriesInSDF took "
-                        +(int)((System.nanoTime()-tStart)/1e6)+" to complete");
-          monitor.done();
+          logger.debug( String.format("numberOfEntriesInSDF took %d to complete",
+                                       (int)((System.nanoTime()-tStart)/1e6)));
+          progress.done();
           return new SDFileIndex(file,values);
       }
 
