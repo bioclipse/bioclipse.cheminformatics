@@ -138,31 +138,21 @@ public class MoleculeViewerContentProvider implements IDataProvider,
     }
 
     protected IChemObject processContent() throws CDKException {
-        /*
-          return chemObjectReader.read(builder.newMolecule());
-          */
-          //read(IMolecule) doesn't read properties ...
+
           IChemObject co = chemReader.read(builder.newChemFile());
           if (co instanceof IChemFile) {
-              int c = ((IChemFile) co).getChemSequenceCount();
-              for (int i=0; i <c;i++) {
-                  Iterator cm = ((IChemFile) co).getChemSequence(i).chemModels().iterator();
-                  while (cm.hasNext()) {
-                    Iterator sm = ((IChemModel)cm.next()).getMoleculeSet().molecules().iterator();
-                      while (sm.hasNext()) {
-
-                        co = (IMolecule) sm.next();
+              for(IChemSequence chemSeq:((IChemFile) co).chemSequences()) {
+                  for(IChemModel chemModel:chemSeq.chemModels()) {
+                    for(IAtomContainer ac:chemModel.getMoleculeSet().molecules()) {
+                        co = (IMolecule) ac;
                         break;
                       }
                     break;
                   }
-                  cm = null;
                   break;
               }
-              //cs = null;
           }
           return co;
-
       }
 
     public ICDKMolecule getMoleculeAt( int index ) {
