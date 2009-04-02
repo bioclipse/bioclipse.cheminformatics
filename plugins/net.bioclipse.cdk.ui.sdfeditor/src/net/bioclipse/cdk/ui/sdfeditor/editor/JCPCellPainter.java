@@ -71,24 +71,15 @@ public class JCPCellPainter implements ICellPainter {
         setupRenderer();
     }
 
-
-
-
     IRenderer2DConfigurator getRenderer2DConfigurator() {
 
         return renderer2DConfigurator;
     }
 
+    void setRenderer2DConfigurator( IRenderer2DConfigurator r2DConfigurator ) {
 
-
-
-    void setRenderer2DConfigurator(
-                                           IRenderer2DConfigurator renderer2DConfigurator ) {
-
-        this.renderer2DConfigurator = renderer2DConfigurator;
+        this.renderer2DConfigurator = r2DConfigurator;
     }
-
-
 
     private void setupRenderer() {
 
@@ -115,15 +106,8 @@ public class JCPCellPainter implements ICellPainter {
         rModel.setBackColor( new java.awt.Color(252,253,254));
         rModel.setFitToScreen( true );
 
-//        greenScreen = new Color(Display.getCurrent(), 252, 253, 254);
         generatedColor = new Color(Display.getCurrent(),200,100,100);
         generatedFont =new Font(Display.getCurrent(),"Arial",16,SWT.BOLD);
-//        imageBounds = new Rectangle2D.Double( 0, 0, imageWidth, imageWidth );
-//        tempImage = new Image( Display.getDefault(),
-//                               imageWidth,
-//                               imageWidth );
-//        imageBoundsSWT = tempImage.getBounds();
-
     }
 
     private boolean retriveAtomContainer(IAdaptable element,IAtomContainer[] result) {
@@ -173,9 +157,6 @@ public class JCPCellPainter implements ICellPainter {
                                               acArray);
             if(acArray[0] == null) return;
 
-
-
-
             if(generated) {
                 gc.setFont( generatedFont );
                 int h = rect.height-gc.getFontMetrics().getHeight();
@@ -221,11 +202,8 @@ public class JCPCellPainter implements ICellPainter {
           rectangle.y = rectangle.y + 1;
           rectangle.height = rectangle.height - 1;
         }
-
         gc.fillRectangle( rectangle );
-
         getColumnImage( gc, rectangle, cellRenderer.getValue( row, col ) );
-
     }
 
     public boolean isUseExtensionGenerators() {
@@ -233,10 +211,8 @@ public class JCPCellPainter implements ICellPainter {
         return useExtensionGenerators;
     }
 
-
     public void setUseExtensionGenerators( boolean useExtensionGenerators ) {
 
         extensionGenerator.setUse( useExtensionGenerators );
     }
-
 }
