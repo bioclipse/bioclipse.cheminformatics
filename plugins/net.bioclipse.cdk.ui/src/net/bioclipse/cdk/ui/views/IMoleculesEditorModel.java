@@ -11,6 +11,7 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.views;
 
+import net.bioclipse.cdk.domain.ICDKMolecule;
 
 /**
  * @author arvid
@@ -18,7 +19,7 @@ package net.bioclipse.cdk.ui.views;
  */
 public interface IMoleculesEditorModel {
     
-    public Object getMoleculeAt(int index);
+    public ICDKMolecule getMoleculeAt(int index);
     
     public int getNumberOfMolecules();
     

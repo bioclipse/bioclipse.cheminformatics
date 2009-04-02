@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.Node;
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.core.BioclipseStore;
@@ -124,13 +125,14 @@ public class MoleculesFromSDF implements IMoleculesFromFile{
     /* (non-Javadoc)
      * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#getMoleculeAt(int)
      */
-    public Object getMoleculeAt( int index ) {
+    public ICDKMolecule getMoleculeAt( int index ) {
         if(children.size() <=index) {
             logger.debug( "index out of bounds Index: "
                                           +index + ", Size: "+children.size() );
           return null;
         } else
-            return children.get(index );
+            return (ICDKMolecule) children.get(index )
+                    .getAdapter( ICDKMolecule.class );
     }
 
     /* (non-Javadoc)

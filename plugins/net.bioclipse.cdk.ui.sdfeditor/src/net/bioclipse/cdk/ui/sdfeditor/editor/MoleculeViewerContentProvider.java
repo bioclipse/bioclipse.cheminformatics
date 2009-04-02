@@ -125,7 +125,7 @@ public class MoleculeViewerContentProvider implements IDataProvider,
         lastRead = mol;
     }
 
-    public Object getMoleculeAt( int index ) {
+    public ICDKMolecule getMoleculeAt( int index ) {
         ICDKMolecule mol = edited.get( index );
         if(mol != null) {
             if(index == lastIndex) {

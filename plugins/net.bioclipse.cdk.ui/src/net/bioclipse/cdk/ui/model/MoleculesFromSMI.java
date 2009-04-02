@@ -30,10 +30,11 @@ public class MoleculesFromSMI implements IMoleculesFromFile {
        molecules = Collections.synchronizedList( new LinkedList<SDFElement>());
     }
 
-    public Object getMoleculeAt( int index ) {
+    public ICDKMolecule getMoleculeAt( int index ) {
 
         if( molecules.size()> index) {
-            return molecules.get( index );
+            return (ICDKMolecule) molecules.get( index )
+                        .getAdapter( ICDKMolecule.class );
         }
         return null;
     }

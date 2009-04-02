@@ -204,7 +204,7 @@ public class MoleculeTableContentProvider implements
                     {
                         molecules = bioList;
                     }
-                    public Object getMoleculeAt( int index ) {
+                    public ICDKMolecule getMoleculeAt( int index ) {
 
                         return molecules.get( index );
                     }
@@ -252,7 +252,7 @@ public class MoleculeTableContentProvider implements
                 rowSize = numberOfEntries( READ_AHEAD );
             }
 
-            public Object getMoleculeAt( int index ) {
+            public ICDKMolecule getMoleculeAt( int index ) {
 
                 return readMoleculeWithIterator( index );
             }
@@ -337,7 +337,7 @@ public class MoleculeTableContentProvider implements
         public void init(IFile file) {
             createIndex( file );
         }
-        public Object getMoleculeAt( int index ) {
+        public ICDKMolecule getMoleculeAt( int index ) {
 
 
             IChemObject chemObject;
