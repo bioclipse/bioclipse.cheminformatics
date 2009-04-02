@@ -1074,15 +1074,34 @@ public class CDKManager implements ICDKManager {
           }
 
           public long start(int index) {
-              if(index==0) return 0;
-              return filePos.get(index-1);
+              return filePos.get(index);
           }
       }
+
       public int numberOfEntriesInSDF(IFile file, IProgressMonitor monitor) {
 
           SDFileIndex index = createSDFIndex( file, monitor );
           return index.size();
       }
+
+      public SDFileIndex createSDFIndex(String file) {
+          throw new IllegalStateException("This methos call should have been" +
+                                          "translated to method(IFile,...,"+
+                                          "IProgresMonitor");
+      }
+
+      public SDFileIndex createSDFIndex(IFile file) {
+          throw new IllegalStateException("This methos call should have been" +
+                                          "translated to method(IFile,...,"+
+                                          "IProgresMonitor");
+      }
+
+      public SDFileIndex createSDFIndex(IFile file, BioclipseUIJob<SDFileIndex> uiJob) {
+          throw new IllegalStateException("This methos call should have been" +
+                                          "translated to method(IFile,...,"+
+                                          "IProgresMonitor");
+      }
+
       public SDFileIndex createSDFIndex(IFile file, IProgressMonitor monitor) {
           boolean large = false;
           int work = 1;

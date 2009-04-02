@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import net.bioclipse.cdk.business.CDKManager.SDFileIndex;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesInfo;
 import net.bioclipse.core.PublishedClass;
@@ -581,6 +582,14 @@ public interface ICDKManager extends IBioclipseManager {
     public double calculateMass( IMolecule molecule )
                   throws BioclipseException;
 
+
+    public SDFileIndex createSDFIndex(IFile file, IProgressMonitor monitor);
+    public SDFileIndex createSDFIndex(IFile file);
+    public SDFileIndex createSDFIndex(IFile file, BioclipseUIJob<SDFileIndex> uiJob);
+    @Recorded
+    @PublishedMethod( params = "String file",
+                      methodSummary = "Creates a index of the molecules positons in a SDFile")
+    public SDFileIndex createSDFIndex(String file);
     /**
      * @param file
      * @param subProgressMonitor
