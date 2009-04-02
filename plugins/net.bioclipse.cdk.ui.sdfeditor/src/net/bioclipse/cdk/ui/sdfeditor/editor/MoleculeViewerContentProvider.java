@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,8 +38,11 @@ import org.eclipse.jface.viewers.Viewer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IChemFile;
+import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.MDLV2000Reader;
 
@@ -53,7 +57,13 @@ public class MoleculeViewerContentProvider implements IDataProvider,
     Logger logger = Logger.getLogger( MoleculeViewerContentProvider.class );
 
     MoleculeTableViewer viewer;
-    SDFileIndex input;
+    SDFileIndex input = new SDFileIndex(null,new ArrayList<Long>()) {
+        @Override
+        public int size() {
+            return 0;
+        }
+
+    };
 
     protected ISimpleChemObjectReader chemReader;
     protected IChemObjectBuilder builder;
@@ -63,7 +73,7 @@ public class MoleculeViewerContentProvider implements IDataProvider,
 
     List<Object> visibleProperties= new ArrayList<Object>(10);
     Set<Object> availableProperties= new HashSet<Object>();
-    
+
     Map<Integer, ICDKMolecule> edited = new HashMap<Integer, ICDKMolecule>();
 
     public MoleculeViewerContentProvider() {
@@ -101,6 +111,7 @@ public class MoleculeViewerContentProvider implements IDataProvider,
         Assert.isTrue( viewer instanceof MoleculeTableViewer );
 
         this.viewer = (MoleculeTableViewer) viewer;
+
         input = (SDFileIndex) newInput;
         setLastRead(-1 , null );
     }
@@ -113,7 +124,8 @@ public class MoleculeViewerContentProvider implements IDataProvider,
         byte[] bytes= new byte[length];
         in.read( bytes , 0  , length );
         in.close();
-        return new String( bytes );
+        String result = new String( bytes );
+        return result.substring( 0,result.indexOf( "$$$$" ));
     }
 
     private void setLastRead(int index,ICDKMolecule mol) {
@@ -125,9 +137,37 @@ public class MoleculeViewerContentProvider implements IDataProvider,
         lastRead = mol;
     }
 
+    protected IChemObject processContent() throws CDKException {
+        /*
+          return chemObjectReader.read(builder.newMolecule());
+          */
+          //read(IMolecule) doesn't read properties ...
+          IChemObject co = chemReader.read(builder.newChemFile());
+          if (co instanceof IChemFile) {
+              int c = ((IChemFile) co).getChemSequenceCount();
+              for (int i=0; i <c;i++) {
+                  Iterator cm = ((IChemFile) co).getChemSequence(i).chemModels().iterator();
+                  while (cm.hasNext()) {
+                    Iterator sm = ((IChemModel)cm.next()).getMoleculeSet().molecules().iterator();
+                      while (sm.hasNext()) {
+
+                        co = (IMolecule) sm.next();
+                        break;
+                      }
+                    break;
+                  }
+                  cm = null;
+                  break;
+              }
+              //cs = null;
+          }
+          return co;
+
+      }
+
     public ICDKMolecule getMoleculeAt( int index ) {
         ICDKMolecule mol = edited.get( index );
-        if(mol != null) {
+        if(mol == null) {
             if(index == lastIndex) {
                 mol = lastRead;
             }
@@ -135,7 +175,7 @@ public class MoleculeViewerContentProvider implements IDataProvider,
                 try {
                     StringReader reader = new StringReader(getRecord( index ));
                     chemReader.setReader( reader );
-                    IChemObject chemObj = chemReader.read(builder.newChemFile());
+                    IChemObject chemObj = processContent();
                     mol = new CDKMolecule((IAtomContainer)chemObj);
                     setLastRead( index, mol );
                     readProperties( mol );
@@ -164,7 +204,7 @@ public class MoleculeViewerContentProvider implements IDataProvider,
 
         return input.size();
     }
-    
+
     public void save(int index,ICDKMolecule molecule) {
         edited.put( index, molecule);
     }
@@ -181,7 +221,7 @@ public class MoleculeViewerContentProvider implements IDataProvider,
                         molecule.getAtomContainer()
                         .getProperties().keySet());
     }
-    
+
     public List<Object> getProperties() {
 
         return new ArrayList<Object>(visibleProperties);
@@ -196,5 +236,10 @@ public class MoleculeViewerContentProvider implements IDataProvider,
 
     public Collection<Object> getAvailableProperties() {
         return new HashSet<Object>(availableProperties);
+    }
+
+    void updateHeaders() {
+
+        viewer.refresh();
     }
 }
