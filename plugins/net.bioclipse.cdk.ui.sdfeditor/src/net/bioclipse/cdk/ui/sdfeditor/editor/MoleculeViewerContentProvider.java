@@ -228,8 +228,8 @@ public class MoleculeViewerContentProvider implements IDataProvider,
     }
 
     public void setVisibleProperties( List<Object> visibleProperties ) {
-        visibleProperties.clear();
-        visibleProperties.addAll( visibleProperties );
+        this.visibleProperties.clear();
+        this.visibleProperties.addAll( visibleProperties );
         if(viewer != null)
             viewer.refresh();
     }
