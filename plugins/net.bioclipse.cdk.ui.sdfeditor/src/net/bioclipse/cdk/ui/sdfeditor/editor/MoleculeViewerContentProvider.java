@@ -53,7 +53,7 @@ import org.openscience.cdk.io.MDLV2000Reader;
  *
  */
 public class MoleculeViewerContentProvider implements IDataProvider,
-        IContentProvider, IMoleculesEditorModel{
+        IContentProvider, IMoleculesEditorModel,IMoleculeTableColumnHandler{
 
     private static final int NUMBER_OF_PROPERTIES = 10;
 

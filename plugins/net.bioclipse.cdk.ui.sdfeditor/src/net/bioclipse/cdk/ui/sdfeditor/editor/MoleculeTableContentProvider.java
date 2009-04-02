@@ -47,7 +47,8 @@ import org.openscience.cdk.io.random.RandomAccessSDFReader;
  * @author arvid
  */
 public class MoleculeTableContentProvider implements
-        ILazyContentProvider, IDataProvider {
+        ILazyContentProvider, IDataProvider ,IMoleculeTableColumnHandler,
+        IMoleculesEditorModel{
 
     Logger logger = Logger.getLogger( MoleculeTableContentProvider.class );
 
@@ -439,5 +440,15 @@ public class MoleculeTableContentProvider implements
             return  value!=null?value.toString():"";
         } else
             return "";
+    }
+
+    public int getNumberOfMolecules() {
+        return getRowCount();
+    }
+
+    public void save() {
+
+        // TODO Auto-generated method stub
+
     }
 }
