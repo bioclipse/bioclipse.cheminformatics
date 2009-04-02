@@ -1055,30 +1055,91 @@ public class CDKManager implements ICDKManager {
           }
       }
 
+      public static class SDFileIndex {
+          final IFile file;
 
-      public int numberOfEntriesInSDF(IFile file, IProgressMonitor monitor) {
+          List<Long> filePos;
 
-          if (monitor == null) {
-              monitor = new NullProgressMonitor();
+          public SDFileIndex(final IFile file,final List<Long> filePos) {
+              this.file = file;
+              this.filePos=new ArrayList<Long>(filePos);
+              this.filePos.add( 0, 0l );
           }
 
+          public IFile file() {
+              return file;
+          }
+          public int size() {
+              return filePos.size()-1;
+          }
+
+          public long start(int index) {
+              if(index==0) return 0;
+              return filePos.get(index-1);
+          }
+      }
+      public int numberOfEntriesInSDF(IFile file, IProgressMonitor monitor) {
+
+          SDFileIndex index = createSDFIndex( file, monitor );
+          return index.size();
+      }
+      public SDFileIndex createSDFIndex(IFile file, IProgressMonitor monitor) {
+          boolean large = false;
+          int work = 1;
+          IProgressMonitor progress = monitor;
+          //SubMonitor progress = SubMonitor.convert( monitor ,100);
+          try {
+              long size = EFS.getStore( file.getLocationURI() )
+                  .fetchInfo().getLength();
+              if(true) {//size > Integer.MAX_VALUE) {
+                  monitor.beginTask( "Generating index", (int)size );
+                  work = (int) (size/ 1000);
+                  large = true;
+              }
+              //else
+                  //progress.setWorkRemaining( (int) size );
+
+          }catch (CoreException e) {
+            logger.debug( "Failed to get size of file" );
+        }
           long tStart = System.nanoTime();
+          List<Long> values = new LinkedList<Long>();
           int num = 0;
+        long pos = 0;
+        long start = 0;
           try {
               BufferedInputStream counterStream
                   = new BufferedInputStream( file.getContents() );
               int c = 0;
               while (c != -1) {
-                  c = counterStream.read();
+                  c = counterStream.read();pos++;
                   if (c == '$') {
-                      c = counterStream.read();
+                      c = counterStream.read();pos++;
                       if (c == '$') {
-                          c = counterStream.read();
+                          c = counterStream.read();pos++;
                           if (c == '$') {
-                              c = counterStream.read();
+                              c = counterStream.read();pos++;
                               if (c == '$') {
-                                  num++;
-                                  counterStream.read();
+                                  c = counterStream.read();pos++;
+                                  if ( c == '\r') {
+                                      c = counterStream.read();// only CR or CR+LF
+                                  }else pos--;
+                                  if( c == '\n') {
+                                      pos++;
+                                      start = pos;
+                                      counterStream.read();pos++;
+                                      num++;
+                                  }else { // next pos already read
+                                      start = pos;
+                                      pos++;
+                                  }
+                                  values.add( start=pos );
+                                  if(!large)
+                                      progress.worked( (int) (pos-start) );
+                                  else {
+                                      if(pos%work == 0)
+                                          progress.worked( work );
+                                  }
                                   if ( monitor.isCanceled() ) {
                                       throw new OperationCanceledException();
                                   }
@@ -1087,6 +1148,11 @@ public class CDKManager implements ICDKManager {
                       }
                   }
               }
+              if( (pos-start)>3) {
+                  values.add(pos);
+                  num++;
+              }
+              progress.worked( (int) (pos%work) );
               counterStream.close();
           }
           catch (Exception exception) {
@@ -1100,7 +1166,7 @@ public class CDKManager implements ICDKManager {
           logger.debug( "numberOfEntriesInSDF took "
                         +(int)((System.nanoTime()-tStart)/1e6)+" to complete");
           monitor.done();
-          return num;
+          return new SDFileIndex(file,values);
       }
 
       private static class Record {
