@@ -42,6 +42,7 @@ import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IChemSequence;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.MDLV2000Reader;
@@ -53,6 +54,8 @@ import org.openscience.cdk.io.MDLV2000Reader;
  */
 public class MoleculeViewerContentProvider implements IDataProvider,
         IContentProvider, IMoleculesEditorModel{
+
+    private static final int NUMBER_OF_PROPERTIES = 10;
 
     Logger logger = Logger.getLogger( MoleculeViewerContentProvider.class );
 
@@ -114,6 +117,23 @@ public class MoleculeViewerContentProvider implements IDataProvider,
 
         input = (SDFileIndex) newInput;
         setLastRead(-1 , null );
+
+        if(input.size()>0) {
+            availableProperties.clear();
+            availableProperties.addAll( getMoleculeAt( 0 ).getAtomContainer()
+                                        .getProperties().keySet() );
+        }
+        fillVisibleProperties();
+    }
+
+    private void fillVisibleProperties() {
+     // fill properties with elements from availableProperties
+        visibleProperties.clear();
+        Iterator<Object> iter = availableProperties.iterator();
+        for(int i=0;i<NUMBER_OF_PROPERTIES;i++) {
+            if(iter.hasNext())
+                visibleProperties.add(iter.next());
+        }
     }
 
     private String getRecord(int index) throws CoreException, IOException {
