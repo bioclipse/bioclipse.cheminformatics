@@ -29,7 +29,9 @@ import net.bioclipse.ui.jobs.BioclipseUIJob;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -51,10 +53,13 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.activities.WorkbenchActivityHelper;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.IChemModelRelay;
@@ -141,6 +146,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         }
 
         IPath path = saveAsDialog.getResult();
+        IFile file= ResourcesPlugin.getWorkspace().getRoot().getFile( path );
         try {
             // do a nasty trick... the SaveAs dialog does not allow us to
             // ask for a format (yet), so guess something from the file
@@ -150,8 +156,12 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
             if (format == null) format = (IChemFormat)CMLFormat.getInstance();
 
             Activator.getDefault().getCDKManager().saveMolecule(
-                model, path.toPortableString(), format, true
+                model, file, format, true
             );
+            setInput( new FileEditorInput(file) );
+            setPartName( file.getName() );
+            firePropertyChange( IWorkbenchPartConstants.PROP_PART_NAME);
+            firePropertyChange( IWorkbenchPartConstants.PROP_INPUT);
         } catch ( BioclipseException e ) {
             logger.warn( "Failed to save molecule. " + e.getMessage() );
         } catch ( CDKException e ) {
@@ -215,7 +225,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
             widget.setInput( model );
         }else {
             IFile file = (IFile) input.getAdapter( IFile.class );
-            if(file != null) {
+            if(file != null && file.exists()) {
                 try {
                     Activator.getDefault().getCDKManager().loadMolecule( file,
                          new BioclipseUIJob<ICDKMolecule>() {
