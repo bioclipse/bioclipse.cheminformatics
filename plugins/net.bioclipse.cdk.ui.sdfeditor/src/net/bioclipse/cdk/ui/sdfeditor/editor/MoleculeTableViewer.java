@@ -54,6 +54,12 @@ public class MoleculeTableViewer extends ContentViewer {
 
         DefaultRowHeaderConfig rowHeaderConfig = new DefaultRowHeaderConfig();
         rowHeaderConfig.setRowHeaderColumnCount(1);
+        SizeConfig rowHeaderColumnWidthConfig = new SizeConfig();
+        rowHeaderColumnWidthConfig.setDefaultSize(STRUCTURE_COLUMN_WIDTH/3);
+        //              columnWidthConfig.setDefaultSize(150);
+        rowHeaderColumnWidthConfig.setDefaultResizable(true);
+        rowHeaderColumnWidthConfig.setIndexResizable( 0, true );
+        rowHeaderConfig.setRowHeaderColumnWidthConfig( rowHeaderColumnWidthConfig );
 
         DefaultBodyConfig bodyConfig = new DefaultBodyConfig(new IDataProvider() {
 
@@ -112,7 +118,7 @@ public class MoleculeTableViewer extends ContentViewer {
         columnWidthConfig.setInitialSize( 0, STRUCTURE_COLUMN_WIDTH );
         //              columnWidthConfig.setDefaultSize(150);
         columnWidthConfig.setDefaultResizable(true);
-        //columnWidthConfig.setIndexResizable(0, false);
+        columnWidthConfig.setIndexResizable(0, true);
 
         // Row heights
         SizeConfig rowHeightConfig = model.getBodyConfig().getRowHeightConfig();
