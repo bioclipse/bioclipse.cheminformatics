@@ -369,7 +369,10 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
             return fOutlinePage;
         }
         if ( IAtomContainer.class.equals( adapter ) ) {
-            return model.getAtomContainer();
+            if(model!=null)
+                return model.getAtomContainer();
+            else
+                return null;
         }
         return super.getAdapter( adapter );
     }
