@@ -160,7 +160,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                    moleculesPage.getContentProvider().updateHeaders();
                }break;
            case Headers:
-               MoleculeTableContentProvider contentProvider =
+               MoleculeViewerContentProvider contentProvider =
                        moleculesPage.getContentProvider();
                ps.setInitialData( contentProvider.getProperties(),
                                   contentProvider.getAvailableProperties());

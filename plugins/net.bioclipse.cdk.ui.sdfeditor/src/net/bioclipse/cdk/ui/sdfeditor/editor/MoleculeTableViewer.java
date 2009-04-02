@@ -152,8 +152,8 @@ public class MoleculeTableViewer extends ContentViewer {
 
             if(selected.length==0) return StructuredSelection.EMPTY;
 
-            MoleculeTableContentProvider contentProvider =
-                            (MoleculeTableContentProvider)getContentProvider();
+            MoleculeViewerContentProvider contentProvider =
+                            getMolContentProvider();
 
             List<ICDKMolecule> mols = new ArrayList<ICDKMolecule>(selected.length);
             for(int i:selected) {
@@ -165,8 +165,8 @@ public class MoleculeTableViewer extends ContentViewer {
         return StructuredSelection.EMPTY;
     }
 
-    private MoleculeTableContentProvider getMolContentProvider() {
-        return (MoleculeTableContentProvider)getContentProvider();
+    private MoleculeViewerContentProvider getMolContentProvider() {
+        return (MoleculeViewerContentProvider)getContentProvider();
     }
 
     @Override

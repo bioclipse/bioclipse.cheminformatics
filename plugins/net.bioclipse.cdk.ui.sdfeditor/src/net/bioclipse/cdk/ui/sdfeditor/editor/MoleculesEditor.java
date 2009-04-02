@@ -15,10 +15,14 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.cdk.business.CDKManager.SDFileIndex;
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
+import net.bioclipse.ui.jobs.BioclipseUIJob;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
@@ -55,13 +59,13 @@ public class MoleculesEditor extends EditorPart implements
 
     public List<String> propertyHeaders = new ArrayList<String>();
 
-    private MoleculeTableContentProvider contentProvider;
+    private MoleculeViewerContentProvider contentProvider;
     private MoleculeTableViewer molTableViewer;
 
     public MoleculesEditor() {
     }
 
-    public MoleculeTableContentProvider getContentProvider() {
+    public MoleculeViewerContentProvider getContentProvider() {
         return contentProvider;
     }
 
@@ -105,9 +109,12 @@ public class MoleculesEditor extends EditorPart implements
     public void createPartControl( Composite parent ) {
 
         molTableViewer = new MoleculeTableViewer(parent,SWT.NONE);
-        molTableViewer.setContentProvider( contentProvider =
-                                        new MoleculeTableContentProvider() );
-        molTableViewer.setInput( getEditorInput() );
+//        molTableViewer.setContentProvider( contentProvider =
+//                                        new MoleculeViewerContentProvider() );
+
+        //molTableViewer.setInput( getEditorInput() );
+        getIndexFromInput( getEditorInput() );
+
 
         MenuManager menuMgr = new MenuManager("Molecuels table","net.bioclipse.cdk.ui.sdfeditor.menu");
         menuMgr.add( new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -117,6 +124,29 @@ public class MoleculesEditor extends EditorPart implements
         logger.debug( "Menu id for SDFEditor " +menuMgr.getId());
 
         getSite().setSelectionProvider( molTableViewer );
+    }
+
+    private void getIndexFromInput(IEditorInput editorInput) {
+        SDFileIndex input = null;
+        input = (SDFileIndex) editorInput.getAdapter( SDFileIndex.class );
+        if(input==null) {
+            IFile file = (IFile) editorInput.getAdapter( IFile.class );
+            if(file!=null) {
+                Activator.getDefault().getCDKManager().createSDFIndex( file,
+                    new BioclipseUIJob<SDFileIndex>() {
+
+                    @Override
+                    public void runInUI() {
+                        molTableViewer.setContentProvider( contentProvider =
+                          new MoleculeViewerContentProvider() );
+                        molTableViewer.setInput( getReturnValue() );
+                        molTableViewer.refresh();
+                    }
+
+                });
+            }
+        }
+//        molTableViewer.setInput( input );
     }
 
     void reactOnSelection( ISelection selection ) {
