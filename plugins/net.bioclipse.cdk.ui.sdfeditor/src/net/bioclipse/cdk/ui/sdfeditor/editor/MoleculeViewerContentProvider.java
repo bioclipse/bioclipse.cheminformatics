@@ -97,7 +97,7 @@ public class MoleculeViewerContentProvider implements IDataProvider,
             return molecule;
         }else {
             return molecule.getAtomContainer()
-                    .getProperty( visibleProperties.get( column+1 ) );
+                    .getProperty( visibleProperties.get( column-1 ) );
         }
     }
 
