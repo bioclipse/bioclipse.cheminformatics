@@ -12,20 +12,31 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.business.CDKManager.SDFileIndex;
+import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
+import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.ui.jobs.BioclipseUIJob;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.content.IContentDescription;
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -59,14 +70,16 @@ public class MoleculesEditor extends EditorPart implements
 
     public List<String> propertyHeaders = new ArrayList<String>();
 
-    private MoleculeViewerContentProvider contentProvider;
     private MoleculeTableViewer molTableViewer;
 
     public MoleculesEditor() {
     }
 
     public MoleculeViewerContentProvider getContentProvider() {
-        return contentProvider;
+        IContentProvider provider = molTableViewer.getContentProvider();
+        if(provider instanceof MoleculeViewerContentProvider)
+            return (MoleculeViewerContentProvider) provider;
+        return null;
     }
 
     public MoleculeTableViewer getMolTableViewer() {
@@ -127,23 +140,89 @@ public class MoleculesEditor extends EditorPart implements
     }
 
     private void getIndexFromInput(IEditorInput editorInput) {
+        ICDKManager cdkManager = Activator.getDefault().getCDKManager();
         SDFileIndex input = null;
         input = (SDFileIndex) editorInput.getAdapter( SDFileIndex.class );
         if(input==null) {
             IFile file = (IFile) editorInput.getAdapter( IFile.class );
             if(file!=null) {
-                Activator.getDefault().getCDKManager().createSDFIndex( file,
-                    new BioclipseUIJob<SDFileIndex>() {
+                IContentType fContentType= Platform.getContentTypeManager()
+                   .getContentType("net.bioclipse.contenttypes.smi");
+                IContentDescription contentDescr;
+                try {
+                    contentDescr = file.getContentDescription();
+                }catch ( CoreException e) {
+                    contentDescr = null;
+                }
+                if(contentDescr !=null && fContentType !=null &&
+                     contentDescr.getContentType().isKindOf( fContentType )) {
+                    try {
+                      cdkManager.loadSMILESFile( file,
+                       new BioclipseUIJob<List<ICDKMolecule>>() {
 
-                    @Override
-                    public void runInUI() {
-                        molTableViewer.setContentProvider( contentProvider =
-                          new MoleculeViewerContentProvider() );
-                        molTableViewer.setInput( getReturnValue() );
-                        molTableViewer.refresh();
+                          @Override
+                          public void runInUI() {
+                              final List<ICDKMolecule> list = getReturnValue();
+
+                              // FIXME there should be a IMoleculesEditorModel content provider
+                              Object input = new IAdaptable() {
+
+                                @SuppressWarnings("unchecked")
+                                public Object getAdapter( Class adapter ) {
+
+                                    if(adapter.isAssignableFrom( IMoleculesEditorModel.class ))
+                                        return new IMoleculesEditorModel() {
+                                        List<ICDKMolecule> molecules;
+                                        {
+                                            molecules = list;
+                                        }
+                                        public ICDKMolecule getMoleculeAt( int index ) {
+
+                                            return molecules.get( index );
+                                        }
+
+                                        public int getNumberOfMolecules() {
+
+                                            return molecules.size();
+                                        }
+
+                                        public void save() {
+                                            throw new UnsupportedOperationException();
+                                        }
+                                    };
+                                    return null;
+                                }
+                              };
+
+
+                              molTableViewer.setContentProvider(
+                                           new MoleculeTableContentProvider() );
+                              molTableViewer.setInput( input );
+                              molTableViewer.refresh();
+                          }
+
+                      } );
+                    }catch(IOException e) {
+                        LogUtils.debugTrace( logger, e );
+                    } catch ( CoreException e ) {
+                        LogUtils.debugTrace( logger, e );
                     }
 
-                });
+                }else {
+
+                    cdkManager.createSDFIndex( file,
+                    new BioclipseUIJob<SDFileIndex>() {
+
+                        @Override
+                        public void runInUI() {
+                            molTableViewer.setContentProvider(
+                                new MoleculeViewerContentProvider() );
+                            molTableViewer.setInput( getReturnValue() );
+                            molTableViewer.refresh();
+                        }
+
+                    });
+                }
             }
         }
 //        molTableViewer.setInput( input );
