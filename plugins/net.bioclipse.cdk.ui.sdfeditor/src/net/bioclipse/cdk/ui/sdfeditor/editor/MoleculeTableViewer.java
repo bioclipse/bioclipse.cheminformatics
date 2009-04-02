@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.sourceforge.nattable.NatTable;
 import net.sourceforge.nattable.config.DefaultBodyConfig;
 import net.sourceforge.nattable.config.DefaultColumnHeaderConfig;
@@ -43,7 +44,7 @@ public class MoleculeTableViewer extends ContentViewer {
         IColumnHeaderLabelProvider columnHeaderLabelProvider = new IColumnHeaderLabelProvider() {
 
             public String getColumnHeaderLabel( int col ) {
-                List<Object> prop = getMolContentProvider().getProperties();
+                List<Object> prop = getColumnHandler().getProperties();
                 if(col == 0)
                     return "2D-structure";
                 if(col<prop.size()+1 )
@@ -64,18 +65,18 @@ public class MoleculeTableViewer extends ContentViewer {
         DefaultBodyConfig bodyConfig = new DefaultBodyConfig(new IDataProvider() {
 
             public int getColumnCount() {
-                if(getMolContentProvider()==null) return 0;
-                return getMolContentProvider().getColumnCount();
+                if(getDataProvider()==null) return 0;
+                return getDataProvider().getColumnCount();
             }
 
             public int getRowCount() {
-                if(getMolContentProvider()==null) return 0;
-                return getMolContentProvider().getRowCount();
+                if(getDataProvider()==null) return 0;
+                return getDataProvider().getRowCount();
             }
 
             public Object getValue( int row, int col ) {
-                if(getMolContentProvider()==null) return null;
-                return getMolContentProvider().getValue( row, col );
+                if(getDataProvider()==null) return null;
+                return getDataProvider().getValue( row, col );
             }
 
         });
@@ -93,13 +94,13 @@ public class MoleculeTableViewer extends ContentViewer {
 
             public String getDisplayText( int row, int col ) {
 
-                return getMolContentProvider().getValue( row, col ).toString();
+                return getDataProvider().getValue( row, col ).toString();
             }
 
             public Object getValue( int row, int col ) {
 
                 // TODO Auto-generated method stub
-                return getMolContentProvider().getValue( row, col );
+                return getDataProvider().getValue( row, col );
             }
 
         });
@@ -158,8 +159,8 @@ public class MoleculeTableViewer extends ContentViewer {
 
             if(selected.length==0) return StructuredSelection.EMPTY;
 
-            MoleculeViewerContentProvider contentProvider =
-                            getMolContentProvider();
+            IMoleculesEditorModel contentProvider =
+                            getMoleculesEditorModel();
 
             List<ICDKMolecule> mols = new ArrayList<ICDKMolecule>(selected.length);
             for(int i:selected) {
@@ -171,8 +172,15 @@ public class MoleculeTableViewer extends ContentViewer {
         return StructuredSelection.EMPTY;
     }
 
-    private MoleculeViewerContentProvider getMolContentProvider() {
-        return (MoleculeViewerContentProvider)getContentProvider();
+    // FIXME Better handling to get data from the contentprovider or store it somewhere else
+    private IMoleculesEditorModel getMoleculesEditorModel() {
+        return (IMoleculesEditorModel)getContentProvider();
+    }
+    private IDataProvider getDataProvider() {
+        return (IDataProvider)getContentProvider();
+    }
+    private IMoleculeTableColumnHandler getColumnHandler() {
+        return (IMoleculeTableColumnHandler) getContentProvider();
     }
 
     @Override
@@ -180,6 +188,7 @@ public class MoleculeTableViewer extends ContentViewer {
         if(!table.isDisposed()) {
             table.reset();
             table.redraw();
+            table.updateResize();
             table.update();
         }
     }
