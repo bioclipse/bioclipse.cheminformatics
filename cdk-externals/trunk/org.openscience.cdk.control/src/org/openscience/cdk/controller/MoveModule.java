@@ -88,6 +88,7 @@ public class MoveModule extends ControllerModuleAdapter {
     	if(start!=null){
     		Vector2d end=new Vector2d();
     		end.sub(worldCoord,start);
+    		
     	//Do the merge of atoms
         if(!chemModelRelay.getRenderer().getRenderer2DModel().getMerge().isEmpty()){
           mergeMolecules(end);
@@ -184,6 +185,7 @@ public class MoveModule extends ControllerModuleAdapter {
 
             Point2d d = new Point2d();
             d.sub(worldCoordTo, worldCoordFrom);
+            
             IAtomContainer selectedAC = selection.getConnectedAtomContainer();
             Set<IAtom> moveAtoms = new HashSet<IAtom>();
             for (IAtom atom : selectedAC.atoms()) {
@@ -193,6 +195,8 @@ public class MoveModule extends ControllerModuleAdapter {
                 for(IAtom atom: bond.atoms())
                     moveAtoms.add( atom );
             }
+            
+            // move without undo or dirty
             for(IAtom atom: moveAtoms)
                 atom.getPoint2d().add(d);
             
@@ -206,7 +210,9 @@ public class MoveModule extends ControllerModuleAdapter {
                         .getMerge().put( toMoveAtom, inRange );
                 }
             }
-
+            //FIXME hack to get structure changed when move is completed
+            chemModelRelay.fireStructureChangedEvent();
+            
             chemModelRelay.updateView();
 
         } else {

@@ -60,6 +60,7 @@ public interface IChemModelRelay {
     /* Event model */
     public void setEventHandler(IChemModelEventRelayHandler handler);
     public void fireZoomEvent();
+    public void fireStructureChangedEvent();
     /**
      * Adds an temporary atom which might be cleared later, when the final
      * atom is added. Controllers can use this to draw temporary atoms, for
