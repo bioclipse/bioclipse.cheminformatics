@@ -51,6 +51,7 @@
    </extension>
 
 <!-- Add MoleculeContent to expand molecules with CDK -->
+<!-- Commented untill all bugs blocking bug 766 have been solved
 <extension
       point="org.eclipse.ui.navigator.viewer">
       <viewerContentBinding
@@ -62,7 +63,7 @@
             </includes>
       </viewerContentBinding>
 </extension>
-
+-->
 <!-- Contribute an Object Contribution to delete individual properties in the view -->
 
    <!--extension
