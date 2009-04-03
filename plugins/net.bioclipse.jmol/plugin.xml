@@ -60,7 +60,11 @@
       </editor>
    </extension>
 
-   <extension
+   <!--
+     Temporarily disabled (see bug #788), but to be
+     renabled for 2.1 (see bug #789).
+
+   extension
          point="org.eclipse.ui.editors">
       <editor
             name="Jmol Script"
@@ -70,9 +74,7 @@
             id="net.bioclipse.jmol.editors.script.JmolScriptEditor"
             default="true">
       </editor>
-   </extension>
-
-
+   </extension -->
 
 <extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
       <propertyContributor contributorId="net.bioclipse.jmol.views.outline.JmolContentOutlinePage">
