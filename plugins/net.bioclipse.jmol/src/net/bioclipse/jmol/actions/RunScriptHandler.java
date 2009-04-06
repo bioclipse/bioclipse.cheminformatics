@@ -20,7 +20,10 @@ public class RunScriptHandler extends AbstractHandler implements IHandler {
             = event.getParameter("net.bioclipse.jmol.scriptParameter");
         IJmolManager manager = Activator.getDefault().getJmolManager();
 
-        if ( manager.selectionIsEmpty() ) {
+        // If running non select script and nothing is selected, 
+        // select all before the script and select none after
+        if ( manager.selectionIsEmpty() 
+             && !script.matches( "(?i:select).*") ) {
             script = "select all;" + script + ";select none;";
         }
         manager.run( script );
