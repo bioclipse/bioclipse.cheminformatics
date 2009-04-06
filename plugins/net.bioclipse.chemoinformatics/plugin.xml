@@ -196,5 +196,20 @@
       </menuContribution>
  </extension>
 
+   <extension
+         id="net.bioclipse.chemoinformatics.cheatsheet"
+         name="General Chemistry tasks"
+         point="org.eclipse.ui.cheatsheets.cheatSheetContent">
+      <category
+            id="net.bioclipse.chemoinformatics.cheatsheet.category"
+            name="Chemistry"/>
+      <cheatsheet
+            category="net.bioclipse.chemoinformatics.cheatsheet.category"
+            composite="false"
+            contentFile="cheatsheets/GeneralChemoinformaticsCheatSheet.xml"
+            id="net.bioclipse.spectrum.cheatsheet.GeneralChemoinformaticsCheatsheet"
+            name="General Chemistry Cheat Sheet"/>
+   </extension>
+
 
 </plugin>

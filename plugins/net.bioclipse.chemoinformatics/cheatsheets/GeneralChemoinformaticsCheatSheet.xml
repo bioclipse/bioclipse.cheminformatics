@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="Gneral Chemistry Tasks">
+	<intro>
+		<description>
+			This cheat sheet tells you general chemistry (or, more strictly speaking, chemoinformatics) tasks you can 
+			do in Bioclipse. These are centered around handling molecular data files and calculating their properties. 
+		</description>
+	</intro>
+	<item title="Step 0: Prerequisites">
+		<description>
+ 			You need the Chemoinformatics feature installed for this (which you have if you read this and have installed Bioclipse via the update site).
+ 		</description>
+	</item>
+	<item
+       href="/net.bioclipse.cdk.jchempaint/doc/jcpEditor.html"
+       title="Option 1: Draw and Edit single Structures, handle File Formats">
+		<description>
+			The JChemPaint editor allows graphical viewing and editing of structures in various formatsa and file format conversion. See help via ? on top of this section for details.
+		</description>
+	</item>
+	<item
+       href="/net.bioclipse.spectrum/html/sdfEditor.html"
+       title="Option 2: Handle Multiple Structure Files">
+		<description>
+			Files with multiple structures (SDF and CML) cannot be handled in the JChemPaintEditor. They can be viewed in the SDF Editor (use ? for details). This 
+			editor also offers extraction of files (e. g. single files for editing in JChemPaint) and creation of SDFs from several other files.
+		</description>
+	</item>
+	<item
+       href="TODO"
+       title="Option 3: Calculate QSAR properties">
+		<description>
+			A wide variety of molecular and atomic qsar descriptory (e.g. XLogP, ALogP, Lipinske Rule of Five, Atomic Polarizability) can be calculated in Bioclipse. See ? for details.
+		</description>
+	</item>
+	<item
+       href="/net.bioclipse.cdk.ui/html/maintopic.html"
+       title="Option 4: Convert file formats">
+		<description>
+			You can create 2D and 3D coordinates for molecules. Right click on the file and choose "Generate 2D/3D". See ? for details.
+		</description>
+	</item>
+	<item
+       href="/net.bioclipse.cdk.smartsmatching/html/smartsmatchingview.html"
+       title="Option 5: Do whatever with smarts">
+		<description>
+			TODO the person who did this needs to fill in some high-level text on smarts here
+		</description>
+	</item>
+	<item
+       href="/net.bioclipse.webservices/doc/wsplugin.html"
+       title="Option 6: Search in External databases">
+		<description>
+			You can search in a variety of external (EBI) databases File -> New -> Web Services -> Use 
+			WSDbfetch Web Service at EBI. See ? for details.
+		</description>
+	</item>
+	<item
+       title="Option 7: Work with Spectral Data">
+		<description>
+			If you want to work with spectral data (e. g. view spectra and peak pick them, do a structure elucidation), you should install 
+			the Speclipse feature (in case this is not yet the case) via Help -> Software Update -> Speclipse Update Site (or by choosing "Click to perform" right here) and read the General Spectrum Cheat Sheet.
+		</description>
+		<action pluginId="net.bioclipse.chemoinformatics" class="net.bioclipse.chemoinformatics.action.CheatSheetAction" param1="runupdate"/>
+	</item>
+</cheatsheet>
