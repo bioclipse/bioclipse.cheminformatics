@@ -790,4 +790,11 @@
       <initializer class="net.bioclipse.cdk.jchempaint.preferences.PreferenceInitializer"/>
    </extension>
 
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true"/>
+   </extension>
+   
 </plugin>

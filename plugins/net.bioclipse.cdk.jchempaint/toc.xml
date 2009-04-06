@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="JChemPaint">
+	<topic label="The JChemPaint Plug-in" href="doc/jcpPlugin.html"> 
+		<topic label="The JChemPaint Editor" href="doc/jcpEditor.html"> 
+			<topic label="Create a new molecule" href="doc/molecules.html"/>
+			<topic label="Create a new molecule from SMILES" href="doc/moleculefromsmiles.html"/>
+			<topic label="Convert a Structure File" href="doc/convert.html"/>
+		</topic>
+	</topic>
+</toc>
