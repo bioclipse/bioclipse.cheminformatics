@@ -2,7 +2,8 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="SDF Editor plugin">
-	<topic label="About SDF Editor plugin"  href="html/maintopic.html"> 
+	<topic label="About SDF Editor plugin"  href="html/maintopic.html">
+		<topic label="The SDF Editor" href="html/sdfEditor.html"/> 
 		<topic label="The New SDF Wizard" href="html/newwizard.html"/> 
 		<topic label="Extracting from SDF" href="html/extract.html"/>
 	</topic>
