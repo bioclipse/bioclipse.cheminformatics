@@ -1,0 +1,9 @@
+   <introContent>
+      <extensionContent id="net.bioclipse.intro.workbench.tutorials" style="css/sample.css" name="Bioclipse Tuturials" path="tutorials/@">
+        <group style-id="content-group" id="workbench-group">
+          <link label="Chemistry in Bioclipse" url="http://org.eclipse.ui.intro/showStandby?partId=net.bioclipse.cheatsheet&amp;input=net.bioclipse.chemoinformatics.cheatsheet.GeneralChemoinformaticsCheatsheet">
+              <text>Tells about Chemistry tasks which can be done in Bioclipse.</text>
+     	    </link>
+     	</group>
+      </extensionContent>
+   </introContent>

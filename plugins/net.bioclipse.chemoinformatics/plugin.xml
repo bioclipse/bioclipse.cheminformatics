@@ -207,9 +207,13 @@
             category="net.bioclipse.chemoinformatics.cheatsheet.category"
             composite="false"
             contentFile="cheatsheets/GeneralChemoinformaticsCheatSheet.xml"
-            id="net.bioclipse.spectrum.cheatsheet.GeneralChemoinformaticsCheatsheet"
+            id="net.bioclipse.chemoinformatics.cheatsheet.GeneralChemoinformaticsCheatsheet"
             name="General Chemistry Cheat Sheet"/>
    </extension>
 
-
+   <extension point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="configextension.xml"/>  
+   </extension>
 </plugin>
