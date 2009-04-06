@@ -28,7 +28,8 @@ public class JmolAtomSelection extends JmolSelection {
         selectionSet.add("atomno="+atomIndex);
     }
 
-    public JmolAtomSelection(BitSet selection) {
+    public JmolAtomSelection(BitSet selection, boolean updateJmolSelection) {
+        super(updateJmolSelection);
         selectionSet=new HashSet<String>();
         for ( int i = 0; i < selection.size(); i++ ) {
             if ( selection.get( i ) )

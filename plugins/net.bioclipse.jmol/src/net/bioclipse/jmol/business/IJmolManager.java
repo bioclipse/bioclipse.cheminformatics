@@ -84,4 +84,6 @@ public interface IJmolManager extends IBioclipseManager{
                       methodSummary = "Prints the given string to the Jmol " +
                       		            "console" )
     public void print(String s);
+    
+    public boolean selectionIsEmpty();
 }

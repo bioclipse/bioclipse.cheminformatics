@@ -723,27 +723,26 @@ public class JmolEditor extends MultiPageEditorPart
 //            }
 //        });
 
-        if ( this.selection != null && this.selection.equals( selection ) ) {
-            return; //The new selection is equal to the old one. We are done.
-        }
-        
+       
         this.selection = (JmolSelection)selection;
 
-        String selStr;
-        if ( selection.isEmpty() ) {
-            selStr = "Select none";
-        }
-        else {
-            StringBuilder builder = new StringBuilder();
-            builder.append( "Select " );
-            for ( String s : this.selection) {
-                builder.append( s );
-                builder.append( ", " );
+        if ( this.selection.updateJmolSelection() ) {
+            String selStr;
+            if ( selection.isEmpty() ) {
+                selStr = "Select none";
             }
-            // -2 to get rid of last ", " part
-            selStr = builder.substring( 0, builder.length() - 2 );
+            else {
+                StringBuilder builder = new StringBuilder();
+                builder.append( "Select " );
+                for ( String s : this.selection) {
+                    builder.append( s );
+                    builder.append( ", " );
+                }
+                // -2 to get rid of last ", " part
+                selStr = builder.substring( 0, builder.length() - 2 );
+            }
+            runScript(selStr);
         }
-        runScript(selStr);
 
         if (selectionListeners==null) 
             return;

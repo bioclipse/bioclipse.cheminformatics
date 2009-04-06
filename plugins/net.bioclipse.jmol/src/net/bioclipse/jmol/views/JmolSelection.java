@@ -16,7 +16,17 @@ public abstract class JmolSelection implements IStructuredSelection,
                                                Iterable<String> {
 
     Set<String> selectionSet;
+    
+    private boolean updateJmolSelection;
 	
+    public JmolSelection() {
+        updateJmolSelection = false;
+    }
+    
+    public JmolSelection(boolean updateJmolSelection) {
+        this.updateJmolSelection = updateJmolSelection;
+    }
+
     public Object getFirstElement() {
         return selectionSet.toArray()[0];
     }
@@ -68,5 +78,10 @@ public abstract class JmolSelection implements IStructuredSelection,
         else if ( !( selectionSet.equals( other.selectionSet ) ) )
             return false;
         return true;
+    }
+
+    public boolean updateJmolSelection() {
+
+        return updateJmolSelection;
     }
 }

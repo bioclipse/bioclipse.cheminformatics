@@ -122,4 +122,9 @@ public class JmolManager implements IJmolManager {
             public void run() { getJmolConsoleView().printMessage( message ); }
         } );
     }
+    
+    public boolean selectionIsEmpty() {
+        JmolEditor editor = findActiveJmolEditor();
+        return editor.getSelection().isEmpty();
+    }
 }
