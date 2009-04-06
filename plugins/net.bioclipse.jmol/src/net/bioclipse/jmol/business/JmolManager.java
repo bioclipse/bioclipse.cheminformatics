@@ -125,6 +125,7 @@ public class JmolManager implements IJmolManager {
     
     public boolean selectionIsEmpty() {
         JmolEditor editor = findActiveJmolEditor();
-        return editor.getSelection().isEmpty();
+        return editor.getSelection() == null 
+            || editor.getSelection().isEmpty();
     }
 }
