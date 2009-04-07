@@ -144,6 +144,25 @@
              name="Direction"
              optional="true">
        </commandParameter>
+       <state
+             id="net.bioclipse.cdk.jchempaint.moduleState">
+          <class
+                class="net.bioclipse.cdk.jchempaint.handlers.ModuleState">
+             <parameter
+                   name="default"
+                   value="MoveModule">
+             </parameter>
+             <parameter
+                   name="persisted"
+                   value="false">
+             </parameter>
+          </class>
+       </state>
+       <commandParameter
+             id="net.bioclipse.cdk.jchempaint.DrawModeString"
+             name="DrawModeString"
+             optional="true">
+       </commandParameter>
     </command>
  </extension>
  <extension
@@ -153,7 +172,7 @@
        <toolbar
              id="net.bioclipse.cdk.ui.jchempaint.toolbar">
         <command
-                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.addbond"
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
                 icon="icons/jcp/bond.png"
                 label="Add Bond"
                 style="radio"
@@ -164,6 +183,14 @@
                       definitionId="net.bioclipse.cdk.jchempaint.editor.type">
                 </reference>
              </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="AddBondModule">
+             </parameter>
+             <parameter
+                   name="net.bioclipse.cdk.jchempaint.DrawModeString"
+                   value="Draw Bond">
+             </parameter>
           </command>
              <!--
           <command
@@ -200,6 +227,10 @@
                    name="jcp.controller.module"
                    value="CycleSymbolModule">
              </parameter>
+             <parameter
+                   name="net.bioclipse.cdk.jchempaint.DrawModeString"
+                   value="Cycle Symbol">
+             </parameter>
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
@@ -220,6 +251,10 @@
              <parameter
                    name="jcp.controller.param.direction"
                    value="Up">
+             </parameter>
+             <parameter
+                   name="net.bioclipse.cdk.jchempaint.DrawModeString"
+                   value="Add or convert to bond up">
              </parameter>
           </command>
           <command
@@ -242,6 +277,10 @@
                    name="jcp.controller.param.direction"
                    value="Down">
              </parameter>
+             <parameter
+                   name="net.bioclipse.cdk.jchempaint.DrawModeString"
+                   value="Add or convert to bond down">
+             </parameter>
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
@@ -262,6 +301,10 @@
              <parameter
                    name="jcp.controller.param.int"
                    value="1">
+             </parameter>
+             <parameter
+                   name="net.bioclipse.cdk.jchempaint.DrawModeString"
+                   value="Increase Charge">
              </parameter>
           </command>
           <command
@@ -284,6 +327,10 @@
                    name="jcp.controller.param.int"
                    value="-1">
              </parameter>
+             <parameter
+                   name="net.bioclipse.cdk.jchempaint.DrawModeString"
+                   value="Decrease Charge">
+             </parameter>
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
@@ -300,6 +347,10 @@
              <parameter
                    name="jcp.controller.module"
                    value="MoveModule">
+             </parameter>
+             <parameter
+                   name="net.bioclipse.cdk.jchempaint.DrawModeString"
+                   value="Move">
              </parameter>
           </command>
           <command
@@ -318,6 +369,10 @@
                    name="jcp.controller.module"
                    value="RemoveModule">
              </parameter>
+             <parameter
+                   name="net.bioclipse.cdk.jchempaint.DrawModeString"
+                   value="Delete">
+             </parameter>
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
@@ -335,6 +390,10 @@
                    name="jcp.controller.module"
                    value="SelectLassoModule">
              </parameter>
+             <parameter
+                   name="net.bioclipse.cdk.jchempaint.DrawModeString"
+                   value="Select in Free Form">
+             </parameter>
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
@@ -351,6 +410,10 @@
              <parameter
                    name="jcp.controller.module"
                    value="SelectSquareModule">
+             </parameter>
+             <parameter
+                   name="net.bioclipse.cdk.jchempaint.DrawModeString"
+                   value="Select Square">
              </parameter>
           </command>
           <command
@@ -377,6 +440,10 @@
                    name="jcp.controller.param.boolean"
                    value="false">
              </parameter>
+             <parameter
+                   name="net.bioclipse.cdk.jchempaint.DrawModeString"
+                   value="Ring 3">
+             </parameter>
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
@@ -401,6 +468,10 @@
              <parameter
                    name="jcp.controller.param.boolean"
                    value="false">
+             </parameter>
+             <parameter
+                   name="net.bioclipse.cdk.jchempaint.DrawModeString"
+                   value="Ring 4">
              </parameter>
           </command>
           <command
@@ -427,6 +498,10 @@
                    name="jcp.controller.param.boolean"
                    value="false">
              </parameter>
+             <parameter
+                   name="net.bioclipse.cdk.jchempaint.DrawModeString"
+                   value="Ring 5">
+             </parameter>
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
@@ -451,6 +526,10 @@
              <parameter
                    name="jcp.controller.param.boolean"
                    value="false">
+             </parameter>
+             <parameter
+                   name="net.bioclipse.cdk.jchempaint.DrawModeString"
+                   value="Ring 6">
              </parameter>
           </command>
           <command
@@ -477,6 +556,10 @@
                    name="jcp.controller.param.boolean"
                    value="false">
              </parameter>
+             <parameter
+                   name="net.bioclipse.cdk.jchempaint.DrawModeString"
+                   value="Ring 7">
+             </parameter>
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
@@ -502,6 +585,10 @@
                    name="jcp.controller.param.boolean"
                    value="false">
              </parameter>
+             <parameter
+                   name="net.bioclipse.cdk.jchempaint.DrawModeString"
+                   value="Ring 8">
+             </parameter>
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
@@ -526,6 +613,10 @@
              <parameter
                    name="jcp.controller.param.boolean"
                    value="true">
+             </parameter>
+             <parameter
+                   name="net.bioclipse.cdk.jchempaint.DrawModeString"
+                   value="Benzene">
              </parameter>
           </command>
           <command

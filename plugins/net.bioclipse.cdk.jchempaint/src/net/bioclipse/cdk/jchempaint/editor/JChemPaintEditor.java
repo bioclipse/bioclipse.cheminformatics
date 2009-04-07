@@ -12,24 +12,34 @@
 package net.bioclipse.cdk.jchempaint.editor;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.jchempaint.handlers.ModuleState;
 import net.bioclipse.cdk.jchempaint.handlers.RedoHandler;
 import net.bioclipse.cdk.jchempaint.handlers.UndoHandler;
 import net.bioclipse.cdk.jchempaint.outline.JCPOutlinePage;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.ui.jobs.BioclipseUIJob;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.internal.resources.File;
+import org.eclipse.core.commands.IParameter;
+import org.eclipse.core.commands.NotEnabledException;
+import org.eclipse.core.commands.NotHandledException;
+import org.eclipse.core.commands.Parameterization;
+import org.eclipse.core.commands.ParameterizedCommand;
+import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -50,14 +60,18 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartConstants;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.activities.WorkbenchActivityHelper;
+import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.dialogs.SaveAsDialog;
+import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -259,7 +273,53 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
             }
         } );
 
+        createPartListener();
+
         createUndoRedoHangler();
+    }
+
+    private void createPartListener() {
+
+        IPartListener2 partListener = new IPartListener2() {
+
+            public void partActivated( IWorkbenchPartReference partRef ) {
+
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put( "net.bioclipse.cdk.jchempaint.DrawModeString",
+                                getControllerHub().getActiveDrawModule()
+                                    .getDrawModeString());
+                    ICommandService service = (ICommandService) getSite()
+                                            .getService(ICommandService.class);
+                    service.refreshElements(
+                      "net.bioclipse.cdk.ui.editors.jchempaint.command.module",
+                      null);
+
+            }
+
+            public void partBroughtToTop( IWorkbenchPartReference partRef ) {
+            }
+
+            public void partClosed( IWorkbenchPartReference partRef ) {
+            }
+
+            public void partDeactivated( IWorkbenchPartReference partRef ) {
+            }
+
+            public void partHidden( IWorkbenchPartReference partRef ) {
+            }
+
+            public void partInputChanged( IWorkbenchPartReference partRef ) {
+            }
+
+            public void partOpened( IWorkbenchPartReference partRef ) {
+            }
+
+            public void partVisible( IWorkbenchPartReference partRef ) {
+            }
+
+        };
+        getSite().getPage().addPartListener( partListener );
+
     }
 
     private void createUndoRedoHangler() {
