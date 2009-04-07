@@ -29,7 +29,7 @@
             class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
             default="true"
             icon="icons/doc_mol_2d.png"
-            id="net.bioclipse.cdk.ui.editors.jchempaint"
+            id="net.bioclipse.cdk.ui.editors.jchempaint.mdl"
             name="MDLMolfileEditor">
          <contentTypeBinding
                contentTypeId="net.bioclipse.contenttypes.mdlMolFile2D">
@@ -39,7 +39,7 @@
             class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
             default="true"
             icon="icons/doc_mol_2d.png"
-            id="net.bioclipse.cdk.ui.editors.jchempaint"
+            id="net.bioclipse.cdk.ui.editors.jchempaint.cml"
             name="CMLfileEditor">
          <contentTypeBinding
                contentTypeId="net.bioclipse.contenttypes.cml.singleMolecule2d">
@@ -49,7 +49,7 @@
             class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
             default="true"
             icon="icons/doc_mol_2d.png"
-            id="net.bioclipse.cdk.ui.editors.jchempaint"
+            id="net.bioclipse.cdk.ui.editors.jchempaint.cml"
             name="CMLfileEditor">
          <contentTypeBinding
                contentTypeId="net.bioclipse.contenttypes.cml.singleMolecule5d">
@@ -59,7 +59,7 @@
             class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
             default="true"
             icon="icons/doc_mol_2d.png"
-            id="net.bioclipse.cdk.ui.editors.jchempaint"
+            id="net.bioclipse.cdk.ui.editors.jchempaint.pubchem"
             name="PubChemCompoundXMLMolfileEditor">
          <contentTypeBinding
                contentTypeId="net.bioclipse.contenttypes.pubchem.xml.compound">
@@ -838,6 +838,9 @@
               </equals>
               <equals
                     value="net.bioclipse.cdk.ui.editors.jchempaint.cml">
+              </equals>
+              <equals
+                    value="net.bioclipse.cdk.ui.editors.jchempaint.pubchem">
               </equals>
            </or>
         </with>
