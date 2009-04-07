@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Bioclipse Chemoinformatics
 Bundle-SymbolicName: net.bioclipse.chemoinformatics;singleton:=true
-Bundle-Version: 2.0.0.B20090318
+Bundle-Version: 2.0.0.B20090407
 Bundle-Activator: net.bioclipse.chemoinformatics.Activator
 Bundle-Vendor: The Bioclipse Team
 Require-Bundle: org.eclipse.ui,
@@ -13,9 +13,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.console,
  org.eclipse.core.variables,
  org.eclipse.core.runtime.compatibility.auth,
- org.eclipse.ui.cheatsheets;bundle-version="3.3.101",
- org.eclipse.update.core;bundle-version="3.2.201",
- org.eclipse.update.ui;bundle-version="3.2.100",
+ org.eclipse.ui.cheatsheets,
+ org.eclipse.update.core,
+ org.eclipse.update.ui,
  net.bioclipse.ui;bundle-version="2.0.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
