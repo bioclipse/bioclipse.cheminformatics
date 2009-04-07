@@ -206,7 +206,7 @@
                label="Select">
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Select all"
+                  label="Select All"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -215,7 +215,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Select none"
+                  label="Select None"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -224,7 +224,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Select protein"
+                  label="Select Protein"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -233,7 +233,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Select amino"
+                  label="Select Amino"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -242,7 +242,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Select nucleic"
+                  label="Select Nucleic"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -251,7 +251,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Select water"
+                  label="Select Water"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -260,7 +260,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Select hetero"
+                  label="Select Hetero"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -298,7 +298,7 @@
                label="Atoms">
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Spacefill 0"
+                  label="Off"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -330,7 +330,7 @@
                label="Bonds">
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="off"
+                  label="Off"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -371,7 +371,7 @@
                label="Surface">
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="dots on"
+                  label="Dots On"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -380,7 +380,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="dots off"
+                  label="Dots Off"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -394,7 +394,7 @@
                label="Frame">
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Next frame"
+                  label="Next Frame"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -403,7 +403,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Previous frame"
+                  label="Previous Frame"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -412,7 +412,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Play once"
+                  label="Play Once"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -421,7 +421,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Play repeat"
+                  label="Play Repeat"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -435,7 +435,7 @@
                label="Biopolymer">
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Cartoon on"
+                  label="Cartoon On"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -444,7 +444,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Cartoon off"
+                  label="Cartoon Off"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -453,7 +453,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Ribbons on"
+                  label="Ribbons On"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -462,7 +462,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Ribbons off"
+                  label="Ribbons Off"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -471,7 +471,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Rockets on"
+                  label="Rockets On"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -480,7 +480,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Rockets off"
+                  label="Rockets Off"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -489,7 +489,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Meshribbons on"
+                  label="Meshribbons On"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -498,7 +498,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Meshribbons off"
+                  label="Meshribbons Off"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -507,7 +507,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Strands on"
+                  label="Strands On"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -516,7 +516,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Strands off"
+                  label="Strands Off"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -525,7 +525,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Trace on"
+                  label="Trace On"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -534,7 +534,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Trace off"
+                  label="Trace Off"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -543,7 +543,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Backbone on"
+                  label="Backbone On"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -552,7 +552,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Backbone off"
+                  label="Backbone Off"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -602,7 +602,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Location: center"
+                  label="Location: Center"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -611,7 +611,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Location: Top right"
+                  label="Location: Top Right"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -625,7 +625,7 @@
                label="Rotate">
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Rotate around X"
+                  label="Rotate Around X-axis"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -634,7 +634,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Spin on"
+                  label="Spin On"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -643,7 +643,7 @@
             </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runscript"
-                  label="Spin off"
+                  label="Spin Off"
                   icon="icons/molecule3D.png">
                   <parameter
                         name="net.bioclipse.jmol.scriptParameter"
@@ -669,7 +669,7 @@
                id="net.bioclipse.jmol.editor.toolbar">
             <command
                   commandId="net.bioclipse.jmol.actions.export"
-                  tooltip="Export as image"
+                  tooltip="Export as Image"
                   icon="icons/capture-screen.png">
                <visibleWhen>
                   <reference
@@ -679,7 +679,7 @@
              </command>
             <command
                   commandId="net.bioclipse.jmol.actions.runEditorScript"
-                  tooltip="Run script in editor"
+                  tooltip="Run Script in Editor"
                   icon="icons/smallRun.gif">
                <visibleWhen>
                   <reference
