@@ -28,6 +28,16 @@
   <osgi:reference id="JSJobCreatorAdvice" 
                   interface="net.bioclipse.scripting.business.IJSJobCreatorAdvice"/>
 
+  <bean id="jmolRunnerAdvice"
+        class="net.bioclipse.jmol.business.JmolRunnerAdvice">
+  </bean>
+  
+  <bean id="jmolRunnerAdvisor"
+        class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+        <property name="advice"  ref="jmolRunnerAdvice" />
+        <property name="pattern" value=".*" />
+  </bean>
+
   <bean id="recordingAdvisor"
   		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
         <property name="advice"  ref="recordingAdvice" />
@@ -61,6 +71,7 @@
               value="net.bioclipse.jmol.business.IJSJmolManager" />
     <property name="interceptorNames">
         <list>
+            <value>jmolRunnerAdvisor</value>
             <value>JSJobCreatorAdvice</value>
         </list>
     </property>

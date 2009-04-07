@@ -33,7 +33,7 @@ public class JmolManager implements IJmolManager {
         return "jmol";
     }
 
-    public void run(String script) {
+    public void run(String script, boolean reportErrorToJSConsole) {
 
         if (script == null || script.length() <= 0)
             throw new IllegalArgumentException(
@@ -41,11 +41,13 @@ public class JmolManager implements IJmolManager {
 
         //Run script in editor
         JmolEditor editor = findActiveJmolEditor();
-        if (editor != null){
-            editor.runScript(script);
+        if (editor == null) {
+            throw new IllegalStateException(
+                "Could not find any Jmol editor to run the script in" );
         }
+        editor.runScript(script, reportErrorToJSConsole);
     }
-
+    
     public void load(String path) throws CoreException {
         throw new IllegalStateException( "This manager method should " +
         		                             "not have been called" );
@@ -127,5 +129,9 @@ public class JmolManager implements IJmolManager {
         JmolEditor editor = findActiveJmolEditor();
         return editor.getSelection() == null 
             || editor.getSelection().isEmpty();
+    }
+
+    public void run( String script ) {
+        run( script, false );
     }
 }

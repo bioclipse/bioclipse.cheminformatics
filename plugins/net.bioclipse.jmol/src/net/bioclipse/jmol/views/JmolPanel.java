@@ -49,6 +49,8 @@ public class JmolPanel extends JPanel {
     private Viewer viewer;
 
     private ISelectionProvider part;
+
+    private volatile JmolListener jmolListener;
     
 //    public JmolPanel() {
 //        jmolViewer = createViewer(new SmarterJmolAdapter());
@@ -72,9 +74,9 @@ public class JmolPanel extends JPanel {
         viewer.setColorBackground("white");
         viewer.setAutoBond(true);
         
-        JmolListener listener = new JmolListener(part, viewer);
-        viewer.setJmolStatusListener(listener);
-        viewer.addSelectionListener(listener);
+        jmolListener = new JmolListener(part, viewer);
+        viewer.setJmolStatusListener(jmolListener);
+        viewer.addSelectionListener(jmolListener);
         viewer.setFrankOn(false);
         return viewer;
     }
@@ -119,4 +121,7 @@ public class JmolPanel extends JPanel {
         return viewer.getOpenFileError();
     }
 
+    public JmolListener getJmolListener() {
+        return jmolListener;
+    }
 }

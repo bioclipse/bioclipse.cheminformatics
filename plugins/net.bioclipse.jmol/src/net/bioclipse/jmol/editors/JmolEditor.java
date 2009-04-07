@@ -773,4 +773,11 @@ public class JmolEditor extends MultiPageEditorPart
             jmolPanel.getViewer().openStringInline( data );
         }
     }
+
+    public void runScript( String script, boolean repportErrorToJSConsole ) {
+        if ( repportErrorToJSConsole ) {
+            jmolPanel.getJmolListener().toggleReportErrorToJSConsole();
+        }
+        runScript(script);
+    }
 }
