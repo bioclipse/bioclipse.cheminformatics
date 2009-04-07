@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.bioclipse.cdk.business.CDKManager.SDFileIndex;
+import net.bioclipse.cdk.business.SDFileIndex;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
@@ -60,13 +60,7 @@ public class MoleculeViewerContentProvider implements IDataProvider,
     Logger logger = Logger.getLogger( MoleculeViewerContentProvider.class );
 
     MoleculeTableViewer viewer;
-    SDFileIndex input = new SDFileIndex(null,new ArrayList<Long>()) {
-        @Override
-        public int size() {
-            return 0;
-        }
-
-    };
+    SDFileIndex input = SDFileIndex.emptyIndex();
 
     protected ISimpleChemObjectReader chemReader;
     protected IChemObjectBuilder builder;

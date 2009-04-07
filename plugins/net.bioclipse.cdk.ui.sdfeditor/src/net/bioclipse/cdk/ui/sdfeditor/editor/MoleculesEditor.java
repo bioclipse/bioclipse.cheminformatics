@@ -18,7 +18,7 @@ import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
-import net.bioclipse.cdk.business.CDKManager.SDFileIndex;
+import net.bioclipse.cdk.business.SDFileIndex;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;

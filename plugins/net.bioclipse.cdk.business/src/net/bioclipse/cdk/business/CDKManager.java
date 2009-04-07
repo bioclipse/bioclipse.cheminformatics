@@ -1056,29 +1056,6 @@ public class CDKManager implements ICDKManager {
           }
       }
 
-      public static class SDFileIndex {
-          final IFile file;
-
-          List<Long> filePos;
-
-          public SDFileIndex(final IFile file,final List<Long> filePos) {
-              this.file = file;
-              this.filePos=new ArrayList<Long>(filePos);
-              this.filePos.add( 0, 0l );
-          }
-
-          public IFile file() {
-              return file;
-          }
-          public int size() {
-              return filePos.size()-1;
-          }
-
-          public long start(int index) {
-              return filePos.get(index);
-          }
-      }
-
       public int numberOfEntriesInSDF(IFile file, IProgressMonitor monitor) {
 
           SDFileIndex index = createSDFIndex( file, monitor );

@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.bioclipse.cdk.business.CDKManager.SDFileIndex;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesInfo;
 import net.bioclipse.core.PublishedClass;
