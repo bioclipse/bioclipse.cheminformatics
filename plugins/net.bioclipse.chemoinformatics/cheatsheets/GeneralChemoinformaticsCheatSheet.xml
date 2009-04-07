@@ -59,8 +59,7 @@
        title="Option 7: Work with Spectral Data">
 		<description>
 			If you want to work with spectral data (e. g. view spectra and peak pick them, do a structure elucidation), you should install 
-			the Speclipse feature (in case this is not yet the case) via Help -> Software Update -> Speclipse Update Site (or by choosing "Click to perform" right here) and read the General Spectrum Cheat Sheet.
+			the Speclipse feature (in case this is not yet the case) via Help -> Software Update -> Speclipse Update Site and read the General Spectrum Cheat Sheet.
 		</description>
-		<action pluginId="net.bioclipse.chemoinformatics" class="net.bioclipse.chemoinformatics.action.CheatSheetAction" param1="runupdate"/>
 	</item>
 </cheatsheet>
