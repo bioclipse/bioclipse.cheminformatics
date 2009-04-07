@@ -335,7 +335,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
         MenuManager menuMgr = new MenuManager();
         menuMgr.add( new GroupMarker( IWorkbenchActionConstants.MB_ADDITIONS ) );
-        getSite().registerContextMenu( menuMgr, widget );
+        getSite().registerContextMenu("net.bioclipse.cdk.ui.editors.jchempaint", 
+                                      menuMgr, widget );
 
         menu = menuMgr.createContextMenu( widget );
         widget.setMenu( menu );
