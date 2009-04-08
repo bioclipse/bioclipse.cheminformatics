@@ -17,6 +17,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -49,7 +50,7 @@ public class Create3dHandler extends AbstractHandler {
                             Activator.getDefault().getCDKManager()
                                     .loadMolecule(
                                                    (IFile) ssel
-                                                           .getFirstElement() );
+                                                           .getFirstElement(), new NullProgressMonitor() );
                     mol =
                             (ICDKMolecule) Activator.getDefault()
                                     .getCDKManager()
