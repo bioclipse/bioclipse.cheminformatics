@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: CDK Debug Plugin
+Bundle-Name: CDK Extras
 Bundle-SymbolicName: net.bioclipse.cdk.debug;singleton:=true
 Bundle-Version: 2.0.0.B20090407
 Bundle-Activator: net.bioclipse.cdkdebug.Activator
