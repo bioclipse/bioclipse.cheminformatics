@@ -647,6 +647,9 @@ public class CDKManager implements ICDKManager {
     }
 
     public IChemFormat guessFormatFromExtension(String file) {
+        if (file.endsWith(".mdl")) {
+            return (IChemFormat)MDLV2000Format.getInstance();
+        }
         for (IChemFormat aFormat : formatsFactory.getFormats()) {
             if (aFormat == MDLFormat.getInstance()) {
                 // never match this one: it's outdated and != MDLV2000Format
