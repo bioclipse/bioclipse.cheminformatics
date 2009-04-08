@@ -7,15 +7,10 @@
 		<BioObject
 	        describer="net.bioclipse.cdk.jchempaint.describer.JCPEditorDescriber"
     	    id="net.bioclipse.cdk.jchempaint.describer"
-    	    objectClass="net.bioclipse.cdk.domain.ICDKMolecule"
-        	name="wee">
-        	<Editor
-               id="net.bioclipse.cdk.ui.editors.jchempaint"
-               alias="jcp,2d">
-        	</Editor>
+    	    objectClass="net.bioclipse.cdk.domain.ICDKMolecule">
 		</BioObject>         
-   
    </extension>
+
    <extension
          point="org.eclipse.ui.editors">
       <editor
