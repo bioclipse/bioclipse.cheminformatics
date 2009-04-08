@@ -56,7 +56,8 @@ public interface IJmolManager extends IBioclipseManager{
     
     
     @Recorded
-    @PublishedMethod( methodSummary = "Export as image")
+    @PublishedMethod( methodSummary = "Export as image to path",
+                      params = "String filepath" )
     public void snapshot(String filepath);
     
     /**
