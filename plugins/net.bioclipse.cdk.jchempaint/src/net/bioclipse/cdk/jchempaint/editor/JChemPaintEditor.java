@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 The Bioclipse Project and others.
+ * Copyright (c) 2008-2009 The Bioclipse Project and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,18 +28,10 @@ import net.bioclipse.cdk.jchempaint.handlers.UndoHandler;
 import net.bioclipse.cdk.jchempaint.outline.JCPOutlinePage;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.ui.jobs.BioclipseUIJob;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IParameter;
-import org.eclipse.core.commands.NotEnabledException;
-import org.eclipse.core.commands.NotHandledException;
-import org.eclipse.core.commands.Parameterization;
-import org.eclipse.core.commands.ParameterizedCommand;
-import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -70,8 +62,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.dialogs.SaveAsDialog;
-import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.internal.part.NullEditorInput;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -102,6 +93,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     private JChemPaintEditorWidget widget;
     private IControllerModel       c2dm;
     private Menu                   menu;
+
+    IPartListener2 partListener;
 
     public JChemPaintEditorWidget getWidget() {
         return widget;
@@ -198,7 +191,10 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 //            file.getContentDescription().getContentType()
             setPartName( input.getName() );
                 return;
-        }else {
+        }else if(input instanceof NullEditorInput) {
+            return;
+        }
+        else{
             ICDKMolecule cModel = (ICDKMolecule)
                                     input.getAdapter( ICDKMolecule.class );
             if(cModel!=null) {
@@ -280,7 +276,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
     private void createPartListener() {
 
-        IPartListener2 partListener = new IPartListener2() {
+        partListener = new IPartListener2() {
 
             public void partActivated( IWorkbenchPartReference partRef ) {
 
@@ -290,9 +286,10 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                                     .getDrawModeString());
                     ICommandService service = (ICommandService) getSite()
                                             .getService(ICommandService.class);
-                    service.refreshElements(
-                      "net.bioclipse.cdk.ui.editors.jchempaint.command.module",
-                      null);
+                    if(service!=null) {
+                        service.refreshElements( ModuleState.COMMAND_ID,
+                                                 null);
+                    }
 
             }
 
@@ -335,7 +332,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
         MenuManager menuMgr = new MenuManager();
         menuMgr.add( new GroupMarker( IWorkbenchActionConstants.MB_ADDITIONS ) );
-        getSite().registerContextMenu("net.bioclipse.cdk.ui.editors.jchempaint", 
+        getSite().registerContextMenu("net.bioclipse.cdk.ui.editors.jchempaint",
                                       menuMgr, widget );
 
         menu = menuMgr.createContextMenu( widget );
@@ -531,6 +528,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         // menuMgr, widget);
         getSite().setSelectionProvider( null );
         getSite().getPage().removeSelectionListener( this );
+        getSite().getPage().removePartListener( partListener );
 
         widget.dispose();
         menu.dispose();
