@@ -793,4 +793,27 @@ public class CDKManagerTest extends AbstractManagerTest {
         mol = cdk.fromSMILES("O=C(CC(=O)[O-])[O-]");
         Assert.assertEquals(-2, cdk.totalFormalCharge(mol));
     }
+    
+    @Test public void testBug826() throws Exception{
+        String path = getClass().getResource("/testFiles/polycarpol.mdl").getPath();
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), new NullProgressMonitor() );
+        IFile target=new MockIFile();
+        cdk.saveMolecule( mol, target,true );
+        byte[] b=new byte[100];
+        target.getContents().read( b );
+        Assert.assertEquals( 'p', (char)b[0]);
+        Assert.assertEquals( 'o', (char)b[0]);
+        Assert.assertEquals( 'l', (char)b[0]);
+        Assert.assertEquals( 'y', (char)b[0]);
+        Assert.assertEquals( 'c', (char)b[0]);
+        Assert.assertEquals( 'a', (char)b[0]);
+        Assert.assertEquals( 'r', (char)b[0]);
+        Assert.assertEquals( 'p', (char)b[0]);
+        Assert.assertEquals( 'o', (char)b[0]);
+        Assert.assertEquals( 'l', (char)b[0]);
+        Assert.assertEquals( '.', (char)b[0]);
+        Assert.assertEquals( 'm', (char)b[0]);
+        Assert.assertEquals( 'd', (char)b[0]);
+        Assert.assertEquals( 'l', (char)b[0]);
+    }
 }
