@@ -802,18 +802,18 @@ public class CDKManagerTest extends AbstractManagerTest {
         byte[] b=new byte[100];
         target.getContents().read( b );
         Assert.assertEquals( 'p', (char)b[0]);
-        Assert.assertEquals( 'o', (char)b[0]);
-        Assert.assertEquals( 'l', (char)b[0]);
-        Assert.assertEquals( 'y', (char)b[0]);
-        Assert.assertEquals( 'c', (char)b[0]);
-        Assert.assertEquals( 'a', (char)b[0]);
-        Assert.assertEquals( 'r', (char)b[0]);
-        Assert.assertEquals( 'p', (char)b[0]);
-        Assert.assertEquals( 'o', (char)b[0]);
-        Assert.assertEquals( 'l', (char)b[0]);
-        Assert.assertEquals( '.', (char)b[0]);
-        Assert.assertEquals( 'm', (char)b[0]);
-        Assert.assertEquals( 'd', (char)b[0]);
-        Assert.assertEquals( 'l', (char)b[0]);
+        Assert.assertEquals( 'o', (char)b[1]);
+        Assert.assertEquals( 'l', (char)b[2]);
+        Assert.assertEquals( 'y', (char)b[3]);
+        Assert.assertEquals( 'c', (char)b[4]);
+        Assert.assertEquals( 'a', (char)b[5]);
+        Assert.assertEquals( 'r', (char)b[6]);
+        Assert.assertEquals( 'p', (char)b[7]);
+        Assert.assertEquals( 'o', (char)b[8]);
+        Assert.assertEquals( 'l', (char)b[9]);
+        Assert.assertEquals( '.', (char)b[10]);
+        Assert.assertEquals( 'm', (char)b[11]);
+        Assert.assertEquals( 'd', (char)b[12]);
+        Assert.assertEquals( 'l', (char)b[13]);
     }
 }
