@@ -115,8 +115,8 @@ public class JmolManager implements IJmolManager {
     }
 
   	public void snapshot(String filepath) {
-    		IFile file = ResourcePathTransformer.getInstance().transform(filepath);
-    		this.findActiveJmolEditor().snapshot(file);
+  	    IFile file = ResourcePathTransformer.getInstance().transform(filepath);
+  	    this.findActiveJmolEditor().snapshot(file);
   	}
 
     public void print( final String message ) {
