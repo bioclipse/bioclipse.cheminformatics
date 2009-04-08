@@ -55,6 +55,9 @@
                   contentTypeId="net.bioclipse.contenttypes.cml.singleMolecule3d">
             </contentTypeBinding>
             <contentTypeBinding
+                  contentTypeId="net.bioclipse.contenttypes.cml.singleMolecule5d">
+            </contentTypeBinding>
+            <contentTypeBinding
                   contentTypeId="net.bioclipse.contenttypes.sdf3d">
             </contentTypeBinding>
       </editor>
