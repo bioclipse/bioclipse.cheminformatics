@@ -8,9 +8,10 @@ import org.eclipse.core.runtime.IExecutableExtension;
 
 public class ModuleState extends State implements IExecutableExtension {
 
+    public final static String COMMAND_ID = "net.bioclipse.cdk.ui.editors.jchempaint.command.module";
     public final static String STATE_ID = "net.bioclipse.cdk.jchempaint.moduleState";
     public final static String PARAMETER_ID = "jcp.controller.module";
-    
+
     public ModuleState() {
 
     }
@@ -27,10 +28,10 @@ public class ModuleState extends State implements IExecutableExtension {
 
     @Override
     public void setValue( Object value ) {
-    
+
         if( ! (value instanceof String))
             return;// we set only String values
-        
+
         super.setValue( value );
     }
 }
