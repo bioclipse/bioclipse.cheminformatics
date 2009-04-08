@@ -516,7 +516,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
             }
 
             widget.getRenderer2DModel().setSelection( jcpSelection );
-            widget.redraw();
+            if(!widget.isDisposed())
+                widget.redraw();
         }
     }
 
