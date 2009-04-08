@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SaveAsDialog;
+import org.openscience.cdk.interfaces.IAtom;
 
 /**
  * A handler class for a Generate 2D Coordinates menu item
@@ -55,6 +56,10 @@ public class Create2dHandler extends AbstractHandler {
                             (ICDKMolecule) Activator.getDefault()
                                     .getCDKManager()
                                     .generate2dCoordinates( mol );
+                    //we set 3d to null, since when writing out, 3d might override 2d
+                    for(IAtom atom : mol.getAtomContainer().atoms()){
+                        atom.setPoint3d( null );
+                    }
                 } catch ( Exception e ) {
                     LogUtils.handleException( e, logger );
                     return null;
