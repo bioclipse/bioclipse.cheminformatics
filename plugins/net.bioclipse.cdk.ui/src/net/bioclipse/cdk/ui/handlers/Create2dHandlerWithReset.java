@@ -55,80 +55,79 @@ public class Create2dHandlerWithReset extends AbstractHandler {
       if ( !sel.isEmpty() ) {
           if ( sel instanceof IStructuredSelection ) {
               IStructuredSelection ssel = (IStructuredSelection) sel;
-              ICDKMolecule mol;
-              try {
-                  mol =
-                          Activator.getDefault().getCDKManager()
-                                  .loadMolecule(
-                                                 (IFile) ssel
-                                                         .getFirstElement(), new NullProgressMonitor() );
-                  if(make3D){
-                      mol =
-                          (ICDKMolecule) Activator.getDefault()
-                                  .getCDKManager()
-                                  .generate3dCoordinates( mol );                    
-                  }else{
+              for(int i=0;i<ssel.toArray().length;i++){
+                ICDKMolecule mol;
+                try {
                     mol =
+                            Activator.getDefault().getCDKManager()
+                                    .loadMolecule(
+                                                   (IFile) ssel.toArray()[i], new NullProgressMonitor() );
+                    if(make3D){
+                        mol =
                             (ICDKMolecule) Activator.getDefault()
                                     .getCDKManager()
-                                    .generate2dCoordinates( mol );
-                  }
-                  if(withReset){
-                    //we set the other coordinates to null, since when writing out, they might override
-                    for(IAtom atom : mol.getAtomContainer().atoms()){
-                        if(make3D)
-                            atom.setPoint2d( null );
-                        else
-                            atom.setPoint3d( null );
+                                    .generate3dCoordinates( mol );                    
+                    }else{
+                      mol =
+                              (ICDKMolecule) Activator.getDefault()
+                                      .getCDKManager()
+                                      .generate2dCoordinates( mol );
                     }
-                  }
-              } catch ( Exception e ) {
-                  LogUtils.handleException( e, logger );
-                  return;
-              }
-              MessageBox mb =
-                      new MessageBox( new Shell(), SWT.YES | SWT.NO | SWT.CANCEL
-                                                   | SWT.ICON_QUESTION );
-              mb.setText( "Change file" );
-              mb.setMessage( "Do you want to write the "+ (make3D ? "3D" : "2D")+ " coordinates into the existing file? If no, a new one will be created." );
-              int val = mb.open();
-              if ( val == SWT.YES ) {
-                  try {
-                      Activator.getDefault().getCDKManager()
-                              .saveMolecule(
-                                             mol,
-                                             (IFile) ssel.getFirstElement(),
-                                             true);
-                  } catch ( Exception e ) {
-                      throw new RuntimeException( e.getMessage() );
-                  }
-              } else if ( val == SWT.NO ){
-                  SaveAsDialog dialog = new SaveAsDialog( new Shell() );
-                  dialog.setOriginalFile( (IFile) ssel.getFirstElement() );
-                  int saveasreturn = dialog.open();
-                  IPath result = dialog.getResult();
-                  if ( saveasreturn != SaveAsDialog.CANCEL ) {
-                      if ( dialog.getResult().getFileExtension() == null )
-                          result =
-                                  result.addFileExtension( ((IFile) ssel
-                                          .getFirstElement())
-                                          .getFileExtension() );
-                      try {
-                          Activator
-                                  .getDefault()
-                                  .getCDKManager()
-                                  .saveMolecule(
-                                                 mol,
-                                                 ((IFile) ssel
-                                                         .getFirstElement())
-                                                         .getWorkspace()
-                                                         .getRoot()
-                                                         .getFile(
-                                                                   result ),
-                                                 true );
-                      } catch ( Exception e ) {
-                          throw new RuntimeException( e.getMessage() );
+                    if(withReset){
+                      //we set the other coordinates to null, since when writing out, they might override
+                      for(IAtom atom : mol.getAtomContainer().atoms()){
+                          if(make3D)
+                              atom.setPoint2d( null );
+                          else
+                              atom.setPoint3d( null );
                       }
+                    }
+                } catch ( Exception e ) {
+                    LogUtils.handleException( e, logger );
+                    return;
+                }
+                MessageBox mb =
+                        new MessageBox( new Shell(), SWT.YES | SWT.NO | SWT.CANCEL
+                                                     | SWT.ICON_QUESTION );
+                mb.setText( "Change file: "+((IFile) ssel.toArray()[i]).getName() );
+                mb.setMessage( "Do you want to write the "+ (make3D ? "3D" : "2D")+ " coordinates into the existing file? If no, a new one will be created." );
+                int val = mb.open();
+                if ( val == SWT.YES ) {
+                    try {
+                        Activator.getDefault().getCDKManager()
+                                .saveMolecule(
+                                               mol,
+                                               (IFile) ssel.toArray()[i],
+                                               true);
+                    } catch ( Exception e ) {
+                        throw new RuntimeException( e.getMessage() );
+                    }
+                } else if ( val == SWT.NO ){
+                    SaveAsDialog dialog = new SaveAsDialog( new Shell() );
+                    dialog.setOriginalFile( (IFile) ssel.toArray()[i] );
+                    int saveasreturn = dialog.open();
+                    IPath result = dialog.getResult();
+                    if ( saveasreturn != SaveAsDialog.CANCEL ) {
+                        if ( dialog.getResult().getFileExtension() == null )
+                            result =
+                                    result.addFileExtension( ((IFile) ssel.toArray()[i])
+                                            .getFileExtension() );
+                        try {
+                            Activator
+                                    .getDefault()
+                                    .getCDKManager()
+                                    .saveMolecule(
+                                                   mol,
+                                                   ((IFile) ssel.toArray()[i])
+                                                           .getWorkspace()
+                                                           .getRoot()
+                                                           .getFile(
+                                                                     result ),
+                                                   true );
+                        } catch ( Exception e ) {
+                            throw new RuntimeException( e.getMessage() );
+                        }
+                    }
                   }
               }
           }
