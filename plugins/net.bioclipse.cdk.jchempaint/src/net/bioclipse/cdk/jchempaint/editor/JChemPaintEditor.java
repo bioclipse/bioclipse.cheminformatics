@@ -11,12 +11,16 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.editor;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import javax.imageio.ImageIO;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
@@ -28,6 +32,7 @@ import net.bioclipse.cdk.jchempaint.handlers.UndoHandler;
 import net.bioclipse.cdk.jchempaint.outline.JCPOutlinePage;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.ui.jobs.BioclipseUIJob;
 
 import org.apache.log4j.Logger;
@@ -37,8 +42,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -46,6 +53,9 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
@@ -265,7 +275,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
         parent.addDisposeListener( new DisposeListener() {
             public void widgetDisposed( DisposeEvent e ) {
-                disposeControll( e );
+                disposeControl( e );
             }
         } );
 
@@ -521,7 +531,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         }
     }
 
-    private void disposeControll( DisposeEvent e ) {
+    private void disposeControl( DisposeEvent e ) {
 
         // TODO remove regiistration?
         // getSite().registerContextMenu(
@@ -533,5 +543,24 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
         widget.dispose();
         menu.dispose();
+    }
+
+    public void snapshot(final IFile file) throws CoreException {
+        Image image = widget.snapshot();
+        ImageLoader loader = new ImageLoader();
+        loader.data = new ImageData[] { image.getImageData() };
+        ByteArrayOutputStream inMemoryFile = new ByteArrayOutputStream(); 
+        loader.save(inMemoryFile, SWT.IMAGE_PNG);
+        try {
+            inMemoryFile.flush();
+        } catch (IOException ioe) {
+            
+        }
+        ByteArrayInputStream input = new ByteArrayInputStream(inMemoryFile.toByteArray());
+        if (file.exists()) {
+            file.setContents(input, true, false, null);
+        } else {
+            file.create(input, true, null);
+        }
     }
 }

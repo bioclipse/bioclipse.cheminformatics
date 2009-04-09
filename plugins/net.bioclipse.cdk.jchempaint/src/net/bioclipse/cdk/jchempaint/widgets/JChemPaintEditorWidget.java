@@ -55,6 +55,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
@@ -156,6 +157,13 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
            }
        });
     }
+    
+    public Image snapshot() {
+        Rectangle area = getClientArea();
+        Image image = new Image(getDisplay(), area.width, area.height);
+        paint(new GC(image));
+        return image;
+    }
 
     private void setAtomContainerInHub(IAtomContainer atomContainer) {
 
@@ -203,12 +211,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                     }
 
                     public void zoomChanged() {
-
                         resizeControl();
-
-
                     }
-
                 }
         );
 
@@ -290,46 +294,45 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     }
 
     private void paintControl( PaintEvent event ) {
+        paint(event.gc);
+    }
+    
+    private void paint(GC gc) {
+        setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
+        // drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
 
-            setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
-            //drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
+        Rectangle c = getClientArea();
+        Rectangle2D drawArea = new Rectangle2D.Double(c.x, c.y, c.width,
+                c.height);
 
-            Rectangle c = getClientArea();
-            Rectangle2D drawArea =
-                new Rectangle2D.Double(c.x, c.y, c.width, c.height);
+        paintDirty(gc, c.width, c.height);
 
-            paintDitry( event.gc, c.width,c.height );
+        if (atomContainer != null) {
+            SWTRenderer visitor = new SWTRenderer(gc);
+            Renderer renderer = getRenderer();
 
-            if(atomContainer != null) {
-                SWTRenderer visitor = new SWTRenderer( event.gc );
-                Renderer renderer = getRenderer();
-
-                if (isNew) {
-                    renderer.setScale(atomContainer);
-                    java.awt.Rectangle diagramBounds = renderer.
-                    calculateDiagramBounds(atomContainer);
-                    renderer.setZoomToFit( drawArea.getWidth(),
-                                           drawArea.getHeight(),
-                                           diagramBounds.getWidth(),
-                                           diagramBounds.getHeight());
-                    renderer.paintMolecule(atomContainer, visitor,drawArea,true);
-                    isNew = false;
+            if (isNew) {
+                renderer.setScale(atomContainer);
+                java.awt.Rectangle diagramBounds = 
+                    renderer.calculateDiagramBounds(atomContainer);
+                renderer.setZoomToFit(
+                        drawArea.getWidth(),
+                        drawArea.getHeight(), 
+                        diagramBounds.getWidth(),
+                        diagramBounds.getHeight());
+                renderer.paintMolecule(atomContainer, visitor, drawArea, true);
+                isNew = false;
+            } else {
+                if (isScrolling) {
+                    renderer.repaint(visitor);
                 } else {
-                    Rectangle dB= getDiagramBounds();
-//                    renderer.setDrawCenter( origin.x+dB.width/2,
-//                                            origin.y +dB.height/2);
-                    if(isScrolling) {
-                        renderer.repaint( visitor );
-                    }else {
-                        //                        java.awt.Rectangle diagramSize =
-                        renderer.paintMolecule(atomContainer, visitor);
-                        // ...update scroll bars here
-                    }
+                    renderer.paintMolecule(atomContainer, visitor);
                 }
             }
+        }
     }
 
-    void paintDitry(GC gc,int width, int height) {
+    private void paintDirty(GC gc,int width, int height) {
         if(isdirty) {
             gc.setFont( generatedFont );
             int h = height-gc.getFontMetrics().getHeight();
@@ -554,7 +557,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 	    return isdirty;
 	}
 
-	java.awt.Color createFromSWT(org.eclipse.swt.graphics.Color color) {
+	private java.awt.Color createFromSWT(org.eclipse.swt.graphics.Color color) {
 	    return new java.awt.Color( color.getRed(),
 	                               color.getGreen(),
 	                               color.getBlue());

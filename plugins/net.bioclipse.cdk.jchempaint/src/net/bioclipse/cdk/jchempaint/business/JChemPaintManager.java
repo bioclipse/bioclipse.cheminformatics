@@ -16,9 +16,12 @@ import javax.vecmath.Point2d;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
+import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.scripting.ui.Activator;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
@@ -72,6 +75,19 @@ public class JChemPaintManager implements IJChemPaintManager {
             }
         });
         return jcpEditor;
+    }
+    
+    public void snapshot(String filepath) {
+        final IFile file = ResourcePathTransformer.getInstance().transform(filepath);
+        PlatformUI.getWorkbench().getDisplay().syncExec( new Runnable() {
+            public void run() {
+                try {
+                    findActiveEditor().snapshot(file);
+                } catch (CoreException c) {
+                    
+                }
+            }
+        });
     }
 
     public ICDKMolecule getModel() throws BioclipseException {

@@ -32,6 +32,10 @@ import org.openscience.cdk.interfaces.IBond;
 @TestClasses("net.bioclipse.cdk.jchempaint.business.test.JChemPaintManagerTest")
 public interface IJChemPaintManager extends IBioclipseManager {
     
+    @PublishedMethod ( params = "double the zoom factor", 
+                       methodSummary = "set the zoom factor" )
+    public void snapshot(String path);                      
+    
     @Recorded
     @PublishedMethod ( params = "double the zoom factor", 
                        methodSummary = "set the zoom factor" )
