@@ -11,6 +11,18 @@
 		</BioObject>         
    </extension>
 
+      <extension
+         point="net.bioclipse.ui.business.editorShortname">
+         <shortname
+               alias="jcp"
+               editorID="net.bioclipse.cdk.ui.editors.jchempaint">
+         </shortname>
+         <shortname
+               alias="2d"
+               editorID="net.bioclipse.cdk.ui.editors.jchempaint">
+         </shortname>
+   </extension>
+
    <extension
          point="org.eclipse.ui.editors">
       <editor
