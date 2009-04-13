@@ -2082,7 +2082,7 @@ public class CDKManager implements ICDKManager {
 
     public List<IMolecule> createMoleculeList() throws BioclipseException,
             InvocationTargetException {
-        return new ArrayList<IMolecule>();
+        return new BioList<IMolecule>();
     }
 
     public IMolecule perceiveAromaticity( IMolecule mol ) throws BioclipseException {
