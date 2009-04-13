@@ -24,6 +24,29 @@
          </contentTypeBinding>
       </editor>
    </extension>
+   
+      <extension
+         point="net.bioclipse.ui.business.editorShortname">
+         <shortname
+               alias="sdf"
+               editorID="net.bioclipse.cdk.ui.sdfeditor">
+         </shortname>
+         <shortname
+               alias="multimol"
+               editorID="net.bioclipse.cdk.ui.sdfeditor">
+         </shortname>
+   </extension>
+   
+      <extension
+         point="net.bioclipse.ui.bioobjectDescriber">
+		<BioObject
+	        describer="net.bioclipse.cdk.ui.sdfeditor.describer.MolTableDescriber"
+    	    id="net.bioclipse.cdk.jchempaint.describer"
+    	    objectClass="net.bioclipse.core.domain.BioList">
+		</BioObject>         
+   </extension>
+   
+   
    <extension
          point="org.eclipse.core.expressions.definitions">
       <definition
