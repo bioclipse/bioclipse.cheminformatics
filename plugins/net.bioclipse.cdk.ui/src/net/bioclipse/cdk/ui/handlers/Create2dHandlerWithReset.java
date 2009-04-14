@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SaveAsDialog;
+import org.openscience.cdk.exception.NoSuchAtomTypeException;
 import org.openscience.cdk.interfaces.IAtom;
 
 /**
@@ -83,53 +84,59 @@ public class Create2dHandlerWithReset extends AbstractHandler {
                               atom.setPoint3d( null );
                       }
                     }
-                } catch ( Exception e ) {
-                    LogUtils.handleException( e, logger );
-                    return;
-                }
-                MessageBox mb =
-                        new MessageBox( new Shell(), SWT.YES | SWT.NO | SWT.CANCEL
-                                                     | SWT.ICON_QUESTION );
-                mb.setText( "Change file: "+((IFile) ssel.toArray()[i]).getName() );
-                mb.setMessage( "Do you want to write the "+ (make3D ? "3D" : "2D")+ " coordinates into the existing file? If no, a new one will be created." );
-                int val = mb.open();
-                if ( val == SWT.YES ) {
-                    try {
-                        Activator.getDefault().getCDKManager()
-                                .saveMolecule(
-                                               mol,
-                                               (IFile) ssel.toArray()[i],
-                                               true);
-                    } catch ( Exception e ) {
-                        throw new RuntimeException( e.getMessage() );
-                    }
-                } else if ( val == SWT.NO ){
-                    SaveAsDialog dialog = new SaveAsDialog( new Shell() );
-                    dialog.setOriginalFile( (IFile) ssel.toArray()[i] );
-                    int saveasreturn = dialog.open();
-                    IPath result = dialog.getResult();
-                    if ( saveasreturn != SaveAsDialog.CANCEL ) {
-                        if ( dialog.getResult().getFileExtension() == null )
-                            result =
-                                    result.addFileExtension( ((IFile) ssel.toArray()[i])
-                                            .getFileExtension() );
+                    MessageBox mb =
+                            new MessageBox( new Shell(), SWT.YES | SWT.NO | SWT.CANCEL
+                                                         | SWT.ICON_QUESTION );
+                    mb.setText( "Change file: "+((IFile) ssel.toArray()[i]).getName() );
+                    mb.setMessage( "Do you want to write the "+ (make3D ? "3D" : "2D")+ " coordinates into the existing file? If no, a new one will be created." );
+                    int val = mb.open();
+                    if ( val == SWT.YES ) {
                         try {
-                            Activator
-                                    .getDefault()
-                                    .getCDKManager()
+                            Activator.getDefault().getCDKManager()
                                     .saveMolecule(
                                                    mol,
-                                                   ((IFile) ssel.toArray()[i])
-                                                           .getWorkspace()
-                                                           .getRoot()
-                                                           .getFile(
-                                                                     result ),
-                                                   true );
+                                                   (IFile) ssel.toArray()[i],
+                                                   true);
                         } catch ( Exception e ) {
                             throw new RuntimeException( e.getMessage() );
                         }
+                    } else if ( val == SWT.NO ){
+                        SaveAsDialog dialog = new SaveAsDialog( new Shell() );
+                        dialog.setOriginalFile( (IFile) ssel.toArray()[i] );
+                        int saveasreturn = dialog.open();
+                        IPath result = dialog.getResult();
+                        if ( saveasreturn != SaveAsDialog.CANCEL ) {
+                            if ( dialog.getResult().getFileExtension() == null )
+                                result =
+                                        result.addFileExtension( ((IFile) ssel.toArray()[i])
+                                                .getFileExtension() );
+                            try {
+                                Activator
+                                        .getDefault()
+                                        .getCDKManager()
+                                        .saveMolecule(
+                                                       mol,
+                                                       ((IFile) ssel.toArray()[i])
+                                                               .getWorkspace()
+                                                               .getRoot()
+                                                               .getFile(
+                                                                         result ),
+                                                       true );
+                            } catch ( Exception e ) {
+                                throw new RuntimeException( e.getMessage() );
+                            }
+                        }
                     }
-                  }
+                } catch ( NoSuchAtomTypeException e ) {
+                    MessageBox mb =
+                        new MessageBox( new Shell(), SWT.OK
+                                                     | SWT.ICON_WARNING );
+                    mb.setText( "Problems handling atom types in "+((IFile) ssel.toArray()[i]).getName() );
+                    mb.setMessage( "We cannot handle this structure since it contains unknown atom types. We leave this file unchanged!" );
+                    mb.open();
+                } catch ( Exception e ) {
+                    LogUtils.handleException( e, logger );
+                }
               }
           }
       }
