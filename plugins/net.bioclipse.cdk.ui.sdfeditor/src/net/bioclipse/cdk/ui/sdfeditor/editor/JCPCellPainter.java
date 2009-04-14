@@ -21,6 +21,7 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.view.ChoiceGenerator;
 import net.bioclipse.cdk.jchempaint.view.SWTFontManager;
 import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
+import net.bioclipse.core.domain.IMolecule;
 import net.sourceforge.nattable.NatTable;
 import net.sourceforge.nattable.model.INatTableModel;
 import net.sourceforge.nattable.painter.cell.ICellPainter;
@@ -32,6 +33,7 @@ import net.sourceforge.nattable.util.GUIHelper;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -125,7 +127,7 @@ public class JCPCellPainter implements ICellPainter {
 
                 generatedAC = ((ICDKMolecule)Activator.getDefault()
                         .getCDKManager()
-                        .generate2dCoordinates( mol ))
+                        .generate2dCoordinates(  new IMolecule[]{mol}, new NullProgressMonitor() )[0] )
                         .getAtomContainer();
                 //FIXME work-around for bug 613
                 generatedAC.setProperties( new HashMap<Object, Object>(
