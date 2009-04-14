@@ -1203,7 +1203,7 @@ public class CDKManagerPluginTest {
                              .getProperties().get( "wee" ) );
 
 
-        ICDKMolecule mol2 = (ICDKMolecule)cdk.generate2dCoordinates( new IMolecule[]{mol}, new NullProgressMonitor() )[0];
+        ICDKMolecule mol2 = (ICDKMolecule)cdk.generate2dCoordinates( new IMolecule[]{mol} )[0];
         Assert.assertTrue( cdk.has2d( mol2 ));
 
         //Make sure Atom properties are copied to new molecule
