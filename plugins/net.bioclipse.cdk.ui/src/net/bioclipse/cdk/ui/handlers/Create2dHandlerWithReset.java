@@ -9,6 +9,7 @@ package net.bioclipse.cdk.ui.handlers;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
@@ -66,12 +67,12 @@ public class Create2dHandlerWithReset extends AbstractHandler {
                         mol =
                             (ICDKMolecule) Activator.getDefault()
                                     .getCDKManager()
-                                    .generate3dCoordinates( mol );                    
+                                    .generate3dCoordinates( new IMolecule[]{mol} )[0] ;                    
                     }else{
                       mol =
                               (ICDKMolecule) Activator.getDefault()
                                       .getCDKManager()
-                                      .generate2dCoordinates( mol );
+                                      .generate2dCoordinates( new IMolecule[]{mol} )[0];
                     }
                     if(withReset){
                       //we set the other coordinates to null, since when writing out, they might override
