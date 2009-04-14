@@ -636,25 +636,27 @@ public class CDKManagerTest extends AbstractManagerTest {
     }
 
     @Test public void testGenerate3DCoordinates() throws Exception {
-        ICDKMolecule molecule = cdk.fromSMILES("CCC");
-        assertEquals(3, molecule.getAtomContainer().getAtomCount());
-        Assert.assertNull(molecule.getAtomContainer().getAtom(0).getPoint3d());
-        molecule.getAtomContainer().getAtom( 0 ).setPoint2d( new Point2d(0,0) );
-        cdk.generate3dCoordinates(molecule);
-        assertNotNull(molecule.getAtomContainer().getAtom(0).getPoint3d());
-        assertNotNull(molecule.getAtomContainer().getAtom(0).getPoint2d());
+        ICDKMolecule[] molecule = new ICDKMolecule[1];
+        molecule[0]= cdk.fromSMILES("CCC");
+        assertEquals(3, molecule[0].getAtomContainer().getAtomCount());
+        Assert.assertNull(molecule[0].getAtomContainer().getAtom(0).getPoint3d());
+        molecule[0].getAtomContainer().getAtom( 0 ).setPoint2d( new Point2d(0,0) );
+        cdk.generate3dCoordinates(molecule, new NullProgressMonitor());
+        assertNotNull(molecule[0].getAtomContainer().getAtom(0).getPoint3d());
+        assertNotNull(molecule[0].getAtomContainer().getAtom(0).getPoint2d());
     }
 
     @Test public void testGenerate2DCoordinates() throws Exception {
-        ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
-        assertEquals(4, molecule.getAtomContainer().getAtomCount());
-        Assert.assertNull(molecule.getAtomContainer().getAtom(0).getPoint2d());
+        ICDKMolecule[] molecule = new ICDKMolecule[1];
+        molecule[0] = cdk.fromSMILES("CCCBr");
+        assertEquals(4, molecule[0].getAtomContainer().getAtomCount());
+        Assert.assertNull(molecule[0].getAtomContainer().getAtom(0).getPoint2d());
         //3d coords should stay, we test that.
-        molecule.getAtomContainer().getAtom( 0 ).setPoint3d( new Point3d(0,0,0) );
-        IMolecule cdkMolecule = cdk.generate2dCoordinates(molecule);
-        Assert.assertTrue(cdkMolecule instanceof ICDKMolecule);
-        assertNotNull(((ICDKMolecule)cdkMolecule).getAtomContainer().getAtom(0).getPoint2d());
-        assertNotNull(((ICDKMolecule)cdkMolecule).getAtomContainer().getAtom(0).getPoint3d());
+        molecule[0].getAtomContainer().getAtom( 0 ).setPoint3d( new Point3d(0,0,0) );
+        IMolecule[] cdkMolecule = cdk.generate2dCoordinates(molecule, new NullProgressMonitor());
+        Assert.assertTrue(cdkMolecule[0] instanceof ICDKMolecule);
+        assertNotNull(((ICDKMolecule)cdkMolecule[0]).getAtomContainer().getAtom(0).getPoint2d());
+        assertNotNull(((ICDKMolecule)cdkMolecule[0]).getAtomContainer().getAtom(0).getPoint3d());
     }
     
     
@@ -671,14 +673,14 @@ public class CDKManagerTest extends AbstractManagerTest {
     @Test public void testHas2d() throws Exception {
         ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
         Assert.assertFalse(cdk.has2d(molecule));
-        IMolecule cdkMolecule = cdk.generate2dCoordinates(molecule);
-        Assert.assertTrue(cdk.has2d(cdkMolecule));
+        IMolecule[] cdkMolecule = cdk.generate2dCoordinates(new ICDKMolecule[]{molecule}, new NullProgressMonitor());
+        Assert.assertTrue(cdk.has2d(cdkMolecule[0]));
     }
 
     @Test public void testHas3d() throws Exception {
         ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
         Assert.assertFalse(cdk.has3d(molecule));
-        cdk.generate3dCoordinates(molecule);
+        cdk.generate3dCoordinates(new ICDKMolecule[]{molecule}, new NullProgressMonitor());
         Assert.assertTrue(cdk.has3d(molecule));
     }
 
@@ -792,28 +794,5 @@ public class CDKManagerTest extends AbstractManagerTest {
 
         mol = cdk.fromSMILES("O=C(CC(=O)[O-])[O-]");
         Assert.assertEquals(-2, cdk.totalFormalCharge(mol));
-    }
-    
-    @Test public void testBug826() throws Exception{
-        String path = getClass().getResource("/testFiles/polycarpol.mdl").getPath();
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), new NullProgressMonitor() );
-        IFile target=new MockIFile();
-        cdk.saveMolecule( mol, target,true );
-        byte[] b=new byte[100];
-        target.getContents().read( b );
-        Assert.assertEquals( 'p', (char)b[0]);
-        Assert.assertEquals( 'o', (char)b[1]);
-        Assert.assertEquals( 'l', (char)b[2]);
-        Assert.assertEquals( 'y', (char)b[3]);
-        Assert.assertEquals( 'c', (char)b[4]);
-        Assert.assertEquals( 'a', (char)b[5]);
-        Assert.assertEquals( 'r', (char)b[6]);
-        Assert.assertEquals( 'p', (char)b[7]);
-        Assert.assertEquals( 'o', (char)b[8]);
-        Assert.assertEquals( 'l', (char)b[9]);
-        Assert.assertEquals( '.', (char)b[10]);
-        Assert.assertEquals( 'm', (char)b[11]);
-        Assert.assertEquals( 'd', (char)b[12]);
-        Assert.assertEquals( 'l', (char)b[13]);
     }
 }

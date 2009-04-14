@@ -48,9 +48,12 @@ import net.bioclipse.core.business.MoleculeManager;
 import net.bioclipse.core.domain.IMolecule;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.content.IContentType;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -1200,7 +1203,7 @@ public class CDKManagerPluginTest {
                              .getProperties().get( "wee" ) );
 
 
-        ICDKMolecule mol2 = (ICDKMolecule)cdk.generate2dCoordinates( mol );
+        ICDKMolecule mol2 = (ICDKMolecule)cdk.generate2dCoordinates( new IMolecule[]{mol}, new NullProgressMonitor() )[0];
         Assert.assertTrue( cdk.has2d( mol2 ));
 
         //Make sure Atom properties are copied to new molecule
@@ -1272,5 +1275,32 @@ public class CDKManagerPluginTest {
         Assert.assertTrue(mol.getResource() instanceof IFile);
         IFile ifile = (IFile)mol.getResource();
         Assert.assertNotNull(ifile.getContentDescription());
+    }
+    
+    
+    @Test public void testBug826() throws Exception{
+        URI uri = getClass().getResource("/testFiles/polycarpol.mdl").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        ICDKMolecule mol = cdk.loadMolecule( path);
+        final String FILENAME = "/Virtual/testResource7.cml";
+        cdk.saveMolecule( mol, FILENAME,true );
+        IFile newfile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(FILENAME));
+        byte[] b=new byte[100];
+        newfile.getContents().read( b );
+        Assert.assertEquals( 'p', (char)b[0]);
+        Assert.assertEquals( 'o', (char)b[1]);
+        Assert.assertEquals( 'l', (char)b[2]);
+        Assert.assertEquals( 'y', (char)b[3]);
+        Assert.assertEquals( 'c', (char)b[4]);
+        Assert.assertEquals( 'a', (char)b[5]);
+        Assert.assertEquals( 'r', (char)b[6]);
+        Assert.assertEquals( 'p', (char)b[7]);
+        Assert.assertEquals( 'o', (char)b[8]);
+        Assert.assertEquals( 'l', (char)b[9]);
+        Assert.assertEquals( '.', (char)b[10]);
+        Assert.assertEquals( 'm', (char)b[11]);
+        Assert.assertEquals( 'd', (char)b[12]);
+        Assert.assertEquals( 'l', (char)b[13]);
     }
 }
