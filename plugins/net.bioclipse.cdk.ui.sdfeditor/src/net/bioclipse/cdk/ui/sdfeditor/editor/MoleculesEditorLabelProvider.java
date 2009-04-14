@@ -139,7 +139,7 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
 
                 generatedAC = ((ICDKMolecule)Activator.getDefault()
                         .getCDKManager()
-                        .generate2dCoordinates( new IMolecule[]{mol}, new NullProgressMonitor() )[0])
+                        .generate2dCoordinates( new IMolecule[]{mol} )[0])
                         .getAtomContainer();
                 result[0] = generatedAC;
             } catch ( Exception e ) {
