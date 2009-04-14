@@ -1365,7 +1365,7 @@ public class CDKManager implements ICDKManager {
         return mass;
       }
 
-      public IMolecule[] generate2dCoordinates(IMolecule[] molecule, IProgressMonitor monitor)
+      public IMolecule[] generate2dCoordinates(IMolecule[] molecule)
                        throws Exception {
 
           ICDKMolecule cdkmol = null;
@@ -1578,7 +1578,7 @@ public class CDKManager implements ICDKManager {
                                                  .transform(path) );
       }
 
-      public IMolecule[] generate3dCoordinates(IMolecule[] molecule, IProgressMonitor monitor)
+      public IMolecule[] generate3dCoordinates(IMolecule[] molecule)
                        throws Exception {
           ICDKMolecule cdkmol = null;
           CDKMolecule[] newMolecules=new CDKMolecule[molecule.length];

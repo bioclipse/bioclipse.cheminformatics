@@ -599,16 +599,16 @@ public interface ICDKManager extends IBioclipseManager {
     public int numberOfEntriesInSDF( IFile file, BioclipseUIJob<Integer> uiJob);
 
     @Recorded
-    @PublishedMethod(params = "IMolecule[] molecule, IProgressMonitor monitor",
+    @PublishedMethod(params = "IMolecule[] molecule",
                      methodSummary="Create 2D coordinate for the given molecule")
     @TestMethods("testGenerate2DCoordinates")
-    public IMolecule[] generate2dCoordinates(IMolecule[] molecule, IProgressMonitor monitor) throws Exception;
+    public IMolecule[] generate2dCoordinates(IMolecule[] molecule) throws Exception;
 
     @Recorded
-    @PublishedMethod(params = "IMolecule[] molecule, IProgressMonitor monitor",
+    @PublishedMethod(params = "IMolecule[] molecule",
                      methodSummary="Create 3D coordinate for the given molecule")
     @TestMethods("testGenerate3DCoordinates")
-    public IMolecule[] generate3dCoordinates(IMolecule[] molecule, IProgressMonitor monitor) throws Exception;
+    public IMolecule[] generate3dCoordinates(IMolecule[] molecule) throws Exception;
 
 
     @Recorded
