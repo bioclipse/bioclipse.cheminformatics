@@ -52,4 +52,8 @@ public class NoSuchAtomTypeException extends CDKException {
     public NoSuchAtomTypeException(String message) {
         super( message );
     }
+    
+    public NoSuchAtomTypeException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

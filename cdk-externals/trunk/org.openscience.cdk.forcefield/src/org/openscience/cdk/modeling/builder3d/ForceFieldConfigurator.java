@@ -242,7 +242,7 @@ public class ForceFieldConfigurator {
 	 *@return                sssrf set
 	 *@exception  Exception  Description of the Exception
 	 */
-	public IRingSet assignAtomTyps(IMolecule molecule) throws Exception {
+	public IRingSet assignAtomTyps(IMolecule molecule) throws NoSuchAtomTypeException, CDKException {
 		org.openscience.cdk.interfaces.IAtom atom = null;
 		String hoseCode = "";
 		HOSECodeGenerator hcg = new HOSECodeGenerator();
@@ -291,9 +291,11 @@ public class ForceFieldConfigurator {
 			}
 			try {
 				configureAtom(atom, hoseCode, isInHeteroRing);
+			} catch (NoSuchAtomTypeException ex){
+			    throw new NoSuchAtomTypeException("Could not final configure atom due to problems with force field", ex);
 			} catch (CDKException ex2) {
 				System.out.println("Could not final configure atom " + i + " due to " + ex2.toString());
-				throw new Exception("Could not final configure atom due to problems with force field", ex2);
+				throw new CDKException("Could not final configure atom due to problems with force field", ex2);
 			}
 		}
 		
@@ -351,7 +353,7 @@ public class ForceFieldConfigurator {
 	 * @param  ID    the atom type id
 	 * @return       the assigned atom
 	 */
-	private org.openscience.cdk.interfaces.IAtom setAtom(org.openscience.cdk.interfaces.IAtom atom, String ID) throws Exception {
+	private org.openscience.cdk.interfaces.IAtom setAtom(org.openscience.cdk.interfaces.IAtom atom, String ID) throws CDKException {
 		IAtomType at = null;
 		String key = "";
 		List<?> data = null;
@@ -385,7 +387,7 @@ public class ForceFieldConfigurator {
 		return atom;
 	}
 	
-	public org.openscience.cdk.interfaces.IAtom configureAtom(org.openscience.cdk.interfaces.IAtom atom, String hoseCode, boolean _boolean) throws Exception {
+	public org.openscience.cdk.interfaces.IAtom configureAtom(org.openscience.cdk.interfaces.IAtom atom, String hoseCode, boolean _boolean) throws CDKException {
 		if (ffName.equals("mm2")){
 			return configureMM2BasedAtom(atom, hoseCode,_boolean);
 		}else if (ffName.equals("mmff94")){
@@ -402,7 +404,7 @@ public class ForceFieldConfigurator {
 	 * @return                   atom
 	 * @exception  CDKException  Description of the Exception
 	 */
-	public IAtom configureMM2BasedAtom(IAtom atom, String hoseCode,boolean hetRing) throws Exception {
+	public IAtom configureMM2BasedAtom(IAtom atom, String hoseCode,boolean hetRing) throws CDKException {
 		//logger.debug("CONFIGURE MM2 ATOM");
 		List<Pattern> atomTypePattern = null;
 		MM2BasedAtomTypePattern atp = new MM2BasedAtomTypePattern();
@@ -560,7 +562,7 @@ public class ForceFieldConfigurator {
 	 * @return                   atom
 	 * @exception  CDKException  Description of the Exception
 	 */
-	public IAtom configureMMFF94BasedAtom(IAtom atom, String hoseCode, boolean isInHetRing) throws Exception {
+	public IAtom configureMMFF94BasedAtom(IAtom atom, String hoseCode, boolean isInHetRing) throws CDKException {
 		//logger.debug("****** Configure MMFF94 AtomType ******");
 		List<Pattern> atomTypePattern = null;
 		MMFF94BasedAtomTypePattern atp = new MMFF94BasedAtomTypePattern();
