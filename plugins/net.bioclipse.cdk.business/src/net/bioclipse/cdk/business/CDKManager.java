@@ -1365,34 +1365,37 @@ public class CDKManager implements ICDKManager {
         return mass;
       }
 
-      public IMolecule generate2dCoordinates(IMolecule molecule)
+      public IMolecule[] generate2dCoordinates(IMolecule[] molecule, IProgressMonitor monitor)
                        throws Exception {
 
           ICDKMolecule cdkmol = null;
+          CDKMolecule[] newMolecules=new CDKMolecule[molecule.length];
 
-          if (molecule instanceof ICDKMolecule) {
-              cdkmol = (ICDKMolecule) molecule;
+          for(int i=0;i<molecule.length;i++){
+            if (molecule[i] instanceof ICDKMolecule) {
+                cdkmol = (ICDKMolecule) molecule[i];
+            }
+            else {
+                cdkmol = create(molecule[i]);
+            }
+  
+            IMoleculeSet mols
+                = ConnectivityChecker.partitionIntoMolecules(
+                      cdkmol.getAtomContainer() );
+  
+            StructureDiagramGenerator sdg = new StructureDiagramGenerator();
+  
+            org.openscience.cdk.interfaces.IMolecule newmolecule = DefaultChemObjectBuilder.getInstance().newMolecule();
+            for ( IAtomContainer mol : mols.molecules() ) {
+                sdg.setMolecule( cdkmol.getAtomContainer()
+                                       .getBuilder().newMolecule(mol) );
+                sdg.generateCoordinates();
+                IAtomContainer ac = sdg.getMolecule();
+                newmolecule.add(ac);
+            }
+            newMolecules[i] = new CDKMolecule(newmolecule);
           }
-          else {
-              cdkmol = create(molecule);
-          }
-
-          IMoleculeSet mols
-              = ConnectivityChecker.partitionIntoMolecules(
-                    cdkmol.getAtomContainer() );
-
-          StructureDiagramGenerator sdg = new StructureDiagramGenerator();
-          org.openscience.cdk.interfaces.IMolecule newmolecule
-              = cdkmol.getAtomContainer().getBuilder().newMolecule();
-
-          for ( IAtomContainer mol : mols.molecules() ) {
-              sdg.setMolecule( cdkmol.getAtomContainer()
-                                     .getBuilder().newMolecule(mol) );
-              sdg.generateCoordinates();
-              IAtomContainer ac = sdg.getMolecule();
-              newmolecule.add(ac);
-          }
-          return new CDKMolecule(newmolecule);
+          return newMolecules;
       }
 
       public Iterator<ICDKMolecule> createMoleculeIterator(String path)
@@ -1575,32 +1578,37 @@ public class CDKManager implements ICDKManager {
                                                  .transform(path) );
       }
 
-      public IMolecule generate3dCoordinates(IMolecule molecule)
+      public IMolecule[] generate3dCoordinates(IMolecule[] molecule, IProgressMonitor monitor)
                        throws Exception {
-
           ICDKMolecule cdkmol = null;
-          if ( molecule instanceof ICDKMolecule ) {
-              cdkmol = (ICDKMolecule) molecule;
-          }else {
-              cdkmol=create(molecule);
+          CDKMolecule[] newMolecules=new CDKMolecule[molecule.length];
+
+          for(int i=0;i<molecule.length;i++){
+  
+            if ( molecule[i] instanceof ICDKMolecule ) {
+                cdkmol = (ICDKMolecule) molecule[i];
+            }else {
+                cdkmol=create(molecule[i]);
+            }
+  
+            ModelBuilder3D mb3d = ModelBuilder3D.getInstance();
+            IMoleculeSet mols = ConnectivityChecker.partitionIntoMolecules(
+                                    cdkmol.getAtomContainer() );
+  
+            org.openscience.cdk.interfaces.IMolecule newmolecule
+                = cdkmol.getAtomContainer().getBuilder().newMolecule();
+  
+            for ( IAtomContainer mol : mols.molecules() ) {
+  
+                addExplicitHydrogens( new CDKMolecule(mol) );
+                org.openscience.cdk.interfaces.IMolecule ac
+                    = mb3d.generate3DCoordinates(
+                          (org.openscience.cdk.interfaces.IMolecule)mol, false);
+                newmolecule.add(ac);
+            }
+            newMolecules[i] = new CDKMolecule(newmolecule);
           }
-
-          ModelBuilder3D mb3d = ModelBuilder3D.getInstance();
-          IMoleculeSet mols = ConnectivityChecker.partitionIntoMolecules(
-                                  cdkmol.getAtomContainer() );
-
-          org.openscience.cdk.interfaces.IMolecule newmolecule
-              = cdkmol.getAtomContainer().getBuilder().newMolecule();
-
-          for ( IAtomContainer mol : mols.molecules() ) {
-
-              addExplicitHydrogens( new CDKMolecule(mol) );
-              org.openscience.cdk.interfaces.IMolecule ac
-                  = mb3d.generate3DCoordinates(
-                        (org.openscience.cdk.interfaces.IMolecule)mol, false);
-              newmolecule.add(ac);
-          }
-          return new CDKMolecule(newmolecule);
+          return newMolecules;
       }
 
       public IMolecule addExplicitHydrogens(IMolecule molecule)
