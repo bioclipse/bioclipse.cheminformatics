@@ -94,22 +94,20 @@ public abstract class AbstractCDKManagerPluginTest {
                                 + "jaxp.DocumentBuilderFactoryImpl" );
     }
     
-    private static ICDKManager      cdk;
-    private static ICDKDebugManager cdkdebug;
-    private static ICDKManager      jscdk;
+    protected static ICDKManager      cdk;
+    protected static ICDKDebugManager cdkdebug;
 
-    @BeforeClass public static void setupCDKManagerPluginTest() {
+    public static void setupCDKManagerPluginTest() {
         // the next line is needed to ensure the OSGI loader properly start
         // the org.springframework.bundle.osgi.extender, so that the manager
         // can be loaded too. Otherwise, it will fail with a time out.
         net.bioclipse.ui.Activator.getDefault();
 
         try {
-            cdk      = net.bioclipse.cdk.business.Activator
-                          .getDefault().getCDKManager();
             cdkdebug = net.bioclipse.cdkdebug.Activator
                           .getDefault().getManager();
-        } catch (RuntimeException exception) {
+        } 
+        catch (RuntimeException exception) {
             fail("Failed to instantiate the CDK managers.");
         }
     }
@@ -131,8 +129,9 @@ public abstract class AbstractCDKManagerPluginTest {
 
     @Test
     public void testLoadMolecules() throws IOException,
-                                          BioclipseException,
-                                          CoreException, URISyntaxException {
+                                           BioclipseException,
+                                           CoreException, 
+                                           URISyntaxException {
 
         URI uri = getClass().getResource("/testFiles/dbsmallconf.sdf").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());
@@ -144,7 +143,8 @@ public abstract class AbstractCDKManagerPluginTest {
         for (ICDKMolecule mol : mols) {
             Assert.assertNotNull(mol);
             Assert.assertNotSame(0, mol.getAtomContainer().getAtomCount());
-            Assert.assertEquals( "dbsmallconf.sdf", mol.getResource().getName() );
+            Assert.assertEquals( "dbsmallconf.sdf", 
+                                 mol.getResource().getName() );
         }
     }
 
