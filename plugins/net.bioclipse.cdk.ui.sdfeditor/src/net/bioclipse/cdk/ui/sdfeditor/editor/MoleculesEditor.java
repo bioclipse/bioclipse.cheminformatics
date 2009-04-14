@@ -23,6 +23,7 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+import net.bioclipse.core.domain.BioList;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.ui.jobs.BioclipseUIJob;
 
@@ -223,7 +224,46 @@ public class MoleculesEditor extends EditorPart implements
 
                     });
                 }
+            }else {
+            final BioList<ICDKMolecule> list = (BioList<ICDKMolecule>) editorInput.getAdapter( BioList.class );
+            if(list!=null) {
+
+                Object inp = new IAdaptable() {
+
+                    @SuppressWarnings("unchecked")
+                    public Object getAdapter( Class adapter ) {
+
+                        if(adapter.isAssignableFrom( IMoleculesEditorModel.class ))
+                            return new IMoleculesEditorModel() {
+                            List<ICDKMolecule> molecules;
+                            {
+                                molecules = list;
+                            }
+                            public ICDKMolecule getMoleculeAt( int index ) {
+
+                                return molecules.get( index );
+                            }
+
+                            public int getNumberOfMolecules() {
+
+                                return molecules.size();
+                            }
+
+                            public void save() {
+                                throw new UnsupportedOperationException();
+                            }
+                        };
+                        return null;
+                    }
+                  };
+
+
+                  molTableViewer.setContentProvider(
+                               new MoleculeTableContentProvider() );
+                  molTableViewer.setInput( inp );
+                  molTableViewer.refresh();
             }
+        }
         }
 //        molTableViewer.setInput( input );
     }
