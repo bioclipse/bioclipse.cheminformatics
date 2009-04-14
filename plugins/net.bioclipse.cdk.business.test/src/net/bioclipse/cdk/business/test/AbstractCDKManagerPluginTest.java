@@ -80,7 +80,7 @@ import org.openscience.cdk.templates.MoleculeFactory;
 import org.openscience.cdk.tools.diff.AtomContainerDiff;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 
-public class CDKManagerPluginTest {
+public abstract class AbstractCDKManagerPluginTest {
 
     //Needed to run these tests on some systems. If it breaks them on 
     //other systems we need to do some sort of checking before 
@@ -94,8 +94,9 @@ public class CDKManagerPluginTest {
                                 + "jaxp.DocumentBuilderFactoryImpl" );
     }
     
-    private static ICDKManager cdk;
+    private static ICDKManager      cdk;
     private static ICDKDebugManager cdkdebug;
+    private static ICDKManager      jscdk;
 
     @BeforeClass public static void setupCDKManagerPluginTest() {
         // the next line is needed to ensure the OSGI loader properly start
@@ -104,8 +105,10 @@ public class CDKManagerPluginTest {
         net.bioclipse.ui.Activator.getDefault();
 
         try {
-            cdk = net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
-            cdkdebug= net.bioclipse.cdkdebug.Activator.getDefault().getManager();
+            cdk      = net.bioclipse.cdk.business.Activator
+                          .getDefault().getCDKManager();
+            cdkdebug = net.bioclipse.cdkdebug.Activator
+                          .getDefault().getManager();
         } catch (RuntimeException exception) {
             fail("Failed to instantiate the CDK managers.");
         }
@@ -113,12 +116,13 @@ public class CDKManagerPluginTest {
 
     @Test
     public void testLoadMoleculeFromCMLFile() throws IOException, 
-                                          BioclipseException, 
-                                          CoreException, URISyntaxException {
+                                                     BioclipseException, 
+                                                     CoreException, 
+                                                     URISyntaxException {
 
         URI uri = getClass().getResource("/testFiles/0037.cml").toURI();
-        URL url=FileLocator.toFileURL(uri.toURL());
-        String path=url.getFile();
+        URL url = FileLocator.toFileURL(uri.toURL());
+        String path = url.getFile();
         ICDKMolecule mol = cdk.loadMolecule( path);
 
         System.out.println("mol: " + mol.toString());
