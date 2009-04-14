@@ -68,12 +68,12 @@ public class Create2dHandlerWithReset extends AbstractHandler {
                         mol =
                             (ICDKMolecule) Activator.getDefault()
                                     .getCDKManager()
-                                    .generate3dCoordinates( new IMolecule[]{mol} )[0] ;                    
+                                    .generate3dCoordinates( mol ) ;                    
                     }else{
                       mol =
                               (ICDKMolecule) Activator.getDefault()
                                       .getCDKManager()
-                                      .generate2dCoordinates( new IMolecule[]{mol} )[0];
+                                      .generate2dCoordinates( mol );
                     }
                     if(withReset){
                       //we set the other coordinates to null, since when writing out, they might override
