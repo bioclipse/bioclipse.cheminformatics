@@ -599,20 +599,32 @@ public interface ICDKManager extends IBioclipseManager {
     public int numberOfEntriesInSDF( IFile file, BioclipseUIJob<Integer> uiJob);
 
     @Recorded
-    @PublishedMethod(params = "IMolecule[] molecule",
-                     methodSummary="Create 2D coordinate for the given molecule")
+    @PublishedMethod(params = "List<IMolecule> molecule",
+                     methodSummary="Create 2D coordinate for the given molecules")
     @TestMethods("testGenerate2DCoordinates")
-    public IMolecule[] generate2dCoordinates(IMolecule[] molecule) throws Exception;
+    public List<IMolecule> generate2dCoordinates(List<IMolecule> molecule) throws Exception;
 
     @Recorded
-    @PublishedMethod(params = "IMolecule[] molecule",
-                     methodSummary="Create 3D coordinate for the given molecule")
+    @PublishedMethod(params = "IMolecule molecule",
+                     methodSummary="Create 2D coordinate for the given molecule")
+    @TestMethods("testGenerate2DCoordinatesSingle")
+    public IMolecule generate2dCoordinates(IMolecule molecule) throws Exception;
+
+    @Recorded
+    @PublishedMethod(params = "List<IMolecule> molecule",
+                     methodSummary="Create 3D coordinate for the given molecules")
     @TestMethods("testGenerate3DCoordinates")
-    public IMolecule[] generate3dCoordinates(IMolecule[] molecule) throws Exception;
+    public List<IMolecule> generate3dCoordinates(List<IMolecule> molecule) throws Exception;
 
 
     @Recorded
-	public void saveMol2(ICDKMolecule mol2, String filename) throws InvocationTargetException, BioclipseException, CDKException, CoreException;
+    @PublishedMethod(params = "IMolecule molecule",
+                     methodSummary="Create 3D coordinate for the given molecule")
+    @TestMethods("testGenerate3DCoordinatesSingle")
+    public IMolecule generate3dCoordinates(IMolecule molecule) throws Exception;
+
+    @Recorded
+	  public void saveMol2(ICDKMolecule mol2, String filename) throws InvocationTargetException, BioclipseException, CDKException, CoreException;
 
     @Recorded
     @PublishedMethod(params = "ICDKMolecule molecule, String filename",

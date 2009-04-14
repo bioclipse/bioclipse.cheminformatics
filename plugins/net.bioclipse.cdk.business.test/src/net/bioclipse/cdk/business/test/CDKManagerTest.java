@@ -636,27 +636,65 @@ public class CDKManagerTest extends AbstractManagerTest {
     }
 
     @Test public void testGenerate3DCoordinates() throws Exception {
-        ICDKMolecule[] molecule = new ICDKMolecule[1];
-        molecule[0]= cdk.fromSMILES("CCC");
-        assertEquals(3, molecule[0].getAtomContainer().getAtomCount());
-        Assert.assertNull(molecule[0].getAtomContainer().getAtom(0).getPoint3d());
-        molecule[0].getAtomContainer().getAtom( 0 ).setPoint2d( new Point2d(0,0) );
+        List<IMolecule> molecule = new ArrayList<IMolecule>();
+        molecule.add( cdk.fromSMILES("CCC"));
+        molecule.add( cdk.fromSMILES("C1CCCCC1"));
+        assertEquals(3, ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtomCount());
+        assertEquals(6, ((ICDKMolecule)molecule.get( 1 )).getAtomContainer().getAtomCount());
+        Assert.assertNull(((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom(0).getPoint3d());
+        Assert.assertNull(((ICDKMolecule)molecule.get( 1 )).getAtomContainer().getAtom(0).getPoint3d());
+        ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom( 0 ).setPoint2d( new Point2d(0,0) );
+        ((ICDKMolecule)molecule.get( 1 )).getAtomContainer().getAtom( 0 ).setPoint2d( new Point2d(0,0) );
         cdk.generate3dCoordinates(molecule);
-        assertNotNull(molecule[0].getAtomContainer().getAtom(0).getPoint3d());
-        assertNotNull(molecule[0].getAtomContainer().getAtom(0).getPoint2d());
+        assertNotNull(((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom(0).getPoint3d());
+        assertNotNull(((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom(0).getPoint2d());
+        assertNotNull(((ICDKMolecule)molecule.get( 1 )).getAtomContainer().getAtom(0).getPoint3d());
+        assertNotNull(((ICDKMolecule)molecule.get( 1 )).getAtomContainer().getAtom(0).getPoint2d());
     }
 
-    @Test public void testGenerate2DCoordinates() throws Exception {
-        ICDKMolecule[] molecule = new ICDKMolecule[1];
-        molecule[0] = cdk.fromSMILES("CCCBr");
-        assertEquals(4, molecule[0].getAtomContainer().getAtomCount());
-        Assert.assertNull(molecule[0].getAtomContainer().getAtom(0).getPoint2d());
+    @Test public void testGenerate3DCoordinatesSingle() throws Exception {
+        List<IMolecule> molecule = new ArrayList<IMolecule>();
+        molecule.add( cdk.fromSMILES("CCC"));
+        assertEquals(3, ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtomCount());
+        Assert.assertNull(((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom(0).getPoint3d());
+        //2d coords should stay, we test that
+        ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom( 0 ).setPoint2d( new Point2d(0,0) );
+        cdk.generate3dCoordinates(molecule);
+        assertNotNull(((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom(0).getPoint3d());
+        assertNotNull(((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom(0).getPoint2d());
+    }
+
+    @Test public void testGenerate2DCoordinatesSingle() throws Exception {
+        List<IMolecule> molecule = new ArrayList<IMolecule>();
+        molecule.add(cdk.fromSMILES("CCCBr"));
+        assertEquals(4, ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtomCount());
+        Assert.assertNull(((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom(0).getPoint2d());
         //3d coords should stay, we test that.
-        molecule[0].getAtomContainer().getAtom( 0 ).setPoint3d( new Point3d(0,0,0) );
-        IMolecule[] cdkMolecule = cdk.generate2dCoordinates(molecule);
-        Assert.assertTrue(cdkMolecule[0] instanceof ICDKMolecule);
-        assertNotNull(((ICDKMolecule)cdkMolecule[0]).getAtomContainer().getAtom(0).getPoint2d());
-        assertNotNull(((ICDKMolecule)cdkMolecule[0]).getAtomContainer().getAtom(0).getPoint3d());
+        ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom( 0 ).setPoint3d( new Point3d(0,0,0) );
+        List<IMolecule> cdkMolecule = cdk.generate2dCoordinates(molecule);
+        Assert.assertTrue(cdkMolecule.get(0) instanceof ICDKMolecule);
+        assertNotNull(((ICDKMolecule)cdkMolecule.get(0)).getAtomContainer().getAtom(0).getPoint2d());
+        assertNotNull(((ICDKMolecule)cdkMolecule.get(0)).getAtomContainer().getAtom(0).getPoint3d());
+    }
+
+    
+    @Test public void testGenerate2DCoordinates() throws Exception {
+        List<IMolecule> molecule = new ArrayList<IMolecule>();
+        molecule.add(cdk.fromSMILES("CCCBr"));
+        molecule.add( cdk.fromSMILES("C1CCCCC1"));
+        assertEquals(4, ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtomCount());
+        assertEquals(6, ((ICDKMolecule)molecule.get( 1 )).getAtomContainer().getAtomCount());
+        Assert.assertNull(((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom(0).getPoint2d());
+        Assert.assertNull(((ICDKMolecule)molecule.get( 1 )).getAtomContainer().getAtom(0).getPoint2d());
+        //3d coords should stay, we test that.
+        ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom( 0 ).setPoint3d( new Point3d(0,0,0) );
+        ((ICDKMolecule)molecule.get( 1 )).getAtomContainer().getAtom( 0 ).setPoint3d( new Point3d(0,0,0) );
+        List<IMolecule> cdkMolecule = cdk.generate2dCoordinates(molecule);
+        Assert.assertTrue(cdkMolecule.get(0) instanceof ICDKMolecule);
+        assertNotNull(((ICDKMolecule)cdkMolecule.get(0)).getAtomContainer().getAtom(0).getPoint2d());
+        assertNotNull(((ICDKMolecule)cdkMolecule.get(0)).getAtomContainer().getAtom(0).getPoint3d());
+        assertNotNull(((ICDKMolecule)cdkMolecule.get(1)).getAtomContainer().getAtom(0).getPoint2d());
+        assertNotNull(((ICDKMolecule)cdkMolecule.get(1)).getAtomContainer().getAtom(0).getPoint3d());
     }
     
     
@@ -673,14 +711,14 @@ public class CDKManagerTest extends AbstractManagerTest {
     @Test public void testHas2d() throws Exception {
         ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
         Assert.assertFalse(cdk.has2d(molecule));
-        IMolecule[] cdkMolecule = cdk.generate2dCoordinates(new ICDKMolecule[]{molecule});
-        Assert.assertTrue(cdk.has2d(cdkMolecule[0]));
+        IMolecule cdkMolecule = cdk.generate2dCoordinates(molecule);
+        Assert.assertTrue(cdk.has2d(cdkMolecule));
     }
 
     @Test public void testHas3d() throws Exception {
         ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
         Assert.assertFalse(cdk.has3d(molecule));
-        cdk.generate3dCoordinates(new ICDKMolecule[]{molecule});
+        cdk.generate3dCoordinates(molecule);
         Assert.assertTrue(cdk.has3d(molecule));
     }
 

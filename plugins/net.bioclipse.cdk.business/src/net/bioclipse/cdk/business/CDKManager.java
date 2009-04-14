@@ -1365,18 +1365,26 @@ public class CDKManager implements ICDKManager {
         return mass;
       }
 
-      public IMolecule[] generate2dCoordinates(IMolecule[] molecule)
+      public IMolecule generate2dCoordinates(IMolecule molecule)
+                       throws Exception {
+          List<IMolecule> molecules = new ArrayList<IMolecule>();
+          molecules.add( molecule );
+          return generate2dCoordinates( molecules ).get( 0 );
+      
+      }
+
+      public List<IMolecule> generate2dCoordinates(List<IMolecule> molecules)
                        throws Exception {
 
           ICDKMolecule cdkmol = null;
-          CDKMolecule[] newMolecules=new CDKMolecule[molecule.length];
+          List<IMolecule> newMolecules=new ArrayList<IMolecule>();
 
-          for(int i=0;i<molecule.length;i++){
-            if (molecule[i] instanceof ICDKMolecule) {
-                cdkmol = (ICDKMolecule) molecule[i];
+          for(int i=0;i<molecules.size();i++){
+            if (molecules.get(0) instanceof ICDKMolecule) {
+                cdkmol = (ICDKMolecule) molecules.get(0);
             }
             else {
-                cdkmol = create(molecule[i]);
+                cdkmol = create(molecules.get(0));
             }
   
             IMoleculeSet mols
@@ -1393,7 +1401,7 @@ public class CDKManager implements ICDKManager {
                 IAtomContainer ac = sdg.getMolecule();
                 newmolecule.add(ac);
             }
-            newMolecules[i] = new CDKMolecule(newmolecule);
+            newMolecules.add( new CDKMolecule(newmolecule) );
           }
           return newMolecules;
       }
@@ -1577,18 +1585,27 @@ public class CDKManager implements ICDKManager {
           return getInfo( ResourcePathTransformer.getInstance()
                                                  .transform(path) );
       }
+      
+      public IMolecule generate3dCoordinates(IMolecule molecule)
+                      throws Exception {
+          List<IMolecule> molecules = new ArrayList<IMolecule>();
+          molecules.add( molecule );
+          return generate3dCoordinates( molecules ).get( 0 );
 
-      public IMolecule[] generate3dCoordinates(IMolecule[] molecule)
+      }
+
+
+      public List<net.bioclipse.core.domain.IMolecule> generate3dCoordinates(List<IMolecule> molecules)
                        throws Exception {
           ICDKMolecule cdkmol = null;
-          CDKMolecule[] newMolecules=new CDKMolecule[molecule.length];
+          ArrayList<net.bioclipse.core.domain.IMolecule> newMolecules=new ArrayList<net.bioclipse.core.domain.IMolecule>();
 
-          for(int i=0;i<molecule.length;i++){
+          for(int i=0;i<molecules.size();i++){
   
-            if ( molecule[i] instanceof ICDKMolecule ) {
-                cdkmol = (ICDKMolecule) molecule[i];
+            if ( molecules.get(i) instanceof ICDKMolecule ) {
+                cdkmol = (ICDKMolecule) molecules.get(i);
             }else {
-                cdkmol=create(molecule[i]);
+                cdkmol=create(molecules.get(i));
             }
   
             ModelBuilder3D mb3d = ModelBuilder3D.getInstance();
@@ -1606,7 +1623,7 @@ public class CDKManager implements ICDKManager {
                           (org.openscience.cdk.interfaces.IMolecule)mol, false);
                 newmolecule.add(ac);
             }
-            newMolecules[i] = new CDKMolecule(newmolecule);
+            newMolecules.add( new CDKMolecule(newmolecule) );
           }
           return newMolecules;
       }

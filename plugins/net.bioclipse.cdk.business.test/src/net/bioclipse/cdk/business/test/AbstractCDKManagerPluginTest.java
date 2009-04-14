@@ -1207,7 +1207,7 @@ public abstract class AbstractCDKManagerPluginTest {
                              .getProperties().get( "wee" ) );
 
 
-        ICDKMolecule mol2 = (ICDKMolecule)cdk.generate2dCoordinates( new IMolecule[]{mol} )[0];
+        ICDKMolecule mol2 = (ICDKMolecule)cdk.generate2dCoordinates( mol );
         Assert.assertTrue( cdk.has2d( mol2 ));
 
         //Make sure Atom properties are copied to new molecule
