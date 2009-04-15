@@ -1377,7 +1377,7 @@ public class CDKManager implements ICDKManager {
                        throws Exception {
 
           ICDKMolecule cdkmol = null;
-          List<IMolecule> newMolecules=new ArrayList<IMolecule>();
+          List<IMolecule> newMolecules=new BioList<IMolecule>();
 
           for(int i=0;i<molecules.size();i++){
             if (molecules.get(0) instanceof ICDKMolecule) {
@@ -1588,7 +1588,7 @@ public class CDKManager implements ICDKManager {
       
       public IMolecule generate3dCoordinates(IMolecule molecule)
                       throws Exception {
-          List<IMolecule> molecules = new ArrayList<IMolecule>();
+          List<IMolecule> molecules = new BioList<IMolecule>();
           molecules.add( molecule );
           return generate3dCoordinates( molecules ).get( 0 );
 
