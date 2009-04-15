@@ -21,7 +21,6 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.view.ChoiceGenerator;
 import net.bioclipse.cdk.jchempaint.view.SWTFontManager;
 import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
-import net.bioclipse.core.domain.IMolecule;
 import net.sourceforge.nattable.NatTable;
 import net.sourceforge.nattable.model.INatTableModel;
 import net.sourceforge.nattable.painter.cell.ICellPainter;
@@ -33,7 +32,6 @@ import net.sourceforge.nattable.util.GUIHelper;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -159,19 +157,9 @@ public class JCPCellPainter implements ICellPainter {
                                               acArray);
             if(acArray[0] == null) return;
 
-            if(generated) {
-                Font oldFont = gc.getFont();
-                Color oldColor = gc.getForeground();
-                gc.setFont( generatedFont );
-                int h = rect.height-gc.getFontMetrics().getHeight();
-                gc.setForeground( generatedColor);
-                gc.drawText( ((ICDKMolecule)element).getName(), rect.x, rect.y+h );
-                gc.setFont( oldFont );
-                gc.setForeground( oldColor );
-            }
 
             gc.setClipping( rect );
-
+            Color oldBackground = gc.getBackground();
             Rectangle2D rectangle = new Rectangle2D.Double( rect.x, rect.y,
                                                             rect.width,
                                                             rect.height);
@@ -180,6 +168,17 @@ public class JCPCellPainter implements ICellPainter {
                                     drawVisitor,
                                     rectangle,
                                     true );
+            if(generated) {
+                Font oldFont = gc.getFont();
+                Color oldColor = gc.getForeground();
+                gc.setBackground( oldBackground );
+                gc.setFont( generatedFont );
+                int h = rect.height-gc.getFontMetrics().getHeight();
+                gc.setForeground( generatedColor);
+                gc.drawText( "Generated", rect.x, rect.y+h );
+                gc.setFont( oldFont );
+                gc.setForeground( oldColor );
+            }
         }
     }
 
@@ -202,8 +201,7 @@ public class JCPCellPainter implements ICellPainter {
 
         INatTableModel tableModel = natTable.getNatTableModel();
         // Allow display grid
-//        if (tableModel.isGridLineEnabled()) {
-        if(true) {
+        if (tableModel.isGridLineEnabled()) {
           rectangle.x = rectangle.x + 1;
           rectangle.width = rectangle.width - 1;
           rectangle.y = rectangle.y + 1;
