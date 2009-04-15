@@ -137,10 +137,10 @@ public class JCPCellPainter implements ICellPainter {
                 logger.info( "Failed to generate 2D-coordinates" );
             }
             generated =  true;
-        }else
+        }else {
             result[0]= mol.getAtomContainer();
-        generated =  false;
-
+            generated =  false;
+        }
         if (renderer2DConfigurator!=null){
             renderer2DConfigurator.configure( renderer.getRenderer2DModel(),
                                               result[0] );
@@ -160,10 +160,14 @@ public class JCPCellPainter implements ICellPainter {
             if(acArray[0] == null) return;
 
             if(generated) {
+                Font oldFont = gc.getFont();
+                Color oldColor = gc.getForeground();
                 gc.setFont( generatedFont );
                 int h = rect.height-gc.getFontMetrics().getHeight();
                 gc.setForeground( generatedColor);
-                gc.drawText( "Generated", 0, h );
+                gc.drawText( ((ICDKMolecule)element).getName(), rect.x, rect.y+h );
+                gc.setFont( oldFont );
+                gc.setForeground( oldColor );
             }
 
             gc.setClipping( rect );
@@ -198,7 +202,8 @@ public class JCPCellPainter implements ICellPainter {
 
         INatTableModel tableModel = natTable.getNatTableModel();
         // Allow display grid
-        if (tableModel.isGridLineEnabled()) {
+//        if (tableModel.isGridLineEnabled()) {
+        if(true) {
           rectangle.x = rectangle.x + 1;
           rectangle.width = rectangle.width - 1;
           rectangle.y = rectangle.y + 1;
