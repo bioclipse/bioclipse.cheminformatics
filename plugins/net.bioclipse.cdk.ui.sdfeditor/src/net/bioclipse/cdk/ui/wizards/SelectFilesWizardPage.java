@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
 public class SelectFilesWizardPage extends WizardPage {
         private boolean withCheckbox;
         private IStructuredSelection selectedFiles = null;
@@ -46,9 +47,7 @@ public class SelectFilesWizardPage extends WizardPage {
                 layout.verticalSpacing = 9;
                 TreeViewer treeViewer = new TreeViewer(container);
                 treeViewer.setContentProvider(new MoleculeFileContentProvider());
-                treeViewer.setLabelProvider(new DecoratingLabelProvider(
-                                new FolderLabelProvider(), PlatformUI.getWorkbench()
-                                                .getDecoratorManager().getLabelDecorator()));
+                treeViewer.setLabelProvider(WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider());
                 treeViewer.setUseHashlookup(true);
                 //Layout the tree viewer below the text field
                 GridData layoutData = new GridData();
