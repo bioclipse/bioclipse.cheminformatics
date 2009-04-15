@@ -1595,10 +1595,11 @@ public class CDKManager implements ICDKManager {
       }
 
 
-      public List<net.bioclipse.core.domain.IMolecule> generate3dCoordinates(List<IMolecule> molecules)
+      public List<IMolecule> generate3dCoordinates(List<IMolecule> molecules)
                        throws Exception {
+
           ICDKMolecule cdkmol = null;
-          ArrayList<net.bioclipse.core.domain.IMolecule> newMolecules=new ArrayList<net.bioclipse.core.domain.IMolecule>();
+          List<IMolecule> newMolecules=new BioList<IMolecule>();
 
           for(int i=0;i<molecules.size();i++){
   
