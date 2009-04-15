@@ -207,7 +207,7 @@ public class CDKManager implements ICDKManager {
               monitor = new NullProgressMonitor();
           }
 
-          List<ICDKMolecule> moleculesList = new ArrayList<ICDKMolecule>();
+          List<ICDKMolecule> moleculesList = new BioList<ICDKMolecule>();
 
           try {
               // Create the reader
@@ -1326,7 +1326,7 @@ public class CDKManager implements ICDKManager {
               = createConformerIterator( file,
                                         new SubProgressMonitor(monitor, 100) );
 
-          List<ICDKMolecule> mols = new ArrayList<ICDKMolecule>();
+          List<ICDKMolecule> mols = new BioList<ICDKMolecule>();
 
           while ( it.hasNext() ) {
               ICDKMolecule molecule = (ICDKMolecule) it.next();
@@ -1545,7 +1545,7 @@ public class CDKManager implements ICDKManager {
               } catch (BioclipseException e) {
               }
           }
-          List<ICDKMolecule> mols = new ArrayList<ICDKMolecule>();
+          List<ICDKMolecule> mols = new BioList<ICDKMolecule>();
           for (StringPair part : list) {
               if (smilesInFirst) {
                   try {
@@ -1941,7 +1941,7 @@ public class CDKManager implements ICDKManager {
                             DefaultChemObjectBuilder.getInstance(),
                             monitor );
               int i = 0;
-              List<IMolecule> result=new ArrayList<IMolecule>();
+              List<IMolecule> result=new BioList<IMolecule>();
               while (reader.hasNext()) {
                   if (i>=startenty && i<=endentry) {
                       result.add( reader.next() );
