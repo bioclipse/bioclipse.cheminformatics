@@ -15,6 +15,7 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IBioclipseManager;
 
 import org.eclipse.core.resources.IFile;
+import org.xmlcml.cml.base.CMLElement;
 
 @TestClasses("net.bioclipse.cml.tests.ValidateCMLManagerTest")
 public interface IValidateCMLManager extends IBioclipseManager {
@@ -27,4 +28,11 @@ public interface IValidateCMLManager extends IBioclipseManager {
                                                                  + "CML")
     public String validate( String filename ) throws IOException,
                                              BioclipseException;
+
+    @PublishedMethod(
+        params = "String cmlString",
+        methodSummary = "Converts a CML String into a CMLElement"
+    )
+    public CMLElement fromString(String cmlString) throws BioclipseException;
+
 }

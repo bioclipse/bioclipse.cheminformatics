@@ -17,6 +17,10 @@ import net.bioclipse.cml.managers.ValidateCMLManager;
 import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.tests.AbstractManagerTest;
 
+import org.junit.Assert;
+import org.junit.Test;
+import org.xmlcml.cml.base.CMLElement;
+
 public class ValidateCMLManagerTest extends AbstractManagerTest {
 
     IValidateCMLManager cml;
@@ -29,6 +33,13 @@ public class ValidateCMLManagerTest extends AbstractManagerTest {
 
     public IBioclipseManager getManager() {
         return cml;
+    }
+
+    @Test public void testFromString() throws Exception {
+        CMLElement cmlElem = cml.fromString(
+            "<molecule xmlns=\"http://www.xmlcml.org/schema\"/>"
+        );
+        Assert.assertTrue(cmlElem.getClass().getName().contains("CMLMolecule"));
     }
 
 }

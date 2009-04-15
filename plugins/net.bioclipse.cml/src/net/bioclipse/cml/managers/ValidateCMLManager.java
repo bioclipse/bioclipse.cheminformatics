@@ -8,10 +8,12 @@ package net.bioclipse.cml.managers;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 
-import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.cml.contenttypes.CmlFileDescriber;
+import net.bioclipse.core.business.BioclipseException;
 import nu.xom.Builder;
+import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.ParsingException;
 
@@ -22,6 +24,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.xmlcml.cml.base.CMLBuilder;
+import org.xmlcml.cml.base.CMLElement;
 
 public class ValidateCMLManager implements IValidateCMLManager {
 
@@ -89,6 +93,21 @@ public class ValidateCMLManager implements IValidateCMLManager {
             return ("Input is valid CML. " + returnString.toString());
         } else {
             return ("Input is not valid CML: " + returnString.toString());
+        }
+    }
+
+    public CMLElement fromString(String cmlString) throws BioclipseException {
+        CMLBuilder builder = new CMLBuilder();
+        try {
+            Document doc =  builder.buildEnsureCML(new StringReader(cmlString));
+            return (CMLElement)doc.getRootElement();
+        } catch (IOException e) {
+            throw new BioclipseException("Could not read the cmlString.", e);
+        } catch (ParsingException e) {
+            throw new BioclipseException(
+                "Could not parse the cmlString; " + e.getMessage(),
+                e
+            );
         }
     }
 }
