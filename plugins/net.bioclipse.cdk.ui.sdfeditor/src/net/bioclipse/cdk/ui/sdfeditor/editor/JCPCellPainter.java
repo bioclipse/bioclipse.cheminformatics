@@ -118,7 +118,7 @@ public class JCPCellPainter implements ICellPainter {
         if(mol == null) return false;
 
         // If no 2D coordinates
-        if ( !GeometryTools.has2DCoordinates( mol.getAtomContainer() ) ) {
+        if ( GeometryTools.has2DCoordinatesNew( mol.getAtomContainer() )<2 ) {
             // Test if 3D coordinates
             IAtomContainer generatedAC = null;
             try {
