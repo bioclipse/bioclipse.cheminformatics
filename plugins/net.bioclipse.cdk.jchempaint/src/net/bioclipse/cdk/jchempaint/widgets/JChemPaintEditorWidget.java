@@ -114,6 +114,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     private Color generatedColor;
     private Font generatedFont;
 
+    private boolean generated = false;
+
     private IOperationHistory operationHistory =
         OperationHistoryFactory.getOperationHistory();
 
@@ -341,6 +343,13 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             gc.setForeground( generatedColor);
             gc.drawText( "Changed", 0, h );
         }
+        if(generated) {
+            gc.setFont( generatedFont );
+            int h = height-gc.getFontMetrics().getHeight();
+            int w = width-gc.textExtent( "Generated" ).x;
+            gc.setForeground( generatedColor );
+            gc.drawText( "Generated", w, h );
+        }
     }
 
     private Rectangle getDiagramBounds() {
@@ -423,9 +432,10 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     public void setAtomContainer( IAtomContainer atomContainer ) {
         if( atomContainer != null) {
             if(atomContainer.getAtomCount() > 0 &&
-               !GeometryTools.has2DCoordinates( atomContainer )) {
+               GeometryTools.has2DCoordinatesNew( atomContainer )<2) {
                 atomContainer = generate2Dfrom3D( atomContainer );
                 setDirty( true );
+                generated = true;
             }
         } else {
         	atomContainer = NoNotificationChemObjectBuilder.getInstance()
