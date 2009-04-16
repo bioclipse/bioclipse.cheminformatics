@@ -482,7 +482,11 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
         if (connectedAtoms.size() == 0) {
             Point2d newAtomPoint = new Point2d(atom.getPoint2d());
-            newAtomPoint.x += bondLength;
+
+            double angle = Math.toRadians( -30 );
+            Vector2d vec1 = new Vector2d(Math.cos(angle), Math.sin(angle));
+            vec1.scale( bondLength );
+            newAtomPoint.add( vec1 );
             newAtom.setPoint2d(newAtomPoint);
         } else if (connectedAtoms.size() == 1) {
             IAtomContainer ac = atomCon.getBuilder().newAtomContainer();
