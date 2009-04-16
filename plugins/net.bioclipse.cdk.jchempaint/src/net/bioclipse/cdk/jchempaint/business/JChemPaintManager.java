@@ -386,6 +386,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         if (model != null) {
             model.setBondLength(bondLength);
         }
+        updateView();
     }
 
     public void setAtomRadius(double atomRadius) {
@@ -393,6 +394,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         if (model != null) {
             model.setAtomRadius(atomRadius);
         }
+        updateView();
     }
 
     public void setIsCompact(boolean isCompact) {
@@ -400,6 +402,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         if (model != null) {
             model.setIsCompact(isCompact);
         }
+        updateView();
     }
 
     public void setBondDistance(double bondDistance) {
@@ -407,6 +410,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         if (model != null) {
             model.setBondDistance(bondDistance);
         }
+        updateView();
     }
 
     public void setBondWidth(double bondWidth) {
@@ -414,6 +418,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         if (model != null) {
             model.setBondWidth(bondWidth);
         }
+        updateView();
     }
 
     public void setDrawNumbers(boolean setDrawNumbers) {
@@ -421,6 +426,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         if (model != null) {
             model.setDrawNumbers(setDrawNumbers);
         }
+        updateView();
     }
 
     public void setFitToScreen(boolean fitToScreen) {
@@ -428,6 +434,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         if (model != null) {
             model.setFitToScreen(fitToScreen);
         }
+        updateView();
     }
 
     public void setHighlightDistance(double highlightDistance) {
@@ -435,6 +442,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         if (model != null) {
             model.setHighlightDistance(highlightDistance);
         }
+        updateView();
     }
 
     public void setRingProportion(double ringProportion) {
@@ -442,6 +450,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         if (model != null) {
             model.setBondDistance(ringProportion);
         }
+        updateView();
     }
 
     public void setShowAromaticity(boolean showAromaticity) {
@@ -449,6 +458,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         if (model != null) {
             model.setShowAromaticity(showAromaticity);
         }
+        updateView();
     }
 
     public void setShowAromaticityInCDKStyle(boolean showAromaticityCDK) {
@@ -456,6 +466,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         if (model != null) {
             model.setShowAromaticityCDKStyle(showAromaticityCDK);
         }
+        updateView();
     }
 
     public void setShowEndCarbons(boolean showEndCarbons) {
@@ -463,6 +474,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         if (model != null) {
             model.setShowEndCarbons(showEndCarbons);
         }
+        updateView();
     }
 
     public void setShowExplicitHydrogens(boolean explicitHydrogens) {
@@ -470,6 +482,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         if (model != null) {
             model.setShowExplicitHydrogens(explicitHydrogens);
         }
+        updateView();
     }
 
     public void setShowImplicitHydrogens(boolean implicitHydrogens) {
@@ -477,6 +490,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         if (model != null) {
             model.setShowImplicitHydrogens(implicitHydrogens);
         }
+        updateView();
     }
 
     public void setWedgeWidth(double wedgeWidth) {
@@ -484,6 +498,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         if (model != null) {
             model.setWedgeWidth(wedgeWidth);
         }
+        updateView();
     }
 
     public void setMargin(double margin) {
@@ -491,6 +506,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         if (model != null) {
             model.setMargin(margin);
         }
+        updateView();
     }
     
     public void setZoom(double zoom) {
@@ -498,6 +514,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         if (model != null) {
             model.setZoomFactor(zoom);
         }
+        updateView();
     }
 
     public double getAtomRadius() {
