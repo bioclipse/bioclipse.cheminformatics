@@ -20,13 +20,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.imageio.ImageIO;
-
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKChemObject;
-import net.bioclipse.cdk.domain.CDKMolecule;
-import net.bioclipse.cdk.domain.ChemObjectPropertySource;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.handlers.ModuleState;
 import net.bioclipse.cdk.jchempaint.handlers.RedoHandler;
@@ -34,7 +30,6 @@ import net.bioclipse.cdk.jchempaint.handlers.UndoHandler;
 import net.bioclipse.cdk.jchempaint.outline.JCPOutlinePage;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.ui.jobs.BioclipseUIJob;
 
 import org.apache.log4j.Logger;
@@ -44,10 +39,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -87,7 +80,6 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
-import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
@@ -96,9 +88,7 @@ import org.openscience.cdk.renderer.selection.AbstractSelection;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.selection.MultiSelection;
 import org.openscience.cdk.renderer.selection.SingleSelection;
-import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
-import org.openscience.cdk.tools.manipulator.MoleculeSetManipulator;
 
 public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
@@ -137,7 +127,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
             if (chemFormat == MDLV2000Format.getInstance() ||
                 chemFormat == CMLFormat.getInstance()) {
                 cdk.saveMolecule(
-                        model,
+                        getCDKMolecule(),
                         model.getResource().getLocationURI().toString(),
                         true // overwrite
                 );
