@@ -306,23 +306,10 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             SWTRenderer visitor = new SWTRenderer(gc);
             Renderer renderer = getRenderer();
 
-            if (isNew) {
-                renderer.setScale(model);
-                java.awt.Rectangle diagramBounds =
-                    renderer.calculateDiagramBounds(model);
-                renderer.setZoomToFit(
-                        drawArea.getWidth(),
-                        drawArea.getHeight(),
-                        diagramBounds.getWidth(),
-                        diagramBounds.getHeight());
-                renderer.paintChemModel( model, visitor, drawArea, true);
-                isNew = false;
+            if (isScrolling) {
+                renderer.repaint(visitor);
             } else {
-                if (isScrolling) {
-                    renderer.repaint(visitor);
-                } else {
-                    renderer.paintChemModel(model, visitor);
-                }
+                renderer.paintChemModel(model, visitor);
             }
         }
     }
@@ -425,7 +412,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     public void setModel( IChemModel model ) {
         hub.setChemModel(model);
         this.applyGlobalProperties();
-
+        if(model != null)
+            getRenderer().setScale( model );
         super.setModel( model );
         setDirty( false );
     }
