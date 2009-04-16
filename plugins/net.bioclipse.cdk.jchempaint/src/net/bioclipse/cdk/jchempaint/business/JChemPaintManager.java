@@ -109,15 +109,17 @@ public class JChemPaintManager implements IJChemPaintManager {
         Display.getDefault().asyncExec(new SetInputRunnable(editor, molecule));
     }
 
-    public void addAtom(String atomType, Point2d worldcoord) {
+    public IAtom addAtom(String atomType, Point2d worldcoord) {
         JChemPaintEditor editor = findActiveEditor();
+        IAtom newAtom = null;
         if (editor != null) {
             IChemModelRelay relay = editor.getControllerHub();
-            relay.addAtom(atomType, worldcoord);
+            newAtom = relay.addAtom(atomType, worldcoord);
         } else {
             Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
         }
         updateView();
+        return newAtom;
     }
 
     public IBond getClosestBond(Point2d worldCoord) {
@@ -279,15 +281,17 @@ public class JChemPaintManager implements IJChemPaintManager {
         updateView();
     }
 
-    public void addAtom(String elementSymbol, IAtom atom) {
+    public IAtom addAtom(String elementSymbol, IAtom atom) {
         JChemPaintEditor editor = findActiveEditor();
+        IAtom newAtom = null;
         if (editor != null) {
             IChemModelRelay relay = editor.getControllerHub();
-            relay.addAtom(elementSymbol, atom);
+            newAtom = relay.addAtom(elementSymbol, atom);
         } else {
             Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
         }
         updateView();
+        return newAtom;
     }
 
     public void zap() {
