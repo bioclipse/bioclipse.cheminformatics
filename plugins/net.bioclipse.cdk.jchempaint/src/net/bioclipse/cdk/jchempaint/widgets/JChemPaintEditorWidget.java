@@ -466,10 +466,10 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             sdg.generateCoordinates();
             container = sdg.getMolecule();
         } catch ( CloneNotSupportedException e ) {
-            System.out.println("Could not create 3D coordinates: " + e.getMessage());
+            System.out.println("Could not create 2D coordinates: " + e.getMessage());
             return atomContainer;
         } catch (Exception e) {
-            System.out.println("Could not create 3D coordinates: " + e.getMessage());
+            System.out.println("Could not create 2D coordinates: " + e.getMessage());
             return atomContainer;
         }
         //FIXME work-around for bug 613
