@@ -159,20 +159,12 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
            }
        });
     }
-    
+
     public Image snapshot() {
         Rectangle area = getClientArea();
         Image image = new Image(getDisplay(), area.width, area.height);
         paint(new GC(image));
         return image;
-    }
-
-    private void setAtomContainerInHub(IAtomContainer atomContainer) {
-
-        IAtomContainer tmp = atomContainer.getBuilder().newAtomContainer( atomContainer );
-        IChemModel chemModel = ChemModelManipulator.newChemModel(tmp);
-        hub.setChemModel(chemModel);
-        this.applyGlobalProperties();
     }
 
     private void setupControllerHub( ) {
@@ -299,7 +291,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     private void paintControl( PaintEvent event ) {
         paint(event.gc);
     }
-    
+
     private void paint(GC gc) {
         setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
         // drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
@@ -310,26 +302,26 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         paintDirty(gc, c.width, c.height);
 
-        if (atomContainer != null) {
+        if (model != null) {
             SWTRenderer visitor = new SWTRenderer(gc);
             Renderer renderer = getRenderer();
 
             if (isNew) {
-                renderer.setScale(atomContainer);
-                java.awt.Rectangle diagramBounds = 
-                    renderer.calculateDiagramBounds(atomContainer);
+                renderer.setScale(model);
+                java.awt.Rectangle diagramBounds =
+                    renderer.calculateDiagramBounds(model);
                 renderer.setZoomToFit(
                         drawArea.getWidth(),
-                        drawArea.getHeight(), 
+                        drawArea.getHeight(),
                         diagramBounds.getWidth(),
                         diagramBounds.getHeight());
-                renderer.paintMolecule(atomContainer, visitor, drawArea, true);
+                renderer.paintChemModel( model, visitor, drawArea, true);
                 isNew = false;
             } else {
                 if (isScrolling) {
                     renderer.repaint(visitor);
                 } else {
-                    renderer.paintMolecule(atomContainer, visitor);
+                    renderer.paintChemModel(model, visitor);
                 }
             }
         }
@@ -430,23 +422,32 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     }
 
     @Override
-    public void setAtomContainer( IAtomContainer atomContainer ) {
+    public void setModel( IChemModel model ) {
+        hub.setChemModel(model);
+        this.applyGlobalProperties();
+
+        super.setModel( model );
+        setDirty( false );
+    }
+
+    public void setAtomContainer(IAtomContainer atomContainer) {
         if( atomContainer != null) {
             if(atomContainer.getAtomCount() > 0 &&
                GeometryTools.has2DCoordinatesNew( atomContainer )<2) {
                 atomContainer = generate2Dfrom3D( atomContainer );
                 setDirty( true );
                 generated = true;
+            }else {
+                atomContainer = atomContainer.getBuilder()
+                        .newAtomContainer( atomContainer );
             }
-        } else {
-        	atomContainer = NoNotificationChemObjectBuilder.getInstance()
-        	    .newAtomContainer();
+            IChemModel model = ChemModelManipulator.newChemModel( atomContainer );
+            setModel( model );
+        }else {
+            setModel( null );
         }
-        setAtomContainerInHub( atomContainer );
-        super.setAtomContainer( atomContainer );
-        setDirty( false );
-    }
 
+    }
     public void setInput( Object element ) {
 
         if(element instanceof IAdaptable) {
@@ -456,9 +457,13 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
             if (molecule != null) {
                 cdkMolecule = molecule;
-                setAtomContainer(molecule.getAtomContainer());
+                setAtomContainer( cdkMolecule.getAtomContainer());
             }
-            else setAtomContainer( null );
+            else {
+                IChemModel model = NoNotificationChemObjectBuilder.getInstance()
+                                    .newChemModel();
+                setModel( model );
+            }
         }
     }
 
@@ -590,10 +595,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     public void doUndo(IUndoRedoable undoredo) {
         operationHistory.add((IUndoableOperation)undoredo);
-    }
-
-    public IAtomContainer getAtomContainer() {
-        return atomContainer;
     }
 
     private void resizeControl() {

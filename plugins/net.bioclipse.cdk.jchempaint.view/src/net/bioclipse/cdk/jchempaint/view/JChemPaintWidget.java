@@ -24,8 +24,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.openscience.cdk.geometry.GeometryTools;
-import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.AtomContainerBoundsGenerator;
@@ -34,13 +33,15 @@ import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.RingGenerator;
+import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 /**
  * @author arvid
  */
 public class JChemPaintWidget extends Canvas {
 
-    protected IAtomContainer  atomContainer;
+    //protected IAtomContainer  atomContainer;
+    protected IChemModel model;
 
     protected RendererModel rendererModel = new RendererModel();
 
@@ -109,7 +110,7 @@ public class JChemPaintWidget extends Canvas {
 
         //drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
 
-        if ( atomContainer == null ) {
+        if ( model == null ) {
             setBackground( getParent().getBackground() );
             return;
         } else
@@ -121,25 +122,22 @@ public class JChemPaintWidget extends Canvas {
 
         SWTRenderer visitor = new SWTRenderer( event.gc );
 
-        renderer.paintMolecule(atomContainer, visitor, drawArea,true);
+        renderer.paintChemModel( model, visitor,drawArea,true );
 
-        if (!(atomContainer.getAtomCount() == 0)) {
+        if( ChemModelManipulator.getAtomCount( model )!=0) {
             isNew = false;
         }
     }
 
-    public void setAtomContainer( IAtomContainer atomContainer ) {
-
-        if( atomContainer!=null
-            && (atomContainer.getAtomCount() == 0
-            ||  GeometryTools.has2DCoordinates( atomContainer )) ) {
-            if(this.atomContainer != atomContainer)
+    public void setModel(IChemModel model) {
+        if(   model!=null
+          ) {
+            if(this.model !=model)
                 isNew = true;
-            this.atomContainer = atomContainer;
-
+            this.model = model;
             updateView( true );
-        }else {
-            this.atomContainer = null;
+        } else {
+            this.model = null;
             updateView( false );
         }
     }

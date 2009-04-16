@@ -23,16 +23,9 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.AtomIndexSelection;
 import net.bioclipse.core.domain.IChemicalSelection;
-import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -51,12 +44,11 @@ import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
-import org.openscience.cdk.renderer.RendererModel;
-import org.openscience.cdk.renderer.elements.ElementGroup;
-import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 /**
  * 2D Rendering widget using the new SWT based JChemPaint renderer.
@@ -65,7 +57,7 @@ public class JChemPaintView extends ViewPart
     implements ISelectionListener {
 
     private static final Logger logger = Logger.getLogger(JChemPaintView.class);
-    
+
     private JChemPaintWidget canvasView;
     private ChoiceGenerator extensionGenerator;
     private IMolecule molecule;
@@ -313,7 +305,8 @@ public class JChemPaintView extends ViewPart
 
     private void setAtomContainer(IAtomContainer ac) {
             try {
-                canvasView.setAtomContainer(ac);
+                IChemModel model = ChemModelManipulator.newChemModel( ac );
+                canvasView.setModel( model );
                 canvasView.setVisible( true );
                 canvasView.redraw();
             } catch (Exception e) {
@@ -327,7 +320,7 @@ public class JChemPaintView extends ViewPart
         getSite().getPage().removePartListener( partListener );
         canvasView.dispose();
     }
-    
+
     public void showExternalGenerators(boolean show) {
         extensionGenerator.setUse( show );
         canvasView.redraw();
