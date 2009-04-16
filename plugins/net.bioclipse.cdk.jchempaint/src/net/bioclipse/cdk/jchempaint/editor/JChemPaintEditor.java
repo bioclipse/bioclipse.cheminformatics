@@ -52,6 +52,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
@@ -378,15 +379,22 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
             @Override
             public void setDirty( boolean dirty ) {
-
                 super.setDirty( dirty );
-                firePropertyChange( IEditorPart.PROP_DIRTY );
+                Display.getDefault().asyncExec( new Runnable() {
+                    public void run() {
+                        firePropertyChange( IEditorPart.PROP_DIRTY );
+                    }
+                });
             }
             @Override
             protected void structureChanged() {
                 super.structureChanged();
                 if(fOutlinePage!=null) {
-                    fOutlinePage.setInput( getControllerHub().getIChemModel() );
+                    Display.getDefault().asyncExec( new Runnable() {
+                        public void run() {
+                            fOutlinePage.setInput( getControllerHub().getIChemModel() );
+                        }
+                    });
                 }
             }
 
@@ -394,7 +402,11 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
             protected void structurePropertiesChanged() {
                 super.structurePropertiesChanged();
                 if(fOutlinePage!=null) {
-                    fOutlinePage.setInput( getControllerHub().getIChemModel() );
+                    Display.getDefault().asyncExec( new Runnable() {
+                        public void run() {
+                            fOutlinePage.setInput( getControllerHub().getIChemModel() );
+                        }
+                    });
                 }
             }
         };

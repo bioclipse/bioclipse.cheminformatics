@@ -554,8 +554,13 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
 	public void setDirty( boolean dirty) {
 	    this.isdirty = dirty;
-	    if(!this.isDisposed())
-	        redraw();
+	    if(!this.isDisposed()) {
+	        Display.getDefault().asyncExec( new Runnable() {
+	            public void run() {
+	                redraw();
+	            }
+	        });
+	    }
 	}
 
 	public boolean getDirty() {
