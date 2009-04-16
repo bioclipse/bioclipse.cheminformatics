@@ -439,16 +439,15 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     }
 
     public ICDKMolecule getCDKMolecule() {
+        IAtomContainer modelContainer = model.getAtomContainer();
+
         IChemModel chemModel = getControllerHub().getIChemModel();
-        IMolecule mol = chemModel.getBuilder().newMolecule();
         for(IAtomContainer aContainer:ChemModelManipulator
                                         .getAllAtomContainers( chemModel )) {
-            mol.add( aContainer );
+            modelContainer.add( aContainer );
         }
 
-        ICDKMolecule returnMol = new CDKMolecule(mol);
-        returnMol.setResource( model.getResource() );
-        return returnMol;
+        return model;
     }
 
     @SuppressWarnings("unchecked")

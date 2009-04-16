@@ -169,7 +169,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     private void setAtomContainerInHub(IAtomContainer atomContainer) {
 
-        IChemModel chemModel = ChemModelManipulator.newChemModel(atomContainer);
+        IAtomContainer tmp = atomContainer.getBuilder().newAtomContainer( atomContainer );
+        IChemModel chemModel = ChemModelManipulator.newChemModel(tmp);
         hub.setChemModel(chemModel);
         this.applyGlobalProperties();
     }
