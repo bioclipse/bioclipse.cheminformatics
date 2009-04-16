@@ -25,6 +25,8 @@ import javax.imageio.ImageIO;
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKChemObject;
+import net.bioclipse.cdk.domain.CDKMolecule;
+import net.bioclipse.cdk.domain.ChemObjectPropertySource;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.handlers.ModuleState;
 import net.bioclipse.cdk.jchempaint.handlers.RedoHandler;
@@ -83,7 +85,9 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
+import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
@@ -92,6 +96,9 @@ import org.openscience.cdk.renderer.selection.AbstractSelection;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.selection.MultiSelection;
 import org.openscience.cdk.renderer.selection.SingleSelection;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
+import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
+import org.openscience.cdk.tools.manipulator.MoleculeSetManipulator;
 
 public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
@@ -432,8 +439,16 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     }
 
     public ICDKMolecule getCDKMolecule() {
+        IChemModel chemModel = getControllerHub().getIChemModel();
+        IMolecule mol = chemModel.getBuilder().newMolecule();
+        for(IAtomContainer aContainer:ChemModelManipulator
+                                        .getAllAtomContainers( chemModel )) {
+            mol.add( aContainer );
+        }
 
-        return model;
+        ICDKMolecule returnMol = new CDKMolecule(mol);
+        returnMol.setResource( model.getResource() );
+        return returnMol;
     }
 
     @SuppressWarnings("unchecked")
@@ -549,12 +564,12 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         Image image = widget.snapshot();
         ImageLoader loader = new ImageLoader();
         loader.data = new ImageData[] { image.getImageData() };
-        ByteArrayOutputStream inMemoryFile = new ByteArrayOutputStream(); 
+        ByteArrayOutputStream inMemoryFile = new ByteArrayOutputStream();
         loader.save(inMemoryFile, SWT.IMAGE_PNG);
         try {
             inMemoryFile.flush();
         } catch (IOException ioe) {
-            
+
         }
         ByteArrayInputStream input = new ByteArrayInputStream(inMemoryFile.toByteArray());
         if (file.exists()) {
