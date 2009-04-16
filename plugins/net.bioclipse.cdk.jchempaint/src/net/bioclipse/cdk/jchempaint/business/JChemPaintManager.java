@@ -279,23 +279,15 @@ public class JChemPaintManager implements IJChemPaintManager {
         updateView();
     }
 
-    public void addAtom(final String elementSymbol, final IAtom atom) {
-        Display.getDefault().asyncExec( new Runnable() {
-            public void run() { 
-
-                JChemPaintEditor editor = findActiveEditor();
-                if (editor != null) {
-                    IChemModelRelay relay = editor.getControllerHub();
-                    relay.addAtom(elementSymbol, atom);
-                } else {
-                    Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
-                }
-                updateView();
-
-                
-            }
-        } );
-        
+    public void addAtom(String elementSymbol, IAtom atom) {
+        JChemPaintEditor editor = findActiveEditor();
+        if (editor != null) {
+            IChemModelRelay relay = editor.getControllerHub();
+            relay.addAtom(elementSymbol, atom);
+        } else {
+            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+        }
+        updateView();
     }
 
     public void zap() {
@@ -326,22 +318,15 @@ public class JChemPaintManager implements IJChemPaintManager {
         updateView();
     }
 
-    public void addRing(final IAtom atom, final int size) {
-        Display.getDefault().asyncExec( new Runnable() {
-            public void run() { 
-
-                JChemPaintEditor editor = findActiveEditor();
-                if (editor != null) {
-                    IChemModelRelay relay = editor.getControllerHub();
-                    relay.addRing(atom, size);
-                } else {
-                    Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
-                }
-                updateView();
-                
-            }
-        } );
-
+    public void addRing(IAtom atom, int size) {
+        JChemPaintEditor editor = findActiveEditor();
+        if (editor != null) {
+            IChemModelRelay relay = editor.getControllerHub();
+            relay.addRing(atom, size);
+        } else {
+            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+        }
+        updateView();
     }
 
     public IBond.Order getBondOrder(int order) {
@@ -354,23 +339,15 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
     }
 
-    public void addPhenyl(final IAtom atom) {
-        Display.getDefault().asyncExec( new Runnable() {
-            public void run() { 
-
-                JChemPaintEditor editor = findActiveEditor();
-                if (editor != null) {
-                    IChemModelRelay relay = editor.getControllerHub();
-                    relay.addPhenyl(atom);
-                } else {
-                    Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
-                }
-                updateView();
-
-                
-            }
-        } );
-
+    public void addPhenyl(IAtom atom) {
+        JChemPaintEditor editor = findActiveEditor();
+        if (editor != null) {
+            IChemModelRelay relay = editor.getControllerHub();
+            relay.addPhenyl(atom);
+        } else {
+            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+        }
+        updateView();
     }
 
     public void addRing(IBond bond, int size) {

@@ -19,7 +19,6 @@ import net.bioclipse.core.Recorded;
 import net.bioclipse.core.TestClasses;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IBioclipseManager;
-import net.bioclipse.scripting.ui.business.GuiAction;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
@@ -342,7 +341,6 @@ public interface IJChemPaintManager extends IBioclipseManager {
     )
     public void addRing(IBond bond, int size);
 
-    @GuiAction
     @Recorded
     @PublishedMethod(
          params = "IAtom atom to add the phenyl ring to",
