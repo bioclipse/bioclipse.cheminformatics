@@ -430,7 +430,12 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     }
 
     public void update() {
-
+        IChemModel cModel = getControllerHub().getIChemModel();
+        if(cModel == null) return;
+        for(IAtomContainer ac:ChemModelManipulator.getAllAtomContainers( cModel )) {
+            ac.setProperties( new HashMap<Object, Object>(
+                    model.getAtomContainer().getProperties()) );
+        }
         widget.redraw();
     }
 
