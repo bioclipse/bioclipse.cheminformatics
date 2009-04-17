@@ -27,6 +27,7 @@ import net.bioclipse.cdk.jchempaint.Activator;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager;
 import net.bioclipse.cdk.jchempaint.editor.SWTMouseEventRelay;
 import net.bioclipse.cdk.jchempaint.undoredo.SWTUndoRedoFactory;
+import net.bioclipse.cdk.jchempaint.view.ChoiceGenerator;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
 import net.bioclipse.core.business.BioclipseException;
@@ -401,6 +402,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     protected List<IGenerator> createGenerators() {
         List<IGenerator> generatorList = new ArrayList<IGenerator>();
 
+        generatorList.add( extensionGenerator
+                           = ChoiceGenerator.getGeneratorsFromExtensionPoint());
+        extensionGenerator.setUse( true );
         generatorList.add(new ExternalHighlightGenerator());
         generatorList.addAll( super.createGenerators() );
         generatorList.add(new SelectionGenerator());
