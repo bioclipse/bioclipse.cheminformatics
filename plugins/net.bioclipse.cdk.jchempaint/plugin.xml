@@ -897,5 +897,11 @@
             file="toc.xml"
             primary="true"/>
    </extension>
+   <extension
+         point="net.bioclipse.cdk.jchempaint.generator">
+      <generator
+            class="net.bioclipse.cdk.jchempaint.generators.ClosestToCenterOfMassGenerator">
+      </generator>
+   </extension>
    
 </plugin>
