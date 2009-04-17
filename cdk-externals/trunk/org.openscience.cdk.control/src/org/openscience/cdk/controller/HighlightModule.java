@@ -111,7 +111,7 @@ public class HighlightModule extends ControllerModuleAdapter {
 	}
 	@Override
     public void mouseWheelMovedBackward( int clicks ) {
-
+	    if(oldCoordinates!=null)
         mouseMove( getOldCoordiPoint2d() );
     }
 	@Override

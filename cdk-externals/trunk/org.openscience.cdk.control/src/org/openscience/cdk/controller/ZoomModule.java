@@ -32,6 +32,11 @@ public class ZoomModule extends ControllerModuleAdapter {
     }
 
     private void doZoom(double z) {
+        if(worldCoord==null) {
+            zoom(z);
+            return;
+        }
+            
         Renderer renderer= chemModelRelay.getRenderer();
         Point2d screenCoord = renderer.toScreenCoordinates( worldCoord.x, worldCoord.y);
         zoom(z);
