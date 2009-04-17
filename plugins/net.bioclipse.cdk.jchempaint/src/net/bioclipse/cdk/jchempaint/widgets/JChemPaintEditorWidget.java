@@ -431,8 +431,11 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 setDirty( true );
                 generated = true;
             }else {
+                IAtomContainer oldAC = atomContainer;
                 atomContainer = atomContainer.getBuilder()
                         .newAtomContainer( atomContainer );
+                atomContainer.setProperties( new HashMap<Object, Object>(
+                        oldAC.getProperties()) );
             }
             IChemModel model = ChemModelManipulator.newChemModel( atomContainer );
             setModel( model );
