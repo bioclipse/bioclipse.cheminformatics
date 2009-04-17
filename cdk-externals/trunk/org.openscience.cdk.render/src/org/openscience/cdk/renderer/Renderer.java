@@ -583,6 +583,9 @@ public class Renderer {
         return totalBounds;
     }
 
+	public static Rectangle2D calculateBounds(IChemModel chemModel) {
+	    return calculateBounds( chemModel.getMoleculeSet());
+	}
     public static Rectangle2D calculateBounds(IReaction reaction) {
         // get the participants in the reaction
         IMoleculeSet reactants = reaction.getReactants();
