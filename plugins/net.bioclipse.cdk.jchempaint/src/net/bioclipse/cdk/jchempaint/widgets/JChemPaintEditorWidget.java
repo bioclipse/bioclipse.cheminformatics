@@ -421,7 +421,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             getRenderer().setScale( model );
 
         Rectangle2D rec= Renderer.calculateBounds( model );
-        getRenderer().setModelCenter( rec.getWidth()/2d, -rec.getHeight()/2d );
+        getRenderer().setModelCenter( rec.getX() + rec.getWidth()/2d, rec.getY()+rec.getHeight()/2d );
 
         resizeControl();
         super.setModel( model );
