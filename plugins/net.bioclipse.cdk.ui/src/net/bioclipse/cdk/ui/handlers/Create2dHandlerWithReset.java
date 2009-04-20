@@ -56,7 +56,35 @@ public class Create2dHandlerWithReset extends AbstractHandler {
                     .getSelectionService().getSelection();
       if ( !sel.isEmpty() ) {
           if ( sel instanceof IStructuredSelection ) {
+              MessageBox mb =
+                  new MessageBox( new Shell(), SWT.YES | SWT.NO | SWT.CANCEL
+                                               | SWT.ICON_QUESTION );
               IStructuredSelection ssel = (IStructuredSelection) sel;
+              mb.setText( "Change "+ssel.size()+" file(s)" );
+              mb.setMessage( "Do you want to write the "+ (make3D ? "3D" : "2D")+ " coordinates into the existing file? If no, new file(s) will be created." );
+              int makenewfile = mb.open();
+              if(makenewfile == SWT.CANCEL)
+                  return;
+              IFile[] filestosaveto=new IFile[ssel.size()];
+              for(int i=0;i<ssel.toArray().length;i++){
+                  if ( makenewfile == SWT.NO ){
+                      SaveAsDialog dialog = new SaveAsDialog( new Shell() );
+                      dialog.setOriginalFile( (IFile) ssel.toArray()[i] );
+                      int saveasreturn = dialog.open();
+                      if ( saveasreturn != SaveAsDialog.CANCEL ) {
+                        IPath result = dialog.getResult();
+                        if ( dialog.getResult().getFileExtension() == null )
+                            result =
+                                    result.addFileExtension( ((IFile) ssel.toArray()[i])
+                                            .getFileExtension() );
+                        filestosaveto[i]=((IFile) ssel.toArray()[i])
+                        .getWorkspace()
+                        .getRoot()
+                        .getFile(
+                                  result );
+                      }
+                  }
+              }
               for(int i=0;i<ssel.toArray().length;i++){
                 ICDKMolecule mol;
                 try {
@@ -84,13 +112,7 @@ public class Create2dHandlerWithReset extends AbstractHandler {
                               atom.setPoint3d( null );
                       }
                     }
-                    MessageBox mb =
-                            new MessageBox( new Shell(), SWT.YES | SWT.NO | SWT.CANCEL
-                                                         | SWT.ICON_QUESTION );
-                    mb.setText( "Change file: "+((IFile) ssel.toArray()[i]).getName() );
-                    mb.setMessage( "Do you want to write the "+ (make3D ? "3D" : "2D")+ " coordinates into the existing file? If no, a new one will be created." );
-                    int val = mb.open();
-                    if ( val == SWT.YES ) {
+                    if ( makenewfile == SWT.YES ) {
                         try {
                             Activator.getDefault().getCDKManager()
                                     .saveMolecule(
@@ -100,35 +122,21 @@ public class Create2dHandlerWithReset extends AbstractHandler {
                         } catch ( Exception e ) {
                             throw new RuntimeException( e.getMessage() );
                         }
-                    } else if ( val == SWT.NO ){
-                        SaveAsDialog dialog = new SaveAsDialog( new Shell() );
-                        dialog.setOriginalFile( (IFile) ssel.toArray()[i] );
-                        int saveasreturn = dialog.open();
-                        IPath result = dialog.getResult();
-                        if ( saveasreturn != SaveAsDialog.CANCEL ) {
-                            if ( dialog.getResult().getFileExtension() == null )
-                                result =
-                                        result.addFileExtension( ((IFile) ssel.toArray()[i])
-                                                .getFileExtension() );
+                    } else if ( makenewfile == SWT.NO ){
                             try {
                                 Activator
                                         .getDefault()
                                         .getCDKManager()
                                         .saveMolecule(
                                                        mol,
-                                                       ((IFile) ssel.toArray()[i])
-                                                               .getWorkspace()
-                                                               .getRoot()
-                                                               .getFile(
-                                                                         result ),
+                                                       filestosaveto[i],
                                                        true );
                             } catch ( Exception e ) {
                                 throw new RuntimeException( e.getMessage() );
                             }
-                        }
                     }
                 } catch ( NoSuchAtomTypeException e ) {
-                    MessageBox mb =
+                    mb =
                         new MessageBox( new Shell(), SWT.OK
                                                      | SWT.ICON_WARNING );
                     mb.setText( "Problems handling atom types in "+((IFile) ssel.toArray()[i]).getName() );
