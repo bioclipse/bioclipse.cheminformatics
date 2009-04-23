@@ -7,9 +7,10 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.handlers;
 
+import java.lang.reflect.InvocationTargetException;
+
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
@@ -135,13 +136,15 @@ public class Create2dHandlerWithReset extends AbstractHandler {
                                 throw new RuntimeException( e.getMessage() );
                             }
                     }
-                } catch ( NoSuchAtomTypeException e ) {
-                    mb =
-                        new MessageBox( new Shell(), SWT.OK
-                                                     | SWT.ICON_WARNING );
-                    mb.setText( "Problems handling atom types in "+((IFile) ssel.toArray()[i]).getName() );
-                    mb.setMessage( "We cannot handle this structure since it contains unknown atom types. We leave this file unchanged!" );
-                    mb.open();
+                } catch ( InvocationTargetException e ) {
+                    if(e.getCause() instanceof NoSuchAtomTypeException){
+                      mb =
+                          new MessageBox( new Shell(), SWT.OK
+                                                       | SWT.ICON_WARNING );
+                      mb.setText( "Problems handling atom types in "+((IFile) ssel.toArray()[i]).getName() );
+                      mb.setMessage( "We cannot handle this structure since it contains unknown atom types. We leave this file unchanged!" );
+                      mb.open();
+                    }
                 } catch ( Exception e ) {
                     LogUtils.handleException( e, logger );
                 }
