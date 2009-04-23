@@ -115,12 +115,14 @@ public class JmolListener implements JmolStatusListener,
 
     public void notifyCallback(int type, Object[] data) {
         if ( type == JmolConstants.CALLBACK_SCRIPT ) {
-            if ( repportErrorToJS &&
-                 data.length >= 2 && 
-                 data[1] instanceof String && 
-                 ( (String)data[1] ).startsWith( "script ERROR:" ) ) {
-                Activator.getDefault()
-                         .getJsConsoleManager().say( (String)data[1] );
+            for ( Object o : data ) {
+                if ( repportErrorToJS &&
+                     o instanceof String && 
+                     ( (String)o ).contains( "ERROR:" ) ) {
+                       Activator.getDefault()
+                                .getJsConsoleManager().say( (String)o );
+                       repportErrorToJS = false;
+                   }
             }
             if ( data.length >= 2 && 
                  data[1] instanceof String && 
