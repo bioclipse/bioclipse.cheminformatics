@@ -193,15 +193,17 @@ public class JChemPaintManager implements IJChemPaintManager {
         updateView();
     }
 
-    public void addBond(IAtom fromAtom, IAtom toAtom) {
+    public IBond addBond(IAtom fromAtom, IAtom toAtom) {
         JChemPaintEditor editor = findActiveEditor();
+        IBond newBond = null;
         if (editor != null) {
             IChemModelRelay relay = editor.getControllerHub();
-            relay.addBond(fromAtom, toAtom);
+            newBond = relay.addBond(fromAtom, toAtom);
         } else {
             Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
         }
         updateView();
+        return newBond;
     }
 
     public void moveTo(IAtom atom, Point2d point) {

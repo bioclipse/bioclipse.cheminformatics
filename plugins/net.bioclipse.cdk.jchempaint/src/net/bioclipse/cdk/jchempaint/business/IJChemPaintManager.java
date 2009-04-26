@@ -284,7 +284,7 @@ public interface IJChemPaintManager extends IBioclipseManager {
          params = "IAtom first atom in the bond, IAtom second atom in the bond", 
          methodSummary = "Create a new bond between the two given atoms."
     )
-    public void addBond(IAtom fromAtom, IAtom toAtom);
+    public IBond addBond(IAtom fromAtom, IAtom toAtom);
 
     @Recorded
     @PublishedMethod(
