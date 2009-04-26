@@ -37,7 +37,7 @@ public class JChemPaintGlobalPropertiesManager
     implements IJChemPaintGlobalPropertiesManager {
 
     public String getNamespace() {
-        return "jcpprop";
+        return "jcpglobal";
     }
 
     private List<JChemPaintEditor> getEditors() {
