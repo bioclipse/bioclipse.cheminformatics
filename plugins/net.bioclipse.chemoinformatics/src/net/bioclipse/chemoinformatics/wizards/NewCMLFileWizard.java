@@ -25,7 +25,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 
 /**
- * Creates a new CML molfile.
+ * Creates a new CML molecule file.
  * 
  * @author egonw
  */
@@ -59,14 +59,14 @@ public class NewCMLFileWizard extends BasicNewResourceWizard {
         mainPage.setFileName(
             WizardHelper.findUnusedFileName(getSelection(), "unnamed", ".cml")
         );
-        mainPage.setTitle("New CML File");
-        mainPage.setDescription("Create a new CML file");
+        mainPage.setTitle("New Molecule File");
+        mainPage.setDescription("Create a new Molecule file");
         addPage(mainPage);
     }
 
     public void init(IWorkbench workbench, IStructuredSelection currentSelection) {
         super.init(workbench, currentSelection);
-        setWindowTitle("New CML File");
+        setWindowTitle("New Molecule File");
         setNeedsProgressMonitor(true);
     }
 
