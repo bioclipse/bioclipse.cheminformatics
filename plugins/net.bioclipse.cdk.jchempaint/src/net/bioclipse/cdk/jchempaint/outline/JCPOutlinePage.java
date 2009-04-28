@@ -27,7 +27,7 @@ import org.openscience.cdk.interfaces.IChemModel;
 public class JCPOutlinePage extends ContentOutlinePage
                                     implements ISelectionListener, IAdaptable {
 
-    private final String CONTRIBUTOR_ID =
+    private static final String CONTRIBUTOR_ID =
         "net.bioclipse.cdk.jchempaint.outline.JCPOutlinePage";
 
     private JChemPaintEditor editor;
