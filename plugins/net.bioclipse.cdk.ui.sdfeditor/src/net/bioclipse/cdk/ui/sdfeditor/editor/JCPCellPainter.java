@@ -18,9 +18,13 @@ import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager;
 import net.bioclipse.cdk.jchempaint.view.ChoiceGenerator;
 import net.bioclipse.cdk.jchempaint.view.SWTFontManager;
 import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
+import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message;
+import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.util.LogUtils;
 import net.sourceforge.nattable.NatTable;
 import net.sourceforge.nattable.model.INatTableModel;
 import net.sourceforge.nattable.painter.cell.ICellPainter;
@@ -81,6 +85,17 @@ public class JCPCellPainter implements ICellPainter {
         this.renderer2DConfigurator = r2DConfigurator;
     }
 
+    private void applyGlobalProperties(RendererModel rendererModel) {
+        // apply the global JCP properties
+        IJChemPaintGlobalPropertiesManager jcpprop =
+        net.bioclipse.cdk.jchempaint.Activator.getDefault().getJCPPropManager();
+        try {
+            jcpprop.applyProperties(rendererModel);
+        } catch (BioclipseException e) {
+            LogUtils.debugTrace( logger, e );
+        }
+    }
+
     private void setupRenderer() {
 
         IFontManager fontManager = new SWTFontManager(Display.getCurrent());
@@ -97,6 +112,9 @@ public class JCPCellPainter implements ICellPainter {
         renderer = new Renderer(generators, fontManager);
 
         RendererModel rModel = renderer.getRenderer2DModel();
+
+        applyGlobalProperties( rModel );
+
         rModel.setMargin( 30 );
         rModel.setDrawNumbers( false );
         rModel.setIsCompact( true );
