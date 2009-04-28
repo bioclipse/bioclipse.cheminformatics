@@ -142,8 +142,12 @@ public class MoleculesFromSDF implements IMoleculesFromFile{
         return children.size();
     }
 
-    public void save( int index, ICDKMolecule moleculeToSave ) {
+    public void markDirty( int index, ICDKMolecule moleculeToSave ) {
         throw new UnsupportedOperationException(this.getClass().getName()+
                     " does not support this operation yet");
+    }
+    public void save() {
+        throw new UnsupportedOperationException(this.getClass().getName()+
+        " does not support this operation yet");
     }
 }

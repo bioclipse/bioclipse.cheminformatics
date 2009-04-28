@@ -35,6 +35,8 @@ public class MoleculeTableViewer extends ContentViewer {
     Control headerControl;
     JCPCellPainter cellPainter;
 
+    private int currentSelected;
+
     public MoleculeTableViewer(Composite parent, int style) {
 
         cellPainter = new JCPCellPainter();
@@ -136,7 +138,7 @@ public class MoleculeTableViewer extends ContentViewer {
         Listener listener = new Listener() {
 
             public void handleEvent( Event event ) {
-
+                
                 updateSelection( getSelection() );
             }
         };
@@ -153,14 +155,17 @@ public class MoleculeTableViewer extends ContentViewer {
     @Override
     public ISelection getSelection() {
 
-        if(getContentProvider() instanceof IMoleculesEditorModel) {
+        if(getContentProvider() instanceof MoleculeTableContentProvider) {
 
             int[] selected = table.getSelectionModel().getSelectedRows();
 
-            if(selected.length==0) return StructuredSelection.EMPTY;
-
-            IMoleculesEditorModel contentProvider =
-                            getMoleculesEditorModel();
+            if(selected.length==0) {
+                currentSelected = -1;
+                return StructuredSelection.EMPTY;
+            }
+            currentSelected = selected[0];
+            MoleculeTableContentProvider contentProvider =
+                            (MoleculeTableContentProvider) getContentProvider();
 
             List<ICDKMolecule> mols = new ArrayList<ICDKMolecule>(selected.length);
             for(int i:selected) {
@@ -214,4 +219,12 @@ public class MoleculeTableViewer extends ContentViewer {
         SelectionChangedEvent event = new SelectionChangedEvent(this, selection);
         fireSelectionChanged(event);
     }
+
+    
+    public int getFirstSelected() {
+    
+        return currentSelected;
+    }
+    
+    
 }

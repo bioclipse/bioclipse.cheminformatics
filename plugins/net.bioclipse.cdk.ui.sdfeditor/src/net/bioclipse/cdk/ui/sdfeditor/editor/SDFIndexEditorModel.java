@@ -4,10 +4,10 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * <http://www.eclipse.org/legal/epl-v10.html>.
- * 
+ *
  * Contributors:
  *     Arvid Berg <goglepox@users.sourceforge.net>
- *     
+ *
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
@@ -48,27 +48,32 @@ import org.openscience.cdk.io.MDLV2000Reader;
 public class SDFIndexEditorModel implements IMoleculesEditorModel {
 
     Logger logger = Logger.getLogger( SDFIndexEditorModel.class );
-    
+
     SDFileIndex input = SDFileIndex.emptyIndex();
-    
+
     protected ISimpleChemObjectReader chemReader;
     protected IChemObjectBuilder builder;
 
     int lastIndex = -1;
     ICDKMolecule lastRead = null;
-    
+
 //    List<Object> visibleProperties= new ArrayList<Object>(10);
     Set<Object> availableProperties= new HashSet<Object>();
-    
+
     Map<Integer, ICDKMolecule> edited = new HashMap<Integer, ICDKMolecule>();
-    
-    
+
+
     public SDFIndexEditorModel() {
 
         chemReader = new MDLV2000Reader();
         builder = DefaultChemObjectBuilder.getInstance();
     }
-    
+
+    public SDFIndexEditorModel(SDFileIndex input) {
+        this();
+        this.input = input;
+    }
+
     /* (non-Javadoc)
      * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#getMoleculeAt(int)
      */
@@ -119,9 +124,16 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel {
     /* (non-Javadoc)
      * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#save(int, net.bioclipse.cdk.domain.ICDKMolecule)
      */
-    public void save( int index, ICDKMolecule moleculeToSave ) {
+    public void markDirty( int index, ICDKMolecule moleculeToSave ) {
 
         edited.put( index, moleculeToSave );
+
+    }
+
+    public void save() {
+
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException();
 
     }
 
@@ -136,7 +148,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel {
         String result = new String( bytes );
         return result.substring( 0,result.indexOf( "$$$$" ));
     }
-    
+
     protected IChemObject processContent() throws CDKException {
 
         IChemObject co = chemReader.read(builder.newChemFile());
@@ -154,7 +166,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel {
         }
         return co;
     }
-    
+
     private void setLastRead(int index,ICDKMolecule mol) {
         if(mol==null) {
             lastIndex = -1;
@@ -163,7 +175,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel {
         }
         lastRead = mol;
     }
-    
+
     private void readProperties(ICDKMolecule molecule) {
 
         availableProperties.addAll(

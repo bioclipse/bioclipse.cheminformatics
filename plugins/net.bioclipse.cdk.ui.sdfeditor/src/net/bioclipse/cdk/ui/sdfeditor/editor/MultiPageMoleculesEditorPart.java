@@ -19,6 +19,7 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
+import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jmol.editors.JmolEditor;
 
@@ -177,7 +178,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                    moleculesPage.getContentProvider().updateHeaders();
                }break;
            case Headers:
-               MoleculeViewerContentProvider contentProvider =
+               MoleculeTableContentProvider contentProvider =
                        moleculesPage.getContentProvider();
                ps.setInitialData( contentProvider.getProperties(),
                                   contentProvider.getAvailableProperties());
@@ -192,7 +193,11 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
     }
 
    private void syncJCP() {
-//       ICDKMolecule newMol = jcpPage.getCDKMolecule();
+       ICDKMolecule newMol = jcpPage.getCDKMolecule();
+
+       moleculesPage.getModel().markDirty(
+                       moleculesPage.getMolTableViewer().getFirstSelected(),
+                       newMol );
 
    }
 
@@ -219,18 +224,24 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
     }
 
     private void updateJCPPage() {
-        ISelection selection = moleculesPage.getSelection();
-        if(selection instanceof IStructuredSelection) {
-           Object element = ((IStructuredSelection)selection).getFirstElement();
-           if(element instanceof SDFElement) {
-               try {
-               jcpPage.setInput( element );
-               } catch (IllegalArgumentException x) {
-
-               }
-           }else if( element instanceof ICDKMolecule) {
-               jcpPage.setInput( element );
-           }
-        }
+        int index = moleculesPage.getMolTableViewer().getFirstSelected();
+        IMoleculesEditorModel model = moleculesPage.getModel();
+        if(model != null)
+            jcpPage.setInput( model.getMoleculeAt( index ));
+        else
+            jcpPage.setInput( null );
+//        ISelection selection = moleculesPage.getSelection();
+//        if(selection instanceof IStructuredSelection) {
+//           Object element = ((IStructuredSelection)selection).getFirstElement();
+//           if(element instanceof SDFElement) {
+//               try {
+//               jcpPage.setInput( element );
+//               } catch (IllegalArgumentException x) {
+//
+//               }
+//           }else if( element instanceof ICDKMolecule) {
+//               jcpPage.setInput( element );
+//           }
+//        }
     }
 }

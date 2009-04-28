@@ -43,9 +43,9 @@ public class MoleculesFromSMI implements IMoleculesFromFile {
         return molecules.size();
     }
 
-    public void save( int index, ICDKMolecule moleculeToSave ) {
+    public void markDirty( int index, ICDKMolecule moleculeToSave ) {
 
-        throw new UnsupportedOperationException("Can't save SMILES yet.");
+        throw new UnsupportedOperationException("Can't edit SMILES yet.");
     }
 
     public void fetchDeferredChildren( Object object,
@@ -111,4 +111,8 @@ public class MoleculesFromSMI implements IMoleculesFromFile {
        return file;
     }
 
+     public void save() {
+
+         throw new UnsupportedOperationException("Can't save SMILES yet.");
+    }
 }

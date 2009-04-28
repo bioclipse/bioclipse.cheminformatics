@@ -10,42 +10,28 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import net.bioclipse.cdk.business.Activator;
-import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
-import net.bioclipse.core.util.LogUtils;
-import net.bioclipse.ui.jobs.BioclipseUIJob;
 import net.sourceforge.nattable.NatTable;
 import net.sourceforge.nattable.data.IDataProvider;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.openscience.cdk.DefaultChemObjectBuilder;
-import org.openscience.cdk.interfaces.IChemObject;
-import org.openscience.cdk.interfaces.IChemObjectBuilder;
-import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.io.random.RandomAccessSDFReader;
 
 /**
  * @author arvid
  */
 public class MoleculeTableContentProvider implements
-        ILazyContentProvider, IDataProvider ,IMoleculeTableColumnHandler,
-        IMoleculesEditorModel{
+        ILazyContentProvider, IDataProvider ,IMoleculeTableColumnHandler
+        {
 
     Logger logger = Logger.getLogger( MoleculeTableContentProvider.class );
 
@@ -55,7 +41,7 @@ public class MoleculeTableContentProvider implements
     private MoleculeTableViewer viewer;
     IMoleculesEditorModel   model       = null;
     List<Object> properties = new ArrayList<Object>(NUMBER_OF_PROPERTIES);
-    Collection<Object> availableProperties = new HashSet<Object>();
+//    Collection<Object> availableProperties = new HashSet<Object>();
 
     MoleculesEditorLabelProvider melp = new MoleculesEditorLabelProvider(
                                     MoleculeTableViewer.STRUCTURE_COLUMN_WIDTH);
@@ -70,7 +56,9 @@ public class MoleculeTableContentProvider implements
     }
 
     public Collection<Object> getAvailableProperties() {
-        return new HashSet<Object>(availableProperties);
+        if(model instanceof SDFIndexEditorModel)
+            return ((SDFIndexEditorModel)model).getPropertyKeys();
+        return Collections.emptySet();
     }
 
 
@@ -103,35 +91,26 @@ public class MoleculeTableContentProvider implements
             this.viewer = (MoleculeTableViewer)viewer;
         }
 
-//        Assert.isTrue( viewer instanceof MoleculeTableViewer );
-        Assert.isTrue( newInput instanceof IAdaptable );
-            if(newInput instanceof IMoleculesEditorModel)
-                setModel((IMoleculesEditorModel) newInput);
-            else {
-                setModel( (IMoleculesEditorModel)
-                          ((IAdaptable)newInput).getAdapter(
-                              IMoleculesEditorModel.class ));
-            }
-            readProperties( model );
-
+        
+        if(newInput instanceof IMoleculesEditorModel)
+            setModel((IMoleculesEditorModel) newInput);
+        else if(newInput instanceof IAdaptable){
+            setModel( (IMoleculesEditorModel)
+                      ((IAdaptable)newInput).getAdapter(
+                                                 IMoleculesEditorModel.class ));
+        }
 
         if(this.viewer != null)
             updateSize( (model!=null?model.getNumberOfMolecules():0) );
 
         // fill properties with elements from availableProperties
         properties.clear();
-        Iterator<Object> iter = availableProperties.iterator();
+        Iterator<Object> iter = getAvailableProperties().iterator();
         for(int i=0;i<NUMBER_OF_PROPERTIES;i++) {
             if(iter.hasNext())
                 properties.add(iter.next());
         }
         updateHeaders();
-    }
-
-    private void readProperties(IMoleculesEditorModel model) {
-        ICDKMolecule moleucle = (ICDKMolecule)model.getMoleculeAt( 0 );
-        availableProperties = moleucle.getAtomContainer().getProperties()
-                    .keySet();
     }
 
     void updateHeaders() {
@@ -181,13 +160,7 @@ public class MoleculeTableContentProvider implements
     public Object getValue( int row, int col ) {
         IMoleculesEditorModel tModel = model;
         ICDKMolecule molecule =  (ICDKMolecule) tModel.getMoleculeAt( row );
-//        if(col == 0) {
-//            return ""+(row+1);
-//        }
         if(col == 0) {
-//            Image image;
-//            image = melp.getColumnImage( molecule ,1);
-//            return image;
             return molecule;
         }
         int i = col;
@@ -201,11 +174,5 @@ public class MoleculeTableContentProvider implements
 
     public int getNumberOfMolecules() {
         return getRowCount();
-    }
-
-    public void save( int index, ICDKMolecule moleculeToSave ) {
-
-       model.save( index, moleculeToSave );
-
     }
 }

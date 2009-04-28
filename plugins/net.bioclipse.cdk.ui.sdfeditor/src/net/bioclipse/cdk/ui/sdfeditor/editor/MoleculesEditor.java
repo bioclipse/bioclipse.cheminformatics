@@ -75,13 +75,18 @@ public class MoleculesEditor extends EditorPart implements
     public MoleculesEditor() {
     }
 
-    public MoleculeViewerContentProvider getContentProvider() {
+    public MoleculeTableContentProvider getContentProvider() {
         IContentProvider provider = molTableViewer.getContentProvider();
-        if(provider instanceof MoleculeViewerContentProvider)
-            return (MoleculeViewerContentProvider) provider;
+        if(provider instanceof MoleculeTableContentProvider)
+            return (MoleculeTableContentProvider) provider;
         return null;
     }
 
+    public IMoleculesEditorModel getModel() {
+        
+        return (IMoleculesEditorModel) molTableViewer.getInput();
+    }
+    
     public MoleculeTableViewer getMolTableViewer() {
         return molTableViewer;
     }
@@ -180,13 +185,7 @@ public class MoleculesEditor extends EditorPart implements
                                 final List<ICDKMolecule> list = getReturnValue();
 
                                 // FIXME there should be a IMoleculesEditorModel content provider
-                                Object input = new IAdaptable() {
-
-                                    @SuppressWarnings("unchecked")
-                                    public Object getAdapter( Class adapter ) {
-
-                                        if(adapter.isAssignableFrom( IMoleculesEditorModel.class ))
-                                            return new IMoleculesEditorModel() {
+                                Object input = new IMoleculesEditorModel() {
                                             List<ICDKMolecule> molecules;
                                             {
                                                 molecules = list;
@@ -201,17 +200,17 @@ public class MoleculesEditor extends EditorPart implements
                                             return molecules.size();
                                         }
 
-                                        public void save(
+                                        public void markDirty(
                                                               int index,
                                                               ICDKMolecule moleculeToSave ) {
 
                                                list.set(index,moleculeToSave);
 
                                             }
+                                        public void save() {
+                                            throw new UnsupportedOperationException();
+                                            }
                                     };
-                                    return null;
-                                }
-                              };
 
 
                               molTableViewer.setContentProvider(
@@ -234,9 +233,11 @@ public class MoleculesEditor extends EditorPart implements
 
                         @Override
                         public void runInUI() {
+                            SDFileIndex sdfIndex = getReturnValue();
                             molTableViewer.setContentProvider(
-                                new MoleculeViewerContentProvider() );
-                            molTableViewer.setInput( getReturnValue() );
+                                new MoleculeTableContentProvider() );
+                            molTableViewer.setInput( 
+                                            new SDFIndexEditorModel(sdfIndex));
                             molTableViewer.refresh();
                         }
 
@@ -246,13 +247,7 @@ public class MoleculesEditor extends EditorPart implements
             final List<ICDKMolecule> list = adapt(editorInput,List.class);
             if(list!=null) {
 
-                Object inp = new IAdaptable() {
-
-                    @SuppressWarnings("unchecked")
-                    public Object getAdapter( Class adapter ) {
-
-                        if(adapter.isAssignableFrom( IMoleculesEditorModel.class ))
-                            return new IMoleculesEditorModel() {
+                Object inp =  new IMoleculesEditorModel() {
                             List<ICDKMolecule> molecules;
                             {
                                 molecules = list;
@@ -267,15 +262,15 @@ public class MoleculesEditor extends EditorPart implements
                                 return molecules.size();
                             }
 
-                            public void save( int index,
+                            public void markDirty( int index,
                                                   ICDKMolecule moleculeToSave ) {
 
                                 molecules.set( index, moleculeToSave );
                             }
+                            
+                            public void save() {
+                                }
                         };
-                        return null;
-                    }
-                  };
 
                   molTableViewer.setContentProvider(
                                new MoleculeTableContentProvider() );
