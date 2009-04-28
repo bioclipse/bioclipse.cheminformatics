@@ -37,6 +37,7 @@ import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.internal.part.NullEditorInput;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                                                     ISelectionListener {
@@ -165,7 +166,8 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
     protected void pageChange( int newPageIndex ) {
        Pages page = pageOrder.get( newPageIndex );
        setPartProperty( "activePage", page.name() );
-
+       if(lastPage == Pages.JCP)
+           syncJCP();
        switch(page) {
            case Molecules:
                if(lastPage == Pages.Headers) {
@@ -188,6 +190,11 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
        firePartPropertyChanged( "activePage", lastPage.name(), page.name() );
        super.pageChange( newPageIndex );
     }
+
+   private void syncJCP() {
+
+//       jcpPage.getControllerHub();
+   }
 
     private void updateJmolPage() {
         ISelection selection = moleculesPage.getSelection();
