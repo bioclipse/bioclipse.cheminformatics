@@ -317,8 +317,7 @@ public class MoleculesEditor extends EditorPart implements
     }
 
     public ISelection getSelection() {
-
-            return StructuredSelection.EMPTY;
+            return molTableViewer.getSelection();
     }
 
     private ISelection getSelectedRows() {
