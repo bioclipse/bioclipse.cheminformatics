@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.Activator;
@@ -31,6 +32,7 @@ import net.bioclipse.cdk.jchempaint.view.ChoiceGenerator;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionException;
@@ -430,18 +432,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     public void setAtomContainer(IAtomContainer atomContainer) {
         if( atomContainer != null) {
-            if(atomContainer.getAtomCount() > 0 &&
-               GeometryTools.has2DCoordinatesNew( atomContainer )<2) {
-                atomContainer = generate2Dfrom3D( atomContainer );
-                setDirty( true );
-                generated = true;
-            }else {
-                IAtomContainer oldAC = atomContainer;
-                atomContainer = atomContainer.getBuilder()
-                        .newAtomContainer( atomContainer );
-                atomContainer.setProperties( new HashMap<Object, Object>(
-                        oldAC.getProperties()) );
-            }
+
             IChemModel model = ChemModelManipulator.newChemModel( atomContainer );
             setModel( model );
         }else {
@@ -458,7 +449,24 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
             if (molecule != null) {
                 cdkMolecule = molecule;
-                setAtomContainer( cdkMolecule.getAtomContainer());
+                IAtomContainer atomContainer = cdkMolecule.getAtomContainer();
+                if(atomContainer.getAtomCount() > 0 &&
+                        GeometryTools.has2DCoordinatesNew( atomContainer )<2) {
+                         cdkMolecule = generate2Dfrom3D( cdkMolecule );
+                         if(cdkMolecule!=null) // FIXME do what else dose empty chem model
+                             atomContainer= cdkMolecule.getAtomContainer();
+                         else
+                             atomContainer = null;
+                         setDirty( true );
+                         generated = true;
+                     }else {
+                         IAtomContainer oldAC = atomContainer;
+                         atomContainer = atomContainer.getBuilder()
+                                 .newAtomContainer( atomContainer );
+                         atomContainer.setProperties( new HashMap<Object, Object>(
+                                 oldAC.getProperties()) );
+                     }
+                setAtomContainer(atomContainer);
             }
             else {
                 IChemModel model = NoNotificationChemObjectBuilder.getInstance()
@@ -471,26 +479,20 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     /*
      * Utility method for copying 3D x,y to 2D coordinates
      */
-    public static IAtomContainer generate2Dfrom3D( IAtomContainer atomContainer ) {
+    public static ICDKMolecule generate2Dfrom3D( ICDKMolecule cdkMolecule ) {
 
-        IAtomContainer container = null;
+        ICDKManager cdk = net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
+        ICDKMolecule newMolecule;
         try {
-            sdg.setMolecule( (IMolecule) atomContainer.clone() );
-            sdg.generateCoordinates();
-            container = sdg.getMolecule();
-        } catch ( CloneNotSupportedException e ) {
-            System.out.println("Could not create 2D coordinates: " + e.getMessage());
-            return atomContainer;
-        } catch (Exception e) {
-            System.out.println("Could not create 2D coordinates: " + e.getMessage());
-            return atomContainer;
+            newMolecule = cdk.generate2dCoordinates( cdkMolecule );
+        } catch ( Exception e ) {
+            // FIXME make non static
+            return null;
         }
-        //FIXME work-around for bug 613
-        container.setProperties( new HashMap<Object, Object>(
-                atomContainer.getProperties()) );
+        newMolecule.getAtomContainer().setProperties( new HashMap<Object, Object>(
+                cdkMolecule.getAtomContainer().getProperties()) );
 
-        return container;
-
+        return newMolecule;
     }
 
     public ControllerHub getControllerHub() {
@@ -628,5 +630,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                                      origin.y + rect.height/2d );
         this.redraw();
 
+    }
+    public ICDKMolecule getMolecule() {
+        return cdkMolecule;
     }
 }

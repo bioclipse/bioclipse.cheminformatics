@@ -1365,7 +1365,7 @@ public class CDKManager implements ICDKManager {
         return mass;
       }
 
-      public IMolecule generate2dCoordinates(IMolecule molecule)
+      public ICDKMolecule generate2dCoordinates(IMolecule molecule)
                        throws Exception {
           List<IMolecule> molecules = new ArrayList<IMolecule>();
           molecules.add( molecule );
@@ -1373,18 +1373,18 @@ public class CDKManager implements ICDKManager {
       
       }
 
-      public List<IMolecule> generate2dCoordinates(List<IMolecule> molecules)
+      public List<ICDKMolecule> generate2dCoordinates(List<? extends IMolecule> molecules)
                        throws Exception {
 
           ICDKMolecule cdkmol = null;
-          List<IMolecule> newMolecules=new BioList<IMolecule>();
+          List<ICDKMolecule> newMolecules= new BioList<ICDKMolecule>();
 
-          for(int i=0;i<molecules.size();i++){
-            if (molecules.get(0) instanceof ICDKMolecule) {
-                cdkmol = (ICDKMolecule) molecules.get(0);
+          for(IMolecule molecule:molecules){
+            if (molecule instanceof ICDKMolecule) {
+                cdkmol = (ICDKMolecule) molecule;
             }
             else {
-                cdkmol = create(molecules.get(0));
+                cdkmol = create(molecule);
             }
   
             IMoleculeSet mols
@@ -1401,7 +1401,7 @@ public class CDKManager implements ICDKManager {
                 IAtomContainer ac = sdg.getMolecule();
                 newmolecule.add(ac);
             }
-            newMolecules.add( new CDKMolecule(newmolecule) );
+            newMolecules.add(  new CDKMolecule(newmolecule) );
           }
           return newMolecules;
       }

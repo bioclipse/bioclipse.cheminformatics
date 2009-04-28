@@ -671,7 +671,7 @@ public class CDKManagerTest extends AbstractManagerTest {
         Assert.assertNull(((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom(0).getPoint2d());
         //3d coords should stay, we test that.
         ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom( 0 ).setPoint3d( new Point3d(0,0,0) );
-        List<IMolecule> cdkMolecule = cdk.generate2dCoordinates(molecule);
+        List<ICDKMolecule> cdkMolecule = cdk.generate2dCoordinates(molecule);
         Assert.assertTrue(cdkMolecule.get(0) instanceof ICDKMolecule);
         assertNotNull(((ICDKMolecule)cdkMolecule.get(0)).getAtomContainer().getAtom(0).getPoint2d());
         assertNotNull(((ICDKMolecule)cdkMolecule.get(0)).getAtomContainer().getAtom(0).getPoint3d());
@@ -689,7 +689,7 @@ public class CDKManagerTest extends AbstractManagerTest {
         //3d coords should stay, we test that.
         ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom( 0 ).setPoint3d( new Point3d(0,0,0) );
         ((ICDKMolecule)molecule.get( 1 )).getAtomContainer().getAtom( 0 ).setPoint3d( new Point3d(0,0,0) );
-        List<IMolecule> cdkMolecule = cdk.generate2dCoordinates(molecule);
+        List<ICDKMolecule> cdkMolecule = cdk.generate2dCoordinates(molecule);
         Assert.assertTrue(cdkMolecule.get(0) instanceof ICDKMolecule);
         assertNotNull(((ICDKMolecule)cdkMolecule.get(0)).getAtomContainer().getAtom(0).getPoint2d());
         assertNotNull(((ICDKMolecule)cdkMolecule.get(0)).getAtomContainer().getAtom(0).getPoint3d());

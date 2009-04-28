@@ -602,13 +602,13 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod(params = "List<IMolecule> molecule",
                      methodSummary="Create 2D coordinate for the given molecules")
     @TestMethods("testGenerate2DCoordinates")
-    public List<IMolecule> generate2dCoordinates(List<IMolecule> molecule) throws Exception;
+    public List<ICDKMolecule>  generate2dCoordinates(List<? extends IMolecule> molecules) throws Exception;
 
     @Recorded
     @PublishedMethod(params = "IMolecule molecule",
                      methodSummary="Create 2D coordinate for the given molecule")
     @TestMethods("testGenerate2DCoordinatesSingle")
-    public IMolecule generate2dCoordinates(IMolecule molecule) throws Exception;
+    public ICDKMolecule generate2dCoordinates(IMolecule molecule) throws Exception;
 
     @Recorded
     @PublishedMethod(params = "List<IMolecule> molecule",

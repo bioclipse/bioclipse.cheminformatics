@@ -97,7 +97,6 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
     private JCPOutlinePage fOutlinePage;
 
-    private ICDKMolecule           model;
     private JChemPaintEditorWidget widget;
     private IControllerModel       c2dm;
     private Menu                   menu;
@@ -119,7 +118,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     @Override
     public void doSave( IProgressMonitor monitor ) {
         ICDKManager cdk = Activator.getDefault().getCDKManager();
-
+        ICDKMolecule model = widget.getMolecule();
         try {
             IFile resource = (IFile)model.getResource();
             IChemFormat chemFormat = cdk.determineFormat(
@@ -150,7 +149,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
     @Override
     public void doSaveAs() {
-
+        ICDKMolecule model = widget.getMolecule();
         SaveAsDialog saveAsDialog = new SaveAsDialog( this.getSite().getShell() );
         if ( model.getResource() instanceof IFile )
             saveAsDialog.setOriginalFile( (IFile) model.getResource() );
@@ -236,8 +235,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         ICDKMolecule cdkModel = (ICDKMolecule) input
                                 .getAdapter( ICDKMolecule.class );
         if(cdkModel!=null) {
-            model = cdkModel;
-            widget.setInput( model );
+            widget.setInput( cdkModel );
         }else {
             IFile file = (IFile) input.getAdapter( IFile.class );
             if(file != null && file.exists()) {
@@ -247,7 +245,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
                         @Override
                         public void runInUI() {
-                            model = getReturnValue();
+                            ICDKMolecule model = getReturnValue();
                             int x2d = GeometryTools.has2DCoordinatesNew( model.getAtomContainer() );
                             x2d = 2;
                             if(x2d <2 ) {
@@ -441,18 +439,18 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         if(cModel == null) return;
         for(IAtomContainer ac:ChemModelManipulator.getAllAtomContainers( cModel )) {
             ac.setProperties( new HashMap<Object, Object>(
-                    model.getAtomContainer().getProperties()) );
+                    widget.getMolecule().getAtomContainer().getProperties()) );
         }
         widget.redraw();
     }
 
     public void setInput( Object element ) {
-
         widget.setInput( element );
         widget.redraw();
     }
 
     public ICDKMolecule getCDKMolecule() {
+        ICDKMolecule model = widget.getMolecule();
         IAtomContainer modelContainer = model.getAtomContainer();
 
         IChemModel chemModel = getControllerHub().getIChemModel();
@@ -475,8 +473,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
             return fOutlinePage;
         }
         if ( IAtomContainer.class.equals( adapter ) ) {
-            if(model!=null)
-                return model.getAtomContainer();
+            if(widget.getMolecule()!=null)
+                return widget.getMolecule().getAtomContainer();
             else
                 return null;
         }
@@ -525,11 +523,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
                         if(contains(ChemModelManipulator.getAllAtomContainers( 
                                    widget.getControllerHub().getIChemModel() ),
-                                   chemObject));
-                        if(contains(widget.getControllerHub()
-                                    .getIChemModel().getMoleculeSet()
-                                    .atomContainers(),
-                                    chemObject)) {
+                                   chemObject)){
 
                             jcpSelection = new SingleSelection<IChemObject>(
                                     chemObject);
