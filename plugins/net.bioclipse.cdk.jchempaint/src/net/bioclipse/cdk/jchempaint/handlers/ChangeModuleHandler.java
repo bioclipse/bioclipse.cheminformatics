@@ -76,8 +76,8 @@ public class ChangeModuleHandler extends AbstractJChemPaintHandler
      */
     public Object execute( ExecutionEvent event ) throws ExecutionException {
 
-        if(matchesRadioState( event ))
-            return null;
+        //if(matchesRadioState( event ))
+        //    return null;
 
         ControllerHub hub = getControllerHub( event );
 
