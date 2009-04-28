@@ -46,7 +46,7 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
  */
 public class JChemPaintWidget extends Canvas {
 
-    static protected class Message {
+    static public class Message {
         enum Alignment{
             TOP_LEFT,
             TOP_RIGHT,
