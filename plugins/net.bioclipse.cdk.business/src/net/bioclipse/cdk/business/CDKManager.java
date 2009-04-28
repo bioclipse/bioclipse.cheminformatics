@@ -792,7 +792,7 @@ public class CDKManager implements ICDKManager {
                           throws BioclipseException, IOException {
 
           if (molstring == null)
-              throw new BioclipseException("Input cannot be null");
+              throw new IllegalArgumentException("Input cannot be null");
 
           ByteArrayInputStream bais
               = new ByteArrayInputStream( molstring.getBytes() );
