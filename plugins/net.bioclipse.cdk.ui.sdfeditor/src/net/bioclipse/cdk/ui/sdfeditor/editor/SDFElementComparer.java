@@ -22,7 +22,7 @@ public class SDFElementComparer implements IElementComparer {
         public boolean equals( Object a, Object b ) {
             if ( a == b )
                 return true;
-            if(a instanceof SDFElementComparer && b instanceof SDFElement) {
+            if(a instanceof SDFElement && b instanceof SDFElement) {
                 SDFElement aa = (SDFElement)a;
                 SDFElement bb = (SDFElement)b;
                 return aa.getResource().equals( bb.getResource() )
