@@ -526,6 +526,9 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                         IChemObject chemObject= ((CDKChemObject)bcSelection
                                                .getFirstElement()).getChemobj();
 
+                        if(contains(ChemModelManipulator.getAllAtomContainers( 
+                                   widget.getControllerHub().getIChemModel() ),
+                                   chemObject));
                         if(contains(widget.getControllerHub()
                                     .getIChemModel().getMoleculeSet()
                                     .atomContainers(),
