@@ -83,7 +83,6 @@ public class MoleculeTableViewer extends ContentViewer {
 
         bodyConfig.setCellRenderer( new AbstractCellRenderer() {
 
-
             @Override
             public ICellPainter getCellPainter( int row, int col ) {
 
@@ -110,6 +109,7 @@ public class MoleculeTableViewer extends ContentViewer {
         model.setColumnHeaderConfig( new DefaultColumnHeaderConfig(columnHeaderLabelProvider));
 
         model.setSingleCellSelection( false );
+        model.setMultipleSelection( true );
 //        model.setMultipleSelection( true );
 //        model.
 
