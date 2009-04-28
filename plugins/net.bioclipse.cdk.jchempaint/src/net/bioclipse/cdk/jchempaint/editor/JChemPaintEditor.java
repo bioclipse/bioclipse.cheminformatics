@@ -76,6 +76,7 @@ import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.controller.IControllerModel;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -251,6 +252,15 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                         @Override
                         public void runInUI() {
                             model = getReturnValue();
+                            int x2d = GeometryTools.has2DCoordinatesNew( model.getAtomContainer() );
+                            x2d = 2;
+                            if(x2d <2 ) {
+                                logger.error( "Not all atoms has 2d coordinates" );
+                                JChemPaintEditor.this.getSite().getPage()
+                                   .closeEditor( JChemPaintEditor.this, false );
+                                model = null;
+                                return;
+                            }
                             widget.setInput( model );
                             if(fOutlinePage!=null) {
                                 fOutlinePage.setInput(
