@@ -27,6 +27,8 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.State;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.commands.IElementUpdater;
@@ -181,15 +183,19 @@ public class ChangeModuleHandler extends AbstractJChemPaintHandler
     }
 
     public String getCurrentValue() {
-        IEditorPart editor = PlatformUI.getWorkbench()
-                                .getActiveWorkbenchWindow().getActivePage()
-                                .getActiveEditor();
+        IWorkbench workbench = PlatformUI.getWorkbench();
+        IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
+        if(workbenchWindow != null) {
 
-        if ( (editor instanceof JChemPaintEditor) ) {
-            ControllerHub hub = ((JChemPaintEditor) editor).getControllerHub();
-            return hub.getActiveDrawModule().getDrawModeString();
+            IEditorPart editor = workbenchWindow
+            .getActivePage()
+            .getActiveEditor();
+
+            if ( (editor instanceof JChemPaintEditor) ) {
+                ControllerHub hub = ((JChemPaintEditor) editor).getControllerHub();
+                return hub.getActiveDrawModule().getDrawModeString();
+            }
         }
-
         return null;
     }
 
