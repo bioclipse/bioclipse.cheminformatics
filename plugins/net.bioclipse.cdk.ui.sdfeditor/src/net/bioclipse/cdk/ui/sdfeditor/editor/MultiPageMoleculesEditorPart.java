@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.ISelectionListener;
@@ -56,6 +57,8 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         Jmol;
     }
     Map<Integer,Pages> pageOrder = new HashMap<Integer,Pages>();
+
+    private boolean dirty = false;
 
 
     public MultiPageMoleculesEditorPart() {
@@ -194,12 +197,26 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
 
    private void syncJCP() {
        ICDKMolecule newMol = jcpPage.getCDKMolecule();
-
+       if(jcpPage.isDirty())
+           setDirty(true);
        moleculesPage.getModel().markDirty(
                        moleculesPage.getMolTableViewer().getFirstSelected(),
                        newMol );
 
    }
+
+    private void setDirty( boolean b ) {
+        if(dirty != b) {
+            dirty  = b;
+            firePropertyChange( IEditorPart.PROP_DIRTY );
+        }
+    }
+
+    @Override
+    public boolean isDirty() {
+
+        return dirty;
+    }
 
     private void updateJmolPage() {
         ISelection selection = moleculesPage.getSelection();
