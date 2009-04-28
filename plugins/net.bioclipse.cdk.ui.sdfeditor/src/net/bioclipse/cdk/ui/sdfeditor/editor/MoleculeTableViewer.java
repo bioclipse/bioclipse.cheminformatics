@@ -15,6 +15,10 @@ import net.sourceforge.nattable.data.IDataProvider;
 import net.sourceforge.nattable.model.DefaultNatTableModel;
 import net.sourceforge.nattable.painter.cell.ICellPainter;
 import net.sourceforge.nattable.renderer.AbstractCellRenderer;
+import net.sourceforge.nattable.typeconfig.style.DefaultStyleConfig;
+import net.sourceforge.nattable.typeconfig.style.DisplayModeEnum;
+import net.sourceforge.nattable.typeconfig.style.IStyleConfig;
+import net.sourceforge.nattable.util.GUIHelper;
 
 import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.ISelection;
@@ -32,7 +36,6 @@ public class MoleculeTableViewer extends ContentViewer {
     public final static int STRUCTURE_COLUMN_WIDTH = 200;
 
     NatTable table;
-    Control headerControl;
     JCPCellPainter cellPainter;
 
     private int currentSelected;
@@ -66,6 +69,8 @@ public class MoleculeTableViewer extends ContentViewer {
 
         DefaultBodyConfig bodyConfig = new DefaultBodyConfig(new IDataProvider() {
 
+
+
             public int getColumnCount() {
                 if(getDataProvider()==null) return 0;
                 return getDataProvider().getColumnCount();
@@ -84,6 +89,15 @@ public class MoleculeTableViewer extends ContentViewer {
         });
 
         bodyConfig.setCellRenderer( new AbstractCellRenderer() {
+
+            DefaultStyleConfig selectedStyle = new DefaultStyleConfig(ICellPainter.COLOR_LIST_SELECTION, GUIHelper.COLOR_WHITE, null, null);
+            @Override
+            public IStyleConfig getStyleConfig(String displayMode, int row, int col) {
+                if (DisplayModeEnum.SELECT.name().equals(displayMode)) {
+                    return selectedStyle;
+                }
+                return super.getStyleConfig(displayMode, row, col);
+            }
 
             @Override
             public ICellPainter getCellPainter( int row, int col ) {
@@ -138,7 +152,7 @@ public class MoleculeTableViewer extends ContentViewer {
         Listener listener = new Listener() {
 
             public void handleEvent( Event event ) {
-                
+
                 updateSelection( getSelection() );
             }
         };
@@ -220,11 +234,11 @@ public class MoleculeTableViewer extends ContentViewer {
         fireSelectionChanged(event);
     }
 
-    
+
     public int getFirstSelected() {
-    
+
         return currentSelected;
     }
-    
-    
+
+
 }
