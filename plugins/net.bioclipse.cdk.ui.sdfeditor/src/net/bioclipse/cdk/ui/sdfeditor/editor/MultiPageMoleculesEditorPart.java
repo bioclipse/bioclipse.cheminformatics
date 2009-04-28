@@ -162,22 +162,6 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         return false;
     }
 
-//    private void reactOnSelection(IStructuredSelection selection){
-//        moleculesPage.reactOnSelection( selection );
-//        if(SINGLE_ENTRY_PAGE == getActivePage()) {
-//            updateJCPPage();
-//        }
-//    }
-//
-//    public void selectionChanged( SelectionChangedEvent event ) {
-//        ISelection selection = event.getSelection();
-//        if( selection instanceof IStructuredSelection){
-//            reactOnSelection( (IStructuredSelection) selection );
-//        }
-//
-//    }
-
-
    @Override
     protected void pageChange( int newPageIndex ) {
        Pages page = pageOrder.get( newPageIndex );
