@@ -23,6 +23,8 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.AtomIndexSelection;
 import net.bioclipse.core.domain.IChemicalSelection;
+import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
@@ -41,12 +43,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.ViewPart;
 import org.openscience.cdk.AtomContainer;
-import org.openscience.cdk.Molecule;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
-import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
@@ -60,19 +59,17 @@ public class JChemPaintView extends ViewPart
 
     private JChemPaintWidget canvasView;
     private ChoiceGenerator extensionGenerator;
-    private IMolecule molecule;
-    private final static StructureDiagramGenerator sdg = new StructureDiagramGenerator();
     private IPartListener2 partListener;
-    private ICDKManager cdk;
 
     /**
      * The constructor.
      */
     public JChemPaintView() {
-
-        cdk = net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
     }
 
+    private ICDKManager getCDKManager() {
+        return net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
+    }
     /**
      * This is a callback that will allow us
      * to create the viewer and initialize it.
@@ -192,6 +189,12 @@ public class JChemPaintView extends ViewPart
         reactOnSelection( selection );
     }
 
+    @SuppressWarnings("unchecked")
+    private static <T> T adapt(IAdaptable adaptor,Class<T> clazz) {
+
+        return (T)adaptor.getAdapter( clazz );
+    }
+
     private void reactOnSelection(ISelection selection) {
 
         if (!(selection instanceof IStructuredSelection))
@@ -205,49 +208,47 @@ public class JChemPaintView extends ViewPart
             setAtomContainer( (IAtomContainer) obj );
         }
         //If we have an ICDKMolecule, just get the AC
-        else if (obj instanceof ICDKMolecule) {
-            CDKMolecule mol = (CDKMolecule) obj;
-            if (mol.getAtomContainer()==null){
-                logger.debug("CDKMolecule but can't get AtomContainer.");
-                return;
+        else
+            if (obj instanceof ICDKMolecule) {
+                CDKMolecule mol = (CDKMolecule) obj;
+                if (mol.getAtomContainer()==null){
+                    logger.debug("CDKMolecule but can't get AtomContainer.");
+                    return;
+                }
+
+                if( GeometryTools.has2DCoordinatesNew( mol.getAtomContainer() )<2) {
+                    setAtomContainer( generate2DFrom( mol ) );
+                }else
+                    setAtomContainer(mol.getAtomContainer());
             }
-            setAtomContainer(mol.getAtomContainer());
-        }
 
         //Try to get an IMolecule via the adapter
         else if (obj instanceof IAdaptable) {
             IAdaptable ada=(IAdaptable)obj;
 
             if(ada instanceof EditorPart) {
-                setAtomContainer( (IAtomContainer)ada
-                                  .getAdapter( IAtomContainer.class ) );
-            }
-            //Start by requesting molecule
-            Object molobj=ada
-            .getAdapter( net.bioclipse.core.domain.IMolecule.class );
-            if (molobj==null ){
-                //Nothing to show
-                //                    clearView();
+                setAtomContainer( adapt(ada,IAtomContainer.class) );
                 return;
             }
-
-            net.bioclipse.core.domain.IMolecule bcmol
-            = (net.bioclipse.core.domain.IMolecule) molobj;
-
+            //Start by requesting molecule
+            IMolecule bcmol = adapt( ada, IMolecule.class);
+            if(bcmol == null) {
+                setAtomContainer( null );
+                return;
+            }
+            IAtomContainer ac = null;
             try {
-
+                ICDKManager cdk = getCDKManager();
                 //Create cdkmol from IMol, via CML or SMILES if that fails
                 ICDKMolecule cdkMol=cdk.create( bcmol );
 
                 //Create molecule
-                IAtomContainer ac=cdkMol.getAtomContainer();
-                molecule=new Molecule(ac);
+                ac=cdkMol.getAtomContainer();
 
                 //Create 2D-coordinates if not available
-                if (GeometryTools.has2DCoordinatesNew( molecule )==0){
-                    sdg.setMolecule((IMolecule)molecule.clone());
-                    sdg.generateCoordinates();
-                    molecule = sdg.getMolecule();
+                if (GeometryTools.has2DCoordinatesNew( ac )<2){
+                    ac = generate2DFrom( cdkMol );
+
                 }
 
                 //Set AtomColorer based on active editor
@@ -255,11 +256,7 @@ public class JChemPaintView extends ViewPart
                 //TODO
 
                 //Update widget
-                setAtomContainer(molecule);
-            } catch (CloneNotSupportedException e) {
-                clearView();
-                logger.debug( "Unable to clone structure in 2Dview: "
-                              + e.getMessage() );
+                setAtomContainer(ac);
             } catch ( BioclipseException e ) {
                 clearView();
                 logger.debug( "Unable to generate structure in 2Dview: "
@@ -273,12 +270,10 @@ public class JChemPaintView extends ViewPart
 
 
             //Handle case where Iadaptable can return atoms to be highlighted
-            Object selobj=ada
-            .getAdapter( IChemicalSelection.class );
+            IChemicalSelection atomSelection=adapt(ada,IChemicalSelection.class);
             //                ArrayList<Integer> atomSelectionIndices=new ArrayList<Integer>();
 
-            if (selobj!=null){
-                IChemicalSelection atomSelection=(IChemicalSelection)selobj;
+            if (atomSelection!=null && ac!=null){
 
                 if ( atomSelection instanceof AtomIndexSelection ) {
                     AtomIndexSelection isel = (AtomIndexSelection) atomSelection;
@@ -286,7 +281,7 @@ public class JChemPaintView extends ViewPart
                     //                        System.out.println("\n** Should highlight these JCP atoms:\n");
                     IAtomContainer selectedMols=new AtomContainer();
                     for (int i=0; i<selindices.length;i++){
-                        selectedMols.addAtom( molecule.getAtom( selindices[i] ));
+                        selectedMols.addAtom( ac.getAtom( selindices[i] ));
                         //                            System.out.println(i);
                     }
                     canvasView.getRenderer2DModel().setExternalSelectedPart( selectedMols );
@@ -294,6 +289,19 @@ public class JChemPaintView extends ViewPart
                 }
             }
         }
+    }
+
+    private IAtomContainer generate2DFrom(IMolecule mol)  {
+        ICDKMolecule newMol = null;
+            try {
+                newMol = getCDKManager().generate2dCoordinates( mol );
+                return newMol.getAtomContainer();
+            } catch ( Exception e ) {
+                setAtomContainer( null );
+                logger.debug( "Error generating 2d coordinates: " +e.getMessage()  );
+                LogUtils.debugTrace( logger, e );
+                return null;
+            }
     }
 
     /**
@@ -311,7 +319,8 @@ public class JChemPaintView extends ViewPart
                 canvasView.redraw();
             } catch (Exception e) {
                 canvasView.setVisible( false );
-                logger.debug("Error displaying molecule in viewer: " + e.getMessage());
+                logger.debug( "Error displaying molecule in 2d structure view: "
+                              + e.getMessage());
             }
     }
 
