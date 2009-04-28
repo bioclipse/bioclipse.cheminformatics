@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.sourceforge.nattable.NatTable;
 import net.sourceforge.nattable.config.DefaultBodyConfig;
 import net.sourceforge.nattable.config.DefaultColumnHeaderConfig;
@@ -29,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.ScrollBar;
 
 
 public class MoleculeTableViewer extends ContentViewer {
@@ -64,7 +64,7 @@ public class MoleculeTableViewer extends ContentViewer {
         rowHeaderColumnWidthConfig.setDefaultSize(STRUCTURE_COLUMN_WIDTH/3);
         //              columnWidthConfig.setDefaultSize(150);
         rowHeaderColumnWidthConfig.setDefaultResizable(true);
-        rowHeaderColumnWidthConfig.setIndexResizable( 0, true );
+        rowHeaderColumnWidthConfig.setIndexResizable( 1, true );
         rowHeaderConfig.setRowHeaderColumnWidthConfig( rowHeaderColumnWidthConfig );
 
         DefaultBodyConfig bodyConfig = new DefaultBodyConfig(new IDataProvider() {
@@ -135,7 +135,7 @@ public class MoleculeTableViewer extends ContentViewer {
         columnWidthConfig.setInitialSize( 0, STRUCTURE_COLUMN_WIDTH );
         //              columnWidthConfig.setDefaultSize(150);
         columnWidthConfig.setDefaultResizable(true);
-        columnWidthConfig.setIndexResizable(0, true);
+        columnWidthConfig.setIndexResizable(1, true);
 
         // Row heights
         SizeConfig rowHeightConfig = model.getBodyConfig().getRowHeightConfig();
@@ -158,6 +158,10 @@ public class MoleculeTableViewer extends ContentViewer {
         };
         table.addListener( SWT.SELECTED, listener);
         table.addListener( SWT.MouseUp, listener );
+        ScrollBar vSb = table.getVerticalBar();
+        vSb.setIncrement( 1 );
+        vSb.setPageIncrement( 1 );
+        table.scrollVBarUpdate( vSb );
     }
 
     @Override
@@ -191,13 +195,10 @@ public class MoleculeTableViewer extends ContentViewer {
         return StructuredSelection.EMPTY;
     }
 
-    // FIXME Better handling to get data from the contentprovider or store it somewhere else
-    private IMoleculesEditorModel getMoleculesEditorModel() {
-        return (IMoleculesEditorModel)getContentProvider();
-    }
     private IDataProvider getDataProvider() {
         return (IDataProvider)getContentProvider();
     }
+
     private IMoleculeTableColumnHandler getColumnHandler() {
         return (IMoleculeTableColumnHandler) getContentProvider();
     }
