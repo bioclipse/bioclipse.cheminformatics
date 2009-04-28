@@ -15,14 +15,16 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
-import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
+import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jmol.editors.JmolEditor;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.ContributionManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -31,6 +33,9 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.internal.part.NullEditorInput;
+import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
@@ -39,8 +44,9 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
     Logger logger = Logger.getLogger( MultiPageMoleculesEditorPart.class );
 
     private MoleculesEditor moleculesPage;
-    private JChemPaintEditorWidget jcpWidget;
+    private JChemPaintEditor jcpPage;
     private JmolEditor jmolPage;
+
     PropertySelector ps;
     Pages lastPage;
 
@@ -69,7 +75,9 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         try {
             int i;
             for(Pages page:new Pages[]{ Pages.Molecules,
-                                        Pages.Headers}) {
+                                        Pages.JCP,
+                                        Pages.Headers,
+                                        }) {
                 switch(page) {
                     case Molecules:
                         i = addPage( moleculesPage =
@@ -85,6 +93,12 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                                                    SWT.NONE));
                         pageOrder.put(i, page);
                         setPageText(i,"Headers");
+                        break;
+                    case JCP:
+                        i = addPage( jcpPage = new JChemPaintEditor(),
+                                     new NullEditorInput());
+                        pageOrder.put( i, page );
+                        setPageText( i, "2D-structure" );
                         break;
                 }
             }
@@ -150,6 +164,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
    @Override
     protected void pageChange( int newPageIndex ) {
        Pages page = pageOrder.get( newPageIndex );
+       setPartProperty( "activePage", page.name() );
 
        switch(page) {
            case Molecules:
@@ -164,9 +179,13 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                        moleculesPage.getContentProvider();
                ps.setInitialData( contentProvider.getProperties(),
                                   contentProvider.getAvailableProperties());
+               break;
+           case JCP:
+               updateJCPPage();
        }
 
        lastPage = pageOrder.get(newPageIndex);
+       firePartPropertyChanged( "activePage", lastPage.name(), page.name() );
        super.pageChange( newPageIndex );
     }
 
@@ -205,10 +224,12 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
            Object element = ((IStructuredSelection)selection).getFirstElement();
            if(element instanceof SDFElement) {
                try {
-               jcpWidget.setInput( element );
+               jcpPage.setInput( element );
                } catch (IllegalArgumentException x) {
 
                }
+           }else if( element instanceof ICDKMolecule) {
+               jcpPage.setInput( element );
            }
         }
     }
