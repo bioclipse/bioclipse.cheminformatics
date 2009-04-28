@@ -18,7 +18,6 @@ import java.util.List;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.Node;
 import net.bioclipse.cdk.domain.SDFElement;
-import net.bioclipse.core.BioclipseStore;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
@@ -143,13 +142,8 @@ public class MoleculesFromSDF implements IMoleculesFromFile{
         return children.size();
     }
 
-    /* (non-Javadoc)
-     * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#save()
-     */
-    public void save() {
+    public void save( int index, ICDKMolecule moleculeToSave ) {
         throw new UnsupportedOperationException(this.getClass().getName()+
-                                        " does not support this operation yet");
-        // TODO Auto-generated method stub
-
+                    " does not support this operation yet");
     }
 }

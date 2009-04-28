@@ -23,7 +23,6 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
-import net.bioclipse.core.domain.BioList;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.ui.jobs.BioclipseUIJob;
 
@@ -140,44 +139,59 @@ public class MoleculesEditor extends EditorPart implements
         getSite().setSelectionProvider( molTableViewer );
     }
 
+    @SuppressWarnings("unchecked")
+    private static <T> T adapt(IAdaptable adaptable, Class<T> clazz) {
+        return (T) adaptable.getAdapter( clazz );
+    }
+
+    private static boolean isKindOf(IContentType in,String contentTypeID) {
+        IContentType testType = Platform.getContentTypeManager()
+                .getContentType( contentTypeID );
+
+        return in!=null && testType!=null && in.isKindOf( testType );
+    }
+
     private void getIndexFromInput(IEditorInput editorInput) {
+
         ICDKManager cdkManager = Activator.getDefault().getCDKManager();
+
         SDFileIndex input = null;
-        input = (SDFileIndex) editorInput.getAdapter( SDFileIndex.class );
+        input = adapt(editorInput, SDFileIndex.class);
+
+
         if(input==null) {
-            IFile file = (IFile) editorInput.getAdapter( IFile.class );
+            IFile file = adapt(editorInput,IFile.class);
             if(file!=null) {
-                IContentType fContentType= Platform.getContentTypeManager()
-                   .getContentType("net.bioclipse.contenttypes.smi");
+
                 IContentDescription contentDescr;
                 try {
                     contentDescr = file.getContentDescription();
                 }catch ( CoreException e) {
                     contentDescr = null;
                 }
-                if(contentDescr !=null && fContentType !=null &&
-                     contentDescr.getContentType().isKindOf( fContentType )) {
+                if(contentDescr != null && isKindOf( contentDescr.getContentType(),
+                             "net.bioclipse.contenttypes.smi" )) {
                     try {
-                      cdkManager.loadSMILESFile( file,
-                       new BioclipseUIJob<List<ICDKMolecule>>() {
+                        cdkManager.loadSMILESFile( file,
+                                                   new BioclipseUIJob<List<ICDKMolecule>>() {
 
-                          @Override
-                          public void runInUI() {
-                              final List<ICDKMolecule> list = getReturnValue();
+                            @Override
+                            public void runInUI() {
+                                final List<ICDKMolecule> list = getReturnValue();
 
-                              // FIXME there should be a IMoleculesEditorModel content provider
-                              Object input = new IAdaptable() {
+                                // FIXME there should be a IMoleculesEditorModel content provider
+                                Object input = new IAdaptable() {
 
-                                @SuppressWarnings("unchecked")
-                                public Object getAdapter( Class adapter ) {
+                                    @SuppressWarnings("unchecked")
+                                    public Object getAdapter( Class adapter ) {
 
-                                    if(adapter.isAssignableFrom( IMoleculesEditorModel.class ))
-                                        return new IMoleculesEditorModel() {
-                                        List<ICDKMolecule> molecules;
-                                        {
-                                            molecules = list;
-                                        }
-                                        public ICDKMolecule getMoleculeAt( int index ) {
+                                        if(adapter.isAssignableFrom( IMoleculesEditorModel.class ))
+                                            return new IMoleculesEditorModel() {
+                                            List<ICDKMolecule> molecules;
+                                            {
+                                                molecules = list;
+                                            }
+                                            public ICDKMolecule getMoleculeAt( int index ) {
 
                                             return molecules.get( index );
                                         }
@@ -187,9 +201,13 @@ public class MoleculesEditor extends EditorPart implements
                                             return molecules.size();
                                         }
 
-                                        public void save() {
-                                            throw new UnsupportedOperationException();
-                                        }
+                                        public void save(
+                                                              int index,
+                                                              ICDKMolecule moleculeToSave ) {
+
+                                               list.set(index,moleculeToSave);
+
+                                            }
                                     };
                                     return null;
                                 }
@@ -225,7 +243,7 @@ public class MoleculesEditor extends EditorPart implements
                     });
                 }
             }else {
-            final BioList<ICDKMolecule> list = (BioList<ICDKMolecule>) editorInput.getAdapter( BioList.class );
+            final List<ICDKMolecule> list = adapt(editorInput,List.class);
             if(list!=null) {
 
                 Object inp = new IAdaptable() {
@@ -249,14 +267,15 @@ public class MoleculesEditor extends EditorPart implements
                                 return molecules.size();
                             }
 
-                            public void save() {
-                                throw new UnsupportedOperationException();
+                            public void save( int index,
+                                                  ICDKMolecule moleculeToSave ) {
+
+                                molecules.set( index, moleculeToSave );
                             }
                         };
                         return null;
                     }
                   };
-
 
                   molTableViewer.setContentProvider(
                                new MoleculeTableContentProvider() );

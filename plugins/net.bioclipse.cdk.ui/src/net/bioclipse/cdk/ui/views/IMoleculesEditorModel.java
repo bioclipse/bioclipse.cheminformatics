@@ -23,5 +23,5 @@ public interface IMoleculesEditorModel {
     
     public int getNumberOfMolecules();
     
-    public void save();
+    public void save(int index,ICDKMolecule moleculeToSave);
 }

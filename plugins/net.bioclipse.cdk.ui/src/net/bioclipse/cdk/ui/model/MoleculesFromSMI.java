@@ -9,7 +9,6 @@ import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.SDFElement;
-import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
@@ -44,10 +43,9 @@ public class MoleculesFromSMI implements IMoleculesFromFile {
         return molecules.size();
     }
 
-    public void save() {
+    public void save( int index, ICDKMolecule moleculeToSave ) {
 
         throw new UnsupportedOperationException("Can't save SMILES yet.");
-
     }
 
     public void fetchDeferredChildren( Object object,

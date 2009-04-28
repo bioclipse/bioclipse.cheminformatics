@@ -442,9 +442,9 @@ public class MoleculeTableContentProvider implements
         return getRowCount();
     }
 
-    public void save() {
+    public void save( int index, ICDKMolecule moleculeToSave ) {
 
-        // TODO Auto-generated method stub
+       model.save( index, moleculeToSave );
 
     }
 }
