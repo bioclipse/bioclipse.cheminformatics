@@ -32,7 +32,6 @@ import net.bioclipse.cdk.jchempaint.view.ChoiceGenerator;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionException;
@@ -55,8 +54,6 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -80,8 +77,6 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
-import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
@@ -97,8 +92,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     Logger logger = Logger.getLogger( JChemPaintEditorWidget.class );
 
-    private final static StructureDiagramGenerator sdg = new
-                                                    StructureDiagramGenerator();
     private Collection<ISelectionChangedListener> listeners =
                                     new ArrayList<ISelectionChangedListener>();
 
@@ -114,8 +107,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     private final Point origin = new Point(0, 0);
     private boolean isdirty = false;
     private boolean isScrolling = false;
-    private Color generatedColor;
-    private Font generatedFont;
 
     private boolean generated = false;
 
@@ -141,9 +132,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                        |SWT.H_SCROLL
                        |SWT.V_SCROLL
                        |SWT.DOUBLE_BUFFERED);
-
-        generatedColor = new Color(Display.getCurrent(),200,100,100);
-        generatedFont =new Font(Display.getCurrent(),"Arial",16,SWT.BOLD);
 
         setupScrollbars();
 
@@ -299,12 +287,10 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
         // drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
 
-        Rectangle c = getClientArea();
-        Rectangle2D drawArea = new Rectangle2D.Double(c.x, c.y, c.width,
-                c.height);
-
-        paintDirty(gc, c.width, c.height);
-
+        for(Message message: messages) {
+            paintMessage( gc, message );
+        }
+        
         if (model != null) {
             SWTRenderer visitor = new SWTRenderer(gc);
             Renderer renderer = getRenderer();
@@ -314,24 +300,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             } else {
                 renderer.paintChemModel(model, visitor);
             }
-        }
-    }
-
-    private void paintDirty(GC gc,int width, int height) {
-        if(isdirty) {
-            gc.setFont( generatedFont );
-            int h = height-gc.getFontMetrics().getHeight();
-
-//            int w = width-gc.stringExtent( "Changed" ).x; // for right side
-            gc.setForeground( generatedColor);
-            gc.drawText( "Changed", 0, h );
-        }
-        if(generated) {
-            gc.setFont( generatedFont );
-            int h = height-gc.getFontMetrics().getHeight();
-            int w = width-gc.textExtent( "Generated" ).x;
-            gc.setForeground( generatedColor );
-            gc.drawText( "Generated", w, h );
         }
     }
 
@@ -459,6 +427,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                              atomContainer = null;
                          setDirty( true );
                          generated = true;
+                         add( Message.GENERATED );
                      }else {
                          IAtomContainer oldAC = atomContainer;
                          atomContainer = atomContainer.getBuilder()
@@ -568,6 +537,11 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
 	public void setDirty( boolean dirty) {
 	    this.isdirty = dirty;
+	    if(isdirty) {
+	        add(Message.DIRTY);
+	    }
+	    else
+	        remove( Message.DIRTY );
 	    if(!this.isDisposed()) {
 	        Display.getDefault().asyncExec( new Runnable() {
 	            public void run() {

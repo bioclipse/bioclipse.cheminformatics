@@ -20,6 +20,7 @@ import java.util.List;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.AtomIndexSelection;
 import net.bioclipse.core.domain.IChemicalSelection;
@@ -182,6 +183,7 @@ public class JChemPaintView extends ViewPart
         if ( part instanceof IEditorPart ) {
             IAtomContainer ac = getAtomContainerFromPart( part );
             if(ac != null) {
+                canvasView.remove( Message.GENERATED );
                 setAtomContainer( ac );
                 return;
             }
@@ -203,7 +205,7 @@ public class JChemPaintView extends ViewPart
         IStructuredSelection ssel = (IStructuredSelection) selection;
 
         Object obj = ssel.getFirstElement();
-
+        canvasView.remove( Message.GENERATED );
         if( obj instanceof IAtomContainer) {
             setAtomContainer( (IAtomContainer) obj );
         }
@@ -295,6 +297,7 @@ public class JChemPaintView extends ViewPart
         ICDKMolecule newMol = null;
             try {
                 newMol = getCDKManager().generate2dCoordinates( mol );
+                canvasView.add( Message.GENERATED );
                 return newMol.getAtomContainer();
             } catch ( Exception e ) {
                 setAtomContainer( null );
@@ -312,16 +315,18 @@ public class JChemPaintView extends ViewPart
     }
 
     private void setAtomContainer(IAtomContainer ac) {
+        IChemModel model = null;
+       if(ac!= null) {
             try {
-                IChemModel model = ChemModelManipulator.newChemModel( ac );
-                canvasView.setModel( model );
-                canvasView.setVisible( true );
-                canvasView.redraw();
+                model = ChemModelManipulator.newChemModel( ac );
             } catch (Exception e) {
-                canvasView.setVisible( false );
                 logger.debug( "Error displaying molecule in 2d structure view: "
                               + e.getMessage());
             }
+       }
+       canvasView.setModel( model );
+       canvasView.setVisible( model!=null );
+       canvasView.redraw();
     }
 
     private void disposeControl(DisposeEvent e) {

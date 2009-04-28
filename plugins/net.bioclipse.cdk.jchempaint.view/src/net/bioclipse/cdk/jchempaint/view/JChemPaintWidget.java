@@ -13,17 +13,23 @@ package net.bioclipse.cdk.jchempaint.view;
 
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
@@ -40,6 +46,40 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
  */
 public class JChemPaintWidget extends Canvas {
 
+    static protected class Message {
+        enum Alignment{
+            TOP_LEFT,
+            TOP_RIGHT,
+            BOTTOM_LEFT,
+            BOTTOM_RIGHT,
+        }
+
+        public static Message DIRTY = new Message( "Changed",
+                                                   Alignment.BOTTOM_LEFT);
+
+        public static Message GENERATED = new Message( "Generated",
+                                                   Alignment.BOTTOM_RIGHT);
+        public final Font font;
+        public final Color color;
+        public final Alignment alignment;
+
+        public final String text;
+
+
+        private Message(String text, Alignment alignment) {
+            this.text = text;
+            this.alignment = alignment;
+            font = Display.getDefault().getSystemFont();
+            color = Display.getDefault().getSystemColor( SWT.COLOR_DARK_MAGENTA );
+
+        }
+
+        public void dispose() {
+            font.dispose();
+            color.dispose();
+        }
+    }
+
     //protected IAtomContainer  atomContainer;
     protected IChemModel model;
 
@@ -50,6 +90,8 @@ public class JChemPaintWidget extends Canvas {
     private Renderer renderer;
 
     private SWTFontManager fontManager;
+
+    protected Set<Message> messages = new HashSet<Message>();
 
     /**
      * A new model has to reset the center
@@ -120,6 +162,10 @@ public class JChemPaintWidget extends Canvas {
         Rectangle2D drawArea = new Rectangle2D.Double( c.x, c.y,
                                                          c.width, c.height);
 
+        for(Message message: messages) {
+            paintMessage( event.gc, message );
+        }
+
         SWTRenderer visitor = new SWTRenderer( event.gc );
 
         renderer.paintChemModel( model, visitor,drawArea,true );
@@ -182,5 +228,43 @@ public class JChemPaintWidget extends Canvas {
     public void setUseExtensionGenerators( boolean useExtensionGenerators ) {
         extensionGenerator.setUse( useExtensionGenerators);
         this.redraw();
+    }
+
+    protected void paintMessage( GC gc, Message message ) {
+        Font oldFont = gc.getFont();
+        Color oldColor = gc.getForeground();
+
+        Rectangle clientRect = getClientArea();
+        gc.setFont(message.font);
+
+        int x = 0;
+        switch(message.alignment) {
+            case TOP_RIGHT:
+            case BOTTOM_RIGHT:
+                x = clientRect.width - gc.textExtent( message.text ).x;
+        }
+
+        int y = 0;
+        switch(message.alignment) {
+            case BOTTOM_LEFT:
+            case BOTTOM_RIGHT:
+                y = clientRect.height-gc.getFontMetrics().getHeight();
+        }
+
+        gc.setForeground( message.color );
+        gc.drawText( message.text, x , y );
+
+        gc.setFont( oldFont );
+        gc.setForeground( oldColor );
+    }
+
+    public void add(Message message) {
+        messages.add( message );
+        redraw();
+    }
+
+    public void remove(Message message) {
+        messages.remove( message );
+        redraw();
     }
 }
