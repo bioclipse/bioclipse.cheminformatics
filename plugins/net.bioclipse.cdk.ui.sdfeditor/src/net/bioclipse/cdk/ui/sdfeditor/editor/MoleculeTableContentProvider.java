@@ -90,11 +90,7 @@ public class MoleculeTableContentProvider implements
             lModel = model;
         }
         if ( lModel != null ) {
-            Object o = lModel.getMoleculeAt( index );
-            if ( o instanceof IAdaptable ) {
-                molecule = ((ICDKMolecule) ((IAdaptable) o)
-                        .getAdapter( ICDKMolecule.class ));
-            }
+            molecule = lModel.getMoleculeAt( index );
         }
 
         return molecule;
