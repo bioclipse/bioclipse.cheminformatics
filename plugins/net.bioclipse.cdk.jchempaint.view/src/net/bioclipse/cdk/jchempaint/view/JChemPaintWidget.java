@@ -24,6 +24,7 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -69,7 +70,11 @@ public class JChemPaintWidget extends Canvas {
         private Message(String text, Alignment alignment) {
             this.text = text;
             this.alignment = alignment;
-            font = Display.getDefault().getSystemFont();
+            Font f = Display.getDefault().getSystemFont();
+            FontData fd = f.getFontData()[0];
+            fd.height = 20;
+            fd.style = SWT.BOLD;
+            font = new Font(Display.getDefault(),fd);
             color = Display.getDefault().getSystemColor( SWT.COLOR_DARK_MAGENTA );
 
         }
@@ -163,7 +168,7 @@ public class JChemPaintWidget extends Canvas {
                                                          c.width, c.height);
 
         for(Message message: messages) {
-            paintMessage( event.gc, message );
+            paintMessage( event.gc, message ,c);
         }
 
         SWTRenderer visitor = new SWTRenderer( event.gc );
@@ -230,11 +235,10 @@ public class JChemPaintWidget extends Canvas {
         this.redraw();
     }
 
-    protected void paintMessage( GC gc, Message message ) {
+    public static void paintMessage( GC gc, Message message , Rectangle clientRect) {
         Font oldFont = gc.getFont();
         Color oldColor = gc.getForeground();
 
-        Rectangle clientRect = getClientArea();
         gc.setFont(message.font);
 
         int x = 0;

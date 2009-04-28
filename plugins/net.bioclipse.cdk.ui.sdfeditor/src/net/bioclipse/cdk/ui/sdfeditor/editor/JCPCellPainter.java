@@ -20,6 +20,7 @@ import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager;
 import net.bioclipse.cdk.jchempaint.view.ChoiceGenerator;
+import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.jchempaint.view.SWTFontManager;
 import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message;
@@ -36,7 +37,6 @@ import net.sourceforge.nattable.util.GUIHelper;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
@@ -62,8 +62,6 @@ import org.openscience.cdk.renderer.generators.RingGenerator;
 public class JCPCellPainter implements ICellPainter {
     public Logger logger = Logger.getLogger(JCPCellPainter.class );
 
-    private Color generatedColor;
-    private Font generatedFont;
     private Renderer renderer;
     private ChoiceGenerator extensionGenerator;
 
@@ -124,8 +122,6 @@ public class JCPCellPainter implements ICellPainter {
         rModel.setBackColor( new java.awt.Color(252,253,254));
         rModel.setFitToScreen( true );
 
-        generatedColor = new Color(Display.getCurrent(),200,100,100);
-        generatedFont =new Font(Display.getCurrent(),"Arial",16,SWT.BOLD);
     }
 
     private boolean retriveAtomContainer(IAdaptable element,IAtomContainer[] result) {
@@ -187,16 +183,10 @@ public class JCPCellPainter implements ICellPainter {
                                     rectangle,
                                     true );
             if(generated) {
-                Font oldFont = gc.getFont();
-                Color oldColor = gc.getForeground();
-                gc.setBackground( oldBackground );
-                gc.setFont( generatedFont );
-                int h = rect.height-gc.getFontMetrics().getHeight();
-                gc.setForeground( generatedColor);
-                gc.drawText( "Generated", rect.x, rect.y+h );
-                gc.setFont( oldFont );
-                gc.setForeground( oldColor );
+                Message message = Message.GENERATED;
+                JChemPaintWidget.paintMessage( gc, message, rect );
             }
+            gc.setBackground( oldBackground );
         }
     }
 

@@ -288,7 +288,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         // drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
 
         for(Message message: messages) {
-            paintMessage( gc, message );
+            paintMessage( gc, message ,getClientArea());
         }
         
         if (model != null) {
