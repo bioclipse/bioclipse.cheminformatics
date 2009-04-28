@@ -10,9 +10,7 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -31,7 +29,6 @@ import net.sourceforge.nattable.data.IDataProvider;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -108,41 +105,14 @@ public class MoleculeTableContentProvider implements
 
 //        Assert.isTrue( viewer instanceof MoleculeTableViewer );
         Assert.isTrue( newInput instanceof IAdaptable );
-
-        final IFile file = ( IFile )( ( IAdaptable )newInput )
-                                    .getAdapter( IFile.class );
-        if ( file != null ) {
-            try {
-                readProperties( file );
-                if ( file.getProject().equals( net.bioclipse.core.Activator
-                                               .getVirtualProject() ) ) {
-                    loadMoleculesFromManager( file , FileType.SDF);
-                } else
-
-                    if ( file.getContentDescription().getContentType().getId()
-                            .equals( "net.bioclipse.contenttypes.sdf" ) ) {
-                        (new SDFileMoleculesEditorModel( this )).init( file );
-                        setModel( createSDFTemporaryModel( file ));
-
-                    } else {
-                        if(file.getContentDescription().getContentType().getId()
-                                .equals( "net.bioclipse.contenttypes.smi" ) ) {
-                            loadMoleculesFromManager( file , FileType.SMI);
-                        }
-                    }
-
-            } catch ( CoreException e ) {
-                logger.warn( "Failed to load file: " + e.getMessage() );
-                LogUtils.debugTrace( logger, e );
-            } catch ( IOException e ) {
-                logger.warn( "Failed to load file: " + e.getMessage() );
-                LogUtils.debugTrace( logger, e );
+            if(newInput instanceof IMoleculesEditorModel)
+                setModel((IMoleculesEditorModel) newInput);
+            else {
+                setModel( (IMoleculesEditorModel)
+                          ((IAdaptable)newInput).getAdapter(
+                              IMoleculesEditorModel.class ));
             }
-        } else {
-            setModel( (IMoleculesEditorModel)
-            ((IAdaptable)newInput).getAdapter( IMoleculesEditorModel.class ));
             readProperties( model );
-        }
 
 
         if(this.viewer != null)
@@ -156,16 +126,6 @@ public class MoleculeTableContentProvider implements
                 properties.add(iter.next());
         }
         updateHeaders();
-    }
-
-    private void readProperties(IFile file) throws CoreException{
-        Iterator<ICDKMolecule> iter = Activator.getDefault()
-                                .getCDKManager().createMoleculeIterator( file );
-        if(iter.hasNext()) {
-            ICDKMolecule moleucle = iter.next();
-            availableProperties = moleucle.getAtomContainer().getProperties()
-                        .keySet();
-        }
     }
 
     private void readProperties(IMoleculesEditorModel model) {
@@ -188,130 +148,6 @@ public class MoleculeTableContentProvider implements
         SDF,SMI
     }
 
-    private void loadMoleculesFromManager(IFile file,FileType type)
-                                            throws CoreException, IOException {
-        BioclipseUIJob< List<ICDKMolecule>> uiJob =
-            new BioclipseUIJob<List<ICDKMolecule>>() {
-            @Override
-            public void runInUI() {
-                final List<ICDKMolecule> bioList = getReturnValue();
-
-                setModel( new IMoleculesEditorModel() {
-                    List<ICDKMolecule> molecules;
-                    {
-                        molecules = bioList;
-                    }
-                    public ICDKMolecule getMoleculeAt( int index ) {
-
-                        return molecules.get( index );
-                    }
-
-                    public int getNumberOfMolecules() {
-
-                        return molecules.size();
-                    }
-
-                    public void save() {
-                        throw new UnsupportedOperationException();
-                    }
-
-                });
-
-                NatTable cTable = getCompositeTable( viewer );
-                cTable.redraw();// TODO selection when size changes?
-                cTable.reset();
-                cTable.updateResize();
-
-            }
-
-            @Override
-            public boolean runInBackground() {
-                return true;
-            }
-        };
-
-        switch(type) {
-            case SDF:
-                Activator.getDefault().getCDKManager()
-                .loadMolecules( file,uiJob);
-                break;
-            case SMI:
-                Activator.getDefault().getCDKManager()
-                .loadSMILESFile( file,uiJob );
-
-        }
-
-    }
-    private IMoleculesEditorModel createSDFTemporaryModel(final IFile file) {
-        return new IMoleculesEditorModel() {
-            int rowSize;
-            {
-                rowSize = numberOfEntries( READ_AHEAD );
-            }
-
-            public ICDKMolecule getMoleculeAt( int index ) {
-
-                return readMoleculeWithIterator( index );
-            }
-
-            public int getNumberOfMolecules() {
-                return rowSize;
-            }
-
-            public void save() {
-                throw new UnsupportedOperationException();
-            }
-
-            private ICDKMolecule readMoleculeWithIterator( int index ) {
-
-                Iterator<ICDKMolecule> iter;
-                try {
-                    iter = Activator.getDefault().getCDKManager()
-                            .createMoleculeIterator( file );
-
-                    ICDKMolecule molecule;
-                    int count = 0;
-                    while ( iter.hasNext() ) {
-                        molecule = iter.next();
-                        if ( count++ == index ) {
-                            return molecule;
-                        }
-                    }
-                } catch ( CoreException e ) {
-                    return null;
-                }
-                return null;
-            }
-
-            private int numberOfEntries( int max ) {
-
-                try {
-                    int count = 0;
-                    BufferedReader reader =
-                       new BufferedReader(
-                          new InputStreamReader( file.getContents() ) );
-
-                    String line;
-                    while ( count < max
-                            && (line = reader.readLine()) != null ) {
-
-                        if ( line.contains( "$$$$" ) ) {
-                            count++;
-                        }
-                    }
-                    reader.close();
-                    return count;
-
-                } catch ( CoreException e ) {
-
-                } catch ( IOException e ) {
-
-                }
-                return 0;
-            }
-        };
-    }
-
     private void updateSize(int size) {
         getCompositeTable( viewer ).redraw();
     }
@@ -321,81 +157,6 @@ public class MoleculeTableContentProvider implements
 
     }
 
-    static class SDFileMoleculesEditorModel implements IMoleculesEditorModel {
-        Logger logger = Logger.getLogger( MoleculeTableContentProvider.class );
-        RandomAccessSDFReader reader;
-        MoleculeTableContentProvider provider;
-
-        public SDFileMoleculesEditorModel(
-                                       MoleculeTableContentProvider provider) {
-            this.provider = provider;
-
-        }
-        public void init(IFile file) {
-            createIndex( file );
-        }
-        public ICDKMolecule getMoleculeAt( int index ) {
-
-
-            IChemObject chemObject;
-            try {
-                chemObject = reader
-                .readRecord( index );
-
-                IMolecule ret = (IMolecule) chemObject;
-
-                return (ret!=null?new CDKMolecule(ret):null);
-            } catch ( Exception e ) {
-               logger.warn("Failed to read molecule for SDFile.", e);
-               return null;
-            }
-        }
-
-        public int getNumberOfMolecules() {
-
-            return reader.size();
-        }
-
-        public void save() {
-
-            // TODO Auto-generated method stub
-
-        }
-
-        private void createIndex(final IFile file) {
-            try {
-                Activator.getDefault().getCDKManager()
-                .createSDFileIndex( file, new BioclipseUIJob<Integer>() {
-                    @Override
-                    public void runInUI() {
-
-                        IChemObjectBuilder builder = DefaultChemObjectBuilder
-                        .getInstance();
-
-                        IPath location = file.getLocation();
-                        try {
-                            java.io.File jFile = (location!=null?location.toFile():null);
-                            if(jFile == null) return;
-                            reader = new RandomAccessSDFReader( jFile, builder );
-                            provider.setModel( SDFileMoleculesEditorModel.this);
-
-                        } catch (IOException e ) {
-                            LogUtils.debugTrace( logger, e );
-                        }
-                    }
-
-                    @Override
-                    public boolean runInBackground() {
-                        return true;
-                    }
-                });
-
-            }catch( OperationCanceledException e) {
-                logger.error("Failed to create inded because, "+e.getMessage());
-                LogUtils.debugTrace( logger, e );
-            }
-        }
-    }
     public void dispose() {
 
     }
