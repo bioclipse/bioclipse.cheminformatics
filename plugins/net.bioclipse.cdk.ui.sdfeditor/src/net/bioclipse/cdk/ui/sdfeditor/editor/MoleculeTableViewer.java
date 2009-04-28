@@ -153,7 +153,7 @@ public class MoleculeTableViewer extends ContentViewer {
     @Override
     public ISelection getSelection() {
 
-        if(getContentProvider() instanceof MoleculeTableContentProvider) {
+        if(getContentProvider() instanceof IMoleculesEditorModel) {
 
             int[] selected = table.getSelectionModel().getSelectedRows();
 
