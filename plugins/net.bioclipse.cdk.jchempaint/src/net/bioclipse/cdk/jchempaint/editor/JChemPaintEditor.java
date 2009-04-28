@@ -68,7 +68,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.dialogs.SaveAsDialog;
-import org.eclipse.ui.internal.part.NullEditorInput;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -194,14 +193,12 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
         setSite( site );
         setInput( input );
-
+        if(input==null) return;
         IFile file = (IFile) input.getAdapter( IFile.class );
         if(file != null) {
 //            file.getContentDescription().getContentType()
             setPartName( input.getName() );
                 return;
-        }else if(input instanceof NullEditorInput) {
-            return;
         }
         else{
             ICDKMolecule cModel = (ICDKMolecule)
@@ -212,7 +209,6 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                 return;
             }
         }
-        throw new PartInitException("File not supported");
     }
 
     @Override
@@ -389,6 +385,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
             @Override
             public void setDirty( boolean dirty ) {
+
                 super.setDirty( dirty );
                 Display.getDefault().asyncExec( new Runnable() {
                     public void run() {

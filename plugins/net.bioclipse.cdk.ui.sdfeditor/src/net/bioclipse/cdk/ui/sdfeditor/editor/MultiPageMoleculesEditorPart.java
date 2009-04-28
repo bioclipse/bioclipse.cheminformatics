@@ -24,20 +24,17 @@ import net.bioclipse.jmol.editors.JmolEditor;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.action.ContributionManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.commands.ICommandService;
-import org.eclipse.ui.internal.part.NullEditorInput;
-import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.part.MultiPageEditorPart;
-import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                                                     ISelectionListener {
@@ -97,7 +94,29 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                         break;
                     case JCP:
                         i = addPage( jcpPage = new JChemPaintEditor(),
-                                     new NullEditorInput());
+                                     new IEditorInput() {
+
+                                        public boolean exists() {
+                                            return false;
+                                        }
+                                        public ImageDescriptor getImageDescriptor() {
+                                            return null;
+                                        }
+                                        public String getName() {
+                                            return null;
+                                        }
+                                        public IPersistableElement getPersistable() {
+                                            return null;
+                                        }
+                                        public String getToolTipText() {
+                                            return null;
+                                        }
+                                        @SuppressWarnings("unchecked")
+                                        public Object getAdapter( Class adapter ) {
+                                            return null;
+                                        }
+
+                        });
                         pageOrder.put( i, page );
                         setPageText( i, "2D-structure" );
                         break;
@@ -117,9 +136,6 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
     public void init( IEditorSite site, IEditorInput input )
                                                       throws PartInitException {
         super.init( site, input );
-
-        //site.getPage().addSelectionListener( this );
-
     }
 
     @Override
@@ -192,8 +208,8 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
     }
 
    private void syncJCP() {
+//       ICDKMolecule newMol = jcpPage.getCDKMolecule();
 
-//       jcpPage.getControllerHub();
    }
 
     private void updateJmolPage() {
@@ -205,13 +221,6 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                               .getAdapter( MoleculesIndexEditorInput.class ) );
            }
         }
-
-//        try {
-//            //jmolPage.init( getEditorSite(), getEditorInput() );
-//        } catch ( PartInitException e ) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
     }
 
     public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
