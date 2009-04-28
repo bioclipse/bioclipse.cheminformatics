@@ -4,10 +4,10 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * <http://www.eclipse.org/legal/epl-v10.html>.
- * 
+ *
  * Contributors:
  *     Arvid Berg <goglepox@users.sf.net>
- *     
+ *
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint;
 
@@ -22,7 +22,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 public class MolecuelsEditorTester extends PropertyTester {
 
     /**
-     * 
+     *
      */
     public MolecuelsEditorTester() {
 
@@ -44,5 +44,5 @@ public class MolecuelsEditorTester extends PropertyTester {
         return false;
     }
 
-    
+
 }
