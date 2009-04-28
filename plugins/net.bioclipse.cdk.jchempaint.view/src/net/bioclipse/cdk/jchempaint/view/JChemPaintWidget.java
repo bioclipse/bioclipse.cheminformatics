@@ -72,8 +72,8 @@ public class JChemPaintWidget extends Canvas {
             this.alignment = alignment;
             Font f = Display.getDefault().getSystemFont();
             FontData fd = f.getFontData()[0];
-            fd.height = 20;
-            fd.style = SWT.BOLD;
+            fd.setHeight(20);
+            fd.setStyle(SWT.BOLD);
             font = new Font(Display.getDefault(),fd);
             color = Display.getDefault().getSystemColor( SWT.COLOR_DARK_MAGENTA );
 
