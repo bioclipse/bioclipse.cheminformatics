@@ -146,7 +146,7 @@ public class PropertySelector extends Composite{
         configureTable(fTable);
 
         fTable.setContentProvider( new IStructuredContentProvider() {
-            Collection<Object> model;
+            Collection<?> model;
             public Object[] getElements( Object inputElement ) {
                 return model.toArray();
             }
@@ -156,7 +156,7 @@ public class PropertySelector extends Composite{
 
             public void inputChanged( Viewer viewer, Object oldInput,
                                       Object newInput ) {
-                model = (Collection<Object>) newInput;
+                model = (Collection<?>) newInput;
             }
         });
         return fTable;
