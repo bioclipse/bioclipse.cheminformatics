@@ -242,6 +242,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
 
     private void updateJCPPage() {
         int index = moleculesPage.getMolTableViewer().getFirstSelected();
+        if(index < 0 ) index = 0;
         IMoleculesEditorModel model = moleculesPage.getModel();
         if(model != null)
             jcpPage.setInput( model.getMoleculeAt( index ));
