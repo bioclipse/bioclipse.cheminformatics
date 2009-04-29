@@ -929,6 +929,76 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="DEL">
       </key>
+      <key
+            commandId="net.bioclipse.cdk.jchempaint.command.change.element"
+            contextId="net.bioclipse.ui.contexts.JChemPaint"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="C">
+         <parameter
+               id="atomType"
+               value="C">
+         </parameter>
+      </key>
+      <key
+            commandId="net.bioclipse.cdk.jchempaint.command.change.element"
+            contextId="net.bioclipse.ui.contexts.JChemPaint"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="O">
+         <parameter
+               id="atomType"
+               value="O">
+         </parameter>
+      </key>
+      <key
+            commandId="net.bioclipse.cdk.jchempaint.command.change.element"
+            contextId="net.bioclipse.ui.contexts.JChemPaint"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="I">
+         <parameter
+               id="atomType"
+               value="I">
+         </parameter>
+      </key>
+      <key
+            commandId="net.bioclipse.cdk.jchempaint.command.change.element"
+            contextId="net.bioclipse.ui.contexts.JChemPaint"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="N">
+         <parameter
+               id="atomType"
+               value="N">
+         </parameter>
+      </key>
+      <key
+            commandId="net.bioclipse.cdk.jchempaint.command.change.element"
+            contextId="net.bioclipse.ui.contexts.JChemPaint"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="P">
+         <parameter
+               id="atomType"
+               value="P">
+         </parameter>
+      </key>
+      <key
+            commandId="net.bioclipse.cdk.jchempaint.command.change.element"
+            contextId="net.bioclipse.ui.contexts.JChemPaint"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="S">
+         <parameter
+               id="atomType"
+               value="S">
+         </parameter>
+      </key>
+      <key
+            commandId="net.bioclipse.cdk.jchempaint.command.change.element"
+            contextId="net.bioclipse.ui.contexts.JChemPaint"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F">
+         <parameter
+               id="atomType"
+               value="F">
+         </parameter>
+      </key>
    </extension>
    <extension
          point="org.eclipse.ui.contexts">
