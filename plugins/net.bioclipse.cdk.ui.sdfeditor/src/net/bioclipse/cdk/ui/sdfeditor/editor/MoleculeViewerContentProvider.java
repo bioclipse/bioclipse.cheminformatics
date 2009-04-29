@@ -51,6 +51,7 @@ import org.openscience.cdk.io.MDLV2000Reader;
  * @author arvid
  *
  */
+@Deprecated
 public class MoleculeViewerContentProvider implements IDataProvider,
         IContentProvider, IMoleculeTableColumnHandler{
 
