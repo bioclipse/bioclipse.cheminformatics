@@ -235,7 +235,7 @@ public class JChemPaintWidget extends Canvas {
         this.redraw();
     }
 
-    public static void paintMessage( GC gc, Message message , Rectangle clientRect) {
+    public static void paintMessage( GC gc, Message message , Rectangle rect) {
         Font oldFont = gc.getFont();
         Color oldColor = gc.getForeground();
 
@@ -245,14 +245,14 @@ public class JChemPaintWidget extends Canvas {
         switch(message.alignment) {
             case TOP_RIGHT:
             case BOTTOM_RIGHT:
-                x = clientRect.width - gc.textExtent( message.text ).x;
+                x = rect.x + rect.width - gc.textExtent( message.text ).x;
         }
 
         int y = 0;
         switch(message.alignment) {
             case BOTTOM_LEFT:
             case BOTTOM_RIGHT:
-                y = clientRect.height-gc.getFontMetrics().getHeight();
+                y = rect.y + rect.height-gc.getFontMetrics().getHeight();
         }
 
         gc.setForeground( message.color );
