@@ -70,6 +70,7 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
@@ -291,6 +292,10 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         } );
 
         createPartListener();
+        IContextService contextService = (IContextService) getSite()
+                                        .getService( IContextService.class );
+
+        contextService.activateContext( "net.bioclipse.ui.contexts.JChemPaint" );
 
         createUndoRedoHangler();
     }

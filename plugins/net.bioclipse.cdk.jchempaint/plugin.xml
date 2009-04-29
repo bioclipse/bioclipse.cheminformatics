@@ -921,6 +921,24 @@
             file="toc.xml"
             primary="true"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.eraser"
+            contextId="net.bioclipse.ui.contexts.JChemPaint"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="DEL">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            description="Context for working with JCP editing"
+            id="net.bioclipse.ui.contexts.JChemPaint"
+            name="JChemPaintContext"
+            parentId="org.eclipse.ui.contexts.window">
+      </context>
+   </extension>
    <!--extension
          point="net.bioclipse.cdk.jchempaint.generator">
       <generator
