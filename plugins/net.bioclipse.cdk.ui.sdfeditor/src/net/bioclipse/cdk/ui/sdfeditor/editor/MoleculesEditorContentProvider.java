@@ -76,21 +76,12 @@ public class MoleculesEditorContentProvider  implements
             LogUtils.debugTrace( logger, e );
         }
         
-//      
-//        
           if( element != null) 
               viewer.replace( parent, index, element );
-//      
     }
    
     private void setChildCount( int count ) {
-        int old = numberOfEntries;
         numberOfEntries = count;
-        
-//        if(viewer.getControl().isVisible())
-//            viewer.refresh();
-//            updateChildCount( file, old );
-        
     }
 
     public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {    
@@ -98,13 +89,8 @@ public class MoleculesEditorContentProvider  implements
             this.viewer = (TreeViewer)viewer;
         }
         if(oldInput != newInput){// && newInput instanceof IDeferredWorkbenchAdapter) {
-            //Object[] objs = contentManager.getChildren( newInput );
-            //this.viewer.add( newInput, objs[0] );
             file = (IFile) newInput;
         }
-//        super.inputChanged( viewer, oldInput, newInput );
-//        if(newInput instanceof MoleculesFromSDF)
-//            getElements(newInput );
     }
 
     public Object getParent( Object element ) {
