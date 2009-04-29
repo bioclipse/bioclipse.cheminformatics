@@ -476,8 +476,11 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     public ISelection getSelection() {
         RendererModel rendererModel = getRenderer2DModel();
-        if (rendererModel == null && cdkMolecule != null)
-            return new StructuredSelection(cdkMolecule);
+        if (rendererModel == null)
+            if(cdkMolecule != null)
+                return new StructuredSelection(cdkMolecule);
+            else
+               return StructuredSelection.EMPTY;
 
         List<CDKChemObject> selection = new LinkedList<CDKChemObject>();
 
