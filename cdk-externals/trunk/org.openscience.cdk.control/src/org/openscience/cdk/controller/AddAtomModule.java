@@ -27,11 +27,7 @@ package org.openscience.cdk.controller;
 
 import javax.vecmath.Point2d;
 
-import org.openscience.cdk.config.IsotopeFactory;
-import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.renderer.RendererModel;
 
 /**

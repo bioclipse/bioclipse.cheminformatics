@@ -25,42 +25,57 @@
  */
 package org.openscience.cdk.controller;
 
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.vecmath.Point2d;
 
 import org.openscience.cdk.controller.ControllerHub.Direction;
-import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemObject;
+import org.openscience.cdk.renderer.selection.AbstractSelection;
+import org.openscience.cdk.renderer.selection.SingleSelection;
 
 
 /**
- * Alters the chirality of a bond, setting it to be into or outof the plane.
- * 
- * @author Gilleain Torrance
+ * Alters the chirality of a bond, setting it to be into or out of the plane.
+ *
+ * @author maclean
  * @cdk.svnrev $Revision$
  * @cdk.module control
  */
 public class AlterBondStereoModule extends ControllerModuleAdapter {
-    
+
     private Direction desiredDirection;
 
-	public AlterBondStereoModule(IChemModelRelay chemModelRelay, Direction desiredDirection) {
+	public AlterBondStereoModule(
+			IChemModelRelay chemModelRelay, Direction desiredDirection) {
 		super(chemModelRelay);
 		this.desiredDirection = desiredDirection;
 	}
 
+	public void mouseClickedDown(Point2d worldCoord) {
+		IAtom atom = this.chemModelRelay.getClosestAtom(worldCoord);
+		IBond bond = this.chemModelRelay.getClosestBond(worldCoord);
 
-    public void mouseClickedDown(Point2d worldCoord) {
-        
-        IAtomContainer selectedAC = getSelectedAtomContainer( worldCoord );
-        Set<IBond> newSelection = new HashSet<IBond>(); 
-        if(selectedAC == null) return;
-        for(IBond bond:selectedAC.bonds()) {
-            newSelection.add( bond );
-            chemModelRelay.makeBondStereo( bond, desiredDirection );
-        }
+		IChemObject singleSelection = getHighlighted(worldCoord, atom, bond);
+
+		if (singleSelection == null) {
+			setSelection(AbstractSelection.EMPTY_SELECTION);
+		} else if (singleSelection instanceof IAtom) {
+			IBond newBond =
+				super.chemModelRelay.makeNewStereoBond(atom, desiredDirection);
+			IAtom otherAtom = newBond.getConnectedAtom(atom);
+			super.setSelection(new SingleSelection<IChemObject>(otherAtom));
+		} else if (singleSelection instanceof IBond) {
+			super.chemModelRelay.makeBondStereo(bond, desiredDirection);
+			setSelection(new SingleSelection<IChemObject>(bond));
+		} else {
+			// by default, change the bond
+			super.chemModelRelay.makeBondStereo(bond, desiredDirection);
+			setSelection(new SingleSelection<IChemObject>(bond));
+		}
+
+		super.chemModelRelay.updateView();
 	}
 
 	public void setChemModelRelay(IChemModelRelay relay) {
@@ -68,11 +83,10 @@ public class AlterBondStereoModule extends ControllerModuleAdapter {
 	}
 
 	public String getDrawModeString() {
-		if (desiredDirection==Direction.UP) {
+		if (desiredDirection == Direction.UP) {
 			return "Add or convert to bond up";
 		} else {
 			return "Add or convert to bond down";
 		}
 	}
-
 }

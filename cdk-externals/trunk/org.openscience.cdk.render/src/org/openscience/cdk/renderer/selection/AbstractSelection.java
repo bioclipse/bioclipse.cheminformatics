@@ -26,6 +26,7 @@ import java.util.Collections;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 
 /**
@@ -33,40 +34,44 @@ import org.openscience.cdk.interfaces.IChemObject;
  * @cdk.module render
  */
 public abstract class AbstractSelection implements IChemObjectSelection {
-    
-    public static IChemObjectSelection EMPTY_SELECTION = new AbstractSelection(){
 
-        public IAtomContainer getConnectedAtomContainer() {
-            return null;
-        }
+    public static IChemObjectSelection EMPTY_SELECTION = new AbstractSelection() {
 
-        public boolean isFilled() {
+		public IAtomContainer getConnectedAtomContainer() {
+			return null;
+		}
 
-            return false;
-        }
+		public boolean isFilled() {
 
-        public boolean contains( IChemObject obj ) {
-            return false;
-        }
-        
-        public <E extends IChemObject> Collection<E> elements( Class<E> clazz ) {
-        
-            return Collections.emptySet();
-        }
-        
-    };
+			return false;
+		}
 
-    protected void addToAtomContainer( IAtomContainer ac, IChemObject item ) {
-    
-        if(item instanceof IAtomContainer) {
-            ac.add( (IAtomContainer) item );
-        }else
-            if(item instanceof IAtom) {
-                ac.addAtom( (IAtom)item );
-            }else
-                if(item instanceof IBond) {
-                    ac.addBond( (IBond )item);
-                }
-    }
+		public boolean contains(IChemObject obj) {
+			return false;
+		}
+
+		public <E extends IChemObject> Collection<E> elements(Class<E> clazz) {
+
+			return Collections.emptySet();
+		}
+
+
+	};
+
+	public void select(IChemModel chemModel) {
+		// TODO Auto-generated method stub
+
+	}
+
+	protected void addToAtomContainer(IAtomContainer ac, IChemObject item) {
+
+		if (item instanceof IAtomContainer) {
+			ac.add((IAtomContainer) item);
+		} else if (item instanceof IAtom) {
+			ac.addAtom((IAtom) item);
+		} else if (item instanceof IBond) {
+			ac.addBond((IBond) item);
+		}
+	}
 
 }

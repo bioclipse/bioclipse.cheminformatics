@@ -43,6 +43,21 @@ public class ReactionBoxGenerator implements IReactionGenerator {
 
 	public IRenderingElement generate(IReaction reaction, RendererModel model) {
 		DISTANCE = model.getBondLength() / model.getScale();
+		Rectangle2D totalBounds = getBounds(reaction);
+        if (totalBounds == null) return null;
+        
+        ElementGroup diagram = new ElementGroup();
+        diagram.add(new RectangleElement(totalBounds.getMinX()-DISTANCE,
+                                    totalBounds.getMinY()-DISTANCE,
+                                    totalBounds.getMaxX()+DISTANCE,
+                                    totalBounds.getMaxY()+DISTANCE,
+                                    model.getForeColor()));
+        if(reaction.getID()!=null)
+        	diagram.add(new TextElement((totalBounds.getMinX()+totalBounds.getMaxX())/2, totalBounds.getMinY()-DISTANCE, reaction.getID(), model.getForeColor()));
+        return diagram;
+	}
+
+	public static Rectangle2D getBounds(IReaction reaction){
         Rectangle2D totalBounds = null;
         for (IAtomContainer molecule : reaction.getReactants().molecules()) {
             Rectangle2D bounds = BoundsGenerator.calculateBounds(molecule);
@@ -60,17 +75,6 @@ public class ReactionBoxGenerator implements IReactionGenerator {
                 totalBounds = totalBounds.createUnion(bounds);
             }
         }
-        if (totalBounds == null) return null;
-        
-        ElementGroup diagram = new ElementGroup();
-        diagram.add(new RectangleElement(totalBounds.getMinX()-DISTANCE,
-                                    totalBounds.getMinY()-DISTANCE,
-                                    totalBounds.getMaxX()+DISTANCE,
-                                    totalBounds.getMaxY()+DISTANCE,
-                                    model.getForeColor()));
-        if(reaction.getID()!=null)
-        	diagram.add(new TextElement((totalBounds.getMinX()+totalBounds.getMaxX())/2, totalBounds.getMinY()-DISTANCE, reaction.getID(), model.getForeColor()));
-        return diagram;
+        return totalBounds;
 	}
-
 }

@@ -33,7 +33,7 @@ import org.openscience.cdk.renderer.RendererModel;
 
 /**
  * This should highlight the atom/bond when moving over with the mouse
- *
+ * 
  * @author Niels Out
  * @cdk.svnrev $Revision: 9162 $
  * @cdk.module control
@@ -41,7 +41,6 @@ import org.openscience.cdk.renderer.RendererModel;
 public class HighlightModule extends ControllerModuleAdapter {
 
 	private IChemModelRelay chemObjectRelay;
-	private Point2d oldCoordinates;
 
 	public HighlightModule(IChemModelRelay chemObjectRelay) {
 		super(chemObjectRelay);
@@ -49,7 +48,7 @@ public class HighlightModule extends ControllerModuleAdapter {
 
 	private IAtom prevHighlightAtom;
 	private IBond prevHighlightBond;
-
+	
 	private void update(IChemObject obj, RendererModel model) {
 	    if(obj instanceof IAtom)
 	        updateAtom((IAtom)obj,model);
@@ -66,7 +65,7 @@ public class HighlightModule extends ControllerModuleAdapter {
             chemObjectRelay.updateView();
         }
 	}
-
+	
 	private void updateBond(IBond bond, RendererModel model) {
 	    if (prevHighlightBond != bond) {
             model.setHighlightedBond(bond);
@@ -76,7 +75,7 @@ public class HighlightModule extends ControllerModuleAdapter {
             chemObjectRelay.updateView();
         }
 	}
-
+	
 	private void unsetHighlights(RendererModel model) {
 	    if (prevHighlightAtom != null || prevHighlightBond != null) {
 	        model.setHighlightedAtom(null);
@@ -88,12 +87,11 @@ public class HighlightModule extends ControllerModuleAdapter {
 	}
 
 	public void mouseMove(Point2d worldCoord) {
-	    setOldCoordinate( new Point2d(worldCoord));
 		IAtom atom = chemObjectRelay.getClosestAtom(worldCoord);
 		IBond bond = chemObjectRelay.getClosestBond(worldCoord);
-		RendererModel model =
+		RendererModel model = 
 		    chemObjectRelay.getRenderer().getRenderer2DModel();
-
+		
 		IChemObject obj = getHighlighted( worldCoord, atom,bond );
 		if(obj == null)
 		    unsetHighlights( model );
@@ -101,30 +99,6 @@ public class HighlightModule extends ControllerModuleAdapter {
 		    update(obj,model);
 	}
 
-	private void setOldCoordinate(Point2d p) {
-	    oldCoordinates = chemObjectRelay.getRenderer().toScreenCoordinates( p.x,
-	                                                                        p.y );
-	}
-	private Point2d getOldCoordiPoint2d() {
-	    return chemObjectRelay.getRenderer().toModelCoordinates( (int)oldCoordinates.x,
-	                                                             (int)oldCoordinates.y);
-	}
-	@Override
-    public void mouseWheelMovedBackward( int clicks ) {
-	    if(oldCoordinates!=null)
-        mouseMove( getOldCoordiPoint2d() );
-    }
-	@Override
-    public void mouseWheelMovedForward( int clicks ) {
-
-	        mouseMove( getOldCoordiPoint2d() );
-    }
-
-	@Override
-	public void mouseDrag( Point2d worldCoordFrom, Point2d worldCoordTo ) {
-
-	    mouseMove( worldCoordTo );
-	}
 	public void setChemModelRelay(IChemModelRelay relay) {
 		this.chemObjectRelay = relay;
 	}

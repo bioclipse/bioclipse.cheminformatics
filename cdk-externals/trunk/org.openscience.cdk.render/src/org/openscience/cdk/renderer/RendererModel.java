@@ -1,9 +1,9 @@
 /* $Revision$ $Author$ $Date$
- * 
+ *
  * Copyright (C) 1997-2007  The Chemistry Development Kit (CDK) project
- * 
+ *
  * Contact: cdk-devel@lists.sourceforge.net
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation; either version 2.1
@@ -12,12 +12,12 @@
  * - but is not limited to - adding the above copyright notice to the beginning
  * of your source code files, and to any copyright notice that you may distribute
  * with programs based on this work.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
@@ -48,130 +48,130 @@ import org.openscience.cdk.renderer.selection.LassoSelection;
 
 /**
  * Model for {@link Renderer} that contains settings for drawing objects.
- * 
+ *
  * @cdk.module render
  * @cdk.svnrev $Revision$
  */
 public class RendererModel implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -4420308906715213445L;
-    
+
     private RenderingParameters parameters;
-    
+
     /* If true, the class will notify its listeners of changes */
     private boolean notification = true;
-    
-    private transient List<ICDKChangeListener> listeners = 
+
+    private transient List<ICDKChangeListener> listeners =
         new ArrayList<ICDKChangeListener>();
-   
+
     /** Determines how much the image is zoomed into on. */
     private double zoomFactor = 1.0;
-    
+
     //this is used for the size of the arrowhead, might become configurable
     public static final int arrowHeadWidth = 10;
 
     /**
      * The color hash is used to color substructures.
-     * 
+     *
      * @see #getColorHash()
      */
-    private Map<IChemObject, Color> colorHash = 
+    private Map<IChemObject, Color> colorHash =
         new Hashtable<IChemObject, Color>();
-    
+
     private Map<IAtom, String> toolTipTextMap = new HashMap<IAtom, String>();
-    
+
     private IAtomColorer colorer = new CDK2DAtomColors();
 
     private IAtom highlightedAtom = null;
-    
+
     private IBond highlightedBond = null;
-    
+
     private IAtomContainer externalSelectedPart = null;
-    
+
     private IAtomContainer clipboardContent = null;
-    
+
     private IChemObjectSelection selection = new LassoSelection();
-    
+
 	private Map<IAtom, IAtom> merge=new HashMap<IAtom, IAtom>();
 
     public RendererModel() {
         this.parameters = new RenderingParameters();
     }
-    
+
     public RendererModel(RenderingParameters parameters) {
         this.parameters = parameters;
     }
-    
+
     public boolean getHighlightShapeFilled() {
         return this.parameters.isHighlightShapeFilled();
     }
-    
+
     public void setHighlightShapeFilled(boolean highlightShapeFilled) {
         this.parameters.setHighlightShapeFilled(highlightShapeFilled);
     }
-    
-    public boolean getShowAromaticityCDKStyle() {    
-        return this.parameters.isShowAromaticityInCDKStyle();   
-    }   
-    
-    public void setShowAromaticityCDKStyle(boolean showIt) {  
-        this.parameters.setShowAromaticityInCDKStyle(showIt);   
-        fireChange();   
+
+    public boolean getShowAromaticityCDKStyle() {
+        return this.parameters.isShowAromaticityInCDKStyle();
     }
-    
+
+    public void setShowAromaticityCDKStyle(boolean showIt) {
+        this.parameters.setShowAromaticityInCDKStyle(showIt);
+        fireChange();
+    }
+
     public double getWedgeWidth() {
         return this.parameters.getWedgeWidth();
     }
-    
+
     public void setWedgeWidth(double wedgeWidth) {
         this.parameters.setWedgeWidth(wedgeWidth);
     }
-    
+
     public double getRingProportion() {
         return this.parameters.getRingProportion();
     }
-    
+
     public void setRingProportion(double ringProportion) {
         this.parameters.setRingProportion(ringProportion);
     }
-    
+
     public AtomShape getCompactShape() {
         return this.parameters.getCompactShape();
     }
-    
+
     public void setCompactShape(AtomShape compactShape) {
         this.parameters.setCompactShape(compactShape);
     }
-    
+
     public double getScale() {
         return this.parameters.getScale();
     }
-    
+
     public void setScale(double scale) {
         this.parameters.setScale(scale);
     }
-    
+
     public void setSelection(IChemObjectSelection selection) {
         this.selection = selection;
     }
-    
+
     public IChemObjectSelection getSelection() {
         return this.selection;
     }
-    
+
     public RenderingParameters.AtomShape getSelectionShape() {
         return this.parameters.getSelectionShape();
     }
-    
+
     public void setSelectionShape(RenderingParameters.AtomShape selectionShape) {
         this.parameters.setSelectionShape(selectionShape);
     }
-    
+
 	/**
 	 * This is the central facility for handling "merges" of atoms. A merge occures if during moving atoms an atom is in Range of another atom.
 	 * These atoms are then put into the merge map as a key-value pair. During the move, the atoms are then marked by a circle and on releasing the mouse
 	 * they get actually merged, meaning one atom is removed and bonds pointing to this atom are made to point to the atom it has been marged with.
-	 * 
+	 *
 	 * @return Returns the merge.map
 	 */
 	public Map<IAtom, IAtom> getMerge() {
@@ -180,8 +180,8 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Get the name of the font family (Arial, etc).
-     * 
-     * @return the name of the font family as a String. 
+     *
+     * @return the name of the font family as a String.
      */
     public String getFontName() {
         return this.parameters.getFontName();
@@ -197,17 +197,17 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Get the style of the font (Normal, Bold).
-     * 
+     *
      * @return the style of the font as a member of the IFontManager.FontStyle
      *         enum
      */
     public IFontManager.FontStyle getFontStyle() {
         return this.parameters.getFontStyle();
     }
-    
+
     /**
      * Set the style of font to use (Normal, Bold).
-     * 
+     *
      * @param fontStyle a member of the enum in {@link IFontManager}
      */
     public void setFontManager(IFontManager.FontStyle fontStyle) {
@@ -248,21 +248,21 @@ public class RendererModel implements Serializable, Cloneable {
         this.parameters.setShowMoleculeTitle(bool);
         fireChange();
     }
-    
+
     /**
      * The length on the screen of a typical bond.
-     * 
+     *
      * @return the user-selected length of a bond, or the default length.
      */
     public double getBondLength() {
         return this.parameters.getBondLength();
     }
-    
+
     /**
      * Set the length on the screen of a typical bond.
-     * 
+     *
      * @param bondLength the length in pixels of a typical bond.
-     * 
+     *
      */
     public void setBondLength(double length) {
         this.parameters.setBondLength(length);
@@ -270,7 +270,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Returns the distance between two lines in a double or triple bond
-     * 
+     *
      * @return the distance between two lines in a double or triple bond
      */
     public double getBondDistance() {
@@ -279,7 +279,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Sets the distance between two lines in a double or triple bond
-     * 
+     *
      * @param bondDistance
      *            the distance between two lines in a double or triple bond
      */
@@ -290,7 +290,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Returns the thickness of a bond line.
-     * 
+     *
      * @return the thickness of a bond line
      */
     public double getBondWidth() {
@@ -299,7 +299,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Sets the thickness of a bond line.
-     * 
+     *
      * @param bondWidth
      *            the thickness of a bond line
      */
@@ -310,7 +310,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * A zoom factor for the drawing.
-     * 
+     *
      * @return a zoom factor for the drawing
      */
     public double getZoomFactor() {
@@ -319,7 +319,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Returns the zoom factor for the drawing.
-     * 
+     *
      * @param zoomFactor
      *            the zoom factor for the drawing
      */
@@ -333,18 +333,18 @@ public class RendererModel implements Serializable, Cloneable {
             }
         }
     }
-    
+
     public boolean isFitToScreen() {
         return this.parameters.isFitToScreen();
     }
-    
+
     public void setFitToScreen(boolean value) {
         this.parameters.setFitToScreen(value);
     }
 
     /**
      * Returns the foreground color for the drawing.
-     * 
+     *
      * @return the foreground color for the drawing
      */
     public Color getForeColor() {
@@ -353,7 +353,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Sets the foreground color with which bonds and atoms are drawn
-     * 
+     *
      * @param foreColor
      *            the foreground color with which bonds and atoms are drawn
      */
@@ -364,7 +364,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Returns the background color
-     * 
+     *
      * @return the background color
      */
     public Color getBackColor() {
@@ -373,7 +373,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Sets the background color
-     * 
+     *
      * @param backColor
      *            the background color
      */
@@ -384,7 +384,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Returns the atom-atom mapping line color
-     * 
+     *
      * @return the atom-atom mapping line color
      */
     public Color getAtomAtomMappingLineColor() {
@@ -393,7 +393,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Sets the atom-atom mapping line color
-     * 
+     *
      * @param mappingColor
      *            the atom-atom mapping line color
      */
@@ -404,7 +404,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Returns if the drawing of atom numbers is switched on for this model
-     * 
+     *
      * @return true if the drawing of atom numbers is switched on for this model
      */
     public boolean drawNumbers() {
@@ -467,7 +467,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Sets if the drawing of atom numbers is switched on for this model.
-     * 
+     *
      * @param drawNumbers
      *            true if the drawing of atom numbers is to be switched on for
      *            this model
@@ -483,11 +483,11 @@ public class RendererModel implements Serializable, Cloneable {
     public boolean getDrawNumbers() {
         return this.parameters.isWillDrawNumbers();
     }
-    
+
     public Color getDefaultBondColor() {
         return this.parameters.getDefaultBondColor();
     }
-    
+
     public void setDefaultBondColor(Color defaultBondColor) {
         this.parameters.setDefaultBondColor(defaultBondColor);
     }
@@ -495,7 +495,7 @@ public class RendererModel implements Serializable, Cloneable {
     /**
      * Returns the radius around an atoms, for which the atom is marked
      * highlighted if a pointer device is placed within this radius.
-     * 
+     *
      * @return The highlight distance for all atoms (in screen space)
      */
     public double getHighlightDistance() {
@@ -505,7 +505,7 @@ public class RendererModel implements Serializable, Cloneable {
     /**
      * Sets the radius around an atoms, for which the atom is marked highlighted
      * if a pointer device is placed within this radius.
-     * 
+     *
      * @param highlightDistance
      *            the highlight radius of all atoms (in screen space)
      */
@@ -530,7 +530,7 @@ public class RendererModel implements Serializable, Cloneable {
     }
 
     /**
-     * This is used for the size of the compact atom element. 
+     * This is used for the size of the compact atom element.
      */
     public double getAtomRadius() {
         return this.parameters.getAtomRadius();
@@ -538,7 +538,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Set the radius of the compact atom representation.
-     * 
+     *
      * @param atomRadius the size of the compact atom symbol.
      *
      */
@@ -549,7 +549,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Returns the atom currently highlighted.
-     * 
+     *
      * @return the atom currently highlighted
      */
     public IAtom getHighlightedAtom() {
@@ -558,7 +558,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Sets the atom currently highlighted.
-     * 
+     *
      * @param highlightedAtom
      *            The atom to be highlighted
      */
@@ -571,7 +571,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Returns the Bond currently highlighted.
-     * 
+     *
      * @return the Bond currently highlighted
      */
     public IBond getHighlightedBond() {
@@ -580,7 +580,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Sets the Bond currently highlighted.
-     * 
+     *
      * @param highlightedBond
      *            The Bond to be currently highlighted
      */
@@ -593,7 +593,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Returns the {@link Map} used for coloring substructures.
-     * 
+     *
      * @return the {@link Map} used for coloring substructures
      */
     public Map<IChemObject, Color> getColorHash() {
@@ -640,7 +640,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Returns the current atom colorer.
-     * 
+     *
      * @return The AtomColorer.
      */
     public IAtomColorer getAtomColorer() {
@@ -649,7 +649,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Sets the atom colorer.
-     * 
+     *
      * @param atomColorer
      *            the new colorer.
      */
@@ -659,7 +659,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Sets the {@link Map} used for coloring substructures
-     * 
+     *
      * @param colorHash
      *            the {@link Map} used for coloring substructures
      */
@@ -671,7 +671,7 @@ public class RendererModel implements Serializable, Cloneable {
     /**
      * Returns the atoms and bonds on the Renderer2D clipboard. If the clipboard
      * is empty it returns null. Primarily used for copy/paste.
-     * 
+     *
      * @return an atomcontainer with the atoms and bonds on the clipboard.
      */
     public IAtomContainer getClipboardContent() {
@@ -681,7 +681,7 @@ public class RendererModel implements Serializable, Cloneable {
     /**
      * Sets the atoms and bonds on the Renderer2D clipboard. Primarily used for
      * copy/paste.
-     * 
+     *
      * @param content
      *            the new content of the clipboard.
      */
@@ -691,7 +691,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Adds a change listener to the list of listeners
-     * 
+     *
      * @param listener
      *            The listener added to the list
      */
@@ -707,7 +707,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Removes a change listener from the list of listeners
-     * 
+     *
      * @param listener
      *            The listener removed from the list
      */
@@ -730,7 +730,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Gets the toolTipText for atom certain atom.
-     * 
+     *
      * @param atom
      *            The atom.
      * @return The toolTipText value.
@@ -745,7 +745,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Sets the showTooltip attribute.
-     * 
+     *
      * @param showToolTip
      *            The new value.
      */
@@ -756,7 +756,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Gets showTooltip attribute.
-     * 
+     *
      * @return The showTooltip value.
      */
     public boolean getShowTooltip() {
@@ -765,7 +765,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Sets the toolTipTextMap.
-     * 
+     *
      * @param map
      *            A map containing Atoms of the current molecule as keys and
      *            Strings to display as values. A line break will be inserted
@@ -778,7 +778,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Gets the toolTipTextMap.
-     * 
+     *
      * @return The toolTipTextValue.
      */
     public Map<IAtom, String> getToolTipTextMap() {
@@ -794,7 +794,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Sets the color used for drawing the part which was selected externally
-     * 
+     *
      * @param externalHighlightColor
      *            The color
      */
@@ -811,7 +811,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Sets the color used for drawing the part we are hovering over.
-     * 
+     *
      * @param hoverOverColor
      *            The color
      */
@@ -828,7 +828,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     /**
      * Sets the color used for drawing the internally selected part.
-     * 
+     *
      * @param selectedPartColor
      *            The color
      */
@@ -839,7 +839,7 @@ public class RendererModel implements Serializable, Cloneable {
     /**
      * Get externally selected atoms. These are atoms selected externally in e.
      * g. Bioclipse via the ChemObjectTree, painted in externalSelectedPartColor
-     * 
+     *
      * @return the selected part
      */
     public IAtomContainer getExternalSelectedPart() {
@@ -849,7 +849,7 @@ public class RendererModel implements Serializable, Cloneable {
     /**
      * Set externally selected atoms. These are atoms selected externally in e.
      * g. Bioclipse via the ChemObjectTree, painted in externalSelectedPartColor
-     * 
+     *
      * @param externalSelectedPart
      *            the selected part
      */
@@ -894,8 +894,20 @@ public class RendererModel implements Serializable, Cloneable {
     public Color getBoundsColor() {
         return this.parameters.getBoundsColor();
     }
-    
+
     public void setBoundsColor(Color color) {
         this.parameters.setBoundsColor(color);
     }
+
+	/**
+	 * @return the on screen radius of the selection element
+	 */
+	public double getSelectionRadius() {
+		return this.parameters.getSelectionRadius();
+	}
+
+	public void setSelectionRadius(double selectionRadius) {
+		this.parameters.setSelectionRadius(selectionRadius);
+	}
+
 }

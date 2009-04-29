@@ -33,6 +33,7 @@ org/openscience/cdk/controller/undoredo/ClearAllEdit.java
 org/openscience/cdk/controller/undoredo/IUndoListener.java
 org/openscience/cdk/controller/undoredo/ChangeCoordsEdit.java
 org/openscience/cdk/controller/undoredo/ChangeIsotopeEdit.java
+org/openscience/cdk/controller/undoredo/LoadNewModelEdit.java
 org/openscience/cdk/controller/undoredo/AdjustBondOrdersEdit.java
 org/openscience/cdk/controller/IControllerModule.java
 org/openscience/cdk/controller/IChemModelRelay.java

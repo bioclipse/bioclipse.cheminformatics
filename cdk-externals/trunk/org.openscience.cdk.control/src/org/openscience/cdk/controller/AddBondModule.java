@@ -35,43 +35,42 @@ import org.openscience.cdk.renderer.selection.AbstractSelection;
 import org.openscience.cdk.renderer.selection.SingleSelection;
 
 /**
- * Adds a bond on clicking an atom, or cycles the order of clicked bonds. 
- * 
+ * Adds a bond on clicking an atom, or cycles the order of clicked bonds.
+ *
  * @cdk.module control
  */
 public class AddBondModule extends ControllerModuleAdapter {
 
-	public AddBondModule(IChemModelRelay relay) {
-		super(relay);
-	}
-	
-	public void mouseClickedDown(Point2d worldCoordinate) {
-		IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoordinate);
-		IBond closestBond = chemModelRelay.getClosestBond(worldCoordinate);
-		
-		IChemObject singleSelection = getHighlighted( worldCoordinate,
-		                                              closestAtom,closestBond );
-	
-		if(singleSelection==null) {
-		    chemModelRelay.addNewBond( worldCoordinate );
-		}else
-		    if( singleSelection instanceof IAtom) {
-		        String atomType = 
-	              chemModelRelay.getController2DModel().getDrawElement();
-	          chemModelRelay.addAtom(atomType, (IAtom)singleSelection);
-		    }else
-		        if(singleSelection instanceof IBond) {
-		            chemModelRelay.cycleBondValence((IBond)singleSelection);
-		        }
-		    if(singleSelection == null)
-		        setSelection( AbstractSelection.EMPTY_SELECTION );
-		    else
-		        setSelection( new SingleSelection<IChemObject>(singleSelection) );
-		chemModelRelay.updateView();
-	}
-	
-	public String getDrawModeString() {
-		return "Draw Bond";
-	}
+    public AddBondModule(IChemModelRelay relay) {
+        super(relay);
+    }
+
+    public void mouseClickedDown(Point2d worldCoordinate) {
+        IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoordinate);
+        IBond closestBond = chemModelRelay.getClosestBond(worldCoordinate);
+
+        IChemObject singleSelection =
+            getHighlighted(worldCoordinate, closestAtom, closestBond);
+
+        if (singleSelection == null) {
+            chemModelRelay.addNewBond(worldCoordinate);
+            setSelection(AbstractSelection.EMPTY_SELECTION);
+        } else if (singleSelection instanceof IAtom) {
+            String atomType =
+                chemModelRelay.getController2DModel().getDrawElement();
+
+            IAtom otherAtom = chemModelRelay.addAtom(
+                    atomType, (IAtom) singleSelection);
+            setSelection(new SingleSelection<IChemObject>(otherAtom));
+        } else if (singleSelection instanceof IBond) {
+            chemModelRelay.cycleBondValence((IBond) singleSelection);
+            setSelection(new SingleSelection<IChemObject>(singleSelection));
+        }
+        chemModelRelay.updateView();
+    }
+
+    public String getDrawModeString() {
+        return "Draw Bond";
+    }
 
 }

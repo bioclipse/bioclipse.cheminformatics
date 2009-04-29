@@ -8,14 +8,14 @@ import org.openscience.cdk.renderer.font.IFontManager;
  * @cdk.module render
  */
 public class RenderingParameters {
-    
+
     /**
      * The size on screen of a compact mode shape
      */
     private double atomRadius = 8;
-    
+
     /**
-     * When atoms are selected or in compact mode, they will 
+     * When atoms are selected or in compact mode, they will
      * be covered by a shape determined by this enumeration
      */
     public enum AtomShape { OVAL, SQUARE };
@@ -29,7 +29,7 @@ public class RenderingParameters {
      * The gap between double and triple bond lines on the screen
      */
     private double bondDistance = 2;
-    
+
     /**
      * The length on screen of a typical bond
      */
@@ -41,40 +41,40 @@ public class RenderingParameters {
     private double bondWidth = 1.0;
 
     /**
-     * The color of the box drawn at the bounds of a 
-     * molecule, molecule set, or reaction 
+     * The color of the box drawn at the bounds of a
+     * molecule, molecule set, or reaction
      */
     private Color boundsColor = Color.LIGHT_GRAY;
 
     /**
-     * Determines whether atoms are colored by type 
+     * Determines whether atoms are colored by type
      */
     private boolean colorAtomsByType = true;
-    
+
     /**
-     * If true, atoms are displayed in a compact notation, 
+     * If true, atoms are displayed in a compact notation,
      * as a colored square or circle, rather than as text
      */
     private boolean compact = false;
-    
+
     /**
      * The shape of the compact mode atom.
      */
     private AtomShape compactShape = AtomShape.SQUARE;
-    
+
     /**
      * The color to draw bonds if not other color is given.
      */
     private Color defaultBondColor = Color.BLACK;
 
     private String fontName = "Arial";
-    
+
     private IFontManager.FontStyle fontStyle = IFontManager.FontStyle.NORMAL;
-    
+
     private Color externalHighlightColor = Color.orange;
-    
+
     private boolean fitToScreen = false;
-    
+
     private Color foreColor = Color.black;
 
     private Color hoverOverColor = Color.lightGray;
@@ -85,47 +85,51 @@ public class RenderingParameters {
      * element symbol. Example C-C-C instead of /\.
      */
     private boolean kekuleStructure = false;
-    
-    
+
+
     /**
-     * The maximum distance on the screen the mouse pointer has to be to 
-     * highlight an element. 
+     * The maximum distance on the screen the mouse pointer has to be to
+     * highlight an element.
      */
     private double highlightDistance = 8;
-    
+
     private boolean highlightShapeFilled = false;
-    
+
     private Color mappingColor = Color.gray;
 
     /**
      * Area on each of the four margins to keep white.
      */
     private double margin = 10;
-    
+
     /**
-     * The proportion of a ring bounds to use to draw the ring. 
+     * The proportion of a ring bounds to use to draw the ring.
      */
     private double ringProportion = 0.35;
-    
+
     /**
      * The factor to convert from model space to screen space.
      */
-    private double scale;
+    private double scale = 1.0;
 
     private Color selectedPartColor = Color.lightGray;
-    
-    
+
     /**
      * The shape to display over selected atoms
      */
     private AtomShape selectionShape = AtomShape.SQUARE;
 
     /**
+     * The radius on screen of the selection shape
+     */
+    private double selectionRadius = 3;
+
+    /**
      * Determines whether rings should be drawn with a circle if they are
      * aromatic.
      */
     private boolean showAromaticity = false;
-    
+
     private boolean showAromaticityInCDKStyle = false;
 
     private boolean showAtomAtomMapping = true;
@@ -153,11 +157,12 @@ public class RenderingParameters {
     private boolean useAntiAliasing = true;
 
     private boolean willDrawNumbers = false;
-    
+
     /**
      * The width on screen of the fat end of a wedge bond.
      */
     private double wedgeWidth = 2.0;
+
 
     public boolean isHighlightShapeFilled() {
         return highlightShapeFilled;
@@ -170,7 +175,7 @@ public class RenderingParameters {
     public boolean isShowAromaticityInCDKStyle() {
         return this.showAromaticityInCDKStyle;
     }
-    
+
     public void setShowAromaticityInCDKStyle(boolean shouldShow) {
         this.showAromaticityInCDKStyle = shouldShow;
     }
@@ -208,7 +213,7 @@ public class RenderingParameters {
     /**
      * The scale is the factor to multiply model coordinates by to convert to
      * coordinates in screen space.
-     * 
+     *
      * @return the scale
      */
     public double getScale() {
@@ -238,7 +243,7 @@ public class RenderingParameters {
     public AtomShape getSelectionShape() {
         return this.selectionShape;
     }
-    
+
     public void setSelectionShape(AtomShape selectionShape) {
         this.selectionShape = selectionShape;
     }
@@ -250,11 +255,11 @@ public class RenderingParameters {
     public void setFontName(String fontName) {
         this.fontName = fontName;
     }
-    
+
     public IFontManager.FontStyle getFontStyle() {
         return this.fontStyle;
     }
-    
+
     public void setFontStyle(IFontManager.FontStyle fontStyle) {
         this.fontStyle = fontStyle;
     }
@@ -470,9 +475,17 @@ public class RenderingParameters {
     public Color getBoundsColor() {
         return this.boundsColor;
     }
-    
+
     public void setBoundsColor(Color color) {
         this.boundsColor = color;
     }
+
+	public double getSelectionRadius() {
+		return this.selectionRadius;
+	}
+
+	public void setSelectionRadius(double selectionRadius) {
+		this.selectionRadius = selectionRadius;
+	}
 
 }

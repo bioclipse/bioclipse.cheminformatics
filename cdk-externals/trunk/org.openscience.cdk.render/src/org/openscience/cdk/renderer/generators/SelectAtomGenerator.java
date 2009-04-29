@@ -26,12 +26,10 @@ import javax.vecmath.Point2d;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.RenderingParameters.AtomShape;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
-import org.openscience.cdk.renderer.elements.LineElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
 import org.openscience.cdk.renderer.elements.RectangleElement;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
@@ -40,11 +38,11 @@ import org.openscience.cdk.renderer.selection.IncrementalSelection;
 /**
  * @cdk.module render
  */
-public class SelectionGenerator implements IGenerator {
+public class SelectAtomGenerator implements IGenerator {
 
     private boolean autoUpdateSelection = true;
 
-    public SelectionGenerator() {}
+    public SelectAtomGenerator() {}
 
     public IRenderingElement generate(IAtomContainer ac, RendererModel model) {
         Color selectionColor = model.getSelectedPartColor();
@@ -53,12 +51,7 @@ public class SelectionGenerator implements IGenerator {
 
         ElementGroup selectionElements = new ElementGroup();
         if (this.autoUpdateSelection || selection.isFilled()) {
-            double r;
-            switch(shape) {
-                case SQUARE: r = 0.1; break;
-
-                case OVAL: default: r = 1; break;
-            }
+            double r = model.getSelectionRadius() / model.getScale();
 
             double d = 2 * r;
             IAtomContainer selectedAC = selection.getConnectedAtomContainer();
@@ -80,23 +73,14 @@ public class SelectionGenerator implements IGenerator {
                     }
                     selectionElements.add(element);
                 }
-
-                for (IBond bond : selectedAC.bonds()) {
-                    Point2d p1 = bond.getAtom(0).getPoint2d();
-                    Point2d p2 = bond.getAtom(1).getPoint2d();
-                    selectionElements.add(
-                            new LineElement(
-                                    p1.x, p1.y, p2.x, p2.y, d, selectionColor));
-                }
-
             }
         }
 
         if (selection instanceof IncrementalSelection) {
-            IncrementalSelection sel = (IncrementalSelection)selection;
-            if(!sel.isFinished())
-                selectionElements.add(sel.generate(selectionColor));
-        }
+			IncrementalSelection sel = (IncrementalSelection) selection;
+			if (!sel.isFinished())
+				selectionElements.add(sel.generate(selectionColor));
+		}
         return selectionElements;
     }
 }

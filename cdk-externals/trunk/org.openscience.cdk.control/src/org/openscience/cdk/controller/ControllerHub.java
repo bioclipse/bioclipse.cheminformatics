@@ -73,14 +73,14 @@ import org.openscience.cdk.layout.TemplateHandler;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
-import org.openscience.cdk.renderer.selection.IChemObjectSelection;
+import org.openscience.cdk.renderer.generators.ReactionBoxGenerator;
 import org.openscience.cdk.renderer.selection.IncrementalSelection;
-import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.SaturationChecker;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
-import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
+import org.openscience.cdk.tools.manipulator.AtomContainerSetManipulator;
 import org.openscience.cdk.tools.manipulator.BondManipulator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
+import org.openscience.cdk.tools.manipulator.ReactionManipulator;
 import org.openscience.cdk.tools.manipulator.ReactionSetManipulator;
 import org.openscience.cdk.validate.ProblemMarker;
 
@@ -98,17 +98,21 @@ import org.openscience.cdk.validate.ProblemMarker;
 public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
 	public enum Direction { UP, DOWN };
+	
 	private IChemModel chemModel;
 
 	private IControllerModel controllerModel;
+	
 	private Renderer renderer;
+	
 	private IViewEventRelay eventRelay;
 
 	private List<IControllerModule> generalModules;
 
-	private StructureDiagramGenerator diagramGenerator;
+	private static StructureDiagramGenerator diagramGenerator;
 
 	private IControllerModule activeDrawModule;
+	
 	private final static RingPlacer ringPlacer = new RingPlacer();
 
 	private IAtomContainer phantoms;
@@ -119,7 +123,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
     private UndoRedoHandler undoredohandler;
 
-	CDKAtomTypeMatcher matcher;
+	private CDKAtomTypeMatcher matcher;
 
 	public ControllerHub(IControllerModel controllerModel,
 		                   Renderer renderer,
@@ -137,8 +141,8 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
 		generalModules = new ArrayList<IControllerModule>();
 
-		registerGeneralControllerModule(new ZoomModule(this));
 		registerGeneralControllerModule(new HighlightModule(this));
+		registerGeneralControllerModule(new ZoomModule(this));
 		matcher = CDKAtomTypeMatcher.getInstance(chemModel.getBuilder());
 	}
 
@@ -416,22 +420,23 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
 	public IAtom addAtomWithoutUndo(String atomType, Point2d worldCoord) {
 		IAtom newAtom = chemModel.getBuilder().newAtom(atomType, worldCoord);
-
 		//FIXME : there should be an initial hierarchy?
 		IMoleculeSet molSet = chemModel.getMoleculeSet();
 		if (molSet == null) {
 		    molSet = chemModel.getBuilder().newMoleculeSet();
-		    IAtomContainer ac = chemModel.getBuilder().newAtomContainer();
+		    IMolecule ac = chemModel.getBuilder().newMolecule();
 		    ac.addAtom(newAtom);
-		    molSet.addAtomContainer(ac);
+		    molSet.addMolecule(ac);
 		    chemModel.setMoleculeSet(molSet);
 		} else {
 		    // FIXME : always add to the first container?
-		    molSet.getAtomContainer(0).addAtom(newAtom);
+		    molSet.getMolecule(0).addAtom(newAtom);
 		}
 		updateAtom(newAtom);
-       	if(getAtomInRange(newAtom.getPoint2d(), null, newAtom)!=null)
-        	newAtom.getPoint2d().x+=this.getRenderer().getRenderer2DModel().getHighlightDistance()/this.getRenderer().getRenderer2DModel().getScale();
+		RendererModel model = this.getRenderer().getRenderer2DModel();
+		double nudgeDistance = model.getHighlightDistance() / model.getScale();
+		if (getClosestAtom(newAtom) != null)
+		    newAtom.getPoint2d().x += nudgeDistance;
         structureChanged();
 		return newAtom;
 	}
@@ -457,7 +462,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         IAtomContainer atomCon =
             ChemModelManipulator.getRelevantAtomContainer(chemModel, atom);
         if (atomCon == null) {
-            atomCon = chemModel.getBuilder().newAtomContainer();
+            atomCon = chemModel.getBuilder().newMolecule();
             IMoleculeSet moleculeSet = chemModel.getMoleculeSet();
             if (moleculeSet == null) {
                 moleculeSet = chemModel.getBuilder().newMoleculeSet();
@@ -482,14 +487,13 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
         if (connectedAtoms.size() == 0) {
             Point2d newAtomPoint = new Point2d(atom.getPoint2d());
-
             double angle = Math.toRadians( -30 );
             Vector2d vec1 = new Vector2d(Math.cos(angle), Math.sin(angle));
             vec1.scale( bondLength );
             newAtomPoint.add( vec1 );
             newAtom.setPoint2d(newAtomPoint);
         } else if (connectedAtoms.size() == 1) {
-            IAtomContainer ac = atomCon.getBuilder().newAtomContainer();
+            IMolecule ac = atomCon.getBuilder().newMolecule();
             ac.addAtom(atom);
             ac.addAtom(newAtom);
             Point2d distanceMeasure = new Point2d(0,0); // XXX not sure about this?
@@ -498,7 +502,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
                     atom, connectedAtom, distanceMeasure, true);
             atomPlacer.placeLinearChain(ac, v, bondLength);
         } else {
-            IAtomContainer placedAtoms = atomCon.getBuilder().newAtomContainer();
+            IMolecule placedAtoms = atomCon.getBuilder().newMolecule();
             for (IAtom conAtom : connectedAtoms) placedAtoms.addAtom(conAtom);
             Point2d center2D = GeometryTools.get2DCenter(placedAtoms);
 
@@ -513,27 +517,39 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         atomCon.addBond(newBond);
         updateAtom(newBond.getAtom(0));
         updateAtom(newBond.getAtom(1));
-        if(getAtomInRange(newAtom.getPoint2d(), null, newAtom)!=null)
-        	newAtom.getPoint2d().x+=this.getRenderer().getRenderer2DModel().getHighlightDistance()/this.getRenderer().getRenderer2DModel().getScale();
+        
+        // shift the new atom a bit if it is in range of another atom
+        RendererModel model = this.getRenderer().getRenderer2DModel();
+        double nudgeDistance = model.getHighlightDistance() / model.getScale();
+        if (getClosestAtom(newAtom) != null)
+        	newAtom.getPoint2d().x += nudgeDistance;
+        
         structureChanged();
         return newAtom;
     }
 
 	public void addNewBond(Point2d worldCoordinate) {
-		IAtomContainer undoRedoContainer = getIChemModel().getBuilder().newAtomContainer();
-	    String atomType =
-	        getController2DModel().getDrawElement();
+		IAtomContainer undoRedoContainer = 
+		    getIChemModel().getBuilder().newAtomContainer();
+		
+		// add the first atom in the new bond
+		String atomType = getController2DModel().getDrawElement();
 	    IAtom atom = addAtomWithoutUndo(atomType, worldCoordinate);
 	    undoRedoContainer.addAtom(atom);
+	    
+	    // add the second atom to this
 	    IAtom newAtom = addAtomWithoutUndo(atomType, atom);
 	    undoRedoContainer.addAtom(newAtom);
+	    
 	    IAtomContainer atomContainer =
-        ChemModelManipulator.getRelevantAtomContainer(
-                    getIChemModel(), newAtom);
+	        ChemModelManipulator.getRelevantAtomContainer(
+                getIChemModel(), newAtom);
+	    
         IBond newBond = atomContainer.getBond(atom, newAtom);
         undoRedoContainer.addBond(newBond);
         updateAtom(newBond.getAtom(0));
         updateAtom(newBond.getAtom(1));
+        
 	    structureChanged();
 	    if(undoredofactory!=null && undoredohandler!=null){
 		    IUndoRedoable undoredo = undoredofactory.getAddAtomsAndBondsEdit(getIChemModel(), undoRedoContainer, "Add Bond",this);
@@ -551,8 +567,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	        bond.setStereo(STEREO_BOND_NONE);
 	    }else{
 	        // cycle the bond order up to maxOrder
-		    IBond.Order maxOrder =
-		        getController2DModel().getMaxOrder();
+		    IBond.Order maxOrder = getController2DModel().getMaxOrder();
 	        if (BondManipulator.isLowerOrder(bond.getOrder(), maxOrder)) {
 	            BondManipulator.increaseBondOrder(bond);
 	        } else {
@@ -574,9 +589,8 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	    }
 	}
 
-    public void makeNewStereoBond(IAtom atom, Direction desiredDirection) {
-        String atomType =
-            getController2DModel().getDrawElement();
+    public IBond makeNewStereoBond(IAtom atom, Direction desiredDirection) {
+        String atomType = getController2DModel().getDrawElement();
         IAtom newAtom = addAtomWithoutUndo(atomType, atom);
         IAtomContainer undoRedoContainer=getIChemModel().getBuilder().newAtomContainer();
 
@@ -597,6 +611,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		    IUndoRedoable undoredo = getUndoRedoFactory().getAddAtomsAndBondsEdit(getIChemModel(), undoRedoContainer, "Add Stereo Bond",this);
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
+	    return newBond;
 	}
 
     public void moveToWithoutUndo( IAtom atom, Point2d worldCoords ) {
@@ -726,11 +741,11 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
                         );
                         if (type != null &&
                             type.getFormalNeighbourCount() != null) {
+                            int connectedAtomCount = container.getConnectedAtomsCount(atom);
                         	atomHydrogenCountsMap.put(atom, new int[]{type.getFormalNeighbourCount() -
-                                container.getConnectedAtomsCount(atom), atom.getHydrogenCount()});
+                                connectedAtomCount, atom.getHydrogenCount()});
                             atom.setHydrogenCount(
-                                type.getFormalNeighbourCount() -
-                                container.getConnectedAtomsCount(atom)
+                                type.getFormalNeighbourCount() - connectedAtomCount
                             );
                         }
                     } catch ( CDKException e ) {
@@ -748,13 +763,13 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     }
 
     public void zap() {
-	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
+	    if (getUndoRedoFactory() != null && getUndoRedoHandler() != null) {
 		    IUndoRedoable undoredo = getUndoRedoFactory().getClearAllEdit(chemModel, chemModel.getMoleculeSet(), chemModel.getReactionSet(), "Clear Panel");
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
-	    if(chemModel.getMoleculeSet()!=null)
+	    if (chemModel.getMoleculeSet() != null)
 	    	chemModel.setMoleculeSet(chemModel.getBuilder().newMoleculeSet());
-	    if(chemModel.getReactionSet()!=null)
+	    if (chemModel.getReactionSet() != null)
 	    	chemModel.setReactionSet(chemModel.getBuilder().newReactionSet());
         structureChanged();
     }
@@ -829,6 +844,66 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     private boolean noStereo(int stereo) {
         return stereo == STEREO_BOND_NONE || stereo == CDKConstants.STEREO_BOND_UNDEFINED;
     }
+    
+    public static void avoidOverlap(IChemModel chemModel){
+		//we avoid overlaps
+		//first we we shift down the reactions
+		Rectangle2D usedReactionbounds=null;
+		if(chemModel.getReactionSet()!=null){
+			for(IReaction reaction : chemModel.getReactionSet().reactions()){
+	            // now move it so that they don't overlap
+	            Rectangle2D reactionbounds = ReactionBoxGenerator.getBounds(reaction);
+				if(usedReactionbounds!=null){
+	                double bondLength = GeometryTools.getBondLengthAverage(reaction);
+	                Rectangle2D shiftedBounds =
+	                    GeometryTools.shiftReactionVertical(
+	                            reaction, reactionbounds, usedReactionbounds, bondLength);
+	                usedReactionbounds = usedReactionbounds.createUnion(shiftedBounds);
+	            } else {
+	            	usedReactionbounds = reactionbounds;
+	            }
+			}
+		}
+		//then we shift the molecules not to overlap
+		Rectangle2D usedBounds = null;
+		if(chemModel.getMoleculeSet()!=null){
+	        for (IAtomContainer container :
+	        	AtomContainerSetManipulator.getAllAtomContainers(chemModel.getMoleculeSet())) {
+	            // now move it so that they don't overlap
+	            Rectangle2D bounds = Renderer.calculateBounds(container);
+	            if (usedBounds != null) {
+	                double bondLength = GeometryTools.getBondLengthAverage(container);
+	                Rectangle2D shiftedBounds =
+	                    GeometryTools.shiftContainer(
+	                            container, bounds, usedBounds, bondLength);
+	                usedBounds = usedBounds.createUnion(shiftedBounds);
+	            } else {
+	                usedBounds = bounds;
+	            }
+	        } 
+		}
+		//and the products/reactants in every reaction
+		if(chemModel.getReactionSet()!=null){
+			for(IReaction reaction : chemModel.getReactionSet().reactions()){
+				usedBounds = null;
+		        for (IAtomContainer container :
+		        	ReactionManipulator.getAllAtomContainers(reaction)) {
+		            // now move it so that they don't overlap
+		            Rectangle2D bounds = Renderer.calculateBounds(container);
+		            if (usedBounds != null) {
+		                double bondLength = GeometryTools.getBondLengthAverage(container);
+		                Rectangle2D shiftedBounds =
+		                    GeometryTools.shiftContainer(
+		                            container, bounds, usedBounds, bondLength);
+		                usedBounds = usedBounds.createUnion(shiftedBounds);
+		            } else {
+		                usedBounds = bounds;
+		            }
+		        } 
+			}
+		}
+		//TODO overlaps of molecules in molecule set and reactions (ok, not too common, but still...)
+    }
 
     public void cleanup() {
         Map<IAtom, Point2d[]> coords = new HashMap<IAtom, Point2d[]>();
@@ -848,19 +923,8 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
                 // deal with disconnected atom containers
                 IMoleculeSet molecules =
                     ConnectivityChecker.partitionIntoMolecules(container);
-                Rectangle2D usedBounds = null;
                 for (IAtomContainer subContainer : molecules.molecules()) {
                     generateNewCoordinates(subContainer);
-
-                    // now move it so that they don't overlap
-                    Rectangle2D bounds = Renderer.calculateBounds(subContainer);
-                    if (usedBounds != null) {
-                        Rectangle2D shiftedBounds =
-                            shiftContainer(subContainer, bounds, usedBounds);
-                        usedBounds = usedBounds.createUnion(shiftedBounds);
-                    } else {
-                        usedBounds = bounds;
-                    }
                 }
 
             }
@@ -870,6 +934,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
                 coordsforatom[0] = atom.getPoint2d();
             }
         }
+        avoidOverlap(chemModel);
         coordinatesChanged();
 	    if (getUndoRedoFactory() != null && getUndoRedoHandler() != null) {
             IUndoRedoable undoredo =
@@ -878,36 +943,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         }
     }
 
-    /**
-     * Shift the container so that it does not overlap with the previous.
-     * XXX this is a very crude layout technique!
-     * @param container the atom container to shift
-     * @param bounds the bounds of the atom container to shift
-     * @param last the bounds of the last atom container
-     */
-    private Rectangle2D shiftContainer(
-            IAtomContainer container, Rectangle2D bounds, Rectangle2D last) {
-
-        RendererModel model = renderer.getRenderer2DModel();
-        double gap = model.getBondLength() / model.getScale();
-
-        if (bounds.intersects(last)) {
-
-            // XXX always displace across width - could be improved
-            double d = bounds.getWidth() + last.getWidth() + gap;
-
-            Point2d p = new Point2d(last.getCenterX() + d, last.getCenterY());
-            GeometryTools.translate2DCenterTo(container, p);
-            return new Rectangle2D.Double(bounds.getX() + d,
-                                          bounds.getY(),
-                                          bounds.getWidth(),
-                                          bounds.getHeight());
-        } else {
-            return bounds;
-        }
-    }
-
-    private void generateNewCoordinates(IAtomContainer container) {
+    public static void generateNewCoordinates(IAtomContainer container) {
         IChemObjectBuilder builder =
             NoNotificationChemObjectBuilder.getInstance();
 
@@ -949,9 +985,9 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
             set = chemModel.getBuilder().newMoleculeSet();
             chemModel.setMoleculeSet(set);
         }
-        IAtomContainer container = set.getAtomContainer(0);
+        IMolecule container = set.getMolecule(0);
         if (container == null) {
-            container = set.getBuilder().newAtomContainer();
+            container = set.getBuilder().newMolecule();
             set.addAtomContainer(container);
         }
         container.add(ring);
@@ -980,9 +1016,9 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
             set = chemModel.getBuilder().newMoleculeSet();
             chemModel.setMoleculeSet(set);
         }
-        IAtomContainer container = set.getAtomContainer(0);
+        IMolecule container = set.getMolecule(0);
         if (container == null) {
-            container = set.getBuilder().newAtomContainer();
+            container = set.getBuilder().newMolecule();
             set.addAtomContainer(container);
         }
         container.add(ring);
@@ -1019,9 +1055,13 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
             sourceContainer.addBond(ringBond);
         }
         updateAtoms(newRing, newRing.atoms());
-        for(IAtom newatom : newRing.atoms()){
-        	if(atom!=newatom && getAtomInRange(atom.getPoint2d(), null, atom)!=null)
-        		atom.getPoint2d().x+=this.getRenderer().getRenderer2DModel().getHighlightDistance()/this.getRenderer().getRenderer2DModel().getScale();
+        
+        RendererModel rModel = this.getRenderer().getRenderer2DModel();
+        double d = rModel.getHighlightDistance() / rModel.getScale();
+        for (IAtom newatom : newRing.atoms()) {
+            if (atom != newatom && getClosestAtom(atom) != null) {
+                atom.getPoint2d().x += d;
+            }
         }
         structureChanged();
         return newRing;
@@ -1072,9 +1112,12 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
             sourceContainer.addBond(ringBond);
         }
         updateAtoms(newRing, newRing.atoms());
-        for(IAtom newatom : newRing.atoms()){
-        	if(atom!=newatom && getAtomInRange(atom.getPoint2d(), null, atom)!=null)
-        		atom.getPoint2d().x+=this.getRenderer().getRenderer2DModel().getHighlightDistance()/this.getRenderer().getRenderer2DModel().getScale();
+        for (IAtom newatom : newRing.atoms()) {
+            if (atom != newatom && getClosestAtom(atom) != null) {
+                RendererModel rModel = this.getRenderer().getRenderer2DModel();
+                double d =  rModel.getHighlightDistance() / rModel.getScale();
+                atom.getPoint2d().x += d;
+            }
         }
         structureChanged();
         return newRing;
@@ -1213,39 +1256,49 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
             }
         }
         updateAtoms(newRing, newRing.atoms());
+        
+        RendererModel rModel = this.getRenderer().getRenderer2DModel();
+        double d =  rModel.getHighlightDistance() / rModel.getScale();
         for(IAtom atom : newRing.atoms()){
-        	if(atom!=firstAtom && atom!=secondAtom && getAtomInRange(atom.getPoint2d(), null, atom)!=null)
-        		atom.getPoint2d().x+=this.getRenderer().getRenderer2DModel().getHighlightDistance()/this.getRenderer().getRenderer2DModel().getScale();
+        	if (atom != firstAtom && atom != secondAtom
+                    && getClosestAtom(atom) != null) {
+        		atom.getPoint2d().x += d;
+        	}
         }
         structureChanged();
         return newRing;
     }
+    
+    public IAtom getClosestAtom(IAtom atom) {
+        return getAtomInRange(null, atom);
+    }
 
-    public IAtom getAtomInRange(Point2d worldCoord, Collection<IAtom> toignore, IAtom atomtoignore) {
+    public IAtom getAtomInRange(Collection<IAtom> toIgnore, IAtom atom) {
+        Point2d atomPosition = atom.getPoint2d();
+        RendererModel rModel = this.getRenderer().getRenderer2DModel();
+        double highlight = rModel.getHighlightDistance() / rModel.getScale();
+        
+        IAtom bestClosestAtom = null;
+        double bestDistance = -1;
+        for (IAtomContainer atomContainer : 
+            ChemModelManipulator.getAllAtomContainers(getIChemModel())) {
 
-        IAtom superClosestAtom=null;
-        // TODO Use highlighted atom instead
-        for(IAtomContainer atomContainer:
-            ChemModelManipulator.getAllAtomContainers(getIChemModel())){
-
-            IAtom closestAtom = GeometryTools.getClosestAtom( worldCoord.x,worldCoord.y,
-                                                              atomContainer,
-                                                              atomtoignore);
-            if (closestAtom != null)
-            {
-                RendererModel rModel = this.getRenderer().getRenderer2DModel();
-
-                if ((closestAtom.getPoint2d().distance( worldCoord )
-                        > rModel.getHighlightDistance()/rModel.getScale())
-                        || (toignore!=null && toignore.contains(closestAtom)))
-                {
-                    closestAtom = null;
+            IAtom closestAtom = GeometryTools.getClosestAtom(atomContainer, atom);
+            
+            if (closestAtom != null) {
+                double distance = closestAtom.getPoint2d().distance(atomPosition); 
+                if ((distance > highlight) || 
+                        (toIgnore != null && toIgnore.contains(closestAtom))) {
+                    continue;
+                } else {
+                    if (bestClosestAtom == null || distance < bestDistance) {
+                        bestClosestAtom = closestAtom;
+                        bestDistance = distance;
+                    }
                 }
             }
-            if(superClosestAtom==null)
-                superClosestAtom = closestAtom;
         }
-        return superClosestAtom;
+        return bestClosestAtom;
     }
 
     public IRing addPhenyl(IBond bond) {
@@ -1321,9 +1374,15 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
             }
         }
         updateAtoms(newRing, newRing.atoms());
-        for(IAtom atom : newRing.atoms()){
-        	if(atom!=firstAtom && atom!=secondAtom && getAtomInRange(atom.getPoint2d(), null, atom)!=null)
-        		atom.getPoint2d().x+=this.getRenderer().getRenderer2DModel().getHighlightDistance()/this.getRenderer().getRenderer2DModel().getScale();
+        
+        RendererModel rModel = this.getRenderer().getRenderer2DModel();
+        double d = rModel.getHighlightDistance() / rModel.getScale();
+        for (IAtom atom : newRing.atoms()) {
+        	if (atom != firstAtom 
+        	        && atom != secondAtom
+                    && getClosestAtom(atom) != null) {
+        		atom.getPoint2d().x += d;
+        	}
         }
         structureChanged();
         return newRing;
@@ -1592,15 +1651,18 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	    structureChanged();
 	}
 
-	public void makeReactantInExistingReaction(String s,
+	/* (non-Javadoc)
+	 * @see org.openscience.cdk.controller.IChemModelRelay#makeReactantInExistingReaction(java.lang.String, org.openscience.cdk.interfaces.IAtomContainer, org.openscience.cdk.interfaces.IAtomContainer)
+	 */
+	public void makeReactantInExistingReaction(String reactionId,
 			IAtomContainer newContainer, IAtomContainer oldcontainer) {
-		IReaction reaction = ReactionSetManipulator.getRelevantReaction(chemModel.getReactionSet(), s);
+		IReaction reaction = ReactionSetManipulator.getReactionByReactionID(chemModel.getReactionSet(), reactionId);
 		IMolecule mol=newContainer.getBuilder().newMolecule(newContainer);
 		mol.setID(newContainer.getID());
 		reaction.addReactant(mol);
 		chemModel.getMoleculeSet().removeAtomContainer(oldcontainer);
 	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
-		    IUndoRedoable undoredo = getUndoRedoFactory().getMakeReactantOrProductInExistingReactionEdit(chemModel, newContainer, oldcontainer, s, true, "Make Reactant in "+s);
+		    IUndoRedoable undoredo = getUndoRedoFactory().getMakeReactantOrProductInExistingReactionEdit(chemModel, newContainer, oldcontainer, reactionId, true, "Make Reactant in "+reactionId);
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
 	    structureChanged();
@@ -1628,15 +1690,18 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	    structureChanged();
 	}
 
-	public void makeProductInExistingReaction(String s,
+	/* (non-Javadoc)
+	 * @see org.openscience.cdk.controller.IChemModelRelay#makeProductInExistingReaction(java.lang.String, org.openscience.cdk.interfaces.IAtomContainer, org.openscience.cdk.interfaces.IAtomContainer)
+	 */
+	public void makeProductInExistingReaction(String reactionId,
 			IAtomContainer newContainer, IAtomContainer oldcontainer) {
-		IReaction reaction = ReactionSetManipulator.getRelevantReaction(chemModel.getReactionSet(), s);
+		IReaction reaction = ReactionSetManipulator.getReactionByReactionID(chemModel.getReactionSet(), reactionId);
 		IMolecule mol=newContainer.getBuilder().newMolecule(newContainer);
 		mol.setID(newContainer.getID());
 		reaction.addProduct(mol);
 		chemModel.getMoleculeSet().removeAtomContainer(oldcontainer);
 	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
-		    IUndoRedoable undoredo = getUndoRedoFactory().getMakeReactantOrProductInExistingReactionEdit(chemModel, newContainer, oldcontainer, s, false, "Make Reactant in "+s);
+		    IUndoRedoable undoredo = getUndoRedoFactory().getMakeReactantOrProductInExistingReactionEdit(chemModel, newContainer, oldcontainer, reactionId, false, "Make Reactant in "+reactionId);
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
 	    structureChanged();
@@ -1648,13 +1713,11 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	 *@param  container  The AtomContainer to work on
 	 *@param  atoms       The Atoms to update
 	 */
-	public void updateAtoms(IAtomContainer container, Iterable<IAtom> atoms)
-	{
-		for(IAtom atom: atoms)
-		{
-			updateAtom(container, atom);
-		}
-	}
+	public void updateAtoms(IAtomContainer container, Iterable<IAtom> atoms) {
+        for (IAtom atom : atoms) {
+            updateAtom(container, atom);
+        }
+    }
 
 
 	/**
@@ -1663,12 +1726,13 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	 *@param  container  The AtomContainer to work on
 	 *@param  atom       The Atom to update
 	 */
-	public void updateAtom(IAtom atom)
-	{
-		IAtomContainer container=ChemModelManipulator.getRelevantAtomContainer(chemModel, atom);
-		if(container != null)
-		    updateAtom(container, atom);
-	}
+	public void updateAtom(IAtom atom) {
+        IAtomContainer container = 
+            ChemModelManipulator.getRelevantAtomContainer(chemModel, atom);
+        if (container != null) {
+            updateAtom(container, atom);
+        }
+    }
 
 	/**
 	 *  Updates an atom with respect to its hydrogen count
@@ -1676,28 +1740,24 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	 *@param  container  The AtomContainer to work on
 	 *@param  atom       The Atom to update
 	 */
-	private void updateAtom(IAtomContainer container, IAtom atom)
-	{
-		if (this.getController2DModel().getAutoUpdateImplicitHydrogens())
-		{
-			atom.setHydrogenCount(0);
+	private void updateAtom(IAtomContainer container, IAtom atom) {
+        if (this.getController2DModel().getAutoUpdateImplicitHydrogens()) {
+            atom.setHydrogenCount(0);
             try {
-                IAtomType type = matcher.findMatchingAtomType(
-                    container, atom
-                );
-                if (type != null &&
-                    type.getFormalNeighbourCount() != null) {
-                    atom.setHydrogenCount(
-                        type.getFormalNeighbourCount() -
-                        container.getConnectedAtomsCount(atom)
-                    );
+                IAtomType type = matcher.findMatchingAtomType(container, atom);
+                if (type != null) {
+                    Integer neighbourCount = type.getFormalNeighbourCount(); 
+                    if (neighbourCount != null) {
+                        atom.setHydrogenCount(
+                                neighbourCount
+                                - container.getConnectedAtomsCount(atom));
+                    }
                 }
-            } catch ( CDKException e ) {
-                // TODO Auto-generated catch block
+            } catch (CDKException e) {
                 e.printStackTrace();
             }
-		}
-	}
+        }
+    }
 
 	public void makeAllExplicitImplicit() {
 		IAtomContainer undoRedoContainer = chemModel.getBuilder().newAtomContainer();

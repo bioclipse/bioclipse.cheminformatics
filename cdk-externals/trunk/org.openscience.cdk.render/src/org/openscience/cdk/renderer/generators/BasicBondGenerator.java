@@ -55,19 +55,28 @@ import org.openscience.cdk.tools.manipulator.RingSetManipulator;
 public class BasicBondGenerator implements IGenerator {
 
 	private LoggingTool logger = new LoggingTool(BasicBondGenerator.class);
-	
+
 	protected IRingSet ringSet;
-	
+
 	/**
 	 * A hack to allow the HighlightGenerator to override the standard colors.
 	 * Set it to non-null to have all bond-lines in this color.
 	 */
 	private Color overrideColor = null;
 
+	/**
+	 * A similar story to the override color
+	 */
+	private double overrideBondWidth = -1;
+
 	public BasicBondGenerator() {}
-	
+
 	public void setOverrideColor(Color color) {
 	    this.overrideColor = color;
+	}
+
+	public void setOverrideBondWidth(double bondWidth) {
+		this.overrideBondWidth = bondWidth;
 	}
 
 	protected IRingSet getRingSet(final IAtomContainer atomContainer) {
@@ -93,7 +102,7 @@ public class BasicBondGenerator implements IGenerator {
 	/**
 	 * Determine the color of a bond, returning either the default color,
 	 * the override color or whatever is in the color hash for that bond.
-	 * 
+	 *
 	 * @param bond the bond we are generating an element for
 	 * @param model the rendering model
 	 * @return the color to paint the bond
@@ -102,13 +111,31 @@ public class BasicBondGenerator implements IGenerator {
 	    if (this.overrideColor != null) {
 	        return overrideColor;
 	    }
-	    
+
 	    Color color = model.getColorHash().get(bond);
 	    if (color == null) {
 	        return model.getDefaultBondColor();
 	    } else {
 	        return color;
 	    }
+	}
+
+	/**
+	 * Determine the width of a bond, returning either the width defined
+	 * in the model, or the override width. Note that this will be scaled
+	 * to the space of the model.
+	 *
+	 * @param bond the bond to determine the width for
+	 * @param model the renderer model
+	 * @return a double in chem-model space
+	 */
+	public double getWidthForBond(IBond bond, RendererModel model) {
+		double scale = model.getScale();
+		if (this.overrideBondWidth != -1) {
+			return this.overrideBondWidth / scale;
+		} else {
+			return model.getBondWidth() / scale;
+		}
 	}
 
 	public IRenderingElement generate(IAtomContainer ac, RendererModel model) {
@@ -153,7 +180,7 @@ public class BasicBondGenerator implements IGenerator {
 		Point2d p1 = bond.getAtom(0).getPoint2d();
 		Point2d p2 = bond.getAtom(1).getPoint2d();
 		Color color = this.getColorForBond(bond, model);
-		double bondWidth = model.getBondWidth() / model.getScale();
+		double bondWidth = this.getWidthForBond(bond, model);
 		double bondDistance = model.getBondDistance() / model.getScale();
 		if (type == IBond.Order.SINGLE) {
 		    return new LineElement(p1.x, p1.y, p2.x, p2.y, bondWidth, color);
@@ -161,12 +188,12 @@ public class BasicBondGenerator implements IGenerator {
     		    ElementGroup group = new ElementGroup();
     		    switch (type) {
     		        case DOUBLE:
-    		            this.createLines(p1, p2, bondWidth, 
+    		            this.createLines(p1, p2, bondWidth,
     		                    bondDistance, color, group);
     		            break;
     		        case TRIPLE:
     		            this.createLines(
-    		                    p1, p2, bondWidth, 
+    		                    p1, p2, bondWidth,
     		                    bondDistance * 2, color, group);
     		            group.add(new LineElement(
     		                    p1.x, p1.y, p2.x, p2.y, bondWidth, color));
@@ -175,16 +202,15 @@ public class BasicBondGenerator implements IGenerator {
     		            this.createLines(
     		                    p1, p2, bondWidth, bondDistance, color, group);
     		            this.createLines(
-    		                    p1, p2, bondWidth, bondDistance * 4, color, 
+    		                    p1, p2, bondWidth, bondDistance * 4, color,
     		                    group);
     		        default:
     		            break;
     		    }
     		    return group;
 		}
-
 	}
-	
+
 	private void createLines(Point2d p1, Point2d p2, double width, double dist,
 	        Color c, ElementGroup group) {
 	    double[] out = generateDistanceData(p1, p2, dist);
@@ -254,11 +280,10 @@ public class BasicBondGenerator implements IGenerator {
 		ww.interpolate(w, u, alpha);
 		Point2d uu = new Point2d();
 		uu.interpolate(u, w, alpha);
-		
-		double width = model.getBondWidth() / model.getScale();
-		
+
 		return new LineElement(
-		        u.x, u.y, w.x, w.y, width, getColorForBond(bond, model));
+		        u.x, u.y, w.x, w.y,
+		        getWidthForBond(bond, model), getColorForBond(bond, model));
 	}
 
 	private IRenderingElement generateStereoElement(

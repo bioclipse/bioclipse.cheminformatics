@@ -31,9 +31,6 @@ package org.openscience.cdk.controller;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import javax.swing.undo.UndoManager;
-import javax.swing.undo.UndoableEditSupport;
-
 import org.openscience.cdk.interfaces.IBond;
 
 /**

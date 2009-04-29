@@ -32,56 +32,58 @@ import org.openscience.cdk.interfaces.IChemObject;
  * @cdk.module render
  */
 public class MultiSelection<T extends IChemObject> extends AbstractSelection {
-    
-    Collection<T> selection;
-    
-    public MultiSelection(Collection<T> selection) {
-        this.selection = selection;
-    }
 
-    public IAtomContainer getConnectedAtomContainer() {
-        IAtomContainer atomContainer = null;
-        if(!selection.isEmpty()) {
-            for(T value:selection) {
-                if(atomContainer == null)
-                    atomContainer = value.getBuilder().newAtomContainer();
-                addToAtomContainer( atomContainer, value );
-            }
-        }
-        return atomContainer;
-    }
+	Collection<T> selection;
 
-    public boolean isFilled() {
+	public MultiSelection(Collection<T> selection) {
+		this.selection = selection;
+	}
 
-        return !selection.isEmpty();
-    }
+	public IAtomContainer getConnectedAtomContainer() {
+		IAtomContainer atomContainer = null;
+		if (!selection.isEmpty()) {
+			for (T value : selection) {
+				if (atomContainer == null)
+					atomContainer = value.getBuilder().newAtomContainer();
+				addToAtomContainer(atomContainer, value);
+			}
+		}
+		return atomContainer;
+	}
 
-    public boolean contains( IChemObject obj ) {
-        if( obj == null) return false;
-        for(T selected:selection) {
-            if(selected == obj)
-                return true;
-        }
-        return false;
-    }
-    
-    /**
-     * Return elements in selection of type clazz
-     * @param clazz 
-     * @return A collection containing clazz objects;
-     */
-    @SuppressWarnings("unchecked")
-    public <E extends IChemObject> Collection<E> elements(Class<E> clazz){
-        Set<E> set = new HashSet<E>();
-        if(clazz.isAssignableFrom( IChemObject.class )) {
-            set.addAll( (Collection<E>) selection );
-            return set;
-        }
-        for(IChemObject obj:selection) {
-            // Check if obj is assignable to E
-            if(clazz.isAssignableFrom( obj.getClass() ))
-                set.add( (E)obj ); 
-        }
-        return  set;
-    }
+	public boolean isFilled() {
+
+		return !selection.isEmpty();
+	}
+
+	public boolean contains(IChemObject obj) {
+		if (obj == null)
+			return false;
+		for (T selected : selection) {
+			if (selected == obj)
+				return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Return elements in selection of type clazz
+	 *
+	 * @param clazz
+	 * @return A collection containing clazz objects;
+	 */
+	@SuppressWarnings("unchecked")
+	public <E extends IChemObject> Collection<E> elements(Class<E> clazz) {
+		Set<E> set = new HashSet<E>();
+		if (clazz.isAssignableFrom(IChemObject.class)) {
+			set.addAll((Collection<E>) selection);
+			return set;
+		}
+		for (IChemObject obj : selection) {
+			// Check if obj is assignable to E
+			if (clazz.isAssignableFrom(obj.getClass()))
+				set.add((E) obj);
+		}
+		return set;
+	}
 }

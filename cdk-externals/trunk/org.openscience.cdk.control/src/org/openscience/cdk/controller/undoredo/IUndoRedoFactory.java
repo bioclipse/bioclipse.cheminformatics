@@ -69,4 +69,5 @@ public interface IUndoRedoFactory {
 			IAtomContainer oldcontainer, String s, boolean reactantOrProduct, String string);
 	public IUndoRedoable getMergeMoleculesEdit(IAtom deletedAtom, IAtomContainer containerWhereAtomWasIn, List<IBond> deletedBonds, Map<IBond, Integer> bondsWithReplacedAtom, Vector2d offset, IAtom atomwhichwasmoved, String type, IChemModelRelay c2dm);
 	public IUndoRedoable getChangeHydrogenCountEdit(Map<IAtom, int[]> atomHydrogenCountsMap, String type);
+	public IUndoRedoable getLoadNewModelEdit(IChemModel chemModel, IMoleculeSet oldsom, IReactionSet oldsor, IMoleculeSet newsom, IReactionSet newsor, String type);
 }

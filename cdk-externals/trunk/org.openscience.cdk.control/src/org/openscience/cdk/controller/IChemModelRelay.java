@@ -1,9 +1,9 @@
 /* $Revision: 7636 $ $Author: nielsout $ $Date: 2007-09-02 11:46:10 +0100 (su, 02 sep 2007) $
- * 
+ *
  * Copyright (C) 2007  Egon Willighagen <egonw@users.lists.sf>
- * 
+ *
  * Contact: cdk-devel@lists.sourceforge.net
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation; either version 2.1
@@ -12,12 +12,12 @@
  * - but is not limited to - adding the above copyright notice to the beginning
  * of your source code files, and to any copyright notice that you may distribute
  * with programs based on this work.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
@@ -53,10 +53,29 @@ public interface IChemModelRelay {
     public void setChemModel(IChemModel model);
     public IAtom getClosestAtom(Point2d worldCoord);
     public IBond getClosestBond(Point2d worldCoord);
-    public IAtom getAtomInRange(Point2d worldCoord, Collection<IAtom> toignore, IAtom atomtoignore);
+    
+    /**
+     * Get the closest atom that is in 'range' (highlight distance) of the
+     * atom 'atom', ignoring all the atoms in the collection 'toIgnore'.
+     * 
+     * @param toIgnore the atoms to ignore in the search
+     * @param atom the atom to use as the base of the search
+     * @return the closest atom that is in highlight distance
+     */
+    public IAtom getAtomInRange(Collection<IAtom> toIgnore, IAtom atom);
+    
+    
+    /**
+     * Find the atom closest to 'atom', exclusind the atom itself.
+     * 
+     * @param atom the atom around which to search
+     * @return the nearest atom other than 'atom'
+     */
+    public IAtom getClosestAtom(IAtom atom);
+    
     public void updateView();
     public void select(IncrementalSelection selection);
-    
+
     /* Event model */
     public void setEventHandler(IChemModelEventRelayHandler handler);
     public void fireZoomEvent();
@@ -65,7 +84,7 @@ public interface IChemModelRelay {
      * Adds an temporary atom which might be cleared later, when the final
      * atom is added. Controllers can use this to draw temporary atoms, for
      * example while drawing new bonds.
-     *  
+     *
      * @param atom atom to add as phantom
      */
     public void addPhantomAtom(IAtom atom);
@@ -73,7 +92,7 @@ public interface IChemModelRelay {
      * Adds an temporary bond which might be cleared later, when the final
      * bond is added. Controllers can use this to draw temporary bonds, for
      * example while drawing new bonds.
-     *  
+     *
      * @param bond bond to add as phantom
      */
     public void addPhantomBond(IBond bond);
@@ -87,7 +106,7 @@ public interface IChemModelRelay {
     public void clearPhantoms();
 
     /* Editing actions for the complete model */
-    public abstract void updateImplicitHydrogenCounts();
+    public void updateImplicitHydrogenCounts();
     public void zap();
     public IRing addRing(int size, Point2d worldcoord);
     public IRing addRing(IAtom atom, int size);
@@ -100,11 +119,21 @@ public interface IChemModelRelay {
     public void cleanup();
     public void flip(boolean horizontal);
 	public void makeReactantInNewReaction(IAtomContainer newContainer, IAtomContainer oldcontainer);
-	public void makeReactantInExistingReaction(String s,
+	/**
+	 * @param reactionId	The id of the reaction to add to
+	 * @param newContainer	The structure to add to the reaction
+	 * @param container		The structure to remove from the MoleculeSet
+	 */
+	public void makeReactantInExistingReaction(String reactionId,
 			IAtomContainer newContainer, IAtomContainer container);
 	public void makeProductInNewReaction(IAtomContainer newContainer,
 			IAtomContainer container);
-	public void makeProductInExistingReaction(String s,
+	/**
+	 * @param reactionId	The id of the reaction to add to
+	 * @param newContainer	The structure to add to the reaction
+	 * @param container		The structure to remove from the MoleculeSet
+	 */
+	public void makeProductInExistingReaction(String reactionId,
 			IAtomContainer newContainer, IAtomContainer container);
     /**
      * Adjusts all bond orders to fit valency
@@ -117,20 +146,20 @@ public interface IChemModelRelay {
     public void clearValidation();
     public void makeAllImplicitExplicit();
     public void makeAllExplicitImplicit();
-//    public abstract void cleanupSelection(Selector sectionIdentifier);
+//    public  void cleanupSelection(Selector sectionIdentifier);
 
     /* Editing actions for atoms */
-    public abstract IAtomContainer removeAtom(IAtom atom);
-    public abstract IAtomContainer removeAtomWithoutUndo(IAtom atom);
-    public abstract IAtom addAtom(String element, Point2d worldcoord);
-    public abstract IAtom addAtomWithoutUndo(String element, Point2d worldcoord);
-    public abstract IAtom addAtom(String element, IAtom atom);
-    public abstract IAtom addAtomWithoutUndo(String element, IAtom atom);
-    public abstract void moveToWithoutUndo(IAtom atom, Point2d point);
-    public abstract void moveTo(IAtom atom, Point2d point);
-    public abstract void setSymbol(IAtom atom, String symbol);
-    public abstract void setCharge(IAtom atom, int charge);
-    public abstract void setMassNumber(IAtom atom, int charge);
+    public IAtomContainer removeAtom(IAtom atom);
+    public IAtomContainer removeAtomWithoutUndo(IAtom atom);
+    public IAtom addAtom(String element, Point2d worldcoord);
+    public IAtom addAtomWithoutUndo(String element, Point2d worldcoord);
+    public IAtom addAtom(String element, IAtom atom);
+    public IAtom addAtomWithoutUndo(String element, IAtom atom);
+    public void moveToWithoutUndo(IAtom atom, Point2d point);
+    public void moveTo(IAtom atom, Point2d point);
+    public void setSymbol(IAtom atom, String symbol);
+    public void setCharge(IAtom atom, int charge);
+    public void setMassNumber(IAtom atom, int charge);
     public void setHydrogenCount(IAtom atom, int intValue);
     public void replaceAtom(IAtom atomnew, IAtom atomold);
     public void addSingleElectron(IAtom atom);
@@ -138,18 +167,18 @@ public interface IChemModelRelay {
     public void updateAtom(IAtom atom);
 
     /* Editing actions for bonds */
-    public abstract IBond addBond(IAtom fromAtom, IAtom toAtom);
-    public abstract void removeBondWithoutUndo(IBond bond);
-    public abstract void removeBond(IBond bond);
-    public abstract void moveToWithoutUndo(IBond bond, Point2d point);
-    public abstract void moveTo(IBond bond, Point2d point);
-    public abstract void setOrder(IBond bond, IBond.Order order);
-    public abstract void setWedgeType(IBond bond, int type);
-    public abstract void addNewBond(Point2d worldCoordinate);
+    public IBond addBond(IAtom fromAtom, IAtom toAtom);
+    public void removeBondWithoutUndo(IBond bond);
+    public void removeBond(IBond bond);
+    public void moveToWithoutUndo(IBond bond, Point2d point);
+    public void moveTo(IBond bond, Point2d point);
+    public void setOrder(IBond bond, IBond.Order order);
+    public void setWedgeType(IBond bond, int type);
+    public void addNewBond(Point2d worldCoordinate);
     public void cycleBondValence(IBond bond);
     public void makeBondStereo(IBond bond, Direction desiredDirection);
-    public void makeNewStereoBond(IAtom atom, Direction desiredDirection);
-    		
+    public IBond makeNewStereoBond(IAtom atom, Direction desiredDirection);
+
     public IUndoRedoFactory getUndoRedoFactory();
-    public UndoRedoHandler getUndoRedoHandler();	
+    public UndoRedoHandler getUndoRedoHandler();
 }

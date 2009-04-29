@@ -28,13 +28,14 @@ org/openscience/cdk/renderer/visitor/AbstractAWTDrawVisitor.java
 org/openscience/cdk/renderer/visitor/AWTDrawVisitor.java
 org/openscience/cdk/renderer/generators/ProductsBoxGenerator.java
 org/openscience/cdk/renderer/generators/BasicBondGenerator.java
-org/openscience/cdk/renderer/generators/SelectionGenerator.java
 org/openscience/cdk/renderer/generators/MappingGenerator.java
 org/openscience/cdk/renderer/generators/BasicGenerator.java
 org/openscience/cdk/renderer/generators/ControllerFeedbackGenerator.java
 org/openscience/cdk/renderer/generators/BoundsGenerator.java
 org/openscience/cdk/renderer/generators/BasicAtomGenerator.java
+org/openscience/cdk/renderer/generators/SelectBondGenerator.java
 org/openscience/cdk/renderer/generators/LonePairGenerator.java
+org/openscience/cdk/renderer/generators/SelectAtomGenerator.java
 org/openscience/cdk/renderer/generators/HighlightAtomGenerator.java
 org/openscience/cdk/renderer/generators/AtomMassGenerator.java
 org/openscience/cdk/renderer/generators/RadicalGenerator.java

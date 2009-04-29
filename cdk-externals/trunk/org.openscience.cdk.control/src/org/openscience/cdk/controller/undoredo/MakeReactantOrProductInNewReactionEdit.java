@@ -45,7 +45,7 @@ import org.openscience.cdk.tools.manipulator.ReactionSetManipulator;
  * @cdk.module control
  * @cdk.svnrev  $Revision: 13311 $
  */
-public class MakeReactantOrProductInExistingReactionEdit implements IUndoRedoable {
+public class MakeReactantOrProductInNewReactionEdit implements IUndoRedoable {
 
     private static final long serialVersionUID = -7667903450980188402L;
 
@@ -67,24 +67,27 @@ public class MakeReactantOrProductInExistingReactionEdit implements IUndoRedoabl
 	 * @param undoRedoContainer
 	 * @param c2dm The controller model; if none, set to null
 	 */
-	public MakeReactantOrProductInExistingReactionEdit(IChemModel chemModel, IAtomContainer ac, IAtomContainer oldcontainer, String s, boolean reactantOrProduct, String type) {
+	public MakeReactantOrProductInNewReactionEdit(IChemModel chemModel, IAtomContainer ac, IAtomContainer oldcontainer, boolean reactantOrProduct, String type) {
 		this.type = type;
 		this.movedContainer = ac;
 		this.oldContainer = oldcontainer;
 		this.chemModel = chemModel;
-		this.reactionID = s;
+		this.reactionID = ReactionSetManipulator.getReactionByAtomContainerID(chemModel.getReactionSet(), movedContainer.getID()).getID();
 		this.reactantOrProduct = reactantOrProduct;
 	}
 
 	public void redo() {
 		chemModel.getMoleculeSet().removeAtomContainer(movedContainer);
-		IReaction reaction = ReactionSetManipulator.getReactionByReactionID(chemModel.getReactionSet(), reactionID);
+		IReaction reaction = chemModel.getBuilder().newReaction();
+		reaction.setID(reactionID);
 		IMolecule mol=chemModel.getBuilder().newMolecule(movedContainer);
 		mol.setID(movedContainer.getID());
 		if(reactantOrProduct)
 			reaction.addReactant(mol);
 		else
 			reaction.addProduct(mol);
+		if(chemModel.getReactionSet()==null)
+			chemModel.setReactionSet(chemModel.getBuilder().newReactionSet());
 		chemModel.getReactionSet().addReaction(reaction);
 		chemModel.getMoleculeSet().removeAtomContainer(oldContainer);
 	}
@@ -93,19 +96,7 @@ public class MakeReactantOrProductInExistingReactionEdit implements IUndoRedoabl
 		if(chemModel.getMoleculeSet()==null)
 			chemModel.setMoleculeSet(chemModel.getBuilder().newMoleculeSet());
 		chemModel.getMoleculeSet().addAtomContainer(oldContainer);
-		IMoleculeSet reactantsorproducts;
-		if(reactantOrProduct)
-			reactantsorproducts = ReactionSetManipulator.getReactionByReactionID(chemModel.getReactionSet(), reactionID).getReactants();
-		else
-			reactantsorproducts = ReactionSetManipulator.getReactionByReactionID(chemModel.getReactionSet(), reactionID).getProducts();
-		int count=0;
-		for(IAtomContainer mol : reactantsorproducts.atomContainers()){
-			if(mol.getID().equals(movedContainer.getID())){
-				reactantsorproducts.removeAtomContainer(count);
-				break;
-			}
-			count++;
-		}
+		chemModel.getReactionSet().removeReaction(ReactionSetManipulator.getReactionByAtomContainerID(chemModel.getReactionSet(), movedContainer.getID()));
 	}
 
 	public boolean canRedo() {

@@ -35,8 +35,8 @@ import org.openscience.cdk.renderer.selection.SingleSelection;
 
 /**
  * Adds an atom on the given location on mouseclick
- * 
- * @author Gilleain Torrance
+ *
+ * @author maclean
  * @cdk.module control
  */
 public class AddRingModule extends ControllerModuleAdapter {
@@ -50,15 +50,15 @@ public class AddRingModule extends ControllerModuleAdapter {
         this.ringSize = ringSize;
         this.addingBenzene = addingBenzene;
     }
-    
+
     private IRing addRingToEmptyCanvas(Point2d p) {
-        if (this.addingBenzene) {
+        if (addingBenzene) {
             return chemModelRelay.addPhenyl(p);
         } else {
             return chemModelRelay.addRing(ringSize, p);
         }
     }
-    
+
     private IRing addRingToAtom(IAtom closestAtom) {
     	IRing newring;
         if (addingBenzene) {
@@ -69,7 +69,7 @@ public class AddRingModule extends ControllerModuleAdapter {
         newring.removeAtom(closestAtom);
         return newring;
     }
-    
+
     private IRing addRingToBond(IBond bond) {
     	IRing newring;
         if (addingBenzene) {
@@ -86,36 +86,35 @@ public class AddRingModule extends ControllerModuleAdapter {
     public void mouseClickedDown(Point2d worldCoord) {
         IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoord);
         IBond closestBond = chemModelRelay.getClosestBond(worldCoord);
-        
+
         IChemObject singleSelection = getHighlighted( worldCoord,
                                                       closestAtom,closestBond );
-      
-        if(singleSelection==null) {
-            this.addRingToEmptyCanvas(worldCoord);
-        }else
-            if( singleSelection instanceof IAtom) {
-                this.addRingToAtom((IAtom)singleSelection);
-            }else
-                if(singleSelection instanceof IBond) {
-                    this.addRingToBond((IBond)singleSelection);
-                }
-        if(singleSelection == null)
-            setSelection( AbstractSelection.EMPTY_SELECTION );
-        else
-            setSelection( new SingleSelection<IChemObject>(singleSelection) );
-        
-        chemModelRelay.updateView();
-    }
+
+        if (singleSelection == null) {
+			this.addRingToEmptyCanvas(worldCoord);
+		} else if (singleSelection instanceof IAtom) {
+			this.addRingToAtom((IAtom) singleSelection);
+		} else if (singleSelection instanceof IBond) {
+			this.addRingToBond((IBond) singleSelection);
+		}
+		if (singleSelection == null)
+			setSelection(AbstractSelection.EMPTY_SELECTION);
+		else
+			setSelection(new SingleSelection<IChemObject>(singleSelection));
+
+		chemModelRelay.updateView();
+	}
 
     public void setChemModelRelay(IChemModelRelay relay) {
         this.chemModelRelay = relay;
     }
 
     public String getDrawModeString() {
-    	if(addingBenzene)
-    		return "Benzene";
-    	else
-    		return "Ring" + " " + ringSize;
+    	if (addingBenzene) {
+			return "Benzene";
+    	} else {
+			return "Ring" + " " + ringSize;
+    	}
     }
 
 }

@@ -30,13 +30,7 @@ import org.openscience.cdk.renderer.elements.IRenderingElement;
  * @cdk.module render
  */
 public interface IncrementalSelection extends IChemObjectSelection{
-    
-    /**
-     * Perform a selection by some method.
-     *
-     * @param chemModel an IChemModel to select from.
-     */
-    public void select(IChemModel chemModel);
+
 
     /**
      * Use this to check if the selection process has finished.

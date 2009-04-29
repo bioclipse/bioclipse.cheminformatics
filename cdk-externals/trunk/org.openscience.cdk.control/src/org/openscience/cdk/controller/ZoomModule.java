@@ -11,46 +11,42 @@ import org.openscience.cdk.renderer.RendererModel;
  */
 public class ZoomModule extends ControllerModuleAdapter {
 
-    Point2d worldCoord=null;
+    private Point2d worldCoord = null;
 
     public ZoomModule(IChemModelRelay chemModelRelay) {
         super(chemModelRelay);
     }
 
     public void mouseWheelMovedForward(int clicks) {
-        double value = .1*clicks;
-        doZoom( 1+value );
+        doZoom( .9 );
         chemModelRelay.fireZoomEvent();
         chemModelRelay.updateView();
     }
 
     public void mouseWheelMovedBackward(int clicks) {
-        double value = .1 * clicks;
-        doZoom( 1+value );
+        doZoom( 1.1 );
         chemModelRelay.fireZoomEvent();
         chemModelRelay.updateView();
     }
 
     private void doZoom(double z) {
-        if(worldCoord==null) {
-            zoom(z);
-            return;
-        }
-            
-        Renderer renderer= chemModelRelay.getRenderer();
-        Point2d screenCoord = renderer.toScreenCoordinates( worldCoord.x, worldCoord.y);
+        Renderer renderer = chemModelRelay.getRenderer();
+        Point2d screenCoord = 
+            renderer.toScreenCoordinates( worldCoord.x, worldCoord.y );
         zoom(z);
-        Point2d newScreenCoords = renderer.toScreenCoordinates( worldCoord.x,
-                                                                worldCoord.y );
+        Point2d newScreenCoords = 
+            renderer.toScreenCoordinates( worldCoord.x, worldCoord.y );
+        
         Vector2d v= new Vector2d();
-        v.sub( screenCoord ,newScreenCoords );
+        v.sub( screenCoord, newScreenCoords );
 //        renderer.shiftDrawCenter( v.x, v.y );
     }
+    
     private void zoom(double zoomFactor) {
         RendererModel model = chemModelRelay.getRenderer().getRenderer2DModel();
         double zoom = model.getZoomFactor();
         zoom = zoom * zoomFactor;
-        if(zoom < .1 && zoom > 100)
+        if (zoom < .1 && zoom > 100)
             return;
         chemModelRelay.getRenderer().setZoom( zoom );
     }
@@ -59,6 +55,7 @@ public class ZoomModule extends ControllerModuleAdapter {
     public void mouseMove( Point2d worldCoord ) {
         this.worldCoord = worldCoord;
     }
+    
     public String getDrawModeString() {
        return "Zoom";
     }

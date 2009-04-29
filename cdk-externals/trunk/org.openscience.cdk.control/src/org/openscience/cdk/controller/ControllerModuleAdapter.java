@@ -114,42 +114,43 @@ public abstract class ControllerModuleAdapter implements IControllerModule {
         return null;
     }
 
-    /**
-     * Handles selection behavior.
-     * When noting is within the highlight radius null is return and the selection
-     * is cleared. If a atom/bond is selected and part of the current selection
-     * the returned atom container contains the selection. If the atom/bond is not
-     * part of the selection the selection is updated to contained only the
-     * atom/bond and is returned in the atom container.
-     * an AtomContaienr is return containing the
-     *
-     * @param worldCoord
-     * @return a AtomContainer containing the atoms/bond that should be affected
-     * by this action. Otherwise <code>null</code>.
-     */
-    protected IAtomContainer getSelectedAtomContainer( Point2d worldCoord ) {
-        RendererModel rModel =chemModelRelay.getRenderer().getRenderer2DModel();
-        IAtom atom = chemModelRelay.getClosestAtom(worldCoord);
-        IBond bond = chemModelRelay.getClosestBond(worldCoord);
+	/**
+	 * Handles selection behavior. When nothing is within the highlight radius,
+	 * null is returned and the selection is cleared. If an atom or bond is
+	 * selected that is part of the current selection, the returned atom
+	 * container contains the selection. If the atom or bond is not part of the
+	 * selection, the selection is updated to contain only the atom or bond
+	 * and is returned in the atom container.
+	 *
+	 * @param worldCoord
+	 * @return a AtomContainer containing the atoms/bond that should be affected
+	 *         by this action. Otherwise <code>null</code>.
+	 */
+	protected IAtomContainer getSelectedAtomContainer(Point2d worldCoord) {
+		RendererModel rModel =
+							chemModelRelay.getRenderer().getRenderer2DModel();
+		IAtom atom = chemModelRelay.getClosestAtom(worldCoord);
+		IBond bond = chemModelRelay.getClosestBond(worldCoord);
 
-        IChemObjectSelection localSelection = rModel.getSelection();
-        IChemObject chemObject = getHighlighted( worldCoord, atom, bond );
+		IChemObjectSelection localSelection = rModel.getSelection();
+		IChemObject chemObject = getHighlighted(worldCoord, atom, bond);
 
-        if(!localSelection.contains( chemObject )) {
-            if(chemObject != null)
-                localSelection = new SingleSelection<IChemObject>(chemObject);
-            else
-                localSelection = AbstractSelection.EMPTY_SELECTION;
-            
-        }
-        setSelection( localSelection );
-        return selection.getConnectedAtomContainer();
-    }
-    
+		if (!localSelection.contains(chemObject)) {
+			if (chemObject != null) {
+				localSelection = new SingleSelection<IChemObject>(chemObject);
+			} else {
+				localSelection = AbstractSelection.EMPTY_SELECTION;
+			}
+		}
+		setSelection(localSelection);
+		return selection.getConnectedAtomContainer();
+	}
+
     protected void setSelection(IChemObjectSelection selection) {
         this.selection = selection;
         chemModelRelay.getRenderer().getRenderer2DModel().setSelection(selection);
-        chemModelRelay.select( null ); /* FIXME setSelection on IChemModelRelay
+        chemModelRelay.select( null );
+        /* FIXME setSelection on IChemModelRelay
          the selection should probably be in the ControllerHub and not in the
          RendererModel */
         chemModelRelay.updateView();

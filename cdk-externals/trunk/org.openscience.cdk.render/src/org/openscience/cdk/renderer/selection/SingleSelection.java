@@ -28,38 +28,41 @@ import java.util.Set;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemObject;
 
-/** Represents a single <code>ChemObject</code>
+/**
+ * Represents a single <code>ChemObject</code>
+ *
  * @author Arvid
  * @cdk.module render
  */
-public class SingleSelection<T extends IChemObject> extends AbstractSelection 
-                                               implements IChemObjectSelection {
+public class SingleSelection<T extends IChemObject> extends AbstractSelection
+		implements IChemObjectSelection {
 
-    T selection;
-    
-    public SingleSelection(T item) {
-        selection = item;
-    }
-    
-    public IAtomContainer getConnectedAtomContainer() {
-        IAtomContainer ac = selection.getBuilder().newAtomContainer();
-        addToAtomContainer( ac, selection );
-        return ac;
-    }
+	T selection;
 
-    public boolean isFilled() {
-        return selection!=null;
-    }
+	public SingleSelection(T item) {
+		selection = item;
+	}
 
-    public boolean contains( IChemObject obj ) {
-        return selection == obj;
-    }
-    
-    @SuppressWarnings("unchecked")
-    public <E extends IChemObject> Collection<E> elements(Class<E> clazz){
-        if(selection == null) return Collections.emptySet();
-        Set<E> set = new HashSet<E>();
-        set.add( (E) selection );
-        return set;
-    }
+	public IAtomContainer getConnectedAtomContainer() {
+		IAtomContainer ac = selection.getBuilder().newAtomContainer();
+		addToAtomContainer(ac, selection);
+		return ac;
+	}
+
+	public boolean isFilled() {
+		return selection != null;
+	}
+
+	public boolean contains(IChemObject obj) {
+		return selection == obj;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <E extends IChemObject> Collection<E> elements(Class<E> clazz) {
+		if (selection == null)
+			return Collections.emptySet();
+		Set<E> set = new HashSet<E>();
+		set.add((E) selection);
+		return set;
+	}
 }
