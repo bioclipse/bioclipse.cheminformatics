@@ -302,9 +302,11 @@ public class MoleculesEditor extends EditorPart implements
 
     public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
         logger.debug( "Selection has chaged" + this.getClass().getName() );
-        logger.debug( part.toString() + this.getSite().getPart().toString());
-        if(part != null && part.equals( this )) return;
-            setSelectedRows( selection );
+        if(part!=null) {
+            logger.debug( part.toString() + this.getSite().getPart().toString());
+            if(part.equals( this )) return;
+        }
+        setSelectedRows( selection );
 //        if( part != null && part.equals( this )) return;
 //        if( selection == null || selection.isEmpty() ) {
 //            if(!viewer.getSelection().isEmpty())
@@ -314,20 +316,6 @@ public class MoleculesEditor extends EditorPart implements
 //        if(selection instanceof IStructuredSelection)
 //            reactOnSelection( (IStructuredSelection) selection );
         //viewer.setSelection( selection );
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public Object getAdapter( Class adapter ) {
-
-//        if(IContentOutlinePage.class.equals( adapter )) {
-//            if(outlinePage == null) {
-//                outlinePage = new MoleculesOutlinePage();
-//                outlinePage.setInput(getEditorInput());
-//            }
-//            return outlinePage;
-//        }
-        return super.getAdapter( adapter );
     }
 
     public ISelection getSelection() {
