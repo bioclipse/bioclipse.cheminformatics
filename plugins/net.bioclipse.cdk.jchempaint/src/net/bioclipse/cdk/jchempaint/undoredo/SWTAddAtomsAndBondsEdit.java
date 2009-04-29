@@ -20,19 +20,18 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
 import org.openscience.cdk.controller.IChemModelRelay;
-import org.openscience.cdk.controller.IControllerModel;
 import org.openscience.cdk.controller.undoredo.AddAtomsAndBondsEdit;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
 
-public class SWTAddAtomsAndBondsEdit extends AddAtomsAndBondsEdit 
+public class SWTAddAtomsAndBondsEdit extends AddAtomsAndBondsEdit
                                      implements IUndoableOperation {
-    
+
     private IUndoContext context;
 
     public SWTAddAtomsAndBondsEdit(IChemModel chemModel,
-                                   IAtomContainer undoRedoContainer, 
-                                   String type, 
+                                   IAtomContainer undoRedoContainer,
+                                   String type,
                                    IChemModelRelay c2dm,
                                    IUndoContext context) {
         super(chemModel, undoRedoContainer, type, c2dm);
@@ -48,7 +47,7 @@ public class SWTAddAtomsAndBondsEdit extends AddAtomsAndBondsEdit
 
     public void removeContext(IUndoContext context) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public IStatus undo(IProgressMonitor monitor, IAdaptable info)
@@ -66,7 +65,7 @@ public class SWTAddAtomsAndBondsEdit extends AddAtomsAndBondsEdit
 
 
     public void addContext(IUndoContext context) {
-        
+
     }
 
 
@@ -78,7 +77,7 @@ public class SWTAddAtomsAndBondsEdit extends AddAtomsAndBondsEdit
 
     public void dispose() {
         // TODO Auto-generated method stub
-        
+
     }
 
 

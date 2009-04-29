@@ -19,7 +19,6 @@ import javax.vecmath.Vector2d;
 
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.openscience.cdk.controller.IChemModelRelay;
-import org.openscience.cdk.controller.IControllerModel;
 import org.openscience.cdk.controller.undoredo.IUndoRedoFactory;
 import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.interfaces.IAtom;
