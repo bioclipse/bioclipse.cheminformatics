@@ -119,6 +119,10 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     public void doSave( IProgressMonitor monitor ) {
         ICDKManager cdk = Activator.getDefault().getCDKManager();
         ICDKMolecule model = widget.getMolecule();
+        if(model.getResource() == null) {
+            doSaveAs();
+            return;
+        }
         try {
             IFile resource = (IFile)model.getResource();
             IChemFormat chemFormat = cdk.determineFormat(
