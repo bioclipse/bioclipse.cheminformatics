@@ -80,23 +80,6 @@ public class SWTFontManager extends AbstractFontManager {
 	    }
 	  }
 
-	private void makeFonts(Device device) {
-		int size = this.minFontSize;
-		double scale = 12;
-		setFont();
-		this.fontSizeToFontMap = new HashMap<Integer, Font>();
-
-//		for (int i = 0; i < this.getNumberOfFontSizes(); i++) {
-		for (int i = 0; i < 20; i++) {
-
-			this.fontSizeToFontMap.put(size,
-					new Font(device, FONT_FAMILY_NAME, size,FONT_STYLE));
-			this.registerFontSizeMapping(scale, size);
-			size += 1;
-			scale += 2.3;
-		}
-	}
-
 	public void setFontForZoom(double scale) {
 	  this.scale = scale;
 		int size = getFontSizeForZoom( scale);

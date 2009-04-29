@@ -1,7 +1,5 @@
 package net.bioclipse.cdk.jchempaint.view;
 
-import static java.lang.Math.round;
-
 import java.awt.geom.AffineTransform;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -86,8 +84,8 @@ public class SWTRenderer implements IDrawVisitor{
 
     public void visit( OvalElement element ) {
         Color colorOld = gc.getBackground();
-        int radius = (int) round(scaleX(element.radius));
-        int diameter = (int) round(scaleX(element.radius * 2));
+        int radius = scaleX(element.radius);
+        int diameter = scaleX(element.radius * 2);
         
         if (element.fill) {
             gc.setBackground(toSWTColor(gc, element.color));
