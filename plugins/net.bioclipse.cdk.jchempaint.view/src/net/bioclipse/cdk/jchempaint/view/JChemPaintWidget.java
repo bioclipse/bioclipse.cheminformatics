@@ -48,7 +48,7 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 public class JChemPaintWidget extends Canvas {
 
     static public class Message {
-        enum Alignment{
+        public static enum Alignment{
             TOP_LEFT,
             TOP_RIGHT,
             BOTTOM_LEFT,
@@ -56,7 +56,7 @@ public class JChemPaintWidget extends Canvas {
         }
 
         public static Message DIRTY = new Message( "Changed",
-                                                   Alignment.BOTTOM_LEFT);
+                                                   Alignment.TOP_LEFT);
 
         public static Message GENERATED = new Message( "Generated",
                                                    Alignment.BOTTOM_RIGHT);
@@ -66,8 +66,7 @@ public class JChemPaintWidget extends Canvas {
 
         public final String text;
 
-
-        private Message(String text, Alignment alignment) {
+        public Message(String text, Alignment alignment) {
             this.text = text;
             this.alignment = alignment;
             Font f = Display.getDefault().getSystemFont();
