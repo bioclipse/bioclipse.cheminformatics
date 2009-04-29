@@ -43,7 +43,7 @@ import java.util.List;
 /**
  * A set of static utility classes for geometric calculations and operations.
  * This class is extensively used, for example, by JChemPaint to edit molecule.
- * All methods in this class change the coordinates of the atoms. Use GeometryTools if you use an external set of coordinates (e. g. rendeirngCoordinates from RendererModel)
+ * All methods in this class change the coordinates of the atoms. Use GeometryTools if you use an external set of coordinates (e. g. renderingCoordinates from RendererModel)
  *
  * @author        seb
  * @author        Stefan Kuhn
@@ -670,39 +670,6 @@ public class GeometryTools {
 	}
 	/**
 	 *  Returns the atom of the given molecule that is closest to the given
-	 *  coordinates and is not the atom.
-	 *  See comment for center(IAtomContainer atomCon, Dimension areaDim, HashMap renderingCoordinates) for details on coordinate sets
-	 *
-	 *@param  xPosition  The x coordinate
-	 *@param  yPosition  The y coordinate
-	 *@param  atomCon    The molecule that is searched for the closest atom
-	 *@param toignore    This molecule will not be returned.
-	 *@return            The atom that is closest to the given coordinates
-	 */
-	public static IAtom getClosestAtom(double xPosition, double yPosition, IAtomContainer atomCon, IAtom toignore) {
-		IAtom closestAtom = null;
-		IAtom currentAtom;
-		double smallestMouseDistance = -1;
-		double mouseDistance;
-		double atomX;
-		double atomY;
-		for (int i = 0; i < atomCon.getAtomCount(); i++) {
-			currentAtom = atomCon.getAtom(i);
-			if(currentAtom!=toignore){
-				atomX = currentAtom.getPoint2d().x;
-				atomY = currentAtom.getPoint2d().y;
-				mouseDistance = Math.sqrt(Math.pow(atomX - xPosition, 2) + Math.pow(atomY - yPosition, 2));
-				if (mouseDistance < smallestMouseDistance || smallestMouseDistance == -1) {
-					smallestMouseDistance = mouseDistance;
-					closestAtom = currentAtom;
-				}
-			}
-		}
-		return closestAtom;
-	}
-	
-	/**
-	 *  Returns the atom of the given molecule that is closest to the given
 	 *  coordinates.
 	 *  See comment for center(IAtomContainer atomCon, Dimension areaDim, HashMap renderingCoordinates) for details on coordinate sets
 	 *
@@ -1037,9 +1004,9 @@ public class GeometryTools {
 	 *@return            The bestAlignmentForLabel value
 	 */
 	public static int getBestAlignmentForLabel(IAtomContainer container, IAtom atom) {
-		int overallDiffX = 0;
+		double overallDiffX = 0;
 		for (IAtom connectedAtom : container.getConnectedAtomsList(atom)) {
-			overallDiffX = overallDiffX + (int) (connectedAtom.getPoint2d().x - atom.getPoint2d().x);
+			overallDiffX += connectedAtom.getPoint2d().x - atom.getPoint2d().x;
 		}
 		if (overallDiffX <= 0) {
 			return 1;
@@ -1342,7 +1309,7 @@ public class GeometryTools {
 	 *@param  firstAtomContainer                the (largest) first aligned AtomContainer which is the reference
 	 *@param  secondAtomContainer               the second aligned AtomContainer
 	 *@param  mappedAtoms             			Map: a Map of the mapped atoms
-	 *@param  Coords3d            			    boolean: true if moecules has 3D coords, false if molecules has 2D coords
+	 *@param  Coords3d            			    boolean: true if molecules has 3D coords, false if molecules has 2D coords
 	 *@return                   				double: the value of the RMSD 
 	 *@exception  CDKException  if there is an error in getting mapped atoms
 	 *
@@ -1383,7 +1350,7 @@ public class GeometryTools {
 	 *@param  secondAtomContainer               the second aligned AtomContainer
 	 *@param  mappedAtoms             			Map: a Map of the mapped atoms
 	 *@param hetAtomOnly                        boolean: true if only hetero atoms should be considered
-	 *@param  Coords3d            			    boolean: true if moecules has 3D coords, false if molecules has 2D coords
+	 *@param  Coords3d            			    boolean: true if molecules has 3D coords, false if molecules has 2D coords
 	 *@return                   				double: the value of the RMSD 
 	 *
 	 **/

@@ -35,7 +35,6 @@ import javax.vecmath.Vector3d;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.exception.NoSuchAtomTypeException;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.interfaces.IAtom;
@@ -152,7 +151,7 @@ public class ModelBuilder3D {
 	/**
 	 * Generate 3D coordinates with force field information.
 	 */
-	public IMolecule generate3DCoordinates(IMolecule molecule, boolean clone) throws CDKException, NoSuchAtomTypeException, CloneNotSupportedException, IOException {
+	public IMolecule generate3DCoordinates(IMolecule molecule, boolean clone) throws Exception {
 	    String[] originalAtomTypeNames = new String[molecule.getAtomCount()];
 	    for (int i=0; i<originalAtomTypeNames.length; i++) {
 	        originalAtomTypeNames[i] = molecule.getAtom(i).getAtomTypeName();
@@ -232,7 +231,7 @@ public class ModelBuilder3D {
 		} catch (Exception ex3) {
 			logger.error("PlaceSubstitutensERROR: Cannot place substitutents due to:" + ex3.getMessage());
 			logger.debug(ex3);
-			throw new CDKException("PlaceSubstitutensERROR: Cannot place substitutents due to:" + ex3.getMessage(), ex3);
+			throw new Exception("PlaceSubstitutensERROR: Cannot place substitutents due to:" + ex3.getMessage(), ex3);
 		}
 		// restore the original atom type names
     for (int i=0; i<originalAtomTypeNames.length; i++) {
@@ -264,10 +263,9 @@ public class ModelBuilder3D {
 	 * Layout the molecule, starts with ring systems and than aliphatic chains.
 	 *
 	 *@param  ringSetMolecule  ringSystems of the molecule
-	 * @throws CloneNotSupportedException 
 	 *@exception  Exception    Description of the Exception
 	 */
-	private void layoutMolecule(List ringSetMolecule, IMolecule molecule, AtomPlacer3D ap3d, AtomTetrahedralLigandPlacer3D atlp3d, AtomPlacer atomPlacer) throws CDKException, IOException, CloneNotSupportedException{
+	private void layoutMolecule(List ringSetMolecule, IMolecule molecule, AtomPlacer3D ap3d, AtomTetrahedralLigandPlacer3D atlp3d, AtomPlacer atomPlacer) throws Exception {
 		//logger.debug("****** LAYOUT MOLECULE MAIN *******");
 		IAtomContainer ac = null;
 		int safetyCounter = 0;
@@ -408,7 +406,7 @@ public class ModelBuilder3D {
 	 *@param  atomNeighbours  placed atomNeighbours of atomA
 	 *@exception  Exception   Description of the Exception
 	 */
-	private void setBranchAtom(IMolecule molecule, IAtom unplacedAtom, IAtom atomA, IAtomContainer atomNeighbours, AtomPlacer3D ap3d, AtomTetrahedralLigandPlacer3D atlp3d) throws CDKException {
+	private void setBranchAtom(IMolecule molecule, IAtom unplacedAtom, IAtom atomA, IAtomContainer atomNeighbours, AtomPlacer3D ap3d, AtomTetrahedralLigandPlacer3D atlp3d) throws Exception {
 		//logger.debug("****** SET Branch Atom ****** >"+molecule.getAtomNumber(unplacedAtom));
 		IAtomContainer noCoords = new org.openscience.cdk.AtomContainer();
 		noCoords.addAtom(unplacedAtom);
@@ -442,7 +440,7 @@ public class ModelBuilder3D {
 				}
 			}
 		} catch (Exception ex2) {
-			throw new CDKException("SetBranchAtomERROR: Not enough branch Points");
+			throw new IOException("SetBranchAtomERROR: Not enough branch Points");
 		}
 
 		int stereo = -1;
@@ -468,7 +466,7 @@ public class ModelBuilder3D {
 	 *@param  chain          AtomContainer if atoms in an aliphatic chain or ring system 
 	 *@exception  Exception  Description of the Exception
 	 */
-	private void searchAndPlaceBranches(IMolecule molecule, IAtomContainer chain, AtomPlacer3D ap3d, AtomTetrahedralLigandPlacer3D atlp3d, AtomPlacer atomPlacer) throws CDKException, IOException {
+	private void searchAndPlaceBranches(IMolecule molecule, IAtomContainer chain, AtomPlacer3D ap3d, AtomTetrahedralLigandPlacer3D atlp3d, AtomPlacer atomPlacer) throws Exception {
 		//logger.debug("****** SEARCH AND PLACE ****** Chain length: "+chain.getAtomCount());
 		java.util.List atoms = null;
 		IAtomContainer branchAtoms = new org.openscience.cdk.AtomContainer();
@@ -510,7 +508,7 @@ public class ModelBuilder3D {
 	 *@param  startAtoms     AtomContainer of possible start atoms for a chain
 	 *@exception  Exception  Description of the Exception
 	 */
-	private void placeLinearChains3D(IMolecule molecule, IAtomContainer startAtoms, AtomPlacer3D ap3d, AtomTetrahedralLigandPlacer3D atlp3d, AtomPlacer atomPlacer) throws CDKException, IOException{
+	private void placeLinearChains3D(IMolecule molecule, IAtomContainer startAtoms, AtomPlacer3D ap3d, AtomTetrahedralLigandPlacer3D atlp3d, AtomPlacer atomPlacer) throws Exception {
 		//logger.debug("****** PLACE LINEAR CHAINS ******");
 		IAtom dihPlacedAtom = null;
 		IAtom thirdPlacedAtom = null;

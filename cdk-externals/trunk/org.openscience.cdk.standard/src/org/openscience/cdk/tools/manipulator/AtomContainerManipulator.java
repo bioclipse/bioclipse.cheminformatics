@@ -1,12 +1,12 @@
 /* $RCSfile$
- * $Author$ 
+ * $Author$
  * $Date$
  * $Revision$
- * 
+ *
  * Copyright (C) 2003-2007  The Chemistry Development Kit (CDK) project
- * 
+ *
  * Contact: cdk-devel@lists.sourceforge.net
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation; either version 2.1
@@ -15,23 +15,17 @@
  * - but is not limited to - adding the above copyright notice to the beginning
  * of your source code files, and to any copyright notice that you may distribute
  * with programs based on this work.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *  */
 package org.openscience.cdk.tools.manipulator;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.annotations.TestClass;
@@ -40,16 +34,13 @@ import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.config.IsotopeFactory;
 import org.openscience.cdk.config.Symbols;
 import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IAtomType;
-import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.interfaces.IElectronContainer;
-import org.openscience.cdk.interfaces.IElement;
-import org.openscience.cdk.interfaces.ILonePair;
-import org.openscience.cdk.interfaces.IMolecularFormula;
-import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.interfaces.IPseudoAtom;
+import org.openscience.cdk.interfaces.*;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Class with convenience methods that provide methods to manipulate
@@ -68,10 +59,10 @@ import org.openscience.cdk.interfaces.IPseudoAtom;
  */
 @TestClass("org.openscience.cdk.tools.manipulator.AtomContainerManipulatorTest")
 public class AtomContainerManipulator {
-	
+
 	/**
 	 * Returna an atom in an atomcontainer identified by id
-	 * 
+	 *
 	 * @param ac The AtomContainer to search in
 	 * @param id The id to search for
 	 * @return An atom having id id
@@ -117,7 +108,7 @@ public class AtomContainerManipulator {
 
     /**
      * Get the summed charge of all atoms in an AtomContainer
-     * 
+     *
      * @param  atomContainer The IAtomContainer to manipulate
      * @return The summed charges of all atoms in this AtomContainer.
      */
@@ -140,7 +131,7 @@ public class AtomContainerManipulator {
      * {@link MolecularFormulaManipulator#getMajorIsotopeMass(org.openscience.cdk.interfaces.IMolecularFormula)}
      * method, after converting the {@link IAtomContainer} to a
      * {@link IMolecularFormula} with the {@link MolecularFormulaManipulator}.
-     * 
+     *
      * @param  atomContainer The IAtomContainer to manipulate
      * @return The summed exact mass of all atoms in this AtomContainer.
      */
@@ -152,11 +143,11 @@ public class AtomContainerManipulator {
         }
         return mass;
     }
-    
+
     /**
      * Returns the molecular mass of the IAtomContainer. For the calculation it uses the
      * masses of the isotope mixture using natural abundances.
-     * 
+     *
      * @param       atomContainer
      * @cdk.keyword mass, molecular
      */
@@ -175,9 +166,9 @@ public class AtomContainerManipulator {
         }
 		 return mass;
     }
-    /** 
+    /**
      * Get the summed natural abundance of all atoms in an AtomContainer
-     * 
+     *
      * @param  atomContainer The IAtomContainer to manipulate
      * @return The summed natural abundance of all atoms in this AtomContainer.
      */
@@ -185,11 +176,11 @@ public class AtomContainerManipulator {
     public static double getTotalNaturalAbundance(IAtomContainer atomContainer) {
         double abundance =  1.0;
         for (IAtom iAtom : atomContainer.atoms()) abundance = abundance * iAtom.getNaturalAbundance();
-        
-    	
+
+
         return abundance/Math.pow(100,atomContainer.getAtomCount());
     }
-    
+
     /**
      * @return The summed formal charges of all atoms in this AtomContainer.
      */
@@ -201,7 +192,7 @@ public class AtomContainerManipulator {
         return chargeP + chargeN;
     }
     /**
-     * @return The summed negative formal charges of all atoms in this AtomContainer. 
+     * @return The summed negative formal charges of all atoms in this AtomContainer.
      */
     @TestMethod("testGetTotalNegativeFormalCharge_IAtomContainer")
     public static int getTotalNegativeFormalCharge(IAtomContainer atomContainer) {
@@ -214,7 +205,7 @@ public class AtomContainerManipulator {
         return charge;
     }
     /**
-     * @return The summed positive formal charges of all atoms in this AtomContainer. 
+     * @return The summed positive formal charges of all atoms in this AtomContainer.
      */
     @TestMethod("testGetTotalPositiveFormalCharge_IAtomContainer")
     public static int getTotalPositiveFormalCharge(IAtomContainer atomContainer) {
@@ -317,7 +308,7 @@ public class AtomContainerManipulator {
      *
      * @param atomContainer The AtomContainer from which to remove the hydrogens
      * @return              The molecule without Hs.
-     * @cdk.keyword         hydrogen, removal
+     * @cdk.keyword         hydrogens, removal
      */
     @TestMethod("testRemoveHydrogens_IAtomContainer")
     public static IAtomContainer removeHydrogens(IAtomContainer atomContainer)
@@ -407,13 +398,13 @@ public class AtomContainerManipulator {
 
         return (mol);
     }
-    
+
 	/**
 	 * Produces an AtomContainer without explicit Hs but with H count from one with Hs.
 	 * Hs bonded to more than one heavy atom are preserved.  The new molecule is a deep copy.
 	 *
 	 * @return         The mol without Hs.
-	 * @cdk.keyword    hydrogen, removal
+	 * @cdk.keyword    hydrogens, removal
 	 */
     @TestMethod("testRemoveHydrogensPreserveMultiplyBonded")
 	public static IAtomContainer removeHydrogensPreserveMultiplyBonded(IAtomContainer ac) {
@@ -441,7 +432,7 @@ public class AtomContainerManipulator {
 	 *
 	 * @param  preserve  a list of H atoms to preserve.
 	 * @return           The mol without Hs.
-	 * @cdk.keyword      hydrogen, removal
+	 * @cdk.keyword      hydrogens, removal
 	 */
 	private static IAtomContainer removeHydrogens(IAtomContainer ac, List<IAtom> preserve) {
 		Map<IAtom,IAtom> map = new HashMap<IAtom,IAtom>();
@@ -529,12 +520,12 @@ public class AtomContainerManipulator {
     }
 
 	/**
-	 *  A method to remove ElectronContainerListeners. 
-	 *  ElectronContainerListeners are used to detect changes 
+	 *  A method to remove ElectronContainerListeners.
+	 *  ElectronContainerListeners are used to detect changes
 	 *  in ElectronContainers (like bonds) and to notifiy
 	 *  registered Listeners in the event of a change.
-	 *  If an object looses interest in such changes, it should 
-	 *  unregister with this AtomContainer in order to improve 
+	 *  If an object looses interest in such changes, it should
+	 *  unregister with this AtomContainer in order to improve
 	 *  performance of this class.
 	 */
 	public static void unregisterElectronContainerListeners(IAtomContainer container)
@@ -544,12 +535,12 @@ public class AtomContainerManipulator {
 	}
 
 	/**
-	 *  A method to remove AtomListeners. 
-	 *  AtomListeners are used to detect changes 
+	 *  A method to remove AtomListeners.
+	 *  AtomListeners are used to detect changes
 	 *  in Atom objects within this AtomContainer and to notifiy
 	 *  registered Listeners in the event of a change.
-	 *  If an object looses interest in such changes, it should 
-	 *  unregister with this AtomContainer in order to improve 
+	 *  If an object looses interest in such changes, it should
+	 *  unregister with this AtomContainer in order to improve
 	 *  performance of this class.
 	 */
 	public static void unregisterAtomListeners(IAtomContainer container)
@@ -560,7 +551,7 @@ public class AtomContainerManipulator {
 	/**
 	 * Compares this AtomContainer with another given AtomContainer and returns
 	 * the Intersection between them. <p>
-	 * 
+	 *
 	 * <b>Important Note</b> : This is not the maximum common substructure.
 	 *
 	 * @param  container1 an AtomContainer object
@@ -590,7 +581,7 @@ public class AtomContainerManipulator {
 		}
 		return intersection;
 	}
-	
+
 	/**
 	 * Constructs an array of Atom objects from an AtomContainer.
 	 * @param  container The original AtomContainer.
@@ -602,7 +593,7 @@ public class AtomContainerManipulator {
 		for (int i = 0; i < ret.length; ++i) ret[i] = container.getAtom(i);
 		return ret;
 	}
-	
+
 	/**
 	 * Constructs an array of Atom objects from a List of Atom objects.
 	 * @param  list The original List.
@@ -614,7 +605,7 @@ public class AtomContainerManipulator {
 		for (int i = 0; i < ret.length; ++i) ret[i] = list.get(i);
 		return ret;
 	}
-	
+
 	/**
 	 * Constructs an array of Bond objects from an AtomContainer.
 	 * @param  container The original AtomContainer.
@@ -626,7 +617,7 @@ public class AtomContainerManipulator {
 		for (int i = 0; i < ret.length; ++i) ret[i] = container.getBond(i);
 		return ret;
 	}
-	
+
 	/**
 	 * Constructs an array of Atom objects from a List of Atom objects.
 	 * @param  list The original List.
@@ -638,7 +629,7 @@ public class AtomContainerManipulator {
 		for (int i = 0; i < ret.length; ++i) ret[i] = list.get(i);
 		return ret;
 	}
-	
+
 	/**
 	 * Constructs an array of Bond objects from an AtomContainer.
 	 * @param  container The original AtomContainer.
@@ -649,7 +640,7 @@ public class AtomContainerManipulator {
 		for (int i = 0; i < ret.length; ++i) ret[i] = container.getElectronContainer(i);
 		return ret;
 	}
-	
+
 	/**
 	 * Constructs an array of Atom objects from a List of Atom objects.
 	 * @param  list The original List.
@@ -668,7 +659,7 @@ public class AtomContainerManipulator {
 	 * to have the same properties as the <code>IAtomType</code>. If no matching atom
 	 * type is found, no configuration is performed.
 	 * <b>This method overwrites existing values.</b>
-	 * 
+	 *
 	 * @param container
 	 * @throws CDKException
 	 */
@@ -690,7 +681,7 @@ public class AtomContainerManipulator {
      * to have the same properties as the <code>IAtomType</code>. If no matching atom
      * type is found, no configuration is performed.
      * <b>This method overwrites existing values.</b>
-     * 
+     *
      * @param container
      * @throws CDKException
      */
@@ -768,7 +759,7 @@ public class AtomContainerManipulator {
 	 * Returns a set of nodes excluding all the hydrogens.
 	 *
 	 * @return         The heavyAtoms value
-	 * @cdk.keyword    hydrogen, removal
+	 * @cdk.keyword    hydrogens, removal
 	 */
     @TestMethod("testGetHeavyAtoms_IAtomContainer")
 	public static  List<IAtom> getHeavyAtoms(IAtomContainer container) {
@@ -780,8 +771,8 @@ public class AtomContainerManipulator {
 		}
 		return newAc;
 	}
-    
-    
+
+
 	/**
 	 * Generates a cloned atomcontainer with all atoms being carbon, all bonds being single non-aromatic
 	 * @param atomContainer The input atomcontainer
@@ -802,7 +793,7 @@ public class AtomContainerManipulator {
 				query.getBond(i).getAtom(1).setFlag(CDKConstants.ISAROMATIC, false);
 			}
 			return query;
-	}	
+	}
 
 	/**
 	 * Returns the sum of the bond order equivalents for a given IAtom. It
@@ -812,7 +803,8 @@ public class AtomContainerManipulator {
 	 * @param  atom  The atom for which to calculate the bond order sum
 	 * @return       The number of bond order equivalents for this atom
 	 */
-	public double getBondOrderSum(IAtomContainer container, IAtom atom) {
+    @TestMethod("testBondOrderSum")
+	public static double getBondOrderSum(IAtomContainer container, IAtom atom) {
 		double count = 0;
 		for (IBond bond : container.getConnectedBondsList(atom)) {
 			if (bond.getOrder() == IBond.Order.SINGLE) {

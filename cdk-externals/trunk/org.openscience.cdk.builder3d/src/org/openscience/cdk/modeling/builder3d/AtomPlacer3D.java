@@ -20,19 +20,18 @@
  */
 package org.openscience.cdk.modeling.builder3d;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.vecmath.Point2d;
-import javax.vecmath.Point3d;
-import javax.vecmath.Vector3d;
-
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+
+import javax.vecmath.Point2d;
+import javax.vecmath.Point3d;
+import javax.vecmath.Vector3d;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -113,7 +112,7 @@ public class AtomPlacer3D {
 	 * @param  chain          the atoms to be assigned, must be connected
 	 * @exception  Exception  Description of the Exception
 	 */
-	public void placeAliphaticHeavyChain(IAtomContainer molecule, IAtomContainer chain){
+	public void placeAliphaticHeavyChain(IAtomContainer molecule, IAtomContainer chain) throws Exception {
 		//logger.debug("******** Place aliphatic Chain *********");
 		int[] first = new int[2];
 		int counter = 1;
@@ -310,7 +309,7 @@ public class AtomPlacer3D {
 	 * @return                The distanceValue value from the force field parameter set
 	 * @exception  Exception  Description of the Exception
 	 */
-	public double getBondLengthValue(String id1, String id2) {
+	public double getBondLengthValue(String id1, String id2) throws Exception {
 		String dkey = "";
 		if (pSet.containsKey(("bond" + id1 + ";" + id2))) {
 			dkey="bond" + id1 + ";" + id2;
@@ -332,7 +331,7 @@ public class AtomPlacer3D {
 	 * @return                The angleKey value
 	 * @exception  Exception  Description of the Exception
 	 */
-	public double getAngleValue(String id1, String id2, String id3) {
+	public double getAngleValue(String id1, String id2, String id3) throws Exception {
 		String akey = "";
 		if (pSet.containsKey(("angle" + id1 + ";" + id2 + ";" + id3))) {
 			akey = "angle" + id1 + ";" + id2 + ";" + id3;

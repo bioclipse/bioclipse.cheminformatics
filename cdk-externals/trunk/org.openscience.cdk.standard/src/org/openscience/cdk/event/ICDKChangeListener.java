@@ -44,12 +44,5 @@ public interface ICDKChangeListener extends EventListener
 	 * @param   event  The EventObject
 	 */
     void stateChanged(EventObject event);
-    
-	/**
-	 * Invoked when the target of the listener has changed its zoom factor.
-	 *
-	 * @param   event  The EventObject
-	 */
-	void zoomFactorChanged(EventObject event);
 }
 

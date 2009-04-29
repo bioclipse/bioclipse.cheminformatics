@@ -33,6 +33,7 @@ org/openscience/cdk/qsar/descriptors/molecular/PetitjeanShapeIndexDescriptor.jav
 org/openscience/cdk/qsar/descriptors/molecular/AutocorrelationDescriptorPolarizability.java
 org/openscience/cdk/qsar/descriptors/molecular/PetitjeanNumberDescriptor.java
 org/openscience/cdk/qsar/descriptors/molecular/VAdjMaDescriptor.java
+org/openscience/cdk/qsar/descriptors/molecular/ChiIndexUtils.java
 org/openscience/cdk/qsar/descriptors/molecular/ALOGPDescriptor.java
 org/openscience/cdk/qsar/descriptors/molecular/ChiPathClusterDescriptor.java
 org/openscience/cdk/qsar/descriptors/molecular/LargestPiSystemDescriptor.java
@@ -41,4 +42,3 @@ org/openscience/cdk/qsar/descriptors/molecular/ChiClusterDescriptor.java
 org/openscience/cdk/qsar/descriptors/molecular/ZagrebIndexDescriptor.java
 org/openscience/cdk/qsar/descriptors/molecular/CarbonTypesDescriptor.java
 org/openscience/cdk/qsar/descriptors/molecular/TPSADescriptor.java
-org/openscience/cdk/qsar/ChiIndexUtils.java
