@@ -183,9 +183,9 @@ public class JCPCellPainter implements ICellPainter {
                                     true );
             if(generated) {
                 Message message = Message.GENERATED;
+                gc.setBackground( oldBackground );
                 JChemPaintWidget.paintMessage( gc, message, rect );
             }
-            gc.setBackground( oldBackground );
         }
     }
 
