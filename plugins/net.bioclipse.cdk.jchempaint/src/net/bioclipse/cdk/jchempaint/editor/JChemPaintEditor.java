@@ -28,6 +28,9 @@ import net.bioclipse.cdk.jchempaint.handlers.ModuleState;
 import net.bioclipse.cdk.jchempaint.handlers.RedoHandler;
 import net.bioclipse.cdk.jchempaint.handlers.UndoHandler;
 import net.bioclipse.cdk.jchempaint.outline.JCPOutlinePage;
+import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
+import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message;
+import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message.Alignment;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.ui.jobs.BioclipseUIJob;
@@ -102,6 +105,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     private Menu                   menu;
 
     IPartListener2 partListener;
+
+    private Message customMessage;
 
     public JChemPaintEditorWidget getWidget() {
         return widget;
@@ -525,7 +530,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                         IChemObject chemObject= ((CDKChemObject)bcSelection
                                                .getFirstElement()).getChemobj();
 
-                        if(contains(ChemModelManipulator.getAllAtomContainers( 
+                        if(contains(ChemModelManipulator.getAllAtomContainers(
                                    widget.getControllerHub().getIChemModel() ),
                                    chemObject)){
 
@@ -591,5 +596,17 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         } else {
             file.create(input, true, null);
         }
+    }
+
+    public void setMessage(String message) {
+        customMessage = new JChemPaintWidget.Message( message,
+                                                      Alignment.BOTTOM_LEFT);
+        getWidget().add( customMessage );
+        getWidget().redraw();
+    }
+
+    public void clearMessage() {
+        getWidget().remove( customMessage );
+        getWidget().redraw();
     }
 }
