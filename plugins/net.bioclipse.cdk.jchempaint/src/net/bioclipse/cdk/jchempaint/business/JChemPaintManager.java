@@ -164,7 +164,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         });
     }
 
-    class SetInputRunnable implements Runnable {
+    static class SetInputRunnable implements Runnable {
         ICDKMolecule molecule;
         JChemPaintEditor editor;
 
