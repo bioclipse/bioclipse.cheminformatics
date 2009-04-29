@@ -27,12 +27,10 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.jchempaint.view.SWTFontManager;
 import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
-import net.bioclipse.core.domain.IMolecule;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.SWT;

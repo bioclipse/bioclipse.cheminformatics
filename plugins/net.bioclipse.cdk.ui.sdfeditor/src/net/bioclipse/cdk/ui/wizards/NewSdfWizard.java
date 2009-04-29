@@ -27,8 +27,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
@@ -70,7 +68,7 @@ public class NewSdfWizard extends BasicNewResourceWizard{
                       newsdPage.setFileExtension( "sdf" );
                   IFile newFile= newsdPage.createNewFile();
                   newFile.delete( true, null );
-                  Iterator it=specPage.getSelectedRes().iterator();
+                  Iterator<?> it=specPage.getSelectedRes().iterator();
                   List<IMolecule> entries=new ArrayList<IMolecule>();
                   List<IFile> failures=new ArrayList<IFile>();
                   while(it.hasNext()){

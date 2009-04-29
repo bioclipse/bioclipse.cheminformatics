@@ -10,10 +10,10 @@
  *     Stefan Kuhn - Implementation of new sdf wizard
  */
 package net.bioclipse.cdk.ui.wizards;
+
 import net.bioclipse.chemoinformatics.contentlabelproviders.MoleculeFileContentProvider;
-import net.bioclipse.ui.contentlabelproviders.FolderLabelProvider;
+
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -27,8 +27,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
+
 public class SelectFilesWizardPage extends WizardPage {
         private boolean withCheckbox;
         private IStructuredSelection selectedFiles = null;

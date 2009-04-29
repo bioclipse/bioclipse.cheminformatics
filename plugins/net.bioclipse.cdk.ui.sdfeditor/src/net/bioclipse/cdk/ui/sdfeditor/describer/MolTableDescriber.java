@@ -1,7 +1,5 @@
 package net.bioclipse.cdk.ui.sdfeditor.describer;
 
-import net.bioclipse.cdk.business.Activator;
-import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.BioList;
 import net.bioclipse.core.domain.IBioObject;
@@ -10,12 +8,8 @@ import net.bioclipse.ui.business.describer.IBioObjectDescriber;
 
 public class MolTableDescriber implements IBioObjectDescriber {
 
-    ICDKManager cdk;
-
-
     public MolTableDescriber() {
 
-        cdk=Activator.getDefault().getCDKManager();
     }
 
     @SuppressWarnings("unchecked")

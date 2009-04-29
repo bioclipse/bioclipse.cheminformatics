@@ -26,7 +26,6 @@ import java.util.Set;
 import net.bioclipse.cdk.business.SDFileIndex;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.util.LogUtils;
 import net.sourceforge.nattable.data.IDataProvider;
 
