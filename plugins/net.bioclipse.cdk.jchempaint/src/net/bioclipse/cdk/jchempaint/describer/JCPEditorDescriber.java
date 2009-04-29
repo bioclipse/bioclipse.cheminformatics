@@ -21,7 +21,7 @@ public class JCPEditorDescriber implements IBioObjectDescriber {
         if ( object instanceof ICDKMolecule ) {
             ICDKMolecule cdkmol = (ICDKMolecule) object;
             try {
-                if (cdk.has2d( cdkmol )){
+                if (!cdk.has3d( cdkmol )){
                     return "net.bioclipse.cdk.ui.editors.jchempaint";
                 }
             } catch ( BioclipseException e ) {
