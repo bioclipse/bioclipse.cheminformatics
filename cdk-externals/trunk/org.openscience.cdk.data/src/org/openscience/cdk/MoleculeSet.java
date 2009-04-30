@@ -119,7 +119,9 @@ public class MoleculeSet extends AtomContainerSet implements IMoleculeSet, Clone
      */
     public org.openscience.cdk.interfaces.IMolecule getMolecule(int number)
     {
-        return (Molecule)super.getAtomContainer(number);
+        IAtomContainer container = super.getAtomContainer(number);
+        if (container instanceof IMolecule) return (IMolecule)container;
+        return container.getBuilder().newMolecule(container);
     }
     
     
