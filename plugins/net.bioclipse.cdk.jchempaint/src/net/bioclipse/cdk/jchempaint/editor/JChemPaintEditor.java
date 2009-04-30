@@ -466,7 +466,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     public ICDKMolecule getCDKMolecule() {
         ICDKMolecule model = widget.getMolecule();
         IAtomContainer modelContainer = model.getAtomContainer();
-
+        modelContainer.removeAllElements();
         IChemModel chemModel = getControllerHub().getIChemModel();
         for(IAtomContainer aContainer:ChemModelManipulator
                                         .getAllAtomContainers( chemModel )) {
