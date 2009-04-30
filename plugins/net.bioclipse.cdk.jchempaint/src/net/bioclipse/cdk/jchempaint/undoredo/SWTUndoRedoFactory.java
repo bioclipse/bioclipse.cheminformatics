@@ -129,7 +129,7 @@ public class SWTUndoRedoFactory implements IUndoRedoFactory {
     }
 
     public IUndoRedoable getChangeHydrogenCountEdit(
-                                                     Map<IAtom, int[]> atomHydrogenCountsMap,
+                                                     Map<IAtom, Integer[]> atomHydrogenCountsMap,
                                                      String type ) {
 
         return new SWTChangeHydrogenCountEdit(atomHydrogenCountsMap,type,this.context);

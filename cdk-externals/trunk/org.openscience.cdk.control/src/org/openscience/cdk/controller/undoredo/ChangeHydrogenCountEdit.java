@@ -43,7 +43,7 @@ public class ChangeHydrogenCountEdit implements IUndoRedoable {
 
     private static final long serialVersionUID = 1237756549190508501L;
 
-    private Map<IAtom, int[]> atomHydrogenCountsMap;
+    private Map<IAtom, Integer[]> atomHydrogenCountsMap;
 
     private String type;
 
@@ -55,7 +55,7 @@ public class ChangeHydrogenCountEdit implements IUndoRedoable {
 	 * @param newCharge
 	 *            The new charge of this atom
 	 */
-	public ChangeHydrogenCountEdit(Map<IAtom, int[]> atomHydrogenCountsMap, String type) {
+	public ChangeHydrogenCountEdit(Map<IAtom, Integer[]> atomHydrogenCountsMap, String type) {
 		this.atomHydrogenCountsMap = atomHydrogenCountsMap;
 		this.type = type;
 	}
@@ -65,7 +65,7 @@ public class ChangeHydrogenCountEdit implements IUndoRedoable {
         Iterator<IAtom> it = keys.iterator();
         while (it.hasNext()) {
             IAtom atom = it.next();
-            int[] counts = atomHydrogenCountsMap.get(atom);
+            Integer[] counts = atomHydrogenCountsMap.get(atom);
             atom.setNotification(false);
             atom.setHydrogenCount(counts[0]);
             atom.setNotification(true);
@@ -77,7 +77,7 @@ public class ChangeHydrogenCountEdit implements IUndoRedoable {
         Iterator<IAtom> it = keys.iterator();
         while (it.hasNext()) {
             IAtom atom = (IAtom) it.next();
-            int[] counts = atomHydrogenCountsMap.get(atom);
+            Integer[] counts = atomHydrogenCountsMap.get(atom);
             atom.setHydrogenCount(counts[1]);
         }
     }

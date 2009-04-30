@@ -16,7 +16,7 @@ import org.openscience.cdk.interfaces.IAtom;
 public class SWTChangeHydrogenCountEdit extends ChangeHydrogenCountEdit
         implements IUndoableOperation {
     IUndoContext context;
-    public SWTChangeHydrogenCountEdit( Map<IAtom, int[]> atomHydrogenCountsMap,
+    public SWTChangeHydrogenCountEdit( Map<IAtom, Integer[]> atomHydrogenCountsMap,
                                     String type, IUndoContext context) {
         super(atomHydrogenCountsMap,type);
         this.context = context;
