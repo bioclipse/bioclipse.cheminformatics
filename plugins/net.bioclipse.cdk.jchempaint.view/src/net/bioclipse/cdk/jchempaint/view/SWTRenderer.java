@@ -270,7 +270,7 @@ public class SWTRenderer implements IDrawVisitor{
             gc.drawText( fc, fcX, fcY, true );
         }
 
-        if(element.hydrogenCount >0) {
+        if(element.hydrogenCount >0 && model.getShowImplicitHydrogens()) {
 
             Point hc = new Point(0,0);
             if(element.hydrogenCount >1) {
