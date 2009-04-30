@@ -214,7 +214,10 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                                     input.getAdapter( ICDKMolecule.class );
             if(cModel!=null) {
                 // FIXME resolve molecule name
-                setPartName( cModel.getName() );
+                if(cModel.getResource()!=null)
+                    setPartName( cModel.getResource().getName() );
+                else
+                    setPartName( "UNNAMED" );
                 return;
             }
         }
