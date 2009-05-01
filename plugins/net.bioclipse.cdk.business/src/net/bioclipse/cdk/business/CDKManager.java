@@ -1618,7 +1618,6 @@ public class CDKManager implements ICDKManager {
   
             for ( IAtomContainer mol : mols.molecules() ) {
   
-                addExplicitHydrogens( new CDKMolecule(mol) );
                 org.openscience.cdk.interfaces.IMolecule ac
                     = mb3d.generate3DCoordinates(
                           (org.openscience.cdk.interfaces.IMolecule)mol, false);
