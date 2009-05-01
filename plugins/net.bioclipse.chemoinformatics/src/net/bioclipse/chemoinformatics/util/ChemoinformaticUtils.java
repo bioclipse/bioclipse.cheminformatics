@@ -41,7 +41,8 @@ public class ChemoinformaticUtils {
      * @throws IOException if an error occurs while reading the contents 
      */
     public static boolean isMolecule(IFile file) throws CoreException, IOException{
-        
+        if(!file.exists())
+            return false;
         IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
         InputStream stream = file.getContents();
         IContentType contentType = contentTypeManager.findContentTypeFor(stream, file.getName());
