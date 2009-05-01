@@ -11,9 +11,17 @@
  */
 package net.bioclipse.cdk.ui.wizards;
 
-import net.bioclipse.chemoinformatics.contentlabelproviders.MoleculeFileContentProvider;
+import java.io.IOException;
 
+import net.bioclipse.chemoinformatics.contentlabelproviders.MoleculeFileContentProvider;
+import net.bioclipse.chemoinformatics.util.ChemoinformaticUtils;
+import net.bioclipse.core.util.LogUtils;
+
+import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -23,6 +31,8 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -34,6 +44,7 @@ public class SelectFilesWizardPage extends WizardPage {
         private boolean withCheckbox;
         private IStructuredSelection selectedFiles = null;
         private Button includeRecursivlyButton;
+        private static final Logger logger = Logger.getLogger( SelectFilesWizardPage.class );
         protected SelectFilesWizardPage(boolean withCheckbox) {
                 super("New SD File");
                 this.withCheckbox=withCheckbox;
@@ -46,7 +57,34 @@ public class SelectFilesWizardPage extends WizardPage {
                 container.setLayout(layout);
                 layout.numColumns = 2;
                 layout.verticalSpacing = 9;
-                TreeViewer treeViewer = new TreeViewer(container);
+                final TreeViewer treeViewer = new TreeViewer(container);
+                if(withCheckbox){
+                    includeRecursivlyButton = new Button(container, SWT.CHECK);
+                    includeRecursivlyButton.addSelectionListener( new SelectionListener() {
+
+                        public void widgetDefaultSelected( SelectionEvent e ) {
+                            this.widgetSelected( e );
+                        }
+
+                        public void widgetSelected( SelectionEvent e ) {
+                            SelectFilesWizardPage.this.setPageComplete(false);
+                            if(includeRecursivlyButton.getSelection()){
+                                ISelection sel = treeViewer.getSelection();
+                                if (sel instanceof IStructuredSelection) {
+                                        selectedFiles=(IStructuredSelection)sel;
+                                        try {
+                                            if(containsMolecule(selectedFiles) || ( includeRecursivlyButton.getSelection() && containsFolder(selectedFiles)))
+                                                    SelectFilesWizardPage.this.setPageComplete(true);
+                                        } catch ( Exception e1 ) {
+                                            LogUtils.handleException( e1, logger );
+                                        }
+                                }
+                            }
+                        }
+                    });
+                    Label includeRecursivlyLabel = new Label(container, SWT.NULL);
+                    includeRecursivlyLabel.setText("Include directories recursivly");
+                }
                 treeViewer.setContentProvider(new MoleculeFileContentProvider());
                 treeViewer.setLabelProvider(WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider());
                 treeViewer.setUseHashlookup(true);
@@ -65,20 +103,20 @@ public class SelectFilesWizardPage extends WizardPage {
                 treeViewer.expandToLevel(2);
                 treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
                         public void selectionChanged(SelectionChangedEvent event) {
+                                SelectFilesWizardPage.this.setPageComplete(false);
                                 ISelection sel = event.getSelection();
                                 if (sel instanceof IStructuredSelection) {
                                         selectedFiles=(IStructuredSelection)sel;
-                                        if(((IStructuredSelection)sel).getFirstElement()!=null)
-                                                SelectFilesWizardPage.this.setPageComplete(true);
+                                        try {
+                                            if(containsMolecule(selectedFiles) || ( includeRecursivlyButton.getSelection() && containsFolder(selectedFiles)))
+                                                    SelectFilesWizardPage.this.setPageComplete(true);
+                                        } catch ( Exception e ) {
+                                            LogUtils.handleException( e, logger );
+                                        }
                                 }
                         }
                 });
                 treeViewer.setSelection(new StructuredSelection(ResourcesPlugin.getWorkspace().getRoot().findMember(".")));
-                if(withCheckbox){
-                    includeRecursivlyButton = new Button(container, SWT.CHECK);
-                    Label includeRecursivlyLabel = new Label(container, SWT.NULL);
-                    includeRecursivlyLabel.setText("Include directories recursivly");
-                }
                 setPageComplete(false);
                 setControl(container);
         }
@@ -87,5 +125,27 @@ public class SelectFilesWizardPage extends WizardPage {
         }
         public boolean doRecursive(){
                 return includeRecursivlyButton.getSelection();
+        }
+
+        private boolean containsMolecule(IStructuredSelection selectedFiles ) throws CoreException, IOException {
+            if(selectedFiles !=null){
+                for(int i=0;i<selectedFiles.toArray().length;i++){
+                    if(selectedFiles.toArray()[i] instanceof IFile){
+                        if(ChemoinformaticUtils.isMolecule( (IFile) selectedFiles.toArray()[i] ))
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+        protected boolean containsFolder( IStructuredSelection selectedFiles2 ) {
+            if(selectedFiles !=null){
+                for(int i=0;i<selectedFiles.toArray().length;i++){
+                    if(selectedFiles.toArray()[i] instanceof IContainer){
+                       return true;
+                    }
+                }
+            }
+            return false;
         }
 }
