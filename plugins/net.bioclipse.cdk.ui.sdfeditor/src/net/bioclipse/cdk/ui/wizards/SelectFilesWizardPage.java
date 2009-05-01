@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -49,6 +50,9 @@ public class SelectFilesWizardPage extends WizardPage {
                 treeViewer.setContentProvider(new MoleculeFileContentProvider());
                 treeViewer.setLabelProvider(WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider());
                 treeViewer.setUseHashlookup(true);
+                ViewerFilter[] filters=new ViewerFilter[1];
+                filters[0]=new DotViewerFilter();
+                treeViewer.setFilters( filters );
                 //Layout the tree viewer below the text field
                 GridData layoutData = new GridData();
                 layoutData.grabExcessHorizontalSpace = true;
