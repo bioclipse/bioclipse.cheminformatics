@@ -20,6 +20,7 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.log4j;version="1.2.15"
-Export-Package: net.bioclipse.chemoinformatics.contentlabelproviders,
- net.bioclipse.chemoinformatics.wizards,
- net.bioclipse.chemoinformatics
+Export-Package: net.bioclipse.chemoinformatics,
+ net.bioclipse.chemoinformatics.contentlabelproviders,
+ net.bioclipse.chemoinformatics.util,
+ net.bioclipse.chemoinformatics.wizards

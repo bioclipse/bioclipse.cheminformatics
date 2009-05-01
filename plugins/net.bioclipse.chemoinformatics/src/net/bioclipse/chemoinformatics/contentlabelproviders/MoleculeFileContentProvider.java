@@ -8,9 +8,9 @@
  *****************************************************************************/
 package net.bioclipse.chemoinformatics.contentlabelproviders;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
+import net.bioclipse.chemoinformatics.util.ChemoinformaticUtils;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
@@ -19,9 +19,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.content.IContentType;
-import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 /** 
@@ -50,27 +47,10 @@ public class MoleculeFileContentProvider implements ITreeContentProvider {
             try {
                 for ( int i=0 ; i < container.members().length ; i++ ) {
                     IResource resource = container.members()[i];
-                    if ( resource instanceof IFile  ) {
-                        
-                        IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
-                        InputStream stream = ((IFile)resource).getContents();
-                        IContentType contentType = contentTypeManager.findContentTypeFor(stream, ((IFile)resource).getName());
-                        stream.close();
-                        if(contentType!=null 
-                                && (contentType.getId().equals( "net.bioclipse.contenttypes.mdlMolFile2D" )
-                                || contentType.getId().equals( "net.bioclipse.contenttypes.mdlMolFile3D" )
-                                || contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleMolecule2d" )
-                                || contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleMolecule3d" )
-                                || contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleMolecule5d" )
-                                || contentType.getId().equals( "net.bioclipse.contenttypes.pdb" ))
-                        ){
-                               childElements.add(resource);
-                        }
-                    }
-                    if ( resource instanceof IContainer 
+                    if ( resource instanceof IFile && ChemoinformaticUtils.isMolecule( (IFile ) resource )) {
+                        childElements.add(resource);
+                    }else if ( resource instanceof IContainer 
                          && resource.isAccessible() 
-                         && resource.getName().charAt(0) != '.' 
-                         && ((IContainer)resource).members().length>0
                          && containsMolecules((IContainer)resource)) {
                             childElements.add(resource);
                     }
@@ -88,21 +68,8 @@ public class MoleculeFileContentProvider implements ITreeContentProvider {
     private boolean containsMolecules( IContainer container ) throws CoreException, IOException {
         //we first test all the files, that should be fast
         for(int i=0;i<container.members().length;i++){
-            if(container.members()[i] instanceof IFile){
-                IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
-                InputStream stream = ((IFile)container.members()[i]).getContents();
-                IContentType contentType = contentTypeManager.findContentTypeFor(stream, ((IFile)container.members()[i]).getName());
-                stream.close();
-                if(contentType!=null 
-                  && (contentType.getId().equals( "net.bioclipse.contenttypes.mdlMolFile2D" )
-                  || contentType.getId().equals( "net.bioclipse.contenttypes.mdlMolFile3D" )
-                  || contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleMolecule2d" )
-                  || contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleMolecule3d" )
-                  || contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleMolecule5d" )
-                  || contentType.getId().equals( "net.bioclipse.contenttypes.pdb" ))
-                ){
+            if(container.members()[i] instanceof IFile && ChemoinformaticUtils.isMolecule( (IFile )container.members()[i])){
                     return true;
-                }
             }
         }
         //if none is a molecule, we need to recursivly check child folders
