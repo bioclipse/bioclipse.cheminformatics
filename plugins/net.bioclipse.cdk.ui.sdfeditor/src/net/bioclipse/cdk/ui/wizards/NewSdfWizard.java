@@ -15,6 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.chemoinformatics.ChemoinformaticsPerspective;
+import net.bioclipse.chemoinformatics.util.ChemoinformaticUtils;
 import net.bioclipse.chemoinformatics.wizards.WizardHelper;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
@@ -27,9 +29,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
+import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 /**
  * A wizard to create a new sd file from existing structure files.
@@ -101,6 +106,7 @@ public class NewSdfWizard extends BasicNewResourceWizard{
                         Activator.getDefault().getCDKManager().createSDFile(
                             newFile, entries, null
                         );
+                        selectAndReveal(newFile);
                   }
                 } catch (Exception e) {
                         LogUtils.handleException(e, logger);
@@ -121,5 +127,6 @@ public class NewSdfWizard extends BasicNewResourceWizard{
                 }
         }
         public void init(IWorkbench workbench, IStructuredSelection selection) {
+            super.init( workbench, selection );
         }
 }
