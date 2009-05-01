@@ -95,9 +95,13 @@ public class NewSdfWizard extends BasicNewResourceWizard{
                           }
                           MessageDialog.openError(this.getShell(), "Problems parsings files", "Some of the files you selected could not be read ("+sb.toString().substring(0, sb.toString().length()-2)+"). We will still use the rest!");
                   }
+                  if(entries.size()==0){
+                      MessageDialog.openError(this.getShell(), "No valid entries found", "Your selection does not contain any valid molecule files. No file can be created!");
+                  }else{
                         Activator.getDefault().getCDKManager().createSDFile(
                             newFile, entries, null
                         );
+                  }
                 } catch (Exception e) {
                         LogUtils.handleException(e, logger);
                 }
