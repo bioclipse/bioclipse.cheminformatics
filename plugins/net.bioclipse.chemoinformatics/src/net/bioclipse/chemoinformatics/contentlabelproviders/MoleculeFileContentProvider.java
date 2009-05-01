@@ -70,7 +70,8 @@ public class MoleculeFileContentProvider implements ITreeContentProvider {
                     if ( resource instanceof IContainer 
                          && resource.isAccessible() 
                          && resource.getName().charAt(0) != '.' 
-                         && ((IContainer)resource).members().length>0) {
+                         && ((IContainer)resource).members().length>0
+                         && containsMolecules((IContainer)resource)) {
                             childElements.add(resource);
                     }
                 }
@@ -83,6 +84,35 @@ public class MoleculeFileContentProvider implements ITreeContentProvider {
             }
         }
         return childElements.toArray();
+    }
+    private boolean containsMolecules( IContainer container ) throws CoreException, IOException {
+        //we first test all the files, that should be fast
+        for(int i=0;i<container.members().length;i++){
+            if(container.members()[i] instanceof IFile){
+                IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
+                InputStream stream = ((IFile)container.members()[i]).getContents();
+                IContentType contentType = contentTypeManager.findContentTypeFor(stream, ((IFile)container.members()[i]).getName());
+                stream.close();
+                if(contentType!=null 
+                  && (contentType.getId().equals( "net.bioclipse.contenttypes.mdlMolFile2D" )
+                  || contentType.getId().equals( "net.bioclipse.contenttypes.mdlMolFile3D" )
+                  || contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleMolecule2d" )
+                  || contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleMolecule3d" )
+                  || contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleMolecule5d" )
+                  || contentType.getId().equals( "net.bioclipse.contenttypes.pdb" ))
+                ){
+                    return true;
+                }
+            }
+        }
+        //if none is a molecule, we need to recursivly check child folders
+        for(int i=0;i<container.members().length;i++){
+            if(container.members()[i] instanceof IContainer){
+                if(containsMolecules( (IContainer )container.members()[i]))
+                    return true;
+            }
+        }
+        return false;
     }
     public Object getParent(Object element) {
         return ( (IFolder)element ).getParent();
