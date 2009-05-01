@@ -15,14 +15,18 @@ import java.io.InputStream;
 
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.chemoinformatics.wizards.WizardHelper;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
@@ -58,7 +62,10 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
         
         selectFilePage = new WizardNewFileCreationPage("newFilePage1", getSelection());//$NON-NLS-1$
         selectFilePage.setTitle("Select File");
-        selectFilePage.setDescription("Select target file"); 
+        selectFilePage.setDescription("Select target file");
+        ISelection sel=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
+        if(sel instanceof IStructuredSelection)
+            selectFilePage.setFileName( WizardHelper.findUnusedFileName((IStructuredSelection)sel, "unnamed", ".sdf") );
         addPage(selectFilePage);
     }
 
