@@ -837,4 +837,13 @@ public class CDKManagerTest extends AbstractManagerTest {
         mol = cdk.fromSMILES("O=C(CC(=O)[O-])[O-]");
         Assert.assertEquals(-2, cdk.totalFormalCharge(mol));
     }
+
+    @Test public void testGetMDLMolfileString() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("O=C(CC)[O-].[Na+]");
+
+        String fileContent = cdk.getMDLMolfileString(mol);
+
+        Assert.assertNotNull(fileContent);
+        Assert.assertTrue(fileContent.contains("V2000"));
+    }
 }

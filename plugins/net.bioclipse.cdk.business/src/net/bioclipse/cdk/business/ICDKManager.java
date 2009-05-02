@@ -1,15 +1,15 @@
- /*******************************************************************************
- * Copyright (c) 2008-2009 The Bioclipse Project and others.
+/*******************************************************************************
+ * Copyright (c) 2008-2009  Ola Spjuth
+ *               2008-2009  Jonathan Alvarsson
+ *               2008-2009  Stefan Kuhn
+ *               2008-2009  Egon Willighagen <egonw@users.sf.net>
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Ola Spjuth
- *     Stefan Kuhn
- *     Jonathan Alvarsson
- *     Egon Willighagen
+ * Contact: http://www.bioclipse.net/
  ******************************************************************************/
 package net.bioclipse.cdk.business;
 
@@ -834,5 +834,12 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testSMARTSonFile")
     public int totalFormalCharge(IMolecule molecule)
         throws BioclipseException;
+
+    @Recorded
+    @PublishedMethod(
+         params="IMolecule molecule",
+         methodSummary="Returns a MDL V2000 molfile serialization")
+    @TestMethods("testGetMDLMolfileString()")
+    public String getMDLMolfileString(ICDKMolecule molecule);
 
 }

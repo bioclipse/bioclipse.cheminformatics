@@ -1,15 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2008 The Bioclipse Project and others.
+ * Copyright (c) 2008-2009  Ola Spjuth
+ *               2008-2009  Jonathan Alvarsson
+ *               2008-2009  Stefan Kuhn
+ *               2008-2009  Egon Willighagen <egonw@users.sf.net>
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Ola Spjuth
- *     Jonathan Alvarsson
- *     Stefan Kuhn
- *
+ * Contact: http://www.bioclipse.net/
  ******************************************************************************/
 package net.bioclipse.cdk.business;
 
@@ -88,6 +88,7 @@ import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.FormatFactory;
 import org.openscience.cdk.io.IChemObjectWriter;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
+import org.openscience.cdk.io.MDLWriter;
 import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.SDFWriter;
 import org.openscience.cdk.io.WriterFactory;
@@ -2158,5 +2159,20 @@ public class CDKManager implements ICDKManager {
             totalCharge += atom.getFormalCharge() == null ? 0 : atom.getFormalCharge();
         }
         return totalCharge;
+    }
+
+    public String getMDLMolfileString(ICDKMolecule molecule) {
+        StringWriter stringWriter = new StringWriter();
+        MDLWriter writer = new MDLWriter(stringWriter);
+        try {
+            writer.writeMolecule(molecule.getAtomContainer());
+            writer.close();
+        } catch (Exception exc) {
+            logger.error(
+                "Error while creating MDL molfile string: " + exc.getMessage(),
+                exc);
+            return null;
+        }
+        return stringWriter.toString();
     }
 }
