@@ -52,8 +52,7 @@ public class ChemoinformaticUtils {
                 || contentType.getId().equals( "net.bioclipse.contenttypes.mdlMolFile3D" )
                 || contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleMolecule2d" )
                 || contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleMolecule3d" )
-                || contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleMolecule5d" )
-                || contentType.getId().equals( "net.bioclipse.contenttypes.pdb" ))
+                || contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleMolecule5d" ))
         )
             return true;
         else
