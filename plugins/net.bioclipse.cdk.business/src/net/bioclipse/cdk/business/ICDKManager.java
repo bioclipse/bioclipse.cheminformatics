@@ -29,6 +29,7 @@ import net.bioclipse.core.TestClasses;
 import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IBioclipseManager;
+import net.bioclipse.core.domain.BioList;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.ui.jobs.BioclipseUIJob;
 
@@ -833,6 +834,24 @@ public interface ICDKManager extends IBioclipseManager {
          methodSummary = "Calculates the total formal charge.")
     @TestMethods("testSMARTSonFile")
     public int totalFormalCharge(IMolecule molecule)
+        throws BioclipseException;
+
+    @Recorded
+    @PublishedMethod(
+         params = "IMolecule calculateFor: molecule to calculate the similarity for, compared to, IMolecule reference:" +
+            " this molecule.",
+         methodSummary = "Calculate tanimoto similarity of two molcules via CDK fingerprint.")
+    @TestMethods("testSingleTanimoto")
+    public float calculateTanimoto(IMolecule calculateFor, IMolecule reference)
+        throws BioclipseException;
+    
+    @Recorded
+    @PublishedMethod(
+         params = "BioList<IMolecule> calculateFor: : molecules to calculate the similarity for, compared to, IMolecule reference:" +
+            " this molecule.",
+         methodSummary = "Calculate tanimoto similarity of a list of molecules to another molecule via CDK fingerprint.")
+    @TestMethods("testMultipleTanimoto")
+    public List<Float> calculateTanimoto(BioList<IMolecule> calculateFor, IMolecule reference)
         throws BioclipseException;
 
     @Recorded

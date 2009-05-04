@@ -71,6 +71,7 @@ import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.config.Elements;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
+import org.openscience.cdk.fingerprint.Fingerprinter;
 import org.openscience.cdk.fingerprint.FingerprinterTool;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.graph.ConnectivityChecker;
@@ -2159,6 +2160,27 @@ public class CDKManager implements ICDKManager {
             totalCharge += atom.getFormalCharge() == null ? 0 : atom.getFormalCharge();
         }
         return totalCharge;
+    }
+
+    public float calculateTanimoto( IMolecule calculateFor, IMolecule reference )
+                                                                               throws BioclipseException {
+        BioList<IMolecule> molist=new BioList<IMolecule>();
+        molist.add( calculateFor );
+        return calculateTanimoto( molist, reference ).get( 0 );
+    }
+
+    public List<Float> calculateTanimoto( BioList<IMolecule> calculateFor,
+                                  IMolecule reference )
+                                                       throws BioclipseException {
+        List<Float> result=new ArrayList<Float>();
+        for(int i=0;i<calculateFor.size();i++ ){
+            try {
+                result.add( org.openscience.cdk.similarity.Tanimoto.calculate( new Fingerprinter().getFingerprint( ((ICDKMolecule)reference).getAtomContainer() ), new Fingerprinter().getFingerprint( ((ICDKMolecule)calculateFor.get( i )).getAtomContainer() ) ) );
+            } catch ( CDKException e ) {
+                throw new BioclipseException("Could not calculate similarity",e);
+            }
+        }
+        return result;
     }
 
     public String getMDLMolfileString(ICDKMolecule molecule) {
