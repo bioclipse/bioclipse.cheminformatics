@@ -15,4 +15,5 @@ Require-Bundle: org.openscience.cdk.interfaces,
 Import-Package: org.apache.log4j
 Export-Package: org.openscience.cdk.config.atomtypes,
  org.openscience.cdk.atomtype,
- org.openscience.cdk.atomtype.mapper
+ org.openscience.cdk.atomtype.mapper,
+ org.openscience.cdk.dict.data

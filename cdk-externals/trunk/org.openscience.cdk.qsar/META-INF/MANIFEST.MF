@@ -27,4 +27,7 @@ Export-Package: org.openscience.cdk.tools,
  org.openscience.cdk.qsar.model.R,
  org.openscience.cdk.qsar.model.R2,
  org.openscience.cdk.qsar,
- org.openscience.cdk.qsar.descriptors.atompair
+ org.openscience.cdk.qsar.descriptors.atompair,
+ org.openscience.cdk.qsar.model.data,
+ org.openscience.cdk.qsar.descriptors.data,
+ org.openscience.cdk.config.data

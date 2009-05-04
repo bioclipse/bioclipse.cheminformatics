@@ -25,4 +25,5 @@ Export-Package: org.openscience.cdk.geometry,
  org.openscience.cdk.io.setting,
  org.openscience.cdk.io.cml,
  org.openscience.cdk.io.listener,
- org.openscience.cdk.io.random
+ org.openscience.cdk.io.random,
+ org.openscience.cdk.io.cml.data

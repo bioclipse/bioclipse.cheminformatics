@@ -31,4 +31,7 @@ Require-Bundle: org.openscience.cdk.annotation,
  org.eclipse.core.runtime
 Export-Package: org.openscience.cdk.qsar,
  org.openscience.cdk.qsar.descriptors.molecular,
+ org.openscience.cdk.qsar.model.data,
+ org.openscience.cdk.qsar.descriptors.data,
+ org.openscience.cdk.config.data,
  org.openscience.cdk.qsarmolecular

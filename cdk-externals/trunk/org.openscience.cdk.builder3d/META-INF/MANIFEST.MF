@@ -25,4 +25,5 @@ Require-Bundle: org.openscience.cdk.core,
  org.eclipse.core.runtime
 Export-Package: org.openscience.cdk.modeling.builder3d,
  org.openscience.cdk.qsar.descriptors.atomic,
+ org.openscience.cdk.modeling.builder3d.data,
  org.openscience.cdk.builder3d

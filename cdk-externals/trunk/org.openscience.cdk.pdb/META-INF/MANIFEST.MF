@@ -20,4 +20,5 @@ Export-Package: org.openscience.cdk.protein.data,
  org.openscience.cdk.tools,
  org.openscience.cdk.io,
  org.openscience.cdk.templates,
+ org.openscience.cdk.templates.data,
  org.openscience.cdk.pdb

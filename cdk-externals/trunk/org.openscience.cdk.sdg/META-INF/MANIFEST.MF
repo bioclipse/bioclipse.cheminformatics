@@ -16,4 +16,5 @@ Require-Bundle: org.openscience.cdk.annotation,
  javax.vecmath,
  org.eclipse.core.runtime
 Export-Package: org.openscience.cdk.layout,
+ org.openscience.cdk.layout.templates,
  org.openscience.cdk.sdg

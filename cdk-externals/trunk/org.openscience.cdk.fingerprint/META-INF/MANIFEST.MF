@@ -19,4 +19,5 @@ Require-Bundle: org.openscience.cdk.annotation,
  javax.vecmath,
  org.eclipse.core.runtime
 Export-Package: org.openscience.cdk.fingerprint,
- org.openscience.cdk.similarity
+ org.openscience.cdk.similarity,
+ org.openscience.cdk.fingerprint.data

@@ -48,4 +48,7 @@ Export-Package: org.openscience.cdk.graph,
  org.openscience.cdk.templates,
  org.openscience.cdk.structgen,
  org.openscience.cdk.index,
+ org.openscience.cdk.dict.data,
+ org.openscience.cdk.config.data,
+ org.openscience.cdk.fingerprint.data,
  org.openscience.cdk.extra

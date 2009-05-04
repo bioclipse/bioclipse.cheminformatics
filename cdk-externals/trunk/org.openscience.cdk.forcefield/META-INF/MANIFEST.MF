@@ -23,4 +23,5 @@ Require-Bundle: org.openscience.cdk.annotation,
 Export-Package: org.openscience.cdk.charges,
  org.openscience.cdk.modeling.forcefield,
  org.openscience.cdk.modeling.builder3d,
+ org.openscience.cdk.modeling.forcefield.data,
  org.openscience.cdk.forcefield
