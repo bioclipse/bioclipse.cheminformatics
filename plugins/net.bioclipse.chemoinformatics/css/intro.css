@@ -1,0 +1,7 @@
+a#weblink { text-align: left; }
+
+#weblink { text-align: left; color: #FF0000;}
+image-right {horizontal-align: right;}
+
+a#chemitem img { background-image : url(graphics/chem.png); }
+a#chemitem:hover img { background-image : url(graphics/chem.png); }
