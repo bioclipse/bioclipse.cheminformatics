@@ -838,6 +838,35 @@ public class CDKManagerTest extends AbstractManagerTest {
         Assert.assertEquals(-2, cdk.totalFormalCharge(mol));
     }
 
+    @Test public void testSingleTanimoto() throws Exception {
+        String path = getClass().getResource("/testFiles/aromatic.mol").getPath();
+        MockIFile mf=new MockIFile(path);
+        ICDKMolecule mol = cdk.loadMolecule( mf, new NullProgressMonitor());
+        float similarity = cdk.calculateTanimoto( mol,mol );
+        Assert.assertEquals( 1, similarity, 0.0001 );
+        path = getClass().getResource("/testFiles/atp.mol").getPath();
+        mf=new MockIFile(path);
+        ICDKMolecule mol2 = cdk.loadMolecule( mf, new NullProgressMonitor());
+        float similarity2 = cdk.calculateTanimoto( mol,mol2 );
+        Assert.assertEquals( 0.1972, similarity2, 0.0001 );
+    }
+
+    @Test public void testMultipleTanimoto() throws Exception {
+        List<Float> expected= new ArrayList<Float>();
+        expected.add((float)1);
+        expected.add((float)0.19720767);
+        List<Float> actuals= new ArrayList<Float>();
+        String path = getClass().getResource("/testFiles/aromatic.mol").getPath();
+        MockIFile mf=new MockIFile(path);
+        ICDKMolecule mol = cdk.loadMolecule( mf, new NullProgressMonitor());
+        actuals.add(cdk.calculateTanimoto( mol,mol ));
+        path = getClass().getResource("/testFiles/atp.mol").getPath();
+        mf=new MockIFile(path);
+        ICDKMolecule mol2 = cdk.loadMolecule( mf, new NullProgressMonitor());
+        actuals.add(cdk.calculateTanimoto( mol,mol2 ));
+        Assert.assertEquals( expected, actuals );
+    }
+
     @Test public void testGetMDLMolfileString() throws Exception {
         ICDKMolecule mol = cdk.fromSMILES("O=C(CC)[O-].[Na+]");
 
