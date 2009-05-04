@@ -999,6 +999,16 @@
                value="F">
          </parameter>
       </key>
+      <key
+            commandId="net.bioclipse.cdk.jchempaint.command.change.element"
+            contextId="net.bioclipse.ui.contexts.JChemPaint"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="H">
+         <parameter
+               id="atomType"
+               value="H">
+         </parameter>
+      </key>
    </extension>
    <extension
          point="org.eclipse.ui.contexts">
