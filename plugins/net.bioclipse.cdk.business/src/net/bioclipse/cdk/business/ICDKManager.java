@@ -838,18 +838,16 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
-         params = "IMolecule calculateFor: molecule to calculate the similarity for, IMolecule reference:" +
-            " molecule in comparision to which similarity is calculated.",
-         methodSummary = "Calculate tanimoto similarity of two molcules via CDK fingerprint.")
+         params = "IMolecule calculateFor, IMolecule reference",
+         methodSummary = "Calculate tanimoto similarity of calculateFor and reference via CDK fingerprint.")
     @TestMethods("testSingleTanimoto")
     public float calculateTanimoto(IMolecule calculateFor, IMolecule reference)
         throws BioclipseException;
     
     @Recorded
     @PublishedMethod(
-         params = "BioList<IMolecule> calculateFor: : molecules to calculate the similarity for, IMolecule reference:" +
-         " molecule in comparision to which similarity is calculated.",
-         methodSummary = "Calculate tanimoto similarity of a list of molecules to another molecule via CDK fingerprint.")
+         params = "BioList<IMolecule> calculateFor, IMolecule reference",
+         methodSummary = "Calculate tanimoto similarity of a list of molecules (calculateFor) to another molecule (reference) via CDK fingerprint.")
     @TestMethods("testMultipleTanimoto")
     public List<Float> calculateTanimoto(BioList<IMolecule> calculateFor, IMolecule reference)
         throws BioclipseException;
