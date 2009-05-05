@@ -25,6 +25,7 @@ import java.io.PrintStream;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -118,6 +119,7 @@ import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
 import org.openscience.cdk.nonotify.NNChemFile;
 import org.openscience.cdk.nonotify.NNMolecule;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
+import org.openscience.cdk.similarity.Tanimoto;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 import org.openscience.cdk.smiles.smarts.parser.TokenMgrError;
@@ -2162,23 +2164,27 @@ public class CDKManager implements ICDKManager {
         return totalCharge;
     }
 
-    public float calculateTanimoto( IMolecule calculateFor, IMolecule reference )
-                                                                               throws BioclipseException {
-        BioList<IMolecule> molist=new BioList<IMolecule>();
-        molist.add( calculateFor );
-        return calculateTanimoto( molist, reference ).get( 0 );
+    public float calculateTanimoto( IMolecule calculateFor, 
+                                    IMolecule reference )
+                                    throws BioclipseException {
+        Fingerprinter fingerprinter = new Fingerprinter();
+        try {
+            BitSet f1=fingerprinter.getFingerprint( 
+                      create(reference).getAtomContainer() );
+            BitSet f2=fingerprinter.getFingerprint(
+                      create(calculateFor).getAtomContainer() );
+            return Tanimoto.calculate( f1, f2 );
+        } catch ( CDKException e ) {
+            throw new BioclipseException("Could not calculate similarity",e);
+        }
     }
 
     public List<Float> calculateTanimoto( BioList<IMolecule> calculateFor,
                                   IMolecule reference )
-                                                       throws BioclipseException {
+                                  throws BioclipseException {
         List<Float> result=new ArrayList<Float>();
         for(int i=0;i<calculateFor.size();i++ ){
-            try {
-                result.add( org.openscience.cdk.similarity.Tanimoto.calculate( new Fingerprinter().getFingerprint( ((ICDKMolecule)reference).getAtomContainer() ), new Fingerprinter().getFingerprint( ((ICDKMolecule)calculateFor.get( i )).getAtomContainer() ) ) );
-            } catch ( CDKException e ) {
-                throw new BioclipseException("Could not calculate similarity",e);
-            }
+            result.add(calculateTanimoto( calculateFor.get( i ), reference )  );
         }
         return result;
     }
