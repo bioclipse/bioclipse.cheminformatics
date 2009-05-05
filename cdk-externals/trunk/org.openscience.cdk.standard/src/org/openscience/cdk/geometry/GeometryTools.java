@@ -29,6 +29,7 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.interfaces.IRingSet;
 import org.openscience.cdk.tools.LoggingTool;
@@ -38,6 +39,7 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
 import java.util.List;
@@ -860,9 +862,34 @@ public class GeometryTools {
 				bondLengthSum += getLength2D(bond);
 			}
 		}
-		return bondLengthSum / bondCounter;
+        if(bondLengthSum==0)
+        	return 0;
+        else
+        	return bondLengthSum / bondCounter;
 	}
 
+	/**
+	 *  An average of all 2D bond length values of all products and reactants is produced. Bonds which have
+	 *  Atom's with no coordinates are disregarded.
+	 *  See comment for center(IAtomContainer atomCon, Dimension areaDim, HashMap renderingCoordinates) for details on coordinate sets
+	 *
+	 *@param  reaction  The Reaction for which the average bond length is to be
+	 *      calculated
+	 *@return     the average bond length
+	 */
+	public static double getBondLengthAverage(IReaction reaction) {
+		double bondlenghtsum=0;
+		int containercount=0;
+		for(IAtomContainer container : reaction.getReactants().atomContainers()){
+			containercount++;
+			bondlenghtsum+=getBondLengthAverage(container);
+		}
+		for(IAtomContainer container : reaction.getProducts().atomContainers()){
+			containercount++;
+			bondlenghtsum+=getBondLengthAverage(container);
+		}
+		return bondlenghtsum/containercount;
+	}
 
 	/**
 	 *  Returns the geometric length of this bond in 2D space.
@@ -1460,7 +1487,7 @@ public class GeometryTools {
     public static Rectangle2D shiftContainer(
             IAtomContainer container, Rectangle2D bounds, Rectangle2D last, double gap) {
 
-        if (bounds.intersects(last)) {
+    	if (bounds.intersects(last) || (bounds.getWidth()==0 && bounds.getHeight()==0 && last.contains(new Point2D.Double(bounds.getX(), bounds.getY())))) {
 
             // XXX always displace across width - could be improved
             double d = bounds.getWidth() + last.getWidth() + gap;
@@ -1471,6 +1498,35 @@ public class GeometryTools {
                                           bounds.getY(),
                                           bounds.getWidth(),
                                           bounds.getHeight());
+        } else {
+            return bounds;
+        }
+    }
+    
+    /**
+     * Shift the containers in a rection vertically so that the reaction does not overlap with the previous.
+     * @param reaction the reaction to shift
+     * @param bounds the bounds of the reaction to shift
+     * @param last the bounds of the last reaction
+     */
+    public static Rectangle2D shiftReactionVertical(
+            IReaction reaction, Rectangle2D bounds, Rectangle2D last, double gap) {
+    	if (bounds.intersects(last)) {
+            double d = bounds.getHeight() + last.getHeight() + gap;
+    		for(IAtomContainer container : reaction.getReactants().atomContainers()){
+    			for(IAtom atom: container.atoms()){
+    				atom.setPoint2d(new Point2d(atom.getPoint2d().x,atom.getPoint2d().y+d));
+    			}
+    		}
+    		for(IAtomContainer container : reaction.getProducts().atomContainers()){
+    			for(IAtom atom: container.atoms()){
+    				atom.setPoint2d(new Point2d(atom.getPoint2d().x,atom.getPoint2d().y+d));
+    			}
+    		}
+            return new Rectangle2D.Double(bounds.getX(),
+                    bounds.getY() + d,
+                    bounds.getWidth(),
+                    bounds.getHeight());
         } else {
             return bounds;
         }
