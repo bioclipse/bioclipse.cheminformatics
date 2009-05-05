@@ -875,4 +875,10 @@ public class CDKManagerTest extends AbstractManagerTest {
         Assert.assertNotNull(fileContent);
         Assert.assertTrue(fileContent.contains("V2000"));
     }
+
+    @Test public void testGetSetProperty() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("CC");
+        Assert.assertNull(cdk.setProperty(mol, "foo", "bar"));
+        Assert.assertEquals("bar", cdk.getProperty(mol, "foo"));
+    }
 }

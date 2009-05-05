@@ -2197,4 +2197,27 @@ public class CDKManager implements ICDKManager {
         }
         return stringWriter.toString();
     }
+
+    public Object getProperty(ICDKMolecule molecule, Object propertyName) {
+        IAtomContainer container = molecule.getAtomContainer();
+        if (container == null) {
+            throw new IllegalArgumentException(
+                "Passed ICDKMolecule has a null IAtomContainer."
+            );
+        }
+        return container.getProperty(propertyName);
+    }
+
+    public Object setProperty(ICDKMolecule molecule, Object propertyName,
+            Object propertyValue) {
+        IAtomContainer container = molecule.getAtomContainer();
+        if (container == null) {
+            throw new IllegalArgumentException(
+                "Passed ICDKMolecule has a null IAtomContainer."
+            );
+        }
+        Object oldValue = container.getProperty(propertyName);
+        container.setProperty(propertyName, propertyValue);
+        return oldValue;
+    }
 }
