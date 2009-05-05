@@ -670,32 +670,27 @@ public class GeometryTools {
 		}
 		return closestAtom;
 	}
-	/**
-	 *  Returns the atom of the given molecule that is closest to the given
-	 *  coordinates and is not the atom.
-	 *  See comment for center(IAtomContainer atomCon, Dimension areaDim, HashMap renderingCoordinates) for details on coordinate sets
-	 *
-	 *@param  xPosition  The x coordinate
-	 *@param  yPosition  The y coordinate
-	 *@param  atomCon    The molecule that is searched for the closest atom
-	 *@param toignore    This molecule will not be returned.
-	 *@return            The atom that is closest to the given coordinates
-	 */
-	public static IAtom getClosestAtom(double xPosition, double yPosition, IAtomContainer atomCon, IAtom toignore) {
+
+    /**
+     * Returns the atom of the given molecule that is closest to the given atom
+     * (excluding itself).
+     * 
+     *@param atomCon
+     *            The molecule that is searched for the closest atom
+     *@param atom
+     *            The atom to search around
+     *@return The atom that is closest to the given coordinates
+     */
+	public static IAtom getClosestAtom(IAtomContainer atomCon, IAtom atom) {
 		IAtom closestAtom = null;
-		IAtom currentAtom;
-		double smallestMouseDistance = -1;
-		double mouseDistance;
-		double atomX;
-		double atomY;
+		double min = -1;
+		Point2d atomPosition = atom.getPoint2d();
 		for (int i = 0; i < atomCon.getAtomCount(); i++) {
-			currentAtom = atomCon.getAtom(i);
-			if(currentAtom!=toignore){
-				atomX = currentAtom.getPoint2d().x;
-				atomY = currentAtom.getPoint2d().y;
-				mouseDistance = Math.sqrt(Math.pow(atomX - xPosition, 2) + Math.pow(atomY - yPosition, 2));
-				if (mouseDistance < smallestMouseDistance || smallestMouseDistance == -1) {
-					smallestMouseDistance = mouseDistance;
+			IAtom currentAtom = atomCon.getAtom(i);
+			if (currentAtom != atom) {
+				double d = atomPosition.distance(currentAtom.getPoint2d());
+				if (d < min || min == -1) {
+					min = d;
 					closestAtom = currentAtom;
 				}
 			}
