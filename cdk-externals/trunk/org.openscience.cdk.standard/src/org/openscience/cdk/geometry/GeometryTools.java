@@ -29,10 +29,12 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.interfaces.IRingSet;
 import org.openscience.cdk.tools.LoggingTool;
+import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
@@ -984,10 +986,10 @@ public class GeometryTools {
 
 
 	/**
-	 *  Determines if this model contains 3D coordinates
+	 *  Determines if this model contains 3D coordinates for all atoms.
 	 *
 	 *@param container the molecule to consider
-	 *@return    boolean indication that 3D coordinates are available
+	 *@return    boolean indication that 3D coordinates are available for all atoms.
 	 */
 	public static boolean has3DCoordinates(IAtomContainer container) {
 		boolean hasinfo = true;
@@ -1000,6 +1002,24 @@ public class GeometryTools {
 	}
 
 
+	/**
+	 *  Determines if this model contains 3D coordinates for all atoms.
+	 *
+	 *@param chemmodel the ChemModel to consider
+	 *@return    boolean indication that 3D coordinates are available for all atoms.
+	 */
+	public static boolean has3DCoordinates(IChemModel chemModel) {
+		List<IAtomContainer> acs = ChemModelManipulator.getAllAtomContainers(chemModel);
+		Iterator<IAtomContainer> it = acs.iterator();
+        while(it.hasNext()){
+            if (!has3DCoordinates(it.next())) {
+                return false;
+            }
+        }
+		return true;
+	}
+
+	
 	/**
 	 *  Determines the normalized vector orthogonal on the vector p1->p2.
 	 *
