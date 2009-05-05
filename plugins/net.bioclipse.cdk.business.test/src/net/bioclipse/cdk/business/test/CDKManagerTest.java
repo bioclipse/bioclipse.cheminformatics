@@ -740,7 +740,7 @@ public class CDKManagerTest extends AbstractManagerTest {
     	mol.add(cdk.fromSMILES("CCCBr"));
     	mol.add(cdk.fromSMILES("CCCCl"));
     	IFile file=new MockIFile();
-    	cdk.createSDFile(file, mol, null);
+    	cdk.saveSDFile(file, mol, null);
     	byte[] bytes=new byte[1000];
     	file.getContents().read(bytes);
     	StringBuffer sb=new StringBuffer();

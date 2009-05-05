@@ -1749,7 +1749,7 @@ public class CDKManager implements ICDKManager {
         return format == null ? "Unknown" : format.getFormatName();
     }
 
-      public void createSDFile(IFile file, List<IMolecule> entries,
+      public void saveSDFile(IFile file, List<IMolecule> entries,
               IProgressMonitor monitor)
                   throws BioclipseException, InvocationTargetException {
 
@@ -1971,10 +1971,10 @@ public class CDKManager implements ICDKManager {
         return extractFromSDFile( ResourcePathTransformer.getInstance().transform(file), startenty, endentry );
     }
 
-    public void createSDFile( String file, List<IMolecule> entries )
+    public void saveSDFile( String file, List<IMolecule> entries )
                                                                 throws BioclipseException,
                                                                 InvocationTargetException {
-        createSDFile(
+        saveSDFile(
             ResourcePathTransformer.getInstance().transform(file),
             entries,
             null

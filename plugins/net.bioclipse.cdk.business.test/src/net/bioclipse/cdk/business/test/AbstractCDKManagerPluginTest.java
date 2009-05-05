@@ -1125,7 +1125,7 @@ public abstract class AbstractCDKManagerPluginTest {
         List<IMolecule> mol = new ArrayList<IMolecule>();
         mol.add(cdk.fromSMILES("CCCBr"));
         mol.add(cdk.fromSMILES("CCCCl"));
-        cdk.createSDFile("/Virtual/testFFF.sdf", mol);
+        cdk.saveSDFile("/Virtual/testFFF.sdf", mol);
         byte[] bytes=new byte[1000];
         IFile file= ResourcePathTransformer.getInstance()
            .transform("/Virtual/testFFF.sdf");
@@ -1146,7 +1146,7 @@ public abstract class AbstractCDKManagerPluginTest {
         ICDKMolecule mol = cdk.fromSMILES("CCCBr");
         mol.getAtomContainer().setProperty("whoopsie", "daisy");
         mols.add(mol);
-        cdk.createSDFile("/Virtual/testPropateProps.sdf", mols);
+        cdk.saveSDFile("/Virtual/testPropateProps.sdf", mols);
         byte[] bytes=new byte[1000];
         IFile file= ResourcePathTransformer.getInstance()
            .transform("/Virtual/testPropateProps.sdf");
