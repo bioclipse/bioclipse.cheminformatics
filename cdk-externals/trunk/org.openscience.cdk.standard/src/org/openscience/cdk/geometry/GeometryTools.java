@@ -38,6 +38,7 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.util.*;
 import java.util.List;
 
@@ -1452,4 +1453,31 @@ public class GeometryTools {
         }
 		return bondLengthSum / bondCounter;
 	}
+	
+	
+    /**
+     * Shift the container so that it does not overlap with the previous.
+     * XXX this is a very crude layout technique!
+     * @param container the atom container to shift
+     * @param bounds the bounds of the atom container to shift
+     * @param last the bounds of the last atom container
+     */
+    public static Rectangle2D shiftContainer(
+            IAtomContainer container, Rectangle2D bounds, Rectangle2D last, double gap) {
+
+        if (bounds.intersects(last)) {
+
+            // XXX always displace across width - could be improved
+            double d = bounds.getWidth() + last.getWidth() + gap;
+
+            Point2d p = new Point2d(last.getCenterX() + d, last.getCenterY());
+            GeometryTools.translate2DCenterTo(container, p);
+            return new Rectangle2D.Double(bounds.getX() + d,
+                                          bounds.getY(),
+                                          bounds.getWidth(),
+                                          bounds.getHeight());
+        } else {
+            return bounds;
+        }
+    }
 }
