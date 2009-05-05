@@ -2193,8 +2193,11 @@ public class CDKManager implements ICDKManager {
                                   IMolecule reference )
                                   throws BioclipseException {
         List<Float> result=new ArrayList<Float>();
+        BitSet refensetBitSet = create(reference).getFingerprint(true);
         for(int i=0;i<calculateFor.size();i++ ){
-            result.add(calculateTanimoto( calculateFor.get( i ), reference )  );
+            result.add(
+                calculateTanimoto(calculateFor.get(i), refensetBitSet)
+            );
         }
         return result;
     }
