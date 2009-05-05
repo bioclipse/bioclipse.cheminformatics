@@ -838,8 +838,8 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
-         params = "IMolecule calculateFor: molecule to calculate the similarity for, compared to, IMolecule reference:" +
-            " this molecule.",
+         params = "IMolecule calculateFor: molecule to calculate the similarity for, IMolecule reference:" +
+            " molecule in comparision to which similarity is calculated.",
          methodSummary = "Calculate tanimoto similarity of two molcules via CDK fingerprint.")
     @TestMethods("testSingleTanimoto")
     public float calculateTanimoto(IMolecule calculateFor, IMolecule reference)
@@ -847,8 +847,8 @@ public interface ICDKManager extends IBioclipseManager {
     
     @Recorded
     @PublishedMethod(
-         params = "BioList<IMolecule> calculateFor: : molecules to calculate the similarity for, compared to, IMolecule reference:" +
-            " this molecule.",
+         params = "BioList<IMolecule> calculateFor: : molecules to calculate the similarity for, IMolecule reference:" +
+         " molecule in comparision to which similarity is calculated.",
          methodSummary = "Calculate tanimoto similarity of a list of molecules to another molecule via CDK fingerprint.")
     @TestMethods("testMultipleTanimoto")
     public List<Float> calculateTanimoto(BioList<IMolecule> calculateFor, IMolecule reference)
