@@ -35,14 +35,30 @@ import org.openscience.cdk.geometry.BondTools;
 import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.graph.invariant.CanonicalLabeler;
 import org.openscience.cdk.graph.invariant.MorganNumbersTools;
-import org.openscience.cdk.interfaces.*;
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtomType;
+import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IIsotope;
+import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.interfaces.IMoleculeSet;
+import org.openscience.cdk.interfaces.IPseudoAtom;
+import org.openscience.cdk.interfaces.IReaction;
+import org.openscience.cdk.interfaces.IRingSet;
 import org.openscience.cdk.ringsearch.AllRingsFinder;
 import org.openscience.cdk.ringsearch.RingPartitioner;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.RingSetManipulator;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TreeMap;
+import java.util.Vector;
 
 /**
  * Generates SMILES strings {@cdk.cite WEI88, WEI89}. It takes into account the
@@ -123,7 +139,7 @@ public class SmilesGenerator
 		IAtom atom0 = bond.getAtom(0);
 		IAtom atom1 = bond.getAtom(1);
 		List<IAtom> connectedAtoms = container.getConnectedAtomsList(atom0);
-		org.openscience.cdk.interfaces.IAtom from = null;
+		IAtom from = null;
         for (IAtom connectedAtom : connectedAtoms) {
             if (connectedAtom != atom1) {
                 from = connectedAtom;
@@ -330,10 +346,10 @@ public class SmilesGenerator
 		canLabler.canonLabel(molecule);
 		brokenBonds.clear();
 		ringMarker = 0;
-		org.openscience.cdk.interfaces.IAtom start = null;
+		IAtom start = null;
 		for (int i = 0; i < molecule.getAtomCount(); i++)
 		{
-			org.openscience.cdk.interfaces.IAtom atom = molecule.getAtom(i);
+			IAtom atom = molecule.getAtom(i);
 			if (chiral && atom.getPoint2d() == null)
 			{
 				throw new CDKException("Atom number " + i + " has no 2D coordinates, but 2D coordinates are needed for creating chiral smiles");
@@ -415,7 +431,7 @@ public class SmilesGenerator
 		return l.toString();
 	}
 
-	private org.openscience.cdk.interfaces.IAtom hasWedges(IAtomContainer ac, org.openscience.cdk.interfaces.IAtom a)
+	private IAtom hasWedges(IAtomContainer ac, IAtom a)
 	{
         List<IAtom> atoms = ac.getConnectedAtomsList(a);
         //		for (int i = 0; i < atoms.size(); i++)
@@ -446,7 +462,7 @@ public class SmilesGenerator
 	 *      actually the possibility of a double bond configuration)
 	 *@return                          false=is not end of configuration, true=is
 	 */
-	private boolean isEndOfDoubleBond(IAtomContainer container, org.openscience.cdk.interfaces.IAtom atom, org.openscience.cdk.interfaces.IAtom parent, boolean[] doubleBondConfiguration)
+	private boolean isEndOfDoubleBond(IAtomContainer container, IAtom atom, IAtom parent, boolean[] doubleBondConfiguration)
 	{
 		if (container.getBondNumber(atom, parent) == -1 || doubleBondConfiguration.length <= container.getBondNumber(atom, parent) || !doubleBondConfiguration[container.getBondNumber(atom, parent)])
 		{
@@ -461,8 +477,8 @@ public class SmilesGenerator
 			if (container.getBond(atom, parent).getOrder() == CDKConstants.BONDORDER_DOUBLE && (lengthAtom == 3 || (lengthAtom == 2 && atom.getSymbol().equals("N"))) && (lengthParent == 3 || (lengthParent == 2 && parent.getSymbol().equals("N"))))
 			{
 				List<IAtom> atoms = container.getConnectedAtomsList(atom);
-				org.openscience.cdk.interfaces.IAtom one = null;
-				org.openscience.cdk.interfaces.IAtom two = null;
+				IAtom one = null;
+				IAtom two = null;
 				IAtom atomi = null;
 				for (int i = 0; i < atoms.size(); i++)
 				{
@@ -500,7 +516,7 @@ public class SmilesGenerator
 	 *      actually the possibility of a double bond configuration)
 	 *@return                          false=is not start of configuration, true=is
 	 */
-	private boolean isStartOfDoubleBond(IAtomContainer container, org.openscience.cdk.interfaces.IAtom a, org.openscience.cdk.interfaces.IAtom parent, boolean[] doubleBondConfiguration)
+	private boolean isStartOfDoubleBond(IAtomContainer container, IAtom a, IAtom parent, boolean[] doubleBondConfiguration)
 	{
 		// TO-DO: We make the silent assumption of unset hydrogen count equals zero hydrogen count here.
 		int lengthAtom = container.getConnectedAtomsCount(a) + ((a.getHydrogenCount() == CDKConstants.UNSET) ? 0 : a.getHydrogenCount());
@@ -512,7 +528,7 @@ public class SmilesGenerator
 		IAtom one = null;
 		IAtom two = null;
 		boolean doubleBond = false;
-		org.openscience.cdk.interfaces.IAtom nextAtom = null;
+		IAtom nextAtom = null;
         for (IAtom atomi : atoms) {
             if (atomi != parent && container.getBond(atomi, a).getOrder() == CDKConstants.BONDORDER_DOUBLE && isEndOfDoubleBond(container, atomi, a, doubleBondConfiguration)) {
                 doubleBond = true;
@@ -598,7 +614,7 @@ public class SmilesGenerator
 	 *@param  container  the AtomContainer that is being parsed.
 	 *@return            Vector of atoms in canonical oreder.
 	 */
-	private List getCanNeigh(final org.openscience.cdk.interfaces.IAtom a, final IAtomContainer container)
+	private List getCanNeigh(final IAtom a, final IAtomContainer container)
 	{
 		List<IAtom> v = container.getConnectedAtomsList(a);
 		if (v.size() > 1)
@@ -692,7 +708,7 @@ public class SmilesGenerator
 	 *      generated for.
 	 *@param useAromaticity				true=aromaticity or sp2 will trigger lower case letters, wrong=only sp2
 	 */
-	private void createSMILES(org.openscience.cdk.interfaces.IAtom a, StringBuffer line, IAtomContainer atomContainer, boolean chiral, boolean[] doubleBondConfiguration, boolean useAromaticity)
+	private void createSMILES(IAtom a, StringBuffer line, IAtomContainer atomContainer, boolean chiral, boolean[] doubleBondConfiguration, boolean useAromaticity)
 	{
 		List tree = new Vector();
 		
@@ -716,7 +732,7 @@ public class SmilesGenerator
 	 *@param  parent     the atom we came from.
 	 *@param  container  the AtomContainer that we are parsing.
 	 */
-	private void createDFSTree(org.openscience.cdk.interfaces.IAtom a, List tree, org.openscience.cdk.interfaces.IAtom parent, IAtomContainer container)
+	private void createDFSTree(IAtom a, List tree, IAtom parent, IAtomContainer container)
 	{
 		tree.add(a);
 		List neighbours = getCanNeigh(a, container);
@@ -1558,8 +1574,10 @@ public class SmilesGenerator
 			{
                 // we put in a special check for N.planar3 cases such
                 // as for indole and pyrrole, which require an explicit
-                // H on the nitrogen
-                if (a.getSymbol().equals("N") && a.getHybridization() == IAtomType.Hybridization.PLANAR3) {
+                // H on the nitrogen. However this only makes sense when
+                // the connectivity is not 3 - so for a case such as n1ncn(c1)CC
+                // the PLANAR3 N already has 3 bonds, so don't add a H for this case
+                if (a.getSymbol().equals("N") && a.getHybridization() == IAtomType.Hybridization.PLANAR3 && container.getConnectedAtomsList(a).size() != 3) {
                     buffer.append("[").append(a.getSymbol().toLowerCase()).append("H]");
                 } else buffer.append(a.getSymbol().toLowerCase());
 			} else
@@ -1757,7 +1775,7 @@ public class SmilesGenerator
 		/**
 		 *  The atoms which close the ring
 		 */
-		private org.openscience.cdk.interfaces.IAtom a1, a2;
+		private IAtom a1, a2;
 
 		/**
 		 *  The number of the marker
@@ -1771,7 +1789,7 @@ public class SmilesGenerator
 		 *
 		 *@param  marker  the ring closure marker. (Great comment!)
 		 */
-		BrokenBond(org.openscience.cdk.interfaces.IAtom a1, org.openscience.cdk.interfaces.IAtom a2, int marker)
+		BrokenBond(IAtom a1, IAtom a2, int marker)
 		{
 			this.a1 = a1;
 			this.a2 = a2;
@@ -1784,7 +1802,7 @@ public class SmilesGenerator
 		 *
 		 *@return    The a1 value
 		 */
-		public org.openscience.cdk.interfaces.IAtom getA1()
+		public IAtom getA1()
 		{
 			return a1;
 		}
@@ -1795,7 +1813,7 @@ public class SmilesGenerator
 		 *
 		 *@return    The a2 value
 		 */
-		public org.openscience.cdk.interfaces.IAtom getA2()
+		public IAtom getA2()
 		{
 			return a2;
 		}

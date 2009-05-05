@@ -29,26 +29,22 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.interfaces.IChemModel;
-import org.openscience.cdk.interfaces.IReaction;
+import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.interfaces.IRingSet;
 import org.openscience.cdk.tools.LoggingTool;
-import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
 import java.awt.*;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.util.*;
 import java.util.List;
 
 /**
  * A set of static utility classes for geometric calculations and operations.
  * This class is extensively used, for example, by JChemPaint to edit molecule.
- * All methods in this class change the coordinates of the atoms. Use GeometryTools if you use an external set of coordinates (e. g. rendeirngCoordinates from RendererModel)
+ * All methods in this class change the coordinates of the atoms. Use GeometryTools if you use an external set of coordinates (e. g. renderingCoordinates from RendererModel)
  *
  * @author        seb
  * @author        Stefan Kuhn
@@ -405,7 +401,7 @@ public class GeometryTools {
 		double centerX = 0;
 		double centerY = 0;
 		for (int i = 0; i < ringSet.getAtomContainerCount(); i++) {
-			Point2d centerPoint = get2DCenter((org.openscience.cdk.interfaces.IRing)ringSet.getAtomContainer(i));
+			Point2d centerPoint = get2DCenter((IRing)ringSet.getAtomContainer(i));
 			centerX += centerPoint.x;
 			centerY += centerPoint.y;
 		}
@@ -673,34 +669,6 @@ public class GeometryTools {
 		}
 		return closestAtom;
 	}
-
-    /**
-     * Returns the atom of the given molecule that is closest to the given atom
-     * (excluding itself).
-     * 
-     *@param atomCon
-     *            The molecule that is searched for the closest atom
-     *@param atom
-     *            The atom to search around
-     *@return The atom that is closest to the given coordinates
-     */
-	public static IAtom getClosestAtom(IAtomContainer atomCon, IAtom atom) {
-		IAtom closestAtom = null;
-		double min = -1;
-		Point2d atomPosition = atom.getPoint2d();
-		for (int i = 0; i < atomCon.getAtomCount(); i++) {
-			IAtom currentAtom = atomCon.getAtom(i);
-			if (currentAtom != atom) {
-				double d = atomPosition.distance(currentAtom.getPoint2d());
-				if (d < min || min == -1) {
-					min = d;
-					closestAtom = currentAtom;
-				}
-			}
-		}
-		return closestAtom;
-	}
-	
 	/**
 	 *  Returns the atom of the given molecule that is closest to the given
 	 *  coordinates.
@@ -863,34 +831,9 @@ public class GeometryTools {
 				bondLengthSum += getLength2D(bond);
 			}
 		}
-        if(bondLengthSum==0)
-        	return 0;
-        else
-        	return bondLengthSum / bondCounter;
+		return bondLengthSum / bondCounter;
 	}
 
-	/**
-	 *  An average of all 2D bond length values of all products and reactants is produced. Bonds which have
-	 *  Atom's with no coordinates are disregarded.
-	 *  See comment for center(IAtomContainer atomCon, Dimension areaDim, HashMap renderingCoordinates) for details on coordinate sets
-	 *
-	 *@param  reaction  The Reaction for which the average bond length is to be
-	 *      calculated
-	 *@return     the average bond length
-	 */
-	public static double getBondLengthAverage(IReaction reaction) {
-		double bondlenghtsum=0;
-		int containercount=0;
-		for(IAtomContainer container : reaction.getReactants().atomContainers()){
-			containercount++;
-			bondlenghtsum+=getBondLengthAverage(container);
-		}
-		for(IAtomContainer container : reaction.getProducts().atomContainers()){
-			containercount++;
-			bondlenghtsum+=getBondLengthAverage(container);
-		}
-		return bondlenghtsum/containercount;
-	}
 
 	/**
 	 *  Returns the geometric length of this bond in 2D space.
@@ -985,10 +928,10 @@ public class GeometryTools {
 
 
 	/**
-	 *  Determines if this model contains 3D coordinates for all atoms.
+	 *  Determines if this model contains 3D coordinates
 	 *
 	 *@param container the molecule to consider
-	 *@return    boolean indication that 3D coordinates are available for all atoms.
+	 *@return    boolean indication that 3D coordinates are available
 	 */
 	public static boolean has3DCoordinates(IAtomContainer container) {
 		boolean hasinfo = true;
@@ -1001,24 +944,6 @@ public class GeometryTools {
 	}
 
 
-	/**
-	 *  Determines if this model contains 3D coordinates for all atoms.
-	 *
-	 *@param chemmodel the ChemModel to consider
-	 *@return    boolean indication that 3D coordinates are available for all atoms.
-	 */
-	public static boolean has3DCoordinates(IChemModel chemModel) {
-		List<IAtomContainer> acs = ChemModelManipulator.getAllAtomContainers(chemModel);
-		Iterator<IAtomContainer> it = acs.iterator();
-        while(it.hasNext()){
-            if (!has3DCoordinates(it.next())) {
-                return false;
-            }
-        }
-		return true;
-	}
-
-	
 	/**
 	 *  Determines the normalized vector orthogonal on the vector p1->p2.
 	 *
@@ -1080,9 +1005,9 @@ public class GeometryTools {
 	 *@return            The bestAlignmentForLabel value
 	 */
 	public static int getBestAlignmentForLabel(IAtomContainer container, IAtom atom) {
-		int overallDiffX = 0;
+		double overallDiffX = 0;
 		for (IAtom connectedAtom : container.getConnectedAtomsList(atom)) {
-			overallDiffX = overallDiffX + (int) (connectedAtom.getPoint2d().x - atom.getPoint2d().x);
+			overallDiffX += connectedAtom.getPoint2d().x - atom.getPoint2d().x;
 		}
 		if (overallDiffX <= 0) {
 			return 1;
@@ -1385,7 +1310,7 @@ public class GeometryTools {
 	 *@param  firstAtomContainer                the (largest) first aligned AtomContainer which is the reference
 	 *@param  secondAtomContainer               the second aligned AtomContainer
 	 *@param  mappedAtoms             			Map: a Map of the mapped atoms
-	 *@param  Coords3d            			    boolean: true if moecules has 3D coords, false if molecules has 2D coords
+	 *@param  Coords3d            			    boolean: true if molecules has 3D coords, false if molecules has 2D coords
 	 *@return                   				double: the value of the RMSD 
 	 *@exception  CDKException  if there is an error in getting mapped atoms
 	 *
@@ -1412,7 +1337,7 @@ public class GeometryTools {
 					n++;
 				}
 			}catch (Exception ex){
-                throw new CDKException(ex.toString());
+                throw new CDKException(ex.getMessage(), ex);
             }
 		}
 		RMSD=Math.sqrt(sum/n);
@@ -1426,7 +1351,7 @@ public class GeometryTools {
 	 *@param  secondAtomContainer               the second aligned AtomContainer
 	 *@param  mappedAtoms             			Map: a Map of the mapped atoms
 	 *@param hetAtomOnly                        boolean: true if only hetero atoms should be considered
-	 *@param  Coords3d            			    boolean: true if moecules has 3D coords, false if molecules has 2D coords
+	 *@param  Coords3d            			    boolean: true if molecules has 3D coords, false if molecules has 2D coords
 	 *@return                   				double: the value of the RMSD 
 	 *
 	 **/
@@ -1494,60 +1419,4 @@ public class GeometryTools {
         }
 		return bondLengthSum / bondCounter;
 	}
-	
-	
-    /**
-     * Shift the container so that it does not overlap with the previous.
-     * XXX this is a very crude layout technique!
-     * @param container the atom container to shift
-     * @param bounds the bounds of the atom container to shift
-     * @param last the bounds of the last atom container
-     */
-    public static Rectangle2D shiftContainer(
-            IAtomContainer container, Rectangle2D bounds, Rectangle2D last, double gap) {
-
-    	if (bounds.intersects(last) || (bounds.getWidth()==0 && bounds.getHeight()==0 && last.contains(new Point2D.Double(bounds.getX(), bounds.getY())))) {
-
-            // XXX always displace across width - could be improved
-            double d = bounds.getWidth() + last.getWidth() + gap;
-
-            Point2d p = new Point2d(last.getCenterX() + d, last.getCenterY());
-            GeometryTools.translate2DCenterTo(container, p);
-            return new Rectangle2D.Double(bounds.getX() + d,
-                                          bounds.getY(),
-                                          bounds.getWidth(),
-                                          bounds.getHeight());
-        } else {
-            return bounds;
-        }
-    }
-    
-    /**
-     * Shift the containers in a rection vertically so that the reaction does not overlap with the previous.
-     * @param reaction the reaction to shift
-     * @param bounds the bounds of the reaction to shift
-     * @param last the bounds of the last reaction
-     */
-    public static Rectangle2D shiftReactionVertical(
-            IReaction reaction, Rectangle2D bounds, Rectangle2D last, double gap) {
-    	if (bounds.intersects(last)) {
-            double d = bounds.getHeight() + last.getHeight() + gap;
-    		for(IAtomContainer container : reaction.getReactants().atomContainers()){
-    			for(IAtom atom: container.atoms()){
-    				atom.setPoint2d(new Point2d(atom.getPoint2d().x,atom.getPoint2d().y+d));
-    			}
-    		}
-    		for(IAtomContainer container : reaction.getProducts().atomContainers()){
-    			for(IAtom atom: container.atoms()){
-    				atom.setPoint2d(new Point2d(atom.getPoint2d().x,atom.getPoint2d().y+d));
-    			}
-    		}
-            return new Rectangle2D.Double(bounds.getX(),
-                    bounds.getY() + d,
-                    bounds.getWidth(),
-                    bounds.getHeight());
-        } else {
-            return bounds;
-        }
-    }
 }
