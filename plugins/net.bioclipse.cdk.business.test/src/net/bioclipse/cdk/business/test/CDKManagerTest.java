@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -880,5 +881,21 @@ public class CDKManagerTest extends AbstractManagerTest {
         ICDKMolecule mol = cdk.fromSMILES("CC");
         Assert.assertNull(cdk.setProperty(mol, "foo", "bar"));
         Assert.assertEquals("bar", cdk.getProperty(mol, "foo"));
+    }
+
+    @Test public void testCalculateTanimoto_BitSet_BitSet() throws Exception {
+        BitSet b1 = new BitSet(5); b1.set(5); b1.set(4);
+        BitSet b3 = new BitSet(5); b3.set(3); b3.set(4);
+        BitSet b4 = new BitSet(5); b4.set(3);
+        Assert.assertEquals(1.0, cdk.calculateTanimoto(b1, b1), 0.0);
+        Assert.assertEquals(0.0, cdk.calculateTanimoto(b1, b4), 0.0);
+        Assert.assertNotSame(1.0, cdk.calculateTanimoto(b1, b3));
+        Assert.assertNotSame(0.0, cdk.calculateTanimoto(b1, b3));
+    }
+
+    @Test public void testCalculateTanimoto_IMolecule_BitSet() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("CC");
+        BitSet b3 = mol.getFingerprint(true);
+        Assert.assertEquals(1.0, cdk.calculateTanimoto(mol, b3), 0.0);
     }
 }

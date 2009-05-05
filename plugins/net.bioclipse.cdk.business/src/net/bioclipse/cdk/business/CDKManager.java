@@ -72,7 +72,6 @@ import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.config.Elements;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
-import org.openscience.cdk.fingerprint.Fingerprinter;
 import org.openscience.cdk.fingerprint.FingerprinterTool;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.graph.ConnectivityChecker;
@@ -2164,19 +2163,30 @@ public class CDKManager implements ICDKManager {
         return totalCharge;
     }
 
+    public float calculateTanimoto(BitSet fingerprint1, BitSet fingerprint2)
+        throws BioclipseException {
+        try {
+            return Tanimoto.calculate(fingerprint1, fingerprint2);
+        } catch (CDKException exception) {
+            throw new BioclipseException(
+                "Could not calculate the tanimoto distance between the two " +
+                "fingerprints: " + exception.getMessage(), exception
+            );
+        }
+    }
+
+    public float calculateTanimoto(IMolecule calculateFor, BitSet reference )
+        throws BioclipseException {
+        BitSet f2 = create(calculateFor).getFingerprint(true);
+        return calculateTanimoto( reference, f2 );
+    }
+
     public float calculateTanimoto( IMolecule calculateFor, 
                                     IMolecule reference )
                                     throws BioclipseException {
-        Fingerprinter fingerprinter = new Fingerprinter();
-        try {
-            BitSet f1=fingerprinter.getFingerprint( 
-                      create(reference).getAtomContainer() );
-            BitSet f2=fingerprinter.getFingerprint(
-                      create(calculateFor).getAtomContainer() );
-            return Tanimoto.calculate( f1, f2 );
-        } catch ( CDKException e ) {
-            throw new BioclipseException("Could not calculate similarity",e);
-        }
+        BitSet f1 = create(reference).getFingerprint(true);
+        BitSet f2 = create(calculateFor).getFingerprint(true);
+        return calculateTanimoto( f1, f2 );
     }
 
     public List<Float> calculateTanimoto( BioList<IMolecule> calculateFor,

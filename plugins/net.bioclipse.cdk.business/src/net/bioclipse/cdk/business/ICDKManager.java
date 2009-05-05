@@ -15,6 +15,7 @@ package net.bioclipse.cdk.business;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -843,7 +844,25 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testSingleTanimoto")
     public float calculateTanimoto(IMolecule calculateFor, IMolecule reference)
         throws BioclipseException;
-    
+
+    @Recorded
+    @PublishedMethod(
+         params = "BitSet fingerprint1, BitSet fingerprint2",
+         methodSummary = "Calculate tanimoto similarity between two " +
+             "fingerprints")
+    @TestMethods("testCalculateTanimoto_BitSet_BitSet")
+    public float calculateTanimoto(BitSet fingerprint1,
+            BitSet fingerprint2) throws BioclipseException;
+
+    @Recorded
+    @PublishedMethod(
+         params = "BioList<IMolecule> calculateFor, BitSet reference",
+         methodSummary = "Calculate tanimoto similarity of a molecule " +
+            "(calculateFor) to a BitSet (reference) via CDK fingerprint.")
+    @TestMethods("testCalculateTanimoto_IMolecule_BitSet")
+    public float calculateTanimoto(IMolecule calculateFor,
+            BitSet reference) throws BioclipseException;
+
     @Recorded
     @PublishedMethod(
          params = "BioList<IMolecule> calculateFor, IMolecule reference",
