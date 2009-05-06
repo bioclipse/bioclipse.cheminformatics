@@ -2189,7 +2189,7 @@ public class CDKManager implements ICDKManager {
         return calculateTanimoto( f1, f2 );
     }
 
-    public List<Float> calculateTanimoto( BioList<IMolecule> calculateFor,
+    public List<Float> calculateTanimoto( List<IMolecule> calculateFor,
                                   IMolecule reference )
                                   throws BioclipseException {
         List<Float> result=new ArrayList<Float>();
