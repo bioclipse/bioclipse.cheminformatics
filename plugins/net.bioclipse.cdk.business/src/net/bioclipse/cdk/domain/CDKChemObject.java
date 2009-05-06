@@ -24,9 +24,9 @@ import org.openscience.cdk.interfaces.IChemObject;
  * @author ola
  *
  */
-public class CDKChemObject extends BioObject implements IBioObject{
+public class CDKChemObject<T extends IChemObject> extends BioObject implements IBioObject{
 
-    private IChemObject chemobj;
+    private T chemobj;
 //    private ChemObjectPropertySource propSource;
     private String name;
 
@@ -45,21 +45,21 @@ public class CDKChemObject extends BioObject implements IBioObject{
         this.name = name;
     }
 
-    public CDKChemObject(String name, IChemObject chemobj) {
+    public CDKChemObject(String name, T chemobj) {
         this.name=name;
         this.chemobj = chemobj;
     }
 
     //Set name=ID from chemobj
-    public CDKChemObject(IChemObject chemobj) {
+    public CDKChemObject(T chemobj) {
         this.chemobj = chemobj;
         name=chemobj.toString();
     }
 
-    public IChemObject getChemobj() {
+    public T getChemobj() {
         return chemobj;
     }
-    public void setChemobj(IChemObject chemobj) {
+    public void setChemobj(T chemobj) {
         this.chemobj = chemobj;
     }
 

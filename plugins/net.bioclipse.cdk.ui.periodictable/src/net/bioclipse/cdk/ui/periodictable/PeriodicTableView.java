@@ -70,7 +70,7 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
 
     Canvas canvas;
 
-    CDKChemObject selection;
+    CDKChemObject<PeriodicTableElement> selection;
     ElementPTFactory eptf;
 
     ListenerList listeners = new ListenerList();
@@ -185,12 +185,13 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
                            // if we cant configer ignore it
                        }
                    }
-                   selection = new CDKChemObject(element);
+                   selection = new CDKChemObject<PeriodicTableElement>(element);
                    setSelection( new StructuredSelection(selection) );
                }else {
+                   selection = null;
                    setSelection(  StructuredSelection.EMPTY );
                }
-
+               canvas.redraw();
            }
         });
 
