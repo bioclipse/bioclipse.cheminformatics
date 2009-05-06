@@ -216,14 +216,15 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
         if(gTmp != null && pTmp != null) {
             group = gTmp;
             period = pTmp;
-        }
-        else if(pTmp != null){
-            int atomNumber = getAtomicNumber( symbol );
-            if(atomNumber<90) {
-                group = 4+atomNumber-58;
-            }else
-                group = 4+atomNumber-90;
-            period = pTmp + 2.5;
+//        Out-commented pending bug 1013
+//        }
+//        else if(pTmp != null){
+//            int atomNumber = getAtomicNumber( symbol );
+//            if(atomNumber<90) {
+//                group = 4+atomNumber-58;
+//            }else
+//                group = 4+atomNumber-90;
+//            period = pTmp + 2.5;
         }else {
             return null;
         }
