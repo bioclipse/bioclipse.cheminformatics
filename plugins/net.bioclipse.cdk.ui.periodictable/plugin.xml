@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="net.bioclipse.chemoinformatics.views.category"
+            class="net.bioclipse.cdk.ui.periodictable.PeriodicTableView"
+            icon="periodictable.png"
+            id="net.bioclipse.cdk.ui.periodictable.view1"
+            name="Periodic Table"
+            restorable="true">
+      </view>
+   </extension>
+
+</plugin>
