@@ -14,7 +14,6 @@ package net.bioclipse.cdk.jchempaint.widgets;
 
 import static net.bioclipse.cdk.jchempaint.outline.StructureContentProvider.createCDKChemObject;
 
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -56,12 +55,9 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.ControllerModel;
@@ -104,11 +100,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     private ControllerModel c2dm;
     private SWTMouseEventRelay relay;
 
-    private final Point origin = new Point(0, 0);
     private boolean isdirty = false;
     private boolean isScrolling = false;
-
-    private boolean generated = false;
 
     private IOperationHistory operationHistory =
         OperationHistoryFactory.getOperationHistory();
@@ -147,6 +140,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
            public void controlResized( ControlEvent e ) {
 
                resizeControl();
+               redraw();
            }
        });
     }
@@ -198,6 +192,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
                     public void zoomChanged() {
                         resizeControl();
+                        redraw();
                     }
                 }
         );
@@ -221,15 +216,12 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             public void widgetSelected(SelectionEvent event) {
                 ScrollBar bar = (ScrollBar) event.widget;
                 int d = bar.getSelection();
-                int dx = -d - origin.x;
                 Rectangle rect = getDiagramBounds();
+                int dx = -d - rect.x;
                 setIsScrolling(true);
-                scroll(dx, 0, 0, 0, rect.width, rect.height, false);
-                //getRenderer().shiftDrawCenter( dx, 0 );
+                scroll(-d, rect.y, rect.x, rect.y, rect.width, rect.height, false);
+                getRenderer().shiftDrawCenter( dx, 0 );
                 setIsScrolling(false);
-                origin.x = -d;
-                getRenderer().setDrawCenter( origin.x+rect.width/2d,
-                                             origin.y+rect.height/2d);
                 update();
             }
         });
@@ -240,41 +232,13 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             public void widgetSelected(SelectionEvent event) {
                 ScrollBar bar = (ScrollBar) event.widget;
                 int d = bar.getSelection();
-                int dy = -d - origin.y;
                 Rectangle rect = getDiagramBounds();
+                int dy = -d - rect.y;
                 setIsScrolling(true);
-                scroll(0, dy, 0, 0, rect.width, rect.height, false);
-                //getRenderer().shiftDrawCenter( 0, dy);
+                scroll(rect.x, -d, rect.x, rect.y, rect.width, rect.height, false);
+                getRenderer().shiftDrawCenter( 0, dy);
                 setIsScrolling(false);
-                origin.y = -d;
-                getRenderer().setDrawCenter( origin.x+rect.width/2d,
-                                             origin.y+rect.height/2d);
                 update();
-            }
-        });
-
-        addListener (SWT.Resize,  new Listener () {
-            public void handleEvent (Event e) {
-                Rectangle rect = getDiagramBounds();
-                Rectangle client = getClientArea();
-                hBar.setMaximum(rect.width);
-                vBar.setMaximum(rect.height);
-                hBar.setThumb(Math.min(rect.width, client.width));
-                vBar.setThumb(Math.min(rect.height, client.height));
-
-                int hPage = rect.width - client.width;
-                int vPage = rect.height - client.height;
-                int hSelection = hBar.getSelection();
-                int vSelection = vBar.getSelection();
-                if (hSelection >= hPage) {
-                    if (hPage <= 0) hSelection = 0;
-                    origin.x = -hSelection;
-                }
-                if (vSelection >= vPage) {
-                    if (vPage <= 0) vSelection = 0;
-                    origin.y = -vSelection;
-                }
-                redraw();
             }
         });
     }
@@ -290,7 +254,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         for(Message message: messages) {
             paintMessage( gc, message ,getClientArea());
         }
-        
+
         if (model != null) {
             SWTRenderer visitor = new SWTRenderer(gc);
             Renderer renderer = getRenderer();
@@ -321,7 +285,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         }
     }
 
-    private void updateSelection() {
+    private void updateToolTip() {
         RendererModel rendererModel = getRenderer2DModel();
         IAtom atom = rendererModel.getHighlightedAtom();
         IBond bond = rendererModel.getHighlightedBond();
@@ -338,9 +302,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             } else {
                 setToolTipText( "" );
             }
-            setSelection( getSelection() );
         }
-
     }
 
     public void setIsScrolling(boolean isScrolling) {
@@ -386,12 +348,12 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     public void setModel( IChemModel model ) {
         hub.setChemModel(model);
         this.applyGlobalProperties();
-        getRenderer().reset();
-        if(model != null)
-            getRenderer().setScale( model );
-
-        Rectangle2D rec= Renderer.calculateBounds( model );
-        getRenderer().setModelCenter( rec.getX() + rec.getWidth()/2d, rec.getY()+rec.getHeight()/2d );
+        Rectangle clientRect = getClientArea();
+        java.awt.Rectangle rect = new java.awt.Rectangle( clientRect.x,
+                                                          clientRect.y,
+                                                          clientRect.width,
+                                                          clientRect.height);
+        getRenderer().setup( model, rect );
 
         resizeControl();
         super.setModel( model );
@@ -426,7 +388,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                          else
                              atomContainer = null;
                          setDirty( true );
-                         generated = true;
                          add( Message.GENERATED );
                      }else {
                          IAtomContainer oldAC = atomContainer;
@@ -585,8 +546,13 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     private void resizeControl() {
         final ScrollBar hBar = getHorizontalBar();
         final ScrollBar vBar = getVerticalBar();
+
+        Integer xVal=null,
+                yVal=null;
+
         Rectangle rect = getDiagramBounds();
         Rectangle client = getClientArea();
+
         hBar.setMaximum (rect.width);
         vBar.setMaximum (rect.height);
         hBar.setThumb (Math.min (rect.width, client.width));
@@ -596,18 +562,20 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         int hSelection = hBar.getSelection ();
         int vSelection = vBar.getSelection ();
         if (hSelection >= hPage) {
-          if (hPage <= 0) hSelection = 0;
-          origin.x = -hSelection;
+          if (hPage <= 0) hSelection = 0;// negative width fits in should center
+          xVal = -hSelection+client.width/2-rect.width/2;
         }
         if (vSelection >= vPage) {
           if (vPage <= 0) vSelection = 0;
-          origin.y = -vSelection;
+          yVal = -vSelection + client.height/2-rect.height/2;
         }
-        getRenderer().setDrawCenter( origin.x + rect.width/2d,
-                                     origin.y + rect.height/2d );
-        this.redraw();
+        int dx = xVal!=null?xVal-rect.x:0;
+        int dy = yVal!=null?yVal-rect.y:0;
 
+        if(dx!=0 || dy!=0)
+            getRenderer().shiftDrawCenter( dx, dy);
     }
+
     public ICDKMolecule getMolecule() {
         return cdkMolecule;
     }
