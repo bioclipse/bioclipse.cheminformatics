@@ -22,6 +22,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
+import org.openscience.cdk.interfaces.IElement;
 import org.openscience.cdk.interfaces.IMonomer;
 import org.openscience.cdk.interfaces.IPseudoAtom;
 import org.openscience.cdk.interfaces.IStrand;
@@ -86,8 +87,12 @@ public class ChemObjectPropertySource extends BasicPropertySource {
             { AC_NO_BONDS, new TextPropertyDescriptor(AC_NO_BONDS,AC_NO_BONDS)},
         };
 
-        
-        private Object AtomPropertiesTable[][] = 
+        private Object ElementPropertiesTable[][] =
+        {
+                { ATOMIC_NUMBER, new TextPropertyDescriptor(ATOMIC_NUMBER,"Atomic Number")},
+                { ATOM_SYMBOL, new TextPropertyDescriptor(ATOM_SYMBOL,"Symbol")},
+        };
+        private Object AtomPropertiesTable[][] =
         {
             { ATOM_TYPE, new TextPropertyDescriptor(ATOM_TYPE,"Type")},
             { ATOMIC_NUMBER, new TextPropertyDescriptor(ATOMIC_NUMBER,"Atomic Number")},
@@ -143,10 +148,24 @@ public class ChemObjectPropertySource extends BasicPropertySource {
             descriptor.setCategory("General");
             getProperties().add((IPropertyDescriptor)descriptor);
           }   
-          
+
           addToValueMap(OBJECT_TITLE,(String)chemobj.getProperty(CDKConstants.TITLE));
           addToValueMap(OBJECT_ID,chemobj.getID());
+
           
+          if( chemobj instanceof IElement && !(chemobj instanceof IAtom)) {
+              IElement element = (IElement) chemobj;
+
+              for (int i=0;i<ElementPropertiesTable.length;i++) {
+                  // Add each property supported.
+                  PropertyDescriptor descriptor;
+                  descriptor = (PropertyDescriptor)ElementPropertiesTable[i][1];
+                  descriptor.setCategory("Element");
+                  getProperties().add((IPropertyDescriptor)descriptor);
+                }
+              addToValueMap(ATOMIC_NUMBER,String.valueOf(element.getAtomicNumber()));
+              addToValueMap(ATOM_SYMBOL,element.getSymbol());
+          }
           //======
           //IAtom
           //======
