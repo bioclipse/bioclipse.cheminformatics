@@ -11,7 +11,6 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.periodictable;
 
-import static org.openscience.cdk.tools.PeriodicTable.getAtomicNumber;
 import static org.openscience.cdk.tools.PeriodicTable.getChemicalSeries;
 import static org.openscience.cdk.tools.PeriodicTable.getGroup;
 import static org.openscience.cdk.tools.PeriodicTable.getPeriod;
@@ -103,6 +102,7 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
     };
 
     Point extent = new Point(0,0);
+    private Font font;
 
 
     /* (non-Javadoc)
@@ -110,29 +110,25 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
      */
     @Override
     public void createPartControl( Composite parent ) {
-        
-         try {
+
+        try {
             eptf = ElementPTFactory.getInstance();
         } catch ( IOException e1 ) {
-            
+
         }
 
-        //org.openscience.cdk.config.Symbols
-        //byAtomicNumber returns a String[]116 element
-
-       elements = Symbols.byAtomicNumber;
-
-
+        elements = Symbols.byAtomicNumber;
 
         canvas = new Canvas(parent,SWT.NONE);
         canvas.setBackground( canvas.getDisplay().getSystemColor( SWT.COLOR_WHITE ) ) ;
         colorConverter = new ColorAWTtoSWTConverter(canvas.getDisplay());
-
         canvas.addDisposeListener( new DisposeListener() {
 
             public void widgetDisposed( DisposeEvent e ) {
 
                 colorConverter.dispose();
+                if(font!=null)
+                    font.dispose();
             }
 
         });
@@ -205,6 +201,13 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
         int rowHeight = (int) Math.round(clientArea.height/9.5);
         int columnWidth = (int) Math.round( clientArea.width/18d);
         extent = new Point(columnWidth,rowHeight);
+        if(font !=null && !font.isDisposed()) {
+            Font newFont = font;
+            font.dispose();
+            FontData fd = newFont.getFontData()[0];
+            fd.setHeight( (int) (.50 * canvas.getClientArea().width/18d) );
+            font = new Font(canvas.getDisplay(),fd);
+        }
 
     }
 
@@ -236,21 +239,12 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
 
     protected void paintControl(PaintEvent e) {
 
-
         GC gc = e.gc;
 
-        Font font = gc.getFont();
-        FontData fd = font.getFontData()[0];
+        if(font!=null)
+            gc.setFont( font );
 
-        fd.setHeight( (int) (.50 * canvas.getClientArea().width/18d) );
-        font = new Font(gc.getDevice(),fd);
-        gc.setFont( font );
-
-//        Point extent = gc.textExtent( "UUu" );
-
-
-        for(String symbol: elements) {// atomType:atomTypes) {
-            //String symbol = atomType.getSymbol();
+        for(String symbol: elements) {
 
             Point gP = getGroupPeriodFor( symbol );
             if(gP == null)
@@ -261,7 +255,6 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
 
             int x = gP.x;
             int y = gP.y;
-
 
             java.awt.Color color = colorMap.get( ser );
             if(color != null) {
@@ -348,7 +341,6 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
     public void removeSelectionChangedListener( ISelectionChangedListener listener ) {
 
         listeners.remove( listener );
-
     }
 
     public void setSelection( ISelection selection ) {
