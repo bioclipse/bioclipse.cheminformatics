@@ -72,9 +72,22 @@ public class SWTMouseEventRelay implements MouseListener, MouseMoveListener,
         isDragging = false;
     }
 
+    private boolean checkState(MouseEvent event,int mouseButton,int key) {
+        return event.button == mouseButton && (event.stateMask & key)!=0;
+    }
+
     public void mouseMove(MouseEvent event) {
         if(isDragging){
-            relay.mouseDrag(dragFromX,dragFromY, event.x, event.y);
+
+            if(checkState( event, 0, SWT.SHIFT )) {
+                int dx = event.x-dragFromX;
+                if(dx<0)
+                    relay.mouseWheelMovedBackward( 0 );
+                else if(dx>0)
+                    relay.mouseWheelMovedForward( 0 );
+
+            }else
+                relay.mouseDrag(dragFromX,dragFromY, event.x, event.y);
             dragFromX=event.x;
             dragFromY=event.y;
         }else
