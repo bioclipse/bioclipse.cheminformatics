@@ -268,12 +268,20 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
             int height = extent.y-ext2.y;
             gc.drawText( symbol, x+width/2,y+height/2,true);
             gc.setForeground( gc.getDevice().getSystemColor( SWT.COLOR_BLACK ) );
-            gc.drawRectangle( x,y , extent.x, extent.y );
 
+            gc.drawRectangle( x,y , extent.x, extent.y );
+        }
+        if( selection != null ) {
+            int oldWidth = gc.getLineWidth();
+            Color oldColor = gc.getForeground();
+            gc.setForeground( gc.getDevice().getSystemColor( SWT.COLOR_LIST_SELECTION ) );
+            Point gP = getGroupPeriodFor( selection.getChemobj().getSymbol() );
+            gc.setLineWidth( 3 );
+            gc.drawRectangle( gP.x,gP.y , extent.x, extent.y );
+            gc.setLineWidth( oldWidth );
+            gc.setForeground( oldColor );
         }
     }
-
-
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
