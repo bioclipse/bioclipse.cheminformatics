@@ -39,7 +39,7 @@ public class ZoomModule extends ControllerModuleAdapter {
         
         Vector2d v= new Vector2d();
         v.sub( screenCoord, newScreenCoords );
-//        renderer.shiftDrawCenter( v.x, v.y );
+        renderer.shiftDrawCenter( v.x, v.y );
     }
     
     private void zoom(double zoomFactor) {
