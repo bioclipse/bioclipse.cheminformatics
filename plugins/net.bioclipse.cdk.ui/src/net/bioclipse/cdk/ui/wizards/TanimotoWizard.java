@@ -103,7 +103,7 @@ public class TanimotoWizard extends Wizard {
                                                                    virtualselection,
                                                                    "similarity",
                                                                    ".sdf" ) );
-            cdkmanager.createSDFile( sdfile, mols, new NullProgressMonitor() );
+            cdkmanager.saveSDFile( sdfile, mols, new NullProgressMonitor() );
             net.bioclipse.ui.business.Activator.getDefault().getUIManager()
                     .open( sdfile );
         } catch ( Exception ex ) {
