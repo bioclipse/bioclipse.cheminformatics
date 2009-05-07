@@ -58,6 +58,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.ControllerModel;
@@ -143,6 +145,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                redraw();
            }
        });
+
     }
 
     public Image snapshot() {
@@ -197,16 +200,38 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 }
         );
 
-        relay = new SWTMouseEventRelay(hub);
+        setupListeners();
+        addListener( SWT.MouseHover, new Listener() {
+           public void handleEvent( Event event ) {
+
+               if(event.type == SWT.MouseHover) {
+                   updateToolTip();
+               }
+
+            }
+        });
         hub.setActiveDrawModule(new MoveModule(hub));
 
         applyGlobalProperties();
 
-        addMouseListener(relay);
-        addMouseMoveListener(relay);
-        addMouseWheelListener(relay);
-        addListener(SWT.MouseEnter, relay);
-        addListener(SWT.MouseExit, relay);
+    }
+
+    private static final int[] EVENTS = new int[]{
+        SWT.MouseDoubleClick,
+        SWT.MouseDown,
+        SWT.MouseEnter,
+        SWT.MouseExit,
+//        SWT.MouseHover,
+        SWT.MouseMove,
+        SWT.MouseUp,
+        SWT.MouseWheel
+    };
+
+    private void setupListeners() {
+        relay = new SWTMouseEventRelay(hub);
+        for(int event:EVENTS) {
+            addListener( event, relay );
+        }
     }
 
     private void setupScrollbars() {
@@ -443,7 +468,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             else
                return StructuredSelection.EMPTY;
 
-        List<CDKChemObject> selection = new LinkedList<CDKChemObject>();
+        List<CDKChemObject<?>> selection = new LinkedList<CDKChemObject<?>>();
 
         IChemObjectSelection sel = rendererModel.getSelection();
         IAtomContainer modelSelection = sel.getConnectedAtomContainer();
@@ -494,6 +519,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 	}
 
     protected void structureChanged() {
+        resizeControl();
     }
 
     protected void structurePropertiesChanged() {
