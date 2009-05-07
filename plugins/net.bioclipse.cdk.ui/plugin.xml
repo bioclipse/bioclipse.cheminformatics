@@ -86,6 +86,10 @@
     <extension
         point="org.eclipse.ui.commands">
         <command
+           id="net.bioclipse.cdk.ui.handlers.calculatetanimoto"
+           defaultHandler="net.bioclipse.cdk.ui.handlers.CalculateTanimotoHandler"
+           name="create3D"/>
+        <command
            id="net.bioclipse.cdk.ui.handlers.create3dwithreset"
            defaultHandler="net.bioclipse.cdk.ui.handlers.Create3dHandlerWithReset"
            name="create3D"/>
@@ -258,6 +262,34 @@
 			      			<or>
 					   		    <test property="org.eclipse.core.resources.contentTypeId" 
 				       	        	value="net.bioclipse.contenttypes.mdlMolFile3D"/>
+				            </or>
+			      		</adapt>
+			   		</iterate>
+		        </visibleWhen>
+	       </command>
+		</menuContribution>
+		<menuContribution
+           locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+		    <command
+		    	commandId="net.bioclipse.cdk.ui.handlers.calculatetanimoto"
+		    	label="Calculate Tanimoto similarity"
+		        icon="icons/molecule2D.png">
+		      	<visibleWhen>
+			   		<iterate operator="and" ifEmpty="false">
+		      			<adapt type="org.eclipse.core.resources.IResource">
+			      			<or>
+				                <test property="org.eclipse.core.resources.contentTypeId" 
+				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule3d"/>
+				                <test property="org.eclipse.core.resources.contentTypeId" 
+				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule5d"/>
+				                <test property="org.eclipse.core.resources.contentTypeId" 
+				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule2d"/>
+				                <test property="org.eclipse.core.resources.contentTypeId" 
+				           	    	value="net.bioclipse.contenttypes.mdlMolFile2D"/>
+				                <test property="org.eclipse.core.resources.contentTypeId" 
+				           	    	value="net.bioclipse.contenttypes.mdlMolFile3D"/>
+				                <test property="org.eclipse.core.resources.contentTypeId" 
+				           	    	value="net.bioclipse.contenttypes.pdb"/>
 				            </or>
 			      		</adapt>
 			   		</iterate>
