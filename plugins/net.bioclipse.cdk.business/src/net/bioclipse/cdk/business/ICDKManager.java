@@ -876,7 +876,7 @@ public interface ICDKManager extends IBioclipseManager {
          params="IMolecule molecule",
          methodSummary="Returns a MDL V2000 molfile serialization")
     @TestMethods("testGetMDLMolfileString()")
-    public String getMDLMolfileString(ICDKMolecule molecule);
+    public String getMDLMolfileString(IMolecule molecule) throws BioclipseException;
 
     @Recorded
     @PublishedMethod(

@@ -2202,7 +2202,10 @@ public class CDKManager implements ICDKManager {
         return result;
     }
 
-    public String getMDLMolfileString(ICDKMolecule molecule) {
+    public String getMDLMolfileString(IMolecule molecule_in) throws BioclipseException {
+        
+        ICDKMolecule molecule = create(molecule_in);
+        
         StringWriter stringWriter = new StringWriter();
         MDLWriter writer = new MDLWriter(stringWriter);
         try {
