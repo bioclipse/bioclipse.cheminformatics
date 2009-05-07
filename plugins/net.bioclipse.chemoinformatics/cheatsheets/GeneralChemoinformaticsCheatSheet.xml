@@ -27,43 +27,51 @@
 		</description>
 	</item>
 	<item
+       href="/net.bioclipse.cdk.ui/html/maintopic.html#tanimoto"
+       title="Option 3: Compare molecules">
+		<description>
+			You can calculte Tanimoto scores to compare similarity of molecules. 
+			See ? for details.
+		</description>
+	</item>
+	<item
        href="TODO"
-       title="Option 3: Calculate QSAR properties">
+       title="Option 4: Calculate QSAR properties">
 		<description>
 			A wide variety of molecular and atomic qsar descriptory (e.g. XLogP, ALogP, Lipinske Rule of Five, Atomic Polarizability) can be calculated in Bioclipse. See ? for details.
 		</description>
 	</item>
 	<item
        href="/net.bioclipse.cdk.jchempaint/doc/convert.html"
-       title="Option 4: Convert file formats">
+       title="Option 5: Convert file formats">
 		<description>
 			In order to convert between file formats (e. g. generate a CML file from an MDL mol file), you need to open the file in JChemPaint (double-clicking normally does this) and save it via File->Save As.. in the new format. See ? for details.
 		</description>
 	</item>
 	<item
        href="/net.bioclipse.cdk.ui/html/maintopic.html"
-       title="Option 5: Create 2D and 3D coordinates">
+       title="Option 6: Create 2D and 3D coordinates">
 		<description>
 			You can create 2D and 3D coordinates for molecules (either if they do not yet exist or if there are already some, which means you do a cleanup). Right click on the file and choose "Generate 2D/3D". See ? for details.
 		</description>
 	</item>
 	<item
        href="/net.bioclipse.cdk.smartsmatching/html/smartsmatchingview.html"
-       title="Option 6: Do whatever with smarts">
+       title="Option 7: Do whatever with smarts">
 		<description>
 			TODO the person who did this needs to fill in some high-level text on smarts here
 		</description>
 	</item>
 	<item
        href="/net.bioclipse.webservices/doc/wsplugin.html"
-       title="Option 7: Search in External databases">
+       title="Option 8: Search in External databases">
 		<description>
 			You can search in a variety of external (EBI) databases File -> New -> Web Services -> Use 
 			WSDbfetch Web Service at EBI. See ? for details.
 		</description>
 	</item>
 	<item
-       title="Option 8: Work with Spectral Data">
+       title="Option 9: Work with Spectral Data">
 		<description>
 			If you want to work with spectral data (e. g. view spectra and peak pick them, do a structure elucidation), you should install 
 			the Speclipse feature (in case this is not yet the case) via Help -> Software Update -> Speclipse Update Site and read the General Spectrum Cheat Sheet.
