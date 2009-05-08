@@ -12,13 +12,13 @@
  *                                             wrecked havoc...
  ******************************************************************************/
 package net.bioclipse.cdkdebug.business;
+
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
-import net.bioclipse.scripting.ui.Activator;
 import org.apache.log4j.Logger;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
@@ -137,7 +137,7 @@ public class CDKDebugManager implements ICDKDebugManager {
         return cdkmol;
     }
     
-    public void perceiveCDKAtomTypes(IMolecule mol) 
+    public String perceiveCDKAtomTypes(IMolecule mol)
                 throws InvocationTargetException {
         
         ICDKMolecule cdkmol;
@@ -155,6 +155,7 @@ public class CDKDebugManager implements ICDKDebugManager {
         CDKAtomTypeMatcher cdkMatcher 
             = CDKAtomTypeMatcher.getInstance(ac.getBuilder());
         
+        StringBuffer result = new StringBuffer();
         int i = 1;
         for (IAtom atom : ac.atoms()) {
             IAtomType type = null;
@@ -162,11 +163,11 @@ public class CDKDebugManager implements ICDKDebugManager {
                 type = cdkMatcher.findMatchingAtomType(ac, atom);
             } 
             catch ( CDKException e ) {}
-            Activator.getDefault().getJsConsoleManager().print(
-                (i) + ": " + (type != null ? type.getAtomTypeName() : "null") +
-                "\n" // FIXME: should use NEWLINE here
-            );
+            result.append(i).append(':').append(
+                type != null ? type.getAtomTypeName() : "null"
+            ).append('\n'); // FIXME: should use NEWLINE here
             i++;
         }
+        return result.toString();
     }
 }

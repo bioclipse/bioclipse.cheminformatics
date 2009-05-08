@@ -61,6 +61,6 @@ public interface ICDKDebugManager extends IBioclipseManager {
          methodSummary = "Returns a list of CDK atom types."
     )
     @TestMethods("testDepictCDKAtomTypes")
-    public void perceiveCDKAtomTypes(IMolecule mol) throws InvocationTargetException;
+    public String perceiveCDKAtomTypes(IMolecule mol) throws InvocationTargetException;
 
 }
