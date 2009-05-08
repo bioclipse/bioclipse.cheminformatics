@@ -554,7 +554,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                 }else if(o instanceof IAdaptable) {
                     IAtomContainer ac = (IAtomContainer)((IAdaptable)o)
                             .getAdapter( IAtomContainer.class  );
-                    if(o != null) {
+                    if(ac != null) {
                         widget.getRenderer2DModel().setExternalSelectedPart( ac );
                     }
                 }
