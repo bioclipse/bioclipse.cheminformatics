@@ -38,17 +38,14 @@ public class CDKDebugManager implements ICDKDebugManager {
     private static final Logger logger = Logger.getLogger(CDKManager.class);
     private static final CDKManager cdk = new CDKManager();
     
-    public void diff(ICDKMolecule mol, ICDKMolecule mol2) {
-        Activator.getDefault().getJsConsoleManager().print( 
-            AtomContainerDiff.diff( mol.getAtomContainer(), 
-                                    mol2.getAtomContainer() )
+    public String diff(ICDKMolecule mol, ICDKMolecule mol2) {
+        return AtomContainerDiff.diff(
+            mol.getAtomContainer(), mol2.getAtomContainer()
         ); 
     }
     
-    public void debug(ICDKMolecule mol) {
-        Activator.getDefault().getJsConsoleManager().print(
-            mol.getAtomContainer().toString()
-        ); 
+    public String debug(ICDKMolecule mol) {
+        return mol.getAtomContainer().toString();
     }
     
     public String getNamespace() {

@@ -34,7 +34,7 @@ public interface ICDKDebugManager extends IBioclipseManager {
          methodSummary = "Returns the differences between the two molecules"
     )
     @TestMethods("testDiff")
-    public void diff(ICDKMolecule mol, ICDKMolecule mol2);
+    public String diff(ICDKMolecule mol, ICDKMolecule mol2);
     
     /**
      * @param mol The molecule to save
@@ -45,7 +45,7 @@ public interface ICDKDebugManager extends IBioclipseManager {
          methodSummary = "Returns a string representation of the data structures."
     )
     @TestMethods("testDebug")
-    public void debug(ICDKMolecule mol);
+    public String debug(ICDKMolecule mol);
 
     @Recorded
     @PublishedMethod(
