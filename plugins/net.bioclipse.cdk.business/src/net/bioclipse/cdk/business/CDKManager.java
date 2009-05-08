@@ -406,7 +406,7 @@ public class CDKManager implements ICDKManager {
 
               // Store the chemFormat used for the reader
               IResourceFormat chemFormat = reader.getFormat();
-              System.out.println( "Rad CDK chemfile with format: "
+              System.out.println( "Read CDK chemfile with format: "
                                   + chemFormat.getFormatName() );
 
               List<IAtomContainer> atomContainersList
