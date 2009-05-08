@@ -48,8 +48,12 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
 
     private String name;
     private IAtomContainer atomContainer;
+
+    // cached properties
     private String cachedSMILES;
     private BitSet cachedFingerprint;
+    private String cachedInchi;
+    private String cachedInchiKey;
 
     private static Preferences prefs;
 
@@ -215,6 +219,10 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
             return this;
         }
         
+        if (adapter.isAssignableFrom(IAtomContainer.class)) {
+            return this.getAtomContainer();
+        }
+        
         if (adapter.isAssignableFrom(IPropertySource.class)) {
             return new CDKMoleculePropertySource(this);
         }
@@ -237,5 +245,27 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
 
         return getClass().getSimpleName() + ":" 
                + Activator.getDefault().getCDKManager().molecularFormula(this);
+    }
+
+    public String getInChI(boolean force) throws BioclipseException {
+        if (force == false) {
+            if (cachedInchi != null) {
+                return cachedInchi;
+            }
+        }
+        InChiManager 
+        try {
+            BitSet fingerprint=fp.getFingerprint(getAtomContainer());
+            cachedFingerprint=fingerprint;
+            return fingerprint;
+        } catch (Exception e) {
+            throw new BioclipseException("Could not create fingerprint: "
+                    + e.getMessage());
+        }
+    }
+
+    public String getInChIKey(boolean force) throws BioclipseException {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

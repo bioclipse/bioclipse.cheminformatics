@@ -1,5 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2008 The Bioclipse Project and others.
+ *               2009  Egon Willighagen <egonw@user.sf.net>
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +9,6 @@
  * 
  * Contributors:
  *     Ola Spjuth
- *     
  ******************************************************************************/
 package net.bioclipse.cdk.domain;
 
@@ -32,6 +33,24 @@ public interface ICDKMolecule extends IMolecule{
      * @throws BioclipseException
      */
     public BitSet getFingerprint(boolean force) throws BioclipseException;
+
+    /**
+     * Calculate the InChI and cache the result.
+     *
+     * @param force if true, do not use cache but force calculation
+     * @return
+     * @throws BioclipseException
+     */
+    public String getInChI(boolean force) throws BioclipseException;
+
+    /**
+     * Calculate the InChIKey and cache the result.
+     *
+     * @param force if true, do not use cache but force calculation
+     * @return
+     * @throws BioclipseException
+     */
+    public String getInChIKey(boolean force) throws BioclipseException;
 
     /**
      * AtomContainer is the CDK model for a molecule
