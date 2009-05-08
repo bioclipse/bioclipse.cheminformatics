@@ -1158,7 +1158,7 @@ public class CDKManager implements ICDKManager {
                             + exception.getMessage(),
                             exception );
           }
-          logger.debug( String.format("numberOfEntriesInSDF took %d to complete",
+          logger.debug( String.format("createSDFIndex took %d to complete",
                                        (int)((System.nanoTime()-tStart)/1e6)));
           progress.done();
           return new SDFileIndex(file,values);
