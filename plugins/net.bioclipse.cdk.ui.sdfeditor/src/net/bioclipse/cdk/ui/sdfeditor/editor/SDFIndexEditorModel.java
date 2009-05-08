@@ -146,7 +146,10 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel {
         in.read( bytes , 0  , length );
         in.close();
         String result = new String( bytes );
-        return result.substring( 0,result.indexOf( "$$$$" ));
+        int i= -1;
+        if((i=result.indexOf( "$$$$" ))!= -1)
+            return result.substring( 0,i);
+        return result;
     }
 
     protected IChemObject processContent() throws CDKException {
