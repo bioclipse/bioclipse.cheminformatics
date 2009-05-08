@@ -52,11 +52,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.content.IContentType;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openscience.cdk.ChemFile;
@@ -1312,5 +1310,20 @@ public abstract class AbstractCDKManagerPluginTest {
         ICDKMolecule mol = cdk.fromSMILES("CC");
         Assert.assertNull(cdk.setProperty(mol, "foo", "bar"));
         Assert.assertEquals("bar", cdk.getProperty(mol, "foo"));
+    }
+
+    @Test public void testRemoveImplicitHydrogens() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("CC");
+        cdk.removeImplicitHydrogens(mol);
+        for (IAtom atom : mol.getAtomContainer().atoms()) {
+            Assert.assertEquals(0, atom.getHydrogenCount().intValue());
+        }
+    }
+
+    @Test public void testRemoveExplicitHydrogens() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("[H]C([H])([H])[H]");
+        Assert.assertEquals(5, mol.getAtomContainer().getAtomCount());
+        cdk.removeExplicitHydrogens(mol);
+        Assert.assertEquals(1, mol.getAtomContainer().getAtomCount());
     }
 }

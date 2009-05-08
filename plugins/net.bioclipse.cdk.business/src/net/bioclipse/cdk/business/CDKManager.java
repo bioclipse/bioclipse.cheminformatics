@@ -2242,4 +2242,23 @@ public class CDKManager implements ICDKManager {
         container.setProperty(propertyName, propertyValue);
         return oldValue;
     }
+
+    public ICDKMolecule removeExplicitHydrogens(ICDKMolecule molecule) {
+        IAtomContainer container = molecule.getAtomContainer();
+        for (int i=container.getAtomCount()-1; i>=0; i--) {
+            IAtom atom = container.getAtom(i);
+            if ("H".equals(atom.getSymbol())) {
+                container.removeAtomAndConnectedElectronContainers(atom);
+            }
+        }
+        return molecule;
+    }
+
+    public ICDKMolecule removeImplicitHydrogens(ICDKMolecule molecule) {
+        IAtomContainer container = molecule.getAtomContainer();
+        for (IAtom atom : container.atoms()) {
+            atom.setHydrogenCount(0);
+        }
+        return molecule;
+    }
 }

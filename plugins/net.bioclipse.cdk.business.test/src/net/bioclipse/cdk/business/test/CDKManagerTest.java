@@ -54,6 +54,7 @@ import org.junit.Test;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
@@ -897,5 +898,20 @@ public class CDKManagerTest extends AbstractManagerTest {
         ICDKMolecule mol = cdk.fromSMILES("CC");
         BitSet b3 = mol.getFingerprint(true);
         Assert.assertEquals(1.0, cdk.calculateTanimoto(mol, b3), 0.0);
+    }
+
+    @Test public void testRemoveImplicitHydrogens() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("CC");
+        cdk.removeImplicitHydrogens(mol);
+        for (IAtom atom : mol.getAtomContainer().atoms()) {
+            Assert.assertEquals(0, atom.getHydrogenCount().intValue());
+        }
+    }
+
+    @Test public void testRemoveExplicitHydrogens() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("[H]C([H])([H])[H]");
+        Assert.assertEquals(5, mol.getAtomContainer().getAtomCount());
+        cdk.removeExplicitHydrogens(mol);
+        Assert.assertEquals(1, mol.getAtomContainer().getAtomCount());
     }
 }

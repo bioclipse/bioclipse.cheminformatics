@@ -895,4 +895,18 @@ public interface ICDKManager extends IBioclipseManager {
     public Object setProperty(ICDKMolecule molecule, Object propertyName,
             Object propertyValue);
 
+    @Recorded
+    @PublishedMethod(
+         params="ICDKMolecule molecule",
+         methodSummary="Removes implicit hydrogens")
+    @TestMethods("testRemoveImplicitHydrogens()")
+    public ICDKMolecule removeImplicitHydrogens(ICDKMolecule molecule);
+
+    @Recorded
+    @PublishedMethod(
+         params="ICDKMolecule molecule",
+         methodSummary="Removes explicit hydrogens")
+    @TestMethods("testRemoveExplicitHydrogens()")
+    public ICDKMolecule removeExplicitHydrogens(ICDKMolecule molecule);
+
 }
