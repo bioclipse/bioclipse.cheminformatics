@@ -40,6 +40,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.GroupMarker;
@@ -531,40 +532,39 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         if ( selection instanceof IStructuredSelection ) {
             IStructuredSelection bcSelection =
                 (IStructuredSelection)selection;
+
+
             IChemObjectSelection jcpSelection = AbstractSelection.EMPTY_SELECTION;
-            if(bcSelection.size()==0) { // do nothing jcpSelection already empty
-            }else
-                if(bcSelection.size()==1) {
-                    if(bcSelection.getFirstElement() instanceof CDKChemObject) {
-                        IChemObject chemObject= ((CDKChemObject)bcSelection
-                                               .getFirstElement()).getChemobj();
 
-                        if(contains(ChemModelManipulator.getAllAtomContainers(
-                                   widget.getControllerHub().getIChemModel() ),
-                                   chemObject)){
 
-                            jcpSelection = new SingleSelection<IChemObject>(
-                                    chemObject);
-                        }
+            Set<IChemObject> chemSelection = new HashSet<IChemObject>();
+            for(Iterator<?> iter = bcSelection.iterator();iter.hasNext();) {
+                Object o = iter.next();
+                if(o instanceof CDKChemObject) {
+                    IChemObject chemObject= ((CDKChemObject<?>)bcSelection
+                            .getFirstElement()).getChemobj();
+
+                    if(contains(widget.getControllerHub()
+                                .getIChemModel().getMoleculeSet()
+                                .atomContainers(),
+                                chemObject)) {
+
+                        chemSelection.add( ((CDKChemObject<?>) o).getChemobj() );
                     }
-            }else {
-
-                Set<IChemObject> chemSelection = new HashSet<IChemObject>();
-                for(Iterator<?> iter = bcSelection.iterator();iter.hasNext();) {
-                    Object o = iter.next();
-                    if(o instanceof CDKChemObject) {
-                        IChemObject chemObject= ((CDKChemObject)bcSelection
-                                .getFirstElement()).getChemobj();
-
-                        if(contains(widget.getControllerHub()
-                                    .getIChemModel().getMoleculeSet()
-                                    .atomContainers(),
-                                    chemObject)) {
-
-                            chemSelection.add( ((CDKChemObject) o).getChemobj() );
-                        }
+                }else if(o instanceof IAdaptable) {
+                    IAtomContainer ac = (IAtomContainer)((IAdaptable)o)
+                            .getAdapter( IAtomContainer.class  );
+                    if(o != null) {
+                        widget.getRenderer2DModel().setExternalSelectedPart( ac );
                     }
                 }
+            }
+
+            if(chemSelection.size()==1) {
+                for(IChemObject o:chemSelection) {
+                    jcpSelection = new SingleSelection<IChemObject>(o);
+                }
+            }else if(chemSelection.size()!=0) {
                 jcpSelection = new MultiSelection<IChemObject>(chemSelection);
             }
 
