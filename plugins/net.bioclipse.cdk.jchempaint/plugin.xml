@@ -930,6 +930,12 @@
             sequence="DEL">
       </key>
       <key
+            commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.eraser"
+            contextId="net.bioclipse.ui.contexts.JChemPaint"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="BACKSPACE">
+      </key>
+      <key
             commandId="net.bioclipse.cdk.jchempaint.command.change.element"
             contextId="net.bioclipse.ui.contexts.JChemPaint"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
