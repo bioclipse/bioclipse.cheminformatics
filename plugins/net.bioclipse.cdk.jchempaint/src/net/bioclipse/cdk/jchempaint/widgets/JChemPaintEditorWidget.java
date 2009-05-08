@@ -184,7 +184,11 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                     }
 
                     public void structureChanged() {
-                        JChemPaintEditorWidget.this.structureChanged();
+                        Display.getDefault().syncExec( new Runnable() {
+                            public void run() {
+                                JChemPaintEditorWidget.this.structureChanged();
+                            }
+                        });
                         setDirty(true);
                     }
 
