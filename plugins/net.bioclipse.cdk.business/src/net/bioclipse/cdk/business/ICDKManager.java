@@ -889,7 +889,7 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod(
          params="ICDKMolecule molecule, Object propertyName, Object" +
          		" propertyValue",
-         methodSummary="Sets thesproperty value for the given property name." +
+         methodSummary="Sets the property value for the given property name." +
          		" Returns the old value, or null if it was yet unset.")
     @TestMethods("testGetSetProperty()")
     public Object setProperty(ICDKMolecule molecule, Object propertyName,
