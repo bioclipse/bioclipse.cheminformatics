@@ -23,6 +23,7 @@ import net.bioclipse.cdk.business.preferences.PreferenceConstants;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.BioObject;
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.inchi.business.IInChIManager;
 
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -253,19 +254,31 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
                 return cachedInchi;
             }
         }
-        InChiManager 
+        IInChIManager inchi = net.bioclipse.inchi.business.Activator.
+            getDefault().getInChIManager();
         try {
-            BitSet fingerprint=fp.getFingerprint(getAtomContainer());
-            cachedFingerprint=fingerprint;
-            return fingerprint;
+            cachedInchi = inchi.generate(this);
+            return cachedInchi;
         } catch (Exception e) {
-            throw new BioclipseException("Could not create fingerprint: "
-                    + e.getMessage());
+            throw new BioclipseException("Could not create InChI: "
+                    + e.getMessage(), e);
         }
     }
 
     public String getInChIKey(boolean force) throws BioclipseException {
-        // TODO Auto-generated method stub
-        return null;
+        if (force == false) {
+            if (cachedInchiKey != null) {
+                return cachedInchiKey;
+            }
+        }
+        IInChIManager inchi = net.bioclipse.inchi.business.Activator.
+            getDefault().getInChIManager();
+        try {
+            cachedInchiKey = inchi.generate(this);
+            return cachedInchiKey;
+        } catch (Exception e) {
+            throw new BioclipseException("Could not create InChIKey: "
+                    + e.getMessage(), e);
+        }
     }
 }

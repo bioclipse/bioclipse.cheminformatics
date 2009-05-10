@@ -1,4 +1,4 @@
-package net.bioclipse.inchi.handlers;
+package net.bioclipse.cdk.business;
 
 import java.util.List;
 
