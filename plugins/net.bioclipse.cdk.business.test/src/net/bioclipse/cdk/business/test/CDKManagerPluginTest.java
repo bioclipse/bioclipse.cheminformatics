@@ -12,13 +12,9 @@
 package net.bioclipse.cdk.business.test;
 
 import static org.junit.Assert.fail;
+import net.bioclipse.cdk.business.Activator;
 
 import org.junit.BeforeClass;
-
-import net.bioclipse.cdk.business.Activator;
-import net.bioclipse.core.business.IBioclipseManager;
-import net.bioclipse.core.tests.AbstractManagerTest;
-
 
 public class CDKManagerPluginTest extends AbstractCDKManagerPluginTest {
 
