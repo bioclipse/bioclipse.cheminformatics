@@ -31,6 +31,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -1325,5 +1326,38 @@ public abstract class AbstractCDKManagerPluginTest {
         Assert.assertEquals(5, mol.getAtomContainer().getAtomCount());
         cdk.removeExplicitHydrogens(mol);
         Assert.assertEquals(1, mol.getAtomContainer().getAtomCount());
+    }
+
+    @Test public void testRoundtripFingerprintViaSDF() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("C");
+        BitSet molBS = mol.getFingerprint(true);
+
+        List<IMolecule> mols=new ArrayList<IMolecule>();
+        mols.add(mol);
+
+        IFile target = new MockIFile();
+        cdk.saveMolecules(mols, target, (IChemFormat)SDFFormat.getInstance());
+
+        List<ICDKMolecule> readmols = cdk.loadMolecules(target);
+        Assert.assertEquals(1, readmols.size());
+        ICDKMolecule mol2 = readmols.get(0);
+        Assert.assertNotNull(mol2);
+        BitSet mol2BS = mol2.getFingerprint(false);
+
+        Assert.assertEquals(molBS.toString(), mol2BS.toString());
+    }
+
+    @Test public void testRoundtripFingerprintViaCML() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("C");
+        BitSet molBS = mol.getFingerprint(true);
+
+        IFile target = new MockIFile();
+        cdk.saveMolecule(mol, target, (IChemFormat)CMLFormat.getInstance());
+
+        ICDKMolecule mol2 = cdk.loadMolecule(target);
+        Assert.assertNotNull(mol2);
+        BitSet mol2BS = mol2.getFingerprint(false);
+
+        Assert.assertEquals(molBS.toString(), mol2BS.toString());
     }
 }
