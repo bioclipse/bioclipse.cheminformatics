@@ -20,7 +20,8 @@ import net.bioclipse.core.domain.IMolecule;
 import org.openscience.cdk.interfaces.IAtomContainer;
 
 /**
- * An intertace for CDKMolecule
+ * An interface for CDKMolecule.
+ *
  * @author ola
  *
  */
