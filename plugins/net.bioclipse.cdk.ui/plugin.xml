@@ -357,7 +357,7 @@
 			locationURI="popup:org.eclipse.ui.popup.any?after=additions">
 		    <command
 		    	commandId="net.bioclipse.inchi.generateInChI"
-		    	label="Generate INChI"
+		    	label="Generate InChI"
 		        icon="icons/lamp16.png">
 		      	<visibleWhen>
 			   		<iterate operator="and" ifEmpty="false">
