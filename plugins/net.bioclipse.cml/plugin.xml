@@ -81,6 +81,23 @@
         
 		<content-type
               base-type="net.bioclipse.contenttypes.cml"
+	          id="net.bioclipse.contenttypes.cml.singleMolecule0d"
+              name="CML (Single 0D Molecule)"
+              priority="high">
+		 	<describer class="net.bioclipse.cml.contenttypes.CmlFileDescriber">
+            	<parameter
+                    name="dimension"
+                    value="0D">
+              	</parameter>
+              	<parameter
+                    name="cardinality"
+                    value="single">
+              	</parameter>
+       		</describer>
+        </content-type>
+        
+		<content-type
+              base-type="net.bioclipse.contenttypes.cml"
 	          id="net.bioclipse.contenttypes.cml.singleMolecule2d"
               name="CML (Single 2D Molecule)"
               priority="high">

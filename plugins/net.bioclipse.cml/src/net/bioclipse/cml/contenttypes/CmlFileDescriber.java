@@ -1,5 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2008 The Bioclipse Project and others.
+ *               2009 Egon Willighagen <egonw@users.sf.net>
+ * 
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -183,6 +185,7 @@ public class CmlFileDescriber extends TextContentDescriber
 			return INVALID;
 
 		String requiredDimension = (String) elements.get("dimension");
+        boolean wants0D = requiredDimension.equalsIgnoreCase("0D");
 		boolean wants2D = requiredDimension.equalsIgnoreCase("2D");
 		boolean wants3D = requiredDimension.equalsIgnoreCase("3D");
 		boolean wants5D = requiredDimension.equalsIgnoreCase("5D");
@@ -225,6 +228,10 @@ public class CmlFileDescriber extends TextContentDescriber
 			return VALID;
 		}
 
+    if ((!has3D && !has2D && wants0D) && (moleculeCount == 1 && wantsSingle)) {
+        return VALID;
+    }
+	
 		//Else, invalid (or indeterminate?)
 		return INVALID;
 	}
