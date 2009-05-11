@@ -526,7 +526,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 	}
 
     protected void structureChanged() {
-        resizeControl();
+        if(!this.isDisposed())
+            resizeControl();
     }
 
     protected void structurePropertiesChanged() {
