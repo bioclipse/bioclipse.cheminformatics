@@ -87,6 +87,17 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                                                 getEditorInput());
                         pageOrder.put(i, page);
                         setPageText(i,"Molecules");
+                        moleculesPage.getMolTableViewer().setDoubleClickHook( new Runnable() {
+                            public void run() {
+                                for(int i:pageOrder.keySet()) {
+                                    Pages p = pageOrder.get( i );
+                                    if(p==Pages.JCP) {
+                                        setActivePage( i );
+                                        break;
+                                    }
+                                }
+                            }
+                        });
                         break;
 
                     case Headers:
