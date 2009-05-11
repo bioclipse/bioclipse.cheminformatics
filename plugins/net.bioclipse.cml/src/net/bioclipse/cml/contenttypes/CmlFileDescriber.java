@@ -99,10 +99,13 @@ public class CmlFileDescriber extends TextContentDescriber
 		/*
 		 * This is a workaround for biopolymer PDB files,
 		 * which have nested <molecule> tags.
+		 * It also makes sure that molecules in Reactions are ignored		
 		 */
 		int moleculeTagDepth = 0;
 		
 		int moleculeCount = 0;
+		
+		int reactionCount = 0;
 
 		try {
 			XmlPullParserFactory factory = 
@@ -134,7 +137,12 @@ public class CmlFileDescriber extends TextContentDescriber
 					    }
 					}
 					
-					if (tagName.equalsIgnoreCase("spectrum")) {
+          if (tagName.equalsIgnoreCase("reaction")) {
+              moleculeTagDepth += 1;
+              reactionCount++;
+          }
+
+          if (tagName.equalsIgnoreCase("spectrum")) {
 					    spectrumTagDepth += 1;
 					    
 					    // only count the top level of molecules, not nested ones.
@@ -162,7 +170,7 @@ public class CmlFileDescriber extends TextContentDescriber
 						}
 					}
 				} else if (parser.getEventType() == XmlPullParser.END_TAG) {
-				    if (moleculeTagDepth > 0 && parser.getName().equalsIgnoreCase("molecule")) {
+				    if (moleculeTagDepth > 0 && (parser.getName().equalsIgnoreCase("molecule") || parser.getName().equalsIgnoreCase("molecule"))) {
 				        moleculeTagDepth -= 1;
 				    }
 				    if (spectrumTagDepth > 0 && parser.getName().equalsIgnoreCase("spectrum")) {
@@ -185,7 +193,9 @@ public class CmlFileDescriber extends TextContentDescriber
 			return INVALID;
 
 		String requiredDimension = (String) elements.get("dimension");
-        boolean wants0D = requiredDimension.equalsIgnoreCase("0D");
+		if(requiredDimension==null)
+		    requiredDimension="0D";
+    boolean wants0D = requiredDimension.equalsIgnoreCase("0D");
 		boolean wants2D = requiredDimension.equalsIgnoreCase("2D");
 		boolean wants3D = requiredDimension.equalsIgnoreCase("3D");
 		boolean wants5D = requiredDimension.equalsIgnoreCase("5D");
@@ -194,37 +204,48 @@ public class CmlFileDescriber extends TextContentDescriber
 		boolean wantsSingle = requiredCardinality.equalsIgnoreCase("single");
 		boolean wantsMultiple = requiredCardinality.equalsIgnoreCase("multiple");
 
-    if ((has3D && has2D && wants5D) && (moleculeCount == 1 && wantsSingle)) {
+    String requiredType = (String) elements.get("type");
+    boolean wantsMolecule = requiredType.equals( "molecule" );
+    boolean wantsReaction = requiredType.equals( "reaction" );
+    
+    if(wantsReaction){
+        if(wantsSingle && reactionCount==1)
+            return VALID;
+        if(wantsMultiple && reactionCount>1)
+            return VALID;
+    }
+    
+		if (wantsMolecule && (has3D && has2D && wants5D) && (moleculeCount == 1 && wantsSingle)) {
       return VALID;
     }
 
-    if ((has3D && has2D && wants5D) && (moleculeCount > 1 && wantsMultiple)) {
+    if (wantsMolecule && (has3D && has2D && wants5D) && (moleculeCount > 1 && wantsMultiple)) {
       return VALID;
     }
     
     //it would still return valid for 2d if a 5d file is tested, but
-    //since we want types to mutally exclusiv, we return invalid here if 5d is asked
-    if(has2D && has3D && !wants5D)
+    //since we want types to mutually exclusiv, we return invalid here if 5d is asked
+    if(wantsMolecule && (has2D && has3D && !wants5D))
         return INVALID;
 
-    if ((has2D && !has3D && wants2D) && (moleculeCount == 1 && wantsSingle)) {
+    if (wantsMolecule && (has2D && !has3D && wants2D) && (moleculeCount == 1 && wantsSingle)) {
 			return VALID;
 		}
 
-		if ((has2D && !has3D && wants2D) && (moleculeCount > 1 && wantsMultiple)) {
+		if (wantsMolecule && (has2D && !has3D && wants2D) && (moleculeCount > 1 && wantsMultiple)) {
 			return VALID;
 		}
 
 		// a CML file without any atoms, is considered input for 2D editing
-    if ((!hasAtoms && wants2D) && (moleculeCount == 1 && wantsSingle)) {
+    if (wantsMolecule && (!hasAtoms && wants2D) && (moleculeCount == 1 && wantsSingle)) {
       return VALID;
     }
 
-    if ((has3D && !has2D && wants3D) && (moleculeCount == 1 && wantsSingle)) {
+    if (wantsMolecule && (has3D && !has2D && wants3D) && (moleculeCount == 1 && wantsSingle)) {
 			return VALID;
 		}
 
-		if ((has3D && !has2D && wants3D) && (moleculeCount > 1 && wantsMultiple)) {
+		if (wantsMolecule && (has3D && !has2D && wants3D) && (moleculeCount > 1 && wantsMultiple)) {
 			return VALID;
 		}
 

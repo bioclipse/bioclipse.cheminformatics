@@ -93,6 +93,10 @@
                     name="cardinality"
                     value="single">
               	</parameter>
+              	<parameter
+                    name="type"
+                    value="molecule">
+              	</parameter>
        		</describer>
         </content-type>
         
@@ -109,6 +113,10 @@
               	<parameter
                     name="cardinality"
                     value="single">
+              	</parameter>
+              	<parameter
+                    name="type"
+                    value="molecule">
               	</parameter>
        		</describer>
         </content-type>
@@ -127,6 +135,10 @@
                     name="cardinality"
                     value="multiple">
               	</parameter>
+              	<parameter
+                    name="type"
+                    value="molecule">
+              	</parameter>
        		</describer>
         </content-type>
         
@@ -143,6 +155,10 @@
               	<parameter
                     name="cardinality"
                     value="single">
+              	</parameter>
+              	<parameter
+                    name="type"
+                    value="molecule">
               	</parameter>
        		</describer>
         </content-type>
@@ -161,6 +177,10 @@
                     name="cardinality"
                     value="multiple">
               	</parameter>
+              	<parameter
+                    name="type"
+                    value="molecule">
+              	</parameter>
        		</describer>
         </content-type>
 
@@ -178,6 +198,10 @@
                     name="cardinality"
                     value="single">
               	</parameter>
+              	<parameter
+                    name="type"
+                    value="molecule">
+              	</parameter>
        		</describer>
         </content-type>
         
@@ -194,6 +218,45 @@
               	<parameter
                     name="cardinality"
                     value="multiple">
+              	</parameter>
+              	<parameter
+                    name="type"
+                    value="molecule">
+              	</parameter>
+       		</describer>
+        </content-type>
+
+		<content-type
+              base-type="net.bioclipse.contenttypes.cml"
+	          id="net.bioclipse.contenttypes.cml.singleReaction"
+              name="CML (Single Reaction)"
+              priority="high">
+		 	<describer class="net.bioclipse.cml.contenttypes.CmlFileDescriber">
+              	<parameter
+                    name="cardinality"
+                    value="single">
+              	</parameter>
+              	<parameter
+                    name="type"
+                    value="reaction">
+              	</parameter>
+       		</describer>
+        </content-type>
+
+
+		<content-type
+              base-type="net.bioclipse.contenttypes.cml"
+	          id="net.bioclipse.contenttypes.cml.multipleReactions"
+              name="CML (Multiple Reaction)"
+              priority="high">
+		 	<describer class="net.bioclipse.cml.contenttypes.CmlFileDescriber">
+              	<parameter
+                    name="cardinality"
+                    value="multiple">
+              	</parameter>
+              	<parameter
+                    name="type"
+                    value="reaction">
               	</parameter>
        		</describer>
         </content-type>
