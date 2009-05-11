@@ -492,10 +492,12 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
             return fOutlinePage;
         }
         if ( IAtomContainer.class.equals( adapter ) ) {
-            if(widget.getMolecule()!=null)
-                return widget.getMolecule().getAtomContainer();
-            else
-                return null;
+            if(widget.getMolecule()!=null) {
+                ICDKMolecule mol = getCDKMolecule();
+                if(mol!=null)
+                    return mol.getAtomContainer();
+            }
+            return null;
         }
         return super.getAdapter( adapter );
     }
