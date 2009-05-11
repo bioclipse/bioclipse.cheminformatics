@@ -39,7 +39,9 @@ import java.util.regex.Pattern;
 
 import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
+import net.bioclipse.cdk.domain.CDKReaction;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.domain.ICDKReaction;
 import net.bioclipse.cdk.domain.MoleculesInfo;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
@@ -84,11 +86,13 @@ import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMoleculeSet;
+import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.FormatFactory;
 import org.openscience.cdk.io.IChemObjectWriter;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
+import org.openscience.cdk.io.MDLRXNReader;
 import org.openscience.cdk.io.MDLWriter;
 import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.SDFWriter;
@@ -99,6 +103,7 @@ import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.IChemFormatMatcher;
 import org.openscience.cdk.io.formats.IResourceFormat;
 import org.openscience.cdk.io.formats.MDLFormat;
+import org.openscience.cdk.io.formats.MDLRXNFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
 import org.openscience.cdk.io.formats.Mol2Format;
 import org.openscience.cdk.io.formats.PDBFormat;
@@ -2241,6 +2246,48 @@ public class CDKManager implements ICDKManager {
         Object oldValue = container.getProperty(propertyName);
         container.setProperty(propertyName, propertyValue);
         return oldValue;
+    }
+    
+    public ICDKReaction loadReaction(IFile file, IProgressMonitor monitor)
+    throws IOException, BioclipseException, CDKException, CoreException {
+
+        //TODO proper matching
+        ICDKReaction loadedMol =
+                loadReaction( file.getContents(), monitor,
+                              determineIChemFormat( file ) );
+        loadedMol.setResource( file );
+
+        return loadedMol;
+    }
+
+    public ICDKReaction loadReaction( InputStream instream,
+                                      IProgressMonitor monitor,
+                                      IChemFormat format )
+                                                          throws BioclipseException,
+                                                          CDKException,
+                                                          IOException {
+
+        if ( monitor == null ) {
+            monitor = new NullProgressMonitor();
+        }
+
+        if(format instanceof CMLFormat){
+            CMLReader reader = new CMLReader(instream);
+            IChemFile chemFile = (IChemFile)reader.read(new org.openscience.cdk.ChemFile());
+            org.openscience.cdk.interfaces.IChemSequence seq = chemFile.getChemSequence(0);
+            org.openscience.cdk.interfaces.IChemModel model = seq.getChemModel(0);
+            IReaction reaction = model.getReactionSet().getReaction(0);
+            return new CDKReaction(reaction);
+        }else if(format instanceof MDLRXNFormat){
+            MDLRXNReader reader = new MDLRXNReader(instream);
+            IChemFile chemFile = (IChemFile)reader.read(new org.openscience.cdk.ChemFile());
+            org.openscience.cdk.interfaces.IChemSequence seq = chemFile.getChemSequence(0);
+            org.openscience.cdk.interfaces.IChemModel model = seq.getChemModel(0);
+            IReaction reaction = model.getReactionSet().getReaction(0);
+            return new CDKReaction(reaction);            
+        }else{
+            throw new BioclipseException("Invalid format");
+        }
     }
 
     public ICDKMolecule removeExplicitHydrogens(ICDKMolecule molecule) {

@@ -14,6 +14,7 @@
 package net.bioclipse.cdk.business;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.BitSet;
 import java.util.Collection;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.domain.ICDKReaction;
 import net.bioclipse.cdk.domain.MoleculesInfo;
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
@@ -894,6 +896,29 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testGetSetProperty()")
     public Object setProperty(ICDKMolecule molecule, Object propertyName,
             Object propertyValue);
+
+    @Recorded
+    @PublishedMethod(
+         params="IFile file, IProgressMonitor monitor",
+         methodSummary="Reads a file into an  ICDKReaction.")
+    @TestMethods("testLoadReaction_IFile_IProgressMonitor")
+    public ICDKReaction loadReaction( IFile file, IProgressMonitor monitor )
+                                                                            throws IOException,
+                                                                            BioclipseException,
+                                                                            CDKException,
+                                                                            CoreException;
+
+    @Recorded
+    @PublishedMethod(
+         params="InputStream instream, IProgressMonitor monitor, IChemFormat format",
+         methodSummary="Reads a stream into an  ICDKReaction.")
+    @TestMethods("testLoadReaction_InputStream_IProgressMonitor_IChemFormat")
+    public ICDKReaction loadReaction( InputStream instream,
+                                      IProgressMonitor monitor,
+                                      IChemFormat format )
+                                                          throws BioclipseException,
+                                                          CDKException,
+                                                          IOException;
 
     @Recorded
     @PublishedMethod(
