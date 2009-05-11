@@ -159,9 +159,8 @@ public class SWTUndoRedoFactory implements IUndoRedoFactory {
     public IUndoRedoable getLoadNewModelEdit(IChemModel chemModel,
             IMoleculeSet oldsom, IReactionSet oldsor, IMoleculeSet newsom,
             IReactionSet newsor, String type) {
-        // TODO Auto-generated method stub
-        // See PeleZilla #987
-        return null;
+
+        return new SWTLoadNewModelEdit(chemModel,oldsom,oldsor,newsom,newsor,type,this.context);
     }
 
 }
