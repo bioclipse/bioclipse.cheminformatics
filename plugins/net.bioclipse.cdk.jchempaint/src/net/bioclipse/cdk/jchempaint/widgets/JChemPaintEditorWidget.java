@@ -352,6 +352,16 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     public void reset() {
         this.isNew = true;
+        if(hub!=null) {
+            Rectangle clientRect = getClientArea();
+            java.awt.Rectangle rect = new java.awt.Rectangle( clientRect.x,
+                                                              clientRect.y,
+                                                              clientRect.width,
+                                                              clientRect.height);
+            getRenderer().setup( hub.getIChemModel(), rect );
+
+            resizeControl();
+        }
     }
 
     public void updateView() {
@@ -377,14 +387,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     public void setModel( IChemModel model ) {
         hub.setChemModel(model);
         this.applyGlobalProperties();
-        Rectangle clientRect = getClientArea();
-        java.awt.Rectangle rect = new java.awt.Rectangle( clientRect.x,
-                                                          clientRect.y,
-                                                          clientRect.width,
-                                                          clientRect.height);
-        getRenderer().setup( model, rect );
-
-        resizeControl();
+        reset();
         super.setModel( model );
         setDirty( false );
     }
