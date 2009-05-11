@@ -36,6 +36,7 @@ import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
@@ -87,17 +88,22 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                                                 getEditorInput());
                         pageOrder.put(i, page);
                         setPageText(i,"Molecules");
-                        moleculesPage.getMolTableViewer().setDoubleClickHook( new Runnable() {
+                        moleculesPage.getMolTableViewer().setDoubleClickHook(
+                         new Runnable() {
                             public void run() {
-                                for(int i:pageOrder.keySet()) {
-                                    Pages p = pageOrder.get( i );
-                                    if(p==Pages.JCP) {
-                                        setActivePage( i );
-                                        break;
-                                    }
+                                try {
+                                IHandlerService services = (IHandlerService)
+                                    getSite().getService(IHandlerService.class);
+                                services.executeCommand(
+                                      "net.bioclipse.cdk.ui.sdfeditor.open.jcp",
+                                      null);
+                                }catch(Exception e) {
+                                    logger.warn( "Failed to open 2D-strcuture tab" );
+                                    LogUtils.debugTrace( logger, e );
                                 }
                             }
-                        });
+                         }
+                        );
                         break;
 
                     case Headers:
@@ -272,5 +278,15 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
 //               jcpPage.setInput( element );
 //           }
 //        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Object getAdapter( Class adapter ) {
+
+        if(JChemPaintEditor.class.isAssignableFrom( adapter )) {
+            return jcpPage;
+        }
+        return super.getAdapter( adapter );
     }
 }

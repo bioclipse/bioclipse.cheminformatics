@@ -263,11 +263,13 @@ public class JChemPaintWidget extends Canvas {
 
     public void add(Message message) {
         messages.add( message );
-        redraw();
+        if(!isDisposed())
+            redraw();
     }
 
     public void remove(Message message) {
         messages.remove( message );
-        redraw();
+        if(!isDisposed())
+            redraw();
     }
 }

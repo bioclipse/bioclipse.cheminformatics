@@ -100,6 +100,11 @@
            id="net.bioclipse.cdk.sdfeditor.handlers.extractEntries"
            defaultHandler="net.bioclipse.cdk.ui.sdfeditor.handlers.ExtractEntriesHandler"
            name="extractEntries"/>
+        <command
+              defaultHandler="net.bioclipse.cdk.ui.sdfeditor.handlers.OpenJCPTab"
+              id="net.bioclipse.cdk.ui.sdfeditor.open.jcp"
+              name="Open 2D-structure tab">
+        </command>
   	</extension>
 
 	<extension
@@ -122,5 +127,22 @@
 		        </visibleWhen>
 	       </command>
 		</menuContribution>
+  <menuContribution
+        locationURI="popup:net.bioclipse.cdk.ui.sdfeditor.menu?after=additions">
+     <command
+           commandId="net.bioclipse.cdk.ui.sdfeditor.open.jcp"
+           label="Open"
+           style="push"
+           tooltip="Open 2D-strcuture edtior">
+        <visibleWhen
+              checkEnabled="true">
+           <iterate>
+              <instanceof
+                    value="net.bioclipse.cdk.domain.ICDKMolecule">
+              </instanceof>
+           </iterate>
+        </visibleWhen>
+     </command>
+  </menuContribution>
 	</extension>
 </plugin>
