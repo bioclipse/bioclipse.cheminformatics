@@ -2248,10 +2248,12 @@ public class CDKManager implements ICDKManager {
         return oldValue;
     }
     
-    public ICDKReaction loadReaction(IFile file, IProgressMonitor monitor)
-    throws IOException, BioclipseException, CDKException, CoreException {
+    public ICDKReaction loadReaction( IFile file, IProgressMonitor monitor )
+                throws IOException,
+                BioclipseException,
+                CDKException,
+                CoreException {
 
-        //TODO proper matching
         ICDKReaction loadedMol =
                 loadReaction( file.getContents(), monitor,
                               determineIChemFormat( file ) );
@@ -2263,30 +2265,38 @@ public class CDKManager implements ICDKManager {
     public ICDKReaction loadReaction( InputStream instream,
                                       IProgressMonitor monitor,
                                       IChemFormat format )
-                                                          throws BioclipseException,
-                                                          CDKException,
-                                                          IOException {
+                                                    throws BioclipseException,
+                                                    CDKException,
+                                                    IOException {
 
         if ( monitor == null ) {
             monitor = new NullProgressMonitor();
         }
 
-        if(format instanceof CMLFormat){
-            CMLReader reader = new CMLReader(instream);
-            IChemFile chemFile = (IChemFile)reader.read(new org.openscience.cdk.ChemFile());
-            org.openscience.cdk.interfaces.IChemSequence seq = chemFile.getChemSequence(0);
-            org.openscience.cdk.interfaces.IChemModel model = seq.getChemModel(0);
-            IReaction reaction = model.getReactionSet().getReaction(0);
-            return new CDKReaction(reaction);
-        }else if(format instanceof MDLRXNFormat){
-            MDLRXNReader reader = new MDLRXNReader(instream);
-            IChemFile chemFile = (IChemFile)reader.read(new org.openscience.cdk.ChemFile());
-            org.openscience.cdk.interfaces.IChemSequence seq = chemFile.getChemSequence(0);
-            org.openscience.cdk.interfaces.IChemModel model = seq.getChemModel(0);
-            IReaction reaction = model.getReactionSet().getReaction(0);
-            return new CDKReaction(reaction);            
-        }else{
-            throw new BioclipseException("Invalid format");
+        if ( format instanceof CMLFormat ) {
+            CMLReader reader = new CMLReader( instream );
+            IChemFile chemFile =
+                    (IChemFile) reader
+                            .read( new org.openscience.cdk.ChemFile() );
+            org.openscience.cdk.interfaces.IChemSequence seq =
+                    chemFile.getChemSequence( 0 );
+            org.openscience.cdk.interfaces.IChemModel model =
+                    seq.getChemModel( 0 );
+            IReaction reaction = model.getReactionSet().getReaction( 0 );
+            return new CDKReaction( reaction );
+        } else if ( format instanceof MDLRXNFormat ) {
+            MDLRXNReader reader = new MDLRXNReader( instream );
+            IChemFile chemFile =
+                    (IChemFile) reader
+                            .read( new org.openscience.cdk.ChemFile() );
+            org.openscience.cdk.interfaces.IChemSequence seq =
+                    chemFile.getChemSequence( 0 );
+            org.openscience.cdk.interfaces.IChemModel model =
+                    seq.getChemModel( 0 );
+            IReaction reaction = model.getReactionSet().getReaction( 0 );
+            return new CDKReaction( reaction );
+        } else {
+            throw new BioclipseException( "Invalid format" );
         }
     }
 
