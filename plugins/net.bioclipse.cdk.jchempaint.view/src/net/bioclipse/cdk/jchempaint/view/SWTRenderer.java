@@ -111,7 +111,7 @@ public class SWTRenderer implements IDrawVisitor{
         int oldLineWidth = gc.getLineWidth();
         // init recursion with background to get the first draw with foreground
         gc.setForeground( toSWTColor( gc, element.color ));
-        gc.setLineWidth( (int)element.width );
+        gc.setLineWidth( (element.width<1?1:(int)element.width) );
         drawLine( element );
 
         gc.setLineWidth( oldLineWidth );
@@ -142,7 +142,6 @@ public class SWTRenderer implements IDrawVisitor{
         vertexB.add(normal);
         vertexC.sub(normal);
         
-//        gc.setLineWidth( (int) wedge.width );
         if (wedge.isDashed)
             drawDashedWedge( vertexA, vertexB, vertexC);
         else
