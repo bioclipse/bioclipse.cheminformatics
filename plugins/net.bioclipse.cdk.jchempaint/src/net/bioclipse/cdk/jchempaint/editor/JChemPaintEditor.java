@@ -40,7 +40,6 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.GroupMarker;
@@ -553,13 +552,16 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
                         chemSelection.add( ((CDKChemObject<?>) o).getChemobj() );
                     }
-                }else if(o instanceof IAdaptable) {
-                    IAtomContainer ac = (IAtomContainer)((IAdaptable)o)
-                            .getAdapter( IAtomContainer.class  );
-                    if(ac != null) {
-                        widget.getRenderer2DModel().setExternalSelectedPart( ac );
-                    }
                 }
+//                This is not enough for selecting substructure matches
+//                it introduced bug 1048 when closing another editor.
+//                else if(o instanceof IAdaptable) {
+//                    IAtomContainer ac = (IAtomContainer)((IAdaptable)o)
+//                            .getAdapter( IAtomContainer.class  );
+//                    if(ac != null) {
+//                        widget.getRenderer2DModel().setExternalSelectedPart( ac );
+//                    }
+//                }
             }
 
             if(chemSelection.size()==1) {
