@@ -36,6 +36,7 @@ import javax.vecmath.Point3d;
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.CDKManagerHelper;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.domain.ICDKReaction;
 import net.bioclipse.cdkdebug.business.ICDKDebugManager;
 import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.business.BioclipseException;
@@ -64,6 +65,7 @@ import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
+import org.openscience.cdk.io.formats.MDLRXNFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
 import org.openscience.cdk.io.formats.Mol2Format;
 import org.openscience.cdk.io.formats.SDFFormat;
@@ -898,6 +900,28 @@ public class CDKManagerTest extends AbstractManagerTest {
         ICDKMolecule mol = cdk.fromSMILES("CC");
         BitSet b3 = mol.getFingerprint(true);
         Assert.assertEquals(1.0, cdk.calculateTanimoto(mol, b3), 0.0);
+    }
+    
+    @Test public void testLoadReaction_InputStream_IProgressMonitor_IChemFormat() throws Exception{
+        String path = getClass().getResource("/testFiles/0002.stg01.rxn").getPath();
+        IFile file = new MockIFile( path );
+        ICDKReaction reaction = cdk.loadReaction( file.getContents(), new NullProgressMonitor(), (IChemFormat)MDLRXNFormat.getInstance());
+
+        Assert.assertNotNull(reaction);
+        Assert.assertSame(1, reaction.getReaction().getReactantCount());
+        Assert.assertSame(1, reaction.getReaction().getProductCount());
+
+    }
+    
+    @Test public void testLoadReaction_IFile_IProgressMonitor() throws Exception{
+        String path = getClass().getResource("/testFiles/reaction.1.cml").getPath();
+        IFile file = new MockIFile( path );
+        ICDKReaction reaction = cdk.loadReaction( file, new NullProgressMonitor());
+
+        Assert.assertNotNull(reaction);
+        Assert.assertSame(1, reaction.getReaction().getReactantCount());
+        Assert.assertSame(1, reaction.getReaction().getProductCount());
+        
     }
 
     @Test public void testRemoveImplicitHydrogens() throws Exception {
