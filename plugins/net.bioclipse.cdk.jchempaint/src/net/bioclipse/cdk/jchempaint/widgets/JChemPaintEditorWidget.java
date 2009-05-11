@@ -80,7 +80,8 @@ import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.ExternalHighlightGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
-import org.openscience.cdk.renderer.generators.SelectionGenerator;
+import org.openscience.cdk.renderer.generators.SelectAtomGenerator;
+import org.openscience.cdk.renderer.generators.SelectBondGenerator;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
@@ -378,7 +379,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         extensionGenerator.setUse( true );
         generatorList.add(new ExternalHighlightGenerator());
         generatorList.addAll( super.createGenerators() );
-        generatorList.add(new SelectionGenerator());
+        generatorList.add(new SelectAtomGenerator());
+        generatorList.add(new SelectBondGenerator());
 
         return generatorList;
     }
