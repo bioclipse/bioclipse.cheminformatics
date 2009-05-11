@@ -84,9 +84,9 @@ import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IChemSequence;
 import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMoleculeSet;
-import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.FormatFactory;
@@ -2272,35 +2272,28 @@ public class CDKManager implements ICDKManager {
             monitor = new NullProgressMonitor();
         }
 
+        IChemModel model;
         if ( format instanceof CMLFormat ) {
             CMLReader reader = new CMLReader( instream );
             IChemFile chemFile =
                     (IChemFile) reader
                             .read( new org.openscience.cdk.ChemFile() );
-            org.openscience.cdk.interfaces.IChemSequence seq =
-                    chemFile.getChemSequence( 0 );
-            org.openscience.cdk.interfaces.IChemModel model =
-                    seq.getChemModel( 0 );
-            List<ICDKReaction> reactions = new ArrayList<ICDKReaction>();
-            for(int i=0;i<model.getReactionSet().getReactionCount();i++)
-                reactions.add( new CDKReaction(model.getReactionSet().getReaction( i )) );
-            return reactions;
+            IChemSequence seq = chemFile.getChemSequence( 0 );
+            model = seq.getChemModel( 0 );
         } else if ( format instanceof MDLRXNFormat ) {
             MDLRXNReader reader = new MDLRXNReader( instream );
             IChemFile chemFile =
                     (IChemFile) reader
                             .read( new org.openscience.cdk.ChemFile() );
-            org.openscience.cdk.interfaces.IChemSequence seq =
-                    chemFile.getChemSequence( 0 );
-            org.openscience.cdk.interfaces.IChemModel model =
-                    seq.getChemModel( 0 );
-            List<ICDKReaction> reactions = new ArrayList<ICDKReaction>();
-            for(int i=0;i<model.getReactionSet().getReactionCount();i++)
-                reactions.add( new CDKReaction(model.getReactionSet().getReaction( i )) );
-            return reactions;
+            IChemSequence seq = chemFile.getChemSequence( 0 );
+            model = seq.getChemModel( 0 );
         } else {
             throw new BioclipseException( "Invalid format" );
         }
+        List<ICDKReaction> reactions = new BioList<ICDKReaction>();
+        for(int i=0;i<model.getReactionSet().getReactionCount();i++)
+            reactions.add( new CDKReaction(model.getReactionSet().getReaction( i )) );
+        return reactions;
     }
 
     public ICDKMolecule removeExplicitHydrogens(ICDKMolecule molecule) {
