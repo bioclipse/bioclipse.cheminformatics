@@ -905,7 +905,7 @@ public class CDKManagerTest extends AbstractManagerTest {
     @Test public void testLoadReaction_InputStream_IProgressMonitor_IChemFormat() throws Exception{
         String path = getClass().getResource("/testFiles/0002.stg01.rxn").getPath();
         IFile file = new MockIFile( path );
-        ICDKReaction reaction = cdk.loadReaction( file.getContents(), new NullProgressMonitor(), (IChemFormat)MDLRXNFormat.getInstance());
+        ICDKReaction reaction = cdk.loadReactions( file.getContents(), new NullProgressMonitor(), (IChemFormat)MDLRXNFormat.getInstance()).get( 0 );
 
         Assert.assertNotNull(reaction);
         Assert.assertSame(1, reaction.getReaction().getReactantCount());
@@ -916,7 +916,7 @@ public class CDKManagerTest extends AbstractManagerTest {
     @Test public void testLoadReaction_IFile_IProgressMonitor() throws Exception{
         String path = getClass().getResource("/testFiles/reaction.1.cml").getPath();
         IFile file = new MockIFile( path );
-        ICDKReaction reaction = cdk.loadReaction( file, new NullProgressMonitor());
+        ICDKReaction reaction = cdk.loadReactions( file, new NullProgressMonitor()).get( 0 );
 
         Assert.assertNotNull(reaction);
         Assert.assertSame(1, reaction.getReaction().getReactantCount());

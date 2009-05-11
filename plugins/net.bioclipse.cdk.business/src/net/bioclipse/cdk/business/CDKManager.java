@@ -2248,21 +2248,20 @@ public class CDKManager implements ICDKManager {
         return oldValue;
     }
     
-    public ICDKReaction loadReaction( IFile file, IProgressMonitor monitor )
+    public List<ICDKReaction> loadReactions( IFile file, IProgressMonitor monitor )
                 throws IOException,
                 BioclipseException,
                 CDKException,
                 CoreException {
 
-        ICDKReaction loadedMol =
-                loadReaction( file.getContents(), monitor,
+        List<ICDKReaction> loadedMol =
+                loadReactions( file.getContents(), monitor,
                               determineIChemFormat( file ) );
-        loadedMol.setResource( file );
 
         return loadedMol;
     }
 
-    public ICDKReaction loadReaction( InputStream instream,
+    public List<ICDKReaction> loadReactions( InputStream instream,
                                       IProgressMonitor monitor,
                                       IChemFormat format )
                                                     throws BioclipseException,
@@ -2282,8 +2281,10 @@ public class CDKManager implements ICDKManager {
                     chemFile.getChemSequence( 0 );
             org.openscience.cdk.interfaces.IChemModel model =
                     seq.getChemModel( 0 );
-            IReaction reaction = model.getReactionSet().getReaction( 0 );
-            return new CDKReaction( reaction );
+            List<ICDKReaction> reactions = new ArrayList<ICDKReaction>();
+            for(int i=0;i<model.getReactionSet().getReactionCount();i++)
+                reactions.add( new CDKReaction(model.getReactionSet().getReaction( i )) );
+            return reactions;
         } else if ( format instanceof MDLRXNFormat ) {
             MDLRXNReader reader = new MDLRXNReader( instream );
             IChemFile chemFile =
@@ -2293,8 +2294,10 @@ public class CDKManager implements ICDKManager {
                     chemFile.getChemSequence( 0 );
             org.openscience.cdk.interfaces.IChemModel model =
                     seq.getChemModel( 0 );
-            IReaction reaction = model.getReactionSet().getReaction( 0 );
-            return new CDKReaction( reaction );
+            List<ICDKReaction> reactions = new ArrayList<ICDKReaction>();
+            for(int i=0;i<model.getReactionSet().getReactionCount();i++)
+                reactions.add( new CDKReaction(model.getReactionSet().getReaction( i )) );
+            return reactions;
         } else {
             throw new BioclipseException( "Invalid format" );
         }

@@ -902,7 +902,7 @@ public interface ICDKManager extends IBioclipseManager {
          params="IFile file, IProgressMonitor monitor",
          methodSummary="Reads a file into an  ICDKReaction.")
     @TestMethods("testLoadReaction_IFile_IProgressMonitor")
-    public ICDKReaction loadReaction( IFile file, IProgressMonitor monitor )
+    public List<ICDKReaction> loadReactions( IFile file, IProgressMonitor monitor )
                                                                             throws IOException,
                                                                             BioclipseException,
                                                                             CDKException,
@@ -913,7 +913,7 @@ public interface ICDKManager extends IBioclipseManager {
          params="InputStream instream, IProgressMonitor monitor, IChemFormat format",
          methodSummary="Reads a stream into an  ICDKReaction.")
     @TestMethods("testLoadReaction_InputStream_IProgressMonitor_IChemFormat")
-    public ICDKReaction loadReaction( InputStream instream,
+    public List<ICDKReaction> loadReactions( InputStream instream,
                                       IProgressMonitor monitor,
                                       IChemFormat format )
                                                           throws BioclipseException,
