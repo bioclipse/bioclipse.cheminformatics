@@ -11,6 +11,8 @@
 package net.bioclipse.jmol.editors;
 
 import java.awt.Image;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
@@ -178,6 +180,32 @@ public class JmolEditor extends MultiPageEditorPart
                 JmolCompMouseListener(composite,this));
 
         final float scaleFactor = 0.3f;
+        jmolPanel.addKeyListener( new KeyAdapter() {
+           @Override
+            public void keyPressed( KeyEvent e ) {
+
+               if(e.getKeyCode() != KeyEvent.VK_W)
+                   return;
+
+               int onmask;
+               String vers = System.getProperty( "os.name" ).toLowerCase();
+               if( vers.indexOf( "mac" ) != -1)
+                   onmask = KeyEvent.META_DOWN_MASK;
+               else
+                   onmask = KeyEvent.CTRL_DOWN_MASK;
+               int offmask = KeyEvent.SHIFT_DOWN_MASK
+                            |KeyEvent.ALT_DOWN_MASK;
+               if ( (e.getModifiersEx() & (onmask | offmask)) == onmask) {
+                   final IEditorPart editor = JmolEditor.this;
+                   Display.getDefault().syncExec(new Runnable() {
+                       public void run() {
+                           editor.getSite().getPage().closeEditor(editor, true );
+                       };
+                   });
+               }
+            }
+        });
+        jmolPanel.requestFocusInWindow();
         jmolPanel.addMouseWheelListener(
             new java.awt.event.MouseWheelListener() {
                 public void mouseWheelMoved(MouseWheelEvent e) {
