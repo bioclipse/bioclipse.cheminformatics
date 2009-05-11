@@ -40,6 +40,8 @@ public class MoleculeTableViewer extends ContentViewer {
 
     private int currentSelected;
 
+    private Runnable dblClickHook;
+
     public MoleculeTableViewer(Composite parent, int style) {
 
         cellPainter = new JCPCellPainter();
@@ -153,11 +155,19 @@ public class MoleculeTableViewer extends ContentViewer {
 
             public void handleEvent( Event event ) {
 
-                updateSelection( getSelection() );
+                switch(event.type) {
+                    case SWT.MouseDoubleClick:
+                        doubleClickHook();
+                        break;
+                    case SWT.SELECTED:
+                    case SWT.MouseUp:
+                        updateSelection( getSelection() );
+                }
             }
         };
         table.addListener( SWT.SELECTED, listener);
         table.addListener( SWT.MouseUp, listener );
+        table.addListener( SWT.MouseDoubleClick, listener );
         ScrollBar vSb = table.getVerticalBar();
         vSb.setIncrement( 1 );
         vSb.setPageIncrement( 1 );
@@ -241,5 +251,12 @@ public class MoleculeTableViewer extends ContentViewer {
         return currentSelected;
     }
 
-
+    public void setDoubleClickHook(Runnable hook) {
+        dblClickHook = hook;
+    }
+    protected void doubleClickHook() {
+        if(dblClickHook!=null) {
+            dblClickHook.run();
+        }
+    }
 }
