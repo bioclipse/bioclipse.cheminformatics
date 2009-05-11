@@ -347,7 +347,7 @@
         point="org.eclipse.ui.commands">
      <command
            id="net.bioclipse.inchi.generateInChI"
-           defaultHandler="net.bioclipse.inchi.handlers.GenerateInChI"
+           defaultHandler="net.bioclipse.cdk.business.GenerateInChI"
            name="generateInChI"/>
   	</extension>
    
