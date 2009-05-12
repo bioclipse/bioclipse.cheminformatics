@@ -409,7 +409,10 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     public void setReaction(IReaction reaction) {
         if( reaction != null) {
 
-            IChemModel model = ChemModelManipulator.newChemModel( reaction );
+            IChemModel model = reaction.getBuilder().newChemModel();
+            IReactionSet reactionSet = reaction.getBuilder().newReactionSet();
+            reactionSet.addReaction( reaction );
+            model.setReactionSet( reactionSet );
             setModel( model );
         }else {
             setModel( null );
