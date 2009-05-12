@@ -82,6 +82,7 @@ public class ChangeModuleHandler extends AbstractJChemPaintHandler
         //    return null;
 
         ControllerHub hub = getControllerHub( event );
+        if(hub==null) return null;
 
         Parameters params= new Parameters(event.getParameters());
 

@@ -68,9 +68,9 @@ public class JChemPaintManager implements IJChemPaintManager {
                                 .getActiveWorkbenchWindow()
                                 .getActivePage()
                                 .getActiveEditor();
-                if (activeEditor != null &&
-                    activeEditor instanceof JChemPaintEditor) {
-                    setActiveEditor((JChemPaintEditor)activeEditor);
+                if (activeEditor != null) {
+                    setActiveEditor( (JChemPaintEditor)activeEditor
+                                     .getAdapter( JChemPaintEditor.class ) );
                 }
             }
         });

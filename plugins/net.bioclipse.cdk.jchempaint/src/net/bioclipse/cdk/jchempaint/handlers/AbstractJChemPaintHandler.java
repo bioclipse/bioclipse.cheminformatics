@@ -44,11 +44,7 @@ public abstract class AbstractJChemPaintHandler extends AbstractHandler {
     protected JChemPaintEditor getEditor(ExecutionEvent event) {
         IEditorPart editor = HandlerUtil.getActiveEditor(event);
 
-        if ( (editor instanceof JChemPaintEditor) ) {
-            return (JChemPaintEditor) editor;
-        } else {
-            return null;
-        }
+        return (JChemPaintEditor)editor.getAdapter( JChemPaintEditor.class );
     }
     
     protected IAtom getSingleSelectedAtom( ExecutionEvent event ) {
@@ -89,23 +85,13 @@ public abstract class AbstractJChemPaintHandler extends AbstractHandler {
     
     protected IChemModelRelay getChemModelRelay( ExecutionEvent event ) {
 
-        IEditorPart editor = HandlerUtil.getActiveEditor( event );
-
-        if ( (editor instanceof JChemPaintEditor) ) {
-            return ((JChemPaintEditor) editor).getControllerHub();
-        } else {
-            return null;
-        }
+        return getControllerHub( event );
     }
     
     protected ControllerHub getControllerHub(ExecutionEvent event) {
-        IEditorPart editor = HandlerUtil.getActiveEditor( event );
-
-        if ( (editor instanceof JChemPaintEditor) ) {
-            return ((JChemPaintEditor) editor).getControllerHub();
-        } else {
-            // TODO Adapt editor to ControllerHub so that it works for MultiPageMoleculesEditor
-            return null;
-        }
+        JChemPaintEditor editor = getEditor( event );
+        if(editor !=null)
+            return editor.getControllerHub();
+        return null;
     }
 }
