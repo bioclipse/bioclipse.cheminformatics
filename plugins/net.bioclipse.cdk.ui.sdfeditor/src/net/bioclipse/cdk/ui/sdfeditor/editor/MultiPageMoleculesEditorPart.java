@@ -284,7 +284,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
     @Override
     public Object getAdapter( Class adapter ) {
 
-        if(JChemPaintEditor.class.isAssignableFrom( adapter )) {
+        if(adapter.isAssignableFrom( JChemPaintEditor.class )) {
             return jcpPage;
         }
         return super.getAdapter( adapter );

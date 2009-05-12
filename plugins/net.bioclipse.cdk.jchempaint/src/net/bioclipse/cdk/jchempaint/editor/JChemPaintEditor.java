@@ -483,6 +483,9 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     @SuppressWarnings("unchecked")
     public Object getAdapter( Class adapter ) {
 
+        if(adapter.equals( this.getClass() )) {
+            return this;
+        }
         if ( IContentOutlinePage.class.equals( adapter ) ) {
             if ( fOutlinePage == null ) {
                 fOutlinePage = new JCPOutlinePage(this);

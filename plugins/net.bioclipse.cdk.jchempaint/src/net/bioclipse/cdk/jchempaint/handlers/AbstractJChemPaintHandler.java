@@ -104,6 +104,7 @@ public abstract class AbstractJChemPaintHandler extends AbstractHandler {
         if ( (editor instanceof JChemPaintEditor) ) {
             return ((JChemPaintEditor) editor).getControllerHub();
         } else {
+            // TODO Adapt editor to ControllerHub so that it works for MultiPageMoleculesEditor
             return null;
         }
     }
