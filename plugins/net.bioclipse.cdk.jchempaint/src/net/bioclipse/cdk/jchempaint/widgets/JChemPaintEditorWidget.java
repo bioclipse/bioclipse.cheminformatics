@@ -75,6 +75,8 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IReaction;
+import org.openscience.cdk.interfaces.IReactionSet;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
@@ -398,6 +400,27 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         if( atomContainer != null) {
 
             IChemModel model = ChemModelManipulator.newChemModel( atomContainer );
+            setModel( model );
+        }else {
+            setModel( null );
+        }
+
+    }
+    public void setReaction(IReaction reaction) {
+        if( reaction != null) {
+
+            IChemModel model = ChemModelManipulator.newChemModel( reaction );
+            setModel( model );
+        }else {
+            setModel( null );
+        }
+
+    }
+    public void setReactionSet(IReactionSet reactionSet) {
+        if( reactionSet != null) {
+
+            IChemModel model = reactionSet.getBuilder().newChemModel();
+            model.setReactionSet( reactionSet );
             setModel( model );
         }else {
             setModel( null );
