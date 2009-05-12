@@ -7,6 +7,7 @@ import java.util.Map;
 import net.bioclipse.cdk.domain.CDKMoleculeSelectionHelper;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.inchi.business.IInChIManager;
+import net.bioclipse.inchi.ui.InChIDialog;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -14,8 +15,6 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-
-import ui.InChIDialog;
 
 public class GenerateInChI extends AbstractHandler {
 
