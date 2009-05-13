@@ -483,7 +483,10 @@ public class CDKManager implements ICDKManager {
 
       public String calculateSMILES(IMolecule molecule)
                     throws BioclipseException {
-          return molecule.getSMILES();
+          return molecule.getSMILES(
+              net.bioclipse.core.domain.IMolecule
+                  .Property.USE_CACHED_OR_CALCULATED
+          );
       }
 
       public void save(IChemModel model, String target, IChemFormat filetype)
@@ -984,7 +987,10 @@ public class CDKManager implements ICDKManager {
           }
 
           // Secondly, try to create from SMILES
-          return fromSMILES( imol.getSMILES() );
+          return fromSMILES( imol.getSMILES(
+              net.bioclipse.core.domain.IMolecule
+                  .Property.USE_CACHED_OR_CALCULATED
+          ) );
       }
 
       public boolean smartsMatches(ICDKMolecule molecule, String smarts)

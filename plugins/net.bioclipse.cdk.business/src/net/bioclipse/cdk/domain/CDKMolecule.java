@@ -92,11 +92,13 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     }
 
 
-    public String getSMILES() throws BioclipseException {
+    public String getSMILES(IMolecule.Property urgency) throws BioclipseException {
 
         //TODO: wrap in job?
+        if (urgency == IMolecule.Property.USE_CACHED) return cachedSMILES;
 
-        if (cachedSMILES != null) {
+        if (cachedSMILES != null &&
+            urgency == IMolecule.Property.USE_CACHED_OR_CALCULATED) {
             return cachedSMILES;
         }
 

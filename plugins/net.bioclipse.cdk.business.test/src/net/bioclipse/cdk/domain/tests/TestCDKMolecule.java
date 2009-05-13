@@ -100,7 +100,10 @@ public class TestCDKMolecule {
         ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path),
                                              new NullProgressMonitor()  );
         assertNotNull(mol);
-        String smiles = mol.getSMILES();
+        String smiles = mol.getSMILES(
+            net.bioclipse.core.domain.IMolecule
+                .Property.USE_CACHED_OR_CALCULATED
+        );
         assertNotNull(smiles);
         System.out.println("Smiles: " + smiles);
     }
@@ -119,7 +122,10 @@ public class TestCDKMolecule {
 
         ICDKMolecule mol = cdk.fromCml( cutcontent );
         assertNotNull(mol);
-        String smiles = mol.getSMILES();
+        String smiles = mol.getSMILES(
+            net.bioclipse.core.domain.IMolecule
+                .Property.USE_CACHED_OR_CALCULATED
+        );
         assertNotNull(smiles);
         System.out.println("Smiles: " + smiles);
     }

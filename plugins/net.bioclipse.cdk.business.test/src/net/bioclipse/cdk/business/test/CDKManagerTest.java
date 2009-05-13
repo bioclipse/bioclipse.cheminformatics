@@ -157,7 +157,11 @@ public class CDKManagerTest extends AbstractManagerTest {
         assertEquals(30, mols.size());
         
         for (ICDKMolecule mol : mols){
-        	System.out.println("Mol: " + mol.getName() + " SMILES: " + mol.getSMILES());
+        	System.out.println("Mol: " + mol.getName() + " SMILES: " +
+        	    mol.getSMILES(
+                    net.bioclipse.core.domain.IMolecule
+                        .Property.USE_CACHED_OR_CALCULATED
+                ));
         	if (mol.getName().equals("1")){
                 ICDKMolecule smilesMol1 = cdk.fromSMILES("C(=O)N(Cc1ccco1)C(c1cc2ccccc2cc1)C(=O)NCc1ccccc1");
                 double expm=cdk.calculateMass(smilesMol1);
@@ -199,7 +203,10 @@ public class CDKManagerTest extends AbstractManagerTest {
             List<String> inputList = new ArrayList<String>(Arrays.asList( input ));
             
             for(ICDKMolecule molecule:molecules) {
-                String smiles = molecule.getSMILES();
+                String smiles = molecule.getSMILES(
+                    net.bioclipse.core.domain.IMolecule
+                        .Property.USE_CACHED_OR_CALCULATED
+                );
                 if(inputList.contains( smiles ))
                     inputList.remove( smiles );
             }
@@ -244,7 +251,10 @@ public class CDKManagerTest extends AbstractManagerTest {
         String path = getClass().getResource("/testFiles/0037.cml").getPath();
         
         ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path), new NullProgressMonitor() );
-        String smiles = mol.getSMILES();
+        String smiles = mol.getSMILES(
+            net.bioclipse.core.domain.IMolecule
+                .Property.USE_CACHED_OR_CALCULATED
+        );
 
         assertEquals("N#CC1CCCC(C)N1C(CO[Si](C)(C)C)C2=CC=CC=C2", smiles);
     }
@@ -327,7 +337,13 @@ public class CDKManagerTest extends AbstractManagerTest {
         IMoleculeManager molecule = new MoleculeManager();
         IMolecule m = molecule.fromSmiles( indoleSmiles );
         ICDKMolecule cdkm = cdk.create( m );
-        assertEquals( cdkm.getSMILES(), m.getSMILES() );
+        assertEquals( cdkm.getSMILES(
+            net.bioclipse.core.domain.IMolecule
+                .Property.USE_CACHED_OR_CALCULATED
+        ), m.getSMILES(
+            net.bioclipse.core.domain.IMolecule
+                .Property.USE_CACHED_OR_CALCULATED
+        ) );
     }
     
     @Test
