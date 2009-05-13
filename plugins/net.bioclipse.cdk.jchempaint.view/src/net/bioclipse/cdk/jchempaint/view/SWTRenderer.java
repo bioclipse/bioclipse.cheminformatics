@@ -17,6 +17,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.graphics.Point;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.elements.ArrowElement;
 import org.openscience.cdk.renderer.elements.AtomSymbolElement;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
@@ -201,15 +202,16 @@ public class SWTRenderer implements IDrawVisitor{
     private Color getBackgroundColor() {
         return toSWTColor( gc, getModel().getBackColor() );
     }
+    
 
     private void drawLine(LineElement element) {
         Path path = new Path(gc.getDevice());
         double[] p1=transform( element.x1, element.y1 );
-        double[] p2=transform( element.x2, element.y2);
+        double[] p2=transform( element.x2, element.y2 );
         path.moveTo( (float)p1[0], (float)p1[1] );
         path.lineTo( (float)p2[0], (float)p2[1] );
-       gc.drawPath( path );
-       path.dispose();
+        gc.drawPath( path );
+        path.dispose();
     }
 
     private Font getFont() {
@@ -220,6 +222,32 @@ public class SWTRenderer implements IDrawVisitor{
     private Font getSmallFont() {
 
         return fontManager.getSmallFont();
+    }
+    
+    public void visit(ArrowElement element) {
+        Path path = new Path(gc.getDevice());
+        double[] a=transform( element.x1, element.y1 );
+        double[] b=transform( element.x2, element.y2 );
+        path.moveTo((float)a[0], (float)a[1]);
+        path.lineTo((float)b[0], (float)b[1]);
+        double aW = model.arrowHeadWidth / model.getScale();
+        if (element.direction) {
+            double[] c = transform( element.x1 - aW, element.y1 - aW );
+            double[] d = transform( element.x1 - aW, element.y1 + aW );
+            path.moveTo((float)a[0], (float)a[1]);
+            path.lineTo((float)c[0], (float)c[1]);
+            path.lineTo((float)a[0], (float)a[1]);
+            path.lineTo((float)d[0], (float)d[1]);
+        } else {
+            double[] c = transform( element.x2 + aW, element.y2 - aW );
+            double[] d = transform( element.x2 + aW, element.y2 + aW );
+            path.moveTo((float)a[0], (float)a[1]);
+            path.lineTo((float)c[0], (float)c[1]);
+            path.lineTo((float)a[0], (float)a[1]);
+            path.lineTo((float)d[0], (float)d[1]);
+        }
+        gc.drawPath( path );
+        path.dispose();
     }
 
     public void visit( TextElement element ) {
