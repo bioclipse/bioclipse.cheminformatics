@@ -2,57 +2,74 @@
 <cheatsheet title="General Chemistry Tasks">
 	<intro>
 		<description>
-			This cheat sheet tells you general chemistry (or, more strictly speaking, chemoinformatics) tasks you can 
-			do in Bioclipse. These are centered around handling molecular data files and calculating their properties. 
+			This cheat sheet demonstrates general chemistry (or, more strictly speaking, chemoinformatics) tasks you can 
+			do in Bioclipse. These are centered around handling molecular data files and calculating molecular properties. 
 		</description>
 	</intro>
 	<item title="Step 0: Prerequisites">
 		<description>
- 			You need the Chemoinformatics feature installed for this (which you have if you read this and have installed Bioclipse via the update site).
+ 			You need the Chemoinformatics feature installed to run this cheat
+ 			sheet. If you run this sheet from within Bioclipse, you have if
+ 			this feature already installed.
  		</description>
 	</item>
 	<item
        href="/net.bioclipse.cdk.jchempaint/doc/jcpEditor.html"
        title="Option 1: Draw and Edit single Structures, handle File Formats">
 		<description>
-			The JChemPaint editor allows graphical viewing and editing of structures in various formatsa and file format conversion. See help via ? on top of this section for details.
+			The JChemPaint editor allows graphical viewing and editing of 2D
+			diagrams of chemical structures in various formats. You can also
+			draw new chemical structures from scratch, and save in CML and
+			MDL molfile formats. See help via ? on top of this section for
+			details.
 		</description>
 	</item>
 	<item
        href="/net.bioclipse.spectrum/html/sdfEditor.html"
        title="Option 2: Handle Multiple Structure Files">
 		<description>
-			Files with multiple structures (SDF and CML) cannot be handled in the JChemPaintEditor. They can be viewed in the SDF Editor (use ? for details). This 
-			editor also offers extraction of files (e. g. single files for editing in JChemPaint) and creation of SDFs from several other files.
+			Files with multiple structures (MDL SD files, and SMILES files) are
+			handled by the SDF Editor (use ? for details). This editor also
+			offers extraction of files (e.g. single files for editing in
+			JChemPaint). Creation of new SD files can be performed with
+			a New Wizard.
 		</description>
 	</item>
 	<item
        href="/net.bioclipse.cdk.ui/html/maintopic.html#tanimoto"
        title="Option 3: Compare molecules">
 		<description>
-			You can calculte Tanimoto scores to compare similarity of molecules. 
-			See ? for details.
+			You can calculate Tanimoto scores to compare the similarity of
+			molecules against a reference molecule. See ? for details.
 		</description>
 	</item>
 	<item
-       href="TODO"
-       title="Option 4: Calculate QSAR properties">
+       title="Option 4: Calculate QSAR descriptors">
 		<description>
-			A wide variety of molecular and atomic qsar descriptory (e.g. XLogP, ALogP, Lipinske Rule of Five, Atomic Polarizability) can be calculated in Bioclipse. See ? for details.
+			A wide variety of molecular QSAR descriptors (e.g. XLogP, ALogP,
+			Lipinske Rule of Five, Atomic Polarizability) can be calculated in
+			Bioclipse using the QSAR feature. See ? for details.
 		</description>
 	</item>
 	<item
        href="/net.bioclipse.cdk.jchempaint/doc/convert.html"
        title="Option 5: Convert file formats">
 		<description>
-			In order to convert between file formats (e. g. generate a CML file from an MDL mol file), you need to open the file in JChemPaint (double-clicking normally does this) and save it via File->Save As.. in the new format. See ? for details.
+			In order to convert from one file formats to another (e.g. convert
+			a MDL molfile to a CML file), you need to open the file in
+			JChemPaint (double-clicking normally does this) and save it via
+			File->Save As.. in the new format. The new files must have
+			either the .mol or .cml file extension. See ? for details.
 		</description>
 	</item>
 	<item
        href="/net.bioclipse.cdk.ui/html/maintopic.html"
        title="Option 6: Create 2D and 3D coordinates">
 		<description>
-			You can create 2D and 3D coordinates for molecules (either if they do not yet exist or if there are already some, which means you do a cleanup). Right click on the file and choose "Generate 2D/3D". See ? for details.
+			You can create 2D and 3D coordinates for molecules (either if they
+			do not yet exist or if there are already some, which means you do
+			a cleanup). Right click on the file and choose "Generate 2D/3D".
+			See ? for details.
 		</description>
 	</item>
 	<item
