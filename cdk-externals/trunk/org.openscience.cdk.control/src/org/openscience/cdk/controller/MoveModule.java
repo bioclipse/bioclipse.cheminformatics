@@ -199,8 +199,6 @@ public class MoveModule extends ControllerModuleAdapter {
                     model.getMerge().put( moveAtom, inRange );
                 }
             }
-             //FIXME hack to get structure changed when move is completed
-            chemModelRelay.fireStructureChangedEvent();
             chemModelRelay.updateView();
 
         } else {
