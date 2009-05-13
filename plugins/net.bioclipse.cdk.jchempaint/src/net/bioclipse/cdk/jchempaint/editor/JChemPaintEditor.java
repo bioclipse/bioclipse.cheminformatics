@@ -43,8 +43,11 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -100,6 +103,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
     private Logger logger = Logger.getLogger(JChemPaintEditor.class);
 
+    public static final String STRUCUTRE_CHANGED_EVENT="structure_changed";
+
     private JCPOutlinePage fOutlinePage;
 
     private JChemPaintEditorWidget widget;
@@ -109,6 +114,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     IPartListener2 partListener;
 
     private Message customMessage;
+
+    private ListenerList propertyChangedListenerList = new ListenerList();
 
     public JChemPaintEditorWidget getWidget() {
         return widget;
@@ -419,6 +426,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                         }
                     });
                 }
+                fireStructureChanged();
             }
 
             @Override
@@ -431,6 +439,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                         }
                     });
                 }
+                fireStructureChanged();
             }
         };
 
@@ -620,5 +629,27 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     public void clearMessage() {
         getWidget().remove( customMessage );
         getWidget().redraw();
+    }
+
+    public void addPropertyChangedListener(IPropertyChangeListener listener) {
+        propertyChangedListenerList.add( listener );
+    }
+
+    public void removePropertyChangedListener(IPropertyChangeListener listener) {
+        propertyChangedListenerList.remove( listener );
+    }
+
+    private void firePropertyChangedEvent(PropertyChangeEvent event) {
+        Object[] listeners = propertyChangedListenerList.getListeners();
+        for (int i = 0; i < listeners.length; ++i) {
+         ((IPropertyChangeListener) listeners[i]).propertyChange(event);
+        }
+    }
+
+    protected final void fireStructureChanged() {
+        firePropertyChangedEvent(
+                   new PropertyChangeEvent( this,
+                                            STRUCUTRE_CHANGED_EVENT,
+                                            null, null) );
     }
 }
