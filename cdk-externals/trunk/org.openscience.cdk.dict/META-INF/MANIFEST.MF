@@ -12,4 +12,5 @@ Require-Bundle: org.openscience.cdk.annotation,
  org.openscience.cdk.core,
  net.bioclipse.xom,
  org.eclipse.core.runtime
-Export-Package: org.openscience.cdk.dict
+Export-Package: org.openscience.cdk.dict,
+ org.openscience.cdk.dict.data

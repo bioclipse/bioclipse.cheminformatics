@@ -75,6 +75,9 @@ public class DictionaryDatabase {
             if (dictionary != null) {
                 dictionaries.put(name.toLowerCase(), dictionary);
                 logger.debug("Read dictionary: ", name);
+                System.out.println("Read dictionary: " + name);
+            } else {
+                System.out.println("Could not load dictionary: " + name);
             }
         }
     }
