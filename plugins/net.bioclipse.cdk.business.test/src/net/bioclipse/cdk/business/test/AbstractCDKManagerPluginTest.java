@@ -1167,6 +1167,12 @@ public abstract class AbstractCDKManagerPluginTest {
     }
 
     @Test
+    public void testMolecularFormulaCharged() throws BioclipseException {
+        ICDKMolecule m = cdk.fromSMILES( "[O-]" );
+        assertEquals( "[HO]-", cdk.molecularFormula(m) );
+    }
+
+    @Test
     public void testNoMolecules_String() throws Exception{
         URI uri = getClass().getResource("/testFiles/atp.mol").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());

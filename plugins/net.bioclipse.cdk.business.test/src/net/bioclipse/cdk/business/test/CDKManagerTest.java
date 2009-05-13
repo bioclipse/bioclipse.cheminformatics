@@ -948,4 +948,11 @@ public class CDKManagerTest extends AbstractManagerTest {
         cdk.removeExplicitHydrogens(mol);
         Assert.assertEquals(1, mol.getAtomContainer().getAtomCount());
     }
+
+    @Test
+    public void testMolecularFormulaCharged() throws BioclipseException {
+        ICDKMolecule m = cdk.fromSMILES( "[O-]" );
+        assertEquals( "[HO]-", cdk.molecularFormula(m) );
+    }
+
 }
