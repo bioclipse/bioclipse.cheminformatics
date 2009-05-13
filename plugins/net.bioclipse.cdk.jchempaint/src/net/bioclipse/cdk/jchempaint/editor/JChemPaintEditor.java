@@ -24,6 +24,7 @@ import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.domain.ISubStructure;
 import net.bioclipse.cdk.jchempaint.handlers.ModuleState;
 import net.bioclipse.cdk.jchempaint.handlers.RedoHandler;
 import net.bioclipse.cdk.jchempaint.handlers.UndoHandler;
@@ -556,15 +557,10 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                         chemSelection.add( ((CDKChemObject<?>) o).getChemobj() );
                     }
                 }
-//                This is not enough for selecting substructure matches
-//                it introduced bug 1048 when closing another editor.
-//                else if(o instanceof IAdaptable) {
-//                    IAtomContainer ac = (IAtomContainer)((IAdaptable)o)
-//                            .getAdapter( IAtomContainer.class  );
-//                    if(ac != null) {
-//                        widget.getRenderer2DModel().setExternalSelectedPart( ac );
-//                    }
-//                }
+                else if(o instanceof ISubStructure) {
+                    IAtomContainer ac = ((ISubStructure)o).getAtomContainer();
+                    widget.getRenderer2DModel().setExternalSelectedPart( ac );
+                }
             }
 
             if(chemSelection.size()==1) {
