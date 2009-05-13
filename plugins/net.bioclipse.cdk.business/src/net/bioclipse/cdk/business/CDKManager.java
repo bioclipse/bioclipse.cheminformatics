@@ -2314,4 +2314,9 @@ public class CDKManager implements ICDKManager {
         }
         return molecule;
     }
+
+    public boolean isConnected(IMolecule molecule) throws BioclipseException {
+        List<IAtomContainer> containers = partition(molecule);
+        return containers.size() == 1;
+    }
 }

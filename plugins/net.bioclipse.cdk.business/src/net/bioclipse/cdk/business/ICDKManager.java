@@ -32,7 +32,6 @@ import net.bioclipse.core.TestClasses;
 import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IBioclipseManager;
-import net.bioclipse.core.domain.BioList;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.ui.jobs.BioclipseUIJob;
 
@@ -829,6 +828,14 @@ public interface ICDKManager extends IBioclipseManager {
          methodSummary = "Splits up an atom container into fully connected molecules")
     @TestMethods("testSMARTSonFile")
     public List<IAtomContainer> partition(IMolecule molecule) throws BioclipseException;
+
+    @Recorded
+    @PublishedMethod(
+         params = "IMolecule molecule",
+         methodSummary = "Returns true if the given atom container is " +
+         		"fully connected. Use parition directly if that is the " +
+         		"antipicated next action, to no repeat to same computation.")
+    public boolean isConnected(IMolecule molecule) throws BioclipseException;
 
     @Recorded
     @PublishedMethod(

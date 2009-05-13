@@ -831,6 +831,16 @@ public class CDKManagerTest extends AbstractManagerTest {
         Assert.assertEquals(2, fragments.size());
     }
 
+    @Test public void testIsConnected() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("O=C(CC)[O-].[Na+]");
+        Assert.assertFalse(cdk.isConnected(mol));
+    }
+
+    @Test public void testIsConnected2() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("O=C(CC)O");
+        Assert.assertTrue(cdk.isConnected(mol));
+    }
+
     @Test public void testTotalFormalCharge() throws Exception {
         ICDKMolecule mol = cdk.fromSMILES("O=C(CC)[O-].[Na+]");
         Assert.assertEquals(0, cdk.totalFormalCharge(mol));
