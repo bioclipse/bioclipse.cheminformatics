@@ -148,7 +148,7 @@ public class GasteigerPEPEPartialCharges implements IChargeCalculator {
 
         // we save the aromaticity flags for the input molecule so that
         // we can add them back before we return
-        boolean[] oldBondAromaticity = new boolean[ac.getAtomCount()];
+        boolean[] oldBondAromaticity = new boolean[ac.getBondCount()];
         boolean[] oldAtomAromaticity = new boolean[ac.getAtomCount()];
         for (int i = 0; i < ac.getAtomCount(); i++) oldAtomAromaticity[i] = ac.getAtom(i).getFlag(CDKConstants.ISAROMATIC);
         for (int i = 0; i < ac.getBondCount(); i++) oldBondAromaticity[i] = ac.getBond(i).getFlag(CDKConstants.ISAROMATIC);
