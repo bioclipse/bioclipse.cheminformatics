@@ -426,6 +426,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                         }
                     });
                 }
+                widget.getRenderer2DModel().setExternalSelectedPart( null );
                 fireStructureChanged();
             }
 
@@ -550,6 +551,11 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
             IChemObjectSelection jcpSelection = AbstractSelection.EMPTY_SELECTION;
 
+            if(selection.isEmpty()) {
+                widget.getRenderer2DModel().setExternalSelectedPart(
+                      widget.getControllerHub().getIChemModel().getBuilder().
+                          newAtomContainer() );
+            }
 
             Set<IChemObject> chemSelection = new HashSet<IChemObject>();
             for(Iterator<?> iter = bcSelection.iterator();iter.hasNext();) {
