@@ -2,7 +2,7 @@
 <feature
       id="net.bioclipse.chemoinformatics_feature"
       label="Bioclipse Chemoinformatics"
-      version="2.0.0.B20090506"
+      version="2.0.0.B20090513"
       provider-name="The Bioclipse Team"
       plugin="net.bioclipse.chemoinformatics">
 
@@ -27,7 +27,7 @@ The Eclipse Public License accompanies this distribution, and is available at ht
    </url>
 
    <requires>
-      <import feature="net.bioclipse.core.patch" version="2.0.0.B20090506" match="greaterOrEqual"/>
+      <import feature="net.bioclipse.core.patch" version="2.0.0.B20090513" match="greaterOrEqual"/>
    </requires>
 
    <plugin
