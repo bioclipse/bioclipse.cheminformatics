@@ -156,7 +156,8 @@ public class RadicalSiteHrGammaReaction extends ReactionEngine implements IReact
 		Iterator<IAtom> atomis = reactant.atoms().iterator();
 		while(atomis.hasNext()){
 			IAtom  atomi = atomis.next();
-			if(atomi.getFlag(CDKConstants.REACTIVE_CENTER) && atomi.getSymbol().equals("C")
+			if(atomi.getFlag(CDKConstants.REACTIVE_CENTER) 
+//					&& atomi.getSymbol().equals("C")
 					&& reactant.getConnectedSingleElectronsCount(atomi) == 1) {
 				
 				hcg.getSpheres((Molecule) reactant, atomi, 4, true);
@@ -214,8 +215,9 @@ public class RadicalSiteHrGammaReaction extends ReactionEngine implements IReact
 		Iterator<IAtom> atomis = reactant.atoms().iterator();
 		while(atomis.hasNext()){
 			IAtom  atomi = atomis.next();
-			if(atomi.getSymbol().equals("C")
-					&& reactant.getConnectedSingleElectronsCount(atomi) == 1) {
+			if(
+//					atomi.getSymbol().equals("C")&& 
+					reactant.getConnectedSingleElectronsCount(atomi) == 1) {
 				
 				hcg.getSpheres((Molecule) reactant, atomi, 4, true);
 				Iterator<IAtom> atomls = hcg.getNodesInSphere(4).iterator();
