@@ -856,13 +856,15 @@ public class RendererModel implements Serializable, Cloneable {
     public void setExternalSelectedPart(IAtomContainer externalSelectedPart) {
         this.externalSelectedPart = externalSelectedPart;
         getColorHash().clear();
-        for (int i = 0; i < externalSelectedPart.getAtomCount(); i++) {
-            getColorHash().put(externalSelectedPart.getAtom(i),
-                    this.getExternalHighlightColor());
-        }
-        Iterator<IBond> bonds = externalSelectedPart.bonds().iterator();
-        while (bonds.hasNext()) {
-            getColorHash().put(bonds.next(), getExternalHighlightColor());
+        if(externalSelectedPart !=null) {
+            for (int i = 0; i < externalSelectedPart.getAtomCount(); i++) {
+                getColorHash().put(externalSelectedPart.getAtom(i),
+                                   this.getExternalHighlightColor());
+            }
+            Iterator<IBond> bonds = externalSelectedPart.bonds().iterator();
+            while (bonds.hasNext()) {
+                getColorHash().put(bonds.next(), getExternalHighlightColor());
+            }
         }
         fireChange();
     }
