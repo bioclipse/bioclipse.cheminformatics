@@ -67,9 +67,6 @@ public class RendererModel implements Serializable, Cloneable {
     /** Determines how much the image is zoomed into on. */
     private double zoomFactor = 1.0;
 
-    //this is used for the size of the arrowhead, might become configurable
-    public static final int arrowHeadWidth = 10;
-
     /**
      * The color hash is used to color substructures.
      *
@@ -100,6 +97,14 @@ public class RendererModel implements Serializable, Cloneable {
 
     public RendererModel(RenderingParameters parameters) {
         this.parameters = parameters;
+    }
+    
+    public int getArrowHeadWidth() {
+        return this.parameters.getArrowHeadWidth();
+    }
+    
+    public void setArrowHeadWidth(int width) {
+        this.parameters.setArrowHeadWidth(width);
     }
 
     public boolean getHighlightShapeFilled() {

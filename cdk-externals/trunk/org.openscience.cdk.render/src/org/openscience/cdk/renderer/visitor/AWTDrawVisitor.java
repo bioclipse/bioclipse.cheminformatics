@@ -101,16 +101,17 @@ public class AWTDrawVisitor extends AbstractAWTDrawVisitor {
         int[] a = this.transformPoint(line.x1, line.y1);
         int[] b = this.transformPoint(line.x2, line.y2);
         this.g.drawLine(a[0], a[1], b[0], b[1]);
-        if(line.direction){
-	        int[] c = this.transformPoint(line.x1-rendererModel.arrowHeadWidth / this.rendererModel.getScale(), line.y1-rendererModel.arrowHeadWidth / this.rendererModel.getScale());
-	        int[] d = this.transformPoint(line.x1-rendererModel.arrowHeadWidth / this.rendererModel.getScale(), line.y1+rendererModel.arrowHeadWidth / this.rendererModel.getScale());
-	        this.g.drawLine(a[0], a[1], c[0], c[1]);
-	        this.g.drawLine(a[0], a[1], d[0], d[1]);
-        }else{
-	        int[] c = this.transformPoint(line.x2+rendererModel.arrowHeadWidth / this.rendererModel.getScale(), line.y2-rendererModel.arrowHeadWidth / this.rendererModel.getScale());
-	        int[] d = this.transformPoint(line.x2+rendererModel.arrowHeadWidth / this.rendererModel.getScale(), line.y2+rendererModel.arrowHeadWidth / this.rendererModel.getScale());
-	        this.g.drawLine(b[0], b[1], c[0], c[1]);
-	        this.g.drawLine(b[0], b[1], d[0], d[1]);
+        double aW = rendererModel.getArrowHeadWidth() / rendererModel.getScale();
+        if (line.direction) {
+            int[] c = this.transformPoint(line.x1 - aW, line.y1 - aW);
+            int[] d = this.transformPoint(line.x1 - aW, line.y1 + aW);
+            this.g.drawLine(a[0], a[1], c[0], c[1]);
+            this.g.drawLine(a[0], a[1], d[0], d[1]);
+        } else {
+            int[] c = this.transformPoint(line.x2 + aW, line.y2 - aW);
+            int[] d = this.transformPoint(line.x2 + aW, line.y2 + aW);
+            this.g.drawLine(b[0], b[1], c[0], c[1]);
+            this.g.drawLine(b[0], b[1], d[0], d[1]);
         }        
         this.g.setStroke(savedStroke);
     }

@@ -8,6 +8,11 @@ import org.openscience.cdk.renderer.font.IFontManager;
  * @cdk.module render
  */
 public class RenderingParameters {
+    
+    /**
+     * The width of an arrow head.
+     */
+    private int arrowHeadWidth = 10;
 
     /**
      * The size on screen of a compact mode shape
@@ -163,6 +168,13 @@ public class RenderingParameters {
      */
     private double wedgeWidth = 2.0;
 
+    public int getArrowHeadWidth() {
+        return this.arrowHeadWidth;
+    }
+    
+    public void setArrowHeadWidth(int width) {
+        this.arrowHeadWidth = width;
+    }
 
     public boolean isHighlightShapeFilled() {
         return highlightShapeFilled;

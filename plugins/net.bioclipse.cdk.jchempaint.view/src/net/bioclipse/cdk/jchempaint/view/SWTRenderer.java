@@ -230,7 +230,7 @@ public class SWTRenderer implements IDrawVisitor{
         double[] b=transform( element.x2, element.y2 );
         path.moveTo((float)a[0], (float)a[1]);
         path.lineTo((float)b[0], (float)b[1]);
-        double aW = model.arrowHeadWidth / model.getScale();
+        double aW = model.getArrowHeadWidth() / model.getScale();
         if (element.direction) {
             double[] c = transform( element.x1 - aW, element.y1 - aW );
             double[] d = transform( element.x1 - aW, element.y1 + aW );
