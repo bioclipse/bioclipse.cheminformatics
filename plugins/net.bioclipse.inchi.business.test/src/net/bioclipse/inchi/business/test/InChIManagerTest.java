@@ -15,6 +15,7 @@ import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.tests.AbstractManagerTest;
+import net.bioclipse.inchi.InChI;
 import net.bioclipse.inchi.business.IInChIManager;
 import net.bioclipse.inchi.business.InChIManager;
 
@@ -38,27 +39,33 @@ public class InChIManagerTest extends AbstractManagerTest {
         CDKManager cdk = new CDKManager();
         IMolecule mol = cdk.fromSMILES("C");
         Assert.assertNotNull("Input structure is unexpectedly null", mol);
-        String inchiStr = inchi.generate(mol);
-        Assert.assertNotNull(inchiStr);
-        Assert.assertEquals("InChI=1/CH4/h1H4", inchiStr);
+        InChI inchiObj = inchi.generate(mol);
+        Assert.assertNotNull(inchiObj);
+        Assert.assertEquals("InChI=1/CH4/h1H4", inchiObj.getValue());
     }
 
     @Test public void testGenerateNoStereo() throws Exception {
         CDKManager cdk = new CDKManager();
         IMolecule mol = cdk.fromSMILES("ClC(Br)(F)(O)");
         Assert.assertNotNull("Input structure is unexpectedly null", mol);
-        String inchiStr = inchi.generate(mol);
+        InChI inchiStr = inchi.generate(mol);
         Assert.assertNotNull(inchiStr);
-        Assert.assertEquals("InChI=1/CHBrClFO/c2-1(3,4)5/h5H", inchiStr);
+        Assert.assertEquals(
+            "InChI=1/CHBrClFO/c2-1(3,4)5/h5H",
+            inchiStr.getValue()
+        );
     }
 
     @Test public void testGenerateKey() throws Exception {
         CDKManager cdk = new CDKManager();
         IMolecule mol = cdk.fromSMILES("C");
         Assert.assertNotNull("Input structure is unexpectedly null", mol);
-        String key = inchi.generateKey(mol);
+        InChI key = inchi.generate(mol);
         Assert.assertNotNull(key);
-        Assert.assertEquals("VNWKTOKETHGBQD-UHFFFAOYAM", key);
+        Assert.assertEquals(
+            "VNWKTOKETHGBQD-UHFFFAOYAM",
+            key.getKey()
+        );
     }
 
 }

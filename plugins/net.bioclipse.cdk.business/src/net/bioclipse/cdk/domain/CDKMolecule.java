@@ -23,6 +23,7 @@ import net.bioclipse.cdk.business.preferences.PreferenceConstants;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.BioObject;
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.inchi.InChI;
 import net.bioclipse.inchi.business.IInChIManager;
 
 import org.eclipse.core.runtime.Preferences;
@@ -53,8 +54,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     // cached properties
     private String cachedSMILES;
     private BitSet cachedFingerprint;
-    private String cachedInchi;
-    private String cachedInchiKey;
+    private InChI cachedInchi;
 
     private static Preferences prefs;
 
@@ -244,18 +244,19 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     }
 
     public String getInChI(IMolecule.Property urgency) throws BioclipseException {
-        if (urgency == IMolecule.Property.USE_CACHED) return cachedInchi;
+        if (urgency == IMolecule.Property.USE_CACHED)
+            return cachedInchi.getValue();
         
         if (urgency != IMolecule.Property.USE_CALCULATED) {
             if (cachedInchi != null) {
-                return cachedInchi;
+                return cachedInchi.getValue();
             }
         }
         IInChIManager inchi = net.bioclipse.inchi.business.Activator.
             getDefault().getInChIManager();
         try {
             cachedInchi = inchi.generate(this);
-            return cachedInchi;
+            return cachedInchi.getValue();
         } catch (Exception e) {
             throw new BioclipseException("Could not create InChI: "
                     + e.getMessage(), e);
@@ -263,18 +264,19 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     }
 
     public String getInChIKey(IMolecule.Property urgency) throws BioclipseException {
-        if (urgency == IMolecule.Property.USE_CACHED) return cachedInchiKey;
+        if (urgency == IMolecule.Property.USE_CACHED)
+            return cachedInchi.getKey();
         
         if (urgency != IMolecule.Property.USE_CALCULATED) {
-            if (cachedInchiKey != null) {
-                return cachedInchiKey;
+            if (cachedInchi != null) {
+                return cachedInchi.getKey();
             }
         }
         IInChIManager inchi = net.bioclipse.inchi.business.Activator.
             getDefault().getInChIManager();
         try {
-            cachedInchiKey = inchi.generateKey( this);
-            return cachedInchiKey;
+            cachedInchi = inchi.generate(this);
+            return cachedInchi.getKey();
         } catch (Exception e) {
             throw new BioclipseException("Could not create InChIKey: "
                     + e.getMessage(), e);

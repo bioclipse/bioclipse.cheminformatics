@@ -6,7 +6,6 @@ import java.util.Map;
 
 import net.bioclipse.cdk.domain.CDKMoleculeSelectionHelper;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.inchi.business.IInChIManager;
 import net.bioclipse.inchi.ui.InChIDialog;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -36,9 +35,6 @@ public class GenerateInChI extends AbstractHandler {
 			return null;
 		}
 		
-		IInChIManager inchi=net.bioclipse.inchi.business.Activator.getDefault().
-		getInChIManager();
-
 		Map<String,String> inchiMolPairs = new HashMap<String, String>();
 		StringBuffer buffer=new StringBuffer(256);
 		buffer.append( "Inchi generation for " + mols.size()
@@ -46,7 +42,10 @@ public class GenerateInChI extends AbstractHandler {
 		for (ICDKMolecule cdkmol : mols){
 			String ret;
 			try {
-				ret = inchi.generate(cdkmol);
+				ret = cdkmol.getInChI(
+				    net.bioclipse.core.domain.IMolecule
+				        .Property.USE_CACHED_OR_CALCULATED
+				);
 			} catch (Exception e) {
 				ret="ERROR: " + e.getMessage();
 			}
