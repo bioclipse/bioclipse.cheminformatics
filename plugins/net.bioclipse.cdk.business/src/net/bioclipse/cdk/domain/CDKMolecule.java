@@ -274,7 +274,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         IInChIManager inchi = net.bioclipse.inchi.business.Activator.
             getDefault().getInChIManager();
         try {
-            cachedInchiKey = inchi.generate(this);
+            cachedInchiKey = inchi.generateKey( this);
             return cachedInchiKey;
         } catch (Exception e) {
             throw new BioclipseException("Could not create InChIKey: "
