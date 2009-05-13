@@ -144,14 +144,6 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         this.name = name;
     }
 
-    public String getCachedSMILES() {
-        return cachedSMILES;
-    }
-
-    public void setCachedSMILES(String cachedSMILES) {
-        this.cachedSMILES = cachedSMILES;
-    }
-
     private final static Properties cmlPrefs = new Properties();
     static {
         cmlPrefs.put("XMLDeclaration", "false");
