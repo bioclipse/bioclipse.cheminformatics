@@ -191,9 +191,10 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
      * @return
      * @throws BioclipseException
      */
-    public BitSet getFingerprint(boolean force) throws BioclipseException {
-
-        if (force==false){
+    public BitSet getFingerprint(IMolecule.Property urgency) throws BioclipseException {
+        if (urgency == IMolecule.Property.USE_CACHED) return cachedFingerprint;
+        
+        if (urgency != IMolecule.Property.USE_CALCULATED) {
             if (cachedFingerprint != null) {
                 return cachedFingerprint;
             }
@@ -250,8 +251,10 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
                + Activator.getDefault().getCDKManager().molecularFormula(this);
     }
 
-    public String getInChI(boolean force) throws BioclipseException {
-        if (force == false) {
+    public String getInChI(IMolecule.Property urgency) throws BioclipseException {
+        if (urgency == IMolecule.Property.USE_CACHED) return cachedInchi;
+        
+        if (urgency != IMolecule.Property.USE_CALCULATED) {
             if (cachedInchi != null) {
                 return cachedInchi;
             }
@@ -267,8 +270,10 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         }
     }
 
-    public String getInChIKey(boolean force) throws BioclipseException {
-        if (force == false) {
+    public String getInChIKey(IMolecule.Property urgency) throws BioclipseException {
+        if (urgency == IMolecule.Property.USE_CACHED) return cachedInchiKey;
+        
+        if (urgency != IMolecule.Property.USE_CALCULATED) {
             if (cachedInchiKey != null) {
                 return cachedInchiKey;
             }

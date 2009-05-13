@@ -924,7 +924,8 @@ public class CDKManagerTest extends AbstractManagerTest {
 
     @Test public void testCalculateTanimoto_IMolecule_BitSet() throws Exception {
         ICDKMolecule mol = cdk.fromSMILES("CC");
-        BitSet b3 = mol.getFingerprint(true);
+        BitSet b3 = mol.getFingerprint(
+            net.bioclipse.core.domain.IMolecule.Property.USE_CALCULATED);
         Assert.assertEquals(1.0, cdk.calculateTanimoto(mol, b3), 0.0);
     }
     

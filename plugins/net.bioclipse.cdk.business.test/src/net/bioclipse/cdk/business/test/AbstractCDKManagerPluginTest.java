@@ -1406,7 +1406,8 @@ public abstract class AbstractCDKManagerPluginTest {
 
     @Test public void testRoundtripFingerprintViaSDF() throws Exception {
         ICDKMolecule mol = cdk.fromSMILES("C");
-        BitSet molBS = mol.getFingerprint(true);
+        BitSet molBS = mol.getFingerprint(net.bioclipse.core.domain
+            .IMolecule.Property .USE_CALCULATED);
 
         List<IMolecule> mols=new ArrayList<IMolecule>();
         mols.add(mol);
@@ -1418,21 +1419,24 @@ public abstract class AbstractCDKManagerPluginTest {
         Assert.assertEquals(1, readmols.size());
         ICDKMolecule mol2 = readmols.get(0);
         Assert.assertNotNull(mol2);
-        BitSet mol2BS = mol2.getFingerprint(false);
+        BitSet mol2BS = mol2.getFingerprint(net.bioclipse.core.domain
+           .IMolecule.Property.USE_CACHED_OR_CALCULATED);
 
         Assert.assertEquals(molBS.toString(), mol2BS.toString());
     }
 
     @Test public void testRoundtripFingerprintViaCML() throws Exception {
         ICDKMolecule mol = cdk.fromSMILES("C");
-        BitSet molBS = mol.getFingerprint(true);
+        BitSet molBS = mol.getFingerprint(net.bioclipse.core.domain
+                .IMolecule.Property.USE_CALCULATED);
 
         IFile target = new MockIFile();
         cdk.saveMolecule(mol, target, (IChemFormat)CMLFormat.getInstance());
 
         ICDKMolecule mol2 = cdk.loadMolecule(target);
         Assert.assertNotNull(mol2);
-        BitSet mol2BS = mol2.getFingerprint(false);
+        BitSet mol2BS = mol2.getFingerprint(net.bioclipse.core.domain
+                .IMolecule.Property.USE_CACHED_OR_CALCULATED);
 
         Assert.assertEquals(molBS.toString(), mol2BS.toString());
     }

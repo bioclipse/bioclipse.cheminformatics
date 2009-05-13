@@ -33,7 +33,7 @@ public interface ICDKMolecule extends IMolecule{
      * @return
      * @throws BioclipseException
      */
-    public BitSet getFingerprint(boolean force) throws BioclipseException;
+    public BitSet getFingerprint(IMolecule.Property urgency) throws BioclipseException;
 
     /**
      * Calculate the InChI and cache the result.
@@ -42,7 +42,7 @@ public interface ICDKMolecule extends IMolecule{
      * @return
      * @throws BioclipseException
      */
-    public String getInChI(boolean force) throws BioclipseException;
+    public String getInChI(IMolecule.Property urgency) throws BioclipseException;
 
     /**
      * Calculate the InChIKey and cache the result.
@@ -51,7 +51,7 @@ public interface ICDKMolecule extends IMolecule{
      * @return
      * @throws BioclipseException
      */
-    public String getInChIKey(boolean force) throws BioclipseException;
+    public String getInChIKey(IMolecule.Property urgency) throws BioclipseException;
 
     /**
      * AtomContainer is the CDK model for a molecule

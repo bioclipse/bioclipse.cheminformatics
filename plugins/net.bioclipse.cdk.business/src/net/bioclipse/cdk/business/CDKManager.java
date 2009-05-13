@@ -934,8 +934,12 @@ public class CDKManager implements ICDKManager {
                                          ICDKMolecule subStructure )
                    throws BioclipseException {
 
-          return FingerprinterTool.isSubset(molecule.getFingerprint(true),
-                                            molecule.getFingerprint(true));
+          return FingerprinterTool.isSubset(
+              molecule.getFingerprint(net.bioclipse.core.domain
+                  .IMolecule.Property.USE_CALCULATED),
+              molecule.getFingerprint(net.bioclipse.core.domain
+                  .IMolecule.Property.USE_CALCULATED)
+          );
       }
 
       public boolean subStructureMatches( ICDKMolecule molecule,
@@ -2188,15 +2192,18 @@ public class CDKManager implements ICDKManager {
 
     public float calculateTanimoto(IMolecule calculateFor, BitSet reference )
         throws BioclipseException {
-        BitSet f2 = create(calculateFor).getFingerprint(true);
+        BitSet f2 = create(calculateFor).getFingerprint(
+            net.bioclipse.core.domain.IMolecule.Property.USE_CALCULATED);
         return calculateTanimoto( reference, f2 );
     }
 
     public float calculateTanimoto( IMolecule calculateFor, 
                                     IMolecule reference )
                                     throws BioclipseException {
-        BitSet f1 = create(reference).getFingerprint(true);
-        BitSet f2 = create(calculateFor).getFingerprint(true);
+        BitSet f1 = create(reference).getFingerprint(
+                net.bioclipse.core.domain.IMolecule.Property.USE_CALCULATED);
+        BitSet f2 = create(calculateFor).getFingerprint(
+                net.bioclipse.core.domain.IMolecule.Property.USE_CALCULATED);
         return calculateTanimoto( f1, f2 );
     }
 
@@ -2204,7 +2211,8 @@ public class CDKManager implements ICDKManager {
                                   IMolecule reference )
                                   throws BioclipseException {
         List<Float> result=new ArrayList<Float>();
-        BitSet refensetBitSet = create(reference).getFingerprint(true);
+        BitSet refensetBitSet = create(reference).getFingerprint(
+                net.bioclipse.core.domain.IMolecule.Property.USE_CALCULATED);
         for(int i=0;i<calculateFor.size();i++ ){
             result.add(
                 calculateTanimoto(calculateFor.get(i), refensetBitSet)

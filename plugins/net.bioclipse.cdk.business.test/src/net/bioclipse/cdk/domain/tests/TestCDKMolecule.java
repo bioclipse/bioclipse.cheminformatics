@@ -70,7 +70,10 @@ public class TestCDKMolecule {
         ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path),
                                              new NullProgressMonitor() );
         assertNotNull(mol);
-        BitSet bs = mol.getFingerprint(false);
+        BitSet bs = mol.getFingerprint(
+            net.bioclipse.core.domain.IMolecule
+                .Property.USE_CACHED_OR_CALCULATED
+        );
         assertNotNull(bs);
         System.out.println("FP: " + bs.toString());
     }
