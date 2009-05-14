@@ -40,11 +40,11 @@ import net.bioclipse.cdk.domain.ICDKReaction;
 import net.bioclipse.cdkdebug.business.ICDKDebugManager;
 import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.business.IMoleculeManager;
 import net.bioclipse.core.business.MoleculeManager;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.tests.AbstractManagerTest;
+import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;

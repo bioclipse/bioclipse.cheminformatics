@@ -12,7 +12,7 @@
 
 package net.bioclipse.jmol.business;
 
-import net.bioclipse.core.business.IBioclipseJSManager;
+import net.bioclipse.managers.business.IBioclipseJSManager;
 
 
 public interface IJSJmolManager extends IJmolManager, IBioclipseJSManager {

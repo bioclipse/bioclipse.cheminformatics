@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.xom,
  net.bioclipse.core,
  net.bioclipse.ui,
- net.bioclipse.scripting.ui
+ net.bioclipse.scripting.ui,
+ net.bioclipse.managers;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Import-Package: org.apache.log4j

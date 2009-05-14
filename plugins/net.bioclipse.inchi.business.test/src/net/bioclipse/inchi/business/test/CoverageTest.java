@@ -11,7 +11,7 @@
 package net.bioclipse.inchi.business.test;
 
 import net.bioclipse.inchi.business.InChIManager;
-import net.bioclipse.core.business.IBioclipseManager;
+import net.bioclipse.managers.business.IBioclipseManager;
 import net.bioclipse.core.tests.coverage.AbstractCoverageTest;
 
 /**

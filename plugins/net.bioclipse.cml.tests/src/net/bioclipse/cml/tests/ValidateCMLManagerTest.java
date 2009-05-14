@@ -14,8 +14,8 @@ package net.bioclipse.cml.tests;
 
 import net.bioclipse.cml.managers.IValidateCMLManager;
 import net.bioclipse.cml.managers.ValidateCMLManager;
-import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.tests.AbstractManagerTest;
+import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.junit.Assert;
 import org.junit.Test;

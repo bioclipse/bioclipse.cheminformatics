@@ -22,6 +22,7 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.ui,
  net.bioclipse.cml,
  org.xmlcml.cmlxom,
- net.bioclipse.xom
+ net.bioclipse.xom,
+ net.bioclipse.managers;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.cml.tests

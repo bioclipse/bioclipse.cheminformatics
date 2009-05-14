@@ -13,6 +13,7 @@ package net.bioclipse.cdk.business.test;
 
 import static org.junit.Assert.fail;
 import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.junit.BeforeClass;
 

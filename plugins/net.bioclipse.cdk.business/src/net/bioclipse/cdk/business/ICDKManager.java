@@ -33,6 +33,7 @@ import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.managers.business.IBioclipseManager;
 import net.bioclipse.ui.jobs.BioclipseUIJob;
 
 import org.eclipse.core.resources.IFile;

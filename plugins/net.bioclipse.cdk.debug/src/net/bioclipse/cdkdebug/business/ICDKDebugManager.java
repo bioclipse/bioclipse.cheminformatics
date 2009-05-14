@@ -18,8 +18,8 @@ import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.TestClasses;
 import net.bioclipse.core.TestMethods;
-import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.managers.business.IBioclipseManager;
 
 @PublishedClass("Contains CDK debug related methods")
 @TestClasses("net.bioclipse.cdk.debug.test.CDKDebugManagerTest")

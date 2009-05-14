@@ -18,7 +18,7 @@ import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.TestClasses;
-import net.bioclipse.core.business.IBioclipseManager;
+import net.bioclipse.managers.business.IBioclipseManager;
 
 @TestClasses("net.bioclipse.jmol.test.JmolManagerTest")
 @PublishedClass("This manager contains methods for controlling jmol")

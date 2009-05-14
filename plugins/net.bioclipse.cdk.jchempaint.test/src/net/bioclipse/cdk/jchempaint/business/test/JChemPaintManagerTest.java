@@ -18,8 +18,8 @@ import java.util.List;
 
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintManager;
 import net.bioclipse.cdk.jchempaint.business.JChemPaintManager;
-import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.tests.AbstractManagerTest;
+import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.junit.Assert;
 import org.junit.Test;

@@ -23,7 +23,7 @@ import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdkdebug.Activator;
 import net.bioclipse.cdkdebug.business.ICDKDebugManager;
-import net.bioclipse.core.business.IBioclipseManager;
+import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.junit.BeforeClass;

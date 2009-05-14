@@ -28,7 +28,8 @@ Require-Bundle: org.eclipse.ui,
  javax.vecmath,
  org.eclipse.core.expressions,
  net.bioclipse.chemoinformatics;bundle-version="2.0.0",
- net.bioclipse.ui.business;bundle-version="2.0.0"
+ net.bioclipse.ui.business;bundle-version="2.0.0",
+ net.bioclipse.managers;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.log4j
 Export-Package: net.bioclipse.cdk.ui.model,

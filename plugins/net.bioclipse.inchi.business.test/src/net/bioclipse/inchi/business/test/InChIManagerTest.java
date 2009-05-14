@@ -12,12 +12,12 @@ package net.bioclipse.inchi.business.test;
 
 import junit.framework.Assert;
 import net.bioclipse.cdk.business.CDKManager;
-import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.tests.AbstractManagerTest;
 import net.bioclipse.inchi.InChI;
 import net.bioclipse.inchi.business.IInChIManager;
 import net.bioclipse.inchi.business.InChIManager;
+import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.junit.Test;
 
