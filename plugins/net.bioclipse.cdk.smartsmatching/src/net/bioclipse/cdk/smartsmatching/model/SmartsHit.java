@@ -10,36 +10,43 @@
  ******************************************************************************/
 package net.bioclipse.cdk.smartsmatching.model;
 
-import java.util.List;
-
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.openscience.cdk.interfaces.IAtomContainer;
 
-import net.bioclipse.cdk.domain.CDKChemObject;
+import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.ISubStructure;
 import net.bioclipse.core.domain.BioObject;
 
 /**
- * Wraps a smarts string and holds a list of hits in a molecule
+ * Model object for a SMARTS hit
  * @author ola
  *
  */
-public class SmartsWrapper extends BioObject{
-    
+public class SmartsHit extends BioObject implements ISubStructure{
+
     private String name;
-    private String smartsString;
-    private List<SmartsHit> hits;
+    private IAtomContainer ac;
+    private SmartsWrapper parent;
     private IPropertySource propertySource;
     
-    public SmartsWrapper(String name, String smartsString) {
+    /**
+     * This is the molecule the hit is in
+     */
+    private ICDKMolecule hitMolecule;
 
-        super();
-        this.name = name;
-        this.smartsString = smartsString;
+    
+    public SmartsHit(String name, IAtomContainer ac) {
+        this.ac=ac;
+        this.name=name;
     }
 
-    public SmartsWrapper() {
+    public IAtomContainer getAtomContainer() {
+        return ac;
     }
-
+    public void setAtomContainer( IAtomContainer ac ) {
+        this.ac = ac;
+    }
+    
     public String getName() {
         return name;
     }
@@ -47,13 +54,15 @@ public class SmartsWrapper extends BioObject{
     public void setName( String name ) {
         this.name = name;
     }
-    
-    public String getSmartsString() {
-        return smartsString;
+
+    public void setParent( SmartsWrapper parent ) {
+
+        this.parent = parent;
     }
-    
-    public void setSmartsString( String smartsString ) {
-        this.smartsString = smartsString;
+
+    public SmartsWrapper getParent() {
+
+        return parent;
     }
     
     @Override
@@ -61,20 +70,23 @@ public class SmartsWrapper extends BioObject{
 
         if (adapter == IPropertySource.class){
             return propertySource!=null 
-                ? propertySource : new SmartsWrapperPropertySource(this);
+                ? propertySource : new SmartsHitPropertySource(this);
         }
 
         return super.getAdapter( adapter );
     }
 
-    public void setHits( List<SmartsHit> hits ) {
-
-        this.hits = hits;
-    }
-
-    public List<SmartsHit> getHits() {
-
-        return hits;
-    }
     
+    public ICDKMolecule getHitMolecule() {
+    
+        return hitMolecule;
+    }
+
+    
+    public void setHitMolecule( ICDKMolecule hitMolecule ) {
+    
+        this.hitMolecule = hitMolecule;
+    }
+
+
 }

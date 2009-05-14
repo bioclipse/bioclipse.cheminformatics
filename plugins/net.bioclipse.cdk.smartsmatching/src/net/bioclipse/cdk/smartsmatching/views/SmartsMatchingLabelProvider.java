@@ -10,14 +10,13 @@
  ******************************************************************************/
 package net.bioclipse.cdk.smartsmatching.views;
 
-import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.smartsmatching.Activator;
+import net.bioclipse.cdk.smartsmatching.model.SmartsHit;
 import net.bioclipse.cdk.smartsmatching.model.SmartsWrapper;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
-import org.openscience.cdk.interfaces.IAtomContainer;
 
 
 public class SmartsMatchingLabelProvider implements ILabelProvider {
@@ -30,13 +29,13 @@ public class SmartsMatchingLabelProvider implements ILabelProvider {
 
         if ( element instanceof SmartsWrapper ) {
             SmartsWrapper sw = (SmartsWrapper) element;
-            if (sw.getMatches()!=null && sw.getMatches().size()>0){
+            if (sw.getHits()!=null && sw.getHits().size()>0){
                 return wrapperWithHits;
             }
             return wrapperWithoutHits;
         }
         
-        else if ( element instanceof CDKChemObject ) {
+        else if ( element instanceof SmartsHit ) {
             return chemObjectImage;
         }
 
@@ -47,19 +46,18 @@ public class SmartsMatchingLabelProvider implements ILabelProvider {
     public String getText( Object element ) {
         if ( element instanceof SmartsWrapper ) {
             SmartsWrapper sw = (SmartsWrapper) element;
-            if (sw.getMatches()!=null){
-                return sw.getName() + " ["+ sw.getMatches().size()+ " matches]";
+            if (sw.getHits()!=null){
+                return sw.getName() + " ["+ sw.getHits().size()+ " matches]";
             }
             return sw.getName();
         }
-        else if ( element instanceof CDKChemObject ) {
+        else if ( element instanceof SmartsHit ) {
             
-            CDKChemObject co = (CDKChemObject)element;
-            if ( co.getChemobj() instanceof IAtomContainer ) {
-                IAtomContainer ac = (IAtomContainer) co.getChemobj();
-                return co.getName() + " ["+ ac.getAtomCount() + " atoms]";
-            }
-            return co.getName();
+            SmartsHit hit = (SmartsHit)element;
+            if (hit.getAtomContainer()!=null)
+                return hit.getName() + " ["+ hit.getAtomContainer().getAtomCount() + " atoms]";
+            else
+                return hit.getName();
         }
 
         return element.toString();

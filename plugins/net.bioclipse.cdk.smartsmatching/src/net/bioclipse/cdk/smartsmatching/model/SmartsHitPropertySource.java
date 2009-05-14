@@ -18,13 +18,14 @@ import net.bioclipse.core.domain.props.BioObjectPropertySource;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.openscience.cdk.interfaces.IAtom;
 
 
-public class SmartsWrapperPropertySource extends BioObjectPropertySource {
+public class SmartsHitPropertySource extends BioObjectPropertySource {
 
     protected static final String PROPERTY_NAME = "Name";
     protected static final String PROPERTY_SMARTS = "SMARTS";
-    protected static final String PROPERTY_MATCHES = "No matches";
+    protected static final String PROPERTY_ATOMS = "Atoms";
 
     private final Object PropertiesTable[][] =
     {
@@ -32,16 +33,16 @@ public class SmartsWrapperPropertySource extends BioObjectPropertySource {
             new TextPropertyDescriptor(PROPERTY_NAME,PROPERTY_NAME)},
         { PROPERTY_SMARTS,
             new TextPropertyDescriptor(PROPERTY_SMARTS,PROPERTY_SMARTS)},
-        { PROPERTY_MATCHES,
-            new TextPropertyDescriptor(PROPERTY_MATCHES,PROPERTY_MATCHES)}
+        { PROPERTY_ATOMS,
+            new TextPropertyDescriptor(PROPERTY_ATOMS,PROPERTY_ATOMS)}
     };
 
-    private SmartsWrapper sw;
+    private SmartsHit hit;
     private ArrayList<IPropertyDescriptor> properties;
     
-    public SmartsWrapperPropertySource(SmartsWrapper sw) {
-        super( sw );
-        this.sw=sw;
+    public SmartsHitPropertySource(SmartsHit hit) {
+        super( hit );
+        this.hit=hit;
         
         properties=new ArrayList<IPropertyDescriptor>();
 //        valueMap=new HashMap<String, Object>();
@@ -51,7 +52,7 @@ public class SmartsWrapperPropertySource extends BioObjectPropertySource {
             // Add each property supported.
             PropertyDescriptor descriptor;
             descriptor = (PropertyDescriptor)PropertiesTable[i][1];
-            descriptor.setCategory("Smarts");
+            descriptor.setCategory("Match");
             properties.add(descriptor);
         }
 
@@ -72,36 +73,27 @@ public class SmartsWrapperPropertySource extends BioObjectPropertySource {
     }
 
     public Object getPropertyValue(Object id) {
-        int a=0;
         
         if (PROPERTY_NAME.equals( id )){
-            return sw.getName();
+            return hit.getName();
         }
         else if (PROPERTY_SMARTS.equals( id )){
-            return sw.getSmartsString();
+            return hit.getParent().getSmartsString();
         }
-        else if (PROPERTY_MATCHES.equals( id )){
-            if (sw.getHits()!=null)
-            return "" + sw.getHits().size();
+        else if (PROPERTY_ATOMS.equals( id )){
+            String ret="";
+            if (hit.getAtomContainer()!=null){
+                for (IAtom atom : hit.getAtomContainer().atoms()){
+                    ret=ret+atom.getSymbol() + hit.getHitMolecule().getAtomContainer().getAtomNumber( atom )+", ";
+                }
+                if (ret.length()>2)
+                    ret=ret.substring( 0,ret.length()-2 );
+            }
+
+            return ret;
         }
         
         return super.getPropertyValue(id);
-    }
-    
-    @Override
-    public void setPropertyValue( Object id, Object value ) {
-
-        if (PROPERTY_NAME.equals( id )){
-            String newval=String.valueOf( value );
-            sw.setName( newval );
-        }
-        else if (PROPERTY_SMARTS.equals( id )){
-            String newval=String.valueOf( value );
-            sw.setSmartsString( newval );
-        }
-        
-        SmartsMatchingView.firePropertyChanged();
-
     }
 
     public ArrayList<IPropertyDescriptor> getProperties() {

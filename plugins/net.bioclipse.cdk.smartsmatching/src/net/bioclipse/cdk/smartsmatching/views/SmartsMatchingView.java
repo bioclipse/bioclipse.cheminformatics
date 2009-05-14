@@ -19,11 +19,11 @@ import java.util.Map;
 
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.ICDKManager;
-import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import net.bioclipse.cdk.smartsmatching.Activator;
 import net.bioclipse.cdk.smartsmatching.AddEditSmartsDialog;
+import net.bioclipse.cdk.smartsmatching.model.SmartsHit;
 import net.bioclipse.cdk.smartsmatching.model.SmartsWrapper;
 import net.bioclipse.cdk.smartsmatching.prefs.SmartsMatchingPrefsHelper;
 import net.bioclipse.core.business.BioclipseException;
@@ -32,7 +32,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.*;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.help.IContextProvider;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.action.*;
@@ -313,8 +312,8 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         
         //For each smarts...
         for (SmartsWrapper sw : smartsInView){
-            if (sw.getMatches()!=null){
-                sw.getMatches().clear();
+            if (sw.getHits()!=null){
+                sw.getHits().clear();
             }
             processSmarts2(sw, mol);
         }
@@ -326,7 +325,7 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
     private void processSmarts2( SmartsWrapper sw, ICDKMolecule mol ) {
 
         //Clear old matches
-        sw.setMatches( new ArrayList<CDKChemObject>() );
+        sw.setHits( new ArrayList<SmartsHit>() );
         if (!cdk.isValidSmarts( sw.getSmartsString() )) return;
 
         List<IAtomContainer> lst;
@@ -337,8 +336,10 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
             if (lst!=null){
 
                 for (IAtomContainer ac : lst){
-                    CDKChemObject matchwrapper=new CDKChemObject("Hit " + i , ac);
-                    sw.getMatches().add( matchwrapper );
+                    SmartsHit hit = new SmartsHit("Hit " + i , ac);
+                    hit.setParent( sw );
+                    hit.setHitMolecule( mol );
+                    sw.getHits().add( hit );
                     i++;
                 }
             }
