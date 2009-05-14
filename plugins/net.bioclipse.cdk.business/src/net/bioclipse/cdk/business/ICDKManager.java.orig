@@ -32,13 +32,14 @@ import net.bioclipse.core.TestClasses;
 import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.business.BioclipseException;
 <<<<<<< HEAD:plugins/net.bioclipse.cdk.business/src/net/bioclipse/cdk/business/ICDKManager.java
-import net.bioclipse.core.business.IBioclipseManager;
-=======
 import net.bioclipse.managers.business.IBioclipseManager;
-import net.bioclipse.core.domain.BioList;
->>>>>>> fixed a bunch of compile error caused during reshuffling of code between plugins:plugins/net.bioclipse.cdk.business/src/net/bioclipse/cdk/business/ICDKManager.java
+=======
+>>>>>>> Start of refactoring CDKManager:plugins/net.bioclipse.cdk.business/src/net/bioclipse/cdk/business/ICDKManager.java
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.jobs.BioclipseJob;
+import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.jobs.BioclipseUIJob;
+import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -73,7 +74,9 @@ public interface ICDKManager extends IBioclipseManager {
     public ICDKMolecule fromSMILES(String SMILES)
         throws BioclipseException;
 
-
+    public BioclipseJob<ICDKMolecule> fromSMILES(String SMILES,
+        BioclipseJobUpdateHook hook);    
+    
     /**
      * Perceives aromaticity on an IMolecule
      * @param mol
@@ -106,27 +109,6 @@ public interface ICDKManager extends IBioclipseManager {
                       		          "molecules exists in the file ")
     @TestMethods("testLoadMoleculeFromCMLFile,testLoadCMLFromFile2")
     public ICDKMolecule loadMolecule( String path )
-        throws IOException, BioclipseException, CoreException;
-
-    public ICDKMolecule loadMolecule( IFile file,
-                                      BioclipseUIJob<ICDKMolecule> uiJob)
-                                             throws IOException,
-                                                    BioclipseException,
-                                                    CoreException;
-    /**
-     * Load molecule from an <code>IFile</code> using CDK.
-     * If many molecules, just return first.
-     * To return a list of molecules, use loadMolecules(...)
-     *
-     * @param file to be loaded
-     * @return loaded sequence
-     * @throws IOException
-     * @throws BioclipseException
-     * @throws CoreException
-     */
-    @Recorded
-    public ICDKMolecule loadMolecule( IFile file,
-                                      IProgressMonitor monitor )
         throws IOException, BioclipseException, CoreException;
 
     /**

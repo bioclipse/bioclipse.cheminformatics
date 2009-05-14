@@ -14,25 +14,17 @@ package net.bioclipse.cdk.domain.tests;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.BitSet;
-import java.util.List;
-
-import junit.framework.Assert;
 
 import net.bioclipse.cdk.business.CDKManager;
-import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IMolecule;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openscience.cdk.io.IChemObjectReader;
 import org.openscience.cdk.io.ReaderFactory;
@@ -51,11 +43,11 @@ public class TestCDKMolecule {
                                 + "jaxp.DocumentBuilderFactoryImpl" );
     }
 
-    ICDKManager cdk;
+    private static CDKManager cdk;
 
     //Do not use SPRING OSGI for this manager
     //since we are only testing the implementations of the manager methods
-    @Before
+    @BeforeClass
     public void initialize() {
         cdk = new CDKManager();
     }
@@ -67,8 +59,7 @@ public class TestCDKMolecule {
         String path = getClass().getResource("/testFiles/0037.cml")
                                 .getPath();
 
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path),
-                                             new NullProgressMonitor() );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path) );
         assertNotNull(mol);
         BitSet bs = mol.getFingerprint(
             net.bioclipse.core.domain.IMolecule
@@ -85,8 +76,7 @@ public class TestCDKMolecule {
         String path = getClass().getResource("/testFiles/0037.cml")
                                 .getPath();
 
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path),
-                                             new NullProgressMonitor()  );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path)  );
         assertNotNull(mol);
         String cmlString = mol.getCML();
         assertNotNull(cmlString);
@@ -100,8 +90,7 @@ public class TestCDKMolecule {
         String path = getClass().getResource("/testFiles/0037.cml")
                                 .getPath();
 
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path),
-                                             new NullProgressMonitor()  );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path));
         assertNotNull(mol);
         String smiles = mol.getSMILES(
             net.bioclipse.core.domain.IMolecule

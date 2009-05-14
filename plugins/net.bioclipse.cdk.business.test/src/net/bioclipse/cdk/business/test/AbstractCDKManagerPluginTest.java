@@ -93,26 +93,7 @@ public abstract class AbstractCDKManagerPluginTest {
     }
     
     protected static ICDKManager      cdk;
-<<<<<<< HEAD:plugins/net.bioclipse.cdk.business.test/src/net/bioclipse/cdk/business/test/AbstractCDKManagerPluginTest.java
-    protected static ICDKDebugManager cdkdebug;
-
-    public static void setupCDKManagerPluginTest() {
-        // the next line is needed to ensure the OSGI loader properly start
-        // the org.springframework.bundle.osgi.extender, so that the manager
-        // can be loaded too. Otherwise, it will fail with a time out.
-        net.bioclipse.ui.Activator.getDefault();
-
-        try {
-            cdkdebug = net.bioclipse.cdkdebug.Activator
-                          .getDefault().getJavaManager();
-        } 
-        catch (RuntimeException exception) {
-            fail("Failed to instantiate the CDK managers.");
-        }
-    }
-=======
     protected static ICDKDebugManager debug;
->>>>>>> Fixed test classes so that they compile again:plugins/net.bioclipse.cdk.business.test/src/net/bioclipse/cdk/business/test/AbstractCDKManagerPluginTest.java
 
     @Test
     public void testLoadMoleculeFromCMLFile() throws IOException, 

@@ -31,11 +31,11 @@ import net.bioclipse.core.Recorded;
 import net.bioclipse.core.TestClasses;
 import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.managers.business.IBioclipseManager;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.jobs.BioclipseUIJob;
+import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -105,27 +105,6 @@ public interface ICDKManager extends IBioclipseManager {
                       		          "molecules exists in the file ")
     @TestMethods("testLoadMoleculeFromCMLFile,testLoadCMLFromFile2")
     public ICDKMolecule loadMolecule( String path )
-        throws IOException, BioclipseException, CoreException;
-
-    public ICDKMolecule loadMolecule( IFile file,
-                                      BioclipseUIJob<ICDKMolecule> uiJob)
-                                             throws IOException,
-                                                    BioclipseException,
-                                                    CoreException;
-    /**
-     * Load molecule from an <code>IFile</code> using CDK.
-     * If many molecules, just return first.
-     * To return a list of molecules, use loadMolecules(...)
-     *
-     * @param file to be loaded
-     * @return loaded sequence
-     * @throws IOException
-     * @throws BioclipseException
-     * @throws CoreException
-     */
-    @Recorded
-    public ICDKMolecule loadMolecule( IFile file,
-                                      IProgressMonitor monitor )
         throws IOException, BioclipseException, CoreException;
 
     /**
