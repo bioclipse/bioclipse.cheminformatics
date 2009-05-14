@@ -96,8 +96,6 @@ public abstract class AbstractCDKManagerPluginTest {
     protected static ICDKManager      cdk;
     protected static ICDKDebugManager debug;
     
-    private volatile boolean[] methodRun = {false};
-
     @Test
     public void testLoadMoleculeFromCMLFile() throws IOException, 
                                                      BioclipseException, 
@@ -1145,42 +1143,24 @@ public abstract class AbstractCDKManagerPluginTest {
     }
     
     @Test
+    @Ignore("Have yet to find a good way to test this. " +
+    		    "JUnit runs the test in the ui thread so can't see that " +
+    		    "something else gets run in it during the test...")
     public void testNumberOfEntriesInSDFIFileUIJob() throws Exception {
         
         URI uri = getClass().getResource("/testFiles/test.sdf").toURI();
         URL url = FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
-        methodRun[0] = false;
-        
-        final Object lock = new Object();
         
         final BioclipseUIJob<Integer> uiJob = new BioclipseUIJob<Integer>() {
             @Override
             public void runInUI() {
-                methodRun[0] = true;
-                synchronized ( lock ) {
-                    lock.notifyAll();
-                }
             }
         };
 
         cdk.numberOfEntriesInSDF( ResourcePathTransformer.getInstance()
                                                          .transform(path), 
                                   uiJob );
-        
-        int wait = 0;
-        while ( methodRun[0] == false && wait <= 5000) {
-            synchronized ( lock ) {
-                lock.wait(1000);
-                wait += 1000;
-            }
-        }
-        
-        assertTrue( methodRun[0] );
-        
-        assertEquals( "There should be two entries in the file",
-                      2,
-                      uiJob.getReturnValue() );
     }
 
     @Test public void testGetInfo() throws Exception {
