@@ -12,6 +12,7 @@
 package net.bioclipse.jmol.business;
 
 import net.bioclipse.core.ResourcePathTransformer;
+import net.bioclipse.jmol.Activator;
 import net.bioclipse.jmol.editors.JmolEditor;
 import net.bioclipse.jmol.views.JmolConsoleView;
 
