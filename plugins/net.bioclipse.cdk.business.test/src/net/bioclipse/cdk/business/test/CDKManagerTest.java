@@ -455,7 +455,9 @@ public class CDKManagerTest extends AbstractManagerTest {
         }
         System.out.println("#############################################");
         
-        List<ICDKMolecule> readmols = cdk.loadMolecules(target);
+        List<ICDKMolecule> readmols 
+            = cdk.loadMolecules( target,
+                                 new NullProgressMonitor() );
         assertEquals(2, readmols.size());
 
     	System.out.println("** Reading back created SDFile: ");
@@ -501,7 +503,8 @@ public class CDKManagerTest extends AbstractManagerTest {
         }
         System.out.println("#############################################");
         
-        List<ICDKMolecule> readmols = cdk.loadMolecules(target);
+        List<ICDKMolecule> readmols 
+            = cdk.loadMolecules(target, new NullProgressMonitor());
     	System.out.println("** Reading back created CML File: ");
         for (ICDKMolecule cdkmol : readmols){
         	System.out.println("  - SMILES: " + cdk.calculateSMILES(cdkmol));

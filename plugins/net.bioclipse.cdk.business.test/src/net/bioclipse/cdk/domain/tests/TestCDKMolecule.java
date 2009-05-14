@@ -24,6 +24,7 @@ import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.business.BioclipseException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openscience.cdk.io.IChemObjectReader;
@@ -59,7 +60,8 @@ public class TestCDKMolecule {
         String path = getClass().getResource("/testFiles/0037.cml")
                                 .getPath();
 
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path) );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path),
+                                             new NullProgressMonitor() );
         assertNotNull(mol);
         BitSet bs = mol.getFingerprint(
             net.bioclipse.core.domain.IMolecule
@@ -76,7 +78,8 @@ public class TestCDKMolecule {
         String path = getClass().getResource("/testFiles/0037.cml")
                                 .getPath();
 
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path)  );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path),
+                                             new NullProgressMonitor() );
         assertNotNull(mol);
         String cmlString = mol.getCML();
         assertNotNull(cmlString);
@@ -90,7 +93,8 @@ public class TestCDKMolecule {
         String path = getClass().getResource("/testFiles/0037.cml")
                                 .getPath();
 
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path));
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path),
+                                             new NullProgressMonitor() );
         assertNotNull(mol);
         String smiles = mol.getSMILES(
             net.bioclipse.core.domain.IMolecule
