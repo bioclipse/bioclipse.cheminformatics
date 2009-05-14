@@ -44,8 +44,6 @@ import net.bioclipse.cdkdebug.business.ICDKDebugManager;
 import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.business.IMoleculeManager;
-import net.bioclipse.core.business.MoleculeManager;
 import net.bioclipse.core.domain.IMolecule;
 
 import org.eclipse.core.resources.IFile;

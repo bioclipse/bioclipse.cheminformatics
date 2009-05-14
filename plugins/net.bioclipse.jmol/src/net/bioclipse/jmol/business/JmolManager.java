@@ -11,10 +11,10 @@
  ******************************************************************************/
 package net.bioclipse.jmol.business;
 
-import net.bioclipse.core.Activator;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.jmol.editors.JmolEditor;
 import net.bioclipse.jmol.views.JmolConsoleView;
+import net.bioclipse.recording.Activator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
