@@ -1150,6 +1150,7 @@ public abstract class AbstractCDKManagerPluginTest {
         URI uri = getClass().getResource("/testFiles/test.sdf").toURI();
         URL url = FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
+        methodRun[0] = false;
         
         final Object lock = new Object();
         
