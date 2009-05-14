@@ -52,7 +52,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.content.IContentType;
 import org.junit.Assert;
@@ -523,7 +522,7 @@ public abstract class AbstractCDKManagerPluginTest {
         ICDKMolecule mol = cdk.loadMolecule( path);
 
         //Save mol to other location (virtual) without specifying file extension
-        cdk.saveMolecule(mol, "/Virtual/atp0.mol");
+        cdk.saveMolecule(mol, "/Virtual/atp" + mol.hashCode() + ".mol");
     }
 
     @Test
@@ -535,8 +534,10 @@ public abstract class AbstractCDKManagerPluginTest {
         assertNotNull(mol2);
 
         //Save mol to other location (virtual) with extension specified
-        cdk.saveMolecule(mol2, "/Virtual/atp2.mol", (IChemFormat)MDLV2000Format.getInstance());
-        mol2 = cdk.loadMolecule("/Virtual/atp2.mol");
+        String atp2Path = "/Virtual/atp" + mol2.hashCode() + ".mol";
+        cdk.saveMolecule(mol2, atp2Path,
+            (IChemFormat)MDLV2000Format.getInstance());
+        mol2 = cdk.loadMolecule(atp2Path);
         assertNotNull(mol2);
     }
 
@@ -549,22 +550,26 @@ public abstract class AbstractCDKManagerPluginTest {
         assertNotNull(mol2);
 
         //Save as CML
-        cdk.saveMolecule(mol2, "/Virtual/atp3.cml", (IChemFormat)CMLFormat.getInstance());
-        mol2 = cdk.loadMolecule("/Virtual/atp3.cml");
+        String atp2Path = "/Virtual/atp" + mol2.hashCode() + ".mol";
+        cdk.saveMolecule(mol2, atp2Path,
+            (IChemFormat)CMLFormat.getInstance());
+        mol2 = cdk.loadMolecule(atp2Path);
         assertNotNull(mol2);
     }
 
     @Test public void testSaveMolecule_IMolecule() throws Exception {
         // set up a file to load, edit and then save
         ICDKMolecule propane  = cdk.fromSMILES("CCC");
-        cdk.saveMolecule(propane, "/Virtual/testSaveMoleculeBBB.mol", false);
-        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMoleculeBBB.mol");
+        String path = "/Virtual/testSaveMolecule" +
+        	propane.hashCode() + ".mol";
+        cdk.saveMolecule(propane, path, false);
+        ICDKMolecule mol = cdk.loadMolecule(path);
 
         // try overwrite
         ICDKMolecule coc  = cdk.fromSMILES("COC");
         coc.setResource(mol.getResource());
         cdk.saveMolecule(coc,true);
-        mol = cdk.loadMolecule("/Virtual/testSaveMoleculeBBB.mol");
+        mol = cdk.loadMolecule(path);
         assertTrue("O(C)C".equals(mol.getSMILES(
             net.bioclipse.core.domain.IMolecule
                 .Property.USE_CACHED_OR_CALCULATED
@@ -578,14 +583,15 @@ public abstract class AbstractCDKManagerPluginTest {
     @Test public void testSaveMolecule_IMolecule_boolean() throws Exception {
         // set up a file to load, edit and then save
         ICDKMolecule propane  = cdk.fromSMILES("CCC");
-        cdk.saveMolecule(propane, "/Virtual/testSaveMoleculeBCD.mol", false);
-        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMoleculeBCD.mol");
+        String path = "/Virtual/testSaveMolecule" + propane.hashCode() + ".mol";
+        cdk.saveMolecule(propane, path, false);
+        ICDKMolecule mol = cdk.loadMolecule(path);
 
         // try overwrite
         ICDKMolecule coc  = cdk.fromSMILES("COC");
         coc.setResource(mol.getResource());
         cdk.saveMolecule(coc, true);
-        mol = cdk.loadMolecule("/Virtual/testSaveMoleculeBCD.mol");
+        mol = cdk.loadMolecule(path);
         assertTrue("O(C)C".equals(mol.getSMILES(
             net.bioclipse.core.domain.IMolecule
                 .Property.USE_CACHED_OR_CALCULATED
@@ -598,8 +604,9 @@ public abstract class AbstractCDKManagerPluginTest {
 
     @Test public void testSaveMolecule_IMolecule_String() throws Exception {
         ICDKMolecule propane  = cdk.fromSMILES("CCC");
-        cdk.saveMolecule(propane, "/Virtual/testSaveMoleculeAAA.mol", false);
-        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMoleculeAAA.mol");
+        String path = "/Virtual/testSaveMolecule" + propane.hashCode() + ".mol";
+        cdk.saveMolecule(propane, path, false);
+        ICDKMolecule mol = cdk.loadMolecule(path);
         assertEquals("CCC", mol.getSMILES(
             net.bioclipse.core.domain.IMolecule
                 .Property.USE_CACHED_OR_CALCULATED
@@ -608,8 +615,9 @@ public abstract class AbstractCDKManagerPluginTest {
 
     @Test public void testSaveMolecule_IMolecule_String_boolean() throws Exception {
         ICDKMolecule propane  = cdk.fromSMILES("CCC");
-        cdk.saveMolecule(propane, "/Virtual/testSaveMoleculeZZZ.mol", false);
-        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMoleculeZZZ.mol");
+        String path = "/Virtual/testSaveMolecule" + propane.hashCode() + ".mol";
+        cdk.saveMolecule(propane, path, false);
+        ICDKMolecule mol = cdk.loadMolecule(path);
         assertEquals("CCC", mol.getSMILES(
             net.bioclipse.core.domain.IMolecule
                 .Property.USE_CACHED_OR_CALCULATED
@@ -618,8 +626,8 @@ public abstract class AbstractCDKManagerPluginTest {
         // try overwrite
         ICDKMolecule coc  = cdk.fromSMILES("COC");
         coc.setResource(mol.getResource());
-        cdk.saveMolecule(coc, "/Virtual/testSaveMoleculeZZZ.mol", true);
-        mol = cdk.loadMolecule("/Virtual/testSaveMoleculeZZZ.mol");
+        cdk.saveMolecule(coc, path, true);
+        mol = cdk.loadMolecule(path);
         assertTrue("O(C)C".equals(mol.getSMILES(
             net.bioclipse.core.domain.IMolecule
                 .Property.USE_CACHED_OR_CALCULATED
@@ -632,10 +640,11 @@ public abstract class AbstractCDKManagerPluginTest {
 
     @Test public void testSaveMolecule_IMolecule_IFile_boolean() throws Exception {
         ICDKMolecule propane  = cdk.fromSMILES("CCC");
+        String path = "/Virtual/testSaveMolecule" + propane.hashCode() + ".mol";
         IFile target = ResourcePathTransformer.getInstance()
-            .transform("/Virtual/testSaveMoleculeXXX.mol");
+            .transform(path);
         cdk.saveMolecule(propane, target, false);
-        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMoleculeXXX.mol");
+        ICDKMolecule mol = cdk.loadMolecule(path);
         assertEquals("CCC", mol.getSMILES(
             net.bioclipse.core.domain.IMolecule
                 .Property.USE_CACHED_OR_CALCULATED
@@ -645,7 +654,7 @@ public abstract class AbstractCDKManagerPluginTest {
         ICDKMolecule coc  = cdk.fromSMILES("COC");
         coc.setResource(mol.getResource());
         cdk.saveMolecule(coc, target, true);
-        mol = cdk.loadMolecule("/Virtual/testSaveMoleculeXXX.mol");
+        mol = cdk.loadMolecule(path);
         assertTrue("O(C)C".equals(mol.getSMILES(
             net.bioclipse.core.domain.IMolecule
                 .Property.USE_CACHED_OR_CALCULATED
@@ -659,10 +668,11 @@ public abstract class AbstractCDKManagerPluginTest {
     @Test(expected=java.lang.Exception.class)
     public void testSaveMolecule_IMolecule_IFile_boolean_overwrite() throws Exception {
         ICDKMolecule propane  = cdk.fromSMILES("CCC");
+        String path = "/Virtual/testSaveMolecule" + propane.hashCode() + ".mol";
         IFile target = ResourcePathTransformer.getInstance()
-            .transform("/Virtual/testSaveMoleculeYYY.mol");
+            .transform(path);
         cdk.saveMolecule(propane, target, false);
-        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMoleculeYYY.mol");
+        ICDKMolecule mol = cdk.loadMolecule(path);
         assertEquals("CCC", mol.getSMILES(
             net.bioclipse.core.domain.IMolecule
                 .Property.USE_CACHED_OR_CALCULATED
@@ -671,9 +681,9 @@ public abstract class AbstractCDKManagerPluginTest {
         // try overwrite
         ICDKMolecule coc  = cdk.fromSMILES("COC");
         target = ResourcePathTransformer.getInstance()
-            .transform("/Virtual/testSaveMoleculeYYY.mol");
+            .transform(path);
         cdk.saveMolecule(coc, target, false);
-        mol = cdk.loadMolecule("/Virtual/testSaveMoleculeYYY.mol");
+        mol = cdk.loadMolecule(path);
         assertTrue("O(C)C".equals(mol.getSMILES(
             net.bioclipse.core.domain.IMolecule
                 .Property.USE_CACHED_OR_CALCULATED
@@ -689,9 +699,9 @@ public abstract class AbstractCDKManagerPluginTest {
         String propaneSmiles = "CCC"; 
         
         ICDKMolecule propane  = cdk.fromSMILES( propaneSmiles  );
-        
-        cdk.saveMolecule(propane, "/Virtual/testSaveMolecule.mol", (IChemFormat)MDLV2000Format.getInstance());
-        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMolecule.mol");
+        String path = "/Virtual/testSaveMolecule" + propane.hashCode() + ".mol";
+        cdk.saveMolecule(propane, path, (IChemFormat)MDLV2000Format.getInstance());
+        ICDKMolecule mol = cdk.loadMolecule(path);
         assertEquals("CCC", mol.getSMILES(
             net.bioclipse.core.domain.IMolecule
                 .Property.USE_CACHED_OR_CALCULATED
@@ -1086,16 +1096,18 @@ public abstract class AbstractCDKManagerPluginTest {
 
     @Test public void testDetermineFormat_FromWSResource() throws Exception {
         ICDKMolecule propane  = cdk.fromSMILES("CCC");
-        cdk.saveMDLMolfile(propane, "/Virtual/testDetermineFormat.mol");
-        String format = cdk.determineFormat("/Virtual/testDetermineFormat.mol");
+        String path = "/Virtual/testDetermineFormat" + propane.hashCode() + ".mol";
+        cdk.saveMDLMolfile(propane, path);
+        String format = cdk.determineFormat(path);
         assertEquals(MDLV2000Format.getInstance().getFormatName(), format);
     }
 
     @Test public void testDetermineFormat_IContentType() throws Exception {
         ICDKMolecule propane  = cdk.fromSMILES("CCC");
-        cdk.saveMDLMolfile(propane, "/Virtual/testBug607.mol");
+        String path = "/Virtual/testBug607." + propane.hashCode() + ".mol";
+        cdk.saveMDLMolfile(propane, path);
 
-        propane = cdk.loadMolecule("/Virtual/testBug607.mol");
+        propane = cdk.loadMolecule(path);
         Assert.assertNotNull(propane.getResource());
         Assert.assertTrue(propane.getResource() instanceof IFile);
         IFile resource = (IFile)propane.getResource();
@@ -1110,8 +1122,9 @@ public abstract class AbstractCDKManagerPluginTest {
     @Test
     public void testSaveMDLMolfile() throws Exception {
         ICDKMolecule propane  = cdk.fromSMILES("CCC");
-        cdk.saveMDLMolfile(propane, "/Virtual/testSaveMDLMolfile.mol");
-        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMDLMolfile.mol");
+        String path = "/Virtual/testSaveMDLMolefile" + propane.hashCode() + ".mol";
+        cdk.saveMDLMolfile(propane, path);
+        ICDKMolecule mol = cdk.loadMolecule(path);
         assertEquals("CCC", mol.getSMILES(
             net.bioclipse.core.domain.IMolecule
                 .Property.USE_CACHED_OR_CALCULATED
@@ -1121,8 +1134,9 @@ public abstract class AbstractCDKManagerPluginTest {
     @Test
     public void testSaveCML() throws Exception {
         ICDKMolecule propane  = cdk.fromSMILES("CCC");
-        cdk.saveCML(propane, "/Virtual/testSaveMDLMolfile.cml");
-        ICDKMolecule mol = cdk.loadMolecule("/Virtual/testSaveMDLMolfile.cml");
+        String path = "/Virtual/testSaveCMLfile" + propane.hashCode() + ".mol";
+        cdk.saveCML(propane, path);
+        ICDKMolecule mol = cdk.loadMolecule(path);
         assertEquals("CCC", mol.getSMILES(
             net.bioclipse.core.domain.IMolecule
                 .Property.USE_CACHED_OR_CALCULATED
@@ -1191,10 +1205,11 @@ public abstract class AbstractCDKManagerPluginTest {
         List<IMolecule> mol = new ArrayList<IMolecule>();
         mol.add(cdk.fromSMILES("CCCBr"));
         mol.add(cdk.fromSMILES("CCCCl"));
-        cdk.saveSDFile("/Virtual/testFFF.sdf", mol);
+        String path = "/Virtual/testFFF" + mol.hashCode() + ".sdf";
+        cdk.saveSDFile(path, mol);
         byte[] bytes=new byte[1000];
         IFile file= ResourcePathTransformer.getInstance()
-           .transform("/Virtual/testFFF.sdf");
+           .transform(path);
         file.getContents().read(bytes);
         StringBuffer sb=new StringBuffer();
           for(int i=0;i<bytes.length;i++){
@@ -1212,10 +1227,11 @@ public abstract class AbstractCDKManagerPluginTest {
         ICDKMolecule mol = cdk.fromSMILES("CCCBr");
         mol.getAtomContainer().setProperty("whoopsie", "daisy");
         mols.add(mol);
-        cdk.saveSDFile("/Virtual/testPropateProps.sdf", mols);
+        String path = "/Virtual/testPropateProps" + mol.hashCode() + ".sdf";
+        cdk.saveSDFile(path, mols);
         byte[] bytes=new byte[1000];
         IFile file= ResourcePathTransformer.getInstance()
-           .transform("/Virtual/testPropateProps.sdf");
+           .transform(path);
         file.getContents().read(bytes);
         StringBuffer sb=new StringBuffer();
         for(int i=0;i<bytes.length;i++){
@@ -1260,7 +1276,7 @@ public abstract class AbstractCDKManagerPluginTest {
     @Test
     public  void testBug583() throws Exception {
         ICDKMolecule mol = cdk.fromSMILES("CC");
-        cdk.saveMolecule(mol,"/Virtual/bug583.cml", true);
+        cdk.saveMolecule(mol,"/Virtual/bug583." + mol.hashCode() + ".cml", true);
     }
 
     @Test @Ignore("See bug #613")
@@ -1295,14 +1311,16 @@ public abstract class AbstractCDKManagerPluginTest {
     @Test
     public  void testStoresResource_Save_IMolecule_String_Boolean() throws Exception {
         ICDKMolecule mol = cdk.fromSMILES("CC");
-        cdk.saveMolecule(mol,"/Virtual/testResource1.cml", true);
+        String path = "/Virtual/testResource" + mol.hashCode() + ".cml";
+        cdk.saveMolecule(mol, path, true);
         Assert.assertNotNull(mol.getResource());
     }
 
     @Test
     public  void testStoresResource_Save_IMolecule_String() throws Exception {
         ICDKMolecule mol = cdk.fromSMILES("CC");
-        cdk.saveMolecule(mol,"/Virtual/testResource2.cml");
+        String path = "/Virtual/testResource" + mol.hashCode() + ".cml";
+        cdk.saveMolecule(mol, path);
         Assert.assertNotNull(mol.getResource());
     }
 
@@ -1310,7 +1328,8 @@ public abstract class AbstractCDKManagerPluginTest {
     public  void testStoresResource_Save_IMolecule_IChemFormat()
     throws Exception {
         ICDKMolecule mol = cdk.fromSMILES("CC");
-        cdk.saveMolecule(mol,"/Virtual/testResource3.cml",
+        String path = "/Virtual/testResource" + mol.hashCode() + ".cml";
+        cdk.saveMolecule(mol, path,
                 (IChemFormat)CMLFormat.getInstance());
         Assert.assertNotNull(mol.getResource());
     }
@@ -1319,7 +1338,8 @@ public abstract class AbstractCDKManagerPluginTest {
     public  void testStoresResource_Save_IMolecule_IChemFormat_Boolean()
     throws Exception {
         ICDKMolecule mol = cdk.fromSMILES("CC");
-        cdk.saveMolecule(mol,"/Virtual/testResource4.cml",
+        String path = "/Virtual/testResource" + mol.hashCode() + ".cml";
+        cdk.saveMolecule(mol, path,
                 (IChemFormat)CMLFormat.getInstance(), true);
         Assert.assertNotNull(mol.getResource());
     }
@@ -1328,7 +1348,8 @@ public abstract class AbstractCDKManagerPluginTest {
     public  void testStoresResource_ContentType()
     throws Exception {
         ICDKMolecule mol = cdk.fromSMILES("CC");
-        cdk.saveMolecule(mol,"/Virtual/testResource4.cml",
+        String path = "/Virtual/testResource" + mol.hashCode() + ".cml";
+        cdk.saveMolecule(mol, path,
                 (IChemFormat)CMLFormat.getInstance(), true);
         Assert.assertNotNull(mol.getResource());
         Assert.assertTrue(mol.getResource() instanceof IFile);
@@ -1338,15 +1359,15 @@ public abstract class AbstractCDKManagerPluginTest {
 
     @Test
     public  void testContentType_onLoad() throws Exception {
-        final String FILENAME = "/Virtual/testResource7.cml";
+    	String path = "/Virtual/testResource" + Math.random() + ".cml";
         cdk.saveMolecule(
             cdk.fromSMILES("CC"),
-            FILENAME,
+            path,
             (IChemFormat)CMLFormat.getInstance(),
             true
         );
 
-        ICDKMolecule mol = cdk.loadMolecule(FILENAME);
+        ICDKMolecule mol = cdk.loadMolecule(path);
         Assert.assertNotNull(mol.getResource());
         Assert.assertTrue(mol.getResource() instanceof IFile);
         IFile ifile = (IFile)mol.getResource();
@@ -1359,7 +1380,7 @@ public abstract class AbstractCDKManagerPluginTest {
         URL url=FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
         ICDKMolecule mol = cdk.loadMolecule( path);
-        final String FILENAME = "/Virtual/testResource7.cml";
+        final String FILENAME = "/Virtual/testResource" + Math.random() + ".cml";
         cdk.saveMolecule( mol, FILENAME,true );
         IFile newfile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(FILENAME));
         byte[] b=new byte[100];

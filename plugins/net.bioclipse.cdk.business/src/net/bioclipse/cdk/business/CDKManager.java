@@ -353,9 +353,8 @@ public class CDKManager implements IBioclipseManager {
                 chemFile = (IChemFile) reader.read(chemFile);
             }
             catch (CDKException e) {
-                //egonw FIXME: Perhaps throw BioclispeException here or remove the TODO
-                // TODO Auto-generated catch block
-                LogUtils.debugTrace(logger, e);
+                throw new BioclipseException("Cannot read file: " +
+                    e.getMessage(), e);
             }
 
             // Store the chemFormat used for the reader
@@ -1435,19 +1434,13 @@ public class CDKManager implements IBioclipseManager {
           return mols;
       }
 
-      public int getNoMolecules(IFile file) {
+      public int getNoMolecules(IFile file)
+          throws IOException, BioclipseException, CoreException {
           if (file.getFileExtension().equals("sdf") ) {
               return numberOfEntriesInSDF(file, new NullProgressMonitor());
           }
-          List<ICDKMolecule> lst;
-          try {
-              lst = loadMolecules(file, new NullProgressMonitor());
-              if (lst!=null) return lst.size();
-          } catch (Exception e) {
-              //TODO egonw FIXME: perhaps throw a BioclipseException instead?
-              logger.debug("Could not count mols in file: " + file + ". Reason: "
-                           + e.getMessage());
-          }
+          List<ICDKMolecule> lst = loadMolecules(file, new NullProgressMonitor());
+          if (lst!=null) return lst.size();
           return -1;
       }
 
