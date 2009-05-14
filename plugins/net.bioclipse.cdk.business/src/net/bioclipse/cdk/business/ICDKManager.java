@@ -39,7 +39,6 @@ import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.content.IContentType;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -49,7 +48,7 @@ import org.openscience.cdk.io.formats.IChemFormat;
 @PublishedClass( "Contains CDK related methods")
 @TestClasses(
     "net.bioclipse.cdk.business.test.CDKManagerTest," +
-		"net.bioclipse.cdk.business.test.CDKManagerPluginTest"
+		"net.bioclipse.cdk.business.test.AbstractCDKManagerPluginTest"
 )
 public interface ICDKManager extends IBioclipseManager {
 
@@ -508,7 +507,7 @@ public interface ICDKManager extends IBioclipseManager {
         methodSummary = "Counts the number of entries in an SDF file at the " +
         		            "given file path. Returns 0 in case of problem." )
     @Recorded
-    @TestMethods("testNumberOfEntriesInSDF")
+    @TestMethods("testNumberOfEntriesInSDFString")
     public int numberOfEntriesInSDF( String filePath );
 
     /**
@@ -568,7 +567,9 @@ public interface ICDKManager extends IBioclipseManager {
         methodSummary = "Creates a index of the molecules positons in a SDFile")
     public SDFileIndex createSDFIndex(String file);
     
-    public int numberOfEntriesInSDF( IFile file, BioclipseUIJob<Integer> uiJob);
+    @TestMethods( "testNumberOfEntriesInSDFIFileUIJob" )
+    public int numberOfEntriesInSDF( IFile file, 
+                                     BioclipseUIJob<Integer> uiJob );
 
     @Recorded
     @PublishedMethod(

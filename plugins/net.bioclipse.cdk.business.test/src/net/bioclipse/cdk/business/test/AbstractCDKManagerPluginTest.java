@@ -45,6 +45,7 @@ import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.jobs.BioclipseUIJob;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -94,6 +95,8 @@ public abstract class AbstractCDKManagerPluginTest {
     
     protected static ICDKManager      cdk;
     protected static ICDKDebugManager debug;
+    
+    private volatile boolean[] methodRun = {false};
 
     @Test
     public void testLoadMoleculeFromCMLFile() throws IOException, 
@@ -214,9 +217,7 @@ public abstract class AbstractCDKManagerPluginTest {
                             .extension( "smi" );
         
         
-        List<ICDKMolecule> molecules = cdk.loadSMILESFile(
-                file, (IProgressMonitor)null
-        );
+        List<ICDKMolecule> molecules = cdk.loadSMILESFile(file);
         Assert.assertNotNull( molecules );
         List<String> inputList = new ArrayList<String>(Arrays.asList( input ));
 
@@ -1131,19 +1132,54 @@ public abstract class AbstractCDKManagerPluginTest {
     }
 
     @Test
-    public void testNumberOfEntriesInSDF() throws Exception {
+    public void testNumberOfEntriesInSDFString() throws Exception {
+        
+        URI uri = getClass().getResource("/testFiles/test.sdf").toURI();
+        URL url = FileLocator.toFileURL(uri.toURL());
+        String path = url.getFile();
+        
+        assertEquals( "There should be two entries in the file",
+            2,
+            cdk.numberOfEntriesInSDF(path)
+        );
+    }
+    
+    @Test
+    public void testNumberOfEntriesInSDFIFileUIJob() throws Exception {
         
         URI uri = getClass().getResource("/testFiles/test.sdf").toURI();
         URL url = FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
         
+        final Object lock = new Object();
+        
+        final BioclipseUIJob<Integer> uiJob = new BioclipseUIJob<Integer>() {
+            @Override
+            public void runInUI() {
+                methodRun[0] = true;
+                synchronized ( lock ) {
+                    lock.notifyAll();
+                }
+            }
+        };
+
+        cdk.numberOfEntriesInSDF( ResourcePathTransformer.getInstance()
+                                                         .transform(path), 
+                                  uiJob );
+        
+        int wait = 0;
+        while ( methodRun[0] == false && wait <= 5000) {
+            synchronized ( lock ) {
+                lock.wait(1000);
+                wait += 1000;
+            }
+        }
+        
+        assertTrue( methodRun[0] );
+        
         assertEquals( "There should be two entries in the file",
-            2,
-            cdk.numberOfEntriesInSDF(
-               ResourcePathTransformer.getInstance().transform(path),
-               (IProgressMonitor)null
-            )
-        );
+                      2,
+                      uiJob.getReturnValue() );
     }
 
     @Test public void testGetInfo() throws Exception {
