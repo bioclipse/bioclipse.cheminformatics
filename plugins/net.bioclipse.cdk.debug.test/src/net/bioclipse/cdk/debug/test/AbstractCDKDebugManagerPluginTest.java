@@ -111,8 +111,7 @@ public abstract class AbstractCDKDebugManagerPluginTest {
     public void testSybylAtomTypePerception() throws FileNotFoundException, IOException, BioclipseException, CoreException, InvocationTargetException{
 
         String path = getClass().getResource("/testFiles/atp.mol").getPath();
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path),
-                                             new NullProgressMonitor()  );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path));
 
         System.out.println("mol: " + mol.toString());
 
@@ -131,8 +130,7 @@ public abstract class AbstractCDKDebugManagerPluginTest {
         String path = getClass().getResource("/testFiles/polycarpol.mol")
         .getPath();
 
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path),
-                                             new NullProgressMonitor()  );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path));
 
         System.out.println("mol: " + mol.toString());
 
@@ -151,8 +149,7 @@ public abstract class AbstractCDKDebugManagerPluginTest {
         String path = getClass().getResource("/testFiles/aromatic.mol")
         .getPath();
 
-        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path),
-                                             new NullProgressMonitor()  );
+        ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path));
 
         System.out.println("mol: " + mol.toString());
 
