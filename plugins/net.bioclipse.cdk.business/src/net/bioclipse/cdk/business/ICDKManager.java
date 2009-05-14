@@ -152,22 +152,6 @@ public interface ICDKManager extends IBioclipseManager {
                                      BioclipseException, 
                                      CoreException;
 
-    /**
-     * Loads molecules from an IFile.
-     *
-     * @param file
-     * @return a list of molecules
-     * @throws IOException
-     * @throws BioclipseException on parsing trouble of the molecules
-     * @throws CoreException
-     */
-    @Recorded
-    public List<ICDKMolecule> loadMolecules( IFile file,
-                                             IProgressMonitor monitor )
-                              throws IOException, 
-                                     BioclipseException, 
-                                     CoreException;
-
     @Recorded
     public List<ICDKMolecule> loadMolecules( IFile file )
                               throws IOException, 
@@ -177,13 +161,6 @@ public interface ICDKManager extends IBioclipseManager {
     public List<ICDKMolecule> 
         loadMolecules( IFile file,
                        BioclipseUIJob<List<ICDKMolecule>> uiJob );
-
-    public List<ICDKMolecule> loadMolecules( IFile file,
-                                             IChemFormat format,
-                                             IProgressMonitor monitor)
-                              throws IOException, 
-                                     BioclipseException, 
-                                     CoreException;
 
     /**
      * Save a molecule in same format as loaded to same filename, if exists
@@ -398,16 +375,6 @@ public interface ICDKManager extends IBioclipseManager {
     public Iterator<ICDKMolecule> createMoleculeIterator(String path)
                                   throws CoreException;
 
-    /**
-     * @param file
-     * @return
-     * @throws CoreException
-     */
-    public Iterator<ICDKMolecule> 
-           createMoleculeIterator( IFile file,
-                                   IProgressMonitor monitor ) 
-           throws CoreException;
-
     public Iterator<ICDKMolecule> createMoleculeIterator(IFile file)
                                   throws CoreException;
 
@@ -551,8 +518,6 @@ public interface ICDKManager extends IBioclipseManager {
                        methodSummary = "Creates a index file for the SD-file." )
     public void createSDFileIndex( String filePath);
 
-    public void createSDFileIndex(IFile file, IProgressMonitor monitor);
-
     public void createSDFileIndex(IFile file, BioclipseUIJob<?> uiJob);
     
     /**
@@ -570,30 +535,10 @@ public interface ICDKManager extends IBioclipseManager {
     public List<ICDKMolecule> loadConformers( String path );
 
     /**
-     * Reads files and extracts conformers if available.
-     * @param file
-     * @return a list of molecules that may have multiple conformers
-     */
-    @Recorded
-    public List<ICDKMolecule> loadConformers( IFile file,
-                                              IProgressMonitor monitor );
-
-    /**
      * @param file
      * @return
      */
     public List<ICDKMolecule> loadConformers( IFile file);
-
-    /**
-     * Returns an iterator to the molecules in an IFile that might
-     * contain conformers.
-     *
-     * @param instream
-     * @return
-     */
-    @Recorded
-    public Iterator<ICDKMolecule> 
-           createConformerIterator( IFile file, IProgressMonitor monitor );
 
     @Recorded
     @PublishedMethod( 
@@ -612,8 +557,8 @@ public interface ICDKManager extends IBioclipseManager {
                   throws BioclipseException;
 
 
-    public SDFileIndex createSDFIndex(IFile file, IProgressMonitor monitor);
     public SDFileIndex createSDFIndex(IFile file);
+
     public SDFileIndex createSDFIndex(IFile file, 
                                       BioclipseUIJob<SDFileIndex> uiJob);
     
@@ -623,13 +568,6 @@ public interface ICDKManager extends IBioclipseManager {
         methodSummary = "Creates a index of the molecules positons in a SDFile")
     public SDFileIndex createSDFIndex(String file);
     
-    /**
-     * @param file
-     * @param subProgressMonitor
-     * @return
-     */
-    @Recorded
-    public int numberOfEntriesInSDF( IFile file, IProgressMonitor monitor );
     public int numberOfEntriesInSDF( IFile file, BioclipseUIJob<Integer> uiJob);
 
     @Recorded
@@ -718,8 +656,7 @@ public interface ICDKManager extends IBioclipseManager {
 
 	public List<ICDKMolecule> loadSMILESFile(IFile file) 
 	                          throws CoreException, IOException;
-	public List<ICDKMolecule> loadSMILESFile(IFile file, IProgressMonitor monitor)
-	                          throws CoreException, IOException;
+
 	public List<ICDKMolecule> 
 	    loadSMILESFile( IFile file,
 	                    BioclipseUIJob<List<ICDKMolecule>> uiJob )
@@ -797,8 +734,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @TestMethods("testCreateSDFile_IFile_IMoleculeArray")
    	public void saveSDFile( IFile file, 
-   	                        List<IMolecule> entries, 
-   	                        IProgressMonitor monitor ) 
+   	                        List<IMolecule> entries ) 
                 throws BioclipseException, InvocationTargetException;
 
     @Recorded
@@ -833,24 +769,22 @@ public interface ICDKManager extends IBioclipseManager {
         		            "to a list" ) 
     public List<ICDKMolecule> extractFromSDFile( String file,
                                                  String property,
-                                                 Collection<String> value);
+                                                 Collection<String> value );
     
     public List<ICDKMolecule> extractFromSDFile( IFile file,
                                                  String property,
-                                                 Collection<String> value,
-                                                 IProgressMonitor monitor);
+                                                 Collection<String> value );
 
     public Map<Integer,String> createSDFPropertyMap( IFile file,
-                                                     String property)
-                                                     throws CoreException,
-                                                     IOException;
+                                                     String property )
+                               throws CoreException, IOException;
     
     @PublishedMethod(
         params = "String file, String property",
         methodSummary = "Create a index for molecules that contains a " +
         		            "certain property" )
     public Map<Integer,String> createSDFPropertyMap( String file,
-                                                     String property)
+                                                     String property )
                                throws CoreException, IOException;
 
     @Recorded
