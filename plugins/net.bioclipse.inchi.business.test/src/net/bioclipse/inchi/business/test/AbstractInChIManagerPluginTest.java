@@ -16,24 +16,13 @@ import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.inchi.InChI;
 import net.bioclipse.inchi.business.IInChIManager;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class InChIManagerPluginTest {
+public abstract class AbstractInChIManagerPluginTest {
 
-    private static IInChIManager inchi;
-    private static ICDKManager cdk;
+    protected static IInChIManager inchi;
+    protected static ICDKManager cdk;
     
-    @BeforeClass public static void setup() {
-        // the next line is needed to ensure the OSGI loader properly start
-        // the org.springframework.bundle.osgi.extender, so that the manager
-        // can be loaded too. Otherwise, it will fail with a time out.
-        net.bioclipse.ui.Activator.getDefault();
-
-        inchi = net.bioclipse.inchi.business.Activator.getDefault().getInChIManager();
-        cdk = net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
-    }
-
     @Test public void testGenerate() throws Exception {
         IMolecule mol = cdk.fromSMILES("C");
         Assert.assertNotNull("Input structure is unexpectedly null", mol);

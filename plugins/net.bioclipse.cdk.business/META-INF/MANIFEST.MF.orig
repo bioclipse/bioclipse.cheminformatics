@@ -1,0 +1,56 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CDK Business
+Bundle-SymbolicName: net.bioclipse.cdk.business;singleton:=true
+Bundle-Version: 2.0.0.B20090506
+Bundle-Activator: net.bioclipse.cdk.business.Activator
+Bundle-Vendor: The Bioclipse Team
+Require-Bundle: org.openscience.cdk.io,
+ org.openscience.cdk.core,
+ org.openscience.cdk.standard,
+ org.openscience.cdk.atomtype,
+ org.openscience.cdk.data,
+ org.openscience.cdk.extra,
+ org.openscience.cdk.interfaces,
+ org.openscience.cdk.libiocml,
+ org.openscience.cdk.libiomd,
+ org.openscience.cdk.valencycheck,
+ org.openscience.cdk.builder3d,
+ org.openscience.cdk.nonotify,
+ org.openscience.cdk.sdg,
+ org.openscience.cdk.smiles,
+ org.openscience.cdk.smarts,
+ org.openscience.cdk.pdb,
+ org.openscience.cdk.pcore,
+ org.openscience.cdk.ioformats,
+ javax.vecmath,
+ org.xmlcml.cmlxom,
+ net.bioclipse.xom,
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ net.bioclipse.core,
+ org.eclipse.core.runtime.compatibility.auth,
+ net.bioclipse.scripting,
+ org.eclipse.core.resources,
+ org.eclipse.ui.views,
+ org.eclipse.core.filesystem,
+ org.eclipse.ui.ide,
+ org.3pq.jgrapht,
+ net.bioclipse.ui,
+ org.springframework.bundle.spring.aop,
+ net.sf.cglib,
+ org.springframework.osgi.aopalliance.osgi,
+ org.openscience.cdk.formula,
+ org.openscience.cdk.ioformats,
+<<<<<<< HEAD:plugins/net.bioclipse.cdk.business/META-INF/MANIFEST.MF
+ org.openscience.cdk.fingerprint,
+ net.bioclipse.inchi
+=======
+ org.openscience.cdk.fingerprint;bundle-version="1.2.1",
+ net.bioclipse.managers;bundle-version="1.0.0"
+>>>>>>> refactored out a plugin net.bioclipse.managers for manager stuff:plugins/net.bioclipse.cdk.business/META-INF/MANIFEST.MF
+Bundle-ActivationPolicy: lazy
+Export-Package: net.bioclipse.cdk.business,
+ net.bioclipse.cdk.domain,
+ net.bioclipse.cdk.providers
+Import-Package: org.apache.log4j

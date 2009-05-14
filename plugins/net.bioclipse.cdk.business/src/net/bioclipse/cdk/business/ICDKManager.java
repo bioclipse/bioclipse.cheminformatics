@@ -33,6 +33,8 @@ import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.managers.business.IBioclipseManager;
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.jobs.BioclipseJob;
+import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.jobs.BioclipseUIJob;
 
 import org.eclipse.core.resources.IFile;
@@ -68,7 +70,9 @@ public interface ICDKManager extends IBioclipseManager {
     public ICDKMolecule fromSMILES(String SMILES)
         throws BioclipseException;
 
-
+    public BioclipseJob<ICDKMolecule> fromSMILES(String SMILES,
+        BioclipseJobUpdateHook hook);    
+    
     /**
      * Perceives aromaticity on an IMolecule
      * @param mol

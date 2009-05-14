@@ -35,12 +35,6 @@ public class GenerateInChI extends AbstractHandler {
 			return null;
 		}
 		
-<<<<<<< HEAD:plugins/net.bioclipse.cdk.business/src/net/bioclipse/cdk/business/GenerateInChI.java
-=======
-		IInChIManager inchi=net.bioclipse.inchi.business.Activator.getDefault().
-		getJavaInChIManager();
-
->>>>>>> Converted the InChI manager to NWO:plugins/net.bioclipse.cdk.business/src/net/bioclipse/cdk/business/GenerateInChI.java
 		Map<String,String> inchiMolPairs = new HashMap<String, String>();
 		StringBuffer buffer=new StringBuffer(256);
 		buffer.append( "Inchi generation for " + mols.size()

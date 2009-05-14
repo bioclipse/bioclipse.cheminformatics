@@ -60,7 +60,7 @@ public class InChIManagerTest extends AbstractManagerTest {
         CDKManager cdk = new CDKManager();
         IMolecule mol = cdk.fromSMILES("C");
         Assert.assertNotNull("Input structure is unexpectedly null", mol);
-        InChI key = inchi.generate(mol, new NullPointerMonitor());
+        InChI key = inchi.generate(mol);
         Assert.assertNotNull(key);
         Assert.assertEquals(
             "VNWKTOKETHGBQD-UHFFFAOYAM",
