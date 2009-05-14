@@ -51,6 +51,7 @@ import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.jobs.BioclipseUIJob;
+import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.EFS;
@@ -142,7 +143,7 @@ import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
  * @author olas, jonalv
  *
  */
-public class CDKManager implements ICDKManager {
+public class CDKManager implements IBioclipseManager {
 
     private static final Logger logger = Logger.getLogger(CDKManager.class);
 
@@ -169,8 +170,8 @@ public class CDKManager implements ICDKManager {
                         throws IOException, BioclipseException, CoreException {
 
         ICDKMolecule loadedMol = loadMolecule( file.getContents(),
-                                               monitor,
-                                               determineIChemFormat(file)
+                                               determineIChemFormat(file),
+                                               monitor
         );
         loadedMol.setResource(file);
 
@@ -1434,37 +1435,31 @@ public class CDKManager implements ICDKManager {
           return mols;
       }
 
-      public int getNoMolecules(String path) {
-          if (path.endsWith("sdf")){
-              return numberOfEntriesInSDF(path);
+      public int getNoMolecules(IFile file) {
+          if (file.getFileExtension().equals("sdf") ) {
+              return numberOfEntriesInSDF(file, new NullProgressMonitor());
           }
           List<ICDKMolecule> lst;
           try {
-              lst = loadMolecules(path);
+              lst = loadMolecules(file, new NullProgressMonitor());
               if (lst!=null) return lst.size();
           } catch (Exception e) {
-              logger.debug("Could not count mols in file: " + path + ". Reason: "
+              //TODO egonw FIXME: perhaps throw a BioclipseException instead?
+              logger.debug("Could not count mols in file: " + file + ". Reason: "
                            + e.getMessage());
           }
           return -1;
       }
 
-      public MoleculesInfo getInfo(String path) {
-          return getInfo( ResourcePathTransformer.getInstance()
-                                                 .transform(path) );
-      }
-      
       public IMolecule generate3dCoordinates(IMolecule molecule)
-                      throws Exception {
+                       throws Exception {
           List<IMolecule> molecules = new BioList<IMolecule>();
           molecules.add( molecule );
           return generate3dCoordinates( molecules ).get( 0 );
-
       }
 
-
       public List<IMolecule> generate3dCoordinates(List<IMolecule> molecules)
-                       throws Exception {
+                             throws Exception {
 
           ICDKMolecule cdkmol = null;
           List<IMolecule> newMolecules=new BioList<IMolecule>();
@@ -1553,7 +1548,7 @@ public class CDKManager implements ICDKManager {
           int num3d=0;
           List<ICDKMolecule> lst;
           try {
-              lst = loadMolecules(transform);
+              lst = loadMolecules(transform, new NullProgressMonitor());
               if (lst!=null){
                   for (ICDKMolecule mol : lst){
                       numMols++;
@@ -1666,13 +1661,9 @@ public class CDKManager implements ICDKManager {
           }
       }
 
-      public List<ICDKMolecule> extractFromSDFile( String file, String property,
-                                                   Collection<String> value ) {
-          throw new IllegalStateException("This method should not be calld, use the one with IFile");
-      }
-
       public List<ICDKMolecule> extractFromSDFile( IFile file,
-                                                   String property, Collection<String> value,
+                                                   String property, 
+                                                   Collection<String> value,
                                                    IProgressMonitor monitor) {
           long timer = System.nanoTime();
           monitor.beginTask( "Extracting molecules", 3000);
@@ -1745,17 +1736,10 @@ public class CDKManager implements ICDKManager {
                       + "ms" );
           return molList;
       }
-      public Map<Integer,String> createSDFPropertyMap( String file,
-                                                     String property)
-                                                     throws CoreException,
-                                                     IOException{
-          throw new IllegalStateException("This method should not be calld, use the one with IFile");
 
-      }
       public Map<Integer,String> createSDFPropertyMap( IFile file,
-                                                        String property)
-                                                        throws CoreException,
-                                                        IOException{
+                                                       String property)
+                                 throws CoreException, IOException {
           LineNumberReader input = new LineNumberReader(
                                    new InputStreamReader(file.getContents()));
           Map<Integer,String> result = new HashMap<Integer, String >();
@@ -1828,23 +1812,6 @@ public class CDKManager implements ICDKManager {
               monitor.done();
           }
       }
-
-    public List<IMolecule> extractFromSDFile( String file, int startenty,
-                                              int endentry )
-                                                            throws BioclipseException,
-                                                            InvocationTargetException {
-        return extractFromSDFile( ResourcePathTransformer.getInstance().transform(file), startenty, endentry );
-    }
-
-    public void saveSDFile( String file, List<IMolecule> entries )
-                                                                throws BioclipseException,
-                                                                InvocationTargetException {
-        saveSDFile(
-            ResourcePathTransformer.getInstance().transform(file),
-            entries,
-            null
-        );
-    }
 
     public String molecularFormula( ICDKMolecule m ) {
 
