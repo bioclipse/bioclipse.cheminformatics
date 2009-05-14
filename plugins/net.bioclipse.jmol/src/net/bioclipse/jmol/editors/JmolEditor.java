@@ -43,6 +43,7 @@ import net.bioclipse.jmol.views.outline.JmolObject;
 
 import org.apache.log4j.Logger;
 
+import net.bioclipse.core.IResourcePathTransformer;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.util.LogUtils;
 
@@ -435,7 +436,7 @@ public class JmolEditor extends MultiPageEditorPart
     private String getContentsFromEditor() {
 
         IEditorInput input=getEditorInput();
-        ResourcePathTransformer transformer 
+        IResourcePathTransformer transformer 
                                     = ResourcePathTransformer.getInstance();
 
         try {

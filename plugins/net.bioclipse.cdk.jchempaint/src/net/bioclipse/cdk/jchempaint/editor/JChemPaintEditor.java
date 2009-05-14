@@ -34,7 +34,7 @@ import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message.Alignment;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.ui.jobs.BioclipseUIJob;
+import net.bioclipse.jobs.BioclipseUIJob;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionException;
