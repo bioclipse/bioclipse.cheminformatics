@@ -327,16 +327,6 @@ public class CDKManagerTest extends AbstractManagerTest {
    	}
     
     @Test
-        assertEquals( cdkm.getSMILES(
-            net.bioclipse.core.domain.IMolecule
-                .Property.USE_CACHED_OR_CALCULATED
-        ), m.getSMILES(
-            net.bioclipse.core.domain.IMolecule
-                .Property.USE_CACHED_OR_CALCULATED
-        ) );
-    }
-    
-    @Test
     public void testSMARTSMatching() throws BioclipseException {
         String propaneSmiles = "CCC"; 
         
@@ -403,9 +393,8 @@ public class CDKManagerTest extends AbstractManagerTest {
         System.out.println("*************************");
         System.out.println("testSaveMoleculesSDF()");
 
-        MoleculeManager molmg=new MoleculeManager();
-        IMolecule mol1=molmg.fromSmiles("CCC");
-        IMolecule mol2=molmg.fromSmiles("C1CCCCC1CCO");
+        IMolecule mol1 = cdk.fromSMILES("CCC");
+        IMolecule mol2 = cdk.fromSMILES("C1CCCCC1CCO");
         
         List<IMolecule> mols=new ArrayList<IMolecule>();
         mols.add(mol1);
@@ -414,7 +403,7 @@ public class CDKManagerTest extends AbstractManagerTest {
         IFile target=new MockIFile();
         cdk.saveMolecules(mols, target, (IChemFormat)SDFFormat.getInstance());
 
-        List<ICDKMolecule> readmols = cdk.loadMolecules(target);
+        List<ICDKMolecule> readmols = cdk.loadMolecules(target, new NullProgressMonitor());
         assertEquals(2, readmols.size());
         
     	System.out.println("** Reading back created SDFile: ");

@@ -356,13 +356,8 @@ public abstract class AbstractCDKManagerPluginTest {
         	MoleculeFactory.makeIndole()
         );
         ICDKMolecule cdkm = cdk.create(new MockMolecule(indoleSmiles));
-        assertEquals(indoleSmiles, cdkm.getSMILES());
-        assertEquals(
+        assertEquals(indoleSmiles,
             cdkm.getSMILES(
-                net.bioclipse.core.domain.IMolecule
-                    .Property.USE_CACHED_OR_CALCULATED
-            ), 
-            m.getSMILES(
                 net.bioclipse.core.domain.IMolecule
                     .Property.USE_CACHED_OR_CALCULATED
             )
@@ -1466,7 +1461,8 @@ public abstract class AbstractCDKManagerPluginTest {
 			this.smiles = smiles;
 		}
 
-		public String getSMILES() throws BioclipseException {
+		public String getSMILES(IMolecule.Property urgency)
+		    throws BioclipseException {
 			return smiles;
 		}
 

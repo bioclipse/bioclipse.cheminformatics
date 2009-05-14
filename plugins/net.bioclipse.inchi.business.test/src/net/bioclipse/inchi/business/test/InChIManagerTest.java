@@ -39,7 +39,7 @@ public class InChIManagerTest extends AbstractManagerTest {
         CDKManager cdk = new CDKManager();
         IMolecule mol = cdk.fromSMILES("C");
         Assert.assertNotNull("Input structure is unexpectedly null", mol);
-        InChI inchiObj = inchi.generate(mol, new NullProcessMonitor());
+        InChI inchiObj = inchi.generate(mol, new NullProgressMonitor());
         Assert.assertNotNull(inchiObj);
         Assert.assertEquals("InChI=1/CH4/h1H4", inchiObj.getValue());
     }
@@ -48,7 +48,7 @@ public class InChIManagerTest extends AbstractManagerTest {
         CDKManager cdk = new CDKManager();
         IMolecule mol = cdk.fromSMILES("ClC(Br)(F)(O)");
         Assert.assertNotNull("Input structure is unexpectedly null", mol);
-        InChI inchiStr = inchi.generate(moll, new NullProgressMonitor());
+        InChI inchiStr = inchi.generate(mol, new NullProgressMonitor());
         Assert.assertNotNull(inchiStr);
         Assert.assertEquals(
             "InChI=1/CHBrClFO/c2-1(3,4)5/h5H",
@@ -60,7 +60,7 @@ public class InChIManagerTest extends AbstractManagerTest {
         CDKManager cdk = new CDKManager();
         IMolecule mol = cdk.fromSMILES("C");
         Assert.assertNotNull("Input structure is unexpectedly null", mol);
-        InChI key = inchi.generate(mol, new NullPointerMonitor());
+        InChI key = inchi.generate(mol, new NullProgressMonitor());
         Assert.assertNotNull(key);
         Assert.assertEquals(
             "VNWKTOKETHGBQD-UHFFFAOYAM",
