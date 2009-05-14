@@ -970,4 +970,7 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testRemoveExplicitHydrogens()")
     public ICDKMolecule removeExplicitHydrogens(ICDKMolecule molecule);
 
+    public void loadMolecule( IFile file,
+                              BioclipseUIJob<ICDKMolecule> bioclipseUIJob );
+
 }

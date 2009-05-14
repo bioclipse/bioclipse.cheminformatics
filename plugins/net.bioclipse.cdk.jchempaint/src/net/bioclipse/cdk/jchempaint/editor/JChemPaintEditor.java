@@ -260,39 +260,29 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         }else {
             IFile file = (IFile) input.getAdapter( IFile.class );
             if(file != null && file.exists()) {
-                try {
-                    Activator.getDefault().getJavaCDKManager().loadMolecule( file,
-                         new BioclipseUIJob<ICDKMolecule>() {
-
-                        @Override
-                        public void runInUI() {
-                            ICDKMolecule model = getReturnValue();
-                            int x2d = GeometryTools.has2DCoordinatesNew( model.getAtomContainer() );
-                            x2d = 2;
-                            if(x2d <2 ) {
-                                logger.error( "Not all atoms has 2d coordinates" );
-                                JChemPaintEditor.this.getSite().getPage()
-                                   .closeEditor( JChemPaintEditor.this, false );
-                                model = null;
-                                return;
-                            }
-                            widget.setInput( model );
-                            if(fOutlinePage!=null) {
-                                fOutlinePage.setInput(
-                                          getControllerHub().getIChemModel() );
-                            }
+                Activator.getDefault().getJavaCDKManager()
+                         .loadMolecule( file,
+                                        new BioclipseUIJob<ICDKMolecule>() {
+    
+                    @Override
+                    public void runInUI() {
+                        ICDKMolecule model = getReturnValue();
+                        int x2d = GeometryTools.has2DCoordinatesNew( model.getAtomContainer() );
+                        x2d = 2;
+                        if(x2d <2 ) {
+                            logger.error( "Not all atoms has 2d coordinates" );
+                            JChemPaintEditor.this.getSite().getPage()
+                               .closeEditor( JChemPaintEditor.this, false );
+                            model = null;
+                            return;
                         }
-                    });
-                } catch ( IOException e1 ) {
-                    logger.warn( "Failed to load molecule "+e1.getMessage() );
-                    throw new RuntimeException(e1);
-                } catch ( BioclipseException e1 ) {
-                    logger.warn( "Failed to load molecule "+e1.getMessage() );
-                    throw new RuntimeException(e1);
-                } catch ( CoreException e1 ) {
-                    logger.warn( "Failed to load molecule "+e1.getMessage() );
-                    throw new RuntimeException(e1);
-                }
+                        widget.setInput( model );
+                        if(fOutlinePage!=null) {
+                            fOutlinePage.setInput(
+                                      getControllerHub().getIChemModel() );
+                        }
+                    }
+                });
             }
         }
 
