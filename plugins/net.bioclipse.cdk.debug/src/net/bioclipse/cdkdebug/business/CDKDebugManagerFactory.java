@@ -19,15 +19,15 @@ import net.bioclipse.cdkdebug.Activator;
 public class CDKDebugManagerFactory implements IExecutableExtension, 
                                               IExecutableExtensionFactory {
 
-    private Object exampleManager;
+    private Object manager;
     
     public void setInitializationData( IConfigurationElement config,
                                        String propertyName, 
                                        Object data) throws CoreException {
-        exampleManager = Activator.getDefault().getManager();
+        manager = Activator.getDefault().getJavaScriptManager();
     }
     
     public Object create() throws CoreException {
-        return exampleManager;
+        return manager;
     }
 }

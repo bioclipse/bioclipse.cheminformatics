@@ -11,12 +11,18 @@
 package net.bioclipse.cdkdebug;
 
 import net.bioclipse.cdkdebug.business.ICDKDebugManager;
+import net.bioclipse.cdkdebug.business.IJavaCDKDebugManager;
+import net.bioclipse.cdkdebug.business.IJavaScriptCDKDebugManager;
+import net.bioclipse.core.util.LogUtils;
 
+import org.apache.log4j.Logger;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class Activator extends AbstractUIPlugin {
+
+    private static final Logger logger = Logger.getLogger(Activator.class);
 
     // The plug-in ID
     public static final String PLUGIN_ID = "net.bioclipse.cdk.debug";
@@ -24,14 +30,10 @@ public class Activator extends AbstractUIPlugin {
     // The shared instance
     private static Activator plugin;
     
-    // tracks the example manager
-    private ServiceTracker finderTracker;
+    private ServiceTracker javaFinderTracker;
+    private ServiceTracker jsFinderTracker;
     
-    /**
-     * The constructor
-     */
-    public Activator() {
-    }
+    public Activator() {}
 
     /*
      * (non-Javadoc)
@@ -40,46 +42,52 @@ public class Activator extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
-        
-        finderTracker = new ServiceTracker( context, 
-                                            ICDKDebugManager.class.getName(), 
-                                            null );
-        finderTracker.open();
+
+        javaFinderTracker = new ServiceTracker(
+                context,
+                IJavaCDKDebugManager.class.getName(), 
+                null
+            );
+            javaFinderTracker.open();
+            jsFinderTracker = new ServiceTracker(
+                context,
+                IJavaScriptCDKDebugManager.class.getName(), 
+                null
+            );
+            jsFinderTracker.open();
     }
 
-    /**
-     * Returns a reference to the example manager object
-     * 
-     * @return the exampleManager
-     */
-    public ICDKDebugManager getManager() {
-        ICDKDebugManager exampleManager = null;
+    public ICDKDebugManager getJavaManager() {
+        ICDKDebugManager manager = null;
         try {
-            exampleManager = (ICDKDebugManager) finderTracker.waitForService(1000*30);
+            manager = (ICDKDebugManager)javaFinderTracker.waitForService(1000*30);
         } catch (InterruptedException e) {
-            throw new IllegalStateException("Could not get the CDKDebug manager: " +
-                e.getMessage(), e);
+        	LogUtils.debugTrace(logger, e);
         }
-        if(exampleManager == null) {
+        if(manager == null) {
             throw new IllegalStateException("Could not get the CDKDebug manager.");
         }
-        return exampleManager;
+        return manager;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-     */
+    public ICDKDebugManager getJavaScriptManager() {
+        ICDKDebugManager manager = null;
+        try {
+            manager = (ICDKDebugManager)jsFinderTracker.waitForService(1000*30);
+        } catch (InterruptedException e) {
+        	LogUtils.debugTrace(logger, e);
+        }
+        if(manager == null) {
+            throw new IllegalStateException("Could not get the CDKDebug manager.");
+        }
+        return manager;
+    }
+
     public void stop(BundleContext context) throws Exception {
         plugin = null;
         super.stop(context);
     }
 
-    /**
-     * Returns the shared instance
-     *
-     * @return the shared instance
-     */
     public static Activator getDefault() {
         return plugin;
     }

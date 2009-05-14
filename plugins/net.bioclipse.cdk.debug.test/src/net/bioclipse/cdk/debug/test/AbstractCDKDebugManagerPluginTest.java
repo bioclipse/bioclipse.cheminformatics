@@ -18,20 +18,19 @@ import static org.junit.Assert.fail;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 
-import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdkdebug.business.CDKDebugManager;
 import net.bioclipse.cdkdebug.business.ICDKDebugManager;
 import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.tests.AbstractManagerTest;
-import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Test;
 import org.openscience.cdk.exception.CDKException;
@@ -40,36 +39,40 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.templates.MoleculeFactory;
 import org.openscience.cdk.tools.diff.AtomContainerDiff;
 
-public class CDKDebugManagerTest extends AbstractManagerTest {
+public abstract class AbstractCDKDebugManagerPluginTest {
 
-    ICDKManager cdk;
-    ICDKDebugManager debug;
+    protected static ICDKDebugManager debug;
+    protected static ICDKManager cdk;
 
-    public CDKDebugManagerTest() {
-        cdk = new CDKManager();
-        debug = new CDKDebugManager();
+    @Test public void testDebug() throws Exception {
+        ICDKMolecule mol = (ICDKMolecule)cdk.fromSMILES("C");
+        debug.debug(mol);
+        // would like to test more, but the method does not return anything
     }
 
-    public IBioclipseManager getManager() {
-        return debug;
+    @Test public void testDiff() throws Exception {
+        ICDKMolecule mol1 = (ICDKMolecule)cdk.fromSMILES("C");
+        ICDKMolecule mol2 = (ICDKMolecule)cdk.fromSMILES("C");
+        debug.diff(mol1, mol2);
+        // would like to test more, but the method does not return anything
     }
 
+    @Test public void testDepictSybylAtomTypes() throws Exception {
+        ICDKMolecule mol = (ICDKMolecule)cdk.fromSMILES("CNCO");
+        debug.perceiveSybylAtomTypes(mol);
+        // would like to test more, but the method does not return anything
+    }
 
     /**
      * Test that sybyl atom typing for 232 mols in an SDF does not
      * throw exception
-     * @throws CoreException
-     * @throws BioclipseException
-     * @throws IOException
-     * @throws FileNotFoundException
      * @throws Exception
      */
-    @Test public void testDepictSybylAtomTypesFromSDF() throws FileNotFoundException, IOException, BioclipseException, CoreException{
-        CDKManager cdk = new CDKManager();
-
-        String path = getClass().getResource("/testFiles/m2d_ref_232.sdf").getPath();
-        List<ICDKMolecule> mols = cdk.loadMolecules( new MockIFile(path),
-                                                     new NullProgressMonitor());
+    @Test public void testDepictSybylAtomTypesFromSDF() throws Exception {
+        URI uri = getClass().getResource("/testFiles/m2d_ref_232.sdf").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        List<ICDKMolecule> mols = cdk.loadMolecules( path);
 
         int cnt=0;
         for (ICDKMolecule mol : mols){
@@ -188,8 +191,5 @@ public class CDKDebugManagerTest extends AbstractManagerTest {
         assertEquals("C.ar", mol2.getAtomContainer().getAtom(3).getAtomTypeName());
         assertEquals("C.ar", mol2.getAtomContainer().getAtom(4).getAtomTypeName());
         assertEquals("C.ar", mol2.getAtomContainer().getAtom(5).getAtomTypeName());
-
-
     }
-
 }

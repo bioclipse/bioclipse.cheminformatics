@@ -7,49 +7,60 @@
                       http://www.springframework.org/schema/osgi 
                       http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
-  <!-- Gets the recording advice -->
   <osgi:reference id="recordingAdvice" 
                   interface="net.bioclipse.recording.IRecordingAdvice" />
 
-  <osgi:reference id="createJobAdvice"
-                  interface="net.bioclipse.ui.jobs.ICreateJobAdvice" />
+  <osgi:reference id="javaManagerDispatcherAdvisor"
+		interface="net.bioclipse.managers.business.IJavaManagerDispatcherAdvisor" />
 
-  <!--+ 
-      | Point cut advisor that inserts the recording advice on all methods.
-      | (The class does nothing on toString() 
-      |  since a regexp for that behavior failed)
-      +-->
+  <osgi:reference id="javaScriptManagerDispatcherAdvisor"
+		interface="net.bioclipse.managers.business.IJavaScriptManagerDispatcherAdvisor" />
+
+  <osgi:reference id="wrapInProxyAdvice"
+		interface="net.bioclipse.recording.IWrapInProxyAdvice" />
+
   <bean id="recordingAdvisor"
   		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
         <property name="advice"  ref="recordingAdvice" />
   		<property name="pattern" value=".*" />
   </bean>
 
-  <!-- The target that later on will be proxied. Our manager class. -->
-  <bean id="exampleManagerTarget" 
+  <bean id="cdkDebugManagerTarget" 
         class="net.bioclipse.cdkdebug.business.CDKDebugManager">
   </bean>
-  
-  <!--+ 
-      | The proxy puts together the managerTarget, the pointcut advisor
-      | and defines which interfaces to be proxied 
-      +-->
-  <bean id="exampleManager"
+
+  <osgi:service id="javaCdkDebugManagerOSGI" ref="javaCdkDebugManager"
+      interface="net.bioclipse.cdkdebug.business.IJavaCDKDebugManager" />
+
+  <bean id="javaCdkDebugManager"
   		class="org.springframework.aop.framework.ProxyFactoryBean">
-  	<property name="target" 
-  	          ref="exampleManagerTarget" />
+  	<property name="target" ref="cdkDebugManagerTarget" />
   	<property name="proxyInterfaces" 
-  	          value="net.bioclipse.cdkdebug.business.ICDKDebugManager" />
+  	          value="net.bioclipse.cdkdebug.business.IJavaCDKDebugManager" />
   	<property name="interceptorNames">
         <list>
            <value>recordingAdvisor</value>
-           <value>createJobAdvice</value>
+           <value>wrapInProxyAdvice</value>
+           <value>javaManagerDispatcherAdvisor</value>
         </list>
     </property>
   </bean>
 
-  <!-- publishes the final manager (the proxy) -->
-  <osgi:service id="exampleManagerOSGI" 
-                ref="exampleManager"
-                interface="net.bioclipse.cdkdebug.business.ICDKDebugManager" />
+  <osgi:service id="javaScriptCdkDebugManagerOSGI" ref="javaScriptCdkDebugManager"
+      interface="net.bioclipse.cdkdebug.business.IJavaScriptCDKDebugManager" />
+
+  <bean id="javaScriptCdkDebugManager"
+  		class="org.springframework.aop.framework.ProxyFactoryBean">
+  	<property name="target" ref="cdkDebugManagerTarget" />
+  	<property name="proxyInterfaces" 
+  	          value="net.bioclipse.cdkdebug.business.IJavaScriptCDKDebugManager" />
+  	<property name="interceptorNames">
+        <list>
+           <value>recordingAdvisor</value>
+           <value>wrapInProxyAdvice</value>
+           <value>javaScriptManagerDispatcherAdvisor</value>
+        </list>
+    </property>
+  </bean>
+
 </beans>
