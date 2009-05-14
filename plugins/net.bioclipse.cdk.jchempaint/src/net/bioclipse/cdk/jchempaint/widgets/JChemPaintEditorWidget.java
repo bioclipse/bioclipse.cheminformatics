@@ -436,7 +436,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
      */
     public static ICDKMolecule generate2Dfrom3D( ICDKMolecule cdkMolecule ) {
 
-        ICDKManager cdk = net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
+        ICDKManager cdk = net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
         ICDKMolecule newMolecule;
         try {
             newMolecule = cdk.generate2dCoordinates( cdkMolecule );

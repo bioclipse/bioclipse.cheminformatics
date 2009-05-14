@@ -9,16 +9,16 @@
 
 package net.bioclipse.cdk.domain.tests;
 
-import net.bioclipse.cdk.business.test.CDKManagerPluginTest;
-import net.bioclipse.cdk.business.test.JSCDKManagerPluginTest;
+import net.bioclipse.cdk.business.test.JavaCDKManagerPluginTest;
+import net.bioclipse.cdk.business.test.JavaScriptCDKManagerPluginTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(value=Suite.class)
-@SuiteClasses( value = { CDKManagerPluginTest.class,
-                         JSCDKManagerPluginTest.class } )
+@SuiteClasses( value = { JavaCDKManagerPluginTest.class,
+                         JavaScriptCDKManagerPluginTest.class } )
 public class AllCDKBusinessPluginTestSuite {
 
 }

@@ -14,7 +14,7 @@ public class CDKMoleculeTester extends PropertyTester{
 
 		if (!(receiver instanceof ICDKMolecule)) return false;
 
-		ICDKManager cdk=Activator.getDefault().getCDKManager();
+		ICDKManager cdk=Activator.getDefault().getJavaCDKManager();
 		ICDKMolecule cdkmol = (ICDKMolecule) receiver;
 		
 

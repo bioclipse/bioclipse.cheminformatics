@@ -61,13 +61,13 @@ public class ExtractWizard extends Wizard implements INewWizard {
 	      if (sel instanceof IStructuredSelection) {
           IStructuredSelection ssel = (IStructuredSelection) sel;
           IFile toExtract=(IFile) ssel.getFirstElement();
-          List<IMolecule> result=Activator.getDefault().getCDKManager().extractFromSDFile( toExtract, Integer.parseInt( selectFilePage.getFrom() ), selectFilePage.getTo().equals( "" ) ? Integer.parseInt( selectFilePage.getFrom() ) : Integer.parseInt( selectFilePage.getTo() ) );
+          List<IMolecule> result=Activator.getDefault().getJavaCDKManager().extractFromSDFile( toExtract, Integer.parseInt( selectFilePage.getFrom() ), selectFilePage.getTo().equals( "" ) ? Integer.parseInt( selectFilePage.getFrom() ) : Integer.parseInt( selectFilePage.getTo() ) );
           if(result.size()==1){
               String filename=selectFilePage.getPathStr()+Path.SEPARATOR+selectFilePage.getFileName()+"."+MDLFormat.getInstance().getPreferredNameExtension();
-              Activator.getDefault().getCDKManager().saveMDLMolfile( (ICDKMolecule)result.get( 0 ), filename );
+              Activator.getDefault().getJavaCDKManager().saveMDLMolfile( (ICDKMolecule)result.get( 0 ), filename );
           }else{
               String filename=selectFilePage.getPathStr()+Path.SEPARATOR+selectFilePage.getFileName()+"."+SDFFormat.getInstance().getPreferredNameExtension();
-              Activator.getDefault().getCDKManager().saveMolecules( result, filename, (IChemFormat)SDFFormat.getInstance());
+              Activator.getDefault().getJavaCDKManager().saveMolecules( result, filename, (IChemFormat)SDFFormat.getInstance());
           }
 	      }
 	      return true;

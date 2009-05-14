@@ -57,7 +57,7 @@ public class MoleculesEditorContentProvider  implements
         
         Object element = null;
         try {
-        Iterator<ICDKMolecule> iter = Activator.getDefault().getCDKManager().createMoleculeIterator( file );
+        Iterator<ICDKMolecule> iter = Activator.getDefault().getJavaCDKManager().createMoleculeIterator( file );
         ICDKMolecule molecule;
             int count = 0;
             while (iter.hasNext()){

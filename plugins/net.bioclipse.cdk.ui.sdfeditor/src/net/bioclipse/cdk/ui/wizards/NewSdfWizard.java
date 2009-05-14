@@ -75,7 +75,7 @@ public class NewSdfWizard extends BasicNewResourceWizard{
                           Object selection=it.next();
                           if(selection instanceof IFile){
                                   try {
-                                          entries.add(Activator.getDefault().getCDKManager().loadMolecules((IFile)selection).get(0));
+                                          entries.add(Activator.getDefault().getJavaCDKManager().loadMolecules((IFile)selection).get(0));
                                   } catch (Exception e) {
                                           failures.add((IFile)selection);
                                   }
@@ -98,7 +98,7 @@ public class NewSdfWizard extends BasicNewResourceWizard{
                   if(entries.size()==0){
                       MessageDialog.openError(this.getShell(), "No valid entries found", "Your selection does not contain any valid molecule files. No file can be created!");
                   }else{
-                        Activator.getDefault().getCDKManager().saveSDFile(
+                        Activator.getDefault().getJavaCDKManager().saveSDFile(
                             newFile, entries, null
                         );
                         selectAndReveal(newFile);
@@ -114,7 +114,7 @@ public class NewSdfWizard extends BasicNewResourceWizard{
                                 doRecursion((IContainer)selection.members()[i], entries,failures);
                         if(selection.members()[i] instanceof IFile){
                                 try {
-                                        entries.add(Activator.getDefault().getCDKManager().loadMolecules((IFile)selection.members()[i]).get(0));
+                                        entries.add(Activator.getDefault().getJavaCDKManager().loadMolecules((IFile)selection.members()[i]).get(0));
                                 } catch (Exception e) {
                                         failures.add((IFile)selection.members()[i]);
                                 }

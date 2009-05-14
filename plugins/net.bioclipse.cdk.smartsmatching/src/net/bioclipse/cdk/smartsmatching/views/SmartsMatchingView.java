@@ -118,7 +118,7 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         viewer.setLabelProvider(new SmartsMatchingLabelProvider());
         viewer.setSorter(new ViewerSorter());
         
-        cdk=net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
+        cdk=net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
         
         //Read prefs for stored smarts
         smartsInView = SmartsMatchingPrefsHelper.getPreferences();

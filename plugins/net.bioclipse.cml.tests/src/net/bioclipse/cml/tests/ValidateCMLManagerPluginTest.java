@@ -36,7 +36,7 @@ public class ValidateCMLManagerPluginTest {
         net.bioclipse.ui.Activator.getDefault();
 
         cml = Activator.getDefault().getValidateCMLManager();
-        cdk = net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
+        cdk = net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
     }
 
     @Test

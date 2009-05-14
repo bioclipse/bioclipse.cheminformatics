@@ -56,7 +56,7 @@ public class AddEditSmartsDialog extends TitleAreaDialog{
             this.smartsWrapper=new SmartsWrapper();
         }
         
-        cdk=Activator.getDefault().getCDKManager();
+        cdk=Activator.getDefault().getJavaCDKManager();
 
     }
 

@@ -69,7 +69,7 @@ public class JChemPaintView extends ViewPart
     }
 
     private ICDKManager getCDKManager() {
-        return net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
+        return net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
     }
     /**
      * This is a callback that will allow us

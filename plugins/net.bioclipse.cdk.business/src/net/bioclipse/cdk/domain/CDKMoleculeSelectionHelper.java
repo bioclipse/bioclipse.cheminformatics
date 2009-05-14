@@ -38,7 +38,7 @@ public class CDKMoleculeSelectionHelper {
 
 		List<ICDKMolecule> mols=new ArrayList<ICDKMolecule>();
 
-		ICDKManager cdk=Activator.getDefault().getCDKManager();
+		ICDKManager cdk=Activator.getDefault().getJavaCDKManager();
 		
 		Iterator<?> it = ((IStructuredSelection) selection).iterator();
 		while(it.hasNext()){

@@ -23,7 +23,7 @@ public class CDKAdapterFactory implements IAdapterFactory {
                 if ( molecule == null ) {
                     try {
                         molecule = Activator.getDefault()
-                                            .getCDKManager()
+                                            .getJavaCDKManager()
                                             .loadMolecule( file );
                     } catch ( Exception e ) {
                         logger.debug( LogUtils.traceStringOf( e ));

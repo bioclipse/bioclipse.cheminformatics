@@ -18,7 +18,7 @@ public class JavaScriptInChIManagerPluginTest
     @BeforeClass public static void setup() {
         inchi = net.bioclipse.inchi.business.Activator.getDefault().
             getJavaScriptInChIManager();
-        cdk = net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
+        cdk = net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
     }
 
 }

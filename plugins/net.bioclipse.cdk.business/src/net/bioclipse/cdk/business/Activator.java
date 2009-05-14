@@ -78,7 +78,7 @@ public class Activator extends AbstractUIPlugin {
         return plugin;
     }
 
-    public ICDKManager getCDKManager() {
+    public ICDKManager getJavaCDKManager() {
         ICDKManager manager = null;
         try {
             manager = (ICDKManager) finderTracker.waitForService(1000*10);
@@ -93,7 +93,7 @@ public class Activator extends AbstractUIPlugin {
         return manager;
     }
     
-    public IJSCDKManager getJSCDKManager() {
+    public IJSCDKManager getJavaScriptCDKManager() {
         IJSCDKManager manager = null;
         try {
             manager = (IJSCDKManager) jsFinderTracker.waitForService(1000*10);

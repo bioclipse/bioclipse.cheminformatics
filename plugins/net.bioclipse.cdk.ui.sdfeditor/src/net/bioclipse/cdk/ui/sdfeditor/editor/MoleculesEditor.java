@@ -158,7 +158,7 @@ public class MoleculesEditor extends EditorPart implements
 
     private void getIndexFromInput(IEditorInput editorInput) {
 
-        ICDKManager cdkManager = Activator.getDefault().getCDKManager();
+        ICDKManager cdkManager = Activator.getDefault().getJavaCDKManager();
 
         SDFileIndex input = null;
         input = adapt(editorInput, SDFileIndex.class);

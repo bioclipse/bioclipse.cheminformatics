@@ -78,7 +78,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
             GeometryTools.has3DCoordinates(item.getAtomContainer()) ?
                 "yes" : "no"
         );
-        ICDKManager cdk = Activator.getDefault().getCDKManager();
+        ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
         valueMap.put(
             PROPERTY_FORMULA, cdk.molecularFormula(item)
         );

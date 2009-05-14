@@ -30,7 +30,7 @@ public class CDKManagerFactory implements IExecutableExtension,
                                        String propertyName, 
                                        Object data) throws CoreException {
         
-        cdkManager = Activator.getDefault().getJSCDKManager();
+        cdkManager = Activator.getDefault().getJavaScriptCDKManager();
         
         if (cdkManager == null ) {
             throw new IllegalStateException("Could not get the JS-CDKManager");

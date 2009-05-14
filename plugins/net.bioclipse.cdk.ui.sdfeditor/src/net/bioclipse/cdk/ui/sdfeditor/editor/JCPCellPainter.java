@@ -137,7 +137,7 @@ public class JCPCellPainter implements ICellPainter {
             try {
 
                 generatedAC = ((ICDKMolecule)Activator.getDefault()
-                        .getCDKManager()
+                        .getJavaCDKManager()
                         .generate2dCoordinates( mol ))
                         .getAtomContainer();
                 //FIXME work-around for bug 613

@@ -90,18 +90,18 @@ public class Create2dHandlerWithReset extends AbstractHandler {
                 ICDKMolecule mol;
                 try {
                     mol =
-                            Activator.getDefault().getCDKManager()
+                            Activator.getDefault().getJavaCDKManager()
                                     .loadMolecule(
                                                    (IFile) ssel.toArray()[i], new NullProgressMonitor() );
                     if(make3D){
                         mol =
                             (ICDKMolecule) Activator.getDefault()
-                                    .getCDKManager()
+                                    .getJavaCDKManager()
                                     .generate3dCoordinates( mol ) ;                    
                     }else{
                       mol =
                               (ICDKMolecule) Activator.getDefault()
-                                      .getCDKManager()
+                                      .getJavaCDKManager()
                                       .generate2dCoordinates( mol );
                     }
                     if(withReset){
@@ -115,7 +115,7 @@ public class Create2dHandlerWithReset extends AbstractHandler {
                     }
                     if ( makenewfile == SWT.YES ) {
                         try {
-                            Activator.getDefault().getCDKManager()
+                            Activator.getDefault().getJavaCDKManager()
                                     .saveMolecule(
                                                    mol,
                                                    (IFile) ssel.toArray()[i],
@@ -127,7 +127,7 @@ public class Create2dHandlerWithReset extends AbstractHandler {
                             try {
                                 Activator
                                         .getDefault()
-                                        .getCDKManager()
+                                        .getJavaCDKManager()
                                         .saveMolecule(
                                                        mol,
                                                        filestosaveto[i],

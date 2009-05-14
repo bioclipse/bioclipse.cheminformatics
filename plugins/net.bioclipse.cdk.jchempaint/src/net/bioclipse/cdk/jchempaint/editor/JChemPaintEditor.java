@@ -131,7 +131,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
     @Override
     public void doSave( IProgressMonitor monitor ) {
-        ICDKManager cdk = Activator.getDefault().getCDKManager();
+        ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
         ICDKMolecule model = widget.getMolecule();
         if(model.getResource() == null) {
             doSaveAs();
@@ -183,11 +183,11 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
             // do a nasty trick... the SaveAs dialog does not allow us to
             // ask for a format (yet), so guess something from the file
             // extension
-            IChemFormat format = Activator.getDefault().getCDKManager()
+            IChemFormat format = Activator.getDefault().getJavaCDKManager()
                 .guessFormatFromExtension(path.toString());
             if (format == null) format = (IChemFormat)CMLFormat.getInstance();
 
-            Activator.getDefault().getCDKManager().saveMolecule(
+            Activator.getDefault().getJavaCDKManager().saveMolecule(
                 model, file, format, true
             );
             setInput( new FileEditorInput(file) );
@@ -261,7 +261,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
             IFile file = (IFile) input.getAdapter( IFile.class );
             if(file != null && file.exists()) {
                 try {
-                    Activator.getDefault().getCDKManager().loadMolecule( file,
+                    Activator.getDefault().getJavaCDKManager().loadMolecule( file,
                          new BioclipseUIJob<ICDKMolecule>() {
 
                         @Override

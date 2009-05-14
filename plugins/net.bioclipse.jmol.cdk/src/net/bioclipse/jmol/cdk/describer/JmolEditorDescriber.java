@@ -15,7 +15,7 @@ public class JmolEditorDescriber implements IBioObjectDescriber{
     
     
     public JmolEditorDescriber() {
-        cdk=Activator.getDefault().getCDKManager();
+        cdk=Activator.getDefault().getJavaCDKManager();
     }
     
     public String getPreferredEditorID(IBioObject object) {

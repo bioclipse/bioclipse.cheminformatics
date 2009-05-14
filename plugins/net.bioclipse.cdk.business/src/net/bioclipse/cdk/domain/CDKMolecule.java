@@ -240,7 +240,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
             return getClass().getSimpleName() + ":" + hashCode();
 
         return getClass().getSimpleName() + ":" 
-               + Activator.getDefault().getCDKManager().molecularFormula(this);
+               + Activator.getDefault().getJavaCDKManager().molecularFormula(this);
     }
 
     public String getInChI(IMolecule.Property urgency) throws BioclipseException {

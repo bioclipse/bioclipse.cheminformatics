@@ -14,7 +14,7 @@ public class JCPEditorDescriber implements IBioObjectDescriber {
 
     public JCPEditorDescriber() {
 
-        cdk=Activator.getDefault().getCDKManager();
+        cdk=Activator.getDefault().getJavaCDKManager();
     }
 
     public String getPreferredEditorID( IBioObject object ) {

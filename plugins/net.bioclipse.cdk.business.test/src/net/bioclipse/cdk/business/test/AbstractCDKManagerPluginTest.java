@@ -102,7 +102,7 @@ public abstract class AbstractCDKManagerPluginTest {
 
         try {
             cdkdebug = net.bioclipse.cdkdebug.Activator
-                          .getDefault().getManager();
+                          .getDefault().getJavaManager();
         } 
         catch (RuntimeException exception) {
             fail("Failed to instantiate the CDK managers.");

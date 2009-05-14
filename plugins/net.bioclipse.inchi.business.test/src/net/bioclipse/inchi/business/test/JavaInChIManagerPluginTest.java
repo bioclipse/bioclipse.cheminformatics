@@ -16,7 +16,7 @@ public class JavaInChIManagerPluginTest extends AbstractInChIManagerPluginTest {
 
     @BeforeClass public static void setup() {
         inchi = net.bioclipse.inchi.business.Activator.getDefault().getJavaInChIManager();
-        cdk = net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
+        cdk = net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
     }
 
 }

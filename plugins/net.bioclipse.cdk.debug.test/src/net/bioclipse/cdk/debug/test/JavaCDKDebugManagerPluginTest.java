@@ -19,7 +19,7 @@ public class JavaCDKDebugManagerPluginTest extends
         debug = net.bioclipse.cdkdebug.Activator.getDefault()
             .getJavaManager();
         cdk = net.bioclipse.cdk.business.Activator.getDefault()
-            .getCDKManager();
+            .getJavaCDKManager();
     }
 
 }

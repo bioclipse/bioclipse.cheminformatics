@@ -136,7 +136,7 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
             try {
 
                 generatedAC = ((ICDKMolecule)Activator.getDefault()
-                        .getCDKManager()
+                        .getJavaCDKManager()
                         .generate2dCoordinates( mol ))
                         .getAtomContainer();
                 result[0] = generatedAC;

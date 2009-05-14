@@ -17,7 +17,7 @@ import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.junit.BeforeClass;
 
-public class CDKManagerPluginTest extends AbstractCDKManagerPluginTest {
+public class JavaCDKManagerPluginTest extends AbstractCDKManagerPluginTest {
 
     @BeforeClass 
     public static void setupCDKManagerPluginTest() {
@@ -25,7 +25,7 @@ public class CDKManagerPluginTest extends AbstractCDKManagerPluginTest {
         AbstractCDKManagerPluginTest.setupCDKManagerPluginTest();
         
         try {
-            cdk = Activator.getDefault().getCDKManager();
+            cdk = Activator.getDefault().getJavaCDKManager();
         } 
         catch (RuntimeException exception) {
             fail("Failed to instantiate the CDK managers.");

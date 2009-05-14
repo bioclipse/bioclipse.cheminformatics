@@ -122,7 +122,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
     public JmolView() {
         history = new ArrayList<String>(50);
         jmolPanel= new JmolPanel(this, new CdkJmolAdapter());
-        cdk=net.bioclipse.cdk.business.Activator.getDefault().getCDKManager();
+        cdk=net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
         setCleared( true );
         lastSelected=new ArrayList();
     }

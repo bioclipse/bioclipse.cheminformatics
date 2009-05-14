@@ -72,7 +72,7 @@ public class SDFAdapterFactory implements IAdapterFactory {
             file.create( new ByteArrayInputStream( data.getBytes() ), true,
                          new NullProgressMonitor() );
             ICDKMolecule result =
-                    Activator.getDefault().getCDKManager().loadMolecule( file );
+                    Activator.getDefault().getJavaCDKManager().loadMolecule( file );
  
             return result;
         }catch(CoreException e){
