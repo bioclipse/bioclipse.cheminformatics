@@ -32,6 +32,8 @@ import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.*;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.action.*;
@@ -414,15 +416,40 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         
         if (!(isSupportedEditor(part))) return;
         if (part==currentPart) return;
+        
+        if ( part instanceof JChemPaintEditor ) {
+            JChemPaintEditor jcp = (JChemPaintEditor) part;
 
-        if (editorSmartsMap.keySet().contains( part )){
-            //Use existing
-            smartsInView=editorSmartsMap.get( part );
-        }else {
-            //Create new
-            List<SmartsWrapper> newSmartsInView = SmartsMatchingPrefsHelper.getPreferences();
-            editorSmartsMap.put( part, newSmartsInView );
-            smartsInView=newSmartsInView;
+            if (editorSmartsMap.keySet().contains( part )){
+                //Use existing
+                smartsInView=editorSmartsMap.get( part );
+            }else {
+                //Create new
+                List<SmartsWrapper> newSmartsInView = SmartsMatchingPrefsHelper.getPreferences();
+                
+                // Register interest in changes from JCP editor
+                jcp.addPropertyChangedListener( new IPropertyChangeListener() {
+                    public void propertyChange( PropertyChangeEvent event ) {
+
+                        if(event.getProperty().equals( JChemPaintEditor.
+                                                       STRUCUTRE_CHANGED_EVENT )) {
+
+                            // editor model has changed, clear everything for now
+                            //TODO: start new match in background thread
+                            logger.debug(
+                               ((JChemPaintEditor)event.getSource()).getTitle()
+                               +" editor has changed");
+                            
+                            smartsInView = SmartsMatchingPrefsHelper.getPreferences();
+                            viewer.setInput(smartsInView);
+                        }
+                    }
+                });
+                
+                editorSmartsMap.put( part, newSmartsInView );
+                smartsInView=newSmartsInView;
+                
+            }
         }
 
         currentPart=part;
