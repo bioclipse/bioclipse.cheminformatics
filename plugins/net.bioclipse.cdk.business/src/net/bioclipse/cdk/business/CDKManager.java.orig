@@ -2330,15 +2330,18 @@ public class CDKManager implements ICDKManager {
         }
         return molecule;
     }
+<<<<<<< HEAD:plugins/net.bioclipse.cdk.business/src/net/bioclipse/cdk/business/CDKManager.java
 
     public boolean isConnected(IMolecule molecule) throws BioclipseException {
         List<IAtomContainer> containers = partition(molecule);
         return containers.size() == 1;
-    }
+=======
     
     public BioclipseJob<ICDKMolecule> fromSMILES( String SMILES,
                                                   BioclipseJobUpdateHook hook ) {
+
         // TODO Auto-generated method stub
         return null;
+>>>>>>> added stub for method delcared in the cdk interface. (just to get things to compile, needs to be changed):plugins/net.bioclipse.cdk.business/src/net/bioclipse/cdk/business/CDKManager.java
     }
 }
