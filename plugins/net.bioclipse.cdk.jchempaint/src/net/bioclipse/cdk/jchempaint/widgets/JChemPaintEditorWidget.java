@@ -29,8 +29,8 @@ import net.bioclipse.cdk.jchempaint.editor.SWTMouseEventRelay;
 import net.bioclipse.cdk.jchempaint.undoredo.SWTUndoRedoFactory;
 import net.bioclipse.cdk.jchempaint.view.ChoiceGenerator;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
-import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionException;
@@ -49,12 +49,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -85,6 +81,7 @@ import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.SelectAtomGenerator;
 import org.openscience.cdk.renderer.generators.SelectBondGenerator;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
+import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 
@@ -135,28 +132,23 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         java.awt.Color color =
             createFromSWT(
-                    getDisplay().getSystemColor(SWT.COLOR_LIST_SELECTION ));
+                          getDisplay().getSystemColor(SWT.COLOR_LIST_SELECTION ));
         getRenderer().getRenderer2DModel().setSelectedPartColor(color);
 
         setupControllerHub();
 
-       addControlListener( new ControlAdapter() {
+        addControlListener( new ControlAdapter() {
 
-           public void controlResized( ControlEvent e ) {
+            public void controlResized( ControlEvent e ) {
 
-               resizeControl();
-               redraw();
-           }
-       });
+                resizeControl();
+                redraw();
+            }
+        });
 
     }
 
-    public Image snapshot() {
-        Rectangle area = getClientArea();
-        Image image = new Image(getDisplay(), area.width, area.height);
-        paint(new GC(image));
-        return image;
-    }
+
 
     private void setupControllerHub( ) {
         IChemModel chemModel =
@@ -275,28 +267,15 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         });
     }
 
-    private void paintControl( PaintEvent event ) {
-        paint(event.gc);
-    }
-
-    private void paint(GC gc) {
-        setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-        // drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
-
-        for(Message message: messages) {
-            paintMessage( gc, message ,getClientArea());
-        }
-
-        if (model != null) {
-            SWTRenderer visitor = new SWTRenderer(gc);
-            Renderer renderer = getRenderer();
+    @Override
+    protected void paint(IDrawVisitor visitor ) {
+    Renderer renderer = getRenderer();
 
             if (isScrolling) {
                 renderer.repaint(visitor);
             } else {
                 renderer.paintChemModel(model, visitor);
             }
-        }
     }
 
     private Rectangle getDiagramBounds() {
@@ -312,8 +291,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         try {
             jcpprop.applyProperties(hub.getRenderer().getRenderer2DModel());
         } catch (BioclipseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LogUtils.debugTrace( logger, e );
         }
     }
 
@@ -341,20 +319,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         this.isScrolling = isScrolling;
     }
 
-    @Override
-    protected void setupPaintListener() {
-        addPaintListener( new PaintListener() {
-
-            public void paintControl( PaintEvent event ) {
-
-                JChemPaintEditorWidget.this.paintControl( event );
-            }
-        } );
-
-    }
-
     public void reset() {
-        this.isNew = true;
         if(hub!=null) {
             Rectangle clientRect = getClientArea();
             java.awt.Rectangle rect = new java.awt.Rectangle( clientRect.x,

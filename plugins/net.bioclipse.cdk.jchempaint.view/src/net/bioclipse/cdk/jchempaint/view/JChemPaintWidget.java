@@ -26,6 +26,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
@@ -40,7 +41,7 @@ import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.RingGenerator;
-import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
+import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 
 /**
  * @author arvid
@@ -95,12 +96,7 @@ public class JChemPaintWidget extends Canvas {
 
     private SWTFontManager fontManager;
 
-    protected Set<Message> messages = new HashSet<Message>();
-
-    /**
-     * A new model has to reset the center
-     */
-    protected boolean isNew = true;
+    private Set<Message> messages = new HashSet<Message>();
 
     public JChemPaintWidget(Composite parent, int style) {
 
@@ -132,7 +128,7 @@ public class JChemPaintWidget extends Canvas {
 
             public void paintControl( PaintEvent event ) {
 
-                JChemPaintWidget.this.paintControl( event );
+                JChemPaintWidget.this.paintControl( event.gc );
             }
         } );
     }
@@ -152,42 +148,43 @@ public class JChemPaintWidget extends Canvas {
         return generatorList;
     }
 
-    private void paintControl( PaintEvent event ) {
 
-        //drawBackground( event.gc, 0, 0, getSize().x, getSize().y );
 
-        if ( model == null ) {
-            setBackground( getParent().getBackground() );
-            return;
-        } else
-            setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
+    public Image snapshot() {
 
-        Rectangle c = getClientArea();
-        Rectangle2D drawArea = new Rectangle2D.Double( c.x, c.y,
-                                                         c.width, c.height);
+        Rectangle area = getClientArea();
+        Image image = new Image( getDisplay(), area.width, area.height );
+        paintControl(  new GC( image ) );
+        return image;
+    }
 
-        for(Message message: messages) {
-            paintMessage( event.gc, message ,c);
-        }
+    protected void paint(IDrawVisitor visitor) {
 
-        SWTRenderer visitor = new SWTRenderer( event.gc );
+            Rectangle c = getClientArea();
+            Rectangle2D drawArea = new Rectangle2D.Double( c.x, c.y,
+                                                           c.width, c.height);
+            renderer.paintChemModel( model, visitor,drawArea,true );
+    }
 
-        renderer.paintChemModel( model, visitor,drawArea,true );
+    private void paintControl( GC gc ) {
 
-        if( ChemModelManipulator.getAtomCount( model )!=0) {
-            isNew = false;
+        if(model != null ) {
+            for(Message message: messages) {
+            paintMessage( gc, message ,getClientArea());
+            }
+            SWTRenderer visitor = new SWTRenderer( gc );
+            paint(visitor);
         }
     }
 
     public void setModel(IChemModel model) {
-        if(   model!=null
-          ) {
-            if(this.model !=model)
-                isNew = true;
+        if ( model != null ) {
             this.model = model;
+            setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
             updateView( true );
         } else {
             this.model = null;
+            setBackground( getParent().getBackground() );
             updateView( false );
         }
     }
