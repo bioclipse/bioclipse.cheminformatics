@@ -48,7 +48,7 @@ public class TestCDKMolecule {
     //Do not use SPRING OSGI for this manager
     //since we are only testing the implementations of the manager methods
     @BeforeClass
-    public void initialize() {
+    public static void initialize() {
         cdk = new CDKManager();
     }
 
