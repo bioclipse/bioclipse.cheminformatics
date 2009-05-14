@@ -31,10 +31,13 @@ import net.bioclipse.core.Recorded;
 import net.bioclipse.core.TestClasses;
 import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.business.IBioclipseManager;
-import net.bioclipse.core.domain.BioList;
+<<<<<<< HEAD:plugins/net.bioclipse.cdk.business/src/net/bioclipse/cdk/business/ICDKManager.java.orig
+<<<<<<< HEAD:plugins/net.bioclipse.cdk.business/src/net/bioclipse/cdk/business/ICDKManager.java
+import net.bioclipse.managers.business.IBioclipseManager;
 =======
 >>>>>>> Start of refactoring CDKManager:plugins/net.bioclipse.cdk.business/src/net/bioclipse/cdk/business/ICDKManager.java
+=======
+>>>>>>> Redid layout of ICDKManager:plugins/net.bioclipse.cdk.business/src/net/bioclipse/cdk/business/ICDKManager.java.orig
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
@@ -72,8 +75,17 @@ public interface ICDKManager extends IBioclipseManager {
        "testFingerPrintMatch,testSubStructureMatch,testSMARTSMatching," +
        "testSave")
     public ICDKMolecule fromSMILES(String SMILES)
+<<<<<<< HEAD:plugins/net.bioclipse.cdk.business/src/net/bioclipse/cdk/business/ICDKManager.java.orig
+        throws BioclipseException;
+
+    public BioclipseJob<ICDKMolecule> fromSMILES(String SMILES,
+        BioclipseJobUpdateHook hook);    
+=======
                         throws BioclipseException;
 
+    public BioclipseJob<ICDKMolecule> fromSMILES( String SMILES,
+                                                  BioclipseJobUpdateHook hook );    
+>>>>>>> Redid layout of ICDKManager:plugins/net.bioclipse.cdk.business/src/net/bioclipse/cdk/business/ICDKManager.java.orig
     
     /**
      * Perceives aromaticity on an IMolecule
@@ -113,7 +125,11 @@ public interface ICDKManager extends IBioclipseManager {
                         "in the file ")
     @TestMethods("testLoadMoleculeFromCMLFile,testLoadCMLFromFile2")
     public ICDKMolecule loadMolecule( String path )
+<<<<<<< HEAD:plugins/net.bioclipse.cdk.business/src/net/bioclipse/cdk/business/ICDKManager.java.orig
+        throws IOException, BioclipseException, CoreException;
+=======
                         throws IOException, BioclipseException, CoreException;
+>>>>>>> Redid layout of ICDKManager:plugins/net.bioclipse.cdk.business/src/net/bioclipse/cdk/business/ICDKManager.java.orig
 
     /**
      * @param file
@@ -1001,7 +1017,30 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
+<<<<<<< HEAD:plugins/net.bioclipse.cdk.business/src/net/bioclipse/cdk/business/ICDKManager.java.orig
+=======
+<<<<<<< HEAD:plugins/net.bioclipse.cdk.business/src/net/bioclipse/cdk/business/ICDKManager.java
+>>>>>>> Redid layout of ICDKManager:plugins/net.bioclipse.cdk.business/src/net/bioclipse/cdk/business/ICDKManager.java.orig
          params="IFile file, IProgressMonitor monitor",
+         methodSummary="Reads a file into an  ICDKReaction.")
+    @TestMethods("testLoadReaction_IFile_IProgressMonitor")
+    public List<ICDKReaction> loadReactions( IFile file, IProgressMonitor monitor )
+                                                                            throws IOException,
+                                                                            BioclipseException,
+                                                                            CDKException,
+                                                                            CoreException;
+
+    @Recorded
+    @PublishedMethod(
+         params="InputStream instream, IProgressMonitor monitor, IChemFormat format",
+         methodSummary="Reads a stream into an  ICDKReaction.")
+    @TestMethods("testLoadReaction_InputStream_IProgressMonitor_IChemFormat")
+    public List<ICDKReaction> loadReactions( InputStream instream,
+                                      IProgressMonitor monitor,
+                                      IChemFormat format )
+                                                          throws BioclipseException,
+                                                          CDKException,
+                                                          IOException;
 
     @Recorded
     @PublishedMethod(
