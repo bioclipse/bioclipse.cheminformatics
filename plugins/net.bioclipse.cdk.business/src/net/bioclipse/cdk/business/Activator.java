@@ -49,12 +49,12 @@ public class Activator extends AbstractUIPlugin {
         super.start(context);
         plugin = this;
         finderTracker = new ServiceTracker( context, 
-                                            ICDKManager.class.getName(), 
+                                            IJavaCDKManager.class.getName(), 
                                             null );
         
         finderTracker.open();
         jsFinderTracker = new ServiceTracker( context, 
-                                            IJSCDKManager.class.getName(), 
+                                            IJavaScriptCDKManager.class.getName(), 
                                             null );
                                     
         jsFinderTracker.open();
@@ -93,10 +93,10 @@ public class Activator extends AbstractUIPlugin {
         return manager;
     }
     
-    public IJSCDKManager getJavaScriptCDKManager() {
-        IJSCDKManager manager = null;
+    public IJavaScriptCDKManager getJavaScriptCDKManager() {
+        IJavaScriptCDKManager manager = null;
         try {
-            manager = (IJSCDKManager) jsFinderTracker.waitForService(1000*10);
+            manager = (IJavaScriptCDKManager) jsFinderTracker.waitForService(1000*10);
         } catch (InterruptedException e) {
             LogUtils.debugTrace(logger, e);
         }
