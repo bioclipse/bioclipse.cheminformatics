@@ -68,18 +68,17 @@ public class TanimotoWizard extends Wizard {
         try {
             ICDKManager cdkmanager =
                     net.bioclipse.cdk.business.Activator.getDefault()
-                            .getCDKManager();
+                            .getJavaCDKManager();
             IStructuredSelection referenceselection =
                     selectFilePage.getSelectedRes();
             IMolecule reference =
                     cdkmanager.loadMolecule( (IFile) referenceselection
-                            .getFirstElement(), new NullProgressMonitor() );
+                            .getFirstElement());
             List<IMolecule> mols = new ArrayList<IMolecule>();
             DecimalFormat formatter = new DecimalFormat( "0.00" );
             for ( int i = 0; i < ssel.size(); i++ ) {
                 ICDKMolecule mol =
-                        cdkmanager.loadMolecule( (IFile) ssel.toArray()[i],
-                                                 new NullProgressMonitor() );
+                        cdkmanager.loadMolecule( (IFile) ssel.toArray()[i]);
                 mol
                         .getAtomContainer()
                         .setProperty(
@@ -103,7 +102,7 @@ public class TanimotoWizard extends Wizard {
                                                                    virtualselection,
                                                                    "similarity",
                                                                    ".sdf" ) );
-            cdkmanager.saveSDFile( sdfile, mols, new NullProgressMonitor() );
+            cdkmanager.saveSDFile( sdfile, mols);
             net.bioclipse.ui.business.Activator.getDefault().getUIManager()
                     .open( sdfile );
         } catch ( Exception ex ) {

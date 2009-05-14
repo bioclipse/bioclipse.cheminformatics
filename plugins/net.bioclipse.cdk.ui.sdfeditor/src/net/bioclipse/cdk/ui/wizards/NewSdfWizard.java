@@ -99,7 +99,7 @@ public class NewSdfWizard extends BasicNewResourceWizard{
                       MessageDialog.openError(this.getShell(), "No valid entries found", "Your selection does not contain any valid molecule files. No file can be created!");
                   }else{
                         Activator.getDefault().getJavaCDKManager().saveSDFile(
-                            newFile, entries, null
+                            newFile, entries
                         );
                         selectAndReveal(newFile);
                   }

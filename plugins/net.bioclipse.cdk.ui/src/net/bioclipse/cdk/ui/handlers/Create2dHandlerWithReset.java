@@ -19,7 +19,6 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -91,8 +90,7 @@ public class Create2dHandlerWithReset extends AbstractHandler {
                 try {
                     mol =
                             Activator.getDefault().getJavaCDKManager()
-                                    .loadMolecule(
-                                                   (IFile) ssel.toArray()[i], new NullProgressMonitor() );
+                                    .loadMolecule((IFile) ssel.toArray()[i]);
                     if(make3D){
                         mol =
                             (ICDKMolecule) Activator.getDefault()

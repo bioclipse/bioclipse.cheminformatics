@@ -253,7 +253,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
             }
         }
         IInChIManager inchi = net.bioclipse.inchi.business.Activator.
-            getDefault().getInChIManager();
+            getDefault().getJavaInChIManager();
         try {
             cachedInchi = inchi.generate(this);
             return cachedInchi.getValue();
@@ -273,7 +273,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
             }
         }
         IInChIManager inchi = net.bioclipse.inchi.business.Activator.
-            getDefault().getInChIManager();
+            getDefault().getJavaInChIManager();
         try {
             cachedInchi = inchi.generate(this);
             return cachedInchi.getKey();

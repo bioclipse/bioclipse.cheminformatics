@@ -54,7 +54,7 @@ public class MoleculesFromSMI implements IMoleculesFromFile {
 
        ICDKManager manager = Activator.getDefault().getJavaCDKManager();
        try {
-        List<ICDKMolecule> mols = manager.loadSMILESFile( file, monitor );
+        List<ICDKMolecule> mols = manager.loadSMILESFile( file );
         for(int i=0;i<mols.size();i++) {
             ICDKMolecule molecule = mols.get( i );
             SDFElement element = new SDFElement( file,

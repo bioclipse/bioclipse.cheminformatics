@@ -22,7 +22,6 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -56,20 +55,16 @@ public class CalculateTanimotoHandler extends AbstractHandler {
                     IStructuredSelection ssel = (IStructuredSelection) sel;
                     ICDKManager cdkmanager =
                             net.bioclipse.cdk.business.Activator.getDefault()
-                                    .getCDKManager();
+                                    .getJavaCDKManager();
                     // In case of two files, we compare each other, else we ask
                     // for a comparision file
                     if ( ssel.toArray().length == 2 ) {
                         ICDKMolecule calculateFor =
                                 cdkmanager
-                                        .loadMolecule(
-                                                       (IFile) ssel.toArray()[0],
-                                                       new NullProgressMonitor() );
+                                    .loadMolecule((IFile) ssel.toArray()[0]);
                         ICDKMolecule reference =
                                 cdkmanager
-                                        .loadMolecule(
-                                                       (IFile) ssel.toArray()[1],
-                                                       new NullProgressMonitor() );
+                                    .loadMolecule((IFile) ssel.toArray()[1]);
                         double similarity =
                                 cdkmanager.calculateTanimoto( calculateFor,
                                                               reference );
