@@ -23,6 +23,10 @@ import net.bioclipse.core.domain.IMolecule;
 public class CDKConformer extends CDKMolecule implements ICDKMolecule {
 
     private ConformerContainer conformerContainer;
+    
+    //needed in order to be able to proxy
+    CDKConformer() {
+    }
 
     public CDKConformer(ConformerContainer conformerContainer) {
         super(null);
