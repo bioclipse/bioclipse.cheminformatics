@@ -7,7 +7,7 @@
  *
  *******************************************************************************/
 
-package net.bioclipse.cdk.domain.tests;
+package net.bioclipse.cdk;
 
 import net.bioclipse.cdk.business.test.JavaCDKManagerPluginTest;
 import net.bioclipse.cdk.business.test.JavaScriptCDKManagerPluginTest;
