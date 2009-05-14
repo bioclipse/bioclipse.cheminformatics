@@ -327,6 +327,15 @@ public class CDKManagerTest extends AbstractManagerTest {
    	}
     
     @Test
+<<<<<<< HEAD:plugins/net.bioclipse.cdk.business.test/src/net/bioclipse/cdk/business/test/CDKManagerTest.java
+    public void testCDKMoleculeFromIMolecule() throws BioclipseException {
+        SmilesGenerator generator = new SmilesGenerator();
+        String indoleSmiles  = generator
+                               .createSMILES( MoleculeFactory
+                                              .makeIndole() );
+        IMoleculeManager molecule = new MoleculeManager();
+        IMolecule m = molecule.fromSmiles( indoleSmiles );
+        ICDKMolecule cdkm = cdk.create( m );
         assertEquals( cdkm.getSMILES(
             net.bioclipse.core.domain.IMolecule
                 .Property.USE_CACHED_OR_CALCULATED
@@ -337,6 +346,8 @@ public class CDKManagerTest extends AbstractManagerTest {
     }
     
     @Test
+=======
+>>>>>>> Fixed test classes so that they compile again:plugins/net.bioclipse.cdk.business.test/src/net/bioclipse/cdk/business/test/CDKManagerTest.java
     public void testSMARTSMatching() throws BioclipseException {
         String propaneSmiles = "CCC"; 
         
@@ -397,35 +408,6 @@ public class CDKManagerTest extends AbstractManagerTest {
         Assert.assertArrayEquals(new byte[]{10,32,32,67,68,75}, bytes);
     }
 
-    @Test
-    public void testSaveMoleculesSDF() throws BioclipseException, CDKException, CoreException, IOException {
-
-        System.out.println("*************************");
-        System.out.println("testSaveMoleculesSDF()");
-
-        MoleculeManager molmg=new MoleculeManager();
-        IMolecule mol1=molmg.fromSmiles("CCC");
-        IMolecule mol2=molmg.fromSmiles("C1CCCCC1CCO");
-        
-        List<IMolecule> mols=new ArrayList<IMolecule>();
-        mols.add(mol1);
-        mols.add(mol2);
-        
-        IFile target=new MockIFile();
-        cdk.saveMolecules(mols, target, (IChemFormat)SDFFormat.getInstance());
-
-        List<ICDKMolecule> readmols = cdk.loadMolecules(target);
-        assertEquals(2, readmols.size());
-        
-    	System.out.println("** Reading back created SDFile: ");
-        for (ICDKMolecule cdkmol : readmols){
-        	System.out.println("  - SMILES: " + cdk.calculateSMILES(cdkmol));
-        }
-        
-        System.out.println("*************************");
-        
-    }
-    
     @Test
     public void testSaveMoleculesSDFwithProps() throws BioclipseException, CDKException, CoreException, IOException {
 

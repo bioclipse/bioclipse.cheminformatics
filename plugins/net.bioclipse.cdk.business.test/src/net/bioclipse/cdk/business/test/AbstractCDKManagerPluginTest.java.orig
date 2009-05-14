@@ -373,11 +373,14 @@ public abstract class AbstractCDKManagerPluginTest {
     
     @Test
     public void testCDKMoleculeFromIMolecule() throws BioclipseException {
-        final String indoleSmiles  = new SmilesGenerator().createSMILES(
-        	MoleculeFactory.makeIndole()
-        );
-        ICDKMolecule cdkm = cdk.create(new MockMolecule(indoleSmiles));
-        assertEquals(indoleSmiles, cdkm.getSMILES());
+<<<<<<< HEAD:plugins/net.bioclipse.cdk.business.test/src/net/bioclipse/cdk/business/test/AbstractCDKManagerPluginTest.java
+        SmilesGenerator generator = new SmilesGenerator();
+        String indoleSmiles  = generator
+                               .createSMILES( MoleculeFactory
+                                              .makeIndole() );
+        IMoleculeManager molecule = new MoleculeManager();
+        IMolecule m = molecule.fromSmiles( indoleSmiles );
+        ICDKMolecule cdkm = cdk.create( m );
         assertEquals(
             cdkm.getSMILES(
                 net.bioclipse.core.domain.IMolecule
@@ -388,6 +391,13 @@ public abstract class AbstractCDKManagerPluginTest {
                     .Property.USE_CACHED_OR_CALCULATED
             )
          );
+=======
+        final String indoleSmiles  = new SmilesGenerator().createSMILES(
+        	MoleculeFactory.makeIndole()
+        );
+        ICDKMolecule cdkm = cdk.create(new MockMolecule(indoleSmiles));
+        assertEquals(indoleSmiles, cdkm.getSMILES());
+>>>>>>> Fixed test classes so that they compile again:plugins/net.bioclipse.cdk.business.test/src/net/bioclipse/cdk/business/test/AbstractCDKManagerPluginTest.java
     }
     
     @Test
