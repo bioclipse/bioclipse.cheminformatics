@@ -35,10 +35,14 @@ import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.vecmath.Point2d;
+import javax.vecmath.Point3d;
+
 import net.bioclipse.cdk.business.CDKManagerHelper;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.domain.ICDKReaction;
 import net.bioclipse.cdk.domain.MoleculesInfo;
 import net.bioclipse.cdkdebug.business.ICDKDebugManager;
 import net.bioclipse.core.MockIFile;
@@ -52,11 +56,13 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.content.IContentType;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.NoSuchAtomException;
@@ -70,6 +76,7 @@ import org.openscience.cdk.io.Mol2Reader;
 import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
+import org.openscience.cdk.io.formats.MDLRXNFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
 import org.openscience.cdk.io.formats.Mol2Format;
 import org.openscience.cdk.io.formats.SDFFormat;
@@ -108,6 +115,8 @@ public abstract class AbstractCDKManagerPluginTest {
 
         System.out.println("mol: " + mol.toString());
         assertNotNull(mol);
+        Assert.assertNotSame(0, mol.getAtomContainer().getAtomCount());
+        Assert.assertNotSame(0, mol.getAtomContainer().getBondCount());
     }
 
     @Test
@@ -364,6 +373,15 @@ public abstract class AbstractCDKManagerPluginTest {
          );
     }
     
+    @Test
+    public void testStructureMatches() throws BioclipseException {
+        ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
+        ICDKMolecule molecule2 = cdk.fromSMILES("CCCBr");
+        ICDKMolecule molecule3 = cdk.fromSMILES("C1CCBrC1");
+        assertTrue(cdk.areIsomorphic(molecule, molecule2));
+        Assert.assertFalse(cdk.areIsomorphic(molecule, molecule3));
+    }
+
     @Test
     public void testSMARTSMatching() throws BioclipseException {
         String propaneSmiles = "CCC"; 
@@ -1479,5 +1497,283 @@ public abstract class AbstractCDKManagerPluginTest {
 
 		public Object getAdapter(Class adapter) { return null; }
 	}
+    
+    @Test public void testAddExplicitHydrogens() throws Exception {
+        ICDKMolecule molecule = cdk.fromSMILES("C");
+        assertEquals(1, molecule.getAtomContainer().getAtomCount());
+        cdk.addExplicitHydrogens(molecule);
+        assertEquals(5, molecule.getAtomContainer().getAtomCount());
+        assertEquals(0, molecule.getAtomContainer().getAtom(0).getHydrogenCount());
+    }
 
+    @Test public void testBug691() throws Exception {
+        ICDKMolecule molecule = cdk.fromSMILES("C(C1C(C(C(C(O1)O)O)O)O)O");
+        assertEquals(12, molecule.getAtomContainer().getAtomCount());
+        cdk.addExplicitHydrogens(molecule);
+        assertEquals(24, molecule.getAtomContainer().getAtomCount());
+        assertEquals(0, molecule.getAtomContainer().getAtom(0).getHydrogenCount());
+    }
+
+    @Test public void testAddImplicitHydrogens() throws Exception {
+        ICDKMolecule molecule = cdk.fromSMILES("C");
+        assertEquals(1, molecule.getAtomContainer().getAtomCount());
+        cdk.addImplicitHydrogens(molecule);
+        assertEquals(1, molecule.getAtomContainer().getAtomCount());
+        assertEquals(4, molecule.getAtomContainer().getAtom(0).getHydrogenCount());
+    }
+
+    @Test public void testGenerate3DCoordinates() throws Exception {
+        List<IMolecule> molecule = new ArrayList<IMolecule>();
+        molecule.add( cdk.fromSMILES("CCC"));
+        molecule.add( cdk.fromSMILES("C1CCCCC1"));
+        assertEquals(3, ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtomCount());
+        assertEquals(6, ((ICDKMolecule)molecule.get( 1 )).getAtomContainer().getAtomCount());
+        Assert.assertNull(((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom(0).getPoint3d());
+        Assert.assertNull(((ICDKMolecule)molecule.get( 1 )).getAtomContainer().getAtom(0).getPoint3d());
+        ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom( 0 ).setPoint2d( new Point2d(0,0) );
+        ((ICDKMolecule)molecule.get( 1 )).getAtomContainer().getAtom( 0 ).setPoint2d( new Point2d(0,0) );
+        cdk.generate3dCoordinates(molecule);
+        assertNotNull(((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom(0).getPoint3d());
+        assertNotNull(((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom(0).getPoint2d());
+        assertNotNull(((ICDKMolecule)molecule.get( 1 )).getAtomContainer().getAtom(0).getPoint3d());
+        assertNotNull(((ICDKMolecule)molecule.get( 1 )).getAtomContainer().getAtom(0).getPoint2d());
+    }
+
+    @Test public void testGenerate3DCoordinatesSingle() throws Exception {
+        List<IMolecule> molecule = new ArrayList<IMolecule>();
+        molecule.add( cdk.fromSMILES("CCC"));
+        assertEquals(3, ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtomCount());
+        Assert.assertNull(((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom(0).getPoint3d());
+        //2d coords should stay, we test that
+        ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom( 0 ).setPoint2d( new Point2d(0,0) );
+        cdk.generate3dCoordinates(molecule);
+        assertNotNull(((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom(0).getPoint3d());
+        assertNotNull(((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom(0).getPoint2d());
+    }
+
+    @Test public void testGenerate2DCoordinatesSingle() throws Exception {
+        List<IMolecule> molecule = new ArrayList<IMolecule>();
+        molecule.add(cdk.fromSMILES("CCCBr"));
+        assertEquals(4, ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtomCount());
+        Assert.assertNull(((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom(0).getPoint2d());
+        //3d coords should stay, we test that.
+        ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom( 0 ).setPoint3d( new Point3d(0,0,0) );
+        List<ICDKMolecule> cdkMolecule = cdk.generate2dCoordinates(molecule);
+        Assert.assertTrue(cdkMolecule.get(0) instanceof ICDKMolecule);
+        assertNotNull(((ICDKMolecule)cdkMolecule.get(0)).getAtomContainer().getAtom(0).getPoint2d());
+        assertNotNull(((ICDKMolecule)cdkMolecule.get(0)).getAtomContainer().getAtom(0).getPoint3d());
+    }
+
+    
+    @Test public void testGenerate2DCoordinates() throws Exception {
+        List<IMolecule> molecule = new ArrayList<IMolecule>();
+        molecule.add(cdk.fromSMILES("CCCBr"));
+        molecule.add( cdk.fromSMILES("C1CCCCC1"));
+        assertEquals(4, ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtomCount());
+        assertEquals(6, ((ICDKMolecule)molecule.get( 1 )).getAtomContainer().getAtomCount());
+        Assert.assertNull(((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom(0).getPoint2d());
+        Assert.assertNull(((ICDKMolecule)molecule.get( 1 )).getAtomContainer().getAtom(0).getPoint2d());
+        //3d coords should stay, we test that.
+        ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom( 0 ).setPoint3d( new Point3d(0,0,0) );
+        ((ICDKMolecule)molecule.get( 1 )).getAtomContainer().getAtom( 0 ).setPoint3d( new Point3d(0,0,0) );
+        List<ICDKMolecule> cdkMolecule = cdk.generate2dCoordinates(molecule);
+        Assert.assertTrue(cdkMolecule.get(0) instanceof ICDKMolecule);
+        assertNotNull(((ICDKMolecule)cdkMolecule.get(0)).getAtomContainer().getAtom(0).getPoint2d());
+        assertNotNull(((ICDKMolecule)cdkMolecule.get(0)).getAtomContainer().getAtom(0).getPoint3d());
+        assertNotNull(((ICDKMolecule)cdkMolecule.get(1)).getAtomContainer().getAtom(0).getPoint2d());
+        assertNotNull(((ICDKMolecule)cdkMolecule.get(1)).getAtomContainer().getAtom(0).getPoint3d());
+    }
+
+    @Test 
+    public void testPerceiveAromaticity() throws Exception{
+        String path = getClass().getResource("/testFiles/aromatic.mol").getPath();
+        MockIFile mf=new MockIFile(path);
+        ICDKMolecule mol = cdk.loadMolecule(mf);
+        Assert.assertFalse( mol.getAtomContainer().getAtom( 6 ).getFlag( CDKConstants.ISAROMATIC ) );
+        ICDKMolecule molwitharomaticity = (ICDKMolecule)cdk.perceiveAromaticity( mol );
+        Assert.assertTrue( molwitharomaticity.getAtomContainer().getAtom( 6 ).getFlag( CDKConstants.ISAROMATIC ) );
+    }
+
+    @Test public void testHas2d() throws Exception {
+        ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
+        Assert.assertFalse(cdk.has2d(molecule));
+        IMolecule cdkMolecule = cdk.generate2dCoordinates(molecule);
+        Assert.assertTrue(cdk.has2d(cdkMolecule));
+    }
+
+    @Test public void testHas3d() throws Exception {
+        ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
+        Assert.assertFalse(cdk.has3d(molecule));
+        cdk.generate3dCoordinates(molecule);
+        Assert.assertTrue(cdk.has3d(molecule));
+    }
+
+    @Test public void testFromCML() throws Exception {
+        ICDKMolecule molecule = cdk.fromCml("<molecule id='m1'><atomArray atomID='a1 a2' x2='0.0 0.1' y2='1.2 1.3'/></molecule>");
+        Assert.assertNotNull(molecule);
+        Assert.assertEquals(2, molecule.getAtomContainer().getAtomCount());
+    }
+
+    @Test public void testFromString() throws Exception {
+        ICDKMolecule molecule = cdk.fromCml("<molecule id='m1'><atomArray atomID='a1 a2' x2='0.0 0.1' y2='1.2 1.3'/></molecule>");
+        Assert.assertNotNull(molecule);
+        Assert.assertEquals(2, molecule.getAtomContainer().getAtomCount());
+    }
+
+    @Test
+    public void testGetFormat() {
+        Assert.assertEquals(
+                MDLV2000Format.getInstance(),
+                cdk.getFormat("MDLV2000Format")
+        );
+        Assert.assertEquals(
+                Mol2Format.getInstance(),
+                cdk.getFormat("Mol2Format")
+        );
+        Assert.assertEquals(
+                CMLFormat.getInstance(),
+                cdk.getFormat("CMLFormat")
+        );
+        Assert.assertEquals(
+                SDFFormat.getInstance(),
+                cdk.getFormat("SDFFormat")
+        );
+    }
+
+    @Test
+    public void testGuessFormatFromExtension() {
+        Assert.assertEquals(
+                MDLV2000Format.getInstance(),
+                cdk.guessFormatFromExtension("file.mol")
+        );
+        Assert.assertEquals(
+                MDLV2000Format.getInstance(),
+                cdk.guessFormatFromExtension("file.mdl")
+        );
+        Assert.assertEquals(
+                Mol2Format.getInstance(),
+                cdk.guessFormatFromExtension("file.mol2")
+        );
+        Assert.assertEquals(
+                CMLFormat.getInstance(),
+                cdk.guessFormatFromExtension("file.cml")
+        );
+        Assert.assertEquals(
+                SDFFormat.getInstance(),
+                cdk.guessFormatFromExtension("file.sdf")
+        );
+    }
+
+    @Test
+    public void testGetFormats() {
+        String formats = cdk.getFormats();
+        Assert.assertTrue(formats.contains("Mol2Format"));
+        Assert.assertTrue(formats.contains("CMLFormat"));
+        Assert.assertTrue(formats.contains("MDLV2000Format"));
+        Assert.assertTrue(formats.contains("SDFFormat"));
+    }
+
+    @Test public void testPartition() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("O=C(CC)[O-].[Na+]");
+        List<IAtomContainer> fragments = cdk.partition(mol);
+        Assert.assertEquals(2, fragments.size());
+    }
+
+    @Test public void testIsConnected() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("O=C(CC)[O-].[Na+]");
+        Assert.assertFalse(cdk.isConnected(mol));
+    }
+
+    @Test public void testIsConnected2() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("O=C(CC)O");
+        Assert.assertTrue(cdk.isConnected(mol));
+    }
+
+    @Test public void testTotalFormalCharge() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("O=C(CC)[O-].[Na+]");
+        Assert.assertEquals(0, cdk.totalFormalCharge(mol));
+
+        mol = cdk.fromSMILES("O=C(CC)[O-]");
+        Assert.assertEquals(-1, cdk.totalFormalCharge(mol));
+
+        mol = cdk.fromSMILES("O=C(CC(=O)[O-])[O-]");
+        Assert.assertEquals(-2, cdk.totalFormalCharge(mol));
+    }
+
+    @Test public void testSingleTanimoto() throws Exception {
+        String path = getClass().getResource("/testFiles/aromatic.mol").getPath();
+        MockIFile mf=new MockIFile(path);
+        ICDKMolecule mol = cdk.loadMolecule(mf);
+        float similarity = cdk.calculateTanimoto( mol,mol );
+        Assert.assertEquals( 1, similarity, 0.0001 );
+        path = getClass().getResource("/testFiles/atp.mol").getPath();
+        mf=new MockIFile(path);
+        ICDKMolecule mol2 = cdk.loadMolecule(mf);
+        float similarity2 = cdk.calculateTanimoto( mol,mol2 );
+        Assert.assertEquals( 0.1972, similarity2, 0.0001 );
+    }
+
+    @Test public void testMultipleTanimoto() throws Exception {
+        List<Float> expected= new ArrayList<Float>();
+        expected.add((float)1);
+        expected.add((float)0.19720767);
+        List<Float> actuals= new ArrayList<Float>();
+        String path = getClass().getResource("/testFiles/aromatic.mol").getPath();
+        MockIFile mf=new MockIFile(path);
+        ICDKMolecule mol = cdk.loadMolecule(mf);
+        actuals.add(cdk.calculateTanimoto( mol,mol ));
+        path = getClass().getResource("/testFiles/atp.mol").getPath();
+        mf=new MockIFile(path);
+        ICDKMolecule mol2 = cdk.loadMolecule(mf);
+        actuals.add(cdk.calculateTanimoto( mol,mol2 ));
+        Assert.assertEquals( expected, actuals );
+    }
+
+    @Test public void testGetMDLMolfileString() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("O=C(CC)[O-].[Na+]");
+
+        String fileContent = cdk.getMDLMolfileString(mol);
+
+        Assert.assertNotNull(fileContent);
+        Assert.assertTrue(fileContent.contains("V2000"));
+    }
+
+    @Test public void testCalculateTanimoto_BitSet_BitSet() throws Exception {
+        BitSet b1 = new BitSet(5); b1.set(5); b1.set(4);
+        BitSet b3 = new BitSet(5); b3.set(3); b3.set(4);
+        BitSet b4 = new BitSet(5); b4.set(3);
+        Assert.assertEquals(1.0, cdk.calculateTanimoto(b1, b1), 0.0);
+        Assert.assertEquals(0.0, cdk.calculateTanimoto(b1, b4), 0.0);
+        Assert.assertNotSame(1.0, cdk.calculateTanimoto(b1, b3));
+        Assert.assertNotSame(0.0, cdk.calculateTanimoto(b1, b3));
+    }
+
+    @Test public void testCalculateTanimoto_IMolecule_BitSet() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("CC");
+        BitSet b3 = mol.getFingerprint(
+            net.bioclipse.core.domain.IMolecule.Property.USE_CALCULATED);
+        Assert.assertEquals(1.0, cdk.calculateTanimoto(mol, b3), 0.0);
+    }
+
+    @Test public void testLoadReaction_InputStream_IProgressMonitor_IChemFormat() throws Exception{
+        String path = getClass().getResource("/testFiles/0002.stg01.rxn").getPath();
+        IFile file = new MockIFile( path );
+        ICDKReaction reaction = cdk.loadReactions( file.getContents(), new NullProgressMonitor(), (IChemFormat)MDLRXNFormat.getInstance()).get( 0 );
+
+        Assert.assertNotNull(reaction);
+        Assert.assertSame(1, reaction.getReaction().getReactantCount());
+        Assert.assertSame(1, reaction.getReaction().getProductCount());
+
+    }
+    
+    @Test public void testLoadReaction_IFile_IProgressMonitor() throws Exception{
+        String path = getClass().getResource("/testFiles/reaction.1.cml").getPath();
+        IFile file = new MockIFile( path );
+        ICDKReaction reaction = cdk.loadReactions( file, new NullProgressMonitor()).get( 0 );
+
+        Assert.assertNotNull(reaction);
+        Assert.assertSame(1, reaction.getReaction().getReactantCount());
+        Assert.assertSame(1, reaction.getReaction().getProductCount());
+        
+    }
 }
