@@ -48,8 +48,8 @@ import org.openscience.cdk.io.formats.IChemFormat;
 
 @PublishedClass( "Contains CDK related methods")
 @TestClasses(
-    "net.bioclipse.cdk.business.test.CDKManagerTest," +
-		"net.bioclipse.cdk.business.test.AbstractCDKManagerPluginTest"
+    "net.bioclipse.cdk.business.test.APITest," +
+    "net.bioclipse.cdk.business.test.AbstractCDKManagerPluginTest"
 )
 public interface ICDKManager extends IBioclipseManager {
 
