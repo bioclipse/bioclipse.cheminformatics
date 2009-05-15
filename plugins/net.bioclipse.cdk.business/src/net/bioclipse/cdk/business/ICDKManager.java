@@ -39,7 +39,6 @@ import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.content.IContentType;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -831,9 +830,9 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
-         params = "IMolecule molecule: Molecule to query, String SMARTS",
+         params = "ICDKMolecule molecule, String SMARTS",
          methodSummary = "Query a molecule for a SMARTS string and return a " +
-         		             "list of IAtomCOntainers with the matches." )
+             "list of IAtomCOntainers with the matches." )
     @TestMethods("testSMARTSonFile")
     public List<IAtomContainer> getSmartsMatches( ICDKMolecule molecule, 
                                                   String SMARTS )
@@ -935,25 +934,25 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
-         params="IFile file, IProgressMonitor monitor",
-         methodSummary="Reads a file into an  ICDKReaction.")
+         params="IFile file",
+         methodSummary="Reads a file into a list of ICDKReactions.")
     @TestMethods("testLoadReaction_IFile_IProgressMonitor")
     public List<ICDKReaction> loadReactions( IFile file )
-                                                                            throws IOException,
-                                                                            BioclipseException,
-                                                                            CDKException,
-                                                                            CoreException;
+        throws IOException,
+        BioclipseException,
+        CDKException,
+        CoreException;
 
     @Recorded
     @PublishedMethod(
-         params="InputStream instream, IProgressMonitor monitor, IChemFormat format",
-         methodSummary="Reads a stream into an  ICDKReaction.")
+         params="InputStream instream, IChemFormat format",
+         methodSummary="Reads a stream into a list of ICDKReaction.")
     @TestMethods("testLoadReaction_InputStream_IProgressMonitor_IChemFormat")
     public List<ICDKReaction> loadReactions( InputStream instream,
-                                      IChemFormat format )
-                                                          throws BioclipseException,
-                                                          CDKException,
-                                                          IOException;
+            IChemFormat format )
+            throws BioclipseException,
+            CDKException,
+            IOException;
 
     @Recorded
     @PublishedMethod(
