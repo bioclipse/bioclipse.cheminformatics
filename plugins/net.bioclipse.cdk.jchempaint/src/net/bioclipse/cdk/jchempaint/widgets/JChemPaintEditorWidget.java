@@ -90,8 +90,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     Logger logger = Logger.getLogger( JChemPaintEditorWidget.class );
 
-    private Collection<ISelectionChangedListener> listeners =
-                                    new ArrayList<ISelectionChangedListener>();
+    private ListenerList listeners = new ListenerList();
 
     private IAtom prevHighlightedAtom;
     private IBond prevHighlightedBond;
