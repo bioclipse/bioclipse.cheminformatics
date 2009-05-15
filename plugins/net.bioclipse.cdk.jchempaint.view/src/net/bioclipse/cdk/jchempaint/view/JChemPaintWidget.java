@@ -130,7 +130,7 @@ public class JChemPaintWidget extends Canvas {
 
         generatorList.add( extensionGenerator
                            = ChoiceGenerator.getGeneratorsFromExtensionPoint());
-
+        extensionGenerator.setUse( true );
         generatorList.add( new AtomContainerBoundsGenerator() );
         generatorList.add( new HighlightAtomGenerator() );
         generatorList.add( new HighlightBondGenerator() );
@@ -253,5 +253,9 @@ public class JChemPaintWidget extends Canvas {
         messages.remove( message );
         if(!isDisposed())
             redraw();
+    }
+
+    public ICDKMolecule getMolecule() {
+        return source;
     }
 }

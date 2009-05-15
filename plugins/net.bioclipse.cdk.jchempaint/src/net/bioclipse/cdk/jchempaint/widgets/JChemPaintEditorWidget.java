@@ -65,7 +65,7 @@ import org.openscience.cdk.controller.MoveModule;
 import org.openscience.cdk.controller.undoredo.IUndoListener;
 import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.controller.undoredo.UndoRedoHandler;
-import org.openscience.cdk.geometry.GeometryTools;
+import static org.openscience.cdk.geometry.GeometryTools.has2DCoordinatesNew;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -83,7 +83,6 @@ import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
-
 public class JChemPaintEditorWidget extends JChemPaintWidget
     implements ISelectionProvider, IViewEventRelay, IUndoListener {
 
@@ -93,8 +92,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     private IAtom prevHighlightedAtom;
     private IBond prevHighlightedBond;
-
-    private ICDKMolecule cdkMolecule;
 
     private ControllerHub hub;
     private ControllerModel c2dm;
@@ -378,40 +375,40 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             setModel( null );
         }
     }
-    public void setInput( Object element ) {
+    public void setInput( IAdaptable element ) {
 
-        if(element instanceof IAdaptable) {
             ICDKMolecule molecule =
                 (ICDKMolecule)
                 ((IAdaptable)element).getAdapter( ICDKMolecule.class );
 
             if (molecule != null) {
-                cdkMolecule = molecule;
-                IAtomContainer atomContainer = cdkMolecule.getAtomContainer();
-                if(atomContainer.getAtomCount() > 0 &&
-                        GeometryTools.has2DCoordinatesNew( atomContainer )<2) {
-                         cdkMolecule = generate2Dfrom3D( cdkMolecule );
-                         if(cdkMolecule!=null) // FIXME do what else dose empty chem model
-                             atomContainer= cdkMolecule.getAtomContainer();
-                         else
-                             atomContainer = null;
-                         setDirty( true );
-                         add( Message.GENERATED );
-                     }else {
-                         IAtomContainer oldAC = atomContainer;
-                         atomContainer = atomContainer.getBuilder()
-                                 .newAtomContainer( atomContainer );
-                         atomContainer.setProperties( new HashMap<Object, Object>(
-                                 oldAC.getProperties()) );
-                     }
+                source = molecule;
+                IAtomContainer atomContainer = molecule.getAtomContainer();
+                if( atomContainer.getAtomCount() > 0
+                        && has2DCoordinatesNew( atomContainer )<2) {
+
+                    molecule = generate2Dfrom3D( molecule );
+                    if(molecule!=null) // FIXME do what else dose empty chem model
+                        atomContainer= molecule.getAtomContainer();
+                    else
+                        atomContainer = null;
+
+                    setDirty( true );
+                    add( Message.GENERATED );
+                }else {
+                    IAtomContainer oldAC = atomContainer;
+                    atomContainer = atomContainer.getBuilder()
+                    .newAtomContainer( atomContainer );
+                    atomContainer.setProperties( new HashMap<Object, Object>(
+                            oldAC.getProperties()) );
+                }
                 setAtomContainer(atomContainer);
             }
             else {
                 IChemModel model = NoNotificationChemObjectBuilder.getInstance()
-                                    .newChemModel();
+                .newChemModel();
                 setModel( model );
             }
-        }
     }
 
     /*
@@ -446,8 +443,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     public ISelection getSelection() {
         RendererModel rendererModel = getRenderer2DModel();
         if (rendererModel == null)
-            if(cdkMolecule != null)
-                return new StructuredSelection(cdkMolecule);
+            if(source != null)
+                return new StructuredSelection(source);
             else
                return StructuredSelection.EMPTY;
 
@@ -466,8 +463,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             }
         }
 
-        if (selection.isEmpty() && cdkMolecule != null) {
-            return new StructuredSelection(cdkMolecule);
+        if (selection.isEmpty() && source != null) {
+            return new StructuredSelection(source);
         }
 
         return new StructuredSelection(selection);
@@ -591,9 +588,5 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         if(dx!=0 || dy!=0)
             getRenderer().shiftDrawCenter( dx, dy);
-    }
-
-    public ICDKMolecule getMolecule() {
-        return cdkMolecule;
     }
 }

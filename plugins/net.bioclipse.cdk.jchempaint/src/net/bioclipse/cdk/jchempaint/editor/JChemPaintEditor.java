@@ -41,6 +41,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
@@ -463,8 +464,10 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     }
 
     public void setInput( Object element ) {
-        widget.setInput( element );
-        widget.redraw();
+        if(element instanceof IAdaptable) {
+            widget.setInput( (IAdaptable)element );
+            widget.redraw();
+        }
     }
 
     public ICDKMolecule getCDKMolecule() {
