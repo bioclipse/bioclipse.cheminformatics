@@ -15,7 +15,6 @@ package net.bioclipse.cdk.jchempaint.widgets;
 import static net.bioclipse.cdk.jchempaint.outline.StructureContentProvider.createCDKChemObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,7 +26,6 @@ import net.bioclipse.cdk.jchempaint.Activator;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager;
 import net.bioclipse.cdk.jchempaint.editor.SWTMouseEventRelay;
 import net.bioclipse.cdk.jchempaint.undoredo.SWTUndoRedoFactory;
-import net.bioclipse.cdk.jchempaint.view.ChoiceGenerator;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
@@ -39,6 +37,7 @@ import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.core.commands.operations.IUndoableOperation;
 import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ISelection;
@@ -118,7 +117,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         public boolean matches(IUndoContext context) {
             return context.getLabel().equals(label);
         }
-
     };
 
     public JChemPaintEditorWidget(Composite parent, int style) {
@@ -129,9 +127,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         setupScrollbars();
 
-        java.awt.Color color =
-            createFromSWT(
-                          getDisplay().getSystemColor(SWT.COLOR_LIST_SELECTION ));
+        java.awt.Color color = createFromSWT( SWT.COLOR_LIST_SELECTION );
         getRenderer().getRenderer2DModel().setSelectedPartColor(color);
 
         setupControllerHub();
@@ -144,10 +140,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 redraw();
             }
         });
-
     }
-
-
 
     private void setupControllerHub( ) {
         IChemModel chemModel =
@@ -201,17 +194,14 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         setupListeners();
         addListener( SWT.MouseHover, new Listener() {
            public void handleEvent( Event event ) {
-
                if(event.type == SWT.MouseHover) {
                    updateToolTip();
                }
-
             }
         });
         hub.setActiveDrawModule(new MoveModule(hub));
 
         applyGlobalProperties();
-
     }
 
     private static final int[] EVENTS = new int[]{
@@ -267,14 +257,15 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     }
 
     @Override
-    protected void paint(IDrawVisitor visitor ) {
-    Renderer renderer = getRenderer();
+    protected void paint( IDrawVisitor visitor ) {
 
-            if (isScrolling) {
-                renderer.repaint(visitor);
-            } else {
-                renderer.paintChemModel(model, visitor);
-            }
+        Renderer renderer = getRenderer();
+
+        if ( isScrolling ) {
+            renderer.repaint( visitor );
+        } else {
+            renderer.paintChemModel( model, visitor );
+        }
     }
 
     private Rectangle getDiagramBounds() {
@@ -306,7 +297,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 setToolTipText(
                         rendererModel.getToolTipText(prevHighlightedAtom));
             } else if (prevHighlightedBond != null) {
-             // put getToolTipText(prevHighlightedBond) here
+                // put getToolTipText(prevHighlightedBond) here
                 setToolTipText( null );
             } else {
                 setToolTipText( "" );
@@ -326,13 +317,11 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                                                               clientRect.width,
                                                               clientRect.height);
             getRenderer().setup( hub.getIChemModel(), rect );
-
             resizeControl();
         }
     }
 
     public void updateView() {
-        //updateSelection();
         redraw();
     }
 
@@ -340,9 +329,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     protected List<IGenerator> createGenerators() {
         List<IGenerator> generatorList = new ArrayList<IGenerator>();
 
-        generatorList.add( extensionGenerator
-                           = ChoiceGenerator.getGeneratorsFromExtensionPoint());
-        extensionGenerator.setUse( true );
         generatorList.add(new ExternalHighlightGenerator());
         generatorList.addAll( super.createGenerators() );
         generatorList.add(new SelectAtomGenerator());
@@ -362,13 +348,11 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     public void setAtomContainer(IAtomContainer atomContainer) {
         if( atomContainer != null) {
-
             IChemModel model = ChemModelManipulator.newChemModel( atomContainer );
             setModel( model );
         }else {
             setModel( null );
         }
-
     }
     public void setReaction(IReaction reaction) {
         if( reaction != null) {
@@ -383,6 +367,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         }
 
     }
+
     public void setReactionSet(IReactionSet reactionSet) {
         if( reactionSet != null) {
 
@@ -392,7 +377,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         }else {
             setModel( null );
         }
-
     }
     public void setInput( Object element ) {
 
@@ -491,15 +475,13 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     public void removeSelectionChangedListener(
                                           ISelectionChangedListener listener ) {
-
         listeners.remove( listener );
-
     }
 
     public void setSelection( ISelection selection ) {
         final SelectionChangedEvent e =
             new SelectionChangedEvent(this, selection);
-        Object[] listenersArray = listeners.toArray();
+        Object[] listenersArray = listeners.getListeners();
 
         for (int i = 0; i < listenersArray.length; i++) {
             final ISelectionChangedListener l = (ISelectionChangedListener)
@@ -510,12 +492,11 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 }
             });
         }
-
     }
 
     public void setActiveDrawModule(IControllerModule activeDrawModule){
-		hub.setActiveDrawModule(activeDrawModule);
-	}
+        hub.setActiveDrawModule(activeDrawModule);
+    }
 
     protected void structureChanged() {
         if(!this.isDisposed())
@@ -525,50 +506,54 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     protected void structurePropertiesChanged() {
     }
 
-	public void setDirty( boolean dirty) {
-	    this.isdirty = dirty;
-	    if(!this.isDisposed()) {
-	        Display.getDefault().asyncExec( new Runnable() {
-	            public void run() {
-	                if(isdirty) {
-	                    add(Message.DIRTY);
-	                }
-	                else
-	                    remove( Message.DIRTY );
-	                redraw();
-	            }
-	        });
-	    }
-	}
+    public void setDirty( boolean dirty) {
+        this.isdirty = dirty;
+        if(!this.isDisposed()) {
+            Display.getDefault().asyncExec( new Runnable() {
+                public void run() {
+                    if(isdirty) {
+                        add(Message.DIRTY);
+                    }
+                    else
+                        remove( Message.DIRTY );
+                    redraw();
+                }
+            });
+        }
+    }
 
-	public boolean getDirty() {
-	    return isdirty;
-	}
+    public boolean getDirty() {
+        return isdirty;
+    }
 
-	private java.awt.Color createFromSWT(org.eclipse.swt.graphics.Color color) {
-	    return new java.awt.Color( color.getRed(),
-	                               color.getGreen(),
-	                               color.getBlue());
-	}
+    private java.awt.Color createFromSWT(org.eclipse.swt.graphics.Color color) {
+        return new java.awt.Color( color.getRed(),
+                                   color.getGreen(),
+                                   color.getBlue());
+    }
 
-	public void undo() throws ExecutionException {
-	    if (this.operationHistory.canUndo(this.undoContext)) {
-	        this.operationHistory.undo(undoContext, null, null);
-	        if(!this.operationHistory.canUndo( this.undoContext )) {
-	            setDirty( false );
-	        }
-	    }
-	}
+    private java.awt.Color createFromSWT(int swt_color_constant) {
+        return createFromSWT( getDisplay().getSystemColor(swt_color_constant ));
+    }
+
+    public void undo() throws ExecutionException {
+        if (this.operationHistory.canUndo(this.undoContext)) {
+            this.operationHistory.undo(undoContext, null, null);
+            if(!this.operationHistory.canUndo( this.undoContext )) {
+                setDirty( false );
+            }
+        }
+    }
 
 
-	public void redo() throws ExecutionException {
-	    if (this.operationHistory.canRedo(this.undoContext)) {
+    public void redo() throws ExecutionException {
+        if (this.operationHistory.canRedo(this.undoContext)) {
             this.operationHistory.redo(undoContext, null, null);
             if(!getDirty()) {
                 setDirty( true );
             }
         }
-	}
+    }
 
 
     public void doUndo(IUndoRedoable undoredo) {

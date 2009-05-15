@@ -17,6 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.bioclipse.cdk.domain.ICDKMolecule;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -85,7 +87,8 @@ public class JChemPaintWidget extends Canvas {
         }
     }
 
-    //protected IAtomContainer  atomContainer;
+    protected ICDKMolecule source;
+
     protected IChemModel model;
 
     protected RendererModel rendererModel = new RendererModel();
@@ -99,7 +102,6 @@ public class JChemPaintWidget extends Canvas {
     private Set<Message> messages = new HashSet<Message>();
 
     public JChemPaintWidget(Composite parent, int style) {
-
         super( parent, style|SWT.DOUBLE_BUFFERED );
         parent.addDisposeListener( new DisposeListener() {
             public void widgetDisposed( DisposeEvent e ) {
@@ -108,18 +110,8 @@ public class JChemPaintWidget extends Canvas {
         });
 
         fontManager = new SWTFontManager(this.getDisplay());
-
         renderer = new Renderer(createGenerators(), fontManager);
-
         rendererModel = renderer.getRenderer2DModel();
-
-//        rendererModel.setFitToScreen( true );
-//        rendererModel.setShowImplicitHydrogens( true );
-//        rendererModel.setShowEndCarbons( true );
-//        rendererModel.setShowExplicitHydrogens( true );
-//        rendererModel.setHighlightShapeFilled( true );
-//        rendererModel.setShowAromaticity( true );
-//        rendererModel.setShowAromaticityCDKStyle( false );
         setupPaintListener();
     }
 
@@ -147,8 +139,6 @@ public class JChemPaintWidget extends Canvas {
 
         return generatorList;
     }
-
-
 
     public Image snapshot() {
 
@@ -211,19 +201,15 @@ public class JChemPaintWidget extends Canvas {
     }
 
     private void disposeView() {
-
         fontManager.dispose();
     }
 
     public Point computeSize(int wHint, int hHint, boolean changed) {
 
         int width = 0, height = 0;
-
         height = Math.max(100, wHint);
         width = height;
-
         return new Point(width + 2, height + 2);
-
      }
 
     public void setUseExtensionGenerators( boolean useExtensionGenerators ) {
@@ -234,7 +220,6 @@ public class JChemPaintWidget extends Canvas {
     public static void paintMessage( GC gc, Message message , Rectangle rect) {
         Font oldFont = gc.getFont();
         Color oldColor = gc.getForeground();
-
         gc.setFont(message.font);
 
         int x = 0;
