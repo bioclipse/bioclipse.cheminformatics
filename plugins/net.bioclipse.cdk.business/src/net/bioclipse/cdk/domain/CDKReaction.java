@@ -29,8 +29,15 @@ public class CDKReaction extends BioObject implements ICDKReaction {
 
     private IReaction reaction;
 
+    /*
+     * Needed by Spring
+     */
+    public CDKReaction(){
+        super();
+    }
     
     public CDKReaction(IReaction reaction) {
+    		this();
         this.reaction=reaction;
     }
 
