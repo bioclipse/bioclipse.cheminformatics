@@ -12,7 +12,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.ui.internal.WorkbenchPlugin;
+import org.eclipse.ui.PlatformUI;
 
 public class UndoHandler extends AbstractJChemPaintHandler implements IAction {
 
@@ -120,8 +120,8 @@ public class UndoHandler extends AbstractJChemPaintHandler implements IAction {
 
     public void runWithEvent( Event event ) {
             try {
-                ((JChemPaintEditor)WorkbenchPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).undo();
-                ((JChemPaintEditor)WorkbenchPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).update();
+                ((JChemPaintEditor)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).undo();
+                ((JChemPaintEditor)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).update();
             } catch ( ExecutionException e ) {
                 LogUtils.handleException( e, logger );
             }

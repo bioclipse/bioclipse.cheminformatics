@@ -31,25 +31,25 @@ import org.openscience.cdk.interfaces.IMoleculeSet;
 @SuppressWarnings("serial")
 public class StructureContentProvider implements ITreeContentProvider {
 
-    public static class CDKAtomChemObject extends CDKChemObject {
+    public static class CDKAtomChemObject extends CDKChemObject<IAtom> {
 
-        public CDKAtomChemObject(String name, IChemObject chemobj) {
+        public CDKAtomChemObject(String name, IAtom chemobj) {
             super( name, chemobj );
         }
 
-        public CDKAtomChemObject(IChemObject chemObject) {
+        public CDKAtomChemObject(IAtom chemObject) {
             super(chemObject);
         }
 
     }
 
-    public static class CDKBondChemObject extends CDKChemObject {
+    public static class CDKBondChemObject extends CDKChemObject<IBond> {
 
-        public CDKBondChemObject(String name, IChemObject chemobj) {
+        public CDKBondChemObject(String name, IBond chemobj) {
             super( name, chemobj );
         }
 
-        public CDKBondChemObject(IChemObject chemObject) {
+        public CDKBondChemObject(IBond chemObject) {
             super(chemObject);
         }
     }
@@ -90,7 +90,7 @@ public class StructureContentProvider implements ITreeContentProvider {
         }
         else if (parentElement instanceof CDKChemObject) {
 
-            CDKChemObject chemobj=(CDKChemObject)parentElement;
+            CDKChemObject<?> chemobj=(CDKChemObject<?>)parentElement;
 
             if (!(chemobj.getChemobj() instanceof IAtomContainer)) {
                 return new Object[0];
@@ -117,18 +117,18 @@ public class StructureContentProvider implements ITreeContentProvider {
         return new Object[0];
     }
 
-    public static CDKChemObject createCDKChemObject( IAtom atom ) {
+    public static CDKChemObject<IAtom> createCDKChemObject( IAtom atom ) {
 
         String symbol = atom.getSymbol(),
                name = elementNames.containsKey( symbol )
                           ? elementNames.get( symbol )
                           : "unknown";
-        CDKChemObject co
+        CDKChemObject<IAtom> co
           = new CDKAtomChemObject( name + " (" + symbol + ")", atom );
         return co;
     }
 
-    public static CDKChemObject createCDKChemObject( IBond bond ) {
+    public static CDKChemObject<IBond> createCDKChemObject( IBond bond ) {
 
         StringBuilder sb = new StringBuilder();
         char separator
@@ -148,7 +148,7 @@ public class StructureContentProvider implements ITreeContentProvider {
                    : bond.getFlag(CDKConstants.ISAROMATIC)
                        ? " (aromatic)"
                        : "" );
-        CDKChemObject co=new CDKBondChemObject(sb.toString(), bond);
+        CDKChemObject<IBond> co=new CDKBondChemObject(sb.toString(), bond);
         return co;
     }
 
@@ -173,9 +173,9 @@ public class StructureContentProvider implements ITreeContentProvider {
                 return new Object[0];
             }
 
-            CDKChemObject[] acs=new CDKChemObject[ms.getAtomContainerCount()];
+            CDKChemObject<?>[] acs=new CDKChemObject[ms.getAtomContainerCount()];
             for (int i=0; i<ms.getAtomContainerCount(); i++){
-                acs[i]=new CDKChemObject("AC_" + i, ms.getAtomContainer(i));
+                acs[i]=new CDKChemObject<IAtomContainer>("AC_" + i, ms.getAtomContainer(i));
             }
 
             if (acs.length>1)

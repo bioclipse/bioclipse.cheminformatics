@@ -60,8 +60,8 @@ public class JCPOutlinePage extends ContentOutlinePage
             public boolean equals( Object a, Object b ) {
 
                 if(a instanceof CDKChemObject && b instanceof CDKChemObject) {
-                    return ((CDKChemObject)a).getChemobj().equals(
-                            ((CDKChemObject)b).getChemobj());
+                    return ((CDKChemObject<?>)a).getChemobj().equals(
+                            ((CDKChemObject<?>)b).getChemobj());
                 }
                 return a.equals( b );
             }
@@ -69,7 +69,7 @@ public class JCPOutlinePage extends ContentOutlinePage
             public int hashCode( Object element ) {
 
                 if(element instanceof CDKChemObject) {
-                    return ((CDKChemObject)element).getChemobj().hashCode();
+                    return ((CDKChemObject<?>)element).getChemobj().hashCode();
                 }
                 return element.hashCode();
             }

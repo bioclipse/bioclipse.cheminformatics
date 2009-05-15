@@ -67,7 +67,7 @@ public class StructureLabelProvider extends LabelProvider {
     public String getText(Object obj) {
         
         String s = obj instanceof Container     ? ((Container)    obj).getName()
-                 : obj instanceof CDKChemObject ? ((CDKChemObject)obj).getName()
+                 : obj instanceof CDKChemObject ? ((CDKChemObject<?>)obj).getName()
                  : obj.toString();
                  
        return s == null ? "???" : s;
@@ -78,7 +78,7 @@ public class StructureLabelProvider extends LabelProvider {
         if (!(element instanceof CDKChemObject))
             return null;
         
-        IChemObject chemobj = ((CDKChemObject)element).getChemobj();
+        IChemObject chemobj = ((CDKChemObject<?>)element).getChemobj();
 
         if (chemobj instanceof IAtom) {
             IAtom atom = (IAtom) chemobj;

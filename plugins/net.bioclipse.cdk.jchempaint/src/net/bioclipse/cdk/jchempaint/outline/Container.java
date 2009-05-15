@@ -18,12 +18,12 @@ import net.bioclipse.cdk.domain.CDKChemObject;
 public class Container {
 
     String name;
-    ArrayList<CDKChemObject> children;
+    ArrayList<CDKChemObject<?>> children;
     ArrayList<Container> subfolders;
 
     public Container(String name) {
         this.name=name;
-        children=new ArrayList<CDKChemObject>();
+        children=new ArrayList<CDKChemObject<?>>();
     }
     public String getName() {
         return name;
@@ -31,10 +31,10 @@ public class Container {
     public void setName(String name) {
         this.name = name;
     }
-    public ArrayList<CDKChemObject> getChildren() {
+    public ArrayList<CDKChemObject<?>> getChildren() {
         return children;
     }
-    public void setChildren(ArrayList<CDKChemObject> children) {
+    public void setChildren(ArrayList<CDKChemObject<?>> children) {
         this.children = children;
     }
     public ArrayList<Container> getSubfolders() {
@@ -45,10 +45,10 @@ public class Container {
     }
 
     //Convenience methods for children
-    public void addChild(CDKChemObject co){
+    public void addChild(CDKChemObject<?> co){
         children.add(co);
     }
-    public void removeChild(CDKChemObject co){
+    public void removeChild(CDKChemObject<?> co){
         children.remove(co);
     }
     
