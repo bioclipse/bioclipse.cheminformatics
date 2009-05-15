@@ -11,7 +11,6 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.handlers;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.openscience.cdk.controller.IChemModelRelay;
@@ -19,7 +18,6 @@ import org.openscience.cdk.interfaces.IAtom;
 
 public class InchargeHandler extends AbstractJChemPaintHandler {
 
-    Logger logger = Logger.getLogger(RemoveHandler.class);
     public Object execute(ExecutionEvent event) throws ExecutionException {
 
         IChemModelRelay relay = getChemModelRelay( event );

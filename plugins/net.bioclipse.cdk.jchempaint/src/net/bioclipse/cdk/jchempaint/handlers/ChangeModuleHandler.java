@@ -149,23 +149,6 @@ public class ChangeModuleHandler extends AbstractJChemPaintHandler
         return null;
     }
 
-    private boolean matchesRadioState(ExecutionEvent event)
-                        throws ExecutionException {
-
-        String parameter = event.getParameter(ModuleState.PARAMETER_ID );
-        if(parameter == null)
-            throw new ExecutionException("Missing radio state parameter");
-//        Command command= event.getCommand();
-//        State state = command.getState( ModuleState.STATE_ID );
-//        if(state == null)
-//            throw new ExecutionException("No radio state");
-//        if(!(state.getValue() instanceof String) )
-//                throw new ExecutionException("Radio state not string");
-
-//        return parameter.equals( state.getValue())
-            return getControllerHub( event ).getActiveDrawModule().getClass().getName().equals( parameter );
-    }
-
     private void updateRadioState(Command command, String newState)
                             throws ExecutionException {
         State state = command.getState(ModuleState.STATE_ID);

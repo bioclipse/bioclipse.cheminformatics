@@ -88,11 +88,6 @@
        name="JChemPaintToolbarCommands"
        point="org.eclipse.ui.commands">
     <command
-          defaultHandler="net.bioclipse.cdk.jchempaint.handlers.AddBondHandler"
-          id="net.bioclipse.cdk.ui.editors.jchempaint.command.addbond"
-          name="Add Bond">
-    </command>
-    <command
           defaultHandler="net.bioclipse.cdk.jchempaint.handlers.ChangeAtomHandler"
           id="net.bioclipse.cdk.jchempaint.command.change.element"
           name="Change element">
@@ -108,11 +103,6 @@
           name="Remove">
     </command>
     <command
-          defaultHandler="net.bioclipse.cdk.jchempaint.handlers.SelectHandler"
-          id="net.bioclipse.cdk.ui.editors.jchempaint.command.lasso"
-          name="Select">
-    </command>
-    <command
           defaultHandler="net.bioclipse.cdk.jchempaint.handlers.InchargeHandler"
           id="net.bioclipse.cdk.ui.editors.jchempaint.command.incharge"
           name="Increase Charge">
@@ -121,11 +111,6 @@
           defaultHandler="net.bioclipse.cdk.jchempaint.handlers.DecchargeHandler"
           id="net.bioclipse.cdk.ui.editors.jchempaint.command.deccharge"
           name="Decrease Charge">
-    </command>
-    <command
-          defaultHandler="net.bioclipse.cdk.jchempaint.handlers.MoveHandler"
-          id="net.bioclipse.cdk.ui.editors.jchempaint.command.move"
-          name="Move">
     </command>
     <command
           defaultHandler="net.bioclipse.cdk.jchempaint.handlers.ManagerHandler"
