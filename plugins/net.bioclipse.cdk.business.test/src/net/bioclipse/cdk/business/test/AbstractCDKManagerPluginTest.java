@@ -1586,7 +1586,9 @@ public abstract class AbstractCDKManagerPluginTest {
 
     @Test 
     public void testPerceiveAromaticity() throws Exception{
-        String path = getClass().getResource("/testFiles/aromatic.mol").getPath();
+        URI uri = getClass().getResource("/testFiles/aromatic.mol").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
         MockIFile mf=new MockIFile(path);
         ICDKMolecule mol = cdk.loadMolecule(mf);
         Assert.assertFalse( mol.getAtomContainer().getAtom( 6 ).getFlag( CDKConstants.ISAROMATIC ) );
@@ -1701,12 +1703,16 @@ public abstract class AbstractCDKManagerPluginTest {
     }
 
     @Test public void testSingleTanimoto() throws Exception {
-        String path = getClass().getResource("/testFiles/aromatic.mol").getPath();
+        URI uri = getClass().getResource("/testFiles/aromatic.mol").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
         MockIFile mf=new MockIFile(path);
         ICDKMolecule mol = cdk.loadMolecule(mf);
         float similarity = cdk.calculateTanimoto( mol,mol );
         Assert.assertEquals( 1, similarity, 0.0001 );
-        path = getClass().getResource("/testFiles/atp.mol").getPath();
+        uri = getClass().getResource("/testFiles/atp.mol").toURI();
+        url = FileLocator.toFileURL(uri.toURL());
+        path = url.getFile();
         mf=new MockIFile(path);
         ICDKMolecule mol2 = cdk.loadMolecule(mf);
         float similarity2 = cdk.calculateTanimoto( mol,mol2 );
@@ -1718,11 +1724,15 @@ public abstract class AbstractCDKManagerPluginTest {
         expected.add((float)1);
         expected.add((float)0.19720767);
         List<Float> actuals= new ArrayList<Float>();
-        String path = getClass().getResource("/testFiles/aromatic.mol").getPath();
+        URI uri = getClass().getResource("/testFiles/aromatic.mol").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
         MockIFile mf=new MockIFile(path);
         ICDKMolecule mol = cdk.loadMolecule(mf);
         actuals.add(cdk.calculateTanimoto( mol,mol ));
-        path = getClass().getResource("/testFiles/atp.mol").getPath();
+        uri = getClass().getResource("/testFiles/atp.mol").toURI();
+        url=FileLocator.toFileURL(uri.toURL());
+        path=url.getFile();
         mf=new MockIFile(path);
         ICDKMolecule mol2 = cdk.loadMolecule(mf);
         actuals.add(cdk.calculateTanimoto( mol,mol2 ));
@@ -1756,7 +1766,9 @@ public abstract class AbstractCDKManagerPluginTest {
     }
 
     @Test public void testLoadReaction_InputStream_IProgressMonitor_IChemFormat() throws Exception{
-        String path = getClass().getResource("/testFiles/0002.stg01.rxn").getPath();
+        URI uri = getClass().getResource("/testFiles/0002.stg01.rxn").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
         IFile file = new MockIFile( path );
         ICDKReaction reaction = cdk.loadReactions( file.getContents(), (IChemFormat)MDLRXNFormat.getInstance()).get( 0 );
 
@@ -1767,7 +1779,9 @@ public abstract class AbstractCDKManagerPluginTest {
     }
     
     @Test public void testLoadReaction_IFile_IProgressMonitor() throws Exception{
-        String path = getClass().getResource("/testFiles/reaction.1.cml").getPath();
+        URI uri = getClass().getResource("/testFiles/reaction.1.cml").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
         IFile file = new MockIFile( path );
         ICDKReaction reaction = cdk.loadReactions( file ).get( 0 );
 
