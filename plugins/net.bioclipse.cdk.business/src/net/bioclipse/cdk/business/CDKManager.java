@@ -50,7 +50,6 @@ import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
-import net.bioclipse.jobs.BioclipseUIJob;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.apache.log4j.Logger;
@@ -2078,16 +2077,16 @@ public class CDKManager implements IBioclipseManager {
                 CDKException,
                 CoreException {
 
-        List<ICDKReaction> loadedMol =
-                loadReactions( file.getContents(), monitor,
-                              determineIChemFormat( file ) );
+        List<ICDKReaction> loadedMol = loadReactions(
+            file.getContents(), determineIChemFormat( file ), monitor
+        );
 
         return loadedMol;
     }
 
     public List<ICDKReaction> loadReactions( InputStream instream,
-                                      IProgressMonitor monitor,
-                                      IChemFormat format )
+                                      IChemFormat format,
+                                      IProgressMonitor monitor)
                                                     throws BioclipseException,
                                                     CDKException,
                                                     IOException {
