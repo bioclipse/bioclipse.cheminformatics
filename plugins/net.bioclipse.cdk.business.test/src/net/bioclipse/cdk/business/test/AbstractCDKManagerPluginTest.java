@@ -56,7 +56,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.content.IContentType;
 import org.junit.Assert;
@@ -1770,7 +1769,8 @@ public abstract class AbstractCDKManagerPluginTest {
         URL url=FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
         IFile file = new MockIFile( path );
-        ICDKReaction reaction = cdk.loadReactions( file.getContents(), (IChemFormat)MDLRXNFormat.getInstance()).get( 0 );
+        ICDKReaction reaction = cdk.loadReactions( file.getContents(),
+                (IChemFormat)MDLRXNFormat.getInstance()).get( 0 );
 
         Assert.assertNotNull(reaction);
         Assert.assertSame(1, reaction.getReaction().getReactantCount());
