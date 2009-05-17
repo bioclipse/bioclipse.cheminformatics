@@ -12,7 +12,7 @@ package net.bioclipse.cdk.debug.test;
 
 import net.bioclipse.cdkdebug.business.CDKDebugManager;
 import net.bioclipse.cdkdebug.business.ICDKDebugManager;
-import net.bioclipse.core.tests.coverage.AbstractCoverageTest;
+import net.bioclipse.core.tests.AbstractManagerTest;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 /**
@@ -20,7 +20,7 @@ import net.bioclipse.managers.business.IBioclipseManager;
  * 
  * @author egonw
  */
-public class CoverageTest extends AbstractCoverageTest {
+public class APITest extends AbstractManagerTest {
     
     private static CDKDebugManager manager = new CDKDebugManager();
 

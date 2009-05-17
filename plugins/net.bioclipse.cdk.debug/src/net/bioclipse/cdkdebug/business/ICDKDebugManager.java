@@ -22,7 +22,10 @@ import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 @PublishedClass("Contains CDK debug related methods")
-@TestClasses("net.bioclipse.cdk.debug.test.CDKDebugManagerTest")
+@TestClasses(
+    "net.bioclipse.cdk.debug.test.APITest," +
+    "net.bioclipse.cdk.debug.test.JavaCDKDebugManagerPluginTest"
+)
 public interface ICDKDebugManager extends IBioclipseManager {
 
     /**
