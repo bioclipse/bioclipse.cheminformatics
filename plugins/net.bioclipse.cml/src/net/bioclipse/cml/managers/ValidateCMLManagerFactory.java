@@ -33,7 +33,7 @@ public class ValidateCMLManagerFactory implements IExecutableExtension,
                                        String propertyName, 
                                        Object data) throws CoreException {
     
-        exampleManager = Activator.getDefault().getValidateCMLManager();
+        exampleManager = Activator.getDefault().getJavaScriptManager();
     }
     
     public Object create() throws CoreException {

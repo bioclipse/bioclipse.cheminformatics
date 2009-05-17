@@ -17,15 +17,19 @@ import net.bioclipse.managers.business.IBioclipseManager;
 import org.eclipse.core.resources.IFile;
 import org.xmlcml.cml.base.CMLElement;
 
-@TestClasses("net.bioclipse.cml.tests.ValidateCMLManagerTest")
+@TestClasses(
+    "net.bioclipse.cml.tests.APITest," +
+    "net.bioclipse.cml.tests.ValidateCMLManagerTest"
+)
 public interface IValidateCMLManager extends IBioclipseManager {
 
     @Recorded
     public void validate( IFile input ) throws IOException;
 
     @Recorded
-    @PublishedMethod(params = "String filename", methodSummary = "Checks if the file indicated by filename in workspace is valid  "
-                                                                 + "CML")
+    @PublishedMethod(params = "String filename",
+         methodSummary = "Checks if the file indicated by filename in " +
+         		"workspace is valid CML")
     public String validate( String filename ) throws IOException,
                                              BioclipseException;
 

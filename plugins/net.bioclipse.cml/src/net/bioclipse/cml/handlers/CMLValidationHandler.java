@@ -28,7 +28,9 @@ public class CMLValidationHandler extends AbstractHandler{
             if (sel instanceof IStructuredSelection) {
                IStructuredSelection ssel = (IStructuredSelection) sel;
                try {
-                Activator.getDefault().getValidateCMLManager().validate(((IFile)ssel.getFirstElement()));
+                   Activator.getDefault().getJavaManager().validate(
+                       ((IFile)ssel.getFirstElement())
+                   );
                } catch (IOException e) {
                 throw new RuntimeException(e);
                }

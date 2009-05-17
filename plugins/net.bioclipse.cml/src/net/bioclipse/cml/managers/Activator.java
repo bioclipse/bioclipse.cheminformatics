@@ -29,6 +29,7 @@ public class Activator extends AbstractUIPlugin {
     
     // tracks the example manager
     private ServiceTracker finderTracker;
+    private ServiceTracker jsFinderTracker;
     
     /**
      * The constructor
@@ -44,28 +45,53 @@ public class Activator extends AbstractUIPlugin {
         super.start(context);
         plugin = this;
         
-        finderTracker = new ServiceTracker( context, 
-                                            IValidateCMLManager.class.getName(), 
-                                            null );
+        finderTracker = new ServiceTracker(
+            context, 
+            IJavaValidateCMLManager.class.getName(), 
+            null
+        );
         finderTracker.open();
+        jsFinderTracker = new ServiceTracker(
+            context, 
+            IJavaScriptValidateCMLManager.class.getName(), 
+            null
+        );
+        jsFinderTracker.open();
     }
 
-    /**
-     * Returns a reference to the example manager object
-     * 
-     * @return the exampleManager
-     */
-    public IValidateCMLManager getValidateCMLManager() {
-    	IValidateCMLManager exampleManager = null;
+    public IJavaValidateCMLManager getJavaManager() {
+        IJavaValidateCMLManager javaManager = null;
         try {
-            exampleManager = (IValidateCMLManager) finderTracker.waitForService(1000*30);
+            javaManager = (IJavaValidateCMLManager)
+                finderTracker.waitForService(1000*30);
         } catch (InterruptedException e) {
-            throw new IllegalStateException("Could not get validate CML manager", e);
+            throw new IllegalStateException(
+               "Could not get validate CML manager", e
+            );
         }
-        if(exampleManager == null) {
-            throw new IllegalStateException("Could not get validate CML manager");
+        if(javaManager == null) {
+            throw new IllegalStateException(
+                "Could not get validate CML manager"
+            );
         }
-        return exampleManager;
+        return javaManager;
+    }
+    public IJavaScriptValidateCMLManager getJavaScriptManager() {
+        IJavaScriptValidateCMLManager jsManager = null;
+        try {
+            jsManager = (IJavaScriptValidateCMLManager)
+                jsFinderTracker.waitForService(1000*30);
+        } catch (InterruptedException e) {
+            throw new IllegalStateException(
+               "Could not get validate CML manager", e
+            );
+        }
+        if(jsManager == null) {
+            throw new IllegalStateException(
+                "Could not get validate CML manager"
+            );
+        }
+        return jsManager;
     }
 
     /*
