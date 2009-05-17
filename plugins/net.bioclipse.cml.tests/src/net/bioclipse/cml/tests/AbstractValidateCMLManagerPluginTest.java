@@ -14,30 +14,18 @@ package net.bioclipse.cml.tests;
 
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cml.managers.Activator;
 import net.bioclipse.cml.managers.IValidateCMLManager;
 
-import org.junit.BeforeClass;
+import org.junit.Assert;
 import org.junit.Test;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
+import org.xmlcml.cml.base.CMLElement;
 
-public class ValidateCMLManagerPluginTest {
+public class AbstractValidateCMLManagerPluginTest {
 
-    private static IValidateCMLManager cml;
-    private static ICDKManager cdk;
-
-    public ValidateCMLManagerPluginTest() {}
-
-    @BeforeClass public static void setup() {
-        // the next line is needed to ensure the OSGI loader properly start
-        // the org.springframework.bundle.osgi.extender, so that the manager
-        // can be loaded too. Otherwise, it will fail with a time out.
-        net.bioclipse.ui.Activator.getDefault();
-
-        cml = Activator.getDefault().getValidateCMLManager();
-        cdk = net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
-    }
+    protected static IValidateCMLManager cml;
+    protected static ICDKManager cdk;
 
     @Test
     public void testValidate_String() throws Exception {
@@ -47,4 +35,11 @@ public class ValidateCMLManagerPluginTest {
         cml.validate("/Virtual/testValidate.cml");
     }
     
+    @Test public void testFromString() throws Exception {
+        CMLElement cmlElem = cml.fromString(
+            "<molecule xmlns=\"http://www.xmlcml.org/schema\"/>"
+        );
+        Assert.assertTrue(cmlElem.getClass().getName().contains("CMLMolecule"));
+    }
+
 }

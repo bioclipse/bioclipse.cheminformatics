@@ -1,5 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2008 The Bioclipse Project and others.
+ *               2009 Egon Willighagen <egonw@users.sf.net> 
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,29 +19,17 @@ import net.bioclipse.cml.managers.ValidateCMLManager;
 import net.bioclipse.core.tests.AbstractManagerTest;
 import net.bioclipse.managers.business.IBioclipseManager;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.xmlcml.cml.base.CMLElement;
+public class APITest extends AbstractManagerTest {
 
-public class ValidateCMLManagerTest extends AbstractManagerTest {
+    IValidateCMLManager cml = new ValidateCMLManager();
 
-    IValidateCMLManager cml;
-
-    //Do not use SPRING OSGI for this manager
-    //since we are only testing the implementations of the manager methods
-    public ValidateCMLManagerTest() {
-        cml = new ValidateCMLManager();
-    }
-
+    @Override
     public IBioclipseManager getManager() {
         return cml;
     }
 
-    @Test public void testFromString() throws Exception {
-        CMLElement cmlElem = cml.fromString(
-            "<molecule xmlns=\"http://www.xmlcml.org/schema\"/>"
-        );
-        Assert.assertTrue(cmlElem.getClass().getName().contains("CMLMolecule"));
+    @Override
+    public Class<? extends IBioclipseManager> getManagerInterface() {
+        return IValidateCMLManager.class;
     }
-
 }

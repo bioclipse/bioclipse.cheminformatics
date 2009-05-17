@@ -10,6 +10,7 @@
  ******************************************************************************/
 package net.bioclipse.cml.tests;
 
+import net.bioclipse.cml.managers.IValidateCMLManager;
 import net.bioclipse.cml.managers.ValidateCMLManager;
 import net.bioclipse.core.tests.coverage.AbstractCoverageTest;
 import net.bioclipse.managers.business.IBioclipseManager;
@@ -25,6 +26,11 @@ public class CoverageTest extends AbstractCoverageTest {
 
     public IBioclipseManager getManager() {
         return manager;
+    }
+
+    @Override
+    public Class<? extends IBioclipseManager> getManagerInterface() {
+        return IValidateCMLManager.class;
     }
 
 }

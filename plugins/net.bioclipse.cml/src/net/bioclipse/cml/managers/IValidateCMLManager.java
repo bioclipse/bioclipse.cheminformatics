@@ -19,7 +19,7 @@ import org.xmlcml.cml.base.CMLElement;
 
 @TestClasses(
     "net.bioclipse.cml.tests.APITest," +
-    "net.bioclipse.cml.tests.ValidateCMLManagerTest"
+    "net.bioclipse.cml.tests.JavaValidateCMLManagerPluginTest"
 )
 public interface IValidateCMLManager extends IBioclipseManager {
 
