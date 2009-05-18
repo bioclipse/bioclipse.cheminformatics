@@ -32,7 +32,7 @@ public class JChemPaintManagerFactory implements IExecutableExtension,
                                        String propertyName, 
                                        Object data) throws CoreException {
     
-        exampleManager = Activator.getDefault().getExampleManager();
+        exampleManager = Activator.getDefault().getJavaManager();
     }
     
     public Object create() throws CoreException {

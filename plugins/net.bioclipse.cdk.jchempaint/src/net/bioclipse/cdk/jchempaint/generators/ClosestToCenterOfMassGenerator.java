@@ -48,7 +48,7 @@ public class ClosestToCenterOfMassGenerator implements IGenerator {
      * @see org.openscience.cdk.renderer.generators.IGenerator#generate(org.openscience.cdk.interfaces.IAtomContainer, org.openscience.cdk.renderer.RendererModel)
      */
     public IRenderingElement generate( IAtomContainer ac, RendererModel model ) {
-        IJChemPaintManager jcp = Activator.getDefault().getExampleManager();
+        IJChemPaintManager jcp = Activator.getDefault().getJavaManager();
         Point2d p2=GeometryTools.get2DCentreOfMass( ac);
         if(p2== null) return new ElementGroup();
         IAtom atom = jcp.getClosestAtom(p2);

@@ -2,6 +2,10 @@ package net.bioclipse.cdk.jchempaint;
 
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintManager;
+import net.bioclipse.cdk.jchempaint.business.IJavaJChemPaintGlobalPropertiesManager;
+import net.bioclipse.cdk.jchempaint.business.IJavaJChemPaintManager;
+import net.bioclipse.cdk.jchempaint.business.IJavaScriptJChemPaintGlobalPropertiesManager;
+import net.bioclipse.cdk.jchempaint.business.IJavaScriptJChemPaintManager;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -22,14 +26,15 @@ public class Activator extends AbstractUIPlugin {
     
     // tracks the JChemPaintManager
     private ServiceTracker jcpFinderTracker;
+    private ServiceTracker jcpJsFinderTracker;
     // tracks the JChemPaintGlobalPropertiesManager
     private ServiceTracker jcpPropFinderTracker;
+    private ServiceTracker jcpPropJsFinderTracker;
     
     /**
      * The constructor
      */
-    public Activator() {
-    }
+    public Activator() {}
 
     /*
      * (non-Javadoc)
@@ -45,23 +50,42 @@ public class Activator extends AbstractUIPlugin {
                 null
         );
         jcpFinderTracker.open();
+        jcpJsFinderTracker = new ServiceTracker(
+                context, 
+                IJChemPaintManager.class.getName(), 
+                null
+        );
+        jcpJsFinderTracker.open();
         jcpPropFinderTracker = new ServiceTracker(
                 context, 
                 IJChemPaintGlobalPropertiesManager.class.getName(), 
                 null
         );
         jcpPropFinderTracker.open();
+        jcpPropJsFinderTracker = new ServiceTracker(
+                context, 
+                IJChemPaintGlobalPropertiesManager.class.getName(), 
+                null
+        );
+        jcpPropJsFinderTracker.open();
     }
 
-    /**
-     * Returns a reference to the example manager object
-     * 
-     * @return the exampleManager
-     */
-    public IJChemPaintManager getExampleManager() {
-        IJChemPaintManager exampleManager = null;
+    public IJavaJChemPaintManager getJavaManager() {
+        IJavaJChemPaintManager exampleManager = null;
         try {
-            exampleManager = (IJChemPaintManager) jcpFinderTracker.waitForService(1000*30);
+            exampleManager = (IJavaJChemPaintManager) jcpFinderTracker.waitForService(1000*30);
+        } catch (InterruptedException e) {
+            throw new IllegalStateException("Could not get example manager", e);
+        }
+        if(exampleManager == null) {
+            throw new IllegalStateException("Could not get example manager");
+        }
+        return exampleManager;
+    }
+    public IJavaScriptJChemPaintManager getJavaScriptManager() {
+        IJavaScriptJChemPaintManager exampleManager = null;
+        try {
+            exampleManager = (IJavaScriptJChemPaintManager)jcpJsFinderTracker.waitForService(1000*30);
         } catch (InterruptedException e) {
             throw new IllegalStateException("Could not get example manager", e);
         }
@@ -71,10 +95,25 @@ public class Activator extends AbstractUIPlugin {
         return exampleManager;
     }
 
-    public IJChemPaintGlobalPropertiesManager getJCPPropManager() {
-        IJChemPaintGlobalPropertiesManager manager = null;
+    public IJavaJChemPaintGlobalPropertiesManager getJCPPropManager() {
+        IJavaJChemPaintGlobalPropertiesManager manager = null;
         try {
-            manager = (IJChemPaintGlobalPropertiesManager)jcpPropFinderTracker.waitForService(1000*30);
+            manager = (IJavaJChemPaintGlobalPropertiesManager)
+                jcpPropFinderTracker.waitForService(1000*30);
+        } catch (InterruptedException e) {
+            throw new IllegalStateException("Could not get jcpprop manager", e);
+        }
+        if(manager == null) {
+            throw new IllegalStateException("Could not get example manager");
+        }
+        return manager;
+    }
+    public IJavaScriptJChemPaintGlobalPropertiesManager
+        getJCPPropJavaScriptManager() {
+        IJavaScriptJChemPaintGlobalPropertiesManager manager = null;
+        try {
+            manager = (IJavaScriptJChemPaintGlobalPropertiesManager)
+                jcpPropJsFinderTracker.waitForService(1000*30);
         } catch (InterruptedException e) {
             throw new IllegalStateException("Could not get jcpprop manager", e);
         }

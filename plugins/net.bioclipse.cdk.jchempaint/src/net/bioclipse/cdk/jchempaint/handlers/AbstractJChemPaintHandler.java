@@ -38,7 +38,7 @@ public abstract class AbstractJChemPaintHandler extends AbstractHandler {
     }
 
     protected IJChemPaintManager getManager() {
-        return Activator.getDefault().getExampleManager();
+        return Activator.getDefault().getJavaManager();
     }
     
     protected JChemPaintEditor getEditor(ExecutionEvent event) {
