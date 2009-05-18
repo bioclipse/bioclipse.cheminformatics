@@ -26,7 +26,7 @@ import net.bioclipse.managers.business.IBioclipseManager;
  * @author egonw
  */
 @PublishedClass ("Manager for the JChemPaintEditor Properties scripting language." )
-@TestClasses("net.bioclipse.cdk.jchempaint.business.test.JChemPaintManagerTest")
+@TestClasses("net.bioclipse.cdk.jchempaint.business.test.jcpglobal.APITest")
 public interface IJChemPaintGlobalPropertiesManager extends IBioclipseManager {
     
     public void applyProperties(RendererModel model) throws BioclipseException;

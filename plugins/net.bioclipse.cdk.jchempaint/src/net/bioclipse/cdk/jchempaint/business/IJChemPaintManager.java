@@ -29,7 +29,7 @@ import org.openscience.cdk.interfaces.IBond;
  * @author egonw
  */
 @PublishedClass ("Manager for the JChemPaintEditor scripting language." )
-@TestClasses("net.bioclipse.cdk.jchempaint.business.test.JChemPaintManagerTest")
+@TestClasses("net.bioclipse.cdk.jchempaint.business.test.jcp.APITest")
 public interface IJChemPaintManager extends IBioclipseManager {
     
     @PublishedMethod ( params = "double the zoom factor", 

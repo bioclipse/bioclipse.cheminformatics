@@ -10,7 +10,7 @@
  *     Jonathan Alvarsson
  *
  ******************************************************************************/
-package net.bioclipse.cdk.jchempaint.business.test;
+package net.bioclipse.cdk.jchempaint.business.test.jcp;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -24,10 +24,8 @@ import net.bioclipse.managers.business.IBioclipseManager;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class JChemPaintManagerTest extends AbstractManagerTest {
+public class APITest extends AbstractManagerTest {
 
-    IJChemPaintManager cdk;
-    
     private final static List<String> methodBlackList = new ArrayList<String>();
     
     static {
@@ -35,15 +33,18 @@ public class JChemPaintManagerTest extends AbstractManagerTest {
         methodBlackList.add("getIChemModel");
         methodBlackList.add("getController2DModel");
     }
+
+    private JChemPaintManager manager =
+        new JChemPaintManager();
     
-    //Do not use SPRING OSGI for this manager
-    //since we are only testing the implementations of the manager methods
-    public JChemPaintManagerTest() {
-        cdk = new JChemPaintManager();
+    @Override
+    public IBioclipseManager getManager() {
+        return manager;
     }
 
-    public IBioclipseManager getManager() {
-        return cdk;
+    @Override
+    public Class<? extends IBioclipseManager> getManagerInterface() {
+        return IJChemPaintManager.class;
     }
     
     @Test public void testImplementsAllControllerHubMethods() throws Exception {
@@ -51,7 +52,7 @@ public class JChemPaintManagerTest extends AbstractManagerTest {
         Assert.assertNotNull("Could not load the IChemModelRelay", hub);
         for (Method method : hub.getMethods()) {
             if (!methodBlackList.contains(method.getName())) {
-                Method matchingMethod = getMatchingMethod(cdk.getClass(), method);
+                Method matchingMethod = getMatchingMethod(manager.getClass(), method);
                 Assert.assertNotNull(
                      "The JChemPaintManager does not implement the IChemModelRelay method " +
                      method.getName(), matchingMethod
