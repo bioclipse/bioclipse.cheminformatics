@@ -249,6 +249,23 @@ public abstract class AbstractCDKManagerPluginTest {
 
         System.out.println("mol: " + mol.toString());
         assertNotNull(mol);
+        
+        List<ICDKMolecule> lst = cdk.loadMolecules( path);
+        assertNotNull(lst);
+        assertEquals( 1, lst.size() );
+        ICDKMolecule mol2 = lst.get( 0 );
+        
+        assertEquals( mol2.getInChI( IMolecule.Property.USE_CACHED_OR_CALCULATED ), 
+                      mol.getInChI( IMolecule.Property.USE_CACHED_OR_CALCULATED ) );
+
+        List<ICDKMolecule> lst2 = cdk.loadMolecules( new MockIFile(path));
+        assertNotNull(lst2);
+        assertEquals( 1, lst2.size() );
+        ICDKMolecule mol3 = lst2.get( 0 );
+        
+        assertEquals( mol3.getInChI( IMolecule.Property.USE_CACHED_OR_CALCULATED ), 
+                      mol.getInChI( IMolecule.Property.USE_CACHED_OR_CALCULATED ) );
+
     }
 
     @Test
