@@ -8,10 +8,10 @@
                       http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
 	<osgi:service id="javaJcpManagerOSGI" ref="javaJcpManager"
-		interface="net.bioclipse.cdk.jchempaint.business.IJavaJcpManager" />
+		interface="net.bioclipse.cdk.jchempaint.business.IJavaJChemPaintManager" />
 
 	<osgi:service id="javaScriptJcpManagerOSGI" ref="javaScriptJcpManager"
-		interface="net.bioclipse.cdk.jchempaint.business.IJavaScriptJcpManager" />
+		interface="net.bioclipse.cdk.jchempaint.business.IJavaScriptJChemPaintManager" />
 
 	<osgi:reference id="recordingAdvice"
 		interface="net.bioclipse.recording.IRecordingAdvice" />
@@ -32,13 +32,13 @@
 	</bean>
 	
 	<bean id="jcpManagerTarget" 
-	      class="net.bioclipse.cdk.jchempaint.business.JcpManager">
+	      class="net.bioclipse.cdk.jchempaint.business.JChemPaintManager">
 	</bean>
 
 	<bean id="javaScriptJcpManager" class="org.springframework.aop.framework.ProxyFactoryBean">
 		<property name="target" ref="jcpManagerTarget" />
 		<property name="proxyInterfaces"
-			value="net.bioclipse.cdk.jchempaint.business.IJavaScriptJcpManager" />
+			value="net.bioclipse.cdk.jchempaint.business.IJavaScriptJChemPaintManager" />
 		<property name="interceptorNames">
 			<list>
 				<value>recordingAdvisor</value>
@@ -50,7 +50,8 @@
 
 	<bean id="javaJcpManager" class="org.springframework.aop.framework.ProxyFactoryBean">
 		<property name="target" ref="jcpManagerTarget" />
-		<property name="proxyInterfaces" value="net.bioclipse.cdk.jchempaint.business.IJavaJcpManager" />
+		<property name="proxyInterfaces"
+		    value="net.bioclipse.cdk.jchempaint.business.IJavaJChemPaintManager" />
 		<property name="interceptorNames">
 			<list>
 				<value>recordingAdvisor</value>

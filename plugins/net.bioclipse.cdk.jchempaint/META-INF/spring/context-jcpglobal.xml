@@ -7,11 +7,11 @@
                       http://www.springframework.org/schema/osgi 
                       http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
-	<osgi:service id="javaJcpGlobalManagerOSGI" ref="javaJcpGlobalManager"
-		interface="net.bioclipse.cdk.jchempaint.business.IJavaJcpGlobalManager" />
+	<osgi:service id="javaJcpGlobalManagerOSGI" ref="javaJcpGlobalPropertiesManager"
+		interface="net.bioclipse.cdk.jchempaint.business.IJavaJChemPaintGlobalPropertiesManager" />
 
-	<osgi:service id="javaScriptJcpGlobalManagerOSGI" ref="javaScriptJcpGlobalManager"
-		interface="net.bioclipse.cdk.jchempaint.business.IJavaScriptJcpGlobalManager" />
+	<osgi:service id="javaScriptJcpGlobalManagerOSGI" ref="javaScriptJcpGlobalPropertiesManager"
+		interface="net.bioclipse.cdk.jchempaint.business.IJavaScriptJChemPaintGlobalPropertiesManager" />
 
 	<osgi:reference id="recordingAdvice"
 		interface="net.bioclipse.recording.IRecordingAdvice" />
@@ -31,14 +31,14 @@
 		<property name="pattern" value=".*" /> <!-- See also class implementation -->
 	</bean>
 	
-	<bean id="jcpGlobalManagerTarget" 
-	      class="net.bioclipse.cdk.jchempaint.business.JcpGlobalManager">
+	<bean id="jcpGlobalPropertiesManagerTarget" 
+	      class="net.bioclipse.cdk.jchempaint.business.JChemPaintGlobalPropertiesManager">
 	</bean>
 
-	<bean id="javaScriptJcpGlobalManager" class="org.springframework.aop.framework.ProxyFactoryBean">
-		<property name="target" ref="jcpGlobalManagerTarget" />
+	<bean id="javaScriptJcpGlobalPropertiesManager" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="jcpGlobalPropertiesManagerTarget" />
 		<property name="proxyInterfaces"
-			value="net.bioclipse.cdk.jchempaint.business.IJavaScriptJcpGlobalManager" />
+			value="net.bioclipse.cdk.jchempaint.business.IJavaScriptJChemPaintGlobalPropertiesManager" />
 		<property name="interceptorNames">
 			<list>
 				<value>recordingAdvisor</value>
@@ -48,9 +48,10 @@
 		</property>
 	</bean>
 
-	<bean id="javaJcpGlobalManager" class="org.springframework.aop.framework.ProxyFactoryBean">
-		<property name="target" ref="jcpGlobalManagerTarget" />
-		<property name="proxyInterfaces" value="net.bioclipse.cdk.jchempaint.business.IJavaJcpGlobalManager" />
+	<bean id="javaJcpGlobalPropertiesManager" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="jcpGlobalPropertiesManagerTarget" />
+		<property name="proxyInterfaces"
+		    value="net.bioclipse.cdk.jchempaint.business.IJavaJChemPaintGlobalPropertiesManager" />
 		<property name="interceptorNames">
 			<list>
 				<value>recordingAdvisor</value>

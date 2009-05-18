@@ -46,25 +46,25 @@ public class Activator extends AbstractUIPlugin {
         
         jcpFinderTracker = new ServiceTracker(
                 context, 
-                IJChemPaintManager.class.getName(), 
+                IJavaJChemPaintManager.class.getName(), 
                 null
         );
         jcpFinderTracker.open();
         jcpJsFinderTracker = new ServiceTracker(
                 context, 
-                IJChemPaintManager.class.getName(), 
+                IJavaScriptJChemPaintManager.class.getName(), 
                 null
         );
         jcpJsFinderTracker.open();
         jcpPropFinderTracker = new ServiceTracker(
                 context, 
-                IJChemPaintGlobalPropertiesManager.class.getName(), 
+                IJavaJChemPaintGlobalPropertiesManager.class.getName(), 
                 null
         );
         jcpPropFinderTracker.open();
         jcpPropJsFinderTracker = new ServiceTracker(
                 context, 
-                IJChemPaintGlobalPropertiesManager.class.getName(), 
+                IJavaScriptJChemPaintGlobalPropertiesManager.class.getName(), 
                 null
         );
         jcpPropJsFinderTracker.open();
