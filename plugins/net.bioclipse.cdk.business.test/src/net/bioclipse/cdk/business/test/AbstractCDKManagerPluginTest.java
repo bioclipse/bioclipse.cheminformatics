@@ -38,6 +38,7 @@ import java.util.List;
 import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
 
+import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.CDKManagerHelper;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
@@ -54,9 +55,13 @@ import net.bioclipse.jobs.BioclipseUIJob;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentType;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -240,7 +245,8 @@ public abstract class AbstractCDKManagerPluginTest {
     @Test
     public void testLoadATP() throws IOException, 
                                      BioclipseException, 
-                                     CoreException, URISyntaxException {
+                                     CoreException, URISyntaxException,
+                                     InterruptedException {
 
         URI uri = getClass().getResource("/testFiles/atp.mol").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());
@@ -265,9 +271,72 @@ public abstract class AbstractCDKManagerPluginTest {
         
         assertEquals( mol3.getInChI( IMolecule.Property.USE_CACHED_OR_CALCULATED ), 
                       mol.getInChI( IMolecule.Property.USE_CACHED_OR_CALCULATED ) );
+        
 
     }
 
+    @Test
+    public void testLoadATPInWorkspaceJob() throws IOException, 
+                                     BioclipseException, 
+                                     CoreException, URISyntaxException,
+                                     InterruptedException {
+
+        URI uri = getClass().getResource("/testFiles/atp.mol").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        final String path=url.getFile();
+
+        //Set up the job
+        WorkspaceJob job=new WorkspaceJob("Testing loadMolecules from Junit plugin test"){
+
+            ICDKMolecule jobmol;
+            
+            @Override
+            public IStatus runInWorkspace( IProgressMonitor monitor )
+                                                         throws CoreException {
+                List<ICDKMolecule> mollist;
+                ICDKManager jcdk = Activator.getDefault().getJavaCDKManager();
+                try {
+                    mollist = jcdk.loadMolecules( new MockIFile(path));
+                } catch ( Exception e ) {
+                    throw new CoreException(new Status(IStatus.ERROR, "cdk", 
+                                                       e.getMessage()));
+                }
+                assertNotNull(mollist);
+                assertEquals( 1, mollist.size() );
+                jobmol = mollist.get( 0 );
+                assertNotNull( jobmol );
+                
+                return Status.OK_STATUS;
+            }
+
+            /**
+             * We need to be able to get the result of the job
+             * @param adapter
+             * @return
+             */
+            @Override
+            public Object getAdapter( Class adapter ) {
+                if (adapter.equals( AbstractCDKManagerPluginTest.class ))
+                    return jobmol;
+                return super.getAdapter( adapter );
+            }
+            
+        };
+        job.setUser( false );
+        job.schedule();
+        
+        //Wait out the job so we can get the result
+        job.join();
+        
+        //Get the result with an adapter
+        Object obj = job.getAdapter( AbstractCDKManagerPluginTest.class );
+        assertTrue( obj instanceof ICDKMolecule );
+        ICDKMolecule mol4 = (ICDKMolecule) obj;
+        assertNotNull( mol4 );
+        
+    }
+    
+    
     @Test
     public void testLoadPolycarpol() throws IOException, 
                                             BioclipseException, 
