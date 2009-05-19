@@ -26,16 +26,16 @@ import net.bioclipse.cdk.jchempaint.Activator;
 public class JChemPaintManagerFactory implements IExecutableExtension, 
                                               IExecutableExtensionFactory {
 
-    private Object exampleManager;
+    private Object jchemPaintManager;
     
     public void setInitializationData( IConfigurationElement config,
                                        String propertyName, 
                                        Object data) throws CoreException {
     
-        exampleManager = Activator.getDefault().getJavaManager();
+        jchemPaintManager = Activator.getDefault().getJavaScriptManager();
     }
     
     public Object create() throws CoreException {
-        return exampleManager;
+        return jchemPaintManager;
     }
 }
