@@ -43,8 +43,7 @@ Require-Bundle: org.openscience.cdk.io,
  org.openscience.cdk.formula,
  org.openscience.cdk.ioformats,
  org.openscience.cdk.fingerprint,
- net.bioclipse.inchi,
- net.bioclipse.managers
+ net.bioclipse.inchi
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.cdk.business,
  net.bioclipse.cdk.domain,
