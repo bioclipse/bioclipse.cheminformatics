@@ -75,10 +75,12 @@ public class Activator extends AbstractUIPlugin {
         try {
             exampleManager = (IJavaJChemPaintManager) jcpFinderTracker.waitForService(1000*30);
         } catch (InterruptedException e) {
-            throw new IllegalStateException("Could not get example manager", e);
+            throw new IllegalStateException(
+                          "Could not get the JavaJChemPaintManager", e);
         }
         if(exampleManager == null) {
-            throw new IllegalStateException("Could not get example manager");
+            throw new IllegalStateException(
+                          "Could not get the JavaJChemPaintManager" );
         }
         return exampleManager;
     }
@@ -87,10 +89,12 @@ public class Activator extends AbstractUIPlugin {
         try {
             exampleManager = (IJavaScriptJChemPaintManager)jcpJsFinderTracker.waitForService(1000*30);
         } catch (InterruptedException e) {
-            throw new IllegalStateException("Could not get example manager", e);
+            throw new IllegalStateException(
+                          "Could not get the JavaScriptJChemPaintManager", e);
         }
         if(exampleManager == null) {
-            throw new IllegalStateException("Could not get example manager");
+            throw new IllegalStateException(
+                          "Could not get the JavaScriptJChemPaintManager" );
         }
         return exampleManager;
     }
