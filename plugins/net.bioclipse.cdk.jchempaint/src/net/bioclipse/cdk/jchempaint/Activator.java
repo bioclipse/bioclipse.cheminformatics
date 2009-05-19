@@ -1,7 +1,5 @@
 package net.bioclipse.cdk.jchempaint;
 
-import net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager;
-import net.bioclipse.cdk.jchempaint.business.IJChemPaintManager;
 import net.bioclipse.cdk.jchempaint.business.IJavaJChemPaintGlobalPropertiesManager;
 import net.bioclipse.cdk.jchempaint.business.IJavaJChemPaintManager;
 import net.bioclipse.cdk.jchempaint.business.IJavaScriptJChemPaintGlobalPropertiesManager;
