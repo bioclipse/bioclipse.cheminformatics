@@ -15,8 +15,7 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.ui;bundle-version="2.0.0",
  org.xmlcml.cmlxom;bundle-version="2.0.0",
  net.bioclipse.xom;bundle-version="1.1.0",
- org.xmlpull.xpp3;bundle-version="0.4.0",
- net.bioclipse.managers;bundle-version="1.0.0"
+ org.xmlpull.xpp3;bundle-version="0.4.0"
 Bundle-ClassPath: .
 Bundle-Activator: net.bioclipse.cml.managers.Activator
 Eclipse-AutoStart: true

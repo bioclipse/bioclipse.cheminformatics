@@ -19,7 +19,6 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.diff,
  org.openscience.cdk.extra,
  org.openscience.cdk.ioformats,
- net.bioclipse.ui;bundle-version="2.0.0",
- net.bioclipse.managers;bundle-version="1.0.0"
+ net.bioclipse.ui;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.cdk.debug.test
