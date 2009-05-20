@@ -10,6 +10,8 @@
 ******************************************************************************/
 package net.bioclipse.cdk.domain;
 
+import org.eclipse.swt.graphics.Color;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 
 /**
@@ -19,6 +21,15 @@ import org.openscience.cdk.interfaces.IAtomContainer;
  */
 public interface ISubStructure {
 
+    /**
+     * @return atomcontainer with atoms and bonds that should be highlighted
+     */
     public IAtomContainer getAtomContainer();
+
+    /**
+     * @param atom
+     * @return The color that the provided atom should be highlighted with
+     */
+    public Color getHighlightingColor(IAtom atom);
     
 }
