@@ -293,7 +293,7 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
 
     }
 
-    class ColorAWTtoSWTConverter {
+    static class ColorAWTtoSWTConverter {
 
         Device device;
         Color DEFAULT_COLOR;
@@ -302,7 +302,7 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
         public ColorAWTtoSWTConverter(Device device) {
             this.device=device;
             lookup = new HashMap<java.awt.Color, org.eclipse.swt.graphics.Color>();
-            this.device.getSystemColor(SWT.COLOR_MAGENTA);
+            DEFAULT_COLOR = this.device.getSystemColor(SWT.COLOR_MAGENTA);
         }
 
         public Color toSWTColor(java.awt.Color color) {
