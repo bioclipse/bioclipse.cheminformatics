@@ -277,16 +277,18 @@ public abstract class AbstractCDKManagerPluginTest {
 
     @Test
     public void testLoadATPInWorkspaceJob() throws IOException, 
-                                     BioclipseException, 
-                                     CoreException, URISyntaxException,
-                                     InterruptedException {
+                                                   BioclipseException, 
+                                                   CoreException, 
+                                                   URISyntaxException,
+                                                   InterruptedException {
 
         URI uri = getClass().getResource("/testFiles/atp.mol").toURI();
-        URL url=FileLocator.toFileURL(uri.toURL());
-        final String path=url.getFile();
+        URL url = FileLocator.toFileURL(uri.toURL());
+        final String path = url.getFile();
 
         //Set up the job
-        WorkspaceJob job=new WorkspaceJob("Testing loadMolecules from Junit plugin test"){
+        WorkspaceJob job = 
+            new WorkspaceJob("Testing loadMolecules from Junit plugin test") {
 
             ICDKMolecule jobmol;
             
