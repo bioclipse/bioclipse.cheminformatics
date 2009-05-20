@@ -10,7 +10,11 @@
  ******************************************************************************/
 package net.bioclipse.cdk.smartsmatching.model;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -86,6 +90,16 @@ public class SmartsHit extends BioObject implements ISubStructure{
     public void setHitMolecule( ICDKMolecule hitMolecule ) {
     
         this.hitMolecule = hitMolecule;
+    }
+
+    /**
+     * In this implementation, all atoms are colored red
+     */
+    public Color getHighlightingColor( IAtom atom ) {
+
+        Display display = new Display();
+        Color red = display.getSystemColor(SWT.COLOR_RED);
+        return red;
     }
 
 
