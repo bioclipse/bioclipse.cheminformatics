@@ -12,6 +12,7 @@
 package net.bioclipse.cdk.jchempaint.generators;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import javax.vecmath.Matrix3d;
 import javax.vecmath.Point2d;
@@ -28,6 +29,7 @@ import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.LineElement;
+import org.openscience.cdk.renderer.elements.PathElement;
 import org.openscience.cdk.renderer.generators.IGenerator;
 
 
@@ -56,7 +58,6 @@ public class ClosestToCenterOfMassGenerator implements IGenerator {
         return generateStar( atom.getPoint2d(),
                              model.getHighlightDistance()*3/model.getScale(),
                              model.getBondWidth()/model.getScale());
-
     }
 
     protected IRenderingElement generateStar( Point2d center,
@@ -87,6 +88,39 @@ public class ClosestToCenterOfMassGenerator implements IGenerator {
         }
 
         return star;
+    }
+
+    protected IRenderingElement generateFilledStar( Point2d center,
+                                                    double radius,
+                                                    int points,
+                                                    double width) {
+        Matrix3d m3 = new Matrix3d();
+        m3.rotZ( 2*Math.PI/(points*2) );
+        Vector3d v1 = new Vector3d(0,-1,0);
+        Vector3d v2 = new Vector3d(0,-1,0);
+        v1.scale( radius );
+        v2.scale( radius/2 );
+
+        Vector2d[] vecs = new Vector2d[points*2];
+        for(int i =0;i<vecs.length;i+=2) {
+            vecs[i] = new Vector2d(v1.x,v1.y);
+            m3.transform( v1 );
+            vecs[i+1] = new Vector2d(v1.x,v1.y);
+            vecs[i+1].scale( .4 );
+            m3.transform( v1 );
+        }
+
+        Point2d first= null;
+        Point2d p1 = new Point2d();
+        ArrayList<Point2d> pts = new ArrayList<Point2d>();
+        for(int i =0;i<vecs.length;i++) {
+
+            p1.add( center, vecs[i] );
+            if(first == null) first = new Point2d(p1);
+            pts.add( new Point2d(p1) );
+        }
+        pts.add(first);
+        return new PathElement(pts,Color.ORANGE);
     }
 
     private LineElement createLine(Point2d p1,Point2d p2,double width) {
