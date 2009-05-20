@@ -62,6 +62,7 @@ import org.openscience.cdk.controller.IChemModelEventRelayHandler;
 import org.openscience.cdk.controller.IControllerModule;
 import org.openscience.cdk.controller.IViewEventRelay;
 import org.openscience.cdk.controller.MoveModule;
+import org.openscience.cdk.controller.PhantomBondGenerator;
 import org.openscience.cdk.controller.undoredo.IUndoListener;
 import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.controller.undoredo.UndoRedoHandler;
@@ -116,6 +117,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         }
     };
 
+    private PhantomBondGenerator phantomGenerator;
+
     public JChemPaintEditorWidget(Composite parent, int style) {
         super( parent,  style
                        |SWT.H_SCROLL
@@ -154,6 +157,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                                 new SWTUndoRedoFactory(this.undoContext)
         );
 
+        phantomGenerator.setControllerHub( hub );
         hub.setEventHandler(
                 new IChemModelEventRelayHandler() {
 
@@ -328,6 +332,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         generatorList.add(new ExternalHighlightGenerator());
         generatorList.addAll( super.createGenerators() );
+        generatorList.add( phantomGenerator = new PhantomBondGenerator());
         generatorList.add(new SelectAtomGenerator());
         generatorList.add(new SelectBondGenerator());
 
