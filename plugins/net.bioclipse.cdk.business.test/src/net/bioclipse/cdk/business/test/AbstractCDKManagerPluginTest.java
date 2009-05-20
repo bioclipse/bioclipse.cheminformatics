@@ -276,15 +276,12 @@ public abstract class AbstractCDKManagerPluginTest {
     }
 
     @Test
-    public void testLoadATPInWorkspaceJob() throws IOException, 
-                                                   BioclipseException, 
-                                                   CoreException, 
-                                                   URISyntaxException,
-                                                   InterruptedException {
+    public void testLoadATPInWorkspaceJob() throws Exception {
 
         URI uri = getClass().getResource("/testFiles/atp.mol").toURI();
         URL url = FileLocator.toFileURL(uri.toURL());
         final String path = url.getFile();
+        final Exception[] exception = {null};
 
         //Set up the job
         WorkspaceJob job = 
@@ -300,6 +297,9 @@ public abstract class AbstractCDKManagerPluginTest {
                 try {
                     mollist = jcdk.loadMolecules( new MockIFile(path));
                 } catch ( Exception e ) {
+                    synchronized ( exception ) {
+                        exception[0] = e;
+                    }
                     throw new CoreException(new Status(IStatus.ERROR, "cdk", 
                                                        e.getMessage()));
                 }
@@ -329,6 +329,12 @@ public abstract class AbstractCDKManagerPluginTest {
         
         //Wait out the job so we can get the result
         job.join();
+        
+        synchronized ( exception ) {
+            if ( exception[0] != null ) {
+                throw exception[0];
+            }
+        }
         
         //Get the result with an adapter
         Object obj = job.getAdapter( AbstractCDKManagerPluginTest.class );
