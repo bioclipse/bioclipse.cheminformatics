@@ -39,6 +39,7 @@ import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.content.IContentType;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -970,5 +971,8 @@ public interface ICDKManager extends IBioclipseManager {
 
     public void loadMolecule( IFile file,
                               BioclipseUIJob<ICDKMolecule> bioclipseUIJob );
+
+    public int numberOfEntriesInSDF( IFile file,
+                                     SubProgressMonitor subProgressMonitor );
 
 }
