@@ -9,8 +9,9 @@
 	<item title="Step 0: Prerequisites">
 		<description>
  			You need the Chemoinformatics feature installed to run this cheat
- 			sheet. If you run this sheet from within Bioclipse, you have if
- 			this feature already installed.
+sheet to run the first steps. Later steps are optional
+and depend on the Speclipse and XMPP features to be installed
+too.
  		</description>
 	</item>
 	<item
