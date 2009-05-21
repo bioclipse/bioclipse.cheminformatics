@@ -103,10 +103,10 @@ public class Activator extends AbstractUIPlugin {
             manager = (IJavaJChemPaintGlobalPropertiesManager)
                 jcpPropFinderTracker.waitForService(1000*30);
         } catch (InterruptedException e) {
-            throw new IllegalStateException("Could not get jcpprop manager", e);
+            throw new IllegalStateException("Could not get jcpglobal manager", e);
         }
         if(manager == null) {
-            throw new IllegalStateException("Could not get example manager");
+            throw new IllegalStateException("Could not get jcpglobal manager");
         }
         return manager;
     }
@@ -117,10 +117,10 @@ public class Activator extends AbstractUIPlugin {
             manager = (IJavaScriptJChemPaintGlobalPropertiesManager)
                 jcpPropJsFinderTracker.waitForService(1000*30);
         } catch (InterruptedException e) {
-            throw new IllegalStateException("Could not get jcpprop manager", e);
+            throw new IllegalStateException("Could not get jcpglobal manager", e);
         }
         if(manager == null) {
-            throw new IllegalStateException("Could not get example manager");
+            throw new IllegalStateException("Could not get jcpglobal manager");
         }
         return manager;
     }
