@@ -14,7 +14,9 @@ package net.bioclipse.cdk.domain;
 
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.BioObject;
+import net.bioclipse.core.domain.IMolecule;
 
+import org.eclipse.ui.views.properties.IPropertySource;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.libio.cml.Convertor;
@@ -67,5 +69,22 @@ public class CDKReaction extends BioObject implements ICDKReaction {
         Convertor convertor = new Convertor(true, null);
         CMLReaction cmlMol = convertor.cdkReactionToCMLReaction( getReaction());
         return cmlMol.toXML();
+    }
+    public Object getAdapter( Class adapter ) {
+        
+        if (adapter == IMolecule.class){
+            return this;
+        }
+        
+        if (adapter.isAssignableFrom(IReaction.class)) {
+            return this.getReaction();
+        }
+        
+        if (adapter.isAssignableFrom(IPropertySource.class)) {
+            return new CDKReactionPropertySource(this);
+        }
+        
+        // TODO Auto-generated method stub
+        return super.getAdapter( adapter );
     }
 }
