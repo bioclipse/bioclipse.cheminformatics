@@ -43,7 +43,6 @@ import net.bioclipse.cdk.business.CDKManagerHelper;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.domain.ICDKReaction;
 import net.bioclipse.cdk.domain.MoleculesInfo;
 import net.bioclipse.cdkdebug.business.ICDKDebugManager;
 import net.bioclipse.core.MockIFile;
@@ -80,7 +79,6 @@ import org.openscience.cdk.io.Mol2Reader;
 import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
-import org.openscience.cdk.io.formats.MDLRXNFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
 import org.openscience.cdk.io.formats.Mol2Format;
 import org.openscience.cdk.io.formats.SDFFormat;
@@ -1858,30 +1856,4 @@ public abstract class AbstractCDKManagerPluginTest {
         Assert.assertEquals(1.0, cdk.calculateTanimoto(mol, b3), 0.0);
     }
 
-    @Test public void testLoadReaction_InputStream_IProgressMonitor_IChemFormat() throws Exception{
-        URI uri = getClass().getResource("/testFiles/0002.stg01.rxn").toURI();
-        URL url=FileLocator.toFileURL(uri.toURL());
-        String path=url.getFile();
-        IFile file = new MockIFile( path );
-        ICDKReaction reaction = cdk.loadReactions( file.getContents(),
-                (IChemFormat)MDLRXNFormat.getInstance()).get( 0 );
-
-        Assert.assertNotNull(reaction);
-        Assert.assertSame(1, reaction.getReaction().getReactantCount());
-        Assert.assertSame(1, reaction.getReaction().getProductCount());
-
-    }
-    
-    @Test public void testLoadReaction_IFile_IProgressMonitor() throws Exception{
-        URI uri = getClass().getResource("/testFiles/reaction.1.cml").toURI();
-        URL url=FileLocator.toFileURL(uri.toURL());
-        String path=url.getFile();
-        IFile file = new MockIFile( path );
-        ICDKReaction reaction = cdk.loadReactions( file ).get( 0 );
-
-        Assert.assertNotNull(reaction);
-        Assert.assertSame(1, reaction.getReaction().getReactantCount());
-        Assert.assertSame(1, reaction.getReaction().getProductCount());
-        
-    }
 }
