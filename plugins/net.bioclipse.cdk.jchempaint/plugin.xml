@@ -812,6 +812,17 @@
              commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.eraser"
              label="Delete"
              style="push">
+          <visibleWhen
+                checkEnabled="false">
+             <or>
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.selected.atom">
+                </reference>
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.selected.bond">
+                </reference>
+             </or>
+          </visibleWhen>
        </command>
        <command
              commandId="net.bioclipse.cdk.jchempaint.manager.action"
