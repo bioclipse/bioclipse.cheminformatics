@@ -62,9 +62,14 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel {
 
     Map<Integer, ICDKMolecule> edited = new HashMap<Integer, ICDKMolecule>();
 
+    private Map<Integer, Map<Object,Object>> molProps;
+
+    private Map<Object,Class<?>> propertyList;
+
 
     public SDFIndexEditorModel() {
-
+        molProps = new HashMap<Integer, Map<Object,Object>>();
+        propertyList = new HashMap<Object, Class<?>>();
         chemReader = new MDLV2000Reader();
         builder = DefaultChemObjectBuilder.getInstance();
     }
@@ -191,4 +196,22 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel {
         return new HashSet<Object>(availableProperties);
     }
 
+    public <T,S> S getPropertyFor(int moleculeIndex,T property) {
+        Map<Object,Object> props = molProps.get(moleculeIndex);
+        Class<?> c = propertyList.get( property );
+        if(props!=null) {
+            Object val = props.get( property );
+            if(c.isAssignableFrom( val.getClass() ))
+                return (S) val;
+        }
+        return null;
+    }
+
+    public <T extends Object,S extends Object>void setPropertyFor(int moleculeIndex, T property, S value) {
+        Map<Object,Object> props = molProps.get( moleculeIndex );
+        propertyList.put( property, value.getClass() );
+        if(props==null)
+            molProps.put( moleculeIndex, props = new HashMap<Object, Object>() );
+        props.put( property, value );
+    }
 }
