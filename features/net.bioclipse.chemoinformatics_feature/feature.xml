@@ -26,9 +26,6 @@ The Eclipse Public License accompanies this distribution, and is available at ht
       <update label="Bioclipse2 update site" url="http://update2.bioclipse.net"/>
    </url>
 
-   <requires>
-   </requires>
-
    <plugin
          id="net.bioclipse.cdk.business"
          download-size="0"
