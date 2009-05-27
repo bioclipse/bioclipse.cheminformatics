@@ -1016,12 +1016,6 @@ public class CDKManager implements IBioclipseManager {
 
       public int numberOfEntriesInSDF(IFile file, IProgressMonitor monitor) {
 
-          SDFileIndex index = createSDFIndex( file, monitor );
-          return index.size();
-      }
-
-      public SDFileIndex createSDFIndex(IFile file, IProgressMonitor monitor) {
-
           SubMonitor progress = SubMonitor.convert( monitor ,100);
           long size = -1;
           try {
@@ -1104,7 +1098,7 @@ public class CDKManager implements IBioclipseManager {
                             "numberOfEntriesInSDF took %d to complete",
                             (int)((System.nanoTime()-tStart)/1e6)) );
           progress.done();
-          return new SDFileIndex(file,values);
+          return values.size();
       }
 
       private static class Record {

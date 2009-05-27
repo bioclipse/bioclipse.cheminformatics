@@ -10,9 +10,12 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
+import org.eclipse.core.resources.IFile;
+
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
+import net.bioclipse.jobs.BioclipseUIJob;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 @PublishedClass(value = "Contains methods for interacting with lists of molecules")
@@ -21,5 +24,13 @@ public interface IMoleculeTableManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(methodSummary="Log a value")
     public void dummy();
+
+    @Recorded
+    public SDFileIndex createSDFIndex(IFile file, 
+           BioclipseUIJob<SDFileIndex> uiJob);
+    @Recorded
+    @PublishedMethod(params = "String file", 
+      methodSummary = "Creates a index of the molecules positons in a SDFile")
+    public SDFileIndex createSDFIndex( String file );
 
 }

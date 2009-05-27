@@ -556,17 +556,6 @@ public interface ICDKManager extends IBioclipseManager {
                   throws BioclipseException;
 
 
-    public SDFileIndex createSDFIndex(IFile file);
-
-    public SDFileIndex createSDFIndex(IFile file, 
-                                      BioclipseUIJob<SDFileIndex> uiJob);
-    
-    @Recorded
-    @PublishedMethod( 
-        params = "String file",
-        methodSummary = "Creates a index of the molecules positons in a SDFile")
-    public SDFileIndex createSDFIndex(String file);
-    
     @TestMethods( "testNumberOfEntriesInSDFIFileUIJob" )
     public int numberOfEntriesInSDF( IFile file, 
                                      BioclipseUIJob<Integer> uiJob );

@@ -9,7 +9,7 @@
  *     Arvid Berg <goglepox@users.sf.net>
  *
  ******************************************************************************/
-package net.bioclipse.cdk.business;
+package net.bioclipse.cdk.ui.sdfeditor.business;
 
 import java.util.ArrayList;
 import java.util.List;

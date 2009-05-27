@@ -18,10 +18,10 @@ import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
-import net.bioclipse.cdk.business.SDFileIndex;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
+import net.bioclipse.cdk.ui.sdfeditor.business.SDFileIndex;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.BioclipseUIJob;
@@ -228,7 +228,9 @@ public class MoleculesEditor extends EditorPart implements
 
                 }else {
 
-                    cdkManager.createSDFIndex( file,
+                    net.bioclipse.cdk.ui.sdfeditor.Activator.getDefault()
+                    .getMoleculeTableManager()
+                    .createSDFIndex( file,
                     new BioclipseUIJob<SDFileIndex>() {
 
                         @Override
