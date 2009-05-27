@@ -48,7 +48,7 @@ public class CDKDebugManager implements ICDKDebugManager {
         return mol.getAtomContainer().toString();
     }
     
-    public String getNamespace() {
+    public String getManagerName() {
         return "cdx";
     }
    

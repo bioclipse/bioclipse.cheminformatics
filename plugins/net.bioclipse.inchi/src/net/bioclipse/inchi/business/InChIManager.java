@@ -34,7 +34,7 @@ public class InChIManager implements IBioclipseManager {
         return factory;
     }
 
-    public String getNamespace() {
+    public String getManagerName() {
         return "inchi";
     }
 

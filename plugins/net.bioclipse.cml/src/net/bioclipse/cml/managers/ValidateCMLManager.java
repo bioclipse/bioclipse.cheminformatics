@@ -56,7 +56,7 @@ public class ValidateCMLManager implements IValidateCMLManager {
         } );
     }
 
-    public String getNamespace() {
+    public String getManagerName() {
 
         return "cml";
     }

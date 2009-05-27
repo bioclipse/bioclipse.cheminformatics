@@ -38,7 +38,7 @@ public class PubChemManager implements IPubChemManager {
 
     private final static String TOOL = "bioclipse.net";
 
-    public String getNamespace() {
+    public String getManagerName() {
         return "pubchem";
     }
 

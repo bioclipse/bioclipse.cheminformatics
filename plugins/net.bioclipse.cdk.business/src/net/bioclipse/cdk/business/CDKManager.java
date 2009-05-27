@@ -156,7 +156,7 @@ public class CDKManager implements IBioclipseManager {
         CDKManagerHelper.registerAllFormats(formatsFactory);
     }
 
-    public String getNamespace() {
+    public String getManagerName() {
         return "cdk";
     }
 

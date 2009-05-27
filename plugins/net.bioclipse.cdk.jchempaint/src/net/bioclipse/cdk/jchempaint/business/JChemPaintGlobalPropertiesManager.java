@@ -36,7 +36,7 @@ import org.openscience.cdk.renderer.RendererModel;
 public class JChemPaintGlobalPropertiesManager
     implements IJChemPaintGlobalPropertiesManager {
 
-    public String getNamespace() {
+    public String getManagerName() {
         return "jcpglobal";
     }
 

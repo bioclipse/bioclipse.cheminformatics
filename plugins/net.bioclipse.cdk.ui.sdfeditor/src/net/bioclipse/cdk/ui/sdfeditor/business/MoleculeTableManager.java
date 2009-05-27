@@ -31,7 +31,7 @@ public class MoleculeTableManager implements IBioclipseManager {
 
     Logger logger = Logger.getLogger( MoleculeTableManager.class );
 
-    public String getNamespace() {
+    public String getManagerName() {
         return "molTable";
     }
 

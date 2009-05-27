@@ -50,7 +50,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         }
     }
 
-    public String getNamespace() {
+    public String getManagerName() {
         return "jcp";
     }
 

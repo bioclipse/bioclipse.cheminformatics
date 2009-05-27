@@ -29,7 +29,7 @@ public class JmolManager implements IJmolManager {
 
     private JmolEditor jmolEditor;
 
-    public String getNamespace() {
+    public String getManagerName() {
         return "jmol";
     }
 
