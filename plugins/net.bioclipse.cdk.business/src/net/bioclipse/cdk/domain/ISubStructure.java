@@ -10,6 +10,7 @@
 ******************************************************************************/
 package net.bioclipse.cdk.domain;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.swt.graphics.Color;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -19,7 +20,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
  * @author ola
  *
  */
-public interface ISubStructure {
+public interface ISubStructure extends IAdaptable {
 
     /**
      * @return atomcontainer with atoms and bonds that should be highlighted
