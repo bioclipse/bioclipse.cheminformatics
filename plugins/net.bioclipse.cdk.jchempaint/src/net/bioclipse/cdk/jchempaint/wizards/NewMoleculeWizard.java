@@ -16,13 +16,17 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.internal.editors.text.EditorsPlugin;
 import org.eclipse.ui.internal.editors.text.NonExistingFileEditorInput;
@@ -48,6 +52,8 @@ public class NewMoleculeWizard extends Wizard implements INewWizard {
         "  </bondArray>" + newline +
 		"</molecule>" + newline;
 	
+    private IWorkbenchWindow activeWindow;
+    
     /**
      * Creates a wizard for creating a new file resource in the workspace.
      */
@@ -65,6 +71,7 @@ public class NewMoleculeWizard extends Wizard implements INewWizard {
     public void init(IWorkbench workbench, IStructuredSelection currentSelection) {
         setWindowTitle("New Molecule");
         setNeedsProgressMonitor(true);
+        activeWindow = workbench.getActiveWorkbenchWindow();
     }
 
     public boolean performFinish() {
@@ -73,15 +80,13 @@ public class NewMoleculeWizard extends Wizard implements INewWizard {
         IFileStore fileStore= queryFileStore();
         IEditorInput input= createEditorInput(fileStore);
         String editorId= getEditorId(fileStore);
-        IWorkbenchPage page= PlatformUI.getWorkbench()
-            .getActiveWorkbenchWindow().getActivePage();
+        IWorkbenchPage page= activeWindow.getActivePage();
         try {
             IEditorPart editor=page.openEditor(input, editorId);
             if (editor instanceof TextEditor) {
                 TextEditor ted = (TextEditor) editor;
                 IDocumentProvider pr=ted.getDocumentProvider();
                 IDocument doc=pr.getDocument(input);
-                //                String currentContent=doc.get();
                 doc.set(FILE_CONTENT);
             }
 
@@ -99,7 +104,16 @@ public class NewMoleculeWizard extends Wizard implements INewWizard {
     }
 
     private String getEditorId(IFileStore fileStore) {
-        return "net.bioclipse.cdk.ui.editors.jchempaint";
+//        if (true) return "net.bioclipse.cdk.ui.editors.jchempaint";
+        
+        IWorkbench workbench = activeWindow.getWorkbench();
+        IEditorRegistry editorRegistry = workbench.getEditorRegistry();
+        IEditorDescriptor descriptor =
+            editorRegistry.getDefaultEditor(fileStore.getName());
+        if (descriptor != null) return descriptor.getId();
+        
+        // default to the plain TextEditor
+        return EditorsUI.DEFAULT_TEXT_EDITOR_ID;
     }
 
     private IEditorInput createEditorInput(IFileStore fileStore) {

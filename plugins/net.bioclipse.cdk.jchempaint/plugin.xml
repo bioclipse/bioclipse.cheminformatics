@@ -1027,8 +1027,10 @@
       <extension
          point="org.eclipse.ui.newWizards">
       <wizard
+            canFinishEarly="true"
             category="net.bioclipse.cdk.ChemistryFiles"
             class="net.bioclipse.cdk.jchempaint.wizards.NewMoleculeWizard"
+            hasPages="false"
             icon="icons/molecule3D.png"
             id="net.bioclipse.cdk.jchempaint.wizards.NewMoleculeWizard"
             name="Molecule (2)"
