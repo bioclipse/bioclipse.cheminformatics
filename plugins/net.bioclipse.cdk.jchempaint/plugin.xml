@@ -1024,4 +1024,31 @@
       </generator>
    </extension-->
    
+      <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="net.bioclipse.cdk.ChemistryFiles"
+            class="net.bioclipse.cdk.jchempaint.wizards.NewMoleculeWizard"
+            icon="icons/molecule3D.png"
+            id="net.bioclipse.cdk.jchempaint.wizards.NewMoleculeWizard"
+            name="Molecule (2)"
+            preferredPerspectives="net.bioclipse.chemoinformatics.ChemoinformaticsPerspective">
+      </wizard>
+   </extension>
+
+  <extension point="org.eclipse.ui.navigator.navigatorContent">
+    <commonWizard type="new"
+        wizardId="net.bioclipse.cdk.jchempaint.wizards.NewMoleculeWizard">
+      <enablement>
+        <or>
+          <adapt type="org.eclipse.core.resources.IFile" />
+          <adapt type="org.eclipse.core.resources.IFolder" />
+          <adapt type="org.eclipse.core.resources.IProject" />
+          <adapt type="org.eclipse.core.resources.IWorkspaceRoot" />
+        </or>
+      </enablement>
+    </commonWizard>
+  </extension>
+
+   
 </plugin>

@@ -30,9 +30,14 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.smarts;bundle-version="1.1.5",
  net.bioclipse.ui.business
 Bundle-ActivationPolicy: lazy
-Import-Package: org.apache.log4j
-Export-Package: net.bioclipse.cdk.jchempaint,
- net.bioclipse.cdk.jchempaint.business,
+Import-Package: org.apache.log4j,
+ org.eclipse.core.filesystem,
+ org.eclipse.core.resources,
+ org.eclipse.jface.text,
+ org.eclipse.ui.editors.text,
+ org.eclipse.ui.internal.editors.text,
+ org.eclipse.ui.texteditor
+Export-Package: net.bioclipse.cdk.jchempaint.business,
  net.bioclipse.cdk.jchempaint.editor,
  net.bioclipse.cdk.jchempaint.widgets
 Bundle-Vendor: The Bioclipse Team
