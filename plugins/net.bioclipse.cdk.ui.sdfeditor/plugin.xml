@@ -145,4 +145,11 @@
      </command>
   </menuContribution>
 	</extension>
+ <extension
+       point="net.bioclipse.scripting.contribution">
+    <scriptContribution
+          id="net.bioclipse.cdk.ui.sdfeditor.business.MoleculeTableManager"
+          service="net.bioclipse.cdk.ui.sdfeditor.business.MoleculeTableManagerFactory">
+    </scriptContribution>
+ </extension>
 </plugin>
