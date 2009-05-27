@@ -37,7 +37,8 @@ Import-Package: org.apache.log4j,
  org.eclipse.ui.editors.text,
  org.eclipse.ui.internal.editors.text,
  org.eclipse.ui.texteditor
-Export-Package: net.bioclipse.cdk.jchempaint.business,
+Export-Package: net.bioclipse.cdk.jchempaint,
+ net.bioclipse.cdk.jchempaint.business,
  net.bioclipse.cdk.jchempaint.editor,
  net.bioclipse.cdk.jchempaint.widgets
 Bundle-Vendor: The Bioclipse Team
