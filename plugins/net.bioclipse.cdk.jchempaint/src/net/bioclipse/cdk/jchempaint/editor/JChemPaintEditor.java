@@ -284,6 +284,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                         }
                     }
                 });
+            }else {
+                logger.error( "Failed to get molecule form editor input" );
             }
         }
 

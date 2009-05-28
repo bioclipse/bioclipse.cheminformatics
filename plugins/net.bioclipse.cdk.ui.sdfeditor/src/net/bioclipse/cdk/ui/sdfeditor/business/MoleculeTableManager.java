@@ -36,8 +36,8 @@ public class MoleculeTableManager implements IBioclipseManager {
         return "molTable";
     }
 
-    public void dummy() {
-        logger.info( "Dummy on molTable manager has been called" );
+    public void dummy(String... strings) {
+        logger.info( "Dummy on molTable manager has been called with thees argumenst "+strings.toString() );
     }
 
     public SDFileIndex createSDFIndex(IFile file, IProgressMonitor monitor) {

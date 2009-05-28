@@ -23,8 +23,8 @@ import net.bioclipse.managers.business.IBioclipseManager;
 public interface IMoleculeTableManager extends IBioclipseManager {
 
     @Recorded
-    @PublishedMethod(methodSummary="Log a value")
-    public void dummy();
+    @PublishedMethod(methodSummary="Log a value and tests ")
+    public void dummy(String... strings);
 
     @Recorded
     public void createSDFIndex(IFile file,

@@ -412,6 +412,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             else {
                 IChemModel model = NoNotificationChemObjectBuilder.getInstance()
                 .newChemModel();
+                source = null;
                 setModel( model );
             }
     }
