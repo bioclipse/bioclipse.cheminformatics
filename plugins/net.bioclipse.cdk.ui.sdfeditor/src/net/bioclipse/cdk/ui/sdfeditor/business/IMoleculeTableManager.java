@@ -27,7 +27,7 @@ public interface IMoleculeTableManager extends IBioclipseManager {
     public void dummy();
 
     @Recorded
-    public SDFileIndex createSDFIndex(IFile file,
+    public void createSDFIndex(IFile file,
            BioclipseUIJob<SDFileIndex> uiJob);
     @Recorded
     @PublishedMethod(params = "String file",
