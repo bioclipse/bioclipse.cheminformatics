@@ -55,12 +55,12 @@ public class MoleculeTableManager implements IBioclipseManager {
         }
         long tStart = System.nanoTime();
         List<Long> values = new LinkedList<Long>();
+        List<Long> propPos = new LinkedList<Long>();
         int num = 0;
         long pos = 0;
         long start = 0;
         int work = 0;
 
-        long markProperty = -1;
         try {
             ReadableByteChannel fc = Channels.newChannel( file.getContents() );
             ByteBuffer byteBuffer = ByteBuffer.allocateDirect( 200 );
@@ -103,7 +103,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                     }else if(c == '\r') continue;
                     else if(c == '$') dollarCount++;
                     else if(c== '>' && firstInLine) {
-                        markProperty = pos;
+                        propPos.add( pos );
                         firstInLine = false;
                     }else {
                         firstInLine=false;

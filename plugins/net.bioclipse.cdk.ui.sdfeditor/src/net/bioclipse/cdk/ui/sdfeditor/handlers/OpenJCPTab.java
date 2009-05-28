@@ -1,7 +1,5 @@
 package net.bioclipse.cdk.ui.sdfeditor.handlers;
 
-import java.util.Map;
-
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart;
 

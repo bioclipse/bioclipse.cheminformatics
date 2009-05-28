@@ -196,6 +196,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel {
         return new HashSet<Object>(availableProperties);
     }
 
+    @SuppressWarnings("unchecked")
     public <T,S> S getPropertyFor(int moleculeIndex,T property) {
         Map<Object,Object> props = molProps.get(moleculeIndex);
         Class<?> c = propertyList.get( property );

@@ -278,6 +278,7 @@ public class PropertySelector extends Composite{
         removeAll = removeAllButton;
     }
 
+    @SuppressWarnings("unchecked")
     private void addSelection() {
         IStructuredSelection selection = (IStructuredSelection) pTable.getSelection();
         viewProperties.addAll(selection.toList());
@@ -288,6 +289,7 @@ public class PropertySelector extends Composite{
         vTable.getControl().setFocus();
     }
 
+    @SuppressWarnings("unchecked")
     private void removeSelection() {
         IStructuredSelection selection = (IStructuredSelection) vTable.getSelection();
         viewProperties.removeAll( selection.toList());
