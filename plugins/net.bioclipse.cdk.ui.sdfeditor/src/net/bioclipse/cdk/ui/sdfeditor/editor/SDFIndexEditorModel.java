@@ -201,10 +201,14 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDK
     public <T> T getPropertyFor(int moleculeIndex,String property) {
         Map<String,Object> props = molProps.get(moleculeIndex);
         Class<?> c = propertyList.get( property );
-        if(props!=null) {
+        if(props!=null && c != null) {
             Object val = props.get( property );
             if(c.isAssignableFrom( val.getClass() ))
                 return (T) val;
+        }else {
+            ICDKMolecule mol = getMoleculeAt( moleculeIndex );
+            Object val = mol.getAtomContainer().getProperty( property );
+            return (T) val;
         }
         return null;
     }
