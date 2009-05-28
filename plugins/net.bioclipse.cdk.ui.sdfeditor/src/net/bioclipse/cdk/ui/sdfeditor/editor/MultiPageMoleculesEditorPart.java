@@ -287,6 +287,8 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         if(adapter.isAssignableFrom( JChemPaintEditor.class )) {
             return jcpPage;
         }
+        if(adapter.isAssignableFrom( MoleculesEditor.class ))
+            return moleculesPage;
         return super.getAdapter( adapter );
     }
 }
