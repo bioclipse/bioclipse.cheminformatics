@@ -35,8 +35,7 @@
       <list>
         <value>recordingAdvisor</value>
         <value>wrapInProxyAdvice</value>
-        <value>javaManagerDispatcherAdvisor
-        </value>
+        <value>javaManagerDispatcherAdvisor</value>
       </list>
     </property>
   </bean>
@@ -48,8 +47,7 @@
       <list>
         <value>recordingAdvisor</value>
         <value>wrapInProxyAdvice</value>
-        <value>javaScriptManagerDispatcherAdvisor
-        </value>
+        <value>javaScriptManagerDispatcherAdvisor</value>
       </list>
     </property>
   </bean>
