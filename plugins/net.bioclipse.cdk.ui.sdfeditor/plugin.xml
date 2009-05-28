@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   <extension-point id="net.bioclipse.cdk.propertyCalculator" name="Property Calculator" schema="schema/net.bioclipse.cdk.propertyCalculator.exsd"/>
+   <extension-point id="net.bioclipse.cdk.propertyCalculator" name="PropertyCalculator" schema="schema/net.bioclipse.cdk.propertyCalculator.exsd"/>
    <extension
          point="org.eclipse.ui.editors">
       <editor
@@ -106,6 +106,16 @@
               id="net.bioclipse.cdk.ui.sdfeditor.open.jcp"
               name="Open 2D-structure tab">
         </command>
+        <command
+              defaultHandler="net.bioclipse.cdk.ui.sdfeditor.handlers.CalculatePropertyHandler"
+              id="net.bioclipse.cdk.ui.sdfeditor.addProperty"
+              name="Add Property">
+           <commandParameter
+                 id="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
+                 name="calculatorId"
+                 optional="false">
+           </commandParameter>
+        </command>
   	</extension>
 
 	<extension
@@ -144,6 +154,24 @@
            </iterate>
         </visibleWhen>
      </command>
+     <command
+           commandId="net.bioclipse.cdk.ui.sdfeditor.addProperty"
+           label="Calculate number of atoms property"
+           style="push">
+        <parameter
+              name="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
+              value="net.bioclipse.cdk.calculator.numberOfAtoms">
+        </parameter>
+        <visibleWhen
+              checkEnabled="false">
+           <with
+                 variable="activeEditor">
+              <instanceof
+                    value="net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart">
+              </instanceof>
+           </with>
+        </visibleWhen>
+     </command>
   </menuContribution>
 	</extension>
  <extension
@@ -154,9 +182,10 @@
     </scriptContribution>
  </extension>
  <extension
+       id="net.bioclipse.cdk.calculator.numberOfAtoms"
        point="net.bioclipse.cdk.propertyCalculator">
     <Calculator
-          calculate="net.bioclipse.cdk.ui.sdfeditor.NumberOfAtomCalculator">
+          class="net.bioclipse.cdk.ui.sdfeditor.NumberOfAtomCalculator">
     </Calculator>
  </extension>
 </plugin>
