@@ -165,9 +165,15 @@ public class MoleculeTableContentProvider implements
         }
         int i = col;
         if( properties != null && i<properties.size()+1) {
+            if(model instanceof SDFIndexEditorModel) {
+                // FIXME a general interface to access properties
+                return ((SDFIndexEditorModel) model).getPropertyFor(
+                                             row, (String)properties.get(i-1) );
+            }else {
             Object value = molecule.getAtomContainer()
             .getProperty( properties.get(i-1));
             return  value!=null?value.toString():"";
+            }
         } else
             return "";
     }
