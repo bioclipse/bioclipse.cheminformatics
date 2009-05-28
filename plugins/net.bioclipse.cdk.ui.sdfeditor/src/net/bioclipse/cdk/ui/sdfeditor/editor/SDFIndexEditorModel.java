@@ -17,6 +17,7 @@ import java.io.StringReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,7 +46,7 @@ import org.openscience.cdk.io.MDLV2000Reader;
  * @author arvid
  *
  */
-public class SDFIndexEditorModel implements IMoleculesEditorModel {
+public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDKMolecule> {
 
     Logger logger = Logger.getLogger( SDFIndexEditorModel.class );
 
@@ -62,14 +63,14 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel {
 
     Map<Integer, ICDKMolecule> edited = new HashMap<Integer, ICDKMolecule>();
 
-    private Map<Integer, Map<Object,Object>> molProps;
+    private Map<Integer, Map<String,Object>> molProps;
 
-    private Map<Object,Class<?>> propertyList;
+    private Map<String,Class<?>> propertyList;
 
 
     public SDFIndexEditorModel() {
-        molProps = new HashMap<Integer, Map<Object,Object>>();
-        propertyList = new HashMap<Object, Class<?>>();
+        molProps = new HashMap<Integer, Map<String,Object>>();
+        propertyList = new HashMap<String, Class<?>>();
         chemReader = new MDLV2000Reader();
         builder = DefaultChemObjectBuilder.getInstance();
     }
@@ -192,27 +193,49 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel {
     }
 
     public Collection<Object> getPropertyKeys() {
-
+        availableProperties.addAll( propertyList.keySet() );
         return new HashSet<Object>(availableProperties);
     }
 
     @SuppressWarnings("unchecked")
-    public <T,S> S getPropertyFor(int moleculeIndex,T property) {
-        Map<Object,Object> props = molProps.get(moleculeIndex);
+    public <T> T getPropertyFor(int moleculeIndex,String property) {
+        Map<String,Object> props = molProps.get(moleculeIndex);
         Class<?> c = propertyList.get( property );
         if(props!=null) {
             Object val = props.get( property );
             if(c.isAssignableFrom( val.getClass() ))
-                return (S) val;
+                return (T) val;
         }
         return null;
     }
 
-    public <T extends Object,S extends Object>void setPropertyFor(int moleculeIndex, T property, S value) {
-        Map<Object,Object> props = molProps.get( moleculeIndex );
+    public <T extends Object>void setPropertyFor(int moleculeIndex, String property, T value) {
+        Map<String,Object> props = molProps.get( moleculeIndex );
         propertyList.put( property, value.getClass() );
         if(props==null)
-            molProps.put( moleculeIndex, props = new HashMap<Object, Object>() );
+            molProps.put( moleculeIndex, props = new HashMap<String, Object>() );
         props.put( property, value );
+    }
+
+    public Iterator<ICDKMolecule> iterator() {
+
+        return new Iterator<ICDKMolecule>() {
+
+            int pos = 0;
+            public boolean hasNext() {
+                return pos < getNumberOfMolecules();
+            }
+
+            public ICDKMolecule next() {
+
+                return getMoleculeAt( ++pos );
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException(
+                                        "remove is not supported for SDFIndex");
+            }
+
+        };
     }
 }

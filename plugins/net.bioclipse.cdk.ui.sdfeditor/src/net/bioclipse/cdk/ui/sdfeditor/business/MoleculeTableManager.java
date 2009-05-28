@@ -16,6 +16,9 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.bioclipse.cdk.ui.sdfeditor.editor.SDFIndexEditorModel;
+import net.bioclipse.managers.business.IBioclipseManager;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
@@ -23,8 +26,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubMonitor;
-
-import net.bioclipse.managers.business.IBioclipseManager;
 
 
 public class MoleculeTableManager implements IBioclipseManager {
@@ -120,16 +121,31 @@ public class MoleculeTableManager implements IBioclipseManager {
         }
         catch (Exception exception) {
             // ok, I give up...
-            logger.debug( "Could not determine the number of molecules to " +
-                          "read, because: "
+            logger.debug( "Could not create index: "
                           + exception.getClass().getSimpleName() + " : "
                           + exception.getMessage(),
                           exception );
         }
         logger.debug( String.format(
-                          "numberOfEntriesInSDF took %d to complete",
+                          "createSDFIndex took %d to complete",
                           (int)((System.nanoTime()-tStart)/1e6)) );
         progress.done();
         return new SDFileIndex(file,values);
+    }
+
+    public void calculateProperty( SDFIndexEditorModel model,
+                                   IPropertyCalculator<?> calculator,
+                                   IProgressMonitor monitor) {
+        monitor.beginTask( "Calculating properties", model.getNumberOfMolecules() );
+        for(int i=0;i<model.getNumberOfMolecules();i++) {
+            model.setPropertyFor( i, calculator.getPropertyName(),
+                                  calculator.calculate( model.getMoleculeAt( i ) ) );
+            monitor.worked( 1 );
+            if(i%10 == 0) {
+                monitor.subTask( String.format( "%d/%d", i+1
+                                             ,model.getNumberOfMolecules() ) );
+            }
+        }
+        monitor.done();
     }
 }

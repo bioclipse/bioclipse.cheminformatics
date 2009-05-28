@@ -12,6 +12,7 @@ package net.bioclipse.cdk.ui.sdfeditor.business;
 
 import org.eclipse.core.resources.IFile;
 
+import net.bioclipse.cdk.ui.sdfeditor.editor.SDFIndexEditorModel;
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
@@ -26,11 +27,18 @@ public interface IMoleculeTableManager extends IBioclipseManager {
     public void dummy();
 
     @Recorded
-    public SDFileIndex createSDFIndex(IFile file, 
+    public SDFileIndex createSDFIndex(IFile file,
            BioclipseUIJob<SDFileIndex> uiJob);
     @Recorded
-    @PublishedMethod(params = "String file", 
+    @PublishedMethod(params = "String file",
       methodSummary = "Creates a index of the molecules positons in a SDFile")
     public SDFileIndex createSDFIndex( String file );
 
+    @Recorded
+    @PublishedMethod(params = "SDFIndexEditorModel model,"
+                             +" IPropertyCalculator calculator",
+      methodSummary = "Calculate a property and sets it on the model for each"
+                      +" molecule in the model")
+    public void calculateProperty( SDFIndexEditorModel model,
+                                   IPropertyCalculator<?> calculator);
 }

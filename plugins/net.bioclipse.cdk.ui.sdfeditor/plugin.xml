@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
+   <extension-point id="net.bioclipse.cdk.propertyCalculator" name="Property Calculator" schema="schema/net.bioclipse.cdk.propertyCalculator.exsd"/>
    <extension
          point="org.eclipse.ui.editors">
       <editor
@@ -151,5 +152,11 @@
           id="net.bioclipse.cdk.ui.sdfeditor.business.MoleculeTableManager"
           service="net.bioclipse.cdk.ui.sdfeditor.business.MoleculeTableManagerFactory">
     </scriptContribution>
+ </extension>
+ <extension
+       point="net.bioclipse.cdk.propertyCalculator">
+    <Calculator
+          calculate="net.bioclipse.cdk.ui.sdfeditor.NumberOfAtomCalculator">
+    </Calculator>
  </extension>
 </plugin>
