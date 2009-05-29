@@ -24,6 +24,7 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.vecmath.Point2d;
@@ -1119,4 +1120,7 @@ public class Renderer {
         return diagram;
 	}
 
+	public List<IGenerator> getGenerators(){
+	    return new ArrayList<IGenerator>(generators);
+	}
 }
