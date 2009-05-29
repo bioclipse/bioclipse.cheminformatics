@@ -283,12 +283,10 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
     @SuppressWarnings("unchecked")
     @Override
     public Object getAdapter( Class adapter ) {
-
-        if(adapter.isAssignableFrom( JChemPaintEditor.class )) {
-            return jcpPage;
+        IEditorPart active = getActiveEditor();
+        if(active != null && adapter.isAssignableFrom( active.getClass() )) {
+            return active;
         }
-        if(adapter.isAssignableFrom( MoleculesEditor.class ))
-            return moleculesPage;
         return super.getAdapter( adapter );
     }
 }
