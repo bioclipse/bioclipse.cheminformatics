@@ -10,13 +10,20 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
+import java.io.ByteArrayInputStream;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.sdfeditor.editor.SDFIndexEditorModel;
+import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.apache.log4j.Logger;
@@ -26,6 +33,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubMonitor;
+import org.openscience.cdk.Molecule;
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.io.IChemObjectWriter;
+import org.openscience.cdk.io.SDFWriter;
 
 
 public class MoleculeTableManager implements IBioclipseManager {
@@ -37,7 +49,8 @@ public class MoleculeTableManager implements IBioclipseManager {
     }
 
     public void dummy(String... strings) {
-        logger.info( "Dummy on molTable manager has been called with thees argumenst "+strings.toString() );
+        logger.info( "Dummy on molTable manager has been called with"
+                     +" thees argumenst "+strings.toString() );
     }
 
     public SDFileIndex createSDFIndex(IFile file, IProgressMonitor monitor) {
@@ -136,10 +149,11 @@ public class MoleculeTableManager implements IBioclipseManager {
     public void calculateProperty( SDFIndexEditorModel model,
                                    IPropertyCalculator<?> calculator,
                                    IProgressMonitor monitor) {
-        monitor.beginTask( "Calculating properties", model.getNumberOfMolecules() );
+        monitor.beginTask( "Calculating properties",
+                           model.getNumberOfMolecules() );
         for(int i=0;i<model.getNumberOfMolecules();i++) {
             model.setPropertyFor( i, calculator.getPropertyName(),
-                                  calculator.calculate( model.getMoleculeAt( i ) ) );
+                             calculator.calculate( model.getMoleculeAt( i ) ) );
             monitor.worked( 1 );
             if(i%100 == 0) {
                 monitor.subTask( String.format( "%d/%d", i+1
@@ -147,5 +161,63 @@ public class MoleculeTableManager implements IBioclipseManager {
             }
         }
         monitor.done();
+    }
+
+    private ByteArrayInputStream convertToByteArrayIs(StringWriter writer)
+                                           throws UnsupportedEncodingException {
+        return new ByteArrayInputStream( writer.toString()
+                                         .getBytes("US-ASCII"));
+    }
+
+    public String saveSDF( IMoleculesEditorModel model, IFile file,
+                           IProgressMonitor monitor) throws BioclipseException {
+        monitor.beginTask( "Saving to file", model.getNumberOfMolecules() );
+        IFile target = null;
+        for(int i =0 ;i<model.getNumberOfMolecules();i++) {
+            StringWriter writer = new StringWriter();
+            IChemObjectWriter chemWriter = new SDFWriter(writer);
+            // TODO Piped streams
+            try {
+
+                ICDKMolecule molecule = model.getMoleculeAt( i );
+                // copy properties
+                IAtomContainer ac = molecule.getAtomContainer();
+                IMolecule mol = null;
+                if(ac instanceof IMolecule)
+                    mol = (IMolecule) ac;
+                else {
+                    mol = new Molecule( ac );
+                    //Properties are lost in this CDK operation, so copy them
+                    mol.setProperties( ac.getProperties() );
+                }
+
+            chemWriter.write( model.getMoleculeAt( i ).getAtomContainer() );
+            chemWriter.close();
+            if(target==null) {
+                target = file;
+                if(file.exists()) {
+                    target.setContents( convertToByteArrayIs( writer ),
+                                                                  false,
+                                                                  true,
+                                                                  monitor );
+                }else {
+                    target.create( convertToByteArrayIs( writer ),
+                                                           false,
+                                                           monitor );
+                }
+            }else {
+                target.appendContents( convertToByteArrayIs( writer ),
+                                                                false,
+                                                                true,
+                                                                monitor);
+            }
+            }catch(Exception e) {
+                LogUtils.debugTrace( logger, e );
+                throw new BioclipseException("Faild to save file: "+
+                                             e.getMessage());
+            }
+        }
+        monitor.done();
+        return file.getLocation().toPortableString();
     }
 }

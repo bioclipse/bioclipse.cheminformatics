@@ -10,14 +10,16 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
-import org.eclipse.core.resources.IFile;
-
 import net.bioclipse.cdk.ui.sdfeditor.editor.SDFIndexEditorModel;
+import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
+import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.jobs.BioclipseUIJob;
 import net.bioclipse.managers.business.IBioclipseManager;
+
+import org.eclipse.core.resources.IFile;
 
 @PublishedClass(value = "Contains methods for interacting with lists of molecules")
 public interface IMoleculeTableManager extends IBioclipseManager {
@@ -41,4 +43,12 @@ public interface IMoleculeTableManager extends IBioclipseManager {
                       +" molecule in the model")
     public void calculateProperty( SDFIndexEditorModel model,
                                    IPropertyCalculator<?> calculator);
+
+    @Recorded
+    public void saveSDF(IMoleculesEditorModel model, IFile file) throws BioclipseException;
+
+    @Recorded
+    @PublishedMethod(params = "SDFIndexEdiorModel model, String file",
+                     methodSummary = "Saved the model to the file as SDF")
+    public String saveSDF(IMoleculesEditorModel model, String file) throws BioclipseException;
 }
