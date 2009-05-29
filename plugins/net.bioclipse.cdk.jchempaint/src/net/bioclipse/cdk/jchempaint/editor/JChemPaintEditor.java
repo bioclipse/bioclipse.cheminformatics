@@ -133,7 +133,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     @Override
     public void doSave( IProgressMonitor monitor ) {
         ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
-        ICDKMolecule model = widget.getMolecule();
+        ICDKMolecule model = getCDKMolecule();
         if(model.getResource() == null) {
             doSaveAs();
             return;
@@ -168,7 +168,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
     @Override
     public void doSaveAs() {
-        ICDKMolecule model = widget.getMolecule();
+        ICDKMolecule model = getCDKMolecule();
         SaveAsDialog saveAsDialog = new SaveAsDialog( this.getSite().getShell() );
         if ( model.getResource() instanceof IFile )
             saveAsDialog.setOriginalFile( (IFile) model.getResource() );
@@ -264,7 +264,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                 Activator.getDefault().getJavaCDKManager()
                          .loadMolecule( file,
                                         new BioclipseUIJob<ICDKMolecule>() {
-    
+
                     @Override
                     public void runInUI() {
                         ICDKMolecule model = getReturnValue();
@@ -458,6 +458,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     public void update() {
         IChemModel cModel = getControllerHub().getIChemModel();
         if(cModel == null) return;
+        // FIXME this syncing of properties should be done in some other way
         for(IAtomContainer ac:ChemModelManipulator.getAllAtomContainers( cModel )) {
             ac.setProperties( new HashMap<Object, Object>(
                     widget.getMolecule().getAtomContainer().getProperties()) );
@@ -500,11 +501,9 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
             return fOutlinePage;
         }
         if ( IAtomContainer.class.equals( adapter ) ) {
-            if(widget.getMolecule()!=null) {
-                ICDKMolecule mol = getCDKMolecule();
-                if(mol!=null)
-                    return mol.getAtomContainer();
-            }
+            ICDKMolecule mol = getCDKMolecule();
+            if(mol!=null)
+                return mol.getAtomContainer();
             return null;
         }
         return super.getAdapter( adapter );
