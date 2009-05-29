@@ -12,6 +12,9 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
@@ -23,6 +26,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.IRenderingVisitor;
 import org.openscience.cdk.renderer.generators.IGenerator;
@@ -30,21 +34,38 @@ import org.openscience.cdk.renderer.generators.IGenerator;
 public class ChoiceGenerator implements IGenerator {
 
     boolean use = false;
-    IGenerator generator;
+    List<IGenerator> generators;
 
-    public ChoiceGenerator(IGenerator generator) {
-        this.generator = generator;
+    public ChoiceGenerator() {
+        generators = new ArrayList<IGenerator>();
     }
 
+    public ChoiceGenerator(IGenerator generator) {
+        this();
+        generators.add(generator);
+    }
+
+    private void add(IGenerator generator) {
+        generators.add(generator);
+    }
+
+    public Object[] toArray() {
+        return generators.toArray();
+    }
     public void setUse(boolean use) {
         this.use = use;
     }
     public IRenderingElement generate( IAtomContainer ac,
                                        RendererModel model ) {
-        if(generator == null) return EMPTY_ELEMENT;
+        if(generators == null) return EMPTY_ELEMENT;
 
-        if(use)
-            return generator.generate( ac, model );
+        if(use) {
+            ElementGroup group = new ElementGroup();
+            for(IGenerator generator:generators) {
+                group.add( generator.generate( ac, model ));
+            }
+            return group;
+        }
         else
             return EMPTY_ELEMENT;
     }
@@ -52,7 +73,7 @@ public class ChoiceGenerator implements IGenerator {
     public static final String EP_GENERATOR = "net.bioclipse.cdk.jchempaint.generator";
 
     public static ChoiceGenerator getGeneratorsFromExtensionPoint() {
-
+        ChoiceGenerator choiseGenerator = new ChoiceGenerator();
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IExtensionPoint generatorExtensionPoint = registry
         .getExtensionPoint(EP_GENERATOR);
@@ -65,17 +86,17 @@ public class ChoiceGenerator implements IGenerator {
                 for( IConfigurationElement element
                         : extension.getConfigurationElements() ) {
                     try {
-                        final IGenerator generator = (IGenerator) 
+                        final IGenerator generator = (IGenerator)
                                      element.createExecutableExtension("class");
-                        return new ChoiceGenerator(generator);
+                        choiseGenerator.add( generator);
                     } catch (CoreException e) {
-                        LogUtils.debugTrace( Logger.getLogger( 
+                        LogUtils.debugTrace( Logger.getLogger(
                                                      ChoiceGenerator.class) ,e);
                     }
                 }
             }
         }
-        return new ChoiceGenerator(null);
+        return choiseGenerator;
     }
 
     public static IRenderingElement EMPTY_ELEMENT = new IRenderingElement() {
