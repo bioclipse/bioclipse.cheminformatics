@@ -44,7 +44,10 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.io.formats.IChemFormat;
 
-@PublishedClass( "Contains CDK related methods")
+@PublishedClass(
+    value="Contains CDK related methods",
+    doi={"10.1021/ci025584y","10.2174/138161206777585274"}
+)
 @TestClasses(
     "net.bioclipse.cdk.business.test.APITest," +
     "net.bioclipse.cdk.business.test.AbstractCDKManagerPluginTest"
