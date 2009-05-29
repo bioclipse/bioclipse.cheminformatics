@@ -19,11 +19,17 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
+import net.bioclipse.cdk.ui.sdfeditor.Activator;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jmol.editors.JmolEditor;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
@@ -36,6 +42,7 @@ import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
@@ -168,19 +175,51 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
 
     @Override
     public void doSave( IProgressMonitor monitor ) {
-        throw new UnsupportedOperationException();
+        IMoleculesEditorModel model = moleculesPage.getModel();
+        IResource original = null;
+        if(model instanceof SDFIndexEditorModel) {
+            original = ((SDFIndexEditorModel)model).getResource();
+        }
+        if(original instanceof IFile) {
+        try {
+            Activator.getDefault().getMoleculeTableManager().saveSDF( model,
+                                                              (IFile)original );
+            setDirty( false );
+        } catch ( BioclipseException e ) {
+            logger.warn( "Failed to save molecule. " + e.getMessage() );
+        }
+        }else
+            doSaveAs();
     }
 
     @Override
     public void doSaveAs() {
-        throw new UnsupportedOperationException();
-        // Unsupported
+        IMoleculesEditorModel model = moleculesPage.getModel();
+        IResource original = null;
+        if(model instanceof SDFIndexEditorModel) {
+            original = ((SDFIndexEditorModel)model).getResource();
+        }
+        SaveAsDialog saveAsDialog = new SaveAsDialog( this.getSite().getShell() );
+        if (original instanceof IFile )
+            saveAsDialog.setOriginalFile( (IFile) original );
+        int result = saveAsDialog.open();
+        if ( result == 1 ) {
+            logger.debug( "SaveAs canceled." );
+            return;
+        }
 
+        IPath path = saveAsDialog.getResult();
+        IFile file= ResourcesPlugin.getWorkspace().getRoot().getFile( path );
+        try {
+            Activator.getDefault().getMoleculeTableManager().saveSDF( model, file );
+        } catch ( BioclipseException e ) {
+            logger.warn( "Failed to save molecule. " + e.getMessage() );
+        }
     }
 
     @Override
     public boolean isSaveAsAllowed() {
-        return false;
+        return true;
     }
 
    @Override
