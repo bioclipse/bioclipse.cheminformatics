@@ -28,6 +28,7 @@ import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
@@ -80,6 +81,9 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDK
         this.input = input;
     }
 
+    public IResource getResource() {
+        return input.file();
+    }
     /* (non-Javadoc)
      * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#getMoleculeAt(int)
      */
