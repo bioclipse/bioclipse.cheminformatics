@@ -141,7 +141,7 @@ public class MoleculeTableManager implements IBioclipseManager {
             model.setPropertyFor( i, calculator.getPropertyName(),
                                   calculator.calculate( model.getMoleculeAt( i ) ) );
             monitor.worked( 1 );
-            if(i%10 == 0) {
+            if(i%100 == 0) {
                 monitor.subTask( String.format( "%d/%d", i+1
                                              ,model.getNumberOfMolecules() ) );
             }

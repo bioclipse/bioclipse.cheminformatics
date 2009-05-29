@@ -83,7 +83,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDK
     /* (non-Javadoc)
      * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#getMoleculeAt(int)
      */
-    public ICDKMolecule getMoleculeAt( int index ) {
+    public synchronized ICDKMolecule getMoleculeAt( int index ) {
 
         ICDKMolecule mol = edited.get( index );
         if(mol == null) {
