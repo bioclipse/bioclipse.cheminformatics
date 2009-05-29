@@ -54,7 +54,7 @@ public class ClosestToCenterOfMassGenerator implements IGenerator {
         Point2d p2=GeometryTools.get2DCentreOfMass( ac);
         if(p2== null) return new ElementGroup();
         IAtom atom = jcp.getClosestAtom(p2);
-        if(atom.getPoint2d()==null) return new ElementGroup();
+        if(atom==null || atom.getPoint2d()==null) return new ElementGroup();
         return generateStar( atom.getPoint2d(),
                              model.getHighlightDistance()*3/model.getScale(),
                              model.getBondWidth()/model.getScale());
