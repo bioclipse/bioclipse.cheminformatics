@@ -13,6 +13,11 @@ package net.bioclipse.cdk.jchempaint.wizards;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import net.bioclipse.cdk.domain.CDKMolecule;
+import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.ui.business.Activator;
+
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -27,6 +32,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.openscience.cdk.DefaultChemObjectBuilder;
 
 /**
  * Creates a new molecule and opens it in JChemPaint.
@@ -72,11 +78,13 @@ public class NewMoleculeWizard extends Wizard implements INewWizard {
 
     public boolean performFinish() {
       //Open editor with content (String) as content
-        IEditorInput input= createEditorInput();
-        IWorkbenchPage page= activeWindow.getActivePage();
+        ICDKMolecule mol = new CDKMolecule(DefaultChemObjectBuilder
+                                                  .getInstance().newMolecule());
         try {
-            page.openEditor(input, "net.bioclipse.cdk.ui.editors.jchempaint.cml");
-        } catch (PartInitException e) {
+            Activator.getDefault().getUIManager().open( mol, 
+                                "net.bioclipse.cdk.ui.editors.jchempaint.cml" );
+        } catch ( BioclipseException e ) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return true;
