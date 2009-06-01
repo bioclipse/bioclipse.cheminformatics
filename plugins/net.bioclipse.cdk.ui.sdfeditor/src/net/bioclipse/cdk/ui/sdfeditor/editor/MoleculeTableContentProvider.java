@@ -113,7 +113,7 @@ public class MoleculeTableContentProvider implements
         updateHeaders();
     }
 
-    void updateHeaders() {
+    public void updateHeaders() {
 
         viewer.refresh();
     }

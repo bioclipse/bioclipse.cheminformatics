@@ -10,11 +10,15 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.handlers;
 
+import java.util.List;
+
 import net.bioclipse.cdk.ui.sdfeditor.Activator;
 import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator;
+import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableContentProvider;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart;
 import net.bioclipse.cdk.ui.sdfeditor.editor.SDFIndexEditorModel;
+import net.bioclipse.jobs.BioclipseUIJob;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.AbstractHandler;
@@ -42,8 +46,8 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
 
     public Object execute( ExecutionEvent event ) throws ExecutionException {
         IEditorPart editorPart = HandlerUtil.getActiveEditor( event );
-        // FIXME there can be other models besides SDFINdexEditorModel
-        MoleculesEditor editor = (MoleculesEditor) ((MultiPageMoleculesEditorPart)
+        // FIXME there can be other models besides SDFIndexEditorModel
+        final MoleculesEditor editor = (MoleculesEditor) ((MultiPageMoleculesEditorPart)
                             editorPart).getAdapter( MoleculesEditor.class );
         if(editor== null) {
             logger.warn( "Could not find a MoleculesEditor" );
@@ -61,8 +65,23 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
             element.getContributor();
             element.getValue();
             try {
-                IPropertyCalculator<?> calculator = (IPropertyCalculator<?>) element.createExecutableExtension( "class" );
-                Activator.getDefault().getMoleculeTableManager().calculateProperty( model, calculator );
+                final IPropertyCalculator<?> calculator = (IPropertyCalculator<?>)
+                                   element.createExecutableExtension( "class" );
+                Activator.getDefault().getMoleculeTableManager()
+                    .calculateProperty( model, calculator,
+                         new BioclipseUIJob<Void>() {
+                        @Override
+                        public void runInUI() {
+
+                           String name = calculator.getPropertyName();
+                           MoleculeTableContentProvider contentProvider =
+                                           editor.getContentProvider();
+                           List<Object> props= contentProvider.getProperties();
+                           props.add( 0, name );
+                           contentProvider.setVisibleProperties( props );
+                           contentProvider.updateHeaders();
+                        }
+                    });
                 break;
             } catch ( CoreException e ) {
                 logger.debug( "Failed to craete IPropertyCalculator", e );
