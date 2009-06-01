@@ -382,9 +382,11 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     }
     public void setInput( IAdaptable element ) {
 
-            ICDKMolecule molecule =
-                (ICDKMolecule)
-                ((IAdaptable)element).getAdapter( ICDKMolecule.class );
+            ICDKMolecule molecule = null;
+            if(element != null)
+                molecule =
+                    (ICDKMolecule)
+                    ((IAdaptable)element).getAdapter( ICDKMolecule.class );
 
             if (molecule != null) {
                 source = molecule;

@@ -71,6 +71,7 @@ public class GeneratorsView extends PageBookView {
                 public void handleEvent(Event event) {
                     if( event.detail == SWT.CHECK ) {
                         if( !(event.item.getData() instanceof ChoiceGenerator) &&
+                                // FIXME parent item can be null
                                 !(((TreeItem)event.item).getParentItem().getData() instanceof ChoiceGenerator)) {
                            event.detail = SWT.NONE;
                            event.type   = SWT.None;
