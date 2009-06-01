@@ -14,9 +14,11 @@ package net.bioclipse.cdk.jchempaint.editor;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,6 +27,7 @@ import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.ISubStructure;
+import net.bioclipse.cdk.jchempaint.generators.SubStructureGenerator;
 import net.bioclipse.cdk.jchempaint.handlers.ModuleState;
 import net.bioclipse.cdk.jchempaint.handlers.RedoHandler;
 import net.bioclipse.cdk.jchempaint.handlers.UndoHandler;
@@ -94,6 +97,7 @@ import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.selection.AbstractSelection;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.selection.MultiSelection;
@@ -117,6 +121,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     private Message customMessage;
 
     private ListenerList propertyChangedListenerList = new ListenerList();
+
+    private SubStructureGenerator subStructureGenerator;
 
     public JChemPaintEditorWidget getWidget() {
         return widget;
@@ -400,6 +406,13 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         widget = new JChemPaintEditorWidget( parent, SWT.NONE ) {
 
             @Override
+            protected List<IGenerator> createGenerators() {
+                List<IGenerator> generators = new ArrayList<IGenerator>();
+                generators.add( subStructureGenerator = new SubStructureGenerator() );
+                generators.addAll( super.createGenerators() );
+                return generators;
+            }
+            @Override
             public void setDirty( boolean dirty ) {
 
                 super.setDirty( dirty );
@@ -550,7 +563,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                       widget.getControllerHub().getIChemModel().getBuilder().
                           newAtomContainer() );
             }
-
+            subStructureGenerator.clear();
             Set<IChemObject> chemSelection = new HashSet<IChemObject>();
             for(Iterator<?> iter = bcSelection.iterator();iter.hasNext();) {
                 Object o = iter.next();
@@ -566,8 +579,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                     }
                 }
                 else if(o instanceof ISubStructure) {
-                    IAtomContainer ac = ((ISubStructure)o).getAtomContainer();
-                    widget.getRenderer2DModel().setExternalSelectedPart( ac );
+                    subStructureGenerator.add( (ISubStructure)o );
                 }
             }
 
