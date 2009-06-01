@@ -291,6 +291,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                     }
                 });
             }else {
+                widget.setInput( null );
                 logger.error( "Failed to get molecule form editor input" );
             }
         }
@@ -548,8 +549,17 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     }
     public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
 
-        if ( part != null && part.equals( this ) )
-            return;
+        if( part != null) {
+            if(part.equals( this ))
+                    return;
+            else {
+                Object o = part.getAdapter( JChemPaintEditor.class );
+                if(o != null && o.equals( this ))
+                    return;
+            }
+
+        }
+
 
         if ( selection instanceof IStructuredSelection ) {
             IStructuredSelection bcSelection =
