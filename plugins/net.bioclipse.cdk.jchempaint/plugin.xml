@@ -1026,13 +1026,6 @@
       </context>
    </extension>
    <extension
-         point="net.bioclipse.cdk.jchempaint.generator">
-      <generator
-            class="net.bioclipse.cdk.jchempaint.generators.ClosestToCenterOfMassGenerator">
-      </generator>
-   </extension>
-   
-      <extension
          point="org.eclipse.ui.newWizards">
       <wizard
             canFinishEarly="true"
@@ -1068,6 +1061,11 @@
            restorable="true">
      </view>
   </extension>
-
+  <!--extension
+         point="net.bioclipse.cdk.jchempaint.generator">
+      <generator
+            class="net.bioclipse.cdk.jchempaint.generators.ClosestToCenterOfMassGenerator">
+      </generator>
+   </extension -->
    
 </plugin>
