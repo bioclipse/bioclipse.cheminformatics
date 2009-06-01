@@ -38,7 +38,7 @@ public class SmartsHit extends BioObject implements ISubStructure{
      * This is the molecule the hit is in
      */
     private ICDKMolecule hitMolecule;
-    private Color red;
+    private java.awt.Color red;
 
     
     public SmartsHit(String name, IAtomContainer ac) {
@@ -97,10 +97,10 @@ public class SmartsHit extends BioObject implements ISubStructure{
     /**
      * In this implementation, all atoms are colored red
      */
-    public Color getHighlightingColor( IAtom atom ) {
+    public java.awt.Color getHighlightingColor( IAtom atom ) {
 
         if (red==null)
-            red=new Color(PlatformUI.getWorkbench().getDisplay(), 255,0,0);
+            red=java.awt.Color.RED;
 
         return red;
     }

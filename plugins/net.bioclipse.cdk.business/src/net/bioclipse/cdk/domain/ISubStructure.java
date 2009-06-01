@@ -10,8 +10,9 @@
 ******************************************************************************/
 package net.bioclipse.cdk.domain;
 
+import java.awt.Color;
+
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.swt.graphics.Color;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 
