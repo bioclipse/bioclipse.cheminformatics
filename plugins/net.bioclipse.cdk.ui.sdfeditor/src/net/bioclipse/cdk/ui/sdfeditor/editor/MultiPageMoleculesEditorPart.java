@@ -42,6 +42,8 @@ import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.contexts.IContextActivation;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.MultiPageEditorPart;
@@ -51,9 +53,13 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
 
     Logger logger = Logger.getLogger( MultiPageMoleculesEditorPart.class );
 
+    public static final String JCP_CONTEXT = "net.bioclipse.ui.contexts.JChemPaint";
+
     private MoleculesEditor moleculesPage;
     private JChemPaintEditor jcpPage;
     private JmolEditor jmolPage;
+
+    IContextActivation jcpActivation = null;
 
     PropertySelector ps;
     Pages lastPage;
@@ -226,8 +232,15 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
     protected void pageChange( int newPageIndex ) {
        Pages page = pageOrder.get( newPageIndex );
        setPartProperty( "activePage", page.name() );
-       if(lastPage == Pages.JCP)
+       IContextService contextService = (IContextService) getSite()
+                                       .getService( IContextService.class );
+       if(lastPage == Pages.JCP) {
            syncJCP();
+           if(jcpActivation != null) {
+               contextService.deactivateContext( jcpActivation );
+               jcpActivation = null;
+           }
+       }
        switch(page) {
            case Molecules:
                if(lastPage == Pages.Headers) {
@@ -244,10 +257,11 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                break;
            case JCP:
                updateJCPPage();
+               jcpActivation = contextService.activateContext( JCP_CONTEXT );
+               break;
        }
 
        lastPage = pageOrder.get(newPageIndex);
-       firePartPropertyChanged( "activePage", lastPage.name(), page.name() );
        super.pageChange( newPageIndex );
     }
 

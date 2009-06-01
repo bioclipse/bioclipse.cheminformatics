@@ -860,12 +860,20 @@
                  <instanceof
                        value="org.eclipse.ui.part.MultiPageEditorPart">
                  </instanceof>
-                 <test
-                       property="net.bioclipse.cdk.jchempaint.isPartEditorActive"
-                       value="JCP">
-                 </test>
+                 <adapt
+                       type="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor">
+                 </adapt>
               </with>
            </and>
+           <with
+                 variable="activeContexts">
+              <iterate
+                    operator="or">
+                 <equals
+                       value="net.bioclipse.ui.contexts.JChemPaint">
+                 </equals>
+              </iterate>
+           </with>
         </or>
      </definition>
      <definition
