@@ -1635,7 +1635,7 @@ public class CDKManager implements IBioclipseManager {
           }
           catch (Exception e) {
               e.printStackTrace();
-              throw new BioclipseException(e.getMessage());
+              throw new BioclipseException(e.getMessage(), e);
           }
           finally {
               monitor.done();
