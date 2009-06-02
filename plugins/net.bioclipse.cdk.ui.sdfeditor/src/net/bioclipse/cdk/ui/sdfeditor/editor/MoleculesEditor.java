@@ -21,6 +21,7 @@ import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
+import net.bioclipse.cdk.ui.sdfeditor.business.IMoleculeTableManager;
 import net.bioclipse.cdk.ui.sdfeditor.business.SDFileIndex;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.util.LogUtils;
@@ -83,10 +84,10 @@ public class MoleculesEditor extends EditorPart implements
     }
 
     public IMoleculesEditorModel getModel() {
-        
+
         return (IMoleculesEditorModel) molTableViewer.getInput();
     }
-    
+
     public MoleculeTableViewer getMolTableViewer() {
         return molTableViewer;
     }
@@ -227,10 +228,11 @@ public class MoleculesEditor extends EditorPart implements
                     }
 
                 }else {
-
+                    final IMoleculeTableManager molTable =
                     net.bioclipse.cdk.ui.sdfeditor.Activator.getDefault()
-                    .getMoleculeTableManager()
-                    .createSDFIndex( file,
+                    .getMoleculeTableManager();
+
+                    molTable.createSDFIndex( file,
                     new BioclipseUIJob<SDFileIndex>() {
 
                         @Override
@@ -238,8 +240,10 @@ public class MoleculesEditor extends EditorPart implements
                             SDFileIndex sdfIndex = getReturnValue();
                             molTableViewer.setContentProvider(
                                 new MoleculeTableContentProvider() );
-                            molTableViewer.setInput( 
-                                            new SDFIndexEditorModel(sdfIndex));
+                            SDFIndexEditorModel m;
+                            molTableViewer.setInput(
+                                         m= new SDFIndexEditorModel(sdfIndex));
+                            molTable.parseProperties( m );
                             molTableViewer.refresh();
                         }
 
@@ -269,7 +273,7 @@ public class MoleculesEditor extends EditorPart implements
 
                                 molecules.set( index, moleculeToSave );
                             }
-                            
+
                             public void save() {
                                 }
                         };
