@@ -15,10 +15,11 @@ import java.util.List;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import net.bioclipse.cdk.jchempaint.view.ChoiceGenerator;
 
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -55,40 +56,54 @@ public class GeneratorsView extends PageBookView {
 
     @Override
     protected PageRec doCreatePage( final IWorkbenchPart part ) {
-        JChemPaintEditor editor = (JChemPaintEditor) part;
+        final JChemPaintEditor editor = (JChemPaintEditor) part;
         final List<IGenerator> generators = editor.getWidget().getRenderer()
                                             .getGenerators();
-        
+
         Page page = new Page() {
-            
+
             private CheckboxTreeViewer treeViewer;
             @Override
             public void createControl( Composite parent ) {
 
                 final Tree tree = new Tree(parent,SWT.BORDER|SWT.V_SCROLL|SWT.H_SCROLL|SWT.CHECK);
+                treeViewer = new CheckboxTreeViewer(tree);
              // Attach a listener directly after the creation
              tree.addListener(SWT.Selection,new Listener() {
                 public void handleEvent(Event event) {
                     if( event.detail == SWT.CHECK ) {
-                        if( !(event.item.getData() instanceof ChoiceGenerator) &&
-                                // FIXME parent item can be null
-                                !(((TreeItem)event.item).getParentItem().getData() instanceof ChoiceGenerator)) {
+                        TreeItem item = (TreeItem) event.item;
+                        TreeItem parent = item.getParentItem();
+
+                        if( !( item.getData() instanceof ChoiceGenerator )){
+//                             || parent.getData() instanceof ChoiceGenerator)) {
                            event.detail = SWT.NONE;
                            event.type   = SWT.None;
                            event.doit   = false;
                            try {
                               tree.setRedraw(false);
-                              TreeItem item = (TreeItem)event.item;
-                              
                               item.setChecked(! item.getChecked() );
                            } finally {
                               tree.setRedraw(true);
                            }
+                        }else {
+                            if(item.getData() instanceof ChoiceGenerator)
+                                item.setChecked( ((ChoiceGenerator )item
+                                            .getData()).getUse());
                         }
                     }
                 }
              });
 
+                 treeViewer.addCheckStateListener( new ICheckStateListener() {
+                     public void checkStateChanged( CheckStateChangedEvent event ) {
+                         Object element = event.getElement();
+                         if(element instanceof ChoiceGenerator) {
+                             ((ChoiceGenerator)element).setUse( event.getChecked());
+                             editor.update();
+                         }
+                    }
+                 });
                 treeViewer = new CheckboxTreeViewer(tree);
                 treeViewer.setLabelProvider( new LabelProvider() {
                     @Override
@@ -96,7 +111,7 @@ public class GeneratorsView extends PageBookView {
                         return element.getClass().getSimpleName();
                     }
                 });
-                
+
                 treeViewer.setContentProvider( new ITreeContentProvider() {
 
                     @SuppressWarnings("unchecked")
@@ -145,9 +160,9 @@ public class GeneratorsView extends PageBookView {
                             return true;
                         return false;
                     }
-                    
+
                 });
-                
+
                 treeViewer.setInput( generators );
                 for(IGenerator g:generators) {
                     if(!(g instanceof ChoiceGenerator)) {
@@ -166,10 +181,10 @@ public class GeneratorsView extends PageBookView {
             public void setFocus() {
                 treeViewer.getTree().setFocus();
             }
-            
+
         };
-        
-        
+
+
 //        MessagePage messagePage = new MessagePage();
         initPage( page );
 //        messagePage.setMessage( "Page for "+part.getTitle() );
@@ -188,9 +203,9 @@ public class GeneratorsView extends PageBookView {
     @Override
     protected IWorkbenchPart getBootstrapPart() {
 
-        
+
         IWorkbenchPage page = getSite().getPage();
-        if (page != null) {    
+        if (page != null) {
             IEditorPart part = page.getActiveEditor();
             if(part != null && part.getSite().getId()
                     .startsWith( "net.bioclipse.cdk.ui.editors.jchempaint" ))

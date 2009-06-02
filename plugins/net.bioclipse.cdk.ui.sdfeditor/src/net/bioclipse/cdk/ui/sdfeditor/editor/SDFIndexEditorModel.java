@@ -227,6 +227,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDK
                 return (T) val;
         }else {
             ICDKMolecule mol = getMoleculeAt( moleculeIndex );
+            assert(mol != null);
             Object val = mol.getAtomContainer().getProperty( property );
             return (T) val;
         }

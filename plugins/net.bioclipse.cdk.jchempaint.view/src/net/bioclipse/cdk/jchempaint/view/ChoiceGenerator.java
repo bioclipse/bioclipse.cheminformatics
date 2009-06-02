@@ -55,6 +55,9 @@ public class ChoiceGenerator implements IGenerator {
     public void setUse(boolean use) {
         this.use = use;
     }
+    public boolean getUse() {
+        return use;
+    }
     public IRenderingElement generate( IAtomContainer ac,
                                        RendererModel model ) {
         if(generators == null) return EMPTY_ELEMENT;
