@@ -410,21 +410,15 @@ public interface ICDKManager extends IBioclipseManager {
                    throws BioclipseException;
 
     /**
-     * True if the paramater molecule1 and the
-     * paramater molecule2 are isomorph.
-     *
-     * (Performs an isomophism test without checking fingerprints first)
-     *
-     * @param molecule
-     * @param subStructure
-     * @return
+     * True if the parameter molecule1 and the parameter molecule2 are isomorph.
+     * Performs an isomophism test without checking fingerprints first.
      */
     @PublishedMethod (
         params = "ICDKMolecule molecule1, ICDKMolecule molecule2",
         methodSummary = "Returns true if the paramater named molecule1 and " +
-        		            "the paramater named molecule2 are isomorph. \n" +
-    		                "(Performs an isomophism test without checking " +
-    		                "fingerprints)" )
+                        "the paramater named molecule2 are isomorph. \n" +
+                        "(Performs an isomophism test without checking " +
+                        "fingerprints)" )
     @Recorded
     @TestMethods("testStructureMatches")
     public boolean areIsomorphic( ICDKMolecule molecule1,
@@ -432,21 +426,16 @@ public interface ICDKManager extends IBioclipseManager {
 
 
     /**
-     * True if the paramater substructure is a substructure to the
-     * paramater molecule.
-     *
-     * (Performs an isomophism test without checking fingerprints first)
-     *
-     * @param molecule
-     * @param subStructure
-     * @return
+     * True if the parameter substructure is a substructure to the
+     * parameter molecule. Performs an isomophism test without checking
+     * fingerprints first.
      */
     @PublishedMethod (
         params = "ICDKMolecule molecule, ICDKMolecule subStructure",
-    		methodSummary = "Returns true if the paramater named subStructure is " +
-    				            "a substructure of the paramater named molecule. \n" +
-    		                "(Performs an isomophism test without checking " +
-    		                "fingerprints)" )
+        methodSummary = "Returns true if the paramater named subStructure is " +
+                        "a substructure of the paramater named molecule. \n" +
+                        "(Performs an isomophism test without checking " +
+                        "fingerprints)" )
     @Recorded
     @TestMethods("testSubStructureMatch")
     public boolean subStructureMatches( ICDKMolecule molecule,
