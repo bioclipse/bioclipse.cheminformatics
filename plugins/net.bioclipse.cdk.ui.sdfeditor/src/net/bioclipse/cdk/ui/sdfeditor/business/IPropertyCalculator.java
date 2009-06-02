@@ -22,4 +22,6 @@ public interface IPropertyCalculator<T> {
     public T calculate(ICDKMolecule molecule);
 
     public String getPropertyName();
+
+    public T parse( String value );
 }

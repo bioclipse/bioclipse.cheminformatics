@@ -45,4 +45,7 @@ public class NumberOfAtomCalculator implements IPropertyCalculator<Integer> {
         return PROPERTY_NAME;
     }
 
+    public Integer parse( String value ) {
+        return Integer.parseInt( value );
+    }
 }
