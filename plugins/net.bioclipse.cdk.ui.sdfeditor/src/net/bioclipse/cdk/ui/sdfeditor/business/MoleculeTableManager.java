@@ -210,8 +210,10 @@ public class MoleculeTableManager implements IBioclipseManager {
                     String name = property.getPropertyName();
                     Object value = molecule
                     .getProperty( name,Property.USE_CACHED );
-                    String text = property.toString(value );
-                    mol.setProperty( name, text );
+                    if(value != null) {
+                        String text = property.toString(value );
+                        mol.setProperty( name, text );
+                    }
                 }
             chemWriter.write( mol );
             chemWriter.close();
