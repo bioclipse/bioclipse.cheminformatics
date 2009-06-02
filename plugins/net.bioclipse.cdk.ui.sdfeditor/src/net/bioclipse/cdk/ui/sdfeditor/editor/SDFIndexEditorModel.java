@@ -14,15 +14,19 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator;
 import net.bioclipse.cdk.ui.sdfeditor.business.SDFileIndex;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.util.LogUtils;
@@ -30,6 +34,11 @@ import net.bioclipse.core.util.LogUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -68,12 +77,19 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDK
 
     private Map<String,Class<?>> propertyList;
 
+    private Map<String,IPropertyCalculator<?>> calculators;
+
 
     public SDFIndexEditorModel() {
         molProps = new HashMap<Integer, Map<String,Object>>();
         propertyList = new HashMap<String, Class<?>>();
         chemReader = new MDLV2000Reader();
         builder = DefaultChemObjectBuilder.getInstance();
+        calculators = new TreeMap<String, IPropertyCalculator<?>>();
+        Collection<IPropertyCalculator<?>> calcs = retriveCalculatorContributions();
+        for(IPropertyCalculator<?> p:calcs) {
+            calculators.put( p.getPropertyName(), p );
+        }
     }
 
     public SDFIndexEditorModel(SDFileIndex input) {
@@ -245,5 +261,46 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDK
             }
 
         };
+    }
+
+    public long getPropertyPositionFor(int index) {
+        return input.getPropertyStart( index );
+    }
+
+    public int getPropertyCountFor(int index) {
+        return input.getPropertyCount( index );
+    }
+
+    public IPropertyCalculator<?> getCalculator(String property) {
+        IPropertyCalculator<?> calculator = calculators.get( property );
+        return calculator;
+    }
+
+    private Collection<IPropertyCalculator<?>> retriveCalculatorContributions() {
+        List<IPropertyCalculator<?>> calculators
+                        = new ArrayList<IPropertyCalculator<?>>();
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        IExtensionPoint generatorExtensionPoint = registry
+        .getExtensionPoint("net.bioclipse.cdk.propertyCalculator");
+        if(generatorExtensionPoint != null ) {
+            IExtension[] generatorExtensions
+            = generatorExtensionPoint.getExtensions();
+
+            for(IExtension extension : generatorExtensions) {
+
+                for( IConfigurationElement element
+                        : extension.getConfigurationElements() ) {
+                    try {
+                        final IPropertyCalculator<?> generator =
+                            (IPropertyCalculator<?>)
+                            element.createExecutableExtension("class");
+                        calculators.add( generator);
+                    } catch (CoreException e) {
+                        LogUtils.debugTrace( logger ,e);
+                    }
+                }
+            }
+        }
+        return calculators;
     }
 }

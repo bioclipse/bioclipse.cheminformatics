@@ -10,14 +10,22 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.sdfeditor.editor.SDFIndexEditorModel;
@@ -70,6 +78,7 @@ public class MoleculeTableManager implements IBioclipseManager {
         long tStart = System.nanoTime();
         List<Long> values = new LinkedList<Long>();
         List<Long> propPos = new LinkedList<Long>();
+        Map<Integer,List<Long>> propMap = new HashMap<Integer, List<Long>>();
         int num = 0;
         long pos = 0;
         long start = 0;
@@ -95,6 +104,10 @@ public class MoleculeTableManager implements IBioclipseManager {
                         if(dollarCount==4) {
                             work = (int) start;
                             start = pos;
+
+                            propMap.put(num,propPos);
+                            propPos= new  LinkedList<Long>();
+
                             num++;
                             values.add( start );
                             dollarCount = 0;
@@ -143,7 +156,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                           "createSDFIndex took %d to complete",
                           (int)((System.nanoTime()-tStart)/1e6)) );
         progress.done();
-        return new SDFileIndex(file,values);
+        return new SDFileIndex(file,values,propMap);
     }
 
     public void calculateProperty( SDFIndexEditorModel model,
@@ -219,5 +232,74 @@ public class MoleculeTableManager implements IBioclipseManager {
         }
         monitor.done();
         return file.getLocation().toPortableString();
+    }
+
+    private List<String> getProperties( InputStream is,
+                                        long start,
+                                        int numberOfProperties)
+                                        throws IOException{
+        List<String> properties = new ArrayList<String>(numberOfProperties);
+        InputStream in = new BufferedInputStream(is);
+
+        in.skip( start-1 );
+        int read;
+        int newLineCount = 0;
+        StringBuilder builder = new StringBuilder();
+        while(properties.size()< numberOfProperties
+                && (read = in.read())!=-1) {
+            if(read=='\r') continue;
+            if(read =='\n') {
+                newLineCount++;
+                if(newLineCount>=2) {
+                    properties.add( builder.toString() );
+                    builder = new StringBuilder();
+                    continue;
+                }
+            }else
+                newLineCount = 0;
+            builder.append( (char)read );
+        }
+        in.close();
+
+        return properties;
+    }
+
+    public void parseProperties(SDFIndexEditorModel model,IProgressMonitor monitor) {
+        Pattern pNamePattern = Pattern.compile( "^>.*<(.*)>*.\n");
+        try {
+            monitor.beginTask( "Parsing properties", model.getNumberOfMolecules() );
+        for(int i=0;i<model.getNumberOfMolecules();i++) {
+            if(model.getPropertyCountFor( i )==0) {
+                continue;
+            }
+
+            List<String> rawProperties = getProperties(
+                                     ((IFile)model.getResource()).getContents(),
+                                     model.getPropertyPositionFor( i ),
+                                     model.getPropertyCountFor( i ) );
+            for(String rawProperty:rawProperties) {
+                String name = null;
+                // extract property name
+
+
+                Matcher matcher = pNamePattern.matcher( rawProperty );
+                if(matcher.find() && matcher.groupCount()>0) {
+                    name = matcher.group( 1 );
+                    String value=rawProperty.substring( matcher.end( 0 ));
+                    IPropertyCalculator<?> calculator = model.getCalculator( name );
+                    if(calculator !=null) {
+                        model.setPropertyFor( i, name, calculator.parse(value));
+                    }
+                }
+            }
+        }
+        }catch(IOException e) {
+            logger.debug( "Failed to read properties" );
+            throw new RuntimeException(e);
+
+        }catch(CoreException e) {
+            logger.debug( "Failed to read properties" );
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -55,4 +55,7 @@ public interface IMoleculeTableManager extends IBioclipseManager {
     @PublishedMethod(params = "SDFIndexEdiorModel model, String file",
                      methodSummary = "Saved the model to the file as SDF")
     public String saveSDF(IMoleculesEditorModel model, String file) throws BioclipseException;
+
+    @Recorded
+    public void parseProperties(SDFIndexEditorModel model);
 }
