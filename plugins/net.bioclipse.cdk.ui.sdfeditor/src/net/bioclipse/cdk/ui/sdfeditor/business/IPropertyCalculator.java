@@ -17,11 +17,14 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
  * @author arvid
  *
  */
-public interface IPropertyCalculator<T> {
-    
+public interface IPropertyCalculator<T extends Object> {
+
     public T calculate(ICDKMolecule molecule);
 
     public String getPropertyName();
 
     public T parse( String value );
+
+    public String toString( Object value);
+
 }

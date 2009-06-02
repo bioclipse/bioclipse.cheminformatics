@@ -22,7 +22,7 @@ public class NumberOfAtomCalculator implements IPropertyCalculator<Integer> {
 
     public static final String PROPERTY_NAME = "NumberOfAtoms";
     /**
-     * 
+     *
      */
     public NumberOfAtomCalculator() {
 
@@ -41,11 +41,17 @@ public class NumberOfAtomCalculator implements IPropertyCalculator<Integer> {
      * @see net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator#getPropertyName()
      */
     public String getPropertyName() {
-        
+
         return PROPERTY_NAME;
     }
 
     public Integer parse( String value ) {
         return Integer.parseInt( value );
     }
+
+    public String toString( Object value ) {
+        Integer tmp = (Integer) value;
+        return tmp.toString();
+    }
+
 }

@@ -251,6 +251,7 @@ public class MoleculeTableManager implements IBioclipseManager {
             if(read =='\n') {
                 newLineCount++;
                 if(newLineCount>=2) {
+                    builder.deleteCharAt( builder.length()-1 );
                     properties.add( builder.toString() );
                     builder = new StringBuilder();
                     continue;

@@ -225,16 +225,19 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDK
             Object val = props.get( property );
             if(c.isAssignableFrom( val.getClass() ))
                 return (T) val;
-        }else {
-            ICDKMolecule mol = getMoleculeAt( moleculeIndex );
-            assert(mol != null);
-            Object val = mol.getAtomContainer().getProperty( property );
-            return (T) val;
         }
+//        else {
+//            ICDKMolecule mol = getMoleculeAt( moleculeIndex );
+//            assert(mol != null);
+//            Object val = mol.getAtomContainer().getProperty( property );
+//            return (T) val;
+//        }
         return null;
     }
 
-    public <T extends Object>void setPropertyFor(int moleculeIndex, String property, T value) {
+    public <T extends Object>void setPropertyFor( int moleculeIndex, 
+                                                  String property, 
+                                                  T value) {
         Map<String,Object> props = molProps.get( moleculeIndex );
         propertyList.put( property, value.getClass() );
         if(props==null)
@@ -277,7 +280,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDK
         return calculator;
     }
 
-    private Collection<IPropertyCalculator<?>> retriveCalculatorContributions() {
+    public static Collection<IPropertyCalculator<?>> retriveCalculatorContributions() {
         List<IPropertyCalculator<?>> calculators
                         = new ArrayList<IPropertyCalculator<?>>();
         IExtensionRegistry registry = Platform.getExtensionRegistry();
@@ -297,7 +300,8 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDK
                             element.createExecutableExtension("class");
                         calculators.add( generator);
                     } catch (CoreException e) {
-                        LogUtils.debugTrace( logger ,e);
+                        LogUtils.debugTrace( 
+                              Logger.getLogger( SDFIndexEditorModel.class ) ,e);
                     }
                 }
             }
