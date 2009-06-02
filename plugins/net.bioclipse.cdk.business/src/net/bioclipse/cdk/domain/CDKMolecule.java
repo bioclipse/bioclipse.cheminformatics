@@ -236,6 +236,9 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     public String toString() {
         if ( getName() != null )
             return getClass().getSimpleName() + ":" + getName();
+        if (this.getAtomContainer().getAtomCount() == 0) {
+            return getClass().getSimpleName() + ": no atoms";
+        }
         if (Activator.getDefault() == null)
             return getClass().getSimpleName() + ":" + hashCode();
 

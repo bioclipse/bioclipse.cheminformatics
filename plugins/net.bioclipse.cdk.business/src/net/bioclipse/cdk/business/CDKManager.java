@@ -117,6 +117,7 @@ import org.openscience.cdk.io.random.RandomAccessSDFReader;
 import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
+import org.openscience.cdk.nonotify.NNAtomContainer;
 import org.openscience.cdk.nonotify.NNChemFile;
 import org.openscience.cdk.nonotify.NNMolecule;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
@@ -135,7 +136,6 @@ import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
  * The manager class for CDK. Contains CDK related methods.
  *
  * @author olas, jonalv
- *
  */
 public class CDKManager implements IBioclipseManager {
 
@@ -158,6 +158,10 @@ public class CDKManager implements IBioclipseManager {
 
     public String getManagerName() {
         return "cdk";
+    }
+
+    public ICDKMolecule newMolecule() {
+        return new CDKMolecule(new NNAtomContainer());
     }
 
     public ICDKMolecule loadMolecule(IFile file, IProgressMonitor monitor)

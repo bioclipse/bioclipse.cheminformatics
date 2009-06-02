@@ -55,6 +55,17 @@ import org.openscience.cdk.io.formats.IChemFormat;
 public interface ICDKManager extends IBioclipseManager {
 
     /**
+     * Create an empty CDKMolecule.
+     *
+     * @return An ICDKMolecule.
+     * @throws BioclipseException
+     */
+    @Recorded
+    @PublishedMethod(
+        methodSummary = "Creates a cdk molecule from SMILES")
+    public ICDKMolecule newMolecule();
+
+    /**
      * Create a CDKMolecule from SMILES
      * @param SMILES
      * @return
