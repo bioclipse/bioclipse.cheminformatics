@@ -28,6 +28,7 @@ import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IEditorPart;
@@ -55,11 +56,14 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
         }
         SDFIndexEditorModel model = (SDFIndexEditorModel) editor.getModel();
         String calc = event.getParameter( PARAMETER_ID );
-        IExtensionRegistry reg = Platform.getExtensionRegistry();
-        IConfigurationElement[] extensions;
-        IExtension ext = reg.getExtension( calc );
-        extensions = ext.getConfigurationElements();
-        for(IConfigurationElement element:extensions) {
+
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        IConfigurationElement[] elements = registry.getConfigurationElementsFor(
+                                       "net.bioclipse.cdk.propertyCalculator" );
+
+        for(IConfigurationElement element:elements) {
+            if(!((String)element.getAttribute( "id" )).equals( calc ))
+                    continue;
             element.getNamespaceIdentifier();
             element.getName();
             element.getContributor();

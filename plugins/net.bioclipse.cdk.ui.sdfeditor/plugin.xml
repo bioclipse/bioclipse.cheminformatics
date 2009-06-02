@@ -172,6 +172,24 @@
            </with>
         </visibleWhen>
      </command>
+     <command
+           commandId="net.bioclipse.cdk.ui.sdfeditor.addProperty"
+           label="Calculate InChI"
+           style="push">
+        <parameter
+              name="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
+              value="net.bioclipse.cdk.InChI">
+        </parameter>
+        <visibleWhen
+              checkEnabled="false">
+           <with
+                 variable="activeEditor">
+              <instanceof
+                    value="net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart">
+              </instanceof>
+           </with>
+        </visibleWhen>
+     </command>
   </menuContribution>
 	</extension>
  <extension
@@ -182,10 +200,14 @@
     </scriptContribution>
  </extension>
  <extension
-       id="net.bioclipse.cdk.calculator.numberOfAtoms"
        point="net.bioclipse.cdk.propertyCalculator">
     <Calculator
-          class="net.bioclipse.cdk.ui.sdfeditor.NumberOfAtomCalculator">
+          class="net.bioclipse.cdk.ui.sdfeditor.NumberOfAtomCalculator"
+          id="net.bioclipse.cdk.calculator.numberOfAtoms">
+    </Calculator>
+    <Calculator
+          class="net.bioclipse.cdk.ui.sdfeditor.InChIPropertyCalculator"
+          id="net.bioclipse.cdk.InChI">
     </Calculator>
  </extension>
 </plugin>

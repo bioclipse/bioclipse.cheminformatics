@@ -49,17 +49,24 @@
 
    <element name="Calculator">
       <complexType>
-         <attribute name="class" type="string" use="required">
+         <attribute name="id" type="string" use="required">
+            <annotation>
+              <documentation>
+                  
+              </documentation>
+           	</annotation>
+         </attribute>
+      	 <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+
                </documentation>
                <appInfo>
                   <meta.attribute kind="java" basedOn=":net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator"/>
                </appInfo>
             </annotation>
          </attribute>
-      </complexType>
+         </complexType>
    </element>
 
    <annotation>
