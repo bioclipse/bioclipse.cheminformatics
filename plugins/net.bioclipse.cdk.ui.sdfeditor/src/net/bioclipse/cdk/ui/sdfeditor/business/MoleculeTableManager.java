@@ -31,6 +31,7 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.sdfeditor.editor.SDFIndexEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.managers.business.IBioclipseManager;
 
@@ -203,8 +204,16 @@ public class MoleculeTableManager implements IBioclipseManager {
                     //Properties are lost in this CDK operation, so copy them
                     mol.setProperties( ac.getProperties() );
                 }
-
-            chemWriter.write( model.getMoleculeAt( i ).getAtomContainer() );
+                // get calculated properties form extension
+                for(IPropertyCalculator<?> property:
+                    SDFIndexEditorModel.retriveCalculatorContributions()) {
+                    String name = property.getPropertyName();
+                    Object value = molecule
+                    .getProperty( name,Property.USE_CACHED );
+                    String text = property.toString(value );
+                    mol.setProperty( name, text );
+                }
+            chemWriter.write( mol );
             chemWriter.close();
             if(target==null) {
                 target = file;

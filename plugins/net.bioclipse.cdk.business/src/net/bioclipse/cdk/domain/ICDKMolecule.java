@@ -1,6 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2008 The Bioclipse Project and others.
  *               2009  Egon Willighagen <egonw@user.sf.net>
+ *               2009 Arvid Berg <goglepox@users.sf.net>
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -52,6 +53,20 @@ public interface ICDKMolecule extends IMolecule{
      * @throws BioclipseException
      */
     public String getInChIKey(IMolecule.Property urgency) throws BioclipseException;
+
+    /**
+     * If urgency is Property.USE_CALCULATED calculate this property using
+     * a contributed property calculator. If Property.USE_CACHED_OR_CALCULATED
+     * try to use cached value if it is not cached calculates it.
+     * Property.USE_CACHED indicates that it should only return the cached value
+     * or null if no value is cached.
+     *
+     * @param propertyKey indicating which property to get
+     * @param urgency indicates it value should be recalculated or cached value
+     * used
+     * @return value for property indicated by key
+     */
+    public Object getProperty(String propertyKey,Property urgency);
 
     /**
      * AtomContainer is the CDK model for a molecule

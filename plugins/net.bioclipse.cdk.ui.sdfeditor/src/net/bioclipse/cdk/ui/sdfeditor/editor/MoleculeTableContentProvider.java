@@ -18,6 +18,7 @@ import java.util.List;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+import net.bioclipse.core.domain.IMolecule.Property;
 import net.sourceforge.nattable.NatTable;
 import net.sourceforge.nattable.data.IDataProvider;
 
@@ -165,10 +166,14 @@ public class MoleculeTableContentProvider implements
         }
         int i = col;
         if( properties != null && i<properties.size()+1) {
-            if(model instanceof SDFIndexEditorModel) {
-                // FIXME a general interface to access properties
-                return ((SDFIndexEditorModel) model).getPropertyFor(
-                                             row, (String)properties.get(i-1) );
+            Object v = molecule.getProperty( (String)properties.get( i-1 ),
+                                                 Property.USE_CACHED );
+            if(v != null) {
+                return v.toString();
+//            if(model instanceof SDFIndexEditorModel) {
+//                // FIXME a general interface to access properties
+//                return ((SDFIndexEditorModel) model).getPropertyFor(
+//                                             row, (String)properties.get(i-1) );
             }else {
             Object value = molecule.getAtomContainer()
             .getProperty( properties.get(i-1));

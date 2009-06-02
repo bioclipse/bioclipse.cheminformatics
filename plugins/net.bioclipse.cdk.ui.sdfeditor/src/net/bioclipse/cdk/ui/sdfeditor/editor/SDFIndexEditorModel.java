@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import net.bioclipse.cdk.domain.CDKMolecule;
+import net.bioclipse.cdk.domain.CDKMoleculeUtils;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator;
 import net.bioclipse.cdk.ui.sdfeditor.business.SDFileIndex;
@@ -134,6 +135,10 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDK
                     setLastRead( index, null );
                     return null;
                 }
+            }
+            for(IPropertyCalculator<?> calculator:calculators.values()) {
+                CDKMoleculeUtils.setProperty( mol, calculator.getPropertyName(),
+                         getPropertyFor( index, calculator.getPropertyName() ));
             }
         }
         return mol;

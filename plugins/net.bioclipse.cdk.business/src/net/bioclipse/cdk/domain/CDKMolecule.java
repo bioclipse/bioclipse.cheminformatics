@@ -15,7 +15,9 @@ package net.bioclipse.cdk.domain;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.BitSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import net.bioclipse.cdk.business.Activator;
@@ -55,6 +57,8 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     private String cachedSMILES;
     private BitSet cachedFingerprint;
     private InChI cachedInchi;
+
+    private Map<String,Object> cachedProperties;
 
     private static Preferences prefs;
 
@@ -284,5 +288,24 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
             throw new BioclipseException("Could not create InChIKey: "
                     + e.getMessage(), e);
         }
+    }
+
+    public Object getProperty(String propertyKey, Property urgency) {
+        switch (urgency) {
+            case USE_CALCULATED:
+                // TODO get calculator for property
+            case USE_CACHED_OR_CALCULATED:
+                // TODO if cached use it otherwise calculate
+            case USE_CACHED:
+                if(cachedProperties !=null)
+                    return cachedProperties.get( propertyKey );
+        }
+        return null;
+    }
+
+    void setProperty(String propertyKey, Object value) {
+        if(cachedProperties == null)
+            cachedProperties = new HashMap<String, Object>();
+        cachedProperties.put( propertyKey, value );
     }
 }
