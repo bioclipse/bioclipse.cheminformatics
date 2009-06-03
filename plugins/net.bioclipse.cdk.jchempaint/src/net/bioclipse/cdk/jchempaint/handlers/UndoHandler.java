@@ -122,7 +122,7 @@ public class UndoHandler extends AbstractJChemPaintHandler implements IAction {
             try {
                 ((JChemPaintEditor)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).undo();
                 ((JChemPaintEditor)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).update();
-            } catch ( ExecutionException e ) {
+            } catch ( Exception e ) {
                 LogUtils.handleException( e, logger );
             }
     }
