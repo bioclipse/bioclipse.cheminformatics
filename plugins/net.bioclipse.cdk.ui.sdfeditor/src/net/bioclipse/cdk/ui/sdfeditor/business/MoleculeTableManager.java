@@ -304,6 +304,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                     }
                 }
             }
+            monitor.worked( 1 );
         }
         }catch(IOException e) {
             logger.debug( "Failed to read properties" );
