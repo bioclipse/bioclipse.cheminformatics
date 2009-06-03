@@ -33,6 +33,7 @@ import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.jobs.IReturner;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.apache.log4j.Logger;
@@ -70,7 +71,9 @@ public class MoleculeTableManager implements IBioclipseManager {
         logger.info( string.toString() );
     }
 
-    public SDFileIndex createSDFIndex(IFile file, IProgressMonitor monitor) {
+    public void createSDFIndex( IFile file, 
+                                IReturner returner, 
+                                IProgressMonitor monitor ) {
 
         SubMonitor progress = SubMonitor.convert( monitor ,100);
         long size = -1;
@@ -165,7 +168,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                           "createSDFIndex took %d to complete",
                           (int)((System.nanoTime()-tStart)/1e6)) );
         progress.done();
-        return new SDFileIndex(file,values,propMap);
+        returner.completeReturn( new SDFileIndex(file,values,propMap) );
     }
 
     public void calculateProperty( SDFIndexEditorModel model,
