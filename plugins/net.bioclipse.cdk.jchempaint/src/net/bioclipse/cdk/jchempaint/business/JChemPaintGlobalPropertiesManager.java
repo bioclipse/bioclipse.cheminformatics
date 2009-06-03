@@ -57,8 +57,9 @@ public class JChemPaintGlobalPropertiesManager
         List<JChemPaintEditor> jcpEditors = new ArrayList<JChemPaintEditor>();
         for (IEditorReference ref : activeEditors) {
             IEditorPart ePart = ref.getEditor(false);
+            if(ePart == null) continue;
             JChemPaintEditor jcpEditor = (JChemPaintEditor)ePart.getAdapter(
-                                                  JChemPaintEditor.class);
+                                                        JChemPaintEditor.class);
             if (jcpEditor!=null) {
                 jcpEditors.add(jcpEditor);
             }

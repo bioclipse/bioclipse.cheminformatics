@@ -83,8 +83,6 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         return moleculesPage;
     }
 
-
-
     @Override
     protected void createPages() {
 
@@ -336,10 +334,10 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
     @SuppressWarnings("unchecked")
     @Override
     public Object getAdapter( Class adapter ) {
-        IEditorPart active = getActiveEditor();
-        if(active != null && adapter.isAssignableFrom( active.getClass() )) {
-            return active;
-        }
+        if(adapter.equals( MoleculesEditor.class ))
+            return moleculesPage;
+        if(adapter.equals( JChemPaintEditor.class ))
+            return jcpPage;
         return super.getAdapter( adapter );
     }
 }
