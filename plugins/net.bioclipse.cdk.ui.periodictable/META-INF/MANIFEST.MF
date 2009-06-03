@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Periodictable Plug-in
+Bundle-Name: Periodic Table
 Bundle-SymbolicName: net.bioclipse.cdk.ui.periodictable;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 2.0.0.RC1
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.eclipse.swt,
  org.eclipse.ui.ide,
@@ -14,3 +14,4 @@ Require-Bundle: org.eclipse.swt,
  org.openscience.cdk.render;bundle-version="1.2.1",
  net.bioclipse.cdk.business;bundle-version="2.0.0",
  net.bioclipse.core;bundle-version="2.0.0"
+Bundle-Vendor: The Bioclipse Team
