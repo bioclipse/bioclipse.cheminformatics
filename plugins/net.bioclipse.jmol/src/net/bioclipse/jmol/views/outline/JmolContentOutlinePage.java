@@ -147,6 +147,7 @@ public class JmolContentOutlinePage
             String type = obj instanceof JmolAtom    ? "atom"
                         : obj instanceof JmolChain   ? "chain"
                         : obj instanceof JmolMonomer ? "peptide"
+                        : obj instanceof JmolModel   ? "model"
                         : null;
             
             if (type != null) {
