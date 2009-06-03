@@ -29,7 +29,8 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.io;bundle-version="1.2.0",
  net.bioclipse.ui.business;bundle-version="2.0.0",
  org.eclipse.core.filesystem;bundle-version="1.2.0",
- net.bioclipse.inchi;bundle-version="2.0.0"
+ net.bioclipse.inchi;bundle-version="2.0.0",
+ org.openscience.cdk.nonotify;bundle-version="1.2.2"
 Bundle-ActivationPolicy: lazy
 Import-Package: net.bioclipse.inchi.business,
  org.apache.log4j;version="1.2.15"
