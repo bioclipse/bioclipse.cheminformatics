@@ -39,6 +39,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPersistableElement;
+import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
@@ -283,7 +284,10 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
     @Override
     public boolean isDirty() {
 
-        return dirty;
+        if(lastPage == Pages.JCP) {
+            return dirty || jcpPage.isDirty();
+        }
+        return dirty ;
     }
 
     private void updateJmolPage() {
