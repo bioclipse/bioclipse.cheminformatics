@@ -8,7 +8,7 @@
             class="net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart"
             default="true"
             extensions="sdf,smi"
-            icon="icons/table16.gif"
+            icon="icons/table16-with-molecule.png"
             id="net.bioclipse.cdk.ui.sdfeditor"
             name="MoleculeTableEditor">
          <contentTypeBinding
