@@ -8,7 +8,7 @@
             class="net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart"
             default="true"
             extensions="sdf,smi"
-            icon="icons/many_molecules.png"
+            icon="icons/table16.gif"
             id="net.bioclipse.cdk.ui.sdfeditor"
             name="MoleculeTableEditor">
          <contentTypeBinding
@@ -43,7 +43,7 @@
 		<BioObject
 	        describer="net.bioclipse.cdk.ui.sdfeditor.describer.MolTableDescriber"
     	    id="net.bioclipse.cdk.jchempaint.describer"
-    	    objectClass="net.bioclipse.core.domain.BioList">
+    	    objectClass="net.bioclipse.core.domain.RecordableList">
 		</BioObject>         
    </extension>
    
@@ -79,7 +79,7 @@
             category="net.bioclipse.cdk.ChemistryFiles"
             class="net.bioclipse.cdk.ui.wizards.NewSdfWizard"
             hasPages="true"
-            icon="icons/many_molecules.png"
+            icon="icons/table16.gif"
             id="net.bioclipse.cdk.ui.wizards.NewSdfWizard"
             name="SD File (from existing structures)">
          <description>
