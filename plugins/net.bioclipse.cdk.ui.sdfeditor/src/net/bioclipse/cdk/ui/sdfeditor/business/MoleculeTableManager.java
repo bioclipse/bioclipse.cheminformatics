@@ -39,6 +39,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubMonitor;
@@ -58,8 +59,15 @@ public class MoleculeTableManager implements IBioclipseManager {
     }
 
     public void dummy(String... strings) {
-        logger.info( "Dummy on molTable manager has been called with"
-                     +" thees argumenst "+strings.toString() );
+        StringBuilder string = new StringBuilder();
+        string.append( "Dummy on molTable manager has been called with" );
+        string.append( " thees argumenst " );
+        for(String s:strings) {
+            string.append( s );
+            string.append( ", " );
+        }
+        string.delete( string.length()-1, string.length() );
+        logger.info( string.toString() );
     }
 
     public SDFileIndex createSDFIndex(IFile file, IProgressMonitor monitor) {
@@ -186,9 +194,24 @@ public class MoleculeTableManager implements IBioclipseManager {
 
     public String saveSDF( IMoleculesEditorModel model, IFile file,
                            IProgressMonitor monitor) throws BioclipseException {
-        monitor.beginTask( "Saving to file", model.getNumberOfMolecules() );
+
+        SubMonitor subMonitor = SubMonitor.convert( monitor );
+
+        subMonitor.beginTask( "Saving to file", 100 );
+
+        IPath path = file.getLocation();
+        IPath path2 = file.getLocation();
+        path2 = path2.addFileExtension( "tmp" );
+        try {
+            file.move( path2, true, subMonitor.newChild( 10 ) );
+        } catch ( CoreException e1 ) {
+            logger.warn( "Could not rename original" );
+        }
+
         IFile target = null;
-        for(int i =0 ;i<model.getNumberOfMolecules();i++) {
+        SubMonitor loopProgress = subMonitor.newChild( 90 );
+        loopProgress.setWorkRemaining( model.getNumberOfMolecules() );
+         for(int i =0 ;i<model.getNumberOfMolecules();i++) {
             StringWriter writer = new StringWriter();
             IChemObjectWriter chemWriter = new SDFWriter(writer);
             // TODO Piped streams
@@ -219,22 +242,22 @@ public class MoleculeTableManager implements IBioclipseManager {
             chemWriter.write( mol );
             chemWriter.close();
             if(target==null) {
-                target = file;
-                if(file.exists()) {
+                target = file.getParent().getFile( path );
+                if(target.exists()) {
                     target.setContents( convertToByteArrayIs( writer ),
                                                                   false,
                                                                   true,
-                                                                  monitor );
+                                                   loopProgress.newChild( 1 ) );
                 }else {
                     target.create( convertToByteArrayIs( writer ),
                                                            false,
-                                                           monitor );
+                                                   loopProgress.newChild( 1 ) );
                 }
             }else {
                 target.appendContents( convertToByteArrayIs( writer ),
                                                                 false,
                                                                 true,
-                                                                monitor);
+                                                   loopProgress.newChild( 1 ) );
             }
             }catch(Exception e) {
                 LogUtils.debugTrace( logger, e );
@@ -242,7 +265,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                                              e.getMessage());
             }
         }
-        monitor.done();
+        subMonitor.done();
         return file.getLocation().toPortableString();
     }
 
@@ -253,7 +276,9 @@ public class MoleculeTableManager implements IBioclipseManager {
         List<String> properties = new ArrayList<String>(numberOfProperties);
         InputStream in = new BufferedInputStream(is);
 
-        in.skip( start-1 );
+        long skip = in.skip( start-1 );
+        if(skip != start-1)
+            throw new IOException("Failed to skip to properties");
         int read;
         int newLineCount = 0;
         StringBuilder builder = new StringBuilder();
