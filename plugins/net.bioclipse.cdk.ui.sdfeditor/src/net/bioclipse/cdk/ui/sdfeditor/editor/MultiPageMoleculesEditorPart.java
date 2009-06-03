@@ -273,7 +273,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
 
    }
 
-    private void setDirty( boolean b ) {
+    public void setDirty( boolean b ) {
         if(dirty != b) {
             dirty  = b;
             firePropertyChange( IEditorPart.PROP_DIRTY );
