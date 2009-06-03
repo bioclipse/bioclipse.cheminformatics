@@ -80,6 +80,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDK
 
     private Map<String,IPropertyCalculator<?>> calculators;
 
+    private boolean dirty = false;
 
     public SDFIndexEditorModel() {
         molProps = new HashMap<Integer, Map<String,Object>>();
@@ -100,6 +101,14 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDK
 
     public IResource getResource() {
         return input.file();
+    }
+
+    public boolean isDirt() {
+        return dirty || edited.size()!=0;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
     }
     /* (non-Javadoc)
      * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#getMoleculeAt(int)

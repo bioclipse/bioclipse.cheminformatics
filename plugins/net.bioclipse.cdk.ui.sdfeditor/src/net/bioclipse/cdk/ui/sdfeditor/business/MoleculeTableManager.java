@@ -174,6 +174,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                                              ,model.getNumberOfMolecules() ) );
             }
         }
+        model.setDirty(true);
         monitor.done();
     }
 
