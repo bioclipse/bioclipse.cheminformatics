@@ -130,10 +130,12 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
     public void undo() throws ExecutionException {
         widget.undo();
+        fireStructureChanged();
     }
 
     public void redo() throws ExecutionException {
         widget.redo();
+        fireStructureChanged();
     }
 
     @Override
