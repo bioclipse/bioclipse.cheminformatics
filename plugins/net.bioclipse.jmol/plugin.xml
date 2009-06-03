@@ -40,7 +40,7 @@
          point="org.eclipse.ui.editors">
       <editor
             name="Jmol Editor"
-          icon="icons/jmol.png"
+          icon="icons/molecule3D.png"
             contributorClass="net.bioclipse.jmol.editors.JmolEditorContributor"
             class="net.bioclipse.jmol.editors.JmolEditor"
             default="true"
