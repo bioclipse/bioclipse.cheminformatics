@@ -27,8 +27,6 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IEditorPart;
@@ -47,9 +45,11 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
 
     public Object execute( ExecutionEvent event ) throws ExecutionException {
         IEditorPart editorPart = HandlerUtil.getActiveEditor( event );
+        MultiPageMoleculesEditorPart mpmep = (MultiPageMoleculesEditorPart)
+                                                        editorPart;
         // FIXME there can be other models besides SDFIndexEditorModel
-        final MoleculesEditor editor = (MoleculesEditor) ((MultiPageMoleculesEditorPart)
-                            editorPart).getAdapter( MoleculesEditor.class );
+        final MoleculesEditor editor = (MoleculesEditor) editorPart
+                                         .getAdapter( MoleculesEditor.class );
         if(editor== null) {
             logger.warn( "Could not find a MoleculesEditor" );
             return null;
@@ -91,7 +91,7 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
                 logger.debug( "Failed to craete IPropertyCalculator", e );
             }
         }
-
+        mpmep.setDirty( true );
         return null;
     }
 }
