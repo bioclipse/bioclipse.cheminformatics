@@ -35,7 +35,7 @@
       <editor
             class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
             default="true"
-            icon="icons/doc_mol_2d.png"
+            icon="icons/chem.png"
             id="net.bioclipse.cdk.ui.editors.jchempaint.mdl"
             name="MDLMolfileEditor">
          <contentTypeBinding
@@ -45,7 +45,7 @@
       <editor
             class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
             default="true"
-            icon="icons/doc_mol_2d.png"
+            icon="icons/chem.png"
             id="net.bioclipse.cdk.ui.editors.jchempaint.cml"
             name="CMLEditor (Single Molecule)">
          <contentTypeBinding
@@ -61,7 +61,7 @@
       <editor
             class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
             default="true"
-            icon="icons/doc_mol_2d.png"
+            icon="icons/chem.png"
             id="net.bioclipse.cdk.ui.editors.jchempaint.pubchem"
             name="PubChemCompoundXMLMolfileEditor">
          <contentTypeBinding
