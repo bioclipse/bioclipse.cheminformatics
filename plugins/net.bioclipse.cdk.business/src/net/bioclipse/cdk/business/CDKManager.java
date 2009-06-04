@@ -43,8 +43,8 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesInfo;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.RecordableList;
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.domain.RecordableList;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
@@ -116,9 +116,15 @@ import org.openscience.cdk.io.iterator.IteratingMDLReader;
 import org.openscience.cdk.io.random.RandomAccessReader;
 import org.openscience.cdk.io.random.RandomAccessSDFReader;
 import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
+import org.openscience.cdk.isomorphism.matchers.IQueryAtom;
+import org.openscience.cdk.isomorphism.matchers.OrderQueryBond;
+import org.openscience.cdk.isomorphism.matchers.QueryAtomContainer;
+import org.openscience.cdk.isomorphism.matchers.SymbolQueryAtom;
+import org.openscience.cdk.isomorphism.matchers.smarts.AromaticQueryBond;
 import org.openscience.cdk.isomorphism.mcss.RMap;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
+import org.openscience.cdk.nonotify.NNAtom;
 import org.openscience.cdk.nonotify.NNAtomContainer;
 import org.openscience.cdk.nonotify.NNChemFile;
 import org.openscience.cdk.nonotify.NNMolecule;
@@ -906,6 +912,20 @@ public class CDKManager implements IBioclipseManager {
       public List<ICDKMolecule> getSubstructures(ICDKMolecule molecule,
                                                  ICDKMolecule substructure)
           throws BioclipseException {
+          IAtomContainer originalContainer = molecule.getAtomContainer();
+
+          // the below code is going to use IAtom.Id, so we need to keep
+          // track of the originals. At the same time, we overwrite them
+          // with internal identifiers.
+          String[] originalIdentifiers =
+              new String[originalContainer.getAtomCount()];
+          for (int i=0; i<originalContainer.getAtomCount(); i++) {
+              IAtom atom = originalContainer.getAtom(i);
+              originalIdentifiers[i] = atom.getID();
+              // the new identifier is simply the position in the container
+              atom.setID(""+i);
+          }
+
           List<IAtomContainer> uniqueMatches = new ArrayList<IAtomContainer>();
           try {
               // get all matches, which may include duplicates
@@ -913,13 +933,12 @@ public class CDKManager implements IBioclipseManager {
               .getSubgraphMaps(molecule.getAtomContainer(),
                                substructure.getAtomContainer());
               int i = 1;
-              IAtomContainer atomContainer = molecule.getAtomContainer();
               for (List<RMap> substruct : substructures) {
                   System.out.println("Substructure " + (i++));
                   // convert the RMap into an IAtomContainer
                   IAtomContainer match = new NNAtomContainer();
                   for (RMap mapping : substruct) {
-                      IBond bond = atomContainer.getBond(mapping.getId1());
+                      IBond bond = originalContainer.getBond(mapping.getId1());
                       for (IAtom atom : bond.atoms()) match.addAtom(atom);
                       match.addBond(bond);
                       System.out.println("id1: " + mapping.getId1() + ", id2: " + mapping.getId2());
@@ -927,7 +946,11 @@ public class CDKManager implements IBioclipseManager {
                   // OK, see if we already have an equivalent match
                   boolean foundEquivalentSubstructure = false;
                   for (IAtomContainer mol : uniqueMatches) {
-                      if (UniversalIsomorphismTester.isIsomorph(mol, match))
+                      QueryAtomContainer matchQuery = createQueryContainer(
+                          match
+                      );
+                      if (UniversalIsomorphismTester.isIsomorph(
+                              mol, matchQuery))
                           foundEquivalentSubstructure = true;
                   }
                   if (!foundEquivalentSubstructure) {
@@ -952,7 +975,41 @@ public class CDKManager implements IBioclipseManager {
           for (IAtomContainer mol : uniqueMatches) {
               molecules.add(new CDKMolecule(mol));
           }
+
+          // restore the original identifiers
+          for (int i=0; i<originalContainer.getAtomCount(); i++) {
+              originalContainer.getAtom(i).setID(
+                  originalIdentifiers[i]
+              );
+          }
+
           return molecules;
+      }
+
+      private static QueryAtomContainer createQueryContainer(
+          IAtomContainer container) {
+          QueryAtomContainer queryContainer = new QueryAtomContainer();
+          for (int i = 0; i < container.getAtomCount(); i++) {
+              queryContainer.addAtom(
+                 new AtomIDQueryAtom(container.getAtom(i).getID())
+              );
+          }
+          Iterator<IBond> bonds = container.bonds().iterator();
+          while (bonds.hasNext()) {
+              IBond bond = bonds.next();
+              int index1 = container.getAtomNumber(bond.getAtom(0));
+              int index2 = container.getAtomNumber(bond.getAtom(1));
+              if (bond.getFlag(CDKConstants.ISAROMATIC)) {
+                  queryContainer.addBond(new AromaticQueryBond((IQueryAtom) queryContainer.getAtom(index1),
+                                        (IQueryAtom) queryContainer.getAtom(index2),
+                                        IBond.Order.SINGLE));
+              } else {
+                  queryContainer.addBond(new OrderQueryBond((IQueryAtom) queryContainer.getAtom(index1),
+                                        (IQueryAtom) queryContainer.getAtom(index2),
+                                        bond.getOrder()));
+              }
+          }
+          return queryContainer;
       }
 
       public boolean areIsomorphic( ICDKMolecule molecule,
