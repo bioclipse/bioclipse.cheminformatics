@@ -586,14 +586,13 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
             for(Iterator<?> iter = bcSelection.iterator();iter.hasNext();) {
                 Object o = iter.next();
                 if(o instanceof CDKChemObject) {
-                    IChemObject chemObject= ((CDKChemObject<?>)bcSelection
-                            .getFirstElement()).getChemobj();
+                    IChemObject chemObject= ((CDKChemObject<?>)o).getChemobj();
 
                     if(contains(ChemModelManipulator.getAllAtomContainers(
                                   widget.getControllerHub().getIChemModel()),
                                 chemObject)) {
 
-                        chemSelection.add( ((CDKChemObject<?>) o).getChemobj() );
+                        chemSelection.add( chemObject );
                     }
                 }
                 else if(o instanceof ISubStructure) {
