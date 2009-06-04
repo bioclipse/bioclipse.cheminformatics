@@ -70,7 +70,6 @@ public class ChemoinformaticsPerspective implements IPerspectiveFactory {
         layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET);
         layout.addShowViewShortcut(IPageLayout.ID_PROGRESS_VIEW);
         layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
-        layout.addShowViewShortcut("net.bioclipse.jmol.cdk.views.JmolView");
 	}
 
 	public IPageLayout getStoredLayout() {
