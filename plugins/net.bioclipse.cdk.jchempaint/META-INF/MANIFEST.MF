@@ -41,5 +41,6 @@ Import-Package: org.apache.log4j,
 Export-Package: net.bioclipse.cdk.jchempaint,
  net.bioclipse.cdk.jchempaint.business,
  net.bioclipse.cdk.jchempaint.editor,
- net.bioclipse.cdk.jchempaint.widgets
+ net.bioclipse.cdk.jchempaint.widgets,
+ net.bioclipse.cdk.jchempaint.wizards
 Bundle-Vendor: The Bioclipse Team

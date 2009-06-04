@@ -1061,6 +1061,15 @@
            restorable="true">
      </view>
   </extension>
+  <extension
+        point="org.eclipse.ui.perspectiveExtensions">
+     <perspectiveExtension
+           targetID="net.bioclipse.chemoinformatics.ChemoinformaticsPerspective">
+        <newWizardShortcut
+              id="net.bioclipse.cdk.jchempaint.wizards.NewMoleculeWizard">
+        </newWizardShortcut>
+     </perspectiveExtension>
+  </extension>
   <!--extension
          point="net.bioclipse.cdk.jchempaint.generator">
       <generator
