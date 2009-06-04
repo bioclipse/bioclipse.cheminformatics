@@ -38,6 +38,7 @@ import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message.Alignment;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.jobs.BioclipseUIJob;
+import net.bioclipse.ui.dialogs.SaveAsDialog;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionException;
@@ -79,7 +80,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.contexts.IContextService;
-import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -95,6 +95,7 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
+import org.openscience.cdk.io.formats.IResourceFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.IGenerator;
@@ -177,7 +178,12 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     @Override
     public void doSaveAs() {
         ICDKMolecule model = getCDKMolecule();
-        SaveAsDialog saveAsDialog = new SaveAsDialog( this.getSite().getShell() );
+        List<IResourceFormat> formats = new ArrayList<IResourceFormat>();
+        formats.add(CMLFormat.getInstance());
+        formats.add(MDLV2000Format.getInstance());
+        SaveAsDialog saveAsDialog = new SaveAsDialog(
+            this.getSite().getShell(), formats
+        );
         if ( model.getResource() instanceof IFile )
             saveAsDialog.setOriginalFile( (IFile) model.getResource() );
         int result = saveAsDialog.open();
