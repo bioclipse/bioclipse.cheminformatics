@@ -13,8 +13,10 @@ package net.bioclipse.cdk.jchempaint.wizards;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.ui.business.Activator;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
@@ -27,6 +29,8 @@ import org.openscience.cdk.DefaultChemObjectBuilder;
  * @author egonw
  */
 public class NewMoleculeWizard extends Wizard implements INewWizard {
+
+  private static final Logger logger = Logger.getLogger(NewMoleculeWizard.class);
 
 	public static final String WIZARD_ID =
 		"net.bioclipse.cdk.jchempaint.wizards.NewMoleculeWizard"; //$NON-NLS-1$
@@ -57,8 +61,8 @@ public class NewMoleculeWizard extends Wizard implements INewWizard {
             Activator.getDefault().getUIManager().open( mol, 
                                 "net.bioclipse.cdk.ui.editors.jchempaint.cml" );
         } catch ( BioclipseException e ) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LogUtils.handleException( e, logger, 
+                     net.bioclipse.cdk.jchempaint.Activator.PLUGIN_ID );
         }
         return true;
     }
