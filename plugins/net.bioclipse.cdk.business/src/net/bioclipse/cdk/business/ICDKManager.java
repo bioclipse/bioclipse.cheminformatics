@@ -441,6 +441,16 @@ public interface ICDKManager extends IBioclipseManager {
     public boolean subStructureMatches( ICDKMolecule molecule,
                                         ICDKMolecule subStructure );
 
+    @PublishedMethod (
+        params = "ICDKMolecule molecule, ICDKMolecule subStructure",
+        methodSummary = "Returns the substructure matches in the molecule for" +
+            "the given substructure"
+    )
+    @Recorded
+    public List<ICDKMolecule> getSubstructures(ICDKMolecule molecule,
+                                               ICDKMolecule substructure)
+        throws BioclipseException;
+
     /**
      * Creates a cdk molecule from an IMolecule
      *

@@ -80,6 +80,7 @@ import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
+import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
@@ -115,6 +116,7 @@ import org.openscience.cdk.io.iterator.IteratingMDLReader;
 import org.openscience.cdk.io.random.RandomAccessReader;
 import org.openscience.cdk.io.random.RandomAccessSDFReader;
 import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
+import org.openscience.cdk.isomorphism.mcss.RMap;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
 import org.openscience.cdk.nonotify.NNAtomContainer;
@@ -899,6 +901,58 @@ public class CDKManager implements IBioclipseManager {
           catch (CDKException e) {
               throw new RuntimeException(e);
           }
+      }
+
+      public List<ICDKMolecule> getSubstructures(ICDKMolecule molecule,
+                                                 ICDKMolecule substructure)
+          throws BioclipseException {
+          List<IAtomContainer> uniqueMatches = new ArrayList<IAtomContainer>();
+          try {
+              // get all matches, which may include duplicates
+              List<List<RMap>> substructures = UniversalIsomorphismTester
+              .getSubgraphMaps(molecule.getAtomContainer(),
+                               substructure.getAtomContainer());
+              int i = 1;
+              IAtomContainer atomContainer = molecule.getAtomContainer();
+              for (List<RMap> substruct : substructures) {
+                  System.out.println("Substructure " + (i++));
+                  // convert the RMap into an IAtomContainer
+                  IAtomContainer match = new NNAtomContainer();
+                  for (RMap mapping : substruct) {
+                      IBond bond = atomContainer.getBond(mapping.getId1());
+                      for (IAtom atom : bond.atoms()) match.addAtom(atom);
+                      match.addBond(bond);
+                      System.out.println("id1: " + mapping.getId1() + ", id2: " + mapping.getId2());
+                  }
+                  // OK, see if we already have an equivalent match
+                  boolean foundEquivalentSubstructure = false;
+                  for (IAtomContainer mol : uniqueMatches) {
+                      if (UniversalIsomorphismTester.isIsomorph(mol, match))
+                          foundEquivalentSubstructure = true;
+                  }
+                  if (!foundEquivalentSubstructure) {
+                      // make a clone (to ensure modifying it doesn't change the
+                      // original), and wrap in a CDKMolecule.
+                      uniqueMatches.add((IAtomContainer)match.clone());
+                  }
+              }
+          } catch ( CDKException e ) {
+              throw new BioclipseException(
+                  "Error while finding substructures: " +
+                  e.getMessage(), e
+              );
+          } catch ( CloneNotSupportedException e ) {
+              throw new BioclipseException(
+                  "Error while finding substructures: " +
+                  e.getMessage(), e
+              );
+          }
+          // set up a List<ICDKMolecule> return list
+          List<ICDKMolecule> molecules = new RecordableList<ICDKMolecule>();
+          for (IAtomContainer mol : uniqueMatches) {
+              molecules.add(new CDKMolecule(mol));
+          }
+          return molecules;
       }
 
       public boolean areIsomorphic( ICDKMolecule molecule,
