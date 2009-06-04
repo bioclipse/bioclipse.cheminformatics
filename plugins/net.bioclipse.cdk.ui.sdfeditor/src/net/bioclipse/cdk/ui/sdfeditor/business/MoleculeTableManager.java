@@ -267,6 +267,9 @@ public class MoleculeTableManager implements IBioclipseManager {
                 throw new BioclipseException("Faild to save file: "+
                                              e.getMessage());
             }
+            if ( loopProgress.isCanceled() ) {
+                throw new OperationCanceledException();
+            }
         }
         subMonitor.done();
         return file.getLocation().toPortableString();
@@ -334,6 +337,9 @@ public class MoleculeTableManager implements IBioclipseManager {
                 }
             }
             monitor.worked( 1 );
+            if ( monitor.isCanceled() ) {
+                throw new OperationCanceledException();
+            }
         }
         }catch(IOException e) {
             logger.debug( "Failed to read properties" );
