@@ -100,6 +100,9 @@ public class MoveModule extends ControllerModuleAdapter {
                     .isEmpty()) {
                 mergeMolecules(end);
             } else {
+                for(IAtom atom:selection.getConnectedAtomContainer().atoms()) {
+                    chemModelRelay.moveTo( atom, worldCoord );
+                }
                 IUndoRedoFactory factory = chemModelRelay.getUndoRedoFactory();
                 UndoRedoHandler handler = chemModelRelay.getUndoRedoHandler();
                 if (factory != null && handler != null) {
