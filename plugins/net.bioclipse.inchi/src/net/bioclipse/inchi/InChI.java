@@ -36,5 +36,9 @@ public class InChI {
     public void setKey(String key) {
         this.key = key;
     }
-    
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }
