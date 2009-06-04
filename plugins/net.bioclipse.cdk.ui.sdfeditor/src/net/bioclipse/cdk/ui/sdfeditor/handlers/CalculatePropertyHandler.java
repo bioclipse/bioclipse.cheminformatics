@@ -81,7 +81,8 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
                            MoleculeTableContentProvider contentProvider =
                                            editor.getContentProvider();
                            List<Object> props= contentProvider.getProperties();
-                           props.add( 0, name );
+                           if(!props.contains( name ))
+                               props.add( 0, name );
                            contentProvider.setVisibleProperties( props );
                            contentProvider.updateHeaders();
                         }
