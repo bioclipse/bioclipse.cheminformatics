@@ -705,7 +705,8 @@ public class CDKManager implements IBioclipseManager {
                   ICDKMolecule cdkmol = create(mol);
                   org.openscience.cdk.interfaces.IMolecule imol = null;
 
-                  if (cdkmol instanceof IMolecule) {
+                  if (cdkmol.getAtomContainer() instanceof
+                          org.openscience.cdk.interfaces.IMolecule) {
                       imol = (org.openscience.cdk.interfaces.IMolecule)
                              cdkmol.getAtomContainer();
                   }
