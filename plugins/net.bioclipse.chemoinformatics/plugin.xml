@@ -33,31 +33,6 @@
             name="Chemoinformatics">
       </category>
    </extension>
-   <!-- extension
-         point="org.eclipse.ui.newWizards">
-      <category
-            id="net.bioclipse.cdk.ChemistryFiles"
-            name="Chemistry"/>
-      <wizard
-            category="net.bioclipse.cdk.ChemistryFiles"
-            class="net.bioclipse.chemoinformatics.wizards.NewMDLMolfileWizard"
-            icon="icons/molecule3D.png"
-            id="net.bioclipse.chemoinformatics.wizards.NewMDLMolfileWizard"
-            name="Molecule (in MDL format)"
-            preferredPerspectives="net.bioclipse.chemoinformatics.ChemoinformaticsPerspective">
-      </wizard>
-   </extension-->
-   <extension
-         point="org.eclipse.ui.newWizards">
-      <wizard
-            category="net.bioclipse.cdk.ChemistryFiles"
-            class="net.bioclipse.chemoinformatics.wizards.NewCMLFileWizard"
-            icon="icons/molecule3D.png"
-            id="net.bioclipse.chemoinformatics.wizards.NewCMLFileWizard"
-            name="Molecule"
-            preferredPerspectives="net.bioclipse.chemoinformatics.ChemoinformaticsPerspective">
-      </wizard>
-   </extension>
 
   <extension point="org.eclipse.ui.navigator.navigatorContent">
     <commonWizard type="new"
