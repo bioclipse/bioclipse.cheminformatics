@@ -10,28 +10,15 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.wizards;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.ui.business.Activator;
 
-import org.eclipse.core.resources.IStorage;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.INewWizard;
-import org.eclipse.ui.IPersistableElement;
-import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 
 /**
@@ -43,19 +30,6 @@ public class NewMoleculeWizard extends Wizard implements INewWizard {
 
 	public static final String WIZARD_ID =
 		"net.bioclipse.cdk.jchempaint.wizards.NewMoleculeWizard"; //$NON-NLS-1$
-	
-	public static String newline = System.getProperty("line.separator");
-	
-	private static final String FILE_CONTENT =
-		"<molecule xmlns=\"http://www.xml-cml.org/schema\">" + newline +
-		"  <atomArray>" + newline +
-        "  </atomArray>" + newline +
-		"  <bondArray>" + newline +
-        "  </bondArray>" + newline +
-		"</molecule>" + newline;
-	
-    private IWorkbenchWindow activeWindow;
-    
     /**
      * Creates a wizard for creating a new file resource in the workspace.
      */
@@ -73,7 +47,6 @@ public class NewMoleculeWizard extends Wizard implements INewWizard {
     public void init(IWorkbench workbench, IStructuredSelection currentSelection) {
         setWindowTitle("New Molecule");
         setNeedsProgressMonitor(true);
-        activeWindow = workbench.getActiveWorkbenchWindow();
     }
 
     public boolean performFinish() {
@@ -88,61 +61,5 @@ public class NewMoleculeWizard extends Wizard implements INewWizard {
             e.printStackTrace();
         }
         return true;
-    }
-
-    private IEditorInput createEditorInput() {
-        IStorage storage = new StringStorage(FILE_CONTENT);
-        IEditorInput input = new StringInput(storage);
-        return input;
-    }
-
-    class StringStorage implements IStorage {
-        private String string;
-
-        StringStorage(String input) {
-            this.string = input;
-        }
-
-        public InputStream getContents() throws CoreException {
-            return new ByteArrayInputStream(string.getBytes());
-        }
-
-        public IPath getFullPath() {
-            return null;
-        }
-
-        public String getName() {
-            int len = Math.min(8, string.length());
-            return string.substring(0, len).concat("...");
-        }
-
-        public boolean isReadOnly() {
-            return false;
-        }
-
-        public Object getAdapter( Class adapter ) {
-            return null;
-        }
-
-    }
-
-    class StringInput implements IStorageEditorInput {
-        private IStorage storage;
-        StringInput(IStorage storage) {this.storage = storage;}
-        public boolean exists() {return true;}
-        public ImageDescriptor getImageDescriptor() {return null;}
-        public String getName() {
-            return storage.getName();
-        }
-        public IPersistableElement getPersistable() {return null;}
-        public IStorage getStorage() {
-            return storage;
-        }
-        public String getToolTipText() {
-            return "String-based file: " + storage.getName();
-        }
-        public Object getAdapter( Class adapter ) {
-            return null;
-        }
     }
 }
