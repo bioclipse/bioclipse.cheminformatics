@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c)      2007  Jonathan Alvarsson
+ * Copyright (c) 2007-2009  Jonathan Alvarsson
  *               2008-2009  Egon Willighagen <egonw@users.sf.net>
  *
  * All rights reserved. This program and the accompanying materials
@@ -15,6 +15,7 @@ import java.security.InvalidParameterException;
 
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.inchi.InChI;
+import net.bioclipse.jobs.IReturner;
 import net.bioclipse.managers.business.IBioclipseManager;
 import net.sf.jniinchi.INCHI_RET;
 
@@ -38,7 +39,10 @@ public class InChIManager implements IBioclipseManager {
         return "inchi";
     }
 
-    public InChI generate(IMolecule molecule, IProgressMonitor monitor) throws Exception {
+    public void generate( IMolecule molecule, 
+                          IReturner returner, 
+                          IProgressMonitor monitor) 
+                throws Exception {
     	monitor.beginTask("Calculating InChI", IProgressMonitor.UNKNOWN);
     	Object adapted = molecule.getAdapter(IAtomContainer.class);
         if (adapted != null) {
@@ -51,7 +55,7 @@ public class InChIManager implements IBioclipseManager {
                 InChI inchi = new InChI();
                 inchi.setValue(gen.getInchi());
                 inchi.setKey(gen.getInchiKey());
-                return inchi;
+                returner.completeReturn( inchi );
             } else {
                 throw new InvalidParameterException(
                     "Error while generating InChI: " +
