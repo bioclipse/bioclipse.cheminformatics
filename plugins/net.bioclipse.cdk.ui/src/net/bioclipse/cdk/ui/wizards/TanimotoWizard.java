@@ -67,7 +67,7 @@ public class TanimotoWizard extends Wizard {
     public boolean performFinish() {
 
         try {
-            ICDKManager cdkmanager =
+            final ICDKManager cdkmanager =
                     net.bioclipse.cdk.business.Activator.getDefault()
                             .getJavaCDKManager();
             IStructuredSelection referenceselection =
@@ -75,44 +75,56 @@ public class TanimotoWizard extends Wizard {
             IMolecule reference =
                     cdkmanager.loadMolecule( (IFile) referenceselection
                             .getFirstElement());
-            List<IMolecule> mols = new ArrayList<IMolecule>();
-            DecimalFormat formatter = new DecimalFormat( "0.00" );
+            final List<IMolecule> mols = new ArrayList<IMolecule>();
             for ( int i = 0; i < ssel.size(); i++ ) {
                 ICDKMolecule mol =
                         cdkmanager.loadMolecule( (IFile) ssel.toArray()[i]);
-                mol
-                        .getAtomContainer()
-                        .setProperty(
-                                      "Similarity",
-                                      formatter
-                                              .format( cdkmanager
-                                                      .calculateTanimoto( mol,
-                                                                          reference ) * 100 )
-                                              + "%" );
                 mols.add( mol );
             }
-            IStructuredSelection virtualselection =
-                    new StructuredSelection( net.bioclipse.core.Activator
-                            .getVirtualProject() );
-            final IFile sdfile =
-                    net.bioclipse.core.Activator
-                            .getVirtualProject()
-                            .getFile(
-                                      WizardHelper
-                                              .findUnusedFileName(
-                                                                   virtualselection,
-                                                                   "similarity",
-                                                                   ".sdf" ) );
-            
-            cdkmanager.saveSDFile( sdfile, mols, new BioclipseUIJob<Void>() {
+            cdkmanager.calculateTanimoto( mols, reference, 
+                                          new BioclipseUIJob<List<Float>>() {
+
                 @Override
                 public void runInUI() {
-                    net.bioclipse.ui.business.Activator
-                       .getDefault().getUIManager().open( sdfile );
+                    List<Float> result = getReturnValue();
+                    if(result!=null && result.size()!=0){
+                      try {
+                          DecimalFormat formatter = new DecimalFormat( "0.00" );
+                          for(int i=0;i<mols.size();i++){
+                              ((ICDKMolecule)mols.get( i )).getAtomContainer()
+                              .setProperty(
+                                            "Similarity",
+                                            formatter
+                                                    .format( result.get( i ) * 100 )
+                                                    + "%" );
+                          }
+                          IStructuredSelection virtualselection =
+                              new StructuredSelection( net.bioclipse.core.Activator
+                                      .getVirtualProject() );
+                          final IFile sdfile =
+                                  net.bioclipse.core.Activator
+                                          .getVirtualProject()
+                                          .getFile(
+                                                    WizardHelper
+                                                            .findUnusedFileName(
+                                                                                 virtualselection,
+                                                                                 "similarity",
+                                                                                 ".sdf" ) );
+                          cdkmanager.saveSDFile( sdfile, mols, new BioclipseUIJob<Void>() {
+                              @Override
+                              public void runInUI() {
+                                  net.bioclipse.ui.business.Activator
+                                     .getDefault().getUIManager().open( sdfile );
+                              }
+                              
+                          });
+                      } catch ( Exception e ) {
+                          LogUtils.handleException( e, logger );
+                      }
+                    }
                 }
-                
+
             });
-           
         } catch ( Exception ex ) {
             LogUtils.handleException( ex, logger );
         }
