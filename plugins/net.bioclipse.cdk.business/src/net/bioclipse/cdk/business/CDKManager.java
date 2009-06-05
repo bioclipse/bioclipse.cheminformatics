@@ -2122,7 +2122,7 @@ public class CDKManager implements IBioclipseManager {
         return calculateTanimoto( f1, f2 );
     }
 
-    public List<Float> calculateTanimoto( List<IMolecule> calculateFor,
+    public void calculateTanimoto( List<IMolecule> calculateFor,
                                   IMolecule reference,
                                   IReturner returner,
                                   IProgressMonitor monitor)
@@ -2135,7 +2135,7 @@ public class CDKManager implements IBioclipseManager {
                 calculateTanimoto(calculateFor.get(i), refensetBitSet)
             );
         }
-        return result;
+        returner.completeReturn( result ); 
     }
 
     public String getMDLMolfileString(IMolecule molecule_in) throws BioclipseException {
