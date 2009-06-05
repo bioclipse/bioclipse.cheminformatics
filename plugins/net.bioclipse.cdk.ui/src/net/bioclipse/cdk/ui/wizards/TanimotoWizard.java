@@ -20,6 +20,7 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.chemoinformatics.wizards.WizardHelper;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.jobs.BioclipseUIJob;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -93,7 +94,7 @@ public class TanimotoWizard extends Wizard {
             IStructuredSelection virtualselection =
                     new StructuredSelection( net.bioclipse.core.Activator
                             .getVirtualProject() );
-            IFile sdfile =
+            final IFile sdfile =
                     net.bioclipse.core.Activator
                             .getVirtualProject()
                             .getFile(
@@ -102,9 +103,16 @@ public class TanimotoWizard extends Wizard {
                                                                    virtualselection,
                                                                    "similarity",
                                                                    ".sdf" ) );
-            cdkmanager.saveSDFile( sdfile, mols);
-            net.bioclipse.ui.business.Activator.getDefault().getUIManager()
-                    .open( sdfile );
+            
+            cdkmanager.saveSDFile( sdfile, mols, new BioclipseUIJob<Void>() {
+                @Override
+                public void runInUI() {
+                    net.bioclipse.ui.business.Activator
+                       .getDefault().getUIManager().open( sdfile );
+                }
+                
+            });
+           
         } catch ( Exception ex ) {
             LogUtils.handleException( ex, logger );
         }

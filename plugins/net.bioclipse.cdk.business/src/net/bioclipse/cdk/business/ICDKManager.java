@@ -741,6 +741,12 @@ public interface ICDKManager extends IBioclipseManager {
                 throws BioclipseException, InvocationTargetException;
 
     @Recorded
+    public void saveSDFile( IFile file, 
+                            List<IMolecule> entries,
+                            BioclipseUIJob<Void> uiJob) 
+                throws BioclipseException, InvocationTargetException;
+    
+    @Recorded
     @PublishedMethod(
         params = "String file, List<IMolecule> entries",
         methodSummary = "Creates an sd file from a number of molecules" )
