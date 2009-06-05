@@ -48,6 +48,7 @@ import net.bioclipse.core.domain.RecordableList;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
+import net.bioclipse.jobs.IReturner;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.apache.log4j.Logger;
@@ -2122,7 +2123,9 @@ public class CDKManager implements IBioclipseManager {
     }
 
     public List<Float> calculateTanimoto( List<IMolecule> calculateFor,
-                                  IMolecule reference )
+                                  IMolecule reference,
+                                  IReturner returner,
+                                  IProgressMonitor monitor)
                                   throws BioclipseException {
         List<Float> result=new ArrayList<Float>();
         BitSet refensetBitSet = create(reference).getFingerprint(

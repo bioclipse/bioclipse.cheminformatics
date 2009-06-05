@@ -914,6 +914,19 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
+         params = "BioList<IMolecule> calculateFor, IMolecule reference, "+
+                  "BioclipseUIJob<List<Float>> uiJob",
+         methodSummary = "Calculate tanimoto similarity of a list of " +
+                         "molecules (calculateFor) to another molecule " +
+                         "(reference) via CDK fingerprint." )
+    @TestMethods("testMultipleTanimoto")
+    public void calculateTanimoto( List<IMolecule> calculateFor, 
+                                          IMolecule reference, 
+                                          BioclipseUIJob<List<Float>> uiJob )
+                       throws BioclipseException;
+    
+    @Recorded
+    @PublishedMethod(
          params = "IMolecule molecule",
          methodSummary = "Returns a MDL V2000 molfile serialization" )
     @TestMethods("testGetMDLMolfileString()")
