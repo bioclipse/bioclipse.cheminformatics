@@ -29,8 +29,8 @@ public interface IMoleculeTableManager extends IBioclipseManager {
     public void dummy(String... strings);
 
     @Recorded
-    public void createSDFIndex(IFile file,
-           BioclipseUIJob<SDFileIndex> uiJob);
+    public void createSDFIndex( IFile file,
+                                BioclipseUIJob<SDFileIndex> uiJob);
     @Recorded
     @PublishedMethod(params = "String file",
       methodSummary = "Creates a index of the molecules positons in a SDFile")
@@ -49,12 +49,17 @@ public interface IMoleculeTableManager extends IBioclipseManager {
                                    BioclipseUIJob<Void> uiJob);
 
     @Recorded
-    public void saveSDF(IMoleculesEditorModel model, IFile file) throws BioclipseException;
+    public void saveSDF(IMoleculesEditorModel model, IFile file)
+                                                      throws BioclipseException;
+    public void saveSDF( IMoleculesEditorModel model, IFile file,
+                         BioclipseUIJob<SDFIndexEditorModel> uiJob)
+                                                      throws BioclipseException;
 
     @Recorded
     @PublishedMethod(params = "SDFIndexEdiorModel model, String file",
                      methodSummary = "Saved the model to the file as SDF")
-    public String saveSDF(IMoleculesEditorModel model, String file) throws BioclipseException;
+    public String saveSDF(IMoleculesEditorModel model, String file)
+                                                      throws BioclipseException;
 
     @Recorded
     public void parseProperties(SDFIndexEditorModel model);

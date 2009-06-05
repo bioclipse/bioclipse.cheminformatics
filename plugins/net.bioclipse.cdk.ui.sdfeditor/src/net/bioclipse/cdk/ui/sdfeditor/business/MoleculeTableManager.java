@@ -71,9 +71,15 @@ public class MoleculeTableManager implements IBioclipseManager {
         logger.info( string.toString() );
     }
 
-    public void createSDFIndex( IFile file, 
-                                IReturner returner, 
+    public void createSDFIndex( IFile file,
+                                IReturner returner,
                                 IProgressMonitor monitor ) {
+
+        returner.completeReturn( createIndex( file, monitor ) );
+
+    }
+
+    private SDFileIndex createIndex(IFile file, IProgressMonitor monitor) {
 
         SubMonitor progress = SubMonitor.convert( monitor ,100);
         long size = -1;
@@ -168,7 +174,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                           "createSDFIndex took %d to complete",
                           (int)((System.nanoTime()-tStart)/1e6)) );
         progress.done();
-        returner.completeReturn( new SDFileIndex(file,values,propMap) );
+       return new SDFileIndex(file,values,propMap);
     }
 
     public void calculateProperty( SDFIndexEditorModel model,
@@ -195,25 +201,36 @@ public class MoleculeTableManager implements IBioclipseManager {
                                          .getBytes("US-ASCII"));
     }
 
-    public String saveSDF( IMoleculesEditorModel model, IFile file,
-                           IProgressMonitor monitor) throws BioclipseException {
+    public void saveSDF( IMoleculesEditorModel model, IFile file,
+                           IReturner returner, IProgressMonitor monitor)
+                                            throws BioclipseException {
+        SDFIndexEditorModel index = saveSDF( model, file, monitor );
+        returner.completeReturn( index);
+//        return index.getResource().getFullPath().toPortableString();
+
+    }
+
+    private SDFIndexEditorModel saveSDF(IMoleculesEditorModel model, IFile file,
+                                       IProgressMonitor monitor)
+                                        throws BioclipseException {
 
         SubMonitor subMonitor = SubMonitor.convert( monitor );
 
-        subMonitor.beginTask( "Saving to file", 100 );
+        subMonitor.beginTask( "Saving to file", 1000 );
 
-        IPath path = file.getLocation();
-        IPath path2 = file.getLocation();
-        path2 = path2.addFileExtension( "tmp" );
-        try {
-            file.move( path2, true, subMonitor.newChild( 10 ) );
-        } catch ( CoreException e1 ) {
-            logger.warn( "Could not rename original" );
+        IPath filePath = file.getFullPath();
+        IPath renamePath = null;
+        // If we are overwriting a.k.a save to the same file as we are reading
+        if(file.exists()) {
+            renamePath = filePath;
+            filePath = filePath.addFileExtension( "tmp" );
+
         }
 
         IFile target = null;
-        SubMonitor loopProgress = subMonitor.newChild( 90 );
+        SubMonitor loopProgress = subMonitor.newChild( 333 );
         loopProgress.setWorkRemaining( model.getNumberOfMolecules() );
+        loopProgress.subTask( "Writing to file" );
          for(int i =0 ;i<model.getNumberOfMolecules();i++) {
             StringWriter writer = new StringWriter();
             IChemObjectWriter chemWriter = new SDFWriter(writer);
@@ -244,23 +261,24 @@ public class MoleculeTableManager implements IBioclipseManager {
                 }
             chemWriter.write( mol );
             chemWriter.close();
+            // If  it is the first time we need to create or write over the file
             if(target==null) {
-                target = file.getParent().getFile( path );
+                target = file.getWorkspace().getRoot().getFile( filePath );
                 if(target.exists()) {
                     target.setContents( convertToByteArrayIs( writer ),
                                                                   false,
                                                                   true,
-                                                   loopProgress.newChild( 1 ) );
+                                                   loopProgress.newChild( 100 ) );
                 }else {
                     target.create( convertToByteArrayIs( writer ),
                                                            false,
-                                                   loopProgress.newChild( 1 ) );
+                                                   loopProgress.newChild( 100 ) );
                 }
             }else {
                 target.appendContents( convertToByteArrayIs( writer ),
                                                                 false,
                                                                 true,
-                                                   loopProgress.newChild( 1 ) );
+                                                   loopProgress.newChild( 100 ) );
             }
             }catch(Exception e) {
                 LogUtils.debugTrace( logger, e );
@@ -271,8 +289,27 @@ public class MoleculeTableManager implements IBioclipseManager {
                 throw new OperationCanceledException();
             }
         }
-        subMonitor.done();
-        return file.getLocation().toPortableString();
+         subMonitor.setWorkRemaining( 1000 );
+         SDFIndexEditorModel sdfModel = null;
+         // Rename temp file to real thing and recreate index
+         try {
+             if(renamePath != null) {
+                 subMonitor.subTask( "Renameing temp file" );
+                 file.delete( true, subMonitor.newChild( 100 ) );
+                 target.move( renamePath, true, subMonitor.newChild( 100 ) );
+             }
+             subMonitor.setWorkRemaining( 1000 );
+                  SDFileIndex index=
+                 createIndex( file, subMonitor.newChild( 100 ) );
+                  if(index!=null) {
+                      sdfModel = new SDFIndexEditorModel(index);
+                  }else
+                      throw new BioclipseException("Failed to create new index");
+         } catch ( CoreException e1 ) {
+             logger.warn( "Could not rename original" );
+             throw new BioclipseException("Failed to create new index: "+e1.getMessage());
+         }
+        return sdfModel;
     }
 
     private List<String> getProperties( InputStream is,

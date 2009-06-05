@@ -24,6 +24,7 @@ import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jmol.editors.JmolEditor;
+import net.bioclipse.jobs.BioclipseUIJob;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -39,14 +40,15 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPersistableElement;
-import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
@@ -186,13 +188,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
             original = ((SDFIndexEditorModel)model).getResource();
         }
         if(original instanceof IFile) {
-        try {
-            Activator.getDefault().getMoleculeTableManager().saveSDF( model,
-                                                              (IFile)original );
-            setDirty( false );
-        } catch ( BioclipseException e ) {
-            logger.warn( "Failed to save molecule. " + e.getMessage() );
-        }
+            save((IFile)original,model);
         }else
             doSaveAs();
     }
@@ -213,12 +209,35 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
             return;
         }
 
+        moleculesPage.getMolTableViewer().setInput( null );
         IPath path = saveAsDialog.getResult();
         IFile file= ResourcesPlugin.getWorkspace().getRoot().getFile( path );
+        save(file,model);
+    }
+
+    private void save(IFile file,IMoleculesEditorModel model) {
         try {
-            Activator.getDefault().getMoleculeTableManager().saveSDF( model, file );
+            Activator.getDefault().getMoleculeTableManager()
+            .saveSDF( model, file ,new BioclipseUIJob<SDFIndexEditorModel>() {
+
+                @Override
+                public void runInUI() {
+                    SDFIndexEditorModel model =getReturnValue();
+                    moleculesPage.getMolTableViewer().setInput( model );
+                    moleculesPage.getMolTableViewer().refresh();
+                    IFile file = (IFile)model.getResource();
+                    setInput( new FileEditorInput(file) );
+                    setPartName( file.getName() );
+                    firePropertyChange( IWorkbenchPartConstants.PROP_PART_NAME);
+                    firePropertyChange( IWorkbenchPartConstants.PROP_INPUT);
+                    jcpPage.getWidget().setDirty( false );
+                    setDirty( false );
+                }
+
+            });
         } catch ( BioclipseException e ) {
             logger.warn( "Failed to save molecule. " + e.getMessage() );
+            LogUtils.handleException( e, logger, "net.bioclipse.cdk.ui.sdfeditor" );
         }
     }
 
