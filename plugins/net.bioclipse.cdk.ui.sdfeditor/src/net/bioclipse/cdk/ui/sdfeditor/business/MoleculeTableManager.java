@@ -73,7 +73,7 @@ public class MoleculeTableManager implements IBioclipseManager {
     }
 
     public void createSDFIndex( IFile file,
-                                IReturner returner,
+                                IReturner<SDFileIndex> returner,
                                 IProgressMonitor monitor ) {
 
         returner.completeReturn( createIndex( file, monitor ) );
@@ -203,7 +203,8 @@ public class MoleculeTableManager implements IBioclipseManager {
     }
 
     public void saveSDF( IMoleculesEditorModel model, IFile file,
-                           IReturner returner, IProgressMonitor monitor)
+                         IReturner<IMoleculesEditorModel> returner,
+                         IProgressMonitor monitor)
                                             throws BioclipseException {
         SDFIndexEditorModel index = saveSDF( model, file, monitor );
         returner.completeReturn( index);
