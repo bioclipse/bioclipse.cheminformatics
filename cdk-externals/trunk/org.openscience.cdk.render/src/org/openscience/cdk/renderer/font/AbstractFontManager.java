@@ -63,7 +63,7 @@ public abstract class AbstractFontManager implements IFontManager {
 		for (double upper : this.zoomToFontSizeMap.keySet()) {
 			if (lower == -1) {
 				lower = upper;
-				if(zoom<lower)
+				if(zoom<=lower)
 				    return this.zoomToFontSizeMap.get(upper);
 				continue;
 			}
