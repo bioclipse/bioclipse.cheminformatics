@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import net.bioclipse.cdk.business.CDKManager;
+import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.chemoinformatics.wizards.WizardHelper;
 import net.bioclipse.core.business.BioclipseException;
@@ -74,7 +75,7 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
         if (file == null) {
             return false;
         }
-        CDKManager cdk = new CDKManager();
+        ICDKManager cdk = net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
         try {
             ICDKMolecule cdkMol = cdk.fromSMILES(getSMILES());
             IMolecule newMol = cdk.generate2dCoordinates(cdkMol);

@@ -593,18 +593,55 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(
         params = "List<IMolecule> molecule",
+        methodSummary = "Create 2D coordinate for the given molecules")
+    @TestMethods("testGenerate2DCoordinates")
+    public void generate2dCoordinates( List<? extends IMolecule> molecules,
+                                       BioclipseUIJob<List<IMolecule>> uiJob) 
+           throws Exception;
+
+    @Recorded
+    @PublishedMethod(
+        params = "IMolecule molecule",
+        methodSummary = "Create 2D coordinate for the given molecule")
+    @TestMethods("testGenerate2DCoordinatesSingle")
+    public void generate2dCoordinates(IMolecule molecule,
+                                      BioclipseUIJob<List<IMolecule>> uiJob) 
+                        throws Exception;
+
+    @Recorded
+    @PublishedMethod(
+        params = "List<IMolecule> molecule",
         methodSummary = "Create 3D coordinate for the given molecules" )
     @TestMethods("testGenerate3DCoordinates")
     public List<IMolecule> generate3dCoordinates(List<IMolecule> molecule) 
-                           throws Exception;
+                           throws BioclipseException;
 
     @Recorded
     @PublishedMethod(
         params = "IMolecule molecule",
         methodSummary = "Create 3D coordinate for the given molecule" )
     @TestMethods("testGenerate3DCoordinatesSingle")
-    public IMolecule generate3dCoordinates(IMolecule molecule) throws Exception;
+    public IMolecule generate3dCoordinates(IMolecule molecule) throws BioclipseException;
 
+    @Recorded
+    @PublishedMethod(
+        params = "List<IMolecule> molecule, BioclipseUIJob<List<IMolecule>> uiJob",
+        methodSummary = "Create 3D coordinate for the given molecules" )
+    @TestMethods("testGenerate3DCoordinates")
+    public void generate3dCoordinates(List<IMolecule> molecule,
+                                      BioclipseUIJob<List<IMolecule>> uiJob) 
+                           throws BioclipseException;
+
+    @Recorded
+    @PublishedMethod(
+        params = "IMolecule molecule, BioclipseUIJob<IMolecule> uiJob",
+        methodSummary = "Create 3D coordinate for the given molecule" )
+    @TestMethods("testGenerate3DCoordinatesSingle")
+    public void generate3dCoordinates(IMolecule molecule,
+                                      BioclipseUIJob<IMolecule> uiJob) 
+    throws BioclipseException;
+
+    
     @Recorded
 	  public void saveMol2(ICDKMolecule mol2, String filename) 
                 throws InvocationTargetException, 

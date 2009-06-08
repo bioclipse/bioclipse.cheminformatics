@@ -75,6 +75,7 @@ import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.config.Elements;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
+import org.openscience.cdk.exception.NoSuchAtomTypeException;
 import org.openscience.cdk.fingerprint.FingerprinterTool;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.graph.ConnectivityChecker;
@@ -120,12 +121,10 @@ import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
 import org.openscience.cdk.isomorphism.matchers.IQueryAtom;
 import org.openscience.cdk.isomorphism.matchers.OrderQueryBond;
 import org.openscience.cdk.isomorphism.matchers.QueryAtomContainer;
-import org.openscience.cdk.isomorphism.matchers.SymbolQueryAtom;
 import org.openscience.cdk.isomorphism.matchers.smarts.AromaticQueryBond;
 import org.openscience.cdk.isomorphism.mcss.RMap;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
-import org.openscience.cdk.nonotify.NNAtom;
 import org.openscience.cdk.nonotify.NNAtomContainer;
 import org.openscience.cdk.nonotify.NNChemFile;
 import org.openscience.cdk.nonotify.NNMolecule;
@@ -1395,19 +1394,20 @@ public class CDKManager implements IBioclipseManager {
         return mass;
       }
 
-      public ICDKMolecule generate2dCoordinates(IMolecule molecule)
+      public void generate2dCoordinates(IMolecule molecule,
+                                        IReturner returner,
+                                        IProgressMonitor monitor)
                        throws Exception {
           List<IMolecule> molecules = new ArrayList<IMolecule>();
           molecules.add( molecule );
-          return generate2dCoordinates( molecules ).get( 0 );
+          returner.completeReturn( generate2dCoordinates( molecules ).get( 0 ) );
       
       }
-
-      public List<ICDKMolecule> generate2dCoordinates(List<? extends IMolecule> molecules)
-                       throws Exception {
-
+      
+      private List<IMolecule> generate2dCoordinates(List<IMolecule> molecules)
+                  throws Exception {
           ICDKMolecule cdkmol = null;
-          List<ICDKMolecule> newMolecules= new RecordableList<ICDKMolecule>();
+          List<IMolecule> newMolecules= new RecordableList<IMolecule>();
 
           for(IMolecule molecule:molecules){
             if (molecule instanceof ICDKMolecule) {
@@ -1434,6 +1434,13 @@ public class CDKManager implements IBioclipseManager {
             newMolecules.add(  new CDKMolecule(newmolecule) );
           }
           return newMolecules;
+      }
+
+      public void generate2dCoordinates(List<IMolecule> molecules,
+                                        IReturner returner,
+                                        IProgressMonitor monitor)
+                       throws Exception {
+          returner.completeReturn( generate2dCoordinates( molecules ) );
       }
 
       public void saveMol2(ICDKMolecule mol, String filename)
@@ -1549,15 +1556,24 @@ public class CDKManager implements IBioclipseManager {
           return -1;
       }
 
-      public IMolecule generate3dCoordinates(IMolecule molecule)
-                       throws Exception {
+      public void generate3dCoordinates(IMolecule molecule,
+                                             IReturner returner,
+                                             IProgressMonitor monitor)
+                       throws BioclipseException {
           List<IMolecule> molecules = new RecordableList<IMolecule>();
           molecules.add( molecule );
-          return generate3dCoordinates( molecules ).get( 0 );
+          returner.completeReturn( generate3dCoordinates( molecules ).get( 0 ));
       }
 
-      public List<IMolecule> generate3dCoordinates(List<IMolecule> molecules)
-                             throws Exception {
+      public void generate3dCoordinates(List<IMolecule> molecules,
+                                                   IReturner returner,
+                                                   IProgressMonitor monitor)
+                             throws BioclipseException {
+          returner.completeReturn( generate3dCoordinates( molecules ) );
+      }
+
+      private List<IMolecule> generate3dCoordinates(List<IMolecule> molecules)
+                             throws BioclipseException {
 
           ICDKMolecule cdkmol = null;
           List<IMolecule> newMolecules=new RecordableList<IMolecule>();
@@ -1570,7 +1586,12 @@ public class CDKManager implements IBioclipseManager {
                 cdkmol=create(molecules.get(i));
             }
   
-            ModelBuilder3D mb3d = ModelBuilder3D.getInstance();
+            ModelBuilder3D mb3d;
+            try {
+                mb3d = ModelBuilder3D.getInstance();
+            } catch ( CDKException e ) {
+                throw new BioclipseException(e.getMessage());
+            }
             IMoleculeSet mols = ConnectivityChecker.partitionIntoMolecules(
                                     cdkmol.getAtomContainer() );
   
@@ -1578,17 +1599,23 @@ public class CDKManager implements IBioclipseManager {
                 = cdkmol.getAtomContainer().getBuilder().newMolecule();
   
             for ( IAtomContainer mol : mols.molecules() ) {
-  
-                org.openscience.cdk.interfaces.IMolecule ac
-                    = mb3d.generate3DCoordinates(
-                          (org.openscience.cdk.interfaces.IMolecule)mol, false);
-                newmolecule.add(ac);
+                try{
+                  org.openscience.cdk.interfaces.IMolecule ac
+                      = mb3d.generate3DCoordinates(
+                            (org.openscience.cdk.interfaces.IMolecule)mol, false);
+                  newmolecule.add(ac);
+                }catch(NoSuchAtomTypeException ex){
+                    throw new BioclipseException(ex.getMessage()+", molecule number "+i);
+                } catch ( Exception e ) {
+                    throw new BioclipseException(e.getMessage());
+                }
             }
             newMolecules.add( new CDKMolecule(newmolecule) );
           }
           return newMolecules;
       }
 
+      
       public IMolecule addExplicitHydrogens(IMolecule molecule)
                        throws Exception {
 

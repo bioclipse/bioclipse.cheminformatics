@@ -8,10 +8,14 @@
 package net.bioclipse.cdk.ui.handlers;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.jobs.BioclipseUIJob;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.AbstractHandler;
@@ -50,7 +54,7 @@ public class Create2dHandlerWithReset extends AbstractHandler {
      * @param withReset If true, the other set of coordinates is set to null. This should be used on mol files, since these can only hold one set (3d or 2d).
      * @param make3D true = 3d is generated, false = 2d is generated.
      */
-    public static void doCreation(boolean withReset, boolean make3D){
+    public static void doCreation(final boolean withReset, final boolean make3D){
         ISelection sel =
             PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                     .getSelectionService().getSelection();
@@ -59,13 +63,13 @@ public class Create2dHandlerWithReset extends AbstractHandler {
               MessageBox mb =
                   new MessageBox( new Shell(), SWT.YES | SWT.NO | SWT.CANCEL
                                                | SWT.ICON_QUESTION );
-              IStructuredSelection ssel = (IStructuredSelection) sel;
+              final IStructuredSelection ssel = (IStructuredSelection) sel;
               mb.setText( "Change "+ssel.size()+" file(s)" );
               mb.setMessage( "Do you want to write the "+ (make3D ? "3D" : "2D")+ " coordinates into the existing file? If no, new file(s) will be created." );
-              int makenewfile = mb.open();
+              final int makenewfile = mb.open();
               if(makenewfile == SWT.CANCEL)
                   return;
-              IFile[] filestosaveto=new IFile[ssel.size()];
+              final IFile[] filestosaveto=new IFile[ssel.size()];
               for(int i=0;i<ssel.toArray().length;i++){
                   if ( makenewfile == SWT.NO ){
                       SaveAsDialog dialog = new SaveAsDialog( new Shell() );
@@ -85,69 +89,97 @@ public class Create2dHandlerWithReset extends AbstractHandler {
                       }
                   }
               }
-              for(int i=0;i<ssel.toArray().length;i++){
-                ICDKMolecule mol;
-                try {
-                    mol =
-                            Activator.getDefault().getJavaCDKManager()
-                                    .loadMolecule((IFile) ssel.toArray()[i]);
-                    if(make3D){
-                        mol =
-                            (ICDKMolecule) Activator.getDefault()
-                                    .getJavaCDKManager()
-                                    .generate3dCoordinates( mol ) ;                    
-                    }else{
-                      mol =
-                              (ICDKMolecule) Activator.getDefault()
-                                      .getJavaCDKManager()
-                                      .generate2dCoordinates( mol );
-                    }
-                    if(withReset){
-                      //we set the other coordinates to null, since when writing out, they might override
-                      for(IAtom atom : mol.getAtomContainer().atoms()){
-                          if(make3D)
-                              atom.setPoint2d( null );
-                          else
-                              atom.setPoint3d( null );
-                      }
-                    }
-                    if ( makenewfile == SWT.YES ) {
-                        try {
-                            Activator.getDefault().getJavaCDKManager()
-                                    .saveMolecule(
-                                                   mol,
-                                                   (IFile) ssel.toArray()[i],
-                                                   true);
-                        } catch ( Exception e ) {
-                            throw new RuntimeException( e.getMessage() );
-                        }
-                    } else if ( makenewfile == SWT.NO ){
-                            try {
-                                Activator
-                                        .getDefault()
-                                        .getJavaCDKManager()
-                                        .saveMolecule(
-                                                       mol,
-                                                       filestosaveto[i],
-                                                       true );
-                            } catch ( Exception e ) {
-                                throw new RuntimeException( e.getMessage() );
-                            }
-                    }
-                } catch ( InvocationTargetException e ) {
-                    if(e.getCause() instanceof NoSuchAtomTypeException){
-                      mb =
-                          new MessageBox( new Shell(), SWT.OK
-                                                       | SWT.ICON_WARNING );
-                      mb.setText( "Problems handling atom types in "+((IFile) ssel.toArray()[i]).getName() );
-                      mb.setMessage( "We cannot handle this structure since it contains unknown atom types. We leave this file unchanged!" );
-                      mb.open();
-                    }
-                } catch ( Exception e ) {
-                    LogUtils.handleException( e, logger );
+              try {
+                List<IMolecule> mols = new ArrayList<IMolecule>();
+                for(int i=0;i<ssel.toArray().length;i++){
+                  ICDKMolecule mol;
+                      mols.add(Activator.getDefault().getJavaCDKManager()
+                                      .loadMolecule((IFile) ssel.toArray()[i]));
                 }
-              }
+                if(make3D){
+                    //This try-catch is not working
+                    try{
+                      Activator.getDefault()
+                      .getJavaCDKManager()
+                      .generate3dCoordinates( mols, new BioclipseUIJob<List<IMolecule>>() {
+
+                          @Override
+                          public void runInUI() {
+                              List<IMolecule> newMols = getReturnValue();
+                              handlePostProduction( withReset, make3D, makenewfile, ssel, filestosaveto, newMols );
+                          }
+                      });
+                    } catch ( Exception e ) {
+                        if(e.getCause().getCause() instanceof NoSuchAtomTypeException){
+                          mb =
+                              new MessageBox( new Shell(), SWT.OK
+                                                           | SWT.ICON_WARNING );
+                          mb.setText( "Problems handling atom types in "+((IFile) ssel.toArray()[Integer.parseInt( e.getMessage().split( " " )[e.getMessage().split( " " ).length-1])]).getName() );
+                          mb.setMessage( "We cannot handle this structure since it contains unknown atom types. We recommend you leave this out from generation!" );
+                          mb.open();
+                        }else{
+                            throw e;
+                        }
+                    }
+                }else{
+                    Activator.getDefault()
+                    .getJavaCDKManager()
+                    .generate2dCoordinates( mols, new BioclipseUIJob<List<IMolecule>>() {
+
+                        @Override
+                        public void runInUI() {
+                            List<IMolecule> newMols = getReturnValue();
+                            handlePostProduction( withReset, make3D, makenewfile, ssel, filestosaveto, newMols );
+                        }
+                    });
+                }
+            } catch ( Exception e ) {
+                LogUtils.handleException( e, logger, net.bioclipse.cdk.ui.Activator.PLUGIN_ID );
+            }
           }
       }
+    }
+    
+    private static void handlePostProduction(boolean withReset,
+                                             boolean make3D,
+                                             int makenewfile,
+                                             IStructuredSelection ssel,
+                                             IFile[] filestosaveto,
+                                             List<IMolecule> mols){
+        for(int i=0;i<mols.size();i++){
+            IMolecule mol = mols.get(i);
+            if(withReset){
+              //we set the other coordinates to null, since when writing out, they might override
+              for(IAtom atom : ((ICDKMolecule)mol).getAtomContainer().atoms()){
+                  if(make3D)
+                      atom.setPoint2d( null );
+                  else
+                      atom.setPoint3d( null );
+              }
+            }
+            if ( makenewfile == SWT.YES ) {
+                try {
+                    Activator.getDefault().getJavaCDKManager()
+                            .saveMolecule(
+                                           mol,
+                                           (IFile) ssel.toArray()[i],
+                                           true);
+                } catch ( Exception e ) {
+                    throw new RuntimeException( e.getMessage() );
+                }
+            } else if ( makenewfile == SWT.NO ){
+                    try {
+                        Activator
+                                .getDefault()
+                                .getJavaCDKManager()
+                                .saveMolecule(
+                                               mol,
+                                               filestosaveto[i],
+                                               true );
+                    } catch ( Exception e ) {
+                        throw new RuntimeException( e.getMessage() );
+                    }
+            }
+        }
     }
 }
