@@ -71,6 +71,6 @@ public class SDFileIndex {
 
       public int getPropertyCount(int index) {
           List<Long> propPos = propertiesPos.get(index);
-          return propPos.size();
+          return propPos!=null?propPos.size():0;
       }
   }

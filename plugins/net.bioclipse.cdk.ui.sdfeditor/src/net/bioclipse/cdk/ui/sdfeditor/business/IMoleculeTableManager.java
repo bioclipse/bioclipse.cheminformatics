@@ -10,6 +10,8 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
+import java.util.Collection;
+
 import net.bioclipse.cdk.ui.sdfeditor.editor.SDFIndexEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.PublishedClass;
@@ -62,5 +64,6 @@ public interface IMoleculeTableManager extends IBioclipseManager {
                                                       throws BioclipseException;
 
     @Recorded
-    public void parseProperties(SDFIndexEditorModel model);
+    public void parseProperties( SDFIndexEditorModel model,
+                                 Collection<String> propertyKeys);
 }

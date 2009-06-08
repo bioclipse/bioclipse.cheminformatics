@@ -14,6 +14,7 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
@@ -243,7 +244,8 @@ public class MoleculesEditor extends EditorPart implements
                             SDFIndexEditorModel m;
                             molTableViewer.setInput(
                                          m= new SDFIndexEditorModel(sdfIndex));
-                            molTable.parseProperties( m );
+                            molTable.parseProperties( m ,
+                                                Collections.<String>emptySet());
                             molTableViewer.refresh();
                         }
 

@@ -20,6 +20,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -345,7 +346,8 @@ public class MoleculeTableManager implements IBioclipseManager {
         return properties;
     }
 
-    public void parseProperties(SDFIndexEditorModel model,IProgressMonitor monitor) {
+    public void parseProperties( SDFIndexEditorModel model,Collection<String> propertyKeys,
+                                 IProgressMonitor monitor) {
         Pattern pNamePattern = Pattern.compile( "^>.*<(.*)>*.\n");
         try {
             monitor.beginTask( "Parsing properties", model.getNumberOfMolecules() );
@@ -370,6 +372,9 @@ public class MoleculeTableManager implements IBioclipseManager {
                     IPropertyCalculator<?> calculator = model.getCalculator( name );
                     if(calculator !=null) {
                         model.setPropertyFor( i, name, calculator.parse(value));
+                    }else {
+                        if(propertyKeys.contains( name ))
+                            model.setPropertyFor( i, name, value );
                     }
                 }
             }
