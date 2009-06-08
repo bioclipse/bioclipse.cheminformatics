@@ -188,6 +188,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
             original = ((SDFIndexEditorModel)model).getResource();
         }
         if(original instanceof IFile) {
+            syncJCP();
             save((IFile)original,model);
         }else
             doSaveAs();
@@ -208,7 +209,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
             logger.debug( "SaveAs canceled." );
             return;
         }
-
+        syncJCP();
         moleculesPage.getMolTableViewer().setInput( null );
         IPath path = saveAsDialog.getResult();
         IFile file= ResourcesPlugin.getWorkspace().getRoot().getFile( path );
