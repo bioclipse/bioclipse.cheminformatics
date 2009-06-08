@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Display;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
-import org.openscience.cdk.renderer.generators.AtomContainerBoundsGenerator;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
@@ -131,7 +130,8 @@ public class JChemPaintWidget extends Canvas {
         generatorList.add( extensionGenerator
                            = ChoiceGenerator.getGeneratorsFromExtensionPoint());
         extensionGenerator.setUse( true );
-        generatorList.add( new AtomContainerBoundsGenerator() );
+        // This generator can be used for debugging partitioning problems
+        //generatorList.add( new AtomContainerBoundsGenerator() );
         generatorList.add( new HighlightAtomGenerator() );
         generatorList.add( new HighlightBondGenerator() );
         generatorList.add( new RingGenerator() );
