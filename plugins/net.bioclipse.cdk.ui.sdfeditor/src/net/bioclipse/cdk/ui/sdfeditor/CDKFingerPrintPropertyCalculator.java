@@ -56,11 +56,9 @@ public class CDKFingerPrintPropertyCalculator implements IPropertyCalculator<Bit
         // TODO check if this is right
         byte[] bytes = new Base64().decode( value.getBytes() );
         BitSet set = new BitSet();
-        int index = 0;
-        for(byte b:bytes) {
-            for(int i=0;i<8;i++) {
-                set.set( index++ ,(b & 0x01));
-                b = (byte) (b>>1);
+        for(int i=0;i<bytes.length*8;i++) {
+            if( (bytes[bytes.length-i/8-1] & (1<<(i%8))) > 0) {
+                set.set( i );
             }
         }
         return set;
@@ -69,16 +67,10 @@ public class CDKFingerPrintPropertyCalculator implements IPropertyCalculator<Bit
     public String toString( Object value ) {
         // TODO check if this is right
          BitSet val = (BitSet)value;
-         int numOfBytes = (int) Math.ceil( val.length()/8.0);
-         byte[] bytes = new byte[numOfBytes];
+         byte[] bytes = new byte[val.length()/8+1];
          for(int i=0;i<val.length();i++) {
-             int b = 0;
-             b = b<< 1;
-             if(!val.get( i )) {
-                 b = (b & 0xFE);
-             }
-             if(i%8 == 0) {
-                 bytes[i/8] =(byte) b;
+             if(val.get( i )) {
+                 bytes[bytes.length-i/8-1] |= 1 <<(i%8);
              }
          }
         return new String(new Base64().encode( bytes ));
