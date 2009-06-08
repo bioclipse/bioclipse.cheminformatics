@@ -18,6 +18,8 @@ import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.jobs.BioclipseJob;
+import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.jobs.BioclipseUIJob;
 import net.bioclipse.managers.business.IBioclipseManager;
 
@@ -66,4 +68,8 @@ public interface IMoleculeTableManager extends IBioclipseManager {
     @Recorded
     public void parseProperties( SDFIndexEditorModel model,
                                  Collection<String> propertyKeys);
+
+    public BioclipseJob<Void> parseProperties( SDFIndexEditorModel model,
+                                 Collection<String> propertyKeys, 
+                                 BioclipseJobUpdateHook<Void> hook);
 }
