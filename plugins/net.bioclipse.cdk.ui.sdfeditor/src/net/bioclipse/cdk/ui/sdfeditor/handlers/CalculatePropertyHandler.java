@@ -18,6 +18,7 @@ import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableContentProvider;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart;
 import net.bioclipse.cdk.ui.sdfeditor.editor.SDFIndexEditorModel;
+import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.BioclipseUIJob;
 
 import org.apache.log4j.Logger;
@@ -53,6 +54,11 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
         if(editor== null) {
             logger.warn( "Could not find a MoleculesEditor" );
             return null;
+        }
+        if(!(editor.getModel() instanceof SDFIndexEditorModel)) {
+            IllegalArgumentException e = new IllegalArgumentException("Only SDF model in supported");
+            LogUtils.handleException( e, logger, "net.bioclipse.cdk.ui.sdfeditor" );
+            throw e;
         }
         SDFIndexEditorModel model = (SDFIndexEditorModel) editor.getModel();
         String calc = event.getParameter( PARAMETER_ID );
