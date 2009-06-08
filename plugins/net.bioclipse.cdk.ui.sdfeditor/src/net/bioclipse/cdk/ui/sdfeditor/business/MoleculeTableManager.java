@@ -350,6 +350,12 @@ public class MoleculeTableManager implements IBioclipseManager {
     }
 
     public void parseProperties( SDFIndexEditorModel model,Collection<String> propertyKeys,
+                                 IReturner<Void> returner, IProgressMonitor monitor) {
+        parseProperties( model, propertyKeys, monitor );
+        returner.completeReturn( null );
+    }
+
+    public void parseProperties( SDFIndexEditorModel model,Collection<String> propertyKeys,
                                  IProgressMonitor monitor) {
         Pattern pNamePattern = Pattern.compile( "^>.*<(.*)>*.\n");
         try {
