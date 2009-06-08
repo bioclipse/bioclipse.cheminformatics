@@ -20,6 +20,8 @@ import net.bioclipse.core.util.LogUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.openscience.cdk.fingerprint.Fingerprinter;
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.nonotify.NNAtomContainer;
 
 /**
  * @author arvid
@@ -31,7 +33,8 @@ public class CDKFingerPrintPropertyCalculator implements IPropertyCalculator<Bit
 
         Fingerprinter fp=new Fingerprinter();
         try {
-            BitSet fingerprint=fp.getFingerprint(molecule.getAtomContainer());
+            IAtomContainer ac = new NNAtomContainer(molecule.getAtomContainer());
+            BitSet fingerprint=fp.getFingerprint(ac);
             return fingerprint;
         } catch (Exception e) {
             LogUtils.handleException( new  BioclipseException(
@@ -39,8 +42,9 @@ public class CDKFingerPrintPropertyCalculator implements IPropertyCalculator<Bit
                     + e.getMessage()),
                     Logger.getLogger( CDKFingerPrintPropertyCalculator.class ),
                     "net.bioclipse.cdk.ui.sdfeditor");
+            throw new RuntimeException( "Could not creat fingerpring. "
+                                        +e.getMessage(),e);
         }
-        return null;
     }
 
     public String getPropertyName() {
