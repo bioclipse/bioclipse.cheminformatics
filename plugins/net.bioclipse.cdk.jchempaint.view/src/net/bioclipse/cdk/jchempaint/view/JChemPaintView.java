@@ -56,6 +56,8 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 public class JChemPaintView extends ViewPart
     implements ISelectionListener {
 
+    public static final String VIEW_ID="net.bioclipse.cdk.ui.view.Java2DRendererView";
+    
     private static final Logger logger = Logger.getLogger(JChemPaintView.class);
 
     private JChemPaintWidget canvasView;
