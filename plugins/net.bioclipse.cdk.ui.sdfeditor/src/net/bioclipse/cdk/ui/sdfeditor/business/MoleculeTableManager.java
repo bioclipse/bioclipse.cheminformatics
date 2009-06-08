@@ -230,15 +230,15 @@ public class MoleculeTableManager implements IBioclipseManager {
         }
 
         IFile target = null;
-        SubMonitor loopProgress = subMonitor.newChild( 333 );
-        loopProgress.setWorkRemaining( model.getNumberOfMolecules() );
+        SubMonitor loopProgress = subMonitor.newChild( 1000 );
+        loopProgress.setWorkRemaining( 1000*model.getNumberOfMolecules() );
         loopProgress.subTask( "Writing to file" );
          for(int i =0 ;i<model.getNumberOfMolecules();i++) {
             StringWriter writer = new StringWriter();
             IChemObjectWriter chemWriter = new SDFWriter(writer);
             // TODO Piped streams
             try {
-
+                SubMonitor firstPart = loopProgress.newChild( 200 );
                 ICDKMolecule molecule = model.getMoleculeAt( i );
                 // copy properties
                 IAtomContainer ac = molecule.getAtomContainer();
@@ -261,8 +261,10 @@ public class MoleculeTableManager implements IBioclipseManager {
                         mol.setProperty( name, text );
                     }
                 }
+                firstPart.worked( 100 );
             chemWriter.write( mol );
             chemWriter.close();
+            firstPart.worked( 100 );
             // If  it is the first time we need to create or write over the file
             if(target==null) {
                 target = file.getWorkspace().getRoot().getFile( filePath );
@@ -270,17 +272,17 @@ public class MoleculeTableManager implements IBioclipseManager {
                     target.setContents( convertToByteArrayIs( writer ),
                                                                   false,
                                                                   true,
-                                                   loopProgress.newChild( 100 ) );
+                                                   loopProgress.newChild( 500 ) );
                 }else {
                     target.create( convertToByteArrayIs( writer ),
                                                            false,
-                                                   loopProgress.newChild( 100 ) );
+                                                   loopProgress.newChild( 500 ) );
                 }
             }else {
                 target.appendContents( convertToByteArrayIs( writer ),
                                                                 false,
                                                                 true,
-                                                   loopProgress.newChild( 100 ) );
+                                                   loopProgress.newChild( 500 ) );
             }
             }catch(Exception e) {
                 LogUtils.debugTrace( logger, e );
@@ -296,13 +298,13 @@ public class MoleculeTableManager implements IBioclipseManager {
          // Rename temp file to real thing and recreate index
          try {
              if(renamePath != null) {
-                 subMonitor.subTask( "Renameing temp file" );
-                 file.delete( true, subMonitor.newChild( 100 ) );
-                 target.move( renamePath, true, subMonitor.newChild( 100 ) );
+                 subMonitor.subTask( "Renaming file" );
+                 file.delete( true, subMonitor.newChild( 1000 ) );
+                 target.move( renamePath, true, subMonitor.newChild( 1000 ) );
              }
              subMonitor.setWorkRemaining( 1000 );
                   SDFileIndex index=
-                 createIndex( file, subMonitor.newChild( 100 ) );
+                 createIndex( file, subMonitor.newChild( 1000 ) );
                   if(index!=null) {
                       sdfModel = new SDFIndexEditorModel(index);
                   }else
