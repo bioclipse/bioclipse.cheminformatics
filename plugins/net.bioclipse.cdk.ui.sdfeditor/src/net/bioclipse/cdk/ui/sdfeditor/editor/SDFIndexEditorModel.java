@@ -237,7 +237,8 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDK
         Class<?> c = propertyList.get( property );
         if(props!=null && c != null) {
             Object val = props.get( property );
-            if(c.isAssignableFrom( val.getClass() ))
+
+            if(val != null && c.isAssignableFrom( val.getClass() ))
                 return (T) val;
         }
 //        else {
