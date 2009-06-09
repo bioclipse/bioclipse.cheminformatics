@@ -158,6 +158,15 @@
              optional="true">
        </commandParameter>
     </command>
+    <command
+          defaultHandler="net.bioclipse.cdk.jchempaint.handlers.ToggleImplicitHydrogens"
+          id="net.bioclipse.cdk.jchempaint.implicitHydrogens"
+          name="Show Implicit Hydrogens">
+       <state
+             class="org.eclipse.ui.handlers.RegistryToggleState"
+             id="org.eclipse.ui.commands.toggleState">
+       </state>
+    </command>
  </extension>
  <extension
        point="org.eclipse.core.expressions.propertyTesters">
@@ -834,6 +843,14 @@
                 value="zap">
           </parameter>
        </command>
+       <menu
+             label="Options">
+          <command
+                commandId="net.bioclipse.cdk.jchempaint.implicitHydrogens"
+                label="Show Implicit Hydrogens"
+                style="toggle">
+          </command>
+       </menu>
     </menuContribution>
  </extension>
 
