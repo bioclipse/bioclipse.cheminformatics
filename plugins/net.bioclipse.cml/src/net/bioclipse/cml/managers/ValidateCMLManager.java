@@ -8,6 +8,7 @@ package net.bioclipse.cml.managers;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 
 import net.bioclipse.cml.contenttypes.CmlFileDescriber;
@@ -20,6 +21,7 @@ import nu.xom.ParsingException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
@@ -102,6 +104,23 @@ public class ValidateCMLManager implements IBioclipseManager {
         try {
             Document doc =  builder.buildEnsureCML(new StringReader(cmlString));
             return (CMLElement)doc.getRootElement();
+        } catch (IOException e) {
+            throw new BioclipseException("Could not read the cmlString.", e);
+        } catch (ParsingException e) {
+            throw new BioclipseException(
+                "Could not parse the cmlString; " + e.getMessage(),
+                e
+            );
+        }
+    }
+
+    public CMLElement parseFile(IFile input) throws BioclipseException {
+        CMLBuilder builder = new CMLBuilder();
+        try {
+            Document doc =  builder.buildEnsureCML(new InputStreamReader(input.getContents()));
+            return (CMLElement)doc.getRootElement();
+        } catch (CoreException e) {
+            throw new BioclipseException("Could not read the cmlString.", e);
         } catch (IOException e) {
             throw new BioclipseException("Could not read the cmlString.", e);
         } catch (ParsingException e) {

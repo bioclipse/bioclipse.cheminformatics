@@ -42,4 +42,16 @@ public interface IValidateCMLManager extends IBioclipseManager {
     @TestMethods("testFromString")
     public CMLElement fromString(String cmlString) throws BioclipseException;
 
+    @PublishedMethod(
+                     params = "IFile input",
+                     methodSummary = "Parses a file into a CMLElement"
+    )
+    public CMLElement parseFile(IFile input) throws BioclipseException;
+
+    @PublishedMethod(
+                     params = "String path",
+                     methodSummary = "Parses a file into a CMLElement"
+    )
+    public CMLElement parseFile(String path) throws BioclipseException;
+
 }
