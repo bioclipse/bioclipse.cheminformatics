@@ -1562,7 +1562,8 @@ public class CDKManager implements IBioclipseManager {
           if (file.getFileExtension().equals("sdf") ) {
               return numberOfEntriesInSDF(file, new NullProgressMonitor());
           }
-          List<ICDKMolecule> lst = loadMolecules(file, new NullProgressMonitor());
+          List<ICDKMolecule> lst 
+              = loadMolecules(file, new NullProgressMonitor());
           if (lst!=null) return lst.size();
           return -1;
       }
@@ -1572,7 +1573,8 @@ public class CDKManager implements IBioclipseManager {
                                              IProgressMonitor monitor)
                        throws BioclipseException {
           List<IMolecule> molecules = new RecordableList<IMolecule>();
-          monitor.beginTask( "Creating 3d coordinates", IProgressMonitor.UNKNOWN );
+          monitor.beginTask( "Creating 3d coordinates", 
+                             IProgressMonitor.UNKNOWN );
           molecules.add( molecule );
           returner.completeReturn( 
                    generate3dCoordinates( molecules, monitor ).get( 0 ) );
@@ -1583,8 +1585,10 @@ public class CDKManager implements IBioclipseManager {
                                                    IReturner returner,
                                                    IProgressMonitor monitor)
                              throws BioclipseException {
-          monitor.beginTask( "Creating 3d coordinates", IProgressMonitor.UNKNOWN );
-          returner.completeReturn( generate3dCoordinates( molecules, monitor ) );
+          monitor.beginTask( "Creating 3d coordinates", 
+                             IProgressMonitor.UNKNOWN );
+          returner.completeReturn( generate3dCoordinates( molecules, 
+                                                          monitor ) );
           monitor.done();
       }
 
