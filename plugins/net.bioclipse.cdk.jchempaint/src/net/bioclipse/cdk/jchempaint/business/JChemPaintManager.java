@@ -12,6 +12,8 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.business;
 
+import java.util.List;
+
 import javax.vecmath.Point2d;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -27,9 +29,12 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IBond.Order;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 /**
  * @author egonw
@@ -673,6 +678,29 @@ public class JChemPaintManager implements IJChemPaintManager {
             return model.getZoomFactor();
         } else {
             return 0;
+        }
+    }
+
+    public void addExplicitHydrogens() {
+        JChemPaintEditor editor = findActiveEditor();
+        if (editor != null) {
+            IChemModelRelay relay = editor.getControllerHub();
+            IChemModel model = relay.getIChemModel();
+            List<IAtomContainer> containers =
+                ChemModelManipulator.getAllAtomContainers(model);
+            for (IAtomContainer container : containers) {
+                for (IAtom atom : container.atoms()) {
+                    int hCount = atom.getHydrogenCount() == null ? 0 :
+                        atom.getHydrogenCount();
+                    for (int i=0; i<hCount; i++) {
+                        addAtom("H", atom);
+                    }
+                    atom.setHydrogenCount(0);
+                }
+            }
+        } else {
+            Activator.getDefault().getJsConsoleManager()
+                .say("No opened JChemPaint editor");
         }
     }
 }

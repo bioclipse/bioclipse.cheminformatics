@@ -253,6 +253,13 @@ public interface IJChemPaintManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
+         methodSummary = "Adds explicit hydrogens, given the " +
+                         "given the current connectivity."
+    )
+    public void addExplicitHydrogens();
+
+    @Recorded
+    @PublishedMethod(
          params = "IAtom atom to move, Point2D point where to move to", 
          methodSummary = "Moves an atom to the given location."
     )
