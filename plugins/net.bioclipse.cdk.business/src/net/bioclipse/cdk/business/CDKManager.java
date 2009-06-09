@@ -1623,9 +1623,9 @@ public class CDKManager implements IBioclipseManager {
                             (org.openscience.cdk.interfaces.IMolecule)mol, false);
                   newmolecule.add(ac);
                 }catch(NoSuchAtomTypeException ex){
-                    throw new BioclipseException(ex.getMessage()+", molecule number "+i);
+                    throw new BioclipseException(ex.getMessage()+", molecule number "+i, ex);
                 } catch ( Exception e ) {
-                    throw new BioclipseException(e.getMessage());
+                    throw new BioclipseException(e.getMessage(), e);
                 }
             }
             newMolecules.add( new CDKMolecule(newmolecule) );
