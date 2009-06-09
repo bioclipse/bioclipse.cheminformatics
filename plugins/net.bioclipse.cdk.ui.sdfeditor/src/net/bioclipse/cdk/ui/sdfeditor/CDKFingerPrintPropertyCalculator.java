@@ -42,7 +42,7 @@ public class CDKFingerPrintPropertyCalculator implements IPropertyCalculator<Bit
                     + e.getMessage()),
                     Logger.getLogger( CDKFingerPrintPropertyCalculator.class ),
                     "net.bioclipse.cdk.ui.sdfeditor");
-            throw new RuntimeException( "Could not creat fingerpring. "
+            throw new RuntimeException( "Could not create fingerprint. "
                                         +e.getMessage(),e);
         }
     }
