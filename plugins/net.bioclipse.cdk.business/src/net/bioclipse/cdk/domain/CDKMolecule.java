@@ -251,8 +251,9 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     }
 
     public String getInChI(IMolecule.Property urgency) throws BioclipseException {
-        if (urgency == IMolecule.Property.USE_CACHED)
-            return cachedInchi.getValue();
+        if (urgency == IMolecule.Property.USE_CACHED) {
+            return cachedInchi == null ? "" : cachedInchi.getValue();
+        }
         
         if (urgency != IMolecule.Property.USE_CALCULATED) {
             if (cachedInchi != null) {
@@ -272,7 +273,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
 
     public String getInChIKey(IMolecule.Property urgency) throws BioclipseException {
         if (urgency == IMolecule.Property.USE_CACHED)
-            return cachedInchi.getKey();
+            return cachedInchi == null ? "" : cachedInchi.getKey();
         
         if (urgency != IMolecule.Property.USE_CALCULATED) {
             if (cachedInchi != null) {
