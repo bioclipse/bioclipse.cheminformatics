@@ -11,6 +11,7 @@ import java.io.IOException;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.TestClasses;
+import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.managers.business.IBioclipseManager;
 
@@ -30,6 +31,7 @@ public interface IValidateCMLManager extends IBioclipseManager {
     @PublishedMethod(params = "String filename",
          methodSummary = "Checks if the file indicated by filename in " +
          		"workspace is valid CML")
+    @TestMethods("testValidate_String")
     public String validate( String filename ) throws IOException,
                                              BioclipseException;
 
@@ -37,6 +39,7 @@ public interface IValidateCMLManager extends IBioclipseManager {
         params = "String cmlString",
         methodSummary = "Converts a CML String into a CMLElement"
     )
+    @TestMethods("testFromString")
     public CMLElement fromString(String cmlString) throws BioclipseException;
 
 }
