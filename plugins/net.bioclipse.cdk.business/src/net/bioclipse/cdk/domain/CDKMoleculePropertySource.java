@@ -18,6 +18,7 @@ import java.util.Map;
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.domain.props.BioObjectPropertySource;
 
 import org.eclipse.core.resources.IFile;
@@ -36,6 +37,9 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
     protected static final String PROPERTY_FORMAT = "Molecular Format";
     protected static final String PROPERTY_FORMULA = "Molecular Formula";
     protected static final String PROPERTY_MASS = "Molecular Mass";
+    protected static final String PROPERTY_SMILES = "SMILES";
+    protected static final String PROPERTY_INCHI = "InChI";
+    protected static final String PROPERTY_INCHIKEY = "InChIKey";
 
     private final Object cdkPropertiesTable[][] =
     {
@@ -48,11 +52,18 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         { PROPERTY_FORMULA,
             new TextPropertyDescriptor(PROPERTY_FORMULA,PROPERTY_FORMULA)},
         { PROPERTY_MASS,
-            new TextPropertyDescriptor(PROPERTY_MASS,PROPERTY_MASS)}
+            new TextPropertyDescriptor(PROPERTY_MASS,PROPERTY_MASS)},
+        { PROPERTY_SMILES,
+            new TextPropertyDescriptor(PROPERTY_SMILES,PROPERTY_SMILES)},
+        { PROPERTY_INCHI,
+            new TextPropertyDescriptor(PROPERTY_INCHI,PROPERTY_INCHI)},
+        { PROPERTY_INCHIKEY,
+            new TextPropertyDescriptor(PROPERTY_INCHIKEY,PROPERTY_INCHIKEY)}
     };
 
     private CDKMolecule cdkMol;
     private ArrayList<IPropertyDescriptor> cdkProperties;
+
     private HashMap<String, Object> cdkValueMap;
 
     public CDKMoleculePropertySource(CDKMolecule item) {
@@ -102,6 +113,39 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         } else {
             valueMap.put(PROPERTY_FORMAT, "N/A");
         }
+
+        String smiles = null;
+        try {
+            smiles = cdkMol.getSMILES(Property.USE_CACHED);
+        } catch ( BioclipseException e ) {
+            e.printStackTrace();
+        }
+        valueMap.put(
+            PROPERTY_SMILES,
+            (smiles == null || smiles.length() == 0) ? "N/A" : smiles
+        );
+
+        String inchi = null;
+        try {
+            inchi = cdkMol.getInChI(Property.USE_CACHED);
+        } catch ( BioclipseException e ) {
+            e.printStackTrace();
+        }
+        valueMap.put(
+            PROPERTY_INCHI,
+            (inchi == null || inchi.length() == 0) ? "N/A" : inchi
+        );
+        String inchikey = null;
+        try {
+            inchikey = cdkMol.getInChIKey(Property.USE_CACHED);
+        } catch ( BioclipseException e ) {
+            e.printStackTrace();
+        }
+        valueMap.put(
+            PROPERTY_INCHIKEY,
+            (inchikey == null || inchikey.length() == 0) ? "N/A" : inchikey
+        );
+
         // IChemObject.getProperties()
         Map<Object,Object> objectProps = item.getAtomContainer().getProperties();
         for (Object propKey : objectProps.keySet()) {
