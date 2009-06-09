@@ -591,9 +591,6 @@ public interface ICDKManager extends IBioclipseManager {
                         throws Exception;
 
     @Recorded
-    @PublishedMethod(
-        params = "List<IMolecule> molecule",
-        methodSummary = "Create 2D coordinate for the given molecules")
     @TestMethods("testGenerate2DCoordinates")
     public void generate2dCoordinates( List<? extends IMolecule> molecules,
                                        BioclipseUIJob<List<IMolecule>> uiJob) 
