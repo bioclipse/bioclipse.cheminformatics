@@ -1398,18 +1398,24 @@ public class CDKManager implements IBioclipseManager {
                                         IReturner returner,
                                         IProgressMonitor monitor)
                        throws Exception {
+          monitor.beginTask( "Creating 3d coordinates", IProgressMonitor.UNKNOWN );
           List<IMolecule> molecules = new ArrayList<IMolecule>();
           molecules.add( molecule );
-          returner.completeReturn( generate2dCoordinates( molecules ).get( 0 ) );
-      
+          returner.completeReturn( generate2dCoordinates( molecules,
+                                                          monitor).get( 0 ) );
+          monitor.done();
       }
       
-      private List<IMolecule> generate2dCoordinates(List<IMolecule> molecules)
+      private List<IMolecule> generate2dCoordinates(List<IMolecule> molecules,
+                                                    IProgressMonitor monitor)
                   throws Exception {
           ICDKMolecule cdkmol = null;
           List<IMolecule> newMolecules= new RecordableList<IMolecule>();
 
           for(IMolecule molecule:molecules){
+            if(monitor.isCanceled())
+                return null;
+
             if (molecule instanceof ICDKMolecule) {
                 cdkmol = (ICDKMolecule) molecule;
             }
@@ -1433,14 +1439,19 @@ public class CDKManager implements IBioclipseManager {
             }
             newMolecules.add(  new CDKMolecule(newmolecule) );
           }
-          return newMolecules;
+          if(monitor.isCanceled())
+              return null;
+          else
+              return newMolecules;
       }
 
       public void generate2dCoordinates(List<IMolecule> molecules,
                                         IReturner returner,
                                         IProgressMonitor monitor)
                        throws Exception {
-          returner.completeReturn( generate2dCoordinates( molecules ) );
+          monitor.beginTask( "Creating 3d coordinates", IProgressMonitor.UNKNOWN );
+          returner.completeReturn( generate2dCoordinates( molecules, monitor ) );
+          monitor.done();
       }
 
       public void saveMol2(ICDKMolecule mol, String filename)
@@ -1561,24 +1572,31 @@ public class CDKManager implements IBioclipseManager {
                                              IProgressMonitor monitor)
                        throws BioclipseException {
           List<IMolecule> molecules = new RecordableList<IMolecule>();
+          monitor.beginTask( "Creating 3d coordinates", IProgressMonitor.UNKNOWN );
           molecules.add( molecule );
-          returner.completeReturn( generate3dCoordinates( molecules ).get( 0 ));
+          returner.completeReturn( 
+                   generate3dCoordinates( molecules, monitor ).get( 0 ) );
+          monitor.done();
       }
 
       public void generate3dCoordinates(List<IMolecule> molecules,
                                                    IReturner returner,
                                                    IProgressMonitor monitor)
                              throws BioclipseException {
-          returner.completeReturn( generate3dCoordinates( molecules ) );
+          monitor.beginTask( "Creating 3d coordinates", IProgressMonitor.UNKNOWN );
+          returner.completeReturn( generate3dCoordinates( molecules, monitor ) );
+          monitor.done();
       }
 
-      private List<IMolecule> generate3dCoordinates(List<IMolecule> molecules)
+      private List<IMolecule> generate3dCoordinates(List<IMolecule> molecules, 
+                                                    IProgressMonitor monitor)
                              throws BioclipseException {
 
           ICDKMolecule cdkmol = null;
           List<IMolecule> newMolecules=new RecordableList<IMolecule>();
-
           for(int i=0;i<molecules.size();i++){
+            if(monitor.isCanceled())
+                return null;
   
             if ( molecules.get(i) instanceof ICDKMolecule ) {
                 cdkmol = (ICDKMolecule) molecules.get(i);
@@ -1612,7 +1630,10 @@ public class CDKManager implements IBioclipseManager {
             }
             newMolecules.add( new CDKMolecule(newmolecule) );
           }
-          return newMolecules;
+          if(monitor.isCanceled())
+              return null;
+          else
+              return newMolecules;
       }
 
       
