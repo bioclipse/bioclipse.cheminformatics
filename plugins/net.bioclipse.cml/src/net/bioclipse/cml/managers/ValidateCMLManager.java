@@ -12,6 +12,7 @@ import java.io.StringReader;
 
 import net.bioclipse.cml.contenttypes.CmlFileDescriber;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.managers.business.IBioclipseManager;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
@@ -27,7 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.xmlcml.cml.base.CMLBuilder;
 import org.xmlcml.cml.base.CMLElement;
 
-public class ValidateCMLManager implements IValidateCMLManager {
+public class ValidateCMLManager implements IBioclipseManager {
 
     public String validate( String filename ) throws IOException,
                                              BioclipseException {

@@ -21,7 +21,7 @@ import net.bioclipse.managers.business.IBioclipseManager;
 
 public class APITest extends AbstractManagerTest {
 
-    IValidateCMLManager cml = new ValidateCMLManager();
+    ValidateCMLManager cml = new ValidateCMLManager();
 
     @Override
     public IBioclipseManager getManager() {
