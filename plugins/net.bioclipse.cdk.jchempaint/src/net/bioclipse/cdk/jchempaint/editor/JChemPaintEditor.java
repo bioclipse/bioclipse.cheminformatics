@@ -282,7 +282,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                     @Override
                     public void runInUI() {
                         ICDKMolecule model = getReturnValue();
-                        int x2d = GeometryTools.has2DCoordinatesNew( model.getAtomContainer() );
+                        int x2d = GeometryTools.has2DCoordinatesNew(
+                                                     model.getAtomContainer() );
                         x2d = 2;
                         if(x2d <2 ) {
                             logger.error( "Not all atoms has 2d coordinates" );
@@ -442,6 +443,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                     });
                 }
                 widget.getRenderer2DModel().setExternalSelectedPart( null );
+                subStructureGenerator.clear();
                 fireStructureChanged();
             }
 
@@ -455,6 +457,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                         }
                     });
                 }
+                subStructureGenerator.clear();
                 fireStructureChanged();
             }
         };
