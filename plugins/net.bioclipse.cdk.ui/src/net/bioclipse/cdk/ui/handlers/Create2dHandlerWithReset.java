@@ -106,7 +106,8 @@ public class Create2dHandlerWithReset extends AbstractHandler {
                           @Override
                           public void runInUI() {
                               List<IMolecule> newMols = getReturnValue();
-                              handlePostProduction( withReset, make3D, makenewfile, ssel, filestosaveto, newMols );
+                              if(newMols!=null)
+                                  handlePostProduction( withReset, make3D, makenewfile, ssel, filestosaveto, newMols );
                           }
                       });
                     } catch ( Exception e ) {
