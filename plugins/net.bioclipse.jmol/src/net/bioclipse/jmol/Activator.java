@@ -12,7 +12,8 @@
 package net.bioclipse.jmol;
 
 import net.bioclipse.core.util.LogUtils;
-import net.bioclipse.jmol.business.IJSJmolManager;
+import net.bioclipse.jmol.business.IJavaJmolManager;
+import net.bioclipse.jmol.business.IJavaScriptJmolManager;
 import net.bioclipse.jmol.business.IJmolManager;
 
 import org.apache.log4j.Logger;
@@ -34,8 +35,8 @@ public class Activator extends AbstractUIPlugin {
 
     private static final Logger logger = Logger.getLogger(Activator.class);
 
-    private ServiceTracker finderTracker;
-    private ServiceTracker jsFinderTracker;
+    private ServiceTracker javaFinderTracker;
+    private ServiceTracker javaScriptFinderTracker;
     
     // The shared instance
     private static Activator plugin;
@@ -56,14 +57,16 @@ public class Activator extends AbstractUIPlugin {
         super.start(context);
         plugin = this;
 
-        finderTracker = new ServiceTracker( context, 
-                                            IJmolManager.class.getName(), 
-                                            null );
-        finderTracker.open();
-        jsFinderTracker = new ServiceTracker( context, 
-                                              IJSJmolManager.class.getName(), 
-                                              null );
-        jsFinderTracker.open();
+        javaFinderTracker 
+            = new ServiceTracker( context, 
+                                  IJavaJmolManager.class.getName(), 
+                                  null );
+        javaFinderTracker.open();
+        javaScriptFinderTracker 
+            = new ServiceTracker( context, 
+                                  IJavaScriptJmolManager.class.getName(), 
+                                  null );
+        javaScriptFinderTracker.open();
     }
     
     public void stop(BundleContext context) throws Exception {
@@ -83,9 +86,11 @@ public class Activator extends AbstractUIPlugin {
     public IJmolManager getJmolManager() {
         IJmolManager manager = null;
         try {
-            manager = (IJmolManager) finderTracker.waitForService(1000*10);
+            manager = (IJmolManager) 
+                      javaFinderTracker.waitForService(1000*10);
         } catch (InterruptedException e) {
-            logger.warn("Exception occurred while attempting to get the JmolManager" + e);
+            logger.warn( "Exception occurred while attempting " +
+            		         "to get the JmolManager", e);
             LogUtils.debugTrace(logger, e);
         }
         if (manager == null) {
@@ -94,12 +99,14 @@ public class Activator extends AbstractUIPlugin {
         return manager;
     }
     
-    public IJSJmolManager getJSJmolManager() {
-        IJSJmolManager manager = null;
+    public IJavaScriptJmolManager getJSJmolManager() {
+        IJavaScriptJmolManager manager = null;
         try {
-            manager = (IJSJmolManager) jsFinderTracker.waitForService(1000*10);
+            manager = (IJavaScriptJmolManager) 
+                      javaScriptFinderTracker.waitForService(1000*10);
         } catch (InterruptedException e) {
-            logger.warn("Exception occurred while attempting to get the JSJmolManager" + e);
+            logger.warn( "Exception occurred while attempting " +
+            		         "to get the JSJmolManager", e );
             LogUtils.debugTrace(logger, e);
         }
         if(manager == null) {

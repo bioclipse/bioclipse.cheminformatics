@@ -8,26 +8,32 @@
   <!-- Export the bean (defined in a separate
        config file in this case) as an OSGi service -->
 
-  <osgi:service id="jmolManagerOSGI" 
-                ref="jmolManager"
-                interface="net.bioclipse.jmol.business.IJmolManager" />
+  <osgi:service id="javaJmolManagerOSGI" 
+                ref="javaJmolManager"
+                interface="net.bioclipse.jmol.business.IJavaJmolManager" />
                 
-  <osgi:service id="jsjmolManagerOSGI" 
-                ref="jsjmolManager"
-                interface="net.bioclipse.jmol.business.IJSJmolManager" />
+  <osgi:service id="javaScriptJmolManagerOSGI" 
+                ref="javaScriptJmolManager"
+                interface="net.bioclipse.jmol.business.IJavaScriptJmolManager" />
 
   <osgi:reference id="recordingAdvice" 
                   interface="net.bioclipse.recording.IRecordingAdvice" />
 
-  <osgi:reference id="createJobAdvice"
-                  interface="net.bioclipse.ui.jobs.ICreateJobAdvice" />
+  <osgi:reference id="javaManagerDispatcherAdvisor"
+                  interface="net.bioclipse.managers.business.IJavaManagerDispatcherAdvisor" />
+
+  <osgi:reference id="javaScriptManagerDispatcherAdvisor" 
+                  interface="net.bioclipse.managers.business.IJavaScriptManagerDispatcherAdvisor"/>
 
   <osgi:reference id="wrapInProxyAdvice"
                   interface="net.bioclipse.recording.IWrapInProxyAdvice" />
+ 
+  <bean id="recordingAdvisor"
+        class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+        <property name="advice"  ref="recordingAdvice" />
+        <property name="pattern" value=".*" /> <!-- See also class implementation -->
+  </bean>
   
-  <osgi:reference id="JSJobCreatorAdvice" 
-                  interface="net.bioclipse.scripting.business.IJSJobCreatorAdvice"/>
-
   <bean id="jmolRunnerAdvice"
         class="net.bioclipse.jmol.business.JmolRunnerAdvice">
   </bean>
@@ -37,44 +43,40 @@
         <property name="advice"  ref="jmolRunnerAdvice" />
         <property name="pattern" value=".*" />
   </bean>
-
-  <bean id="recordingAdvisor"
-  		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
-        <property name="advice"  ref="recordingAdvice" />
-  		<property name="pattern" value=".*" /> <!-- See also class implementation -->
-  </bean>
   
   <bean id="jmolManagerTarget" 
         class="net.bioclipse.jmol.business.JmolManager">
   </bean>
   
-  <bean id="jmolManager"
-  		class="org.springframework.aop.framework.ProxyFactoryBean">
-  	<property name="target" 
-  	          ref="jmolManagerTarget" />
-  	<property name="proxyInterfaces" 
-  	          value="net.bioclipse.jmol.business.IJmolManager" />
-  	<property name="interceptorNames">
-  	    <list>
-  	        <value>recordingAdvisor</value>
-  	        <value>wrapInProxyAdvice</value>
-            <value>createJobAdvice</value>
-  	    </list>
-  	</property>
-  </bean>
-  
-  <bean id="jsjmolManager"
+  <bean id="javaScriptJmolManager"
         class="org.springframework.aop.framework.ProxyFactoryBean">
     <property name="target" 
               ref="jmolManagerTarget" />
     <property name="proxyInterfaces" 
-              value="net.bioclipse.jmol.business.IJSJmolManager" />
+              value="net.bioclipse.jmol.business.IJavaScriptJmolManager" />
     <property name="interceptorNames">
         <list>
             <value>jmolRunnerAdvisor</value>
-            <value>JSJobCreatorAdvice</value>
+            <value>recordingAdvisor</value>
+            <value>wrapInProxyAdvice</value>
+            <value>javaScriptManagerDispatcherAdvisor</value>
         </list>
     </property>
+  </bean>
+  
+  <bean id="javaJmolManager"
+  		class="org.springframework.aop.framework.ProxyFactoryBean">
+  	<property name="target" 
+  	          ref="jmolManagerTarget" />
+  	<property name="proxyInterfaces" 
+  	          value="net.bioclipse.jmol.business.IJavaJmolManager" />
+  	<property name="interceptorNames">
+  	    <list>
+  	        <value>recordingAdvisor</value>
+  	        <value>wrapInProxyAdvice</value>
+            <value>javaManagerDispatcherAdvisor</value>
+  	    </list>
+  	</property>
   </bean>
   
 </beans>
