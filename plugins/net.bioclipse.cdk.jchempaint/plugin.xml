@@ -41,6 +41,12 @@
          <contentTypeBinding
                contentTypeId="net.bioclipse.contenttypes.mdlMolFile2D">
          </contentTypeBinding>
+         <contentTypeBinding
+               contentTypeId="net.bioclipse.contenttypes.mdlMolFile0D">
+         </contentTypeBinding>
+         <contentTypeBinding
+               contentTypeId="net.bioclipse.contenttypes.mdlMolFile3D">
+         </contentTypeBinding>
       </editor>
       <editor
             class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
