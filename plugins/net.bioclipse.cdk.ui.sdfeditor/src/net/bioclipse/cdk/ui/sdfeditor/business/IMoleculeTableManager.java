@@ -38,7 +38,7 @@ public interface IMoleculeTableManager extends IBioclipseManager {
                                 BioclipseUIJob<SDFIndexEditorModel> uiJob);
     public void createSDFIndex( InputStream is,
                                 BioclipseUIJob<SDFIndexEditorModel> uiJob);
-    public BioclipseJob<SDFIndexEditorModel> createSDFIndex(InputStream is,
+    public BioclipseJob<SDFIndexEditorModel> createSDFIndex(IFile file,
                              BioclipseJobUpdateHook<SDFIndexEditorModel> hook);
     @Recorded
     @PublishedMethod(params = "String file",
