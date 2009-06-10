@@ -10,6 +10,7 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
+import java.io.InputStream;
 import java.util.Collection;
 
 import net.bioclipse.cdk.ui.sdfeditor.editor.SDFIndexEditorModel;
@@ -21,9 +22,11 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.jobs.BioclipseUIJob;
+import net.bioclipse.jobs.IReturner;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 @PublishedClass(value = "Contains methods for interacting with lists of molecules")
 public interface IMoleculeTableManager extends IBioclipseManager {
@@ -34,11 +37,14 @@ public interface IMoleculeTableManager extends IBioclipseManager {
 
     @Recorded
     public void createSDFIndex( IFile file,
-                                BioclipseUIJob<SDFileIndex> uiJob);
+                                BioclipseUIJob<SDFIndexEditorModel> uiJob);
+    public void createSDFIndex( InputStream is,
+                                BioclipseUIJob<SDFIndexEditorModel> uiJob);
+
     @Recorded
     @PublishedMethod(params = "String file",
       methodSummary = "Creates a index of the molecules positons in a SDFile")
-    public SDFileIndex createSDFIndex( String file );
+    public SDFIndexEditorModel createSDFIndex( String file );
 
     @Recorded
     @PublishedMethod(params = "SDFIndexEditorModel model,"
@@ -70,6 +76,6 @@ public interface IMoleculeTableManager extends IBioclipseManager {
                                  Collection<String> propertyKeys);
 
     public BioclipseJob<Void> parseProperties( SDFIndexEditorModel model,
-                                 Collection<String> propertyKeys, 
+                                 Collection<String> propertyKeys,
                                  BioclipseJobUpdateHook<Void> hook);
 }

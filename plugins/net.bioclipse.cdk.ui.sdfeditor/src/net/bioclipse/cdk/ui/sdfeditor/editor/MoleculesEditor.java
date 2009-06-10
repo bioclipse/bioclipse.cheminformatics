@@ -234,16 +234,15 @@ public class MoleculesEditor extends EditorPart implements
                     .getMoleculeTableManager();
 
                     molTable.createSDFIndex( file,
-                    new BioclipseUIJob<SDFileIndex>() {
+                    new BioclipseUIJob<SDFIndexEditorModel>() {
 
                         @Override
                         public void runInUI() {
-                            SDFileIndex sdfIndex = getReturnValue();
+                            SDFIndexEditorModel m = getReturnValue();
                             molTableViewer.setContentProvider(
                                 new MoleculeTableContentProvider() );
-                            SDFIndexEditorModel m;
-                            molTableViewer.setInput(
-                                         m= new SDFIndexEditorModel(sdfIndex));
+
+                            molTableViewer.setInput( m );
                             molTable.parseProperties( m ,
                                                 Collections.<String>emptySet());
                             molTableViewer.refresh();

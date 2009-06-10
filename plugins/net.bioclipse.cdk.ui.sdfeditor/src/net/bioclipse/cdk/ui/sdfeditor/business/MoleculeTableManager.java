@@ -73,27 +73,42 @@ public class MoleculeTableManager implements IBioclipseManager {
     }
 
     public void createSDFIndex( IFile file,
-                                IReturner<SDFileIndex> returner,
+                                IReturner<SDFIndexEditorModel> returner,
                                 IProgressMonitor monitor ) {
 
-        returner.completeReturn( createIndex( file, monitor ) );
+        returner.completeReturn(
+                   new SDFIndexEditorModel(createIndex( file,null, monitor ) ) );
 
     }
 
-    private SDFileIndex createIndex(IFile file, IProgressMonitor monitor) {
+    public void createSDFIndex( InputStream is,
+                                IReturner<SDFIndexEditorModel> returner,
+                                IProgressMonitor monitor) {
+        createIndex( null, is, monitor );
+
+    }
+    //TODO refactor out file.getContent()
+    private SDFileIndex createIndex( IFile file,
+                                     InputStream inputStream,
+                                     IProgressMonitor monitor) {
 
         SubMonitor progress = SubMonitor.convert( monitor ,100);
         long size = -1;
-        try {
-            size = EFS.getStore( file.getLocationURI() )
-                      .fetchInfo().getLength();
-            progress.beginTask( "Parsing SDFile",
-                                (int)size);
+        if(file != null) {
+            try {
+                size = EFS.getStore( file.getLocationURI() )
+                .fetchInfo().getLength();
+                progress.beginTask( "Parsing SDFile",
+                                    (int)size);
 
-        }catch (CoreException e) {
-            logger.debug( "Failed to get size of file" );
-            progress.beginTask( "Parsing SDFile", IProgressMonitor.UNKNOWN );
+            }catch (CoreException e) {
+                logger.debug( "Failed to get size of file" );
+                progress.beginTask("Parsing SDFile", IProgressMonitor.UNKNOWN );
+            }
+        }else {
+            progress.beginTask("Parsing SDFile", IProgressMonitor.UNKNOWN );
         }
+
         long tStart = System.nanoTime();
         List<Long> values = new LinkedList<Long>();
         List<Long> propPos = new LinkedList<Long>();
@@ -104,7 +119,12 @@ public class MoleculeTableManager implements IBioclipseManager {
         int work = 0;
 
         try {
-            ReadableByteChannel fc = Channels.newChannel( file.getContents() );
+            InputStream is;
+            if(file == null) {
+                is = inputStream;
+            }else
+                is = file.getContents();
+            ReadableByteChannel fc = Channels.newChannel( is );
             ByteBuffer byteBuffer = ByteBuffer.allocateDirect( 200 );
             int dollarCount = 0;
             boolean firstInLine = true;
@@ -304,7 +324,7 @@ public class MoleculeTableManager implements IBioclipseManager {
              }
              subMonitor.setWorkRemaining( 1000 );
                   SDFileIndex index=
-                 createIndex( file, subMonitor.newChild( 1000 ) );
+                 createIndex( file,null, subMonitor.newChild( 1000 ) );
                   if(index!=null) {
                       sdfModel = new SDFIndexEditorModel(index);
                   }else
@@ -351,7 +371,7 @@ public class MoleculeTableManager implements IBioclipseManager {
 
     public void parseProperties( SDFIndexEditorModel model,
                                  Collection<String> propertyKeys,
-                                 IReturner<Void> returner, 
+                                 IReturner<Void> returner,
                                  IProgressMonitor monitor) {
 
         Pattern pNamePattern = Pattern.compile( "^>.*<(.*)>*.\n");
