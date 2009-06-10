@@ -17,6 +17,12 @@ package net.bioclipse.cdk.domain;
  */
 public class CDKMoleculeUtils {
     
+    public enum MolProperty{
+        SMILES,
+        InChI,
+        Fingerprint
+    }
+
     /**
      * Method for inserting cached properties into a CDKMolecule
      * @param mol Molecule to work on.
@@ -26,6 +32,12 @@ public class CDKMoleculeUtils {
     public static void setProperty(ICDKMolecule mol, String key, Object value) {
         if(mol instanceof CDKMolecule) {
             ((CDKMolecule)mol).setProperty( key, value );
+        }
+    }
+
+    public static void clearProperty(ICDKMolecule mol,String key) {
+        if(mol instanceof CDKMolecule) {
+            ((CDKMolecule)mol).celarProperty(key);
         }
     }
 

@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.preferences.PreferenceConstants;
+import net.bioclipse.cdk.domain.CDKMoleculeUtils.MolProperty;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.BioObject;
 import net.bioclipse.core.domain.IMolecule;
@@ -305,8 +306,26 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     }
 
     void setProperty(String propertyKey, Object value) {
+        if(MolProperty.SMILES == MolProperty.valueOf( propertyKey ))
+            cachedSMILES=(String) value;
+        else if(MolProperty.InChI == MolProperty.valueOf( propertyKey ))
+            cachedInchi = (InChI) value;
+        else if(MolProperty.Fingerprint == MolProperty.valueOf( propertyKey ))
+            cachedFingerprint = (BitSet) value;
+        else {
         if(cachedProperties == null)
             cachedProperties = new HashMap<String, Object>();
-        cachedProperties.put( propertyKey, value );
+            cachedProperties.put( propertyKey, value );
+        }
+    }
+
+    void celarProperty( String key ) {
+        if(MolProperty.SMILES == MolProperty.valueOf( key ))
+            cachedSMILES=null;
+        else if(MolProperty.InChI == MolProperty.valueOf( key ))
+            cachedInchi = null;
+        else if(MolProperty.Fingerprint == MolProperty.valueOf( key ))
+            cachedFingerprint = null;
+        else cachedProperties.remove( key );
     }
 }
