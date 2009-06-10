@@ -20,6 +20,7 @@ import net.bioclipse.managers.business.IBioclipseManager;
 import net.sf.jniinchi.INCHI_RET;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.openscience.cdk.inchi.InChIGenerator;
 import org.openscience.cdk.inchi.InChIGeneratorFactory;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -49,6 +50,8 @@ public class InChIManager implements IBioclipseManager {
             IAtomContainer container = (IAtomContainer)adapted;
             InChIGenerator gen = getFactory().getInChIGenerator(container);
             INCHI_RET status = gen.getReturnStatus();
+            if(monitor.isCanceled())
+                throw new OperationCanceledException();
             if (status == INCHI_RET.OKAY ||
                 status == INCHI_RET.WARNING) {
             	monitor.done();
