@@ -39,6 +39,7 @@ import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -93,14 +94,14 @@ public class MoleculeTableManager implements IBioclipseManager {
                                      InputStream inputStream,
                                      IProgressMonitor monitor) {
 
-        SubMonitor progress = SubMonitor.convert( monitor ,100);
+        SubMonitor progress = SubMonitor.convert( monitor ,1000);
         long size = -1;
         if(file != null) {
             try {
                 size = EFS.getStore( file.getLocationURI() )
                 .fetchInfo().getLength();
                 progress.beginTask( "Parsing SDFile",
-                                    (int)size);
+                                    1000);
 
             }catch (CoreException e) {
                 logger.debug( "Failed to get size of file" );
@@ -123,14 +124,17 @@ public class MoleculeTableManager implements IBioclipseManager {
             InputStream is;
             if(file == null) {
                 is = inputStream;
-            }else
-                is = file.getContents();
+            }else {
+                IFileStore store = EFS.getStore( file.getLocationURI() );
+                is = store.openInputStream( EFS.NONE, progress.newChild( 1000 ) );
+            }
             ReadableByteChannel fc = Channels.newChannel( is );
             ByteBuffer byteBuffer = ByteBuffer.allocateDirect( 200 );
             int dollarCount = 0;
             boolean firstInLine = true;
             int bytesRead = 0;
             int c;
+            progress.setWorkRemaining( (int)size );
             while( bytesRead >=0) {
                 byteBuffer.rewind();
                 bytesRead = fc.read( byteBuffer );
