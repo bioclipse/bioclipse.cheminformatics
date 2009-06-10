@@ -41,6 +41,7 @@ import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.inchi.InChI;
 import net.bioclipse.inchi.business.IInChIManager;
+import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.jobs.BioclipseUIJob;
 import net.bioclipse.ui.dialogs.SaveAsDialog;
@@ -54,6 +55,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -129,6 +131,9 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     private ListenerList propertyChangedListenerList = new ListenerList();
 
     private SubStructureGenerator subStructureGenerator;
+
+    private BioclipseJob<String> SMILESJob;
+    private BioclipseJob<InChI>  InChIJob;
 
     public JChemPaintEditorWidget getWidget() {
         return widget;
@@ -690,8 +695,18 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
         IInChIManager inchi = net.bioclipse.inchi.business.Activator
                         .getDefault().getJavaInChIManager();
-        cdk.calculateSMILES( mol,new BioclipseJobUpdateHook<String>("SMILES") {
+        try {
+            if(SMILESJob!=null) {
+                if(SMILESJob.cancel());
+                SMILESJob.join();
+            }
+        } catch ( InterruptedException e ) {
+            logger.debug( "SMILES job interrupted" );
+        }
+        SMILESJob = cdk.calculateSMILES( mol,
+                                  new BioclipseJobUpdateHook<String>("SMILES") {
             public void completeReturn(String object) {
+                SMILESJob = null;
                 CDKMoleculeUtils.setProperty( mol,
                                               MolProperty.SMILES.name(),
                                               object );
@@ -702,10 +717,19 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                 });
             }
         });
-        inchi.generate( mol, new BioclipseJobUpdateHook<InChI>(
+        try {
+            if(InChIJob!=null) {
+                if(InChIJob.cancel());
+                InChIJob.join();
+            }
+        } catch ( InterruptedException e ) {
+            logger.debug( "InChI job interrupted" );
+        }
+        InChIJob = inchi.generate( mol, new BioclipseJobUpdateHook<InChI>(
                                         "InChI generation") {
             @Override
             public void completeReturn( InChI object ) {
+                InChIJob = null;
                 CDKMoleculeUtils.setProperty( mol,
                                               MolProperty.InChI.name(),
                                               object );
