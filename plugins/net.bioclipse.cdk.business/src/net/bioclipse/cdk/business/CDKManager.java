@@ -130,6 +130,7 @@ import org.openscience.cdk.nonotify.NNChemFile;
 import org.openscience.cdk.nonotify.NNMolecule;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.similarity.Tanimoto;
+import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 import org.openscience.cdk.smiles.smarts.parser.TokenMgrError;
@@ -441,6 +442,30 @@ public class CDKManager implements IBioclipseManager {
               net.bioclipse.core.domain.IMolecule
                   .Property.USE_CACHED_OR_CALCULATED
           );
+      }
+
+      public void calculateSMILES(IMolecule molecule,IReturner<String> returner,
+                                  IProgressMonitor monitor ) {
+        monitor.beginTask( "Calculating SMILES", IProgressMonitor.UNKNOWN );
+        ICDKMolecule mol;
+        try {
+            mol = create( molecule );
+        } catch ( BioclipseException e ) {
+            LogUtils.handleException( e, logger, "net.bioclipse.cdk.business" );
+            return;
+        }
+        org.openscience.cdk.interfaces.IMolecule cdkMol =
+            (org.openscience.cdk.interfaces.IMolecule) mol.getAtomContainer();
+
+        // Create the SMILES
+        SmilesGenerator generator = new SmilesGenerator();
+
+        // Operate on a clone with removed hydrogens
+        org.openscience.cdk.interfaces.IMolecule newMol;
+        newMol = (org.openscience.cdk.interfaces.IMolecule)
+                AtomContainerManipulator.removeHydrogens( cdkMol );
+        String result = generator.createSMILES( newMol );
+        returner.completeReturn( result );
       }
 
       public void save(IChemModel model, String target, IChemFormat filetype)

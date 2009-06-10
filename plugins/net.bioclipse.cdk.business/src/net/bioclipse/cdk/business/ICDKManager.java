@@ -374,6 +374,10 @@ public interface ICDKManager extends IBioclipseManager {
     public String calculateSMILES (IMolecule molecule)
                   throws BioclipseException;
 
+    @Recorded
+    public BioclipseJob<String> calculateSMILES( IMolecule molecule,
+                                 BioclipseJobUpdateHook<String> hook);
+
     /**
      * @param path
      * @return
