@@ -28,7 +28,8 @@ public abstract class JmolSelection implements IStructuredSelection,
     }
 
     public Object getFirstElement() {
-        return selectionSet.toArray()[0];
+        return selectionSet.size() > 0 ? selectionSet.toArray()[0]
+                                       : null;
     }
 
 	  public Iterator<String> iterator() {
