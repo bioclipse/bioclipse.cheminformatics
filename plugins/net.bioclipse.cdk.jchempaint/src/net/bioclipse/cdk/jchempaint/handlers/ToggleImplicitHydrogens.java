@@ -30,7 +30,9 @@ public class ToggleImplicitHydrogens extends AbstractHandler {
 
         Command command = event.getCommand();
         boolean oldValue = toggleCommandState(command);
-        
+        if(!oldValue)
+            Activator.getDefault().getJavaManager()
+            .updateImplicitHydrogenCounts();
         Activator.getDefault().getJavaManager()
         .setShowImplicitHydrogens( !oldValue );
 
