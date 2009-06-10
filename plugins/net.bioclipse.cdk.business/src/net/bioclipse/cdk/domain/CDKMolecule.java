@@ -306,11 +306,11 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     }
 
     void setProperty(String propertyKey, Object value) {
-        if(MolProperty.SMILES == MolProperty.valueOf( propertyKey ))
+        if(MolProperty.SMILES.name().equals( propertyKey ))
             cachedSMILES=(String) value;
-        else if(MolProperty.InChI == MolProperty.valueOf( propertyKey ))
+        else if(MolProperty.InChI.name().equals( propertyKey ))
             cachedInchi = (InChI) value;
-        else if(MolProperty.Fingerprint == MolProperty.valueOf( propertyKey ))
+        else if(MolProperty.Fingerprint.name().equals( propertyKey ))
             cachedFingerprint = (BitSet) value;
         else {
         if(cachedProperties == null)
@@ -320,11 +320,11 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     }
 
     void celarProperty( String key ) {
-        if(MolProperty.SMILES == MolProperty.valueOf( key ))
+        if(MolProperty.SMILES.name().equals( key ))
             cachedSMILES=null;
-        else if(MolProperty.InChI == MolProperty.valueOf( key ))
+        else if(MolProperty.InChI.name().equals( key ))
             cachedInchi = null;
-        else if(MolProperty.Fingerprint == MolProperty.valueOf( key ))
+        else if(MolProperty.Fingerprint.name().equals( key ))
             cachedFingerprint = null;
         else cachedProperties.remove( key );
     }

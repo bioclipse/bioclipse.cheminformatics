@@ -446,6 +446,7 @@ public class CDKManager implements IBioclipseManager {
 
       public void calculateSMILES(IMolecule molecule,IReturner<String> returner,
                                   IProgressMonitor monitor ) {
+        assert(molecule!=null);
         monitor.beginTask( "Calculating SMILES", IProgressMonitor.UNKNOWN );
         ICDKMolecule mol;
         try {
