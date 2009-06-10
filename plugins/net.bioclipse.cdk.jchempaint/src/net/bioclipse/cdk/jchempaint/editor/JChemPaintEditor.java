@@ -719,29 +719,30 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                 });
             }
         });
-        try {
-            if(InChIJob!=null) {
-                if(InChIJob.cancel());
-                InChIJob.join();
-            }
-        } catch ( InterruptedException e ) {
-            logger.debug( "InChI job interrupted" );
-        }
-        InChIJob = inchi.generate( mol, new BioclipseJobUpdateHook<InChI>(
-                                        "InChI generation") {
-            @Override
-            public void completeReturn( InChI object ) {
-                InChIJob = null;
-                CDKMoleculeUtils.setProperty( mol,
-                                              MolProperty.InChI.name(),
-                                              object );
-                Display.getDefault().asyncExec( new Runnable() {
-                    public void run() {
-                        widget.setSelection( widget.getSelection());
-                    }
-                });
-            }
-        });
+        // removed inchi auto generation bug 1257
+//        try {
+//            if(InChIJob!=null) {
+//                if(InChIJob.cancel());
+//                InChIJob.join();
+//            }
+//        } catch ( InterruptedException e ) {
+//            logger.debug( "InChI job interrupted" );
+//        }
+//        InChIJob = inchi.generate( mol, new BioclipseJobUpdateHook<InChI>(
+//                                        "InChI generation") {
+//            @Override
+//            public void completeReturn( InChI object ) {
+//                InChIJob = null;
+//                CDKMoleculeUtils.setProperty( mol,
+//                                              MolProperty.InChI.name(),
+//                                              object );
+//                Display.getDefault().asyncExec( new Runnable() {
+//                    public void run() {
+//                        widget.setSelection( widget.getSelection());
+//                    }
+//                });
+//            }
+//        });
     }
 
     protected final void fireStructureChanged() {
