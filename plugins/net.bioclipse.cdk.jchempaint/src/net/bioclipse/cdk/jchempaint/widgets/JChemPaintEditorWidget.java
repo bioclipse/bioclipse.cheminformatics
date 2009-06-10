@@ -98,6 +98,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     private ControllerModel c2dm;
     private SWTMouseEventRelay relay;
 
+    private boolean new2Dcoordinates = false;
     private boolean isdirty = false;
     private boolean isScrolling = false;
 
@@ -381,7 +382,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         }
     }
     public void setInput( IAdaptable element ) {
-
+            new2Dcoordinates = false;
             ICDKMolecule molecule = null;
             if(element != null)
                 molecule =
@@ -399,7 +400,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                         atomContainer= molecule.getAtomContainer();
                     else
                         atomContainer = null;
-
+                    new2Dcoordinates = true;
                     setDirty( true );
                     add( Message.GENERATED );
                 }else {
@@ -512,6 +513,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     }
 
     public void setDirty( boolean dirty) {
+        if(!dirty)
+            new2Dcoordinates = false;
         this.isdirty = dirty;
         if(!this.isDisposed()) {
             Display.getDefault().asyncExec( new Runnable() {
@@ -525,6 +528,10 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 }
             });
         }
+    }
+
+    public boolean is2Dnew() {
+        return new2Dcoordinates;
     }
 
     public boolean getDirty() {
