@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Periodic Table
 Bundle-SymbolicName: net.bioclipse.cdk.ui.periodictable;singleton:=true
-Bundle-Version: 2.0.0.RC1
+Bundle-Version: 2.0.0.RC2
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.eclipse.swt,
  org.eclipse.ui.ide,
