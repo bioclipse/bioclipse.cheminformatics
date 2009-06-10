@@ -40,7 +40,7 @@ public class InChIManager implements IBioclipseManager {
     }
 
     public void generate( IMolecule molecule, 
-                          IReturner returner, 
+                          IReturner<InChI> returner,
                           IProgressMonitor monitor) 
                 throws Exception {
     	monitor.beginTask("Calculating InChI", IProgressMonitor.UNKNOWN);

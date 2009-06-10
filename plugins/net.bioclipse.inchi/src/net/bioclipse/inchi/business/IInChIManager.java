@@ -35,7 +35,7 @@ public interface IInChIManager extends IBioclipseManager {
         		"given molecule.")
     @TestMethods("testGenerate")
     public InChI generate(IMolecule molecule) throws Exception;
-    public BioclipseJob<String> generate(IMolecule molecule, 
-            BioclipseJobUpdateHook h );
+    public BioclipseJob<InChI> generate(IMolecule molecule,
+            BioclipseJobUpdateHook<InChI> h );
 
 }
