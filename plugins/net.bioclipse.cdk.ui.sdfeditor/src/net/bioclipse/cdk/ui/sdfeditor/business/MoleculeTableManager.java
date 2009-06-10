@@ -77,14 +77,15 @@ public class MoleculeTableManager implements IBioclipseManager {
                                 IProgressMonitor monitor ) {
 
         returner.completeReturn(
-                   new SDFIndexEditorModel(createIndex( file,null, monitor ) ) );
+                  new SDFIndexEditorModel(createIndex( file,null, monitor ) ) );
 
     }
 
     public void createSDFIndex( InputStream is,
                                 IReturner<SDFIndexEditorModel> returner,
                                 IProgressMonitor monitor) {
-        createIndex( null, is, monitor );
+        returner.completeReturn( 
+                     new SDFIndexEditorModel(createIndex( null, is, monitor )));
 
     }
     //TODO refactor out file.getContent()
