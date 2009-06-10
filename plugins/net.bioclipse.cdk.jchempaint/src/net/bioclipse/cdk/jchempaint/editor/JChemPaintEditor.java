@@ -692,6 +692,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         CDKMoleculeUtils.clearProperty( mol, MolProperty.SMILES.name() );
         CDKMoleculeUtils.clearProperty( mol, MolProperty.InChI.name() );
         CDKMoleculeUtils.clearProperty( mol, MolProperty.Fingerprint.name() );
+
+        if(mol == null || mol.getAtomContainer().getAtomCount() == 0) return;
         ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
         IInChIManager inchi = net.bioclipse.inchi.business.Activator
                         .getDefault().getJavaInChIManager();
