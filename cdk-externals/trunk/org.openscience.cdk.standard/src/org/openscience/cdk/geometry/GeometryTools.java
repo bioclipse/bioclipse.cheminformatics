@@ -1109,16 +1109,16 @@ public class GeometryTools {
 			overallDiffX += connectedAtom.getPoint2d().x - atom.getPoint2d().x;
 			overallDiffY += connectedAtom.getPoint2d().y - atom.getPoint2d().y;
 		}
-		if (overallDiffX <= 0) {
-			if (overallDiffX < overallDiffY)
+		if ( Math.abs( overallDiffX) > Math.abs(overallDiffY) ) {
+			if (overallDiffX <= 0)
 				return 1;//right aligned
 			else
-				return 2;//top aligned.
-		} else {
-			if (overallDiffX > overallDiffY)
 				return -1;//left aligned
+		} else {
+			if ( overallDiffY <= 0)
+				return 2;//top aligned.
 			else
-				return -2;//H below aligned
+				return -2;//bottom aligned
 		}
 	}
 
