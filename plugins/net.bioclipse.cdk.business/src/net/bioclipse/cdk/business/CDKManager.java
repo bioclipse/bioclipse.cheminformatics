@@ -465,6 +465,8 @@ public class CDKManager implements IBioclipseManager {
         newMol = (org.openscience.cdk.interfaces.IMolecule)
                 AtomContainerManipulator.removeHydrogens( cdkMol );
         String result = generator.createSMILES( newMol );
+        if(monitor.isCanceled())
+            throw new OperationCanceledException();
         returner.completeReturn( result );
       }
 
