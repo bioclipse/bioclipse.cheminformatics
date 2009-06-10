@@ -325,10 +325,10 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         if( part != this && selection instanceof IStructuredSelection) {
 
             moleculesPage.reactOnSelection( selection );
-            if(pageOrder.get(getActivePage() ) == Pages.Jmol)
-                updateJmolPage();
-            if(pageOrder.get(getActivePage() ) == Pages.JCP)
-                updateJCPPage();
+//            if(pageOrder.get(getActivePage() ) == Pages.Jmol)
+//                updateJmolPage();
+//            if(pageOrder.get(getActivePage() ) == Pages.JCP)
+//                updateJCPPage();
         }
     }
 
