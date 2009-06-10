@@ -25,8 +25,10 @@ import java.util.Set;
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKChemObject;
+import net.bioclipse.cdk.domain.CDKMoleculeUtils;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.ISubStructure;
+import net.bioclipse.cdk.domain.CDKMoleculeUtils.MolProperty;
 import net.bioclipse.cdk.jchempaint.generators.SubStructureGenerator;
 import net.bioclipse.cdk.jchempaint.handlers.ModuleState;
 import net.bioclipse.cdk.jchempaint.handlers.RedoHandler;
@@ -37,6 +39,9 @@ import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message.Alignment;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.inchi.InChI;
+import net.bioclipse.inchi.business.IInChIManager;
+import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.jobs.BioclipseUIJob;
 import net.bioclipse.ui.dialogs.SaveAsDialog;
 
@@ -677,7 +682,44 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         }
     }
 
+    private void invalidateProperties() {
+        final ICDKMolecule mol = getCDKMolecule();
+        CDKMoleculeUtils.clearProperty( mol, MolProperty.SMILES.name() );
+        CDKMoleculeUtils.clearProperty( mol, MolProperty.InChI.name() );
+        CDKMoleculeUtils.clearProperty( mol, MolProperty.Fingerprint.name() );
+        ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
+        IInChIManager inchi = net.bioclipse.inchi.business.Activator
+                        .getDefault().getJavaInChIManager();
+        cdk.calculateSMILES( mol,new BioclipseJobUpdateHook<String>("SMILES") {
+            public void completeReturn(String object) {
+                CDKMoleculeUtils.setProperty( mol,
+                                              MolProperty.SMILES.name(),
+                                              object );
+                Display.getDefault().asyncExec( new Runnable() {
+                    public void run() {
+                        widget.setSelection( widget.getSelection());
+                    }
+                });
+            }
+        });
+        inchi.generate( mol, new BioclipseJobUpdateHook<InChI>(
+                                        "InChI generation") {
+            @Override
+            public void completeReturn( InChI object ) {
+                CDKMoleculeUtils.setProperty( mol,
+                                              MolProperty.InChI.name(),
+                                              object );
+                Display.getDefault().asyncExec( new Runnable() {
+                    public void run() {
+                        widget.setSelection( widget.getSelection());
+                    }
+                });
+            }
+        });
+    }
+
     protected final void fireStructureChanged() {
+        invalidateProperties();
         firePropertyChangedEvent(
                    new PropertyChangeEvent( this,
                                             STRUCUTRE_CHANGED_EVENT,
