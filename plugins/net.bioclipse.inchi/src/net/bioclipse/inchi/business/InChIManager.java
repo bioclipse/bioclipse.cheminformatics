@@ -61,7 +61,7 @@ public class InChIManager implements IBioclipseManager {
                 returner.completeReturn( inchi );
             } else {
                 throw new InvalidParameterException(
-                    "Error while generating InChI: " +
+                    "Error while generating InChI (" + status + "): " +
                     gen.getMessage()
                 );
             }
