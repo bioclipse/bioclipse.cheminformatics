@@ -729,28 +729,29 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
         IInChIManager inchi = net.bioclipse.inchi.business.Activator
                         .getDefault().getJavaInChIManager();
-        try {
-            if(SMILESJob!=null) {
-                if(SMILESJob.cancel());
-                SMILESJob.join();
-            }
-        } catch ( InterruptedException e ) {
-            logger.debug( "SMILES job interrupted" );
-        }
-        SMILESJob = cdk.calculateSMILES( mol,
-                                  new BioclipseJobUpdateHook<String>("SMILES") {
-            public void completeReturn(String object) {
-                SMILESJob = null;
-                CDKMoleculeUtils.setProperty( mol,
-                                              MolProperty.SMILES.name(),
-                                              object );
-                Display.getDefault().asyncExec( new Runnable() {
-                    public void run() {
-                        widget.setSelection( widget.getSelection());
-                    }
-                });
-            }
-        });
+        //calculating smiles in the Propertysource instead.
+//        try {
+//            if(SMILESJob!=null) {
+//                if(SMILESJob.cancel());
+//                SMILESJob.join();
+//            }
+//        } catch ( InterruptedException e ) {
+//            logger.debug( "SMILES job interrupted" );
+//        }
+//        SMILESJob = cdk.calculateSMILES( mol,
+//                                  new BioclipseJobUpdateHook<String>("SMILES") {
+//            public void completeReturn(String object) {
+//                SMILESJob = null;
+//                CDKMoleculeUtils.setProperty( mol,
+//                                              MolProperty.SMILES.name(),
+//                                              object );
+//                Display.getDefault().asyncExec( new Runnable() {
+//                    public void run() {
+//                        widget.setSelection( widget.getSelection());
+//                    }
+//                });
+//            }
+//        });
         // removed inchi auto generation bug 1257
 //        try {
 //            if(InChIJob!=null) {

@@ -21,12 +21,14 @@ import net.bioclipse.cdk.domain.CDKMoleculeUtils.MolProperty;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.domain.props.BioObjectPropertySource;
+import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.inchi.InChI;
 import net.bioclipse.inchi.business.IInChIManager;
 import net.bioclipse.inchi.business.InChIManager;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -46,11 +48,12 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IChemObject;
 
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 
 public class CDKMoleculePropertySource extends BioObjectPropertySource {
 
-    protected static Map<ICDKMolecule, BioclipseJob> jobs 
+    protected static Map<ICDKMolecule, BioclipseJob> inchiJobs 
+        = new HashMap<ICDKMolecule, BioclipseJob>();
+    protected static Map<ICDKMolecule, BioclipseJob> smilesJobs
         = new HashMap<ICDKMolecule, BioclipseJob>();
     
     protected static final String PROPERTY_HAS2D = "Has 2D Coords";
@@ -61,6 +64,9 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
     protected static final String PROPERTY_SMILES = "SMILES";
     protected static final String PROPERTY_INCHI = "InChI";
     protected static final String PROPERTY_INCHIKEY = "InChIKey";
+    
+    private static final Logger logger 
+        = Logger.getLogger( CDKMoleculePropertySource.class );
 
     private final Object cdkPropertiesTable[][] =
     {
@@ -87,26 +93,41 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
 
     private HashMap<String, Object> cdkValueMap;
 
-    public CDKMoleculePropertySource(final CDKMolecule item) {
+    public CDKMoleculePropertySource(CDKMolecule item) {
         super(item);
         cdkMol = item;
         
         cdkProperties = setupProperties(item.getAtomContainer());
         cdkValueMap   = getPropertyValues(item);
         
-        ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
+        createPropertiesJobs(item);
+    }
+
+    /**
+     * 
+     */
+    private void createPropertiesJobs(final CDKMolecule item) {
+
+        final ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
         final IInChIManager inchi = net.bioclipse.inchi.business.Activator
                                        .getDefault().getJavaInChIManager();
-        final ICDKMolecule clone;
+        final ICDKMolecule inchiClone;
+        final ICDKMolecule smilesClone;
         try {
-            clone = cdk.create( item );
+            inchiClone  = cdk.create( item );
+            smilesClone = cdk.create( item );
         }
         catch ( BioclipseException e ) {
             throw new RuntimeException(e);
         }
-        BioclipseJob toBeCancelled = jobs.remove( item );
-        if ( toBeCancelled != null ) {
-            toBeCancelled.cancel();
+        BioclipseJob inchiJobToBeCancelled  = inchiJobs.remove( item );
+        BioclipseJob smilesJobToBeCancelled = smilesJobs.remove( item );
+        
+        if ( inchiJobToBeCancelled != null ) {
+            inchiJobToBeCancelled.cancel();
+        }
+        if ( smilesJobToBeCancelled != null ) {
+            smilesJobToBeCancelled.cancel();
         }
         if (item.getProperty( PROPERTY_INCHI, Property.USE_CACHED ) == null) {
             
@@ -115,9 +136,10 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
                 protected IStatus run( IProgressMonitor monitor ) {
                     try {
                         item.setProperty( MolProperty.InChI.name(), 
-                                          inchi.generate( clone ) );
+                                          inchi.generate( inchiClone ) );
                     }
                     catch ( Exception e ) {
+                        LogUtils.debugTrace( logger, e );
                         item.setProperty( MolProperty.InChI.name(), 
                                           InChI.FAILED_TO_CALCULATE );
                     }
@@ -141,7 +163,48 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
                             PropertySheetPage pp 
                                 = (PropertySheetPage) p.getCurrentPage();
                             
+                            pp.refresh();   
+                        }
+                    });
+                }
+            });
+            j.schedule();
+        }
+        
+        if (item.getProperty( PROPERTY_SMILES, Property.USE_CACHED ) == null ) {
+            
+            Job j = new Job("Calculating smiles for properties view") {
+                @Override
+                protected IStatus run( IProgressMonitor monitor ) {
+                    try {
+                        String s = cdk.calculateSMILES( smilesClone );
+                        item.setProperty( MolProperty.SMILES.name(), 
+                                          s );
+                    }
+                    catch ( Exception e ) {
+                        LogUtils.debugTrace( logger, e );
+                        item.setProperty( MolProperty.SMILES.name(), 
+                                          "Failed to calculate" );
+                    }
+                    return Status.OK_STATUS;
+                }
+            };   
+            j.addJobChangeListener( new JobChangeAdapter() {
+                @Override
+                public void done( IJobChangeEvent event ) {
+                    Display.getDefault().asyncExec( new Runnable() {
+    
+                        public void run() {
+                            PropertySheet p 
+                                = (PropertySheet) 
+                                  PlatformUI.getWorkbench()
+                                            .getActiveWorkbenchWindow()
+                                            .getActivePage()
+                                            .findView(
+                                      "org.eclipse.ui.views.PropertySheet" );
                             
+                            PropertySheetPage pp 
+                                = (PropertySheetPage) p.getCurrentPage();
                             
                             pp.refresh();   
                         }
@@ -200,7 +263,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         }
         valueMap.put(
             PROPERTY_SMILES,
-            (smiles == null || smiles.length() == 0) ? "N/A" : smiles
+            (smiles == null) ? "Calculating..." : smiles
         );
 
         String inchi = null;
@@ -211,7 +274,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         }
         valueMap.put(
             PROPERTY_INCHI,
-            (inchi == null || inchi.length() == 0) ? "N/A" : inchi
+            (inchi == null || inchi.length() == 0) ? "Calculating..." : inchi
         );
         String inchikey = null;
         try {
@@ -221,7 +284,8 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         }
         valueMap.put(
             PROPERTY_INCHIKEY,
-            (inchikey == null || inchikey.length() == 0) ? "N/A" : inchikey
+            (inchikey == null || inchikey.length() == 0) ? "Calculating..." 
+                                                         : inchikey
         );
 
         // IChemObject.getProperties()
