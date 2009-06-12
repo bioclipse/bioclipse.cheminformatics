@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import net.bioclipse.cdk.business.Activator;
@@ -55,7 +56,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -162,8 +162,18 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
             IChemFormat chemFormat = cdk.determineFormat(
                 resource.getContentDescription().getContentType()
             );
-            if (chemFormat == MDLV2000Format.getInstance() ||
-                chemFormat == CMLFormat.getInstance()) {
+            if (chemFormat == MDLV2000Format.getInstance()) {
+                Properties properties = new Properties();
+                properties.setProperty("ForceWriteAs2DCoordinates", "true");
+                cdk.saveMolecule(
+                    getCDKMolecule(),
+                    model.getResource().getLocationURI().toString(),
+                    chemFormat,
+                    true, // overwrite
+                    properties
+                );
+                widget.setDirty( false );
+            } else if (chemFormat == CMLFormat.getInstance()) {
                 cdk.saveMolecule(
                         getCDKMolecule(),
                         model.getResource().getLocationURI().toString(),
@@ -212,9 +222,17 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                 .guessFormatFromExtension(path.toString());
             if (format == null) format = (IChemFormat)CMLFormat.getInstance();
 
-            Activator.getDefault().getJavaCDKManager().saveMolecule(
-                model, file, format, true
-            );
+            if (format instanceof MDLV2000Format) {
+                Properties properties = new Properties();
+                properties.setProperty("ForceWriteAs2DCoordinates", "true");
+                Activator.getDefault().getJavaCDKManager().saveMolecule(
+                    model, file, format, true, properties
+                );
+            } else {
+                Activator.getDefault().getJavaCDKManager().saveMolecule(
+                    model, file, format, true
+                );
+            }
             setInput( new FileEditorInput(file) );
             setPartName( file.getName() );
             firePropertyChange( IWorkbenchPartConstants.PROP_PART_NAME);

@@ -337,6 +337,22 @@ public interface ICDKManager extends IBioclipseManager {
     	          throws BioclipseException, CDKException, CoreException;
 
     /**
+     * @param mol The molecule to save
+     * @param target Where to save
+     * @param filetype Which format to save (for formats, see constants)
+     * @param overwrite if true and file exists, overwrite
+     * @param writerProperties for the CDK writer
+     * @throws IllegalStateException
+     */
+    @Recorded
+    public void saveMolecule( IMolecule mol, 
+                              IFile target, 
+                              IChemFormat filetype, 
+                              boolean overwrite,
+                              Properties writerProperties)
+                  throws BioclipseException, CDKException, CoreException;
+
+    /**
      * Save a list of molecules to file
      * @param molecules The molecules to save
      * @param target The IFile to save to
