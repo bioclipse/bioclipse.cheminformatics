@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2009  Egon Willighagen <egonw@users.sf.net>
+ *               2009  Jonathan Alvarsson <jonalv@users.sf.net>
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +16,9 @@ package net.bioclipse.inchi;
  * InChI and InChIKey simultaneously, but the InChIManager is supposed
  * to be stateless, this class can be used to store and return both.
  * 
+ * Also notice that if InChI calculation has failed the instance 
+ * <code>FAILED_TO_CALCULATE</code> can be used.
+ * 
  * @author egonw
  */
 public class InChI {
@@ -22,6 +26,21 @@ public class InChI {
     private String value;
     private String key;
 
+    public InChI() {
+    }
+    
+    public static final InChI FAILED_TO_CALCULATE 
+        = new InChI("Failed to calculate", "Failed to calculate");
+    
+    /**
+     * @param key a InChi key
+     * @param value an InChi value
+     */
+    public InChI(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
+    
     /** Returns the InChI. */
     public String getValue() {
         return value;
