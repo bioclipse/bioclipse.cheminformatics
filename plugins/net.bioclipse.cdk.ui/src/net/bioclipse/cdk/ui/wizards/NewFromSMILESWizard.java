@@ -79,7 +79,7 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
         try {
             ICDKMolecule cdkMol = cdk.fromSMILES(getSMILES());
             IMolecule newMol = cdk.generate2dCoordinates(cdkMol);
-            InputStream source = new ByteArrayInputStream(newMol.getCML().getBytes());
+            InputStream source = new ByteArrayInputStream(newMol.toCML().getBytes());
             file.setContents(source, true, false, null);
         } catch (CoreException e1) {
             e1.printStackTrace();

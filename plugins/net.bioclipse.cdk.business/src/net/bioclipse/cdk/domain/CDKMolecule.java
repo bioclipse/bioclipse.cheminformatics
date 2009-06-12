@@ -128,7 +128,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         cmlPrefs.put("XMLDeclaration", "false");
     }
 
-    public String getCML() throws BioclipseException {
+    public String toCML() throws BioclipseException {
 
         if (getAtomContainer()==null) throw new BioclipseException("No molecule to " +
         "get CML from!");

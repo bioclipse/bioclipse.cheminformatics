@@ -1534,7 +1534,7 @@ public abstract class AbstractCDKManagerPluginTest {
 		}
 
 		// we are not using the rest, and will therefore not implement them
-		public String getCML() throws BioclipseException { return null; }
+		public String toCML() throws BioclipseException { return null; }
 
 		public List<IMolecule> getConformers() { return null; }
 

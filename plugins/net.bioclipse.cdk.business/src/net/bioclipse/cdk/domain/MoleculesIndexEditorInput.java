@@ -81,7 +81,7 @@ public class MoleculesIndexEditorInput implements IFileEditorInput{
                                        element.getAdapter( ICDKMolecule.class );
             if(mol!= null)
                 try {
-                    return mol.getCML();
+                    return mol.toCML();
                 } catch ( BioclipseException e ) {
                     LogUtils.debugTrace( logger, e );
                 }
@@ -97,7 +97,7 @@ public class MoleculesIndexEditorInput implements IFileEditorInput{
             ICDKMolecule mol = (ICDKMolecule)
                                       element.getAdapter( ICDKMolecule.class );
             if(mol != null)
-                return mol.getCML();
+                return mol.toCML();
         }
         return null;
     }

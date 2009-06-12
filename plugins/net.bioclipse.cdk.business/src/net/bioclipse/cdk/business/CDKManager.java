@@ -1069,7 +1069,7 @@ public class CDKManager implements IBioclipseManager {
 
           // First try to create from CML
           try {
-              String cmlString = imol.getCML();
+              String cmlString = imol.toCML();
               if (cmlString != null) {
                   return fromCml(cmlString);
               }
@@ -1814,7 +1814,7 @@ public class CDKManager implements IBioclipseManager {
                     ac = ((CDKMolecule)molecule).getAtomContainer();
                 } else {
                     CMLReader reader = new CMLReader(
-                        new ByteArrayInputStream(molecule.getCML().getBytes())
+                        new ByteArrayInputStream(molecule.toCML().getBytes())
                     );
                     ac = ((IChemFile)reader.read(
                             DefaultChemObjectBuilder.getInstance()

@@ -81,7 +81,7 @@ public class TestCDKMolecule {
         ICDKMolecule mol = cdk.loadMolecule( new MockIFile(path),
                                              new NullProgressMonitor() );
         assertNotNull(mol);
-        String cmlString = mol.getCML();
+        String cmlString = mol.toCML();
         assertNotNull(cmlString);
         System.out.println("CML:\n" + cmlString);
     }
