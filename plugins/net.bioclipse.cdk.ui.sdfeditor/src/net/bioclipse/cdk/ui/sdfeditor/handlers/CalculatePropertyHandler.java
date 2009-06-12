@@ -11,9 +11,12 @@
 package net.bioclipse.cdk.ui.sdfeditor.handlers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import net.bioclipse.cdk.ui.sdfeditor.Activator;
 import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator;
@@ -67,6 +70,8 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
 
         SDFIndexEditorModel model = (SDFIndexEditorModel) editor.getModel();
         String calc = event.getParameter( PARAMETER_ID );
+        Set<String> calcs = new TreeSet<String>(
+                                    Arrays.asList( calc.split( ",\\s*" ) ));
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IConfigurationElement[] elements = registry.getConfigurationElementsFor(
@@ -75,7 +80,7 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
 
         Collection<IPropertyCalculator<?>>  calcList;
 
-        calcList = gatherCalculators( elements, calc );
+        calcList = gatherCalculators( elements, calcs );
 
         executeCalculators( model, editor, calcList );
         mpmep.setDirty( true );
@@ -83,13 +88,13 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
     }
     private Collection<IPropertyCalculator<?>> gatherCalculators(
                         IConfigurationElement[] elements,
-                        String id) {
+                        Collection<String> ids) {
         if(elements.length==0) return Collections.emptyList();
 
         List<IPropertyCalculator<?>> calcList
                                     = new ArrayList<IPropertyCalculator<?>>();
         for(IConfigurationElement element:elements) {
-            if(id!=null && !id.equals( element.getAttribute( "id" ) ))
+            if(ids!=null && !ids.contains( element.getAttribute( "id" ) ))
                     continue;
             try {
                 IPropertyCalculator<?> calculator = (IPropertyCalculator<?>)
