@@ -58,6 +58,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
@@ -163,6 +164,19 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                 resource.getContentDescription().getContentType()
             );
             if (chemFormat == MDLV2000Format.getInstance()) {
+                // check for loss of information
+                IAtomContainer container = model.getAtomContainer();
+                if (GeometryTools.has3DCoordinates(container) &&
+                    GeometryTools.has2DCoordinates(container)) {
+                    boolean agreedWithInfoLoss = MessageDialog.openQuestion(
+                        this.getSite().getShell(),
+                        chemFormat.getFormatName(),
+                        "This file format cannot save 3D and 2D coordinates. " +
+                        "Do you want to save only 2D?"
+                    );
+                    if (!agreedWithInfoLoss) return;
+                }
+
                 Properties properties = new Properties();
                 properties.setProperty("ForceWriteAs2DCoordinates", "true");
                 cdk.saveMolecule(
