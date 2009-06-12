@@ -11,16 +11,12 @@
 package net.bioclipse.cdk.ui.sdfeditor.handlers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 import net.bioclipse.cdk.ui.sdfeditor.Activator;
 import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator;
-import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculatorComposit;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableContentProvider;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart;
@@ -98,15 +94,6 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
             try {
                 IPropertyCalculator<?> calculator = (IPropertyCalculator<?>)
                                    element.createExecutableExtension( "class" );
-                IConfigurationElement[] children = element.getChildren();
-                if(children.length!=0) {
-                    Collection<IPropertyCalculator<?>> result =
-                        gatherCalculators( elements, null );
-                    if(calculator instanceof IPropertyCalculatorComposit) {
-                        ((IPropertyCalculatorComposit)calculator).
-                         addAll(result);
-                    }
-                }
                 calcList.add(calculator);
             } catch ( CoreException e ) {
                 logger.debug( "Failed to craete a IPropertyCalculator", e );
