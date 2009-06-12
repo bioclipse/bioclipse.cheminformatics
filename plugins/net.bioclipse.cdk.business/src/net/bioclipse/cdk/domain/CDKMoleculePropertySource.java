@@ -17,21 +17,42 @@ import java.util.Map;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
+import net.bioclipse.cdk.domain.CDKMoleculeUtils.MolProperty;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.domain.props.BioObjectPropertySource;
+import net.bioclipse.inchi.InChI;
+import net.bioclipse.inchi.business.IInChIManager;
+import net.bioclipse.inchi.business.InChIManager;
+import net.bioclipse.jobs.BioclipseJob;
+import net.bioclipse.jobs.BioclipseJobUpdateHook;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.eclipse.ui.views.properties.PropertySheet;
+import org.eclipse.ui.views.properties.PropertySheetPage;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IChemObject;
 
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
+
 public class CDKMoleculePropertySource extends BioObjectPropertySource {
 
+    protected static Map<ICDKMolecule, BioclipseJob> jobs 
+        = new HashMap<ICDKMolecule, BioclipseJob>();
+    
     protected static final String PROPERTY_HAS2D = "Has 2D Coords";
     protected static final String PROPERTY_HAS3D = "Has 3D Coords";
     protected static final String PROPERTY_FORMAT = "Molecular Format";
@@ -66,12 +87,69 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
 
     private HashMap<String, Object> cdkValueMap;
 
-    public CDKMoleculePropertySource(CDKMolecule item) {
+    public CDKMoleculePropertySource(final CDKMolecule item) {
         super(item);
         cdkMol = item;
         
         cdkProperties = setupProperties(item.getAtomContainer());
-        cdkValueMap = getPropertyValues(item);
+        cdkValueMap   = getPropertyValues(item);
+        
+        ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
+        final IInChIManager inchi = net.bioclipse.inchi.business.Activator
+                                       .getDefault().getJavaInChIManager();
+        final ICDKMolecule clone;
+        try {
+            clone = cdk.create( item );
+        }
+        catch ( BioclipseException e ) {
+            throw new RuntimeException(e);
+        }
+        BioclipseJob toBeCancelled = jobs.remove( item );
+        if ( toBeCancelled != null ) {
+            toBeCancelled.cancel();
+        }
+        if (item.getProperty( PROPERTY_INCHI, Property.USE_CACHED ) == null) {
+            
+            Job j = new Job("Calculating inchi for properties view") {
+                @Override
+                protected IStatus run( IProgressMonitor monitor ) {
+                    try {
+                        item.setProperty( MolProperty.InChI.name(), 
+                                          inchi.generate( clone ) );
+                    }
+                    catch ( Exception e ) {
+                        item.setProperty( MolProperty.InChI.name(), 
+                                          InChI.FAILED_TO_CALCULATE );
+                    }
+                    return Status.OK_STATUS;
+                }
+            };   
+            j.addJobChangeListener( new JobChangeAdapter() {
+                @Override
+                public void done( IJobChangeEvent event ) {
+                    Display.getDefault().asyncExec( new Runnable() {
+    
+                        public void run() {
+                            PropertySheet p 
+                                = (PropertySheet) 
+                                  PlatformUI.getWorkbench()
+                                            .getActiveWorkbenchWindow()
+                                            .getActivePage()
+                                            .findView(
+                                      "org.eclipse.ui.views.PropertySheet" );
+                            
+                            PropertySheetPage pp 
+                                = (PropertySheetPage) p.getCurrentPage();
+                            
+                            
+                            
+                            pp.refresh();   
+                        }
+                    });
+                }
+            });
+            j.schedule();
+        }
     }
 
     /**

@@ -15,6 +15,7 @@ package net.bioclipse.cdk.domain;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     private BitSet cachedFingerprint;
     private InChI cachedInchi;
 
-    private Map<String,Object> cachedProperties;
+    private volatile Map<String,Object> cachedProperties;
 
     private static Preferences prefs;
 
@@ -273,6 +274,8 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
             case USE_CACHED_OR_CALCULATED:
                 // TODO if cached use it otherwise calculate
             case USE_CACHED:
+                if(MolProperty.InChI.name().equals( propertyKey ))
+                    return cachedInchi;
                 if(cachedProperties !=null)
                     return cachedProperties.get( propertyKey );
         }
@@ -285,8 +288,11 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         else if(MolProperty.Fingerprint.name().equals( propertyKey ))
             cachedFingerprint = (BitSet) value;
         else {
+
             if(cachedProperties == null)
-                cachedProperties = new HashMap<String, Object>();
+                cachedProperties = Collections.synchronizedMap( 
+                                       new HashMap<String, Object>() );
+            
             cachedProperties.put( propertyKey, value );
         }
     }
