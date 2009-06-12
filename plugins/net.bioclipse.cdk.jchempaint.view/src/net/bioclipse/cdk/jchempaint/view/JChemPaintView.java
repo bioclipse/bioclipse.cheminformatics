@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.bioclipse.cdk.business.ICDKManager;
+import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message;
@@ -208,6 +209,10 @@ public class JChemPaintView extends ViewPart
 
         Object obj = ssel.getFirstElement();
         canvasView.remove( Message.GENERATED );
+
+        if(obj instanceof CDKChemObject)
+            return;
+
         if( obj instanceof IAtomContainer) {
             setAtomContainer( (IAtomContainer) obj );
         }
