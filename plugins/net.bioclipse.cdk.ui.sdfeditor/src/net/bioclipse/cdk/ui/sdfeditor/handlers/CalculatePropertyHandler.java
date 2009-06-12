@@ -82,15 +82,16 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
                          new BioclipseUIJob<Void>() {
                         @Override
                         public void runInUI() {
-
                            String name = calculator.getPropertyName();
-                           MoleculeTableContentProvider contentProvider =
-                                           editor.getContentProvider();
-                           List<Object> props= contentProvider.getProperties();
-                           if(!props.contains( name ))
-                               props.add( 0, name );
-                           contentProvider.setVisibleProperties( props );
-                           contentProvider.updateHeaders();
+                           if(!name.equals( "net.bioclipse.cdk.fingerprint" )) {
+                               MoleculeTableContentProvider contProv =
+                                   editor.getContentProvider();
+                               List<Object> props= contProv.getProperties();
+                               if(!props.contains( name ))
+                                   props.add( 0, name );
+                               contProv.setVisibleProperties( props );
+                               contProv.updateHeaders();
+                           }
                         }
                     });
                 break;
