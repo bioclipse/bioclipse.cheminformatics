@@ -200,7 +200,7 @@ public class JmolEditor extends MultiPageEditorPart
                    final IEditorPart editor = JmolEditor.this;
                    Display.getDefault().syncExec(new Runnable() {
                        public void run() {
-                           editor.getSite().getPage().closeEditor(editor, true );
+                           editor.getSite().getPage().closeEditor(editor, true);
                        };
                    });
                }
@@ -235,42 +235,39 @@ public class JmolEditor extends MultiPageEditorPart
 
         jmolPanel.getViewer().openStringInline(content);
 
-        //Initialize jmol
-        //===============
-        //Use halos as selection marker
+        // Initialize jmol
+        // ===============
+        // Use halos as selection marker
         jmolPanel.getViewer().setSelectionHalos(true);
         
-        //display all frames, then use 'display'
+        // display all frames, then use 'display'
         runScript("frame 0.0");
         runScript("display 1.1");
 
         runScript("select none");
         
-      //make clicking on elemtents select those elements
+        //make clicking on elemtents select those elements
         if (jmolPanel.getViewer().getPolymerCount() == 0 ) {
             runScript("set picking select atoms");
         }
         else {
             runScript("set picking select group");
         }
-        
-        
-        
-
-        //End Initialize jmol
-        //===============
+        // End Initialize jmol
+        // ===============
 
         int index = addPage(parent);
         setPageText(index, "Jmol");
 
-        //Post selections in Jmol to Eclipse
+        // Post selections in Jmol to Eclipse
         getSite().setSelectionProvider(this);
         
-        //Register help context for this editor
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(this.getControl( 0 ), "net.bioclipse.jmol.jmolEditor");
-
+        // Register help context for this editor
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(
+                this.getControl( 0 ),
+                "net.bioclipse.jmol.jmolEditor"
+        );
     }
-
 
     /**
      * Creates page 1 of the multi-page editor,
@@ -300,6 +297,7 @@ public class JmolEditor extends MultiPageEditorPart
 
         getSite().getPage().addSelectionListener(this);
     }
+
     /**
      * The <code>MultiPageEditorPart</code> implementation of this
      * <code>IWorkbenchPart</code> method disposes all nested editors.
@@ -424,7 +422,8 @@ public class JmolEditor extends MultiPageEditorPart
                                 .getFile()
                                 .getProject()
                                 .equals( event.getResource() ) ) {
-                            IEditorPart editorPart = pages[i].findEditor(editor.getEditorInput());
+                            IEditorPart editorPart
+                              = pages[i].findEditor(editor.getEditorInput());
                             pages[i].closeEditor(editorPart,true);
                         }
                     }
@@ -744,15 +743,6 @@ public class JmolEditor extends MultiPageEditorPart
         if (!(selection instanceof JmolSelection)) 
             return;
 
-        //Mark this editor as active
-//        Display.getDefault().syncExec(new Runnable() {
-//            public void run() {
-//                setActiveEditor(getPart());
-//                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(getPart());
-//            }
-//        });
-
-       
         this.selection = (JmolSelection)selection;
 
         if ( this.selection.updateJmolSelection() ) {
