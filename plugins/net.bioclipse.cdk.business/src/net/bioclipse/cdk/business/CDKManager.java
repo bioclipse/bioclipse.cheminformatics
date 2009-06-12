@@ -436,12 +436,6 @@ public class CDKManager implements IBioclipseManager {
         return moleculesList;
     }
 
-      public String calculateSMILES(IMolecule molecule)
-                    throws BioclipseException {
-          return molecule.toSMILES(
-          );
-      }
-
       public void calculateSMILES(IMolecule molecule,IReturner<String> returner,
                                   IProgressMonitor monitor ) {
         assert(molecule!=null);
