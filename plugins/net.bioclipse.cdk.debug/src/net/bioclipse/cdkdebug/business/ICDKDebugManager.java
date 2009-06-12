@@ -21,6 +21,8 @@ import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.managers.business.IBioclipseManager;
 
+import org.openscience.cdk.io.formats.IChemFormat;
+
 @PublishedClass("Contains CDK debug related methods")
 @TestClasses(
     "net.bioclipse.cdk.debug.test.APITest," +
@@ -65,5 +67,23 @@ public interface ICDKDebugManager extends IBioclipseManager {
     )
     @TestMethods("testDepictCDKAtomTypes")
     public String perceiveCDKAtomTypes(IMolecule mol) throws InvocationTargetException;
+
+    @Recorded
+    @PublishedMethod(
+         params = "IChemFormat format",
+         methodSummary = "Returns a writer options for the CDK writer for " +
+         		"the given IChemFormat."
+    )
+    public String listWriterOptions(IChemFormat format)
+        throws InvocationTargetException;
+
+    @Recorded
+    @PublishedMethod(
+         params = "IChemFormat format",
+         methodSummary = "Returns a reader options for the CDK reader for " +
+                "the given IChemFormat."
+    )
+    public String listReaderOptions(IChemFormat format)
+        throws InvocationTargetException;
 
 }

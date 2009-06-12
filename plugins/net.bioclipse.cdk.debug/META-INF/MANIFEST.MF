@@ -16,6 +16,9 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.core,
  org.openscience.cdk.standard,
  org.openscience.cdk.atomtype,
+ org.openscience.cdk.ioformats,
+ org.openscience.cdk.io,
+ org.openscience.cdk.libiocml,
  net.bioclipse.cdk.business,
  net.bioclipse.scripting.ui
 Bundle-ActivationPolicy: lazy

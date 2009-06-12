@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesInfo;
@@ -302,6 +303,24 @@ public interface ICDKManager extends IBioclipseManager {
                               IChemFormat filetype, 
                               boolean overwrite )
     	          throws BioclipseException, CDKException, CoreException;
+
+    @Recorded
+    @PublishedMethod(
+        params = "IMolecule mol, String filename, " +
+                 "IChemFormat filetype, boolean overwrite, " +
+                 "Properties writerProperties",
+        methodSummary = "saves mol to a file (filename must be a relative to " +
+                        "workspace root and folder must exist), filetype " +
+                        "must be a IChemFormat. If overwrite=true then file " +
+                        "will be overwritten if exists. Properties can be " +
+                        "given to tune the output of the writer." )
+    @TestMethods("testSaveMolecule_IMolecule_String_String")
+    public void saveMolecule( IMolecule mol, 
+                              String filename, 
+                              IChemFormat filetype, 
+                              boolean overwrite,
+                              Properties writerProperties)
+                  throws BioclipseException, CDKException, CoreException;
 
     /**
      * @param mol The molecule to save

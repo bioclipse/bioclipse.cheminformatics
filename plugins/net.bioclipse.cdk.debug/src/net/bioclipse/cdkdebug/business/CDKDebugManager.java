@@ -15,11 +15,13 @@ package net.bioclipse.cdkdebug.business;
 
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.managers.business.IBioclipseManager;
+import net.bioclipse.scripting.ui.views.JsConsoleView;
 
 import org.apache.log4j.Logger;
 import org.openscience.cdk.CDKConstants;
@@ -32,6 +34,12 @@ import org.openscience.cdk.exception.NoSuchAtomTypeException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
+import org.openscience.cdk.io.IChemObjectReader;
+import org.openscience.cdk.io.IChemObjectWriter;
+import org.openscience.cdk.io.ReaderFactory;
+import org.openscience.cdk.io.WriterFactory;
+import org.openscience.cdk.io.formats.IChemFormat;
+import org.openscience.cdk.io.setting.IOSetting;
 import org.openscience.cdk.tools.diff.AtomContainerDiff;
 import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
 
@@ -39,6 +47,8 @@ public class CDKDebugManager implements IBioclipseManager {
 
     private static final Logger logger = Logger.getLogger(CDKManager.class);
     private static final CDKManager cdk = new CDKManager();
+    private static final WriterFactory writerFactory = new WriterFactory();
+    private static final ReaderFactory readerFactory = new ReaderFactory();
     
     public String diff(ICDKMolecule mol, ICDKMolecule mol2) {
         return AtomContainerDiff.diff(
@@ -171,5 +181,65 @@ public class CDKDebugManager implements IBioclipseManager {
             i++;
         }
         return result.toString();
+    }
+
+    public String listWriterOptions(IChemFormat format) {
+        if (format.getWriterClassName() == null)
+            return "No writer avaiable for this format";
+
+        IChemObjectWriter writer = writerFactory.createWriter(format);
+        if (writer == null)
+            return "Cannot instantiate writer: " + format.getWriterClassName();
+
+        IOSetting[] settings = writer.getIOSettings();
+        if (settings == null || settings.length == 0)
+            return "The writer does not have options";
+        
+        StringBuffer overview = new StringBuffer();
+        for (String _ : new String[] {
+            format.getFormatName(), JsConsoleView.NEWLINE })
+            overview.append(_);
+        for (IOSetting setting : settings) {
+            for (String _ : new String[] {
+                "[", setting.getName(), "]",             JsConsoleView.NEWLINE,
+                setting.getQuestion(),                   JsConsoleView.NEWLINE,
+                "Default value: ", 
+                setting.getDefaultSetting(),             JsConsoleView.NEWLINE,
+                "Value        : ", setting.getSetting(), JsConsoleView.NEWLINE})
+                overview.append(_);
+        }
+        if (overview.length() == 0) // there are no options
+            return "The reader does not have options";
+
+        return overview.toString();
+    }
+
+    public String listReaderOptions(IChemFormat format) {
+        if (format.getReaderClassName() == null)
+            return "No reader avaiable for this format";
+
+        IChemObjectReader reader = readerFactory.createReader(format);
+        if (reader == null)
+            return "Cannot instantiate writer: " + format.getReaderClassName();
+
+        IOSetting[] settings = reader.getIOSettings();
+        if (settings == null || settings.length == 0)
+            return "The reader does not have options";
+
+        StringBuffer overview = new StringBuffer();
+        for (String _ : new String[] {
+            format.getFormatName(), JsConsoleView.NEWLINE })
+            overview.append(_);
+        for (IOSetting setting : settings) {
+            for (String _ : new String[] {
+                "[", setting.getName(), "]",             JsConsoleView.NEWLINE,
+                setting.getQuestion(),                   JsConsoleView.NEWLINE,
+                "Default value: ", 
+                setting.getDefaultSetting(),             JsConsoleView.NEWLINE,
+                "Value        : ", setting.getSetting(), JsConsoleView.NEWLINE})
+                overview.append(_);
+        }
+
+        return overview.toString();
     }
 }
