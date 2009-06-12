@@ -45,6 +45,7 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.RenderingParameters.AtomShape;
 import org.openscience.cdk.renderer.font.IFontManager;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator;
@@ -109,6 +110,7 @@ public class JCPCellPainter implements ICellPainter {
         renderer = new Renderer(generators, fontManager);
 
         RendererModel rModel = renderer.getRenderer2DModel();
+        rModel.setCompactShape( AtomShape.OVAL );
 
         applyGlobalProperties( rModel );
 
