@@ -132,10 +132,10 @@ public class JChemPaintWidget extends Canvas {
         extensionGenerator.setUse( true );
         // This generator can be used for debugging partitioning problems
         //generatorList.add( new AtomContainerBoundsGenerator() );
-        generatorList.add( new HighlightAtomGenerator() );
-        generatorList.add( new HighlightBondGenerator() );
         generatorList.add( new RingGenerator() );
         generatorList.add( new BasicAtomGenerator());
+        generatorList.add( new HighlightAtomGenerator() );
+        generatorList.add( new HighlightBondGenerator() );
 
         return generatorList;
     }
