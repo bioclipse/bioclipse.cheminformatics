@@ -55,7 +55,6 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     private IAtomContainer atomContainer;
 
     // cached properties
-    private String cachedSMILES;
     private BitSet cachedFingerprint;
     private InChI cachedInchi;
 
@@ -88,41 +87,24 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
      */
     public CDKMolecule( String name, 
                         IAtomContainer atomContainer, 
-                        String smiles, 
                         BitSet fingerprint ) {
         this(atomContainer);
         this.name = name;
         this.cachedFingerprint = fingerprint;
-        this.cachedSMILES = smiles;
     }
 
 
     public String getSMILES() throws BioclipseException {
+        if (getAtomContainer() == null) return "";
+        IAtomContainer container = getAtomContainer();
 
-        if (getAtomContainer() == null)
-            throw new BioclipseException("Unable to calculate SMILES: Molecule is empty");
-
-        if (!(getAtomContainer() instanceof org.openscience.cdk.interfaces.IMolecule))
-            throw new BioclipseException("Unable to calculate SMILES: Not a molecule.");
-
-        if (getAtomContainer().getAtomCount() > 100)
-            throw new BioclipseException("Unable to calculate SMILES: Molecule has more than 100 atoms.");
-
-        if (getAtomContainer().getBondCount() == 0)
-            throw new BioclipseException("Unable to calculate SMILES: Molecule has no bonds.");
-
-        org.openscience.cdk.interfaces.IMolecule molecule=(org.openscience.cdk.interfaces.IMolecule)getAtomContainer();
-
-        // Create the SMILES
-        SmilesGenerator generator = new SmilesGenerator();
-        
         //Operate on a clone with removed hydrogens
-        org.openscience.cdk.interfaces.IMolecule newMol;
-        newMol=(org.openscience.cdk.interfaces.IMolecule)
-                           AtomContainerManipulator.removeHydrogens( molecule );
-        cachedSMILES = generator.createSMILES(newMol);
+        org.openscience.cdk.interfaces.IMolecule hydrogenlessClone =
+            container.getBuilder().newMolecule(
+                AtomContainerManipulator.removeHydrogens(container)
+            );
 
-        return cachedSMILES;
+        return new SmilesGenerator().createSMILES(hydrogenlessClone);
     }
 
     public IAtomContainer getAtomContainer() {
@@ -298,9 +280,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     }
 
     void setProperty(String propertyKey, Object value) {
-        if(MolProperty.SMILES.name().equals( propertyKey ))
-            cachedSMILES=(String) value;
-        else if(MolProperty.InChI.name().equals( propertyKey ))
+        if(MolProperty.InChI.name().equals( propertyKey ))
             cachedInchi = (InChI) value;
         else if(MolProperty.Fingerprint.name().equals( propertyKey ))
             cachedFingerprint = (BitSet) value;
@@ -312,9 +292,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     }
 
     void celarProperty( String key ) {
-        if(MolProperty.SMILES.name().equals( key ))
-            cachedSMILES=null;
-        else if(MolProperty.InChI.name().equals( key ))
+        if(MolProperty.InChI.name().equals( key ))
             cachedInchi = null;
         else if(MolProperty.Fingerprint.name().equals( key ))
             cachedFingerprint = null;
