@@ -37,7 +37,7 @@ public class CDKMoleculeUtils {
 
     public static void clearProperty(ICDKMolecule mol,String key) {
         if(mol instanceof CDKMolecule) {
-            ((CDKMolecule)mol).celarProperty(key);
+            ((CDKMolecule)mol).clearProperty(key);
         }
     }
 
