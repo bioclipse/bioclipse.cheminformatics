@@ -190,8 +190,6 @@ public abstract class AbstractCDKManagerPluginTest {
         for (ICDKMolecule mol : mols){
         	System.out.println("Mol: " + mol.getName() + " SMILES: " +
         	    mol.getSMILES(
-                    net.bioclipse.core.domain.IMolecule
-                        .Property.USE_CACHED_OR_CALCULATED
                 ));
         	if (mol.getName().equals("1")){
                 ICDKMolecule smilesMol1 = cdk.fromSMILES("C(=O)N(Cc1ccco1)C(c1cc2ccccc2cc1)C(=O)NCc1ccccc1");
@@ -231,8 +229,6 @@ public abstract class AbstractCDKManagerPluginTest {
 
         for(ICDKMolecule molecule:molecules) {
             String smiles = molecule.getSMILES(
-                net.bioclipse.core.domain.IMolecule
-                    .Property.USE_CACHED_OR_CALCULATED
             );
             if(inputList.contains( smiles ))
                 inputList.remove( smiles );
@@ -382,8 +378,6 @@ public abstract class AbstractCDKManagerPluginTest {
         ICDKMolecule mol = cdk.loadMolecule( path);
         
         String smiles = mol.getSMILES(
-            net.bioclipse.core.domain.IMolecule
-                .Property.USE_CACHED_OR_CALCULATED
         );
 
         assertEquals("N#CC1CCCC(C)N1C(CO[Si](C)(C)C)C2=CC=CC=C2", smiles);
@@ -458,8 +452,6 @@ public abstract class AbstractCDKManagerPluginTest {
         ICDKMolecule cdkm = cdk.create(new MockMolecule(indoleSmiles));
         assertEquals(indoleSmiles,
             cdkm.getSMILES(
-                net.bioclipse.core.domain.IMolecule
-                    .Property.USE_CACHED_OR_CALCULATED
             )
          );
     }
@@ -675,12 +667,8 @@ public abstract class AbstractCDKManagerPluginTest {
         cdk.saveMolecule(coc,true);
         mol = cdk.loadMolecule(path);
         assertTrue("O(C)C".equals(mol.getSMILES(
-            net.bioclipse.core.domain.IMolecule
-                .Property.USE_CACHED_OR_CALCULATED
         )) ||
                    "COC".equals(mol.getSMILES(
-                       net.bioclipse.core.domain.IMolecule
-                           .Property.USE_CACHED_OR_CALCULATED
                    )));
     }
 
@@ -697,12 +685,8 @@ public abstract class AbstractCDKManagerPluginTest {
         cdk.saveMolecule(coc, true);
         mol = cdk.loadMolecule(path);
         assertTrue("O(C)C".equals(mol.getSMILES(
-            net.bioclipse.core.domain.IMolecule
-                .Property.USE_CACHED_OR_CALCULATED
         )) ||
                 "COC".equals(mol.getSMILES(
-                    net.bioclipse.core.domain.IMolecule
-                        .Property.USE_CACHED_OR_CALCULATED
                 )));
     }
 
@@ -712,8 +696,6 @@ public abstract class AbstractCDKManagerPluginTest {
         cdk.saveMolecule(propane, path, false);
         ICDKMolecule mol = cdk.loadMolecule(path);
         assertEquals("CCC", mol.getSMILES(
-            net.bioclipse.core.domain.IMolecule
-                .Property.USE_CACHED_OR_CALCULATED
         ));
     }
 
@@ -723,8 +705,6 @@ public abstract class AbstractCDKManagerPluginTest {
         cdk.saveMolecule(propane, path, false);
         ICDKMolecule mol = cdk.loadMolecule(path);
         assertEquals("CCC", mol.getSMILES(
-            net.bioclipse.core.domain.IMolecule
-                .Property.USE_CACHED_OR_CALCULATED
         ));
 
         // try overwrite
@@ -733,12 +713,8 @@ public abstract class AbstractCDKManagerPluginTest {
         cdk.saveMolecule(coc, path, true);
         mol = cdk.loadMolecule(path);
         assertTrue("O(C)C".equals(mol.getSMILES(
-            net.bioclipse.core.domain.IMolecule
-                .Property.USE_CACHED_OR_CALCULATED
         )) ||
                 "COC".equals(mol.getSMILES(
-                    net.bioclipse.core.domain.IMolecule
-                        .Property.USE_CACHED_OR_CALCULATED
                 )));
     }
 
@@ -750,8 +726,6 @@ public abstract class AbstractCDKManagerPluginTest {
         cdk.saveMolecule(propane, target, false);
         ICDKMolecule mol = cdk.loadMolecule(path);
         assertEquals("CCC", mol.getSMILES(
-            net.bioclipse.core.domain.IMolecule
-                .Property.USE_CACHED_OR_CALCULATED
         ));
 
         // try overwrite
@@ -760,12 +734,8 @@ public abstract class AbstractCDKManagerPluginTest {
         cdk.saveMolecule(coc, target, true);
         mol = cdk.loadMolecule(path);
         assertTrue("O(C)C".equals(mol.getSMILES(
-            net.bioclipse.core.domain.IMolecule
-                .Property.USE_CACHED_OR_CALCULATED
         )) ||
                    "COC".equals(mol.getSMILES(
-                       net.bioclipse.core.domain.IMolecule
-                           .Property.USE_CACHED_OR_CALCULATED
                    )));
     }
 
@@ -778,8 +748,6 @@ public abstract class AbstractCDKManagerPluginTest {
         cdk.saveMolecule(propane, target, false);
         ICDKMolecule mol = cdk.loadMolecule(path);
         assertEquals("CCC", mol.getSMILES(
-            net.bioclipse.core.domain.IMolecule
-                .Property.USE_CACHED_OR_CALCULATED
         ));
 
         // try overwrite
@@ -789,12 +757,8 @@ public abstract class AbstractCDKManagerPluginTest {
         cdk.saveMolecule(coc, target, false);
         mol = cdk.loadMolecule(path);
         assertTrue("O(C)C".equals(mol.getSMILES(
-            net.bioclipse.core.domain.IMolecule
-                .Property.USE_CACHED_OR_CALCULATED
         )) ||
                 "COC".equals(mol.getSMILES(
-                    net.bioclipse.core.domain.IMolecule
-                        .Property.USE_CACHED_OR_CALCULATED
                 )));
     }
 
@@ -807,8 +771,6 @@ public abstract class AbstractCDKManagerPluginTest {
         cdk.saveMolecule(propane, path, (IChemFormat)MDLV2000Format.getInstance());
         ICDKMolecule mol = cdk.loadMolecule(path);
         assertEquals("CCC", mol.getSMILES(
-            net.bioclipse.core.domain.IMolecule
-                .Property.USE_CACHED_OR_CALCULATED
         ));
     }
     
@@ -1230,8 +1192,6 @@ public abstract class AbstractCDKManagerPluginTest {
         cdk.saveMDLMolfile(propane, path);
         ICDKMolecule mol = cdk.loadMolecule(path);
         assertEquals("CCC", mol.getSMILES(
-            net.bioclipse.core.domain.IMolecule
-                .Property.USE_CACHED_OR_CALCULATED
         ));
     }
 
@@ -1242,8 +1202,6 @@ public abstract class AbstractCDKManagerPluginTest {
         cdk.saveCML(propane, path);
         ICDKMolecule mol = cdk.loadMolecule(path);
         assertEquals("CCC", mol.getSMILES(
-            net.bioclipse.core.domain.IMolecule
-                .Property.USE_CACHED_OR_CALCULATED
         ));
     }
 
@@ -1570,7 +1528,7 @@ public abstract class AbstractCDKManagerPluginTest {
 			this.smiles = smiles;
 		}
 
-		public String getSMILES(IMolecule.Property urgency)
+		public String getSMILES()
 		    throws BioclipseException {
 			return smiles;
 		}

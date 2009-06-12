@@ -439,8 +439,6 @@ public class CDKManager implements IBioclipseManager {
       public String calculateSMILES(IMolecule molecule)
                     throws BioclipseException {
           return molecule.getSMILES(
-              net.bioclipse.core.domain.IMolecule
-                  .Property.USE_CACHED_OR_CALCULATED
           );
       }
 
@@ -1085,8 +1083,6 @@ public class CDKManager implements IBioclipseManager {
 
           // Secondly, try to create from SMILES
           return fromSMILES( imol.getSMILES(
-              net.bioclipse.core.domain.IMolecule
-                  .Property.USE_CACHED_OR_CALCULATED
           ) );
       }
 
