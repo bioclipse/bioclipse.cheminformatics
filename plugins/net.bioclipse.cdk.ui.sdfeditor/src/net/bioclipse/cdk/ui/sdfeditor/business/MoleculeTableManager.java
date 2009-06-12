@@ -206,9 +206,17 @@ public class MoleculeTableManager implements IBioclipseManager {
     public void calculateProperty( SDFIndexEditorModel model,
                                    IPropertyCalculator<?> calculator,
                                    IProgressMonitor monitor) {
+        calculateProperty( model, new IPropertyCalculator<?>[] {calculator},
+                           monitor );
+    }
+
+    public void calculateProperty( SDFIndexEditorModel model,
+                                   IPropertyCalculator<?>[] calculators,
+                                   IProgressMonitor monitor) {
         monitor.beginTask( "Calculating properties",
-                           model.getNumberOfMolecules() );
+                           model.getNumberOfMolecules());
         for(int i=0;i<model.getNumberOfMolecules();i++) {
+            for(IPropertyCalculator<?> calculator:calculators)
             model.setPropertyFor( i, calculator.getPropertyName(),
                              calculator.calculate( model.getMoleculeAt( i ) ) );
             monitor.worked( 1 );

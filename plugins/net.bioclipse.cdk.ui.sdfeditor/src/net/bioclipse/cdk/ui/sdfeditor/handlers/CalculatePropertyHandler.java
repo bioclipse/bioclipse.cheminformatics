@@ -10,7 +10,12 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.handlers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import net.bioclipse.cdk.ui.sdfeditor.Activator;
 import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator;
@@ -62,44 +67,59 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
         }
         SDFIndexEditorModel model = (SDFIndexEditorModel) editor.getModel();
         String calc = event.getParameter( PARAMETER_ID );
+        // separate id
+        Set<String> calcs = new TreeSet<String>(
+                                Arrays.asList( calc.split( ",\\s*" )));
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IConfigurationElement[] elements = registry.getConfigurationElementsFor(
                                        "net.bioclipse.cdk.propertyCalculator" );
 
+        List<IPropertyCalculator<?>> calcList
+                                = new ArrayList<IPropertyCalculator<?>>();
+
         for(IConfigurationElement element:elements) {
-            if(!((String)element.getAttribute( "id" )).equals( calc ))
+
+            if(!calcs.contains( element.getAttribute( "id" ) ))
                     continue;
-            element.getNamespaceIdentifier();
-            element.getName();
-            element.getContributor();
-            element.getValue();
+
             try {
-                final IPropertyCalculator<?> calculator = (IPropertyCalculator<?>)
+                IPropertyCalculator<?> calculator = (IPropertyCalculator<?>)
                                    element.createExecutableExtension( "class" );
-                Activator.getDefault().getMoleculeTableManager()
-                    .calculateProperty( model, calculator,
-                         new BioclipseUIJob<Void>() {
-                        @Override
-                        public void runInUI() {
-                           String name = calculator.getPropertyName();
-                           if(!name.equals( "net.bioclipse.cdk.fingerprint" )) {
-                               MoleculeTableContentProvider contProv =
-                                   editor.getContentProvider();
-                               List<Object> props= contProv.getProperties();
-                               if(!props.contains( name ))
-                                   props.add( 0, name );
-                               contProv.setVisibleProperties( props );
-                               contProv.updateHeaders();
-                           }
-                        }
-                    });
-                break;
+                calcList.add(calculator);
             } catch ( CoreException e ) {
-                logger.debug( "Failed to craete IPropertyCalculator", e );
+                logger.debug( "Failed to craete a IPropertyCalculator", e );
             }
         }
+        executeCalculators( model, editor, calcList );
         mpmep.setDirty( true );
         return null;
+    }
+
+    private void executeCalculators( SDFIndexEditorModel model,
+                                     final MoleculesEditor editor,
+                         final Collection<IPropertyCalculator<?>> calculators) {
+
+        Activator.getDefault().getMoleculeTableManager()
+        .calculateProperty( model,
+                            calculators.toArray( new IPropertyCalculator<?>[0]),
+                            new BioclipseUIJob<Void>() {
+            @Override
+            public void runInUI() {
+                MoleculeTableContentProvider contProv =
+                    editor.getContentProvider();
+                List<Object> props= contProv.getProperties();
+                for(IPropertyCalculator<?> calculator:calculators) {
+                    String name = calculator.getPropertyName();
+                    if(!name.equals( "net.bioclipse.cdk.fingerprint" )) {
+
+                        if(!props.contains( name ))
+                            props.add( 0, name );
+                    }
+                }
+                contProv.setVisibleProperties( props );
+                contProv.updateHeaders();
+            }
+        });
     }
 }

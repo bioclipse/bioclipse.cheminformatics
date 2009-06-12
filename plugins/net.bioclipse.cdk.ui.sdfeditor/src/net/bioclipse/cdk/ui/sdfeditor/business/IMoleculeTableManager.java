@@ -58,6 +58,11 @@ public interface IMoleculeTableManager extends IBioclipseManager {
                                    BioclipseUIJob<Void> uiJob);
 
     @Recorded
+    public void calculateProperty( SDFIndexEditorModel model,
+                                   IPropertyCalculator<?>[] calculators,
+                                   BioclipseUIJob<Void> uiJob);
+
+    @Recorded
     public void saveSDF(IMoleculesEditorModel model, IFile file)
                                                       throws BioclipseException;
     public void saveSDF( IMoleculesEditorModel model, IFile file,
