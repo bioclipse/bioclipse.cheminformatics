@@ -374,7 +374,8 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws IllegalStateException
      */
     @Recorded
-    public void save( IChemModel model, String target, IChemFormat filetype )
+    public void save( IChemModel model, String target, IChemFormat filetype,
+                      Properties writerProperties)
     	          throws BioclipseException, CDKException, CoreException;
 
     /**

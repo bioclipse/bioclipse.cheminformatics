@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -115,6 +116,7 @@ import org.openscience.cdk.io.formats.SDFFormat;
 import org.openscience.cdk.io.formats.SMILESFormat;
 import org.openscience.cdk.io.iterator.IteratingMDLConformerReader;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
+import org.openscience.cdk.io.listener.PropertiesListener;
 import org.openscience.cdk.io.random.RandomAccessReader;
 import org.openscience.cdk.io.random.RandomAccessSDFReader;
 import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
@@ -469,18 +471,21 @@ public class CDKManager implements IBioclipseManager {
         returner.completeReturn( result );
       }
 
-      public void save(IChemModel model, String target, IChemFormat filetype)
+      public void save(IChemModel model, String target, IChemFormat filetype,
+                        Properties writerProperties)
                   throws BioclipseException, CDKException, CoreException {
           save( model,
                 ResourcePathTransformer.getInstance().transform(target),
                 filetype,
-                null );
+                null,
+                writerProperties);
       }
 
       public void save( IChemModel model,
                         IFile target,
                         IChemFormat filetype,
-                        IProgressMonitor monitor )
+                        IProgressMonitor monitor,
+                        Properties writerProperties )
                   throws BioclipseException, CDKException, CoreException {
 
           if (monitor == null)
@@ -508,6 +513,15 @@ public class CDKManager implements IBioclipseManager {
                 }
                 chemWriter.setWriter(writer);
             }
+            // register a listener for the writer option
+            if (writerProperties != null) {
+                PropertiesListener listener = new PropertiesListener(
+                    writerProperties
+                );
+                chemWriter.addChemObjectIOListener(listener);
+            }
+
+            // write the model
             if (chemWriter.accepts(ChemModel.class)) {
                 chemWriter.write(model);
             } else if (chemWriter.accepts(MoleculeSet.class)){
@@ -669,6 +683,15 @@ public class CDKManager implements IBioclipseManager {
                                 IChemFormat filetype,
                                 boolean overwrite)
                 throws BioclipseException, CDKException, CoreException {
+          saveMolecule(mol_in, target, filetype, overwrite, null);
+      }
+
+      public void saveMolecule( IMolecule mol_in,
+                                IFile target,
+                                IChemFormat filetype,
+                                boolean overwrite,
+                                Properties writerProperties)
+                throws BioclipseException, CDKException, CoreException {
 
           if ( target.exists() && overwrite == false ) {
               throw new BioclipseException("File already exists!");
@@ -680,7 +703,7 @@ public class CDKManager implements IBioclipseManager {
           chemModel.setMoleculeSet( chemModel.getBuilder().newMoleculeSet() );
           chemModel.getMoleculeSet().addAtomContainer( mol.getAtomContainer() );
 
-          this.save(chemModel, target, filetype, null);
+          this.save(chemModel, target, filetype, null, writerProperties);
 
         mol.setResource(target);
       }
@@ -688,14 +711,24 @@ public class CDKManager implements IBioclipseManager {
       public void saveMolecule( IMolecule mol,
                                 String filename,
                                 IChemFormat filetype,
-                                boolean overwrite )
+                                boolean overwrite)
+                  throws BioclipseException, CDKException, CoreException {
+          saveMolecule(mol, filename, filetype, overwrite, null);
+      }
+
+      public void saveMolecule( IMolecule mol,
+                                String filename,
+                                IChemFormat filetype,
+                                boolean overwrite,
+                                Properties writerProperties)
                   throws BioclipseException, CDKException, CoreException {
 
           saveMolecule( mol,
                         ResourcePathTransformer.getInstance()
                                                .transform(filename),
                         filetype,
-                        overwrite );
+                        overwrite,
+                        writerProperties);
       }
 
       /**
@@ -746,7 +779,7 @@ public class CDKManager implements IBioclipseManager {
                   chemModel.getMoleculeSet().addMolecule(imol);
               }
 
-              this.save(chemModel, target, filetype, null);
+              this.save(chemModel, target, filetype, null, null);
           }
           else {
               throw new IllegalArgumentException("Multiple molecules can only " +
