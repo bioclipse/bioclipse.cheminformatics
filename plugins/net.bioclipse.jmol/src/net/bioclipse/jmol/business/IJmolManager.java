@@ -21,7 +21,10 @@ import net.bioclipse.core.TestClasses;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 @TestClasses("net.bioclipse.jmol.test.JmolManagerTest")
-@PublishedClass("This manager contains methods for controlling jmol")
+@PublishedClass(
+    value="This manager contains methods for controlling jmol",
+    doi="10.1038/npre.2007.50.1"
+)
 public interface IJmolManager extends IBioclipseManager{
 
     /**
