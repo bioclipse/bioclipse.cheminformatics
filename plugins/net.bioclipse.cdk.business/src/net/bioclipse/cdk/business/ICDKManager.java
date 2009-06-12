@@ -45,7 +45,7 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.io.formats.IChemFormat;
 
 @PublishedClass(
-    value="Contains CDK related methods",
+    value="Provides CDK-derived functionality.",
     doi={"10.1021/ci025584y","10.2174/138161206777585274"}
 )
 @TestClasses(
