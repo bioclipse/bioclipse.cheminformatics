@@ -19,6 +19,8 @@ import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.managers.business.IBioclipseManager;
+
 import org.apache.log4j.Logger;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
@@ -33,7 +35,7 @@ import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.tools.diff.AtomContainerDiff;
 import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
 
-public class CDKDebugManager implements ICDKDebugManager {
+public class CDKDebugManager implements IBioclipseManager {
 
     private static final Logger logger = Logger.getLogger(CDKManager.class);
     private static final CDKManager cdk = new CDKManager();
