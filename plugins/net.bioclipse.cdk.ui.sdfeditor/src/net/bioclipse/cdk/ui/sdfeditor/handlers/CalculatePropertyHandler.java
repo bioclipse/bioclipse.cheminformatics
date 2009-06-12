@@ -13,12 +13,14 @@ package net.bioclipse.cdk.ui.sdfeditor.handlers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import net.bioclipse.cdk.ui.sdfeditor.Activator;
 import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator;
+import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculatorComposit;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableContentProvider;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart;
@@ -60,42 +62,58 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
             logger.warn( "Could not find a MoleculesEditor" );
             return null;
         }
+
         if(!(editor.getModel() instanceof SDFIndexEditorModel)) {
             IllegalArgumentException e = new IllegalArgumentException("Only SDF model in supported");
             LogUtils.handleException( e, logger, "net.bioclipse.cdk.ui.sdfeditor" );
             throw e;
         }
+
         SDFIndexEditorModel model = (SDFIndexEditorModel) editor.getModel();
         String calc = event.getParameter( PARAMETER_ID );
-        // separate id
-        Set<String> calcs = new TreeSet<String>(
-                                Arrays.asList( calc.split( ",\\s*" )));
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IConfigurationElement[] elements = registry.getConfigurationElementsFor(
                                        "net.bioclipse.cdk.propertyCalculator" );
 
+
+        Collection<IPropertyCalculator<?>>  calcList;
+
+        calcList = gatherCalculators( elements, calc );
+
+        executeCalculators( model, editor, calcList );
+        mpmep.setDirty( true );
+        return null;
+    }
+    private Collection<IPropertyCalculator<?>> gatherCalculators(
+                        IConfigurationElement[] elements,
+                        String id) {
+        if(elements.length==0) return Collections.emptyList();
+
         List<IPropertyCalculator<?>> calcList
-                                = new ArrayList<IPropertyCalculator<?>>();
-
+                                    = new ArrayList<IPropertyCalculator<?>>();
         for(IConfigurationElement element:elements) {
-
-            if(!calcs.contains( element.getAttribute( "id" ) ))
+            if(id!=null && !id.equals( element.getAttribute( "id" ) ))
                     continue;
-
             try {
                 IPropertyCalculator<?> calculator = (IPropertyCalculator<?>)
                                    element.createExecutableExtension( "class" );
+                IConfigurationElement[] children = element.getChildren();
+                if(children.length!=0) {
+                    Collection<IPropertyCalculator<?>> result =
+                        gatherCalculators( elements, null );
+                    if(calculator instanceof IPropertyCalculatorComposit) {
+                        ((IPropertyCalculatorComposit)calculator).
+                         addAll(result);
+                    }
+                }
                 calcList.add(calculator);
             } catch ( CoreException e ) {
                 logger.debug( "Failed to craete a IPropertyCalculator", e );
             }
         }
-        executeCalculators( model, editor, calcList );
-        mpmep.setDirty( true );
-        return null;
+        return calcList;
     }
-
     private void executeCalculators( SDFIndexEditorModel model,
                                      final MoleculesEditor editor,
                          final Collection<IPropertyCalculator<?>> calculators) {

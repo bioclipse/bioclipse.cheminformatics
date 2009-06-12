@@ -23,21 +23,21 @@
          <attribute name="point" type="string" use="required">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="id" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="name" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
                <appInfo>
                   <meta.attribute translatable="true"/>
@@ -49,14 +49,17 @@
 
    <element name="Calculator">
       <complexType>
+         <sequence minOccurs="0" maxOccurs="unbounded">
+            <element ref="Calculator"/>
+         </sequence>
          <attribute name="id" type="string" use="required">
             <annotation>
-              <documentation>
-                  
-              </documentation>
-           	</annotation>
+               <documentation>
+
+               </documentation>
+            </annotation>
          </attribute>
-      	 <attribute name="class" type="string" use="required">
+         <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
 
@@ -66,7 +69,7 @@
                </appInfo>
             </annotation>
          </attribute>
-         </complexType>
+      </complexType>
    </element>
 
    <annotation>
