@@ -438,7 +438,7 @@ public class CDKManager implements IBioclipseManager {
 
       public String calculateSMILES(IMolecule molecule)
                     throws BioclipseException {
-          return molecule.getSMILES(
+          return molecule.toSMILES(
           );
       }
 
@@ -1082,7 +1082,7 @@ public class CDKManager implements IBioclipseManager {
           }
 
           // Secondly, try to create from SMILES
-          return fromSMILES( imol.getSMILES(
+          return fromSMILES( imol.toSMILES(
           ) );
       }
 

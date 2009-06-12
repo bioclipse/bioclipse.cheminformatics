@@ -116,7 +116,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
 
         String smiles = null;
         try {
-            smiles = cdkMol.getSMILES();
+            smiles = cdkMol.toSMILES();
         } catch ( BioclipseException e ) {
             e.printStackTrace();
         }

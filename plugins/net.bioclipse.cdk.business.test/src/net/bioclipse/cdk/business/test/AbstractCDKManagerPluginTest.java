@@ -189,7 +189,7 @@ public abstract class AbstractCDKManagerPluginTest {
         
         for (ICDKMolecule mol : mols){
         	System.out.println("Mol: " + mol.getName() + " SMILES: " +
-        	    mol.getSMILES(
+        	    mol.toSMILES(
                 ));
         	if (mol.getName().equals("1")){
                 ICDKMolecule smilesMol1 = cdk.fromSMILES("C(=O)N(Cc1ccco1)C(c1cc2ccccc2cc1)C(=O)NCc1ccccc1");
@@ -228,7 +228,7 @@ public abstract class AbstractCDKManagerPluginTest {
         List<String> inputList = new ArrayList<String>(Arrays.asList( input ));
 
         for(ICDKMolecule molecule:molecules) {
-            String smiles = molecule.getSMILES(
+            String smiles = molecule.toSMILES(
             );
             if(inputList.contains( smiles ))
                 inputList.remove( smiles );
@@ -377,7 +377,7 @@ public abstract class AbstractCDKManagerPluginTest {
         String path=url.getFile();
         ICDKMolecule mol = cdk.loadMolecule( path);
         
-        String smiles = mol.getSMILES(
+        String smiles = mol.toSMILES(
         );
 
         assertEquals("N#CC1CCCC(C)N1C(CO[Si](C)(C)C)C2=CC=CC=C2", smiles);
@@ -451,7 +451,7 @@ public abstract class AbstractCDKManagerPluginTest {
         );
         ICDKMolecule cdkm = cdk.create(new MockMolecule(indoleSmiles));
         assertEquals(indoleSmiles,
-            cdkm.getSMILES(
+            cdkm.toSMILES(
             )
          );
     }
@@ -666,9 +666,9 @@ public abstract class AbstractCDKManagerPluginTest {
         coc.setResource(mol.getResource());
         cdk.saveMolecule(coc,true);
         mol = cdk.loadMolecule(path);
-        assertTrue("O(C)C".equals(mol.getSMILES(
+        assertTrue("O(C)C".equals(mol.toSMILES(
         )) ||
-                   "COC".equals(mol.getSMILES(
+                   "COC".equals(mol.toSMILES(
                    )));
     }
 
@@ -684,9 +684,9 @@ public abstract class AbstractCDKManagerPluginTest {
         coc.setResource(mol.getResource());
         cdk.saveMolecule(coc, true);
         mol = cdk.loadMolecule(path);
-        assertTrue("O(C)C".equals(mol.getSMILES(
+        assertTrue("O(C)C".equals(mol.toSMILES(
         )) ||
-                "COC".equals(mol.getSMILES(
+                "COC".equals(mol.toSMILES(
                 )));
     }
 
@@ -695,7 +695,7 @@ public abstract class AbstractCDKManagerPluginTest {
         String path = "/Virtual/testSaveMolecule" + propane.hashCode() + ".mol";
         cdk.saveMolecule(propane, path, false);
         ICDKMolecule mol = cdk.loadMolecule(path);
-        assertEquals("CCC", mol.getSMILES(
+        assertEquals("CCC", mol.toSMILES(
         ));
     }
 
@@ -704,7 +704,7 @@ public abstract class AbstractCDKManagerPluginTest {
         String path = "/Virtual/testSaveMolecule" + propane.hashCode() + ".mol";
         cdk.saveMolecule(propane, path, false);
         ICDKMolecule mol = cdk.loadMolecule(path);
-        assertEquals("CCC", mol.getSMILES(
+        assertEquals("CCC", mol.toSMILES(
         ));
 
         // try overwrite
@@ -712,9 +712,9 @@ public abstract class AbstractCDKManagerPluginTest {
         coc.setResource(mol.getResource());
         cdk.saveMolecule(coc, path, true);
         mol = cdk.loadMolecule(path);
-        assertTrue("O(C)C".equals(mol.getSMILES(
+        assertTrue("O(C)C".equals(mol.toSMILES(
         )) ||
-                "COC".equals(mol.getSMILES(
+                "COC".equals(mol.toSMILES(
                 )));
     }
 
@@ -725,7 +725,7 @@ public abstract class AbstractCDKManagerPluginTest {
             .transform(path);
         cdk.saveMolecule(propane, target, false);
         ICDKMolecule mol = cdk.loadMolecule(path);
-        assertEquals("CCC", mol.getSMILES(
+        assertEquals("CCC", mol.toSMILES(
         ));
 
         // try overwrite
@@ -733,9 +733,9 @@ public abstract class AbstractCDKManagerPluginTest {
         coc.setResource(mol.getResource());
         cdk.saveMolecule(coc, target, true);
         mol = cdk.loadMolecule(path);
-        assertTrue("O(C)C".equals(mol.getSMILES(
+        assertTrue("O(C)C".equals(mol.toSMILES(
         )) ||
-                   "COC".equals(mol.getSMILES(
+                   "COC".equals(mol.toSMILES(
                    )));
     }
 
@@ -747,7 +747,7 @@ public abstract class AbstractCDKManagerPluginTest {
             .transform(path);
         cdk.saveMolecule(propane, target, false);
         ICDKMolecule mol = cdk.loadMolecule(path);
-        assertEquals("CCC", mol.getSMILES(
+        assertEquals("CCC", mol.toSMILES(
         ));
 
         // try overwrite
@@ -756,9 +756,9 @@ public abstract class AbstractCDKManagerPluginTest {
             .transform(path);
         cdk.saveMolecule(coc, target, false);
         mol = cdk.loadMolecule(path);
-        assertTrue("O(C)C".equals(mol.getSMILES(
+        assertTrue("O(C)C".equals(mol.toSMILES(
         )) ||
-                "COC".equals(mol.getSMILES(
+                "COC".equals(mol.toSMILES(
                 )));
     }
 
@@ -770,7 +770,7 @@ public abstract class AbstractCDKManagerPluginTest {
         String path = "/Virtual/testSaveMolecule" + propane.hashCode() + ".mol";
         cdk.saveMolecule(propane, path, (IChemFormat)MDLV2000Format.getInstance());
         ICDKMolecule mol = cdk.loadMolecule(path);
-        assertEquals("CCC", mol.getSMILES(
+        assertEquals("CCC", mol.toSMILES(
         ));
     }
     
@@ -1191,7 +1191,7 @@ public abstract class AbstractCDKManagerPluginTest {
         String path = "/Virtual/testSaveMDLMolefile" + propane.hashCode() + ".mol";
         cdk.saveMDLMolfile(propane, path);
         ICDKMolecule mol = cdk.loadMolecule(path);
-        assertEquals("CCC", mol.getSMILES(
+        assertEquals("CCC", mol.toSMILES(
         ));
     }
 
@@ -1201,7 +1201,7 @@ public abstract class AbstractCDKManagerPluginTest {
         String path = "/Virtual/testSaveCMLfile" + propane.hashCode() + ".mol";
         cdk.saveCML(propane, path);
         ICDKMolecule mol = cdk.loadMolecule(path);
-        assertEquals("CCC", mol.getSMILES(
+        assertEquals("CCC", mol.toSMILES(
         ));
     }
 
@@ -1528,7 +1528,7 @@ public abstract class AbstractCDKManagerPluginTest {
 			this.smiles = smiles;
 		}
 
-		public String getSMILES()
+		public String toSMILES()
 		    throws BioclipseException {
 			return smiles;
 		}

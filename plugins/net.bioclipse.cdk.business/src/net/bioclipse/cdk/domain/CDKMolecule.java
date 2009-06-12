@@ -94,7 +94,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     }
 
 
-    public String getSMILES() throws BioclipseException {
+    public String toSMILES() throws BioclipseException {
         if (getAtomContainer() == null) return "";
         IAtomContainer container = getAtomContainer();
 
