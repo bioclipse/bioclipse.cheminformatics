@@ -285,8 +285,8 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         else if(MolProperty.Fingerprint.name().equals( propertyKey ))
             cachedFingerprint = (BitSet) value;
         else {
-        if(cachedProperties == null)
-            cachedProperties = new HashMap<String, Object>();
+            if(cachedProperties == null)
+                cachedProperties = new HashMap<String, Object>();
             cachedProperties.put( propertyKey, value );
         }
     }
@@ -296,6 +296,9 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
             cachedInchi = null;
         else if(MolProperty.Fingerprint.name().equals( key ))
             cachedFingerprint = null;
-        else cachedProperties.remove( key );
+        else {
+            if(cachedProperties!= null)
+                cachedProperties.remove( key );
+        }
     }
 }
