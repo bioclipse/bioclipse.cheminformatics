@@ -212,5 +212,9 @@
           class="net.bioclipse.cdk.ui.sdfeditor.CDKFingerPrintPropertyCalculator"
           id="net.bioclipse.cdk.fingerprint">
     </Calculator>
+    <Calculator
+          class="net.bioclipse.cdk.ui.sdfeditor.InChIPropertyCalculator"
+          id="net.bioclipse.cdk.InChI">
+    </Calculator>
  </extension>
 </plugin>
