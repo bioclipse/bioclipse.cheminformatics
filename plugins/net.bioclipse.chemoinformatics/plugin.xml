@@ -114,6 +114,20 @@
         <content-type
               base-type="net.bioclipse.contenttypes.mdlMolFile"
               file-extensions="mdl,mol"
+              id="net.bioclipse.contenttypes.mdlMolFile0D"
+              name="MDL Molfile (0D)"
+              priority="high">
+		 <describer class="net.bioclipse.chemoinformatics.contenttypes.MdlMolFileCoordinatesDescriber">
+              <parameter
+                    name="type"
+                    value="0D">
+              </parameter>
+       	</describer>
+        </content-type>
+
+        <content-type
+              base-type="net.bioclipse.contenttypes.mdlMolFile"
+              file-extensions="mdl,mol"
               id="net.bioclipse.contenttypes.mdlMolFile2D"
               name="MDL Molfile (2D)"
               priority="high">

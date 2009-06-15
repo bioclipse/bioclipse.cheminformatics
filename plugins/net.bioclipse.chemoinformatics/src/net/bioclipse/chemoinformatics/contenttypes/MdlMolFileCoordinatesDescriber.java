@@ -86,22 +86,33 @@ public class MdlMolFileCoordinatesDescriber extends TextContentDescriber
 	    0.7354   -0.2732    0.0428 C   0  0  0  0  0
 	   -0.6293    0.4199   -0.2145 C   0  0  0  0  0
 	   */
-		double totalZ=0;
+		double totalX=0;
+        double totalY=0;
+        double totalZ=0;
 		for (int i=0; i<atoms;i++){
 			line=br.readLine();
-//            double x = Double.parseDouble(line.substring(0, 10).trim());
-//            double y = Double.parseDouble(line.substring(10, 20).trim());
+            double x = Double.parseDouble(line.substring(0, 10).trim());
+            totalX += Math.abs(x); // *all* values should be zero, not just the sum
+            double y = Double.parseDouble(line.substring(10, 20).trim());
+            totalY += Math.abs(y); // *all* values should be zero, not just the sum
             double z = Double.parseDouble(line.substring(20, 30).trim());
             totalZ += Math.abs(z); // *all* values should be zero, not just the sum
 		}
 		
-		if (totalZ==0 && elementToFind.equalsIgnoreCase("2D")){
+		if (totalZ==0 && totalX!=0 && totalY!=0 &&
+		    elementToFind.equalsIgnoreCase("2D")){
 			return VALID;
 		}
 
-		if (totalZ!=0 && elementToFind.equalsIgnoreCase("3D")){
+		if (totalZ!=0 && totalX!=0 && totalY!=0 &&
+		    elementToFind.equalsIgnoreCase("3D")){
 			return VALID;
 		}
+
+        if (totalZ==0 && totalX==0 && totalY==0 &&
+            elementToFind.equalsIgnoreCase("0D")){
+            return VALID;
+        }
 
 		//Else, invalid (or indeterminate?)
 		return INVALID;
