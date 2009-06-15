@@ -29,7 +29,9 @@ import net.bioclipse.cdk.domain.CDKMoleculeUtils;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator;
 import net.bioclipse.cdk.ui.sdfeditor.business.SDFileIndex;
+import net.bioclipse.cdk.ui.sdfeditor.handlers.CalculatePropertyHandler;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
@@ -167,7 +169,16 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDK
     public void markDirty( int index, ICDKMolecule moleculeToSave ) {
 
         edited.put( index, moleculeToSave );
+        Collection<IPropertyCalculator<?>> propCalcs = CalculatePropertyHandler
+                    .gatherCalculators(
+                     CalculatePropertyHandler.getConfigurationElement(), null );
 
+        for(IPropertyCalculator<?> calc : propCalcs) {
+            String key = calc.getPropertyName();
+            Object o = moleculeToSave.getProperty( key, Property.USE_CACHED );
+            if(o!=null)
+                setPropertyFor( index, key, o );
+        }
     }
 
     public void save() {
@@ -253,8 +264,8 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDK
         return null;
     }
 
-    public <T extends Object>void setPropertyFor( int moleculeIndex, 
-                                                  String property, 
+    public <T extends Object>void setPropertyFor( int moleculeIndex,
+                                                  String property,
                                                   T value) {
         Map<String,Object> props = molProps.get( moleculeIndex );
         propertyList.put( property, value.getClass() );
@@ -318,7 +329,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDK
                             element.createExecutableExtension("class");
                         calculators.add( generator);
                     } catch (CoreException e) {
-                        LogUtils.debugTrace( 
+                        LogUtils.debugTrace(
                               Logger.getLogger( SDFIndexEditorModel.class ) ,e);
                     }
                 }
