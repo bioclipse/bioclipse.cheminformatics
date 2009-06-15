@@ -503,7 +503,7 @@ public interface ICDKManager extends IBioclipseManager {
         methodSummary = "Creates a cdk molecule from a molecule" )
     @Recorded
     @TestMethods("testCDKMoleculeFromIMolecule")
-    public ICDKMolecule create( IMolecule m ) throws BioclipseException;
+    public ICDKMolecule asCDKMolecule( IMolecule m ) throws BioclipseException;
 
 
     /**

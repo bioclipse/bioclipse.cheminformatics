@@ -779,7 +779,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                         = (net.bioclipse.core.domain.IMolecule) molobj;
                         try {
                             //Lengthy operation, as via CML or SMILES
-                            ICDKMolecule cdkmol=cdk.create( bcmol );
+                            ICDKMolecule cdkmol=cdk.asCDKMolecule( bcmol );
                             collectedCDKMols.add( cdkmol );
                         } catch ( BioclipseException e ) {
                             e.printStackTrace();

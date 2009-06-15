@@ -249,7 +249,7 @@ public class JChemPaintView extends ViewPart
             try {
                 ICDKManager cdk = getCDKManager();
                 //Create cdkmol from IMol, via CML or SMILES if that fails
-                ICDKMolecule cdkMol=cdk.create( bcmol );
+                ICDKMolecule cdkMol=cdk.asCDKMolecule( bcmol );
 
                 //Create molecule
                 ac=cdkMol.getAtomContainer();
@@ -261,7 +261,7 @@ public class JChemPaintView extends ViewPart
                 }
 
                 //Set AtomColorer based on active editor
-                //RFE: AtomColorer pŒ JCPWidget
+                //RFE: AtomColorer pï¿½ JCPWidget
                 //TODO
 
                 //Update widget

@@ -70,7 +70,7 @@ public class CDKDebugManager implements IBioclipseManager {
         ICDKMolecule cdkmol;
         
         try {
-            cdkmol = cdk.create(mol);
+            cdkmol = cdk.asCDKMolecule(mol);
         } 
         catch (BioclipseException e) {
             System.out.println("Error converting cdk10 to cdk");
@@ -155,7 +155,7 @@ public class CDKDebugManager implements IBioclipseManager {
         ICDKMolecule cdkmol;
         
         try {
-            cdkmol = cdk.create(mol);
+            cdkmol = cdk.asCDKMolecule(mol);
         } 
         catch ( BioclipseException e ) {
             e.printStackTrace();

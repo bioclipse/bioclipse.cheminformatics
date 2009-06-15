@@ -444,7 +444,7 @@ public class CDKManager implements IBioclipseManager {
         monitor.beginTask( "Calculating SMILES", IProgressMonitor.UNKNOWN );
         ICDKMolecule mol;
         try {
-            mol = create( molecule );
+            mol = asCDKMolecule( molecule );
         } catch ( BioclipseException e ) {
             LogUtils.handleException( e, logger, "net.bioclipse.cdk.business" );
             return;
@@ -697,7 +697,7 @@ public class CDKManager implements IBioclipseManager {
               throw new BioclipseException("File already exists!");
           }
 
-          ICDKMolecule mol = create(mol_in);
+          ICDKMolecule mol = asCDKMolecule(mol_in);
           IChemModel chemModel = mol.getAtomContainer()
                                     .getBuilder().newChemModel();
           chemModel.setMoleculeSet( chemModel.getBuilder().newMoleculeSet() );
@@ -761,7 +761,7 @@ public class CDKManager implements IBioclipseManager {
                                                  .newMoleculeSet() );
               for (IMolecule mol : molecules) {
 
-                  ICDKMolecule cdkmol = create(mol);
+                  ICDKMolecule cdkmol = asCDKMolecule(mol);
                   org.openscience.cdk.interfaces.IMolecule imol = null;
 
                   if (cdkmol.getAtomContainer() instanceof
@@ -1086,9 +1086,9 @@ public class CDKManager implements IBioclipseManager {
 
       /**
        * Create an ICDKMolecule from an IMolecule. First tries to create
-       * ICDKMolecule from CML. If that fails, tries to create from SMILES. If
+       * ICDKMolecule from CML. If that fails, tries to create from SMILES.
        */
-      public ICDKMolecule create(IMolecule imol) throws BioclipseException {
+      public ICDKMolecule asCDKMolecule(IMolecule imol) throws BioclipseException {
 
           if (imol instanceof ICDKMolecule) {
               return (ICDKMolecule) imol;
@@ -1436,7 +1436,7 @@ public class CDKManager implements IBioclipseManager {
         if (molecule instanceof ICDKMolecule) {
             cdkmol = (ICDKMolecule) molecule;
         } else {
-            cdkmol = create(molecule);
+            cdkmol = asCDKMolecule(molecule);
         }
 
         IMolecularFormula mf = molecularFormulaObject( cdkmol );
@@ -1473,7 +1473,7 @@ public class CDKManager implements IBioclipseManager {
                 cdkmol = (ICDKMolecule) molecule;
             }
             else {
-                cdkmol = create(molecule);
+                cdkmol = asCDKMolecule(molecule);
             }
   
             IMoleculeSet mols
@@ -1658,7 +1658,7 @@ public class CDKManager implements IBioclipseManager {
             if ( molecules.get(i) instanceof ICDKMolecule ) {
                 cdkmol = (ICDKMolecule) molecules.get(i);
             }else {
-                cdkmol=create(molecules.get(i));
+                cdkmol=asCDKMolecule(molecules.get(i));
             }
   
             ModelBuilder3D mb3d;
@@ -1704,7 +1704,7 @@ public class CDKManager implements IBioclipseManager {
               cdkmol = (ICDKMolecule) molecule;
           }
           else {
-              cdkmol=create(molecule);
+              cdkmol=asCDKMolecule(molecule);
           }
 
           IAtomContainer ac = cdkmol.getAtomContainer();
@@ -1720,7 +1720,7 @@ public class CDKManager implements IBioclipseManager {
               cdkmol = (ICDKMolecule) molecule;
           }
           else {
-              cdkmol=create(molecule);
+              cdkmol=asCDKMolecule(molecule);
           }
 
           IAtomContainer container = cdkmol.getAtomContainer();
@@ -1772,11 +1772,11 @@ public class CDKManager implements IBioclipseManager {
       }
 
       public boolean has2d(IMolecule mol) throws BioclipseException {
-          return GeometryTools.has2DCoordinates(create(mol).getAtomContainer());
+          return GeometryTools.has2DCoordinates(asCDKMolecule(mol).getAtomContainer());
       }
 
       public boolean has3d(IMolecule mol) throws BioclipseException {
-          return GeometryTools.has3DCoordinates(create(mol).getAtomContainer());
+          return GeometryTools.has3DCoordinates(asCDKMolecule(mol).getAtomContainer());
       }
 
       public void saveCML(ICDKMolecule cml,  String filename)
@@ -2155,7 +2155,7 @@ public class CDKManager implements IBioclipseManager {
         if(mol instanceof ICDKMolecule){
             todealwith = ((ICDKMolecule) mol).getAtomContainer();
         }else{
-            todealwith = create( mol ).getAtomContainer();
+            todealwith = asCDKMolecule( mol ).getAtomContainer();
         }
         try{
             AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(todealwith);
@@ -2172,7 +2172,7 @@ public class CDKManager implements IBioclipseManager {
         if (molecule instanceof ICDKMolecule) {
             todealwith = ((ICDKMolecule) molecule).getAtomContainer();
         } else {
-            todealwith = create( molecule ).getAtomContainer();
+            todealwith = asCDKMolecule( molecule ).getAtomContainer();
         }
 
         IMoleculeSet set = ConnectivityChecker.partitionIntoMolecules(todealwith);
@@ -2190,7 +2190,7 @@ public class CDKManager implements IBioclipseManager {
         if (molecule instanceof ICDKMolecule) {
             todealwith = ((ICDKMolecule) molecule).getAtomContainer();
         } else {
-            todealwith = create( molecule ).getAtomContainer();
+            todealwith = asCDKMolecule( molecule ).getAtomContainer();
         }
 
         int totalCharge = 0;
@@ -2214,7 +2214,7 @@ public class CDKManager implements IBioclipseManager {
 
     public float calculateTanimoto(IMolecule calculateFor, BitSet reference )
         throws BioclipseException {
-        BitSet f2 = create(calculateFor).getFingerprint(
+        BitSet f2 = asCDKMolecule(calculateFor).getFingerprint(
             net.bioclipse.core.domain.IMolecule.Property.USE_CALCULATED);
         return calculateTanimoto( reference, f2 );
     }
@@ -2222,9 +2222,9 @@ public class CDKManager implements IBioclipseManager {
     public float calculateTanimoto( IMolecule calculateFor, 
                                     IMolecule reference )
                                     throws BioclipseException {
-        BitSet f1 = create(reference).getFingerprint(
+        BitSet f1 = asCDKMolecule(reference).getFingerprint(
                 net.bioclipse.core.domain.IMolecule.Property.USE_CALCULATED);
-        BitSet f2 = create(calculateFor).getFingerprint(
+        BitSet f2 = asCDKMolecule(calculateFor).getFingerprint(
                 net.bioclipse.core.domain.IMolecule.Property.USE_CALCULATED);
         return calculateTanimoto( f1, f2 );
     }
@@ -2235,7 +2235,7 @@ public class CDKManager implements IBioclipseManager {
                                   IProgressMonitor monitor)
                                   throws BioclipseException {
         List<Float> result=new ArrayList<Float>();
-        BitSet refensetBitSet = create(reference).getFingerprint(
+        BitSet refensetBitSet = asCDKMolecule(reference).getFingerprint(
                 net.bioclipse.core.domain.IMolecule.Property.USE_CALCULATED);
         for(int i=0;i<calculateFor.size();i++ ){
             result.add(
@@ -2247,7 +2247,7 @@ public class CDKManager implements IBioclipseManager {
 
     public String getMDLMolfileString(IMolecule molecule_in) throws BioclipseException {
         
-        ICDKMolecule molecule = create(molecule_in);
+        ICDKMolecule molecule = asCDKMolecule(molecule_in);
         
         StringWriter stringWriter = new StringWriter();
         MDLWriter writer = new MDLWriter(stringWriter);

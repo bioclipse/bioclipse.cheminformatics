@@ -60,7 +60,7 @@ public class CDKMoleculeSelectionHelper {
 			if (obj instanceof IMolecule) {
 				IMolecule imol = (IMolecule) obj;
 				try {
-					ICDKMolecule cdkmol = cdk.create(imol);
+					ICDKMolecule cdkmol = cdk.asCDKMolecule(imol);
 					if (cdkmol!=null){
 						mols.add(cdkmol);
 						System.out.println("Added " + cdkmol.toString() + " as IMolecule");

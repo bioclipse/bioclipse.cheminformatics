@@ -449,7 +449,7 @@ public abstract class AbstractCDKManagerPluginTest {
         final String indoleSmiles  = new SmilesGenerator().createSMILES(
         	MoleculeFactory.makeIndole()
         );
-        ICDKMolecule cdkm = cdk.create(new MockMolecule(indoleSmiles));
+        ICDKMolecule cdkm = cdk.asCDKMolecule(new MockMolecule(indoleSmiles));
         assertEquals(indoleSmiles,
             cdkm.toSMILES(
             )
