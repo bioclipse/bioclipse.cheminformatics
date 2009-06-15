@@ -10,7 +10,6 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
-import java.io.InputStream;
 import java.util.Collection;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -37,8 +36,7 @@ public interface IMoleculeTableManager extends IBioclipseManager {
     @Recorded
     public void createSDFIndex( IFile file,
                                 BioclipseUIJob<SDFIndexEditorModel> uiJob);
-    public void createSDFIndex( InputStream is,
-                                BioclipseUIJob<SDFIndexEditorModel> uiJob);
+
     public BioclipseJob<SDFIndexEditorModel> createSDFIndex(IFile file,
                              BioclipseJobUpdateHook<SDFIndexEditorModel> hook);
     @Recorded

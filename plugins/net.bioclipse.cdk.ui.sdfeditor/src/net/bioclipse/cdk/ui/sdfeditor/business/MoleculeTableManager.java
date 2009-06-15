@@ -79,20 +79,12 @@ public class MoleculeTableManager implements IBioclipseManager {
                                 IProgressMonitor monitor ) {
 
         returner.completeReturn(
-                  new SDFIndexEditorModel(createIndex( file,null, monitor ) ) );
+                  new SDFIndexEditorModel(createIndex( file, monitor ) ) );
 
     }
 
-    public void createSDFIndex( InputStream is,
-                                IReturner<SDFIndexEditorModel> returner,
-                                IProgressMonitor monitor) {
-        returner.completeReturn(
-                     new SDFIndexEditorModel(createIndex( null, is, monitor )));
-
-    }
     //TODO refactor out file.getContent()
     private SDFileIndex createIndex( IFile file,
-                                     InputStream inputStream,
                                      IProgressMonitor monitor) {
 
         SubMonitor progress = SubMonitor.convert( monitor ,1000);
@@ -123,12 +115,8 @@ public class MoleculeTableManager implements IBioclipseManager {
 
         try {
             InputStream is;
-            if(file == null) {
-                is = inputStream;
-            }else {
                 IFileStore store = EFS.getStore( file.getLocationURI() );
                 is = store.openInputStream( EFS.NONE, progress.newChild( 1000 ) );
-            }
             ReadableByteChannel fc = Channels.newChannel( is );
             ByteBuffer byteBuffer = ByteBuffer.allocateDirect( 200 );
             int dollarCount = 0;
@@ -359,7 +347,7 @@ public class MoleculeTableManager implements IBioclipseManager {
              }
              subMonitor.setWorkRemaining( 1000 );
                   SDFileIndex index=
-                 createIndex( file,null, subMonitor.newChild( 1000 ) );
+                 createIndex( file, subMonitor.newChild( 1000 ) );
                   if(index!=null) {
                       sdfModel = new SDFIndexEditorModel(index);
                   }else
