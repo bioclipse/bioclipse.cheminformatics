@@ -92,6 +92,8 @@ public class MoleculeTableViewer extends ContentViewer {
 
         bodyConfig.setCellRenderer( new AbstractCellRenderer() {
 
+            ICellPainter textPainter = new TextCellPainter();
+
             DefaultStyleConfig selectedStyle = new DefaultStyleConfig(ICellPainter.COLOR_LIST_SELECTION, GUIHelper.COLOR_WHITE, null, null);
             @Override
             public IStyleConfig getStyleConfig(String displayMode, int row, int col) {
@@ -106,7 +108,7 @@ public class MoleculeTableViewer extends ContentViewer {
 
                 if(col == 0)
                     return cellPainter;
-                return super.getCellPainter( row, col );
+                return textPainter;
             }
 
             public String getDisplayText( int row, int col ) {
@@ -116,7 +118,6 @@ public class MoleculeTableViewer extends ContentViewer {
 
             public Object getValue( int row, int col ) {
 
-                // TODO Auto-generated method stub
                 return getDataProvider().getValue( row, col );
             }
 

@@ -169,7 +169,7 @@ public class MoleculeTableContentProvider implements
             Object v = molecule.getProperty( (String)properties.get( i-1 ),
                                                  Property.USE_CACHED );
             if(v != null) {
-                return v.toString();
+                return v;
 //            if(model instanceof SDFIndexEditorModel) {
 //                // FIXME a general interface to access properties
 //                return ((SDFIndexEditorModel) model).getPropertyFor(
