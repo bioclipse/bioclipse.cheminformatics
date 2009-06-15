@@ -1044,4 +1044,10 @@ public interface ICDKManager extends IBioclipseManager {
     public int numberOfEntriesInSDF( IFile file,
                                      SubProgressMonitor subProgressMonitor );
 
+    @Recorded
+    @PublishedMethod(
+         params = "ICDKMolecule molecule",
+         methodSummary = "Clones the CDK data model." )
+    public ICDKMolecule clone(ICDKMolecule molecule) throws BioclipseException;
+
 }

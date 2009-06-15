@@ -2315,4 +2315,17 @@ public class CDKManager implements IBioclipseManager {
         // TODO Auto-generated method stub
         return null;
     }
+
+    public ICDKMolecule clone(ICDKMolecule molecule) throws BioclipseException {
+        try {
+            return new CDKMolecule(
+                (IAtomContainer)molecule.getAtomContainer().clone()
+            );
+        } catch ( CloneNotSupportedException exception ) {
+            throw new BioclipseException(
+                "Could not clone the CDK data model.",
+                exception
+            );
+        }
+    }
 }
