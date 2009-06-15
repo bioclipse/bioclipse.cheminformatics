@@ -221,6 +221,8 @@ public class MoleculeTableManager implements IBioclipseManager {
             model.setPropertyFor( i, calculator.getPropertyName(),
                              calculator.calculate( model.getMoleculeAt( i ) ) );
             monitor.worked( 1000 );
+            if(monitor.isCanceled())
+                throw new OperationCanceledException();
             if(i%100 == 0) {
                 monitor.subTask( String.format( "%d/%d", i+1
                                              ,model.getNumberOfMolecules() ) );
