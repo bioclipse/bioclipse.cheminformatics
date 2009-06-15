@@ -15,8 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 import net.bioclipse.cdk.ui.sdfeditor.Activator;
 import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator;
@@ -70,14 +68,13 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
 
         SDFIndexEditorModel model = (SDFIndexEditorModel) editor.getModel();
         String calc = event.getParameter( PARAMETER_ID );
-        Set<String> calcs = new TreeSet<String>(
-                                    Arrays.asList( calc.split( ",\\s*" ) ));
+        List<String> calcs = Arrays.asList( calc.split( ",\\s*" ) );
 
         IConfigurationElement[] elements = getConfigurationElements();
 
         Collection<IPropertyCalculator<?>>  calcList;
 
-        calcList = gatherCalculators( elements, calcs );
+        calcList = getCalculators( elements, calcs );
 
         executeCalculators( model, editor, calcList );
         mpmep.setDirty( true );
@@ -88,6 +85,29 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         return registry.getConfigurationElementsFor(
                                        "net.bioclipse.cdk.propertyCalculator" );
+    }
+    private Collection<IPropertyCalculator<?>> getCalculators(
+                                              IConfigurationElement[] elements,
+                                              Collection<String> ids) {
+        if(elements.length==0) return Collections.emptyList();
+
+        List<IPropertyCalculator<?>> calcList
+        = new ArrayList<IPropertyCalculator<?>>();
+        for(String id:ids) {
+            for(IConfigurationElement element:elements) {
+                if(id.equals( element.getAttribute( id ) )) {
+                    try {
+                    IPropertyCalculator<?> calculator = (IPropertyCalculator<?>)
+                    element.createExecutableExtension( "class" );
+                    calcList.add(calculator);
+                    }catch(CoreException e) {
+                        Logger.getLogger( CalculatePropertyHandler.class )
+                        .debug( "Failed to craete a IPropertyCalculator", e );
+                    }
+                }
+            }
+        }
+        return calcList;
     }
 
     public static Collection<IPropertyCalculator<?>> gatherCalculators(
