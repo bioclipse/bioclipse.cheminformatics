@@ -12,7 +12,12 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -20,6 +25,8 @@ import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import net.bioclipse.cdk.ui.sdfeditor.Activator;
+import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator;
+import net.bioclipse.cdk.ui.sdfeditor.handlers.CalculatePropertyHandler;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
@@ -247,6 +254,36 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         return true;
     }
 
+    private void calculateProperties(ICDKMolecule molecule) {
+        Collection<IPropertyCalculator<?>>  ids=new ArrayList<IPropertyCalculator<?>>();
+        Collection<IPropertyCalculator<?>> calculators = CalculatePropertyHandler
+        .gatherCalculators( CalculatePropertyHandler
+                            .getConfigurationElements(), null );
+        if(moleculesPage.getModel() instanceof SDFIndexEditorModel) {
+            Collection<Object> idsx = ((SDFIndexEditorModel)moleculesPage.getModel())
+                .getPropertyKeys();
+            for(IPropertyCalculator<?> calculator:calculators) {
+                if( idsx.contains( calculator.getPropertyName() )) {
+                   ids.add( calculator );
+                }
+            }
+        }
+
+
+        Activator.getDefault().getMoleculeTableManager()
+                .calculateProperties( molecule,
+                                      ids.toArray(
+                                              new IPropertyCalculator<?>[0] ),
+                                      new BioclipseUIJob<Void>() {
+                        @Override
+                        public void runInUI() {
+
+                            moleculesPage.refresh();
+
+                        }
+                });
+    }
+
    @Override
     protected void pageChange( int newPageIndex ) {
        Pages page = pageOrder.get( newPageIndex );
@@ -288,6 +325,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
        ICDKMolecule newMol = jcpPage.getCDKMolecule();
        if(jcpPage.isDirty())
            setDirty(true);
+       calculateProperties( newMol );
        moleculesPage.getModel().markDirty(
                        moleculesPage.getMolTableViewer().getFirstSelected(),
                        newMol );

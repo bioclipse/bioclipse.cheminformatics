@@ -410,4 +410,9 @@ public class MoleculesEditor extends EditorPart implements
 
         molTableViewer.cellPainter.setUseExtensionGenerators( useGenerators );
     }
+
+    public void refresh() {
+
+        molTableViewer.refresh();
+    }
 }

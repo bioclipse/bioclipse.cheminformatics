@@ -171,7 +171,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDK
         edited.put( index, moleculeToSave );
         Collection<IPropertyCalculator<?>> propCalcs = CalculatePropertyHandler
                     .gatherCalculators(
-                     CalculatePropertyHandler.getConfigurationElement(), null );
+                     CalculatePropertyHandler.getConfigurationElements(), null );
 
         for(IPropertyCalculator<?> calc : propCalcs) {
             String key = calc.getPropertyName();

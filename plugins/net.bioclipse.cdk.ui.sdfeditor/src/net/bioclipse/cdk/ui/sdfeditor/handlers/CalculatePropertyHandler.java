@@ -73,10 +73,7 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
         Set<String> calcs = new TreeSet<String>(
                                     Arrays.asList( calc.split( ",\\s*" ) ));
 
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IConfigurationElement[] elements = registry.getConfigurationElementsFor(
-                                       "net.bioclipse.cdk.propertyCalculator" );
-
+        IConfigurationElement[] elements = getConfigurationElements();
 
         Collection<IPropertyCalculator<?>>  calcList;
 
@@ -86,7 +83,14 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
         mpmep.setDirty( true );
         return null;
     }
-    private Collection<IPropertyCalculator<?>> gatherCalculators(
+
+    public static IConfigurationElement[] getConfigurationElements() {
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        return registry.getConfigurationElementsFor(
+                                       "net.bioclipse.cdk.propertyCalculator" );
+    }
+
+    public static Collection<IPropertyCalculator<?>> gatherCalculators(
                         IConfigurationElement[] elements,
                         Collection<String> ids) {
         if(elements.length==0) return Collections.emptyList();
@@ -101,7 +105,8 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
                                    element.createExecutableExtension( "class" );
                 calcList.add(calculator);
             } catch ( CoreException e ) {
-                logger.debug( "Failed to craete a IPropertyCalculator", e );
+                Logger.getLogger( CalculatePropertyHandler.class )
+                        .debug( "Failed to craete a IPropertyCalculator", e );
             }
         }
         return calcList;
