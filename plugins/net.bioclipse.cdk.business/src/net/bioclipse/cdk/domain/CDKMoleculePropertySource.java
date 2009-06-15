@@ -100,7 +100,14 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         cdkProperties = setupProperties(item.getAtomContainer());
         cdkValueMap   = getPropertyValues(item);
         
-        createPropertiesJobs(item);
+        if ( item.getAtomContainer().getAtomCount() > 0 ) {
+            createPropertiesJobs(item);
+        }
+        else {
+           cdkValueMap.put( PROPERTY_INCHI,    "Failed to calculate" );
+           cdkValueMap.put( PROPERTY_INCHIKEY, "Failed to calculate" );
+           cdkValueMap.put( PROPERTY_SMILES,   "Failed to calculate" );
+        }
     }
 
     /**
