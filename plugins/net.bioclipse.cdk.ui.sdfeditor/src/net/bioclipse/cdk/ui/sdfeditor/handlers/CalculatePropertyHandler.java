@@ -95,11 +95,12 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
         = new ArrayList<IPropertyCalculator<?>>();
         for(String id:ids) {
             for(IConfigurationElement element:elements) {
-                if(id.equals( element.getAttribute( id ) )) {
+                if(id.equals( element.getAttribute( "id" ) )) {
                     try {
                     IPropertyCalculator<?> calculator = (IPropertyCalculator<?>)
                     element.createExecutableExtension( "class" );
                     calcList.add(calculator);
+                    break;
                     }catch(CoreException e) {
                         Logger.getLogger( CalculatePropertyHandler.class )
                         .debug( "Failed to craete a IPropertyCalculator", e );
@@ -148,8 +149,12 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
                     String name = calculator.getPropertyName();
                     if(!name.equals( "net.bioclipse.cdk.fingerprint" )) {
 
-                        if(!props.contains( name ))
-                            props.add( 0, name );
+                        if(!props.contains( name )) {
+                            if(props.size()>=1)
+                                props.add( 1, name );
+                            else
+                                props.add(0, name);
+                        }
                     }
                 }
                 contProv.setVisibleProperties( props );
