@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.bioclipse.cdk.domain.CDKMoleculeUtils;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.sdfeditor.editor.SDFIndexEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
@@ -85,7 +86,7 @@ public class MoleculeTableManager implements IBioclipseManager {
     public void createSDFIndex( InputStream is,
                                 IReturner<SDFIndexEditorModel> returner,
                                 IProgressMonitor monitor) {
-        returner.completeReturn( 
+        returner.completeReturn(
                      new SDFIndexEditorModel(createIndex( null, is, monitor )));
 
     }
@@ -229,6 +230,25 @@ public class MoleculeTableManager implements IBioclipseManager {
         monitor.done();
     }
 
+    public void calculateProperties( ICDKMolecule molecule,
+                                     IPropertyCalculator<?> [] calculators,
+                                     IReturner<Void> returner,
+                                     IProgressMonitor monitor) {
+        SubMonitor progress = SubMonitor.convert( monitor );
+        progress.beginTask( "Calculating properties for "+ molecule.getName(),
+                            calculators.length*1000 );
+        for(IPropertyCalculator<?> calculator: calculators) {
+            CDKMoleculeUtils.setProperty( molecule,
+                                          calculator.getPropertyName(),
+                                          calculator.calculate(molecule) );
+            progress.worked( 1000 );
+            if(progress.isCanceled())
+                throw new OperationCanceledException();
+        }
+        progress.done();
+        returner.completeReturn( null );
+    }
+
     private ByteArrayInputStream convertToByteArrayIs(StringWriter writer)
                                            throws UnsupportedEncodingException {
         return new ByteArrayInputStream( writer.toString()
@@ -305,17 +325,17 @@ public class MoleculeTableManager implements IBioclipseManager {
                     target.setContents( convertToByteArrayIs( writer ),
                                                                   false,
                                                                   true,
-                                                   loopProgress.newChild( 500 ) );
+                                                 loopProgress.newChild( 500 ) );
                 }else {
                     target.create( convertToByteArrayIs( writer ),
                                                            false,
-                                                   loopProgress.newChild( 500 ) );
+                                                 loopProgress.newChild( 500 ) );
                 }
             }else {
                 target.appendContents( convertToByteArrayIs( writer ),
                                                                 false,
                                                                 true,
-                                                   loopProgress.newChild( 500 ) );
+                                                 loopProgress.newChild( 500 ) );
             }
             }catch(Exception e) {
                 LogUtils.debugTrace( logger, e );
@@ -341,10 +361,11 @@ public class MoleculeTableManager implements IBioclipseManager {
                   if(index!=null) {
                       sdfModel = new SDFIndexEditorModel(index);
                   }else
-                      throw new BioclipseException("Failed to create new index");
+                     throw new BioclipseException("Failed to create new index");
          } catch ( CoreException e1 ) {
              logger.warn( "Could not rename original" );
-             throw new BioclipseException("Failed to create new index: "+e1.getMessage());
+             throw new BioclipseException( "Failed to create new index: "
+                                           + e1.getMessage());
          }
         return sdfModel;
     }

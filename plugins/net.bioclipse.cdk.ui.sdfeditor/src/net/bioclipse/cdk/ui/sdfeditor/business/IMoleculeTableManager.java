@@ -13,6 +13,7 @@ package net.bioclipse.cdk.ui.sdfeditor.business;
 import java.io.InputStream;
 import java.util.Collection;
 
+import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.sdfeditor.editor.SDFIndexEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.PublishedClass;
@@ -62,6 +63,10 @@ public interface IMoleculeTableManager extends IBioclipseManager {
                                    IPropertyCalculator<?>[] calculators,
                                    BioclipseUIJob<Void> uiJob);
 
+    @Recorded
+    public void calculateProperties( ICDKMolecule molecule,
+                                      IPropertyCalculator<?>[] calculators,
+                                      BioclipseUIJob<Void> uiJob);
     @Recorded
     public void saveSDF(IMoleculesEditorModel model, IFile file)
                                                       throws BioclipseException;
