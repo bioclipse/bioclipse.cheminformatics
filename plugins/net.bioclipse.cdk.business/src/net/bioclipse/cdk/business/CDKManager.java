@@ -1430,26 +1430,22 @@ public class CDKManager implements IBioclipseManager {
           return mols;
       }
 
-      public double calculateMass(IMolecule molecule) 
-                    throws BioclipseException {
+    public double calculateMass(IMolecule molecule) throws BioclipseException {
+        ICDKMolecule cdkmol = null;
 
-          ICDKMolecule cdkmol = null;
+        if (molecule instanceof ICDKMolecule) {
+            cdkmol = (ICDKMolecule) molecule;
+        } else {
+            cdkmol = create(molecule);
+        }
 
-          if (molecule instanceof ICDKMolecule) {
-              cdkmol = (ICDKMolecule) molecule;
-          }
-          else {
-              cdkmol = create(molecule);
-          }
-
+        IMolecularFormula mf = molecularFormulaObject( cdkmol );
         // use four digits in the precision
-        double mass = AtomContainerManipulator.getNaturalExactMass(
-               cdkmol.getAtomContainer()
-        );
+        double mass = MolecularFormulaManipulator.getNaturalExactMass(mf);
         mass = (Math.round(mass*10000.0))/10000.0;
 
         return mass;
-      }
+    }
 
       public void generate2dCoordinates(IMolecule molecule,
                                         IReturner returner,
@@ -2020,11 +2016,10 @@ public class CDKManager implements IBioclipseManager {
           }
       }
 
-    public String molecularFormula( ICDKMolecule m ) {
-
-        IMolecularFormula mf
-            = MolecularFormulaManipulator.getMolecularFormula(
-                  m.getAtomContainer() );
+    public IMolecularFormula molecularFormulaObject(ICDKMolecule m) {
+        IMolecularFormula mf = MolecularFormulaManipulator.getMolecularFormula(
+            m.getAtomContainer()
+        );
 
         int missingHCount = 0;
         for (IAtom atom : m.getAtomContainer().atoms()) {
@@ -2034,12 +2029,15 @@ public class CDKManager implements IBioclipseManager {
 
         if (missingHCount > 0) {
             mf.addIsotope( m.getAtomContainer().getBuilder()
-                    .newIsotope( Elements.HYDROGEN),
-                    missingHCount
+                           .newIsotope( Elements.HYDROGEN),
+                           missingHCount
             );
         }
-
-        return MolecularFormulaManipulator.getString( mf );
+        return mf;
+    }
+      
+    public String molecularFormula( ICDKMolecule m ) {
+        return MolecularFormulaManipulator.getString(molecularFormulaObject(m));
     }
 
     private int calculateMissingHydrogens( IAtomContainer container,
