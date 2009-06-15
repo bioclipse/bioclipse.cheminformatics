@@ -159,6 +159,7 @@ public class MoleculeTableContentProvider implements
     }
 
     public Object getValue( int row, int col ) {
+        if(row>=getNumberOfMolecules()) return "";
         IMoleculesEditorModel tModel = model;
         ICDKMolecule molecule =  (ICDKMolecule) tModel.getMoleculeAt( row );
         if(col == 0) {

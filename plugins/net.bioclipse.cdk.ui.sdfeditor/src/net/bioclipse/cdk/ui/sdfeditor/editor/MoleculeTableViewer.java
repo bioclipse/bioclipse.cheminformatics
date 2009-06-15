@@ -80,7 +80,7 @@ public class MoleculeTableViewer extends ContentViewer {
 
             public int getRowCount() {
                 if(getDataProvider()==null) return 0;
-                return getDataProvider().getRowCount();
+                return getDataProvider().getRowCount()+1;
             }
 
             public Object getValue( int row, int col ) {
