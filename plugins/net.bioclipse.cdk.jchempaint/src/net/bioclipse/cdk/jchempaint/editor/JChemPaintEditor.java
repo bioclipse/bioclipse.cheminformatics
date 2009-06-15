@@ -41,9 +41,7 @@ import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message.Alignment;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.inchi.InChI;
-import net.bioclipse.inchi.business.IInChIManager;
 import net.bioclipse.jobs.BioclipseJob;
-import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.jobs.BioclipseUIJob;
 import net.bioclipse.ui.dialogs.SaveAsDialog;
 
@@ -725,10 +723,12 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         CDKMoleculeUtils.clearProperty( mol, MolProperty.InChI.name() );
         CDKMoleculeUtils.clearProperty( mol, MolProperty.Fingerprint.name() );
 
+        widget.setSelection( widget.getSelection() );
+
         if(mol == null || mol.getAtomContainer().getAtomCount() == 0) return;
-        ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
-        IInChIManager inchi = net.bioclipse.inchi.business.Activator
-                        .getDefault().getJavaInChIManager();
+//        ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
+//        IInChIManager inchi = net.bioclipse.inchi.business.Activator
+//                        .getDefault().getJavaInChIManager();
         //calculating smiles in the Propertysource instead.
 //        try {
 //            if(SMILESJob!=null) {
