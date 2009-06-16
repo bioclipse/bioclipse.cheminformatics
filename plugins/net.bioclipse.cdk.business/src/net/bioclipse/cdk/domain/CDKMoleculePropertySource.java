@@ -121,13 +121,13 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         final ICDKMolecule inchiClone;
         final ICDKMolecule smilesClone;
         try {
-            inchiClone  = cdk.asCDKMolecule( item );
-            smilesClone = cdk.asCDKMolecule( item );
+            inchiClone  = cdk.clone( item );
+            smilesClone = cdk.clone( item );
         }
         catch ( BioclipseException e ) {
             throw new RuntimeException(e);
         }
-        BioclipseJob inchiJobToBeCancelled  = inchiJobs.remove( item );
+        BioclipseJob inchiJobToBeCancelled  = inchiJobs.remove(  item );
         BioclipseJob smilesJobToBeCancelled = smilesJobs.remove( item );
         
         if ( inchiJobToBeCancelled != null ) {
