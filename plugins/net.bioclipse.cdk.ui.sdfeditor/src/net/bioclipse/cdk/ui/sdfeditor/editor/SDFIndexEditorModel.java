@@ -59,7 +59,8 @@ import org.openscience.cdk.io.MDLV2000Reader;
  * @author arvid
  *
  */
-public class SDFIndexEditorModel implements IMoleculesEditorModel, Iterable<ICDKMolecule> {
+public class SDFIndexEditorModel implements IMoleculesEditorModel,
+                                            Iterable<ICDKMolecule> {
 
     Logger logger = Logger.getLogger( SDFIndexEditorModel.class );
 

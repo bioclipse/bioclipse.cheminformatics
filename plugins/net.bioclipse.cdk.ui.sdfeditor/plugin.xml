@@ -116,6 +116,11 @@
                  optional="false">
            </commandParameter>
         </command>
+        <command
+              defaultHandler="net.bioclipse.cdk.ui.sdfeditor.handlers.ExtractMolecules"
+              id="net.bioclipse.cdk.moltable.extract"
+              name="Extract Molecules">
+        </command>
   	</extension>
 
 	<extension
@@ -187,9 +192,32 @@
         <visibleWhen
               checkEnabled="true">
            <iterate>
-              <instanceof
-                    value="net.bioclipse.cdk.domain.ICDKMolecule">
-              </instanceof>
+              <or>
+                 <instanceof
+                       value="net.bioclipse.cdk.domain.ICDKMolecule">
+                 </instanceof>
+                 <instanceof
+                       value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
+                 </instanceof>
+              </or>
+           </iterate>
+        </visibleWhen>
+     </command>
+     <command
+           commandId="net.bioclipse.cdk.moltable.extract"
+           label="Extract Molecules"
+           style="push">
+        <visibleWhen
+              checkEnabled="true">
+           <iterate>
+              <or>
+                 <instanceof
+                       value="net.bioclipse.cdk.domain.ICDKMolecule">
+                 </instanceof>
+                 <instanceof
+                       value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
+                 </instanceof>
+              </or>
            </iterate>
         </visibleWhen>
      </command>

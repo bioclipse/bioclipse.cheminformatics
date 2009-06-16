@@ -3,7 +3,10 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.bioclipse.cdk.domain.CDKMolecule;
+import net.bioclipse.cdk.domain.CDKMoleculePropertySource;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.sourceforge.nattable.NatTable;
 import net.sourceforge.nattable.config.DefaultBodyConfig;
 import net.sourceforge.nattable.config.DefaultColumnHeaderConfig;
@@ -19,6 +22,8 @@ import net.sourceforge.nattable.typeconfig.style.DisplayModeEnum;
 import net.sourceforge.nattable.typeconfig.style.IStyleConfig;
 import net.sourceforge.nattable.util.GUIHelper;
 
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -29,6 +34,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
+import org.eclipse.ui.views.properties.IPropertySource;
 
 
 public class MoleculeTableViewer extends ContentViewer {
@@ -181,26 +187,57 @@ public class MoleculeTableViewer extends ContentViewer {
         return table;
     }
 
+    public static class MolTableElement implements IAdaptable {
+
+        final IMoleculesEditorModel model;
+        final int index;
+
+        public MolTableElement(int index, IMoleculesEditorModel model) {
+            this.model = model;
+            this.index = index;
+        }
+
+        @SuppressWarnings("unchecked")
+        public Object getAdapter( Class adapter ) {
+
+            if(adapter.isAssignableFrom( ICDKMolecule.class )) {
+                return model.getMoleculeAt( index );
+            }
+            if (adapter.isAssignableFrom(IPropertySource.class)) {
+                ICDKMolecule mol = model.getMoleculeAt( index );
+                if(mol instanceof CDKMolecule)
+                    return new CDKMoleculePropertySource((CDKMolecule) mol);
+                else
+                    return null;
+            }
+            return Platform.getAdapterManager().getAdapter(this, adapter);
+        }
+    }
+
     @Override
     public ISelection getSelection() {
 
         if(getContentProvider() instanceof MoleculeTableContentProvider) {
 
             int[] selected = table.getSelectionModel().getSelectedRows();
+            int max = getDataProvider().getRowCount();
 
             if(selected.length==0) {
                 currentSelected = -1;
                 return StructuredSelection.EMPTY;
             }
             currentSelected = selected[0];
-            MoleculeTableContentProvider contentProvider =
-                            (MoleculeTableContentProvider) getContentProvider();
 
-            List<ICDKMolecule> mols = new ArrayList<ICDKMolecule>(selected.length);
-            for(int i:selected) {
-                mols.add( contentProvider.getMoleculeAt( i ));
+            IMoleculesEditorModel model;
+            if(getInput() instanceof IMoleculesEditorModel) {
+                model = (IMoleculesEditorModel) getInput();
+                List<IAdaptable> mols = new ArrayList<IAdaptable>(selected.length);
+                for(int i:selected) {
+                    if(i != max)
+                        mols.add( new MolTableElement(i,model));
+                }
+                return new StructuredSelection(mols);
             }
-            return new StructuredSelection(mols);
         }
 
         return StructuredSelection.EMPTY;
