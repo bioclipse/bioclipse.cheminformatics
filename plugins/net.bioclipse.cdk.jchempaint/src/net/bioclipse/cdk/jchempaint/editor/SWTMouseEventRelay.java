@@ -83,8 +83,15 @@ public class SWTMouseEventRelay implements  Listener {
     }
 
     private boolean isMenuClick(Event event) {
-        return (checkButton( event, 1 ) && checkMask( event, SWT.CTRL ))
-               || checkButton( event, 3 );
+
+        return checkButton( event, 3 )
+            || ( isMac() && checkMask( event, SWT.CTRL )
+                         && checkButton( event, 1 ));
+    }
+
+    private boolean isMac() {
+        String vers = System.getProperty( "os.name" ).toLowerCase();
+        return vers.indexOf( "mac" )!=-1;
     }
 
     private boolean checkButton(Event event,int mouseButton) {
