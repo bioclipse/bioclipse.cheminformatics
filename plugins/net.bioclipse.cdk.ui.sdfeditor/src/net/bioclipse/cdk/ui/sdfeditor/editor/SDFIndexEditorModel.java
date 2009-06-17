@@ -73,7 +73,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
     ICDKMolecule lastRead = null;
 
 //    List<Object> visibleProperties= new ArrayList<Object>(10);
-    Set<Object> availableProperties= new HashSet<Object>();
+    private Set<Object> availableProperties= new HashSet<Object>();
 
     Map<Integer, ICDKMolecule> edited = new HashMap<Integer, ICDKMolecule>();
 
@@ -168,7 +168,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
      * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#save(int, net.bioclipse.cdk.domain.ICDKMolecule)
      */
     public void markDirty( int index, ICDKMolecule moleculeToSave ) {
-
+        assert(moleculeToSave!=null);
         edited.put( index, moleculeToSave );
         Collection<IPropertyCalculator<?>> propCalcs = CalculatePropertyHandler
                     .gatherCalculators(
@@ -241,6 +241,15 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
     public Collection<Object> getPropertyKeys() {
         availableProperties.addAll( propertyList.keySet() );
         return new HashSet<Object>(availableProperties);
+    }
+
+    public void addPropertyKey( String name ) {
+
+        availableProperties.add( name );
+    }
+
+    public void removePropertyKey(Object key) {
+        availableProperties.remove( key );
     }
 
     @SuppressWarnings("unchecked")
