@@ -98,10 +98,10 @@ public class AddBondDragModule extends ControllerModuleAdapter {
 
         merge =  (IAtom) getHighlighted(worldCoordTo, closestAtom);
 
-
         chemModelRelay.clearPhantoms();
         if(start.distance( worldCoordTo )<getHighlightDistance()) {
             // clear phantom
+            merge = null;
             dest = null;
         }else if (merge != null) {
             // set bond
