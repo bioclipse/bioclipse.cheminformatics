@@ -43,8 +43,6 @@ import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.xmlcml.cml.element.CMLMolecule;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 /**
  * The CKMolecule wraps an IAtomContainer and is able to cache SMILES
  * @author ola
@@ -214,7 +212,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
 
     public List<IMolecule> getConformers() {
 
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     public String toString() {
