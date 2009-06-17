@@ -22,6 +22,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -295,14 +296,15 @@ public class MoleculeTableManager implements IBioclipseManager {
                 else {
                     mol = new Molecule( ac );
                     //Properties are lost in this CDK operation, so copy them
-                    if(availableProperties!=null) {
-                        Set<Object> acProps = ac.getProperties().keySet();
-                        acProps.retainAll( availableProperties);
-                        for(Object o:acProps) {
-                            mol.setProperty( o, ac.getProperty( o ) );
-                        }
-                    }else
-                        mol.setProperties( ac.getProperties() );
+                    mol.setProperties( ac.getProperties() );
+                }
+                if(availableProperties!=null) {
+                    Set<Object> acProps = new HashSet<Object>(ac.getProperties()
+                                                              .keySet());
+                    acProps.removeAll( availableProperties);
+                    for(Object o:acProps) {
+                       mol.removeProperty( o );
+                    }
                 }
                 // get calculated properties form extension
                 for(IPropertyCalculator<?> property:
@@ -310,7 +312,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                     String name = property.getPropertyName();
                     Object value = molecule
                     .getProperty( name,Property.USE_CACHED );
-                    if(value != null) {
+                    if(value != null && availableProperties.contains( name )) {
                         String text = property.toString(value );
                         mol.setProperty( name, text );
                     }
