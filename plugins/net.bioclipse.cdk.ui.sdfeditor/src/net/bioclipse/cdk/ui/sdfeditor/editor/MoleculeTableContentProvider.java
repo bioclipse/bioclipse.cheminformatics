@@ -62,6 +62,13 @@ public class MoleculeTableContentProvider implements
         return Collections.emptySet();
     }
 
+    public void removeColumn(Object key) {
+        if(model instanceof SDFIndexEditorModel) {
+            ((SDFIndexEditorModel)model).removePropertyKey( key );
+            properties.retainAll( getAvailableProperties() );
+            updateHeaders();
+        }
+    }
 
     private void setModel(IMoleculesEditorModel model) {
         this.model = model;
