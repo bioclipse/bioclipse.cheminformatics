@@ -121,6 +121,11 @@
               id="net.bioclipse.cdk.moltable.extract"
               name="Extract Molecules">
         </command>
+        <command
+              defaultHandler="net.bioclipse.cdk.ui.sdfeditor.handlers.RemoveColumnHandler"
+              id="net.bioclipse.cdk.molTable.column.remove"
+              name="Remove Column">
+        </command>
   	</extension>
 
 	<extension
@@ -220,6 +225,11 @@
               </or>
            </iterate>
         </visibleWhen>
+     </command>
+     <command
+           commandId="net.bioclipse.cdk.molTable.column.remove"
+           label="Remove Column"
+           style="push">
      </command>
   </menuContribution>
 	</extension>
