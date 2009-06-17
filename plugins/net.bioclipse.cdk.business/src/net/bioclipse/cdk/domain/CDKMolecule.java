@@ -131,8 +131,8 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
 
     public String toCML() throws BioclipseException {
 
-        if (getAtomContainer()==null) throw new BioclipseException("No molecule to " +
-        "get CML from!");
+        if (getAtomContainer()==null) 
+            throw new BioclipseException("No molecule to get CML from!");
 
         if (prefs != null && prefs.getBoolean(PreferenceConstants.P_BOOLEAN)) {
             ByteArrayOutputStream bo=new ByteArrayOutputStream();
@@ -143,17 +143,20 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
                 writer.write(getAtomContainer());
                 writer.close();
             } catch (CDKException e) {
-                throw new BioclipseException("Could not convert molecule to CML: "
-                        + e.getMessage());
+                throw new BioclipseException(
+                              "Could not convert molecule to CML: "
+                              + e.getMessage() );
             } catch (IOException e) {
-                throw new BioclipseException("Could not write molecule to CML: "
-                        + e.getMessage());
+                throw new BioclipseException(
+                              "Could not write molecule to CML: "
+                              + e.getMessage());
             }
             return bo.toString();
         }
 
         Convertor convertor = new Convertor(true, null);
-        CMLMolecule cmlMol = convertor.cdkAtomContainerToCMLMolecule(getAtomContainer());
+        CMLMolecule cmlMol 
+            = convertor.cdkAtomContainerToCMLMolecule(getAtomContainer());
         return cmlMol.toXML();
     }
 
@@ -163,7 +166,8 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
      * @return
      * @throws BioclipseException
      */
-    public BitSet getFingerprint(IMolecule.Property urgency) throws BioclipseException {
+    public BitSet getFingerprint(IMolecule.Property urgency) 
+                  throws BioclipseException {
         if (urgency == IMolecule.Property.USE_CACHED) return cachedFingerprint;
         
         if (urgency != IMolecule.Property.USE_CALCULATED) {
@@ -184,7 +188,8 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     }
 
     public boolean has3dCoords() throws BioclipseException {
-        if (getAtomContainer()==null) throw new BioclipseException("Atomcontainer is null!");
+        if (getAtomContainer()==null) 
+            throw new BioclipseException("Atomcontainer is null!");
         return GeometryTools.has3DCoordinates(getAtomContainer());
     }
     
@@ -210,7 +215,6 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     public List<IMolecule> getConformers() {
 
         throw new NotImplementedException();
-        
     }
 
     public String toString() {
@@ -223,10 +227,12 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
             return getClass().getSimpleName() + ":" + hashCode();
 
         return getClass().getSimpleName() + ":" 
-               + Activator.getDefault().getJavaCDKManager().molecularFormula(this);
+               + Activator.getDefault().getJavaCDKManager()
+                                       .molecularFormula(this);
     }
 
-    public String getInChI(IMolecule.Property urgency) throws BioclipseException {
+    public String getInChI(IMolecule.Property urgency) 
+                  throws BioclipseException {
         if (urgency == IMolecule.Property.USE_CACHED) {
             return cachedInchi == null ? "" : cachedInchi.getValue();
         }
@@ -247,7 +253,8 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         }
     }
 
-    public String getInChIKey(IMolecule.Property urgency) throws BioclipseException {
+    public String getInChIKey(IMolecule.Property urgency) 
+                  throws BioclipseException {
         if (urgency == IMolecule.Property.USE_CACHED)
             return cachedInchi == null ? "" : cachedInchi.getKey();
         
