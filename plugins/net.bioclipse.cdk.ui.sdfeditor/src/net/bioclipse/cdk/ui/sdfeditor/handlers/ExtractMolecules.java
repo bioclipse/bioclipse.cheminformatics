@@ -11,6 +11,7 @@
 package net.bioclipse.cdk.ui.sdfeditor.handlers;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
@@ -18,8 +19,11 @@ import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.sdfeditor.Activator;
 import net.bioclipse.cdk.ui.sdfeditor.business.IMoleculeTableManager;
+import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator;
+import net.bioclipse.cdk.ui.sdfeditor.editor.SDFIndexEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.ui.dialogs.SaveAsDialog;
 
@@ -36,10 +40,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbenchPartConstants;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.part.FileEditorInput;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.IResourceFormat;
@@ -70,8 +73,19 @@ public class ExtractMolecules extends AbstractHandler implements IHandler {
                 ICDKMolecule model = (ICDKMolecule)((IAdaptable)selection
                         .getFirstElement()).getAdapter( ICDKMolecule.class );
                 if(model == null) return null;
+
+                Collection<IPropertyCalculator<?>> calculators
+                         = SDFIndexEditorModel.retriveCalculatorContributions();
+                IAtomContainer ac = model.getAtomContainer();
+                for(IPropertyCalculator<?> calculator:calculators) {
+                    String key = calculator.getPropertyName();
+                    ac.setProperty( key , model.getProperty( key,
+                                                        Property.USE_CACHED ) );
+                }
+
                 List<IResourceFormat> formats =new ArrayList<IResourceFormat>();
                 formats.add(CMLFormat.getInstance());
+                formats.add(SDFFormat.getInstance());
                 formats.add(MDLV2000Format.getInstance());
 
                 IFile file= doSaveAs( HandlerUtil.getActiveShell( event ),
@@ -85,11 +99,13 @@ public class ExtractMolecules extends AbstractHandler implements IHandler {
                                         .getDefault().getJavaCDKManager();
                     IChemFormat format =
                                   cdk.guessFormatFromExtension(path.toString());
-                    if (format == null) format = (IChemFormat)CMLFormat.getInstance();
+                    if (format == null)
+                        format = (IChemFormat)CMLFormat.getInstance();
 
                     if (format instanceof MDLV2000Format) {
                         Properties properties = new Properties();
-                        properties.setProperty("ForceWriteAs2DCoordinates", "true");
+                        properties.setProperty( "ForceWriteAs2DCoordinates",
+                                                "true");
                         cdk.saveMolecule(model, file, format, true, properties);
                     } else {
                         cdk.saveMolecule( model, file, format, true);
@@ -117,7 +133,7 @@ public class ExtractMolecules extends AbstractHandler implements IHandler {
                             if(mol!=null)
                                 return mol;
                         }
-                        throw new RuntimeException( "Selection is not a molecule "
+                        throw new RuntimeException("Selection is not a molecule "
                                                     + o);
                     }
 
@@ -126,7 +142,8 @@ public class ExtractMolecules extends AbstractHandler implements IHandler {
                         return selected.size();
                     }
 
-                    public void markDirty( int index, ICDKMolecule moleculeToSave ) {
+                    public void markDirty( int index,
+                                           ICDKMolecule moleculeToSave ) {
 
                         throw new UnsupportedOperationException();
 
