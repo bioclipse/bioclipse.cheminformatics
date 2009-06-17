@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculeUtils;
@@ -73,7 +75,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
     ICDKMolecule lastRead = null;
 
 //    List<Object> visibleProperties= new ArrayList<Object>(10);
-    private Set<Object> availableProperties= new HashSet<Object>();
+    private Set<Object> availableProperties;
 
     Map<Integer, ICDKMolecule> edited = new HashMap<Integer, ICDKMolecule>();
 
@@ -232,24 +234,30 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
     }
 
     private void readProperties(ICDKMolecule molecule) {
-
-        availableProperties.addAll(
+        if(availableProperties==null) {
+            availableProperties = new HashSet<Object>();
+            availableProperties.addAll(
                         molecule.getAtomContainer()
                         .getProperties().keySet());
+        }
     }
 
     public Collection<Object> getPropertyKeys() {
+        if(availableProperties==null) return Collections.emptySet();
         availableProperties.addAll( propertyList.keySet() );
         return new HashSet<Object>(availableProperties);
     }
 
     public void addPropertyKey( String name ) {
-
+        if(availableProperties == null)
+            availableProperties = new HashSet<Object>();
         availableProperties.add( name );
     }
 
     public void removePropertyKey(Object key) {
+        if(availableProperties == null) return;
         availableProperties.remove( key );
+        propertyList.remove( key );
     }
 
     @SuppressWarnings("unchecked")

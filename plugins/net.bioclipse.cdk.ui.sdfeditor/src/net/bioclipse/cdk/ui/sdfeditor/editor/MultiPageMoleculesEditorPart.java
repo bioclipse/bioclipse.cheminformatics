@@ -323,6 +323,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
 
    private void syncJCP() {
        ICDKMolecule newMol = jcpPage.getCDKMolecule();
+       if(newMol == null) return;
        if(jcpPage.isDirty())
            setDirty(true);
        calculateProperties( newMol );

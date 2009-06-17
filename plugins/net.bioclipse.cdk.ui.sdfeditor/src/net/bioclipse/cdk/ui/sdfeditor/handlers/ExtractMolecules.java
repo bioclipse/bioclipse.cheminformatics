@@ -90,6 +90,7 @@ public class ExtractMolecules extends AbstractHandler implements IHandler {
 
                 IFile file= doSaveAs( HandlerUtil.getActiveShell( event ),
                                       formats );
+                if(file == null) return null;
                 IPath path = file.getLocation();
                 try {
                     // do a nasty trick... the SaveAs dialog does not allow us to
