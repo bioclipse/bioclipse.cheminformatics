@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -273,6 +274,9 @@ public class MoleculeTableManager implements IBioclipseManager {
         }
 
         IFile target = null;
+        Collection<Object> availableProperties = null;
+        if(model instanceof SDFIndexEditorModel)
+            availableProperties = ((SDFIndexEditorModel) model).getPropertyKeys();
         SubMonitor loopProgress = subMonitor.newChild( 1000 );
         loopProgress.setWorkRemaining( 1000*model.getNumberOfMolecules() );
         loopProgress.subTask( "Writing to file" );
@@ -291,7 +295,14 @@ public class MoleculeTableManager implements IBioclipseManager {
                 else {
                     mol = new Molecule( ac );
                     //Properties are lost in this CDK operation, so copy them
-                    mol.setProperties( ac.getProperties() );
+                    if(availableProperties!=null) {
+                        Set<Object> acProps = ac.getProperties().keySet();
+                        acProps.retainAll( availableProperties);
+                        for(Object o:acProps) {
+                            mol.setProperty( o, ac.getProperty( o ) );
+                        }
+                    }else
+                        mol.setProperties( ac.getProperties() );
                 }
                 // get calculated properties form extension
                 for(IPropertyCalculator<?> property:
@@ -418,6 +429,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                 Matcher matcher = pNamePattern.matcher( rawProperty );
                 if(matcher.find() && matcher.groupCount()>0) {
                     name = matcher.group( 1 );
+                    model.addPropertyKey(name);
                     String value=rawProperty.substring( matcher.end( 0 ));
                     IPropertyCalculator<?> calculator = model.getCalculator( name );
                     if(calculator !=null) {
