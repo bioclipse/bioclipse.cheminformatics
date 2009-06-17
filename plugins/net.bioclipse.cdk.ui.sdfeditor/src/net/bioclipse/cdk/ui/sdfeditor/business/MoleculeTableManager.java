@@ -204,22 +204,28 @@ public class MoleculeTableManager implements IBioclipseManager {
     public void calculateProperty( SDFIndexEditorModel model,
                                    IPropertyCalculator<?>[] calculators,
                                    IProgressMonitor monitor) {
-        monitor.beginTask( "Calculating properties",
+        SubMonitor progress = SubMonitor.convert( monitor,1000 );
+        progress.beginTask( "Calculating properties",
                            model.getNumberOfMolecules()*1000);
         for(int i=0;i<model.getNumberOfMolecules();i++) {
-            for(IPropertyCalculator<?> calculator:calculators)
-            model.setPropertyFor( i, calculator.getPropertyName(),
-                             calculator.calculate( model.getMoleculeAt( i ) ) );
-            monitor.worked( 1000 );
-            if(monitor.isCanceled())
-                throw new OperationCanceledException();
-            if(i%100 == 0) {
-                monitor.subTask( String.format( "%d/%d", i+1
+            progress.subTask( String.format( "%d/%d", i+1
                                              ,model.getNumberOfMolecules() ) );
+            SubMonitor calculateProgress = progress.newChild( 1000);
+            calculateProgress.beginTask( "property", calculators.length*100 );
+            int prop=1;
+            for(IPropertyCalculator<?> calculator:calculators) {
+                calculateProgress.subTask( String.format( "%d/%d", prop++,
+                                                          calculators.length) );
+                model.setPropertyFor( i, calculator.getPropertyName(),
+                             calculator.calculate( model.getMoleculeAt( i ) ) );
+                calculateProgress.worked( 100 );
+                if(progress.isCanceled())
+                    throw new OperationCanceledException();
             }
+            calculateProgress.done();
         }
         model.setDirty(true);
-        monitor.done();
+        progress.done();
     }
 
     public void calculateProperties( ICDKMolecule molecule,
