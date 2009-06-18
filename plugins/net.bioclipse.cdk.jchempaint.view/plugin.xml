@@ -13,5 +13,24 @@
             restorable="true">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:net.bioclipse.cdk.ui.view.Java2DRendererView">
+         <command
+               commandId="net.bioclipse.cdk.jchempaint.view.open"
+               label="Open"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="net.bioclipse.cdk.jchempaint.view.OpenJCPHandler"
+            id="net.bioclipse.cdk.jchempaint.view.open"
+            name="Open">
+      </command>
+   </extension>
 
 </plugin>

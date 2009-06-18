@@ -30,15 +30,26 @@ import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
@@ -55,15 +66,18 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
  * 2D Rendering widget using the new SWT based JChemPaint renderer.
  */
 public class JChemPaintView extends ViewPart
-    implements ISelectionListener {
+    implements ISelectionListener, ISelectionProvider {
 
     public static final String VIEW_ID="net.bioclipse.cdk.ui.view.Java2DRendererView";
-    
+
     private static final Logger logger = Logger.getLogger(JChemPaintView.class);
 
     private JChemPaintWidget canvasView;
     private ChoiceGenerator extensionGenerator;
     private IPartListener2 partListener;
+    private IAtomContainer ac;
+
+    private ListenerList listeners = new ListenerList();
 
     /**
      * The constructor.
@@ -157,6 +171,7 @@ public class JChemPaintView extends ViewPart
             }
 
         };
+        createContextMenu();
         getSite().getPage().addPartListener( partListener );
         parent.addDisposeListener( new DisposeListener () {
 
@@ -168,6 +183,28 @@ public class JChemPaintView extends ViewPart
 
         });
 
+    }
+
+    private void createContextMenu() {
+        // Create menu manager.
+        MenuManager menuMgr = new MenuManager();
+        menuMgr.setRemoveAllWhenShown(true);
+        menuMgr.addMenuListener(new IMenuListener() {
+            public void menuAboutToShow(IMenuManager mgr) {
+                fillContextMenu(mgr);
+            }
+        });
+
+        // Create menu.
+        Menu menu = menuMgr.createContextMenu(canvasView);
+        canvasView.setMenu(menu);
+
+        // Register menu for extension.
+        getSite().registerContextMenu(menuMgr, this);
+    }
+
+    private void fillContextMenu(IMenuManager mgr) {
+        mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
     }
 
     @Override
@@ -322,6 +359,7 @@ public class JChemPaintView extends ViewPart
     }
 
     private void setAtomContainer(IAtomContainer ac) {
+        this.ac = ac;
         IChemModel model = null;
        if(ac!= null) {
             try {
@@ -345,5 +383,35 @@ public class JChemPaintView extends ViewPart
     public void showExternalGenerators(boolean show) {
         extensionGenerator.setUse( show );
         canvasView.redraw();
+    }
+
+    public void addSelectionChangedListener(
+                                         ISelectionChangedListener listener ) {
+        listeners.add( listener );
+    }
+
+    public ISelection getSelection() {
+        ICDKMolecule mol;
+        try {
+            mol = new CDKMolecule((IAtomContainer)ac.clone());
+            return new StructuredSelection(mol);
+        } catch ( CloneNotSupportedException e ) {
+           logger.debug( "Could not clone atomcontainer" );
+        }
+        return StructuredSelection.EMPTY;
+    }
+
+    public void removeSelectionChangedListener(
+                                         ISelectionChangedListener listener ) {
+        listeners.remove( listener );
+
+    }
+
+    public void setSelection( ISelection selection ) {
+            SelectionChangedEvent event = new SelectionChangedEvent( this,
+                                                                     selection);
+            for(Object o:listeners.getListeners()) {
+                ((ISelectionChangedListener)o).selectionChanged( event );
+            }
     }
 }
