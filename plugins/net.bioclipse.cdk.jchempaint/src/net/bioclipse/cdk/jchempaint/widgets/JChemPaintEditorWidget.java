@@ -19,11 +19,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.vecmath.Point2d;
+
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.Activator;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager;
+import net.bioclipse.cdk.jchempaint.business.IJChemPaintManager;
 import net.bioclipse.cdk.jchempaint.editor.SWTMouseEventRelay;
 import net.bioclipse.cdk.jchempaint.undoredo.SWTUndoRedoFactory;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
@@ -46,12 +49,20 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -141,6 +152,74 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 redraw();
             }
         });
+
+        int ops = DND.DROP_COPY;
+        final TextTransfer textTransfer = TextTransfer.getInstance();
+        Transfer[] transfers = new Transfer[] { textTransfer};
+        this.addDropSupport(ops, transfers, new DropTargetListener() {
+
+            public void dragEnter( DropTargetEvent event ) {
+                event.detail = DND.DROP_COPY;
+            }
+
+            public void dragLeave( DropTargetEvent event ) {
+
+                // TODO Auto-generated method stub
+
+            }
+
+            public void dragOperationChanged( DropTargetEvent event ) {
+                event.detail = DND.DROP_COPY;
+            }
+
+            public void dragOver( DropTargetEvent event ) {
+
+                event.feedback = DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL;
+                if (textTransfer.isSupportedType(event.currentDataType)) {
+                    // NOTE: on unsupported platforms this will return null
+                    Object o = textTransfer.nativeToJava(event.currentDataType);
+                    String t = (String)o;
+                    if (t != null) System.out.println(t);
+                }
+
+            }
+
+            public void drop( DropTargetEvent event ) {
+                if (textTransfer.isSupportedType(event.currentDataType)) {
+                    String text = (String)event.data;
+
+//                    ICDKManager cdk = net.bioclipse.cdk.business.Activator
+//                                        .getDefault().getJavaCDKManager();
+//                    try {
+//                        ICDKMolecule mol = cdk.fromSMILES( text );
+//                        IAtomContainer ac = mol.getAtomContainer();
+//                        if(ac.getAtomCount()==1) {
+//                            IJChemPaintManager jcp = Activator.getDefault()
+//                                                            .getJavaManager();
+//                            Point2d point = new Point2d(event.x,event.y);
+//                            jcp.addAtom( ac.getAtom( 0 ), point);
+//                        }
+//                    } catch ( BioclipseException e ) {
+//                        logger.debug( "Could not create molecuel form text" );
+//                    }
+                    IJChemPaintManager jcp = Activator.getDefault()
+                    .getJavaManager();
+                    Point p = JChemPaintEditorWidget.this.toControl( event.x,
+                                                                     event.y );
+                    Point2d point = getRenderer().toModelCoordinates( p.x,
+                                                                      p.y );
+                    jcp.addAtom( text, point);
+                }
+            }
+
+            public void dropAccept( DropTargetEvent event ) {
+
+                // TODO Auto-generated method stub
+
+            }
+
+        });
+
     }
 
     private void setupControllerHub( ) {
@@ -603,5 +682,13 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         if(dx!=0 || dy!=0)
             getRenderer().shiftDrawCenter( dx, dy);
+    }
+
+    public void addDropSupport(int operations, Transfer[] transferTypes,
+                               final DropTargetListener listener) {
+        Control control = this;
+        DropTarget dropTarget = new DropTarget(control, operations);
+        dropTarget.setTransfer(transferTypes);
+        dropTarget.addDropListener(listener);
     }
 }

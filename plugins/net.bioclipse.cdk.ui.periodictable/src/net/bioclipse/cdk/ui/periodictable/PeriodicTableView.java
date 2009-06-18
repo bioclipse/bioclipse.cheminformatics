@@ -32,6 +32,12 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
@@ -49,6 +55,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.part.ViewPart;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.PeriodicTableElement;
@@ -64,7 +71,7 @@ import org.openscience.cdk.tools.PeriodicTable;
  */
 @SuppressWarnings("serial")
 public class PeriodicTableView extends ViewPart implements ISelectionProvider{
-    
+
     String[] elements;
     ColorAWTtoSWTConverter colorConverter;
 
@@ -150,6 +157,29 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
 
        initSelection();
        getSite().setSelectionProvider( this );
+
+       int ops = DND.DROP_COPY;
+       Transfer[] transfers = new Transfer[] { TextTransfer.getInstance()};
+       this.addDragSupport(ops, transfers, new DragSourceListener() {
+
+        public void dragFinished( DragSourceEvent event ) {
+        }
+
+        public void dragSetData( DragSourceEvent event ) {
+
+            // Provide the data of the requested type.
+            if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
+                event.data = selection.getChemobj().getSymbol();
+            }
+        }
+
+        public void dragStart( DragSourceEvent event ) {
+            if(selection==null)
+                event.doit = false;
+        }
+
+       });
+
     }
 
     private String checkHit(Point p) {
@@ -171,7 +201,7 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
 
         canvas.addMouseListener( new MouseAdapter() {
            @Override
-            public void mouseUp( MouseEvent e ) {
+            public void mouseDown( MouseEvent e ) {
 
                String s = checkHit( new Point(e.x,e.y) );
                if(s!=null) {
@@ -372,4 +402,12 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
             });
         }
     }
+
+    public void addDragSupport(int operations, Transfer[] transferTypes, DragSourceListener listener) {
+
+        Control myControl = canvas;
+        final DragSource dragSource = new DragSource(myControl, operations);
+        dragSource.setTransfer(transferTypes);
+        dragSource.addDragListener(listener);
+      }
 }
