@@ -8,7 +8,7 @@
           allowMultiple="false"
           class="net.bioclipse.jmol.cdk.views.JmolView"
           icon="icons/molecule3D.png"
-          category="net.bioclipse.cdk.category"
+          category="net.bioclipse.chemoinformatics.views.category"
           id="net.bioclipse.jmol.cdk.views.JmolView"
           name="Jmol">
     </view>
