@@ -712,5 +712,19 @@
          </description>
       </view>
     </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="net.bioclipse.chemoinformatics.ChemoinformaticsPerspective">
+         <view
+               id="net.bioclipse.jmol.views.JmolConsoleView"
+               minimized="false"
+               relationship="stack">
+         </view>
+         <viewShortcut
+               id="net.bioclipse.jmol.views.JmolConsoleView">
+         </viewShortcut>
+      </perspectiveExtension>
+   </extension>
 
 </plugin>
