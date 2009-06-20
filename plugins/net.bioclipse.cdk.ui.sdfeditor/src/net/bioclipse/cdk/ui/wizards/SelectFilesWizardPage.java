@@ -45,11 +45,13 @@ public class SelectFilesWizardPage extends WizardPage {
         private IStructuredSelection selectedFiles = null;
         private Button includeRecursivlyButton;
         private static final Logger logger = Logger.getLogger( SelectFilesWizardPage.class );
-        protected SelectFilesWizardPage(boolean withCheckbox) {
+        private ISelection sel;
+        protected SelectFilesWizardPage(boolean withCheckbox, ISelection sel) {
                 super("New SD File");
                 this.withCheckbox=withCheckbox;
                 setTitle("Select files to include");
                 setDescription("All structures you select will be added to the sd file.");
+                this.sel = sel;
         }
         public void createControl(Composite parent) {
                 Composite container = new Composite(parent, SWT.NULL);
@@ -116,8 +118,11 @@ public class SelectFilesWizardPage extends WizardPage {
                                 }
                         }
                 });
-                treeViewer.setSelection(new StructuredSelection(ResourcesPlugin.getWorkspace().getRoot().findMember(".")));
-                setPageComplete(false);
+                treeViewer.setSelection(sel,true);
+                if(sel!=null && !sel.isEmpty())
+                    setPageComplete( true );
+                else
+                    setPageComplete(false);
                 setControl(container);
         }
         public IStructuredSelection getSelectedRes() {

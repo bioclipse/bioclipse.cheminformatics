@@ -57,7 +57,7 @@ public class NewSdfWizard extends BasicNewResourceWizard{
             newsdPage.setTitle("Choose name and location for new file");
             newsdPage.setDescription("Extension will be .sdf if none is given");
             addPage(newsdPage);
-            specPage = new SelectFilesWizardPage(true);
+            specPage = new SelectFilesWizardPage(true, sel);
             addPage(specPage);
 
         }

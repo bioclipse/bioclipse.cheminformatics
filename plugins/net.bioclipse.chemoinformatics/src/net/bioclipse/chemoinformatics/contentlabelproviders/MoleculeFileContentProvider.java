@@ -57,10 +57,9 @@ public class MoleculeFileContentProvider implements ITreeContentProvider {
                 }
             } 
             catch (CoreException e) {
-                LogUtils.handleException(e,logger);
+                LogUtils.handleException(e,logger, net.bioclipse.chemoinformatics.Activator.PLUGIN_ID);
             } catch ( IOException e ) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LogUtils.handleException(e,logger, net.bioclipse.chemoinformatics.Activator.PLUGIN_ID);
             }
         }
         return childElements.toArray();
@@ -82,7 +81,10 @@ public class MoleculeFileContentProvider implements ITreeContentProvider {
         return false;
     }
     public Object getParent(Object element) {
-        return ( (IFolder)element ).getParent();
+        if( element instanceof IFolder)
+            return ( (IFolder)element ).getParent();
+        else
+            return null;
     }
     public boolean hasChildren(Object element) {
         return getChildren(element).length > 0;
