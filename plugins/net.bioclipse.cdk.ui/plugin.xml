@@ -348,4 +348,15 @@
     </commonWizard>
   </extension>
 
+   <extension
+         point="org.eclipse.ui.cheatsheets.cheatSheetContent">
+      <cheatsheet
+            category="net.bioclipse.chemoinformatics.cheatsheet.category"
+            composite="true"
+            contentFile="cheatsheets/scriptingCDK.xml"
+            id="net.bioclipse.cdk.ui.scriptingcdk"
+            name="Scripting CDK in Bioclipse"/>
+   </extension>
+
+
 </plugin>

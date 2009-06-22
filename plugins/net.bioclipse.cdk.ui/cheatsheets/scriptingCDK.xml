@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compositeCheatsheet name="Scripting CDK">
+   <taskGroup kind="set" name="Scripting CDK" skip="false">
+      <intro>
+         <b>Introduction</b>
+This cheat sheet is a tutorial for scripting CDK in Bioclipse.
+      </intro>
+      <onCompletion>
+         <b>Conclusion</b>
+This is a collection of tutorials for scripting CDK in Bioclipse.<br/><br/>
+Comments and suggestions are welcome to &lt;ola.spjuth(AT)farmbio.uu.se&gt;
+      </onCompletion>
+      <task kind="cheatsheet" name="Scripting basics" skip="true">
+         <intro>
+            <b>Introduction</b><br/>
+This tutorial demonstrates the basics of scripting in Bioclipse.
+         </intro>
+         <onCompletion>
+            <b>Conclusion</b><br/>
+Scripting in Bioclipse is easy. Its is very powerful to combine Javascript and Managers which enables creation of advanced scripts.
+         </onCompletion>
+         <param name="path" value="basicScripting.xml">
+         </param>
+      </task>
+      <task kind="cheatsheet" name="Basic I/O" skip="true">
+         <intro>
+            <b>Introduction</b><br/>
+This cheat sheet demonstrates basic I/O using CDK in Bioclipse.
+         </intro>
+         <onCompletion>
+            <b>Conclusion</b><br/>
+CDK I/O in Bioclipse is straightforward and powerful, and forms the basis of more advanced scripting.
+         </onCompletion>
+         <param name="path" value="basicIO.xml">
+         </param>
+      </task>
+      <task kind="cheatsheet" name="Editing and running scripts" skip="false">
+         <intro>
+            <b>Introduction</b><br/>
+This tutorial demonsrates how to edit and run scripts in Bioclipse, as well as how to download Gists.
+         </intro>
+         <onCompletion>
+            <b>Conclusion</b><br/>
+Editing and running scripts is easy in Bioclipse. To publish scripts as Gists makes them available for other users, and provides means to easily update a new version of a script.
+         </onCompletion>
+         <param name="path" value="editrunscripts.xml">
+         </param>
+      </task>
+      <task kind="cheatsheet" name="Sample CDK scripts" skip="false">
+         <intro>
+            <b>Introduction</b><br/>
+This tutorial downloads, opens, and runs some script to demonstrate CDK functionality in Bioclipse.
+         </intro>
+         <onCompletion>
+            <b>Conclusion</b><br/>
+It is very powerful to script CDK from Bioclipse. These scripts is just a taste of what is possible!
+         </onCompletion>
+         <param name="path" value="sampleCDKscripts.xml">
+         </param>
+      </task>
+   </taskGroup>
+</compositeCheatsheet>

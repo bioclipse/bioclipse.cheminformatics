@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet
+      title="Sample CDK scripts">
+   <intro>
+      <description>
+         This tutorial shows some sampel scripts demonstrating CDK functionality in Bioclipse.
+      </description>
+   </intro>
+
+   <item
+         title="Step 1: Download and visualize proteins">
+      <description>
+         The following script downloads, opens, and runs a Gist (95779 to retrieve a 
+         PDB via a Web service from the EBI databases, open it with Jmol, and do 
+         some custom visualization.
+      </description>
+      
+          	<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="res=gist.download(95779,&quot;/Virtual/dnaiso.js&quot;); ui.open(res); js.executeFile(res)"/>
+      
+   </item>
+   
+      <item
+         title="Step 2: Multiple Molecules">
+      <description>
+         The following script downloads, opens, and runs a Gist (95790) to load multiple molecules from 
+         Sample Data (must be installed) and open in MoleculesTable.
+         
+      </description>
+      
+          	<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="res=gist.download(95790,&quot;/Virtual/multimol.js&quot;); ui.open(res); js.executeFile(res)"/>
+      
+   </item>
+   
+         <item
+         title="Step 3: Generate 2D, 3D, and 5D">
+      <description>
+         The following script downloads, opens, and runs a Gist (95755) to load multiple molecules from 
+         Sample Data (must be installed) and open in MoleculesTable.
+         
+      </description>
+      
+          	<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="res=gist.download(95755,&quot;/Virtual/gencoords.js&quot;); ui.open(res); js.executeFile(res)"/>
+      
+   </item>
+   
+         <item
+         title="Step 4: Script JCP Editing">
+      <description>
+         The following script downloads, opens, and runs a Gist (96594) to 
+         iteratively build a molecule in JCP.
+         
+      </description>
+      
+          	<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="res=gist.download(96594,&quot;/Virtual/buildmol.js&quot;); ui.open(res); js.executeFile(res)"/>
+      
+   </item>
+</cheatsheet>

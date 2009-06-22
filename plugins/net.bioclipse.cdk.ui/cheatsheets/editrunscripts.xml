@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet
+      title="Editing and running scripts">
+   <intro>
+      <description>
+         <b>Contents</b><br/>
+This tutorial demonstrates how to edit and run scripts in Bioclipse.
+      </description>
+   </intro>
+
+   <item
+         title="Step 1: Open an existing script">
+      <description>
+         
+		Note: You need Sample Data installed to complete this step.<br/><br/>
+		
+		In the navigator, exapand the <b>Sample Data</b> project, navigate to the 
+		folder <b>Javascripts</b> and double-click on the file <b>extractsmilesAndMass.js</b>. 
+		This opens the file in an editor.
+         
+      </description>
+      <command
+            required="false"
+            serialization="org.eclipse.ui.navigate.openResource(filePath=/Sample Data/Javascripts/extractsmilesAndMass.js)"/>
+   </item>
+
+   <item
+         title="Step 2: Run the active script">
+      <description>
+         
+         To run the script, press the Run button in the toolbar. Note that the 
+         editor must be activefor this to work; if the button is geryed out you can enable 
+         it by clicking in the editor.
+
+      </description>
+
+    <action
+			pluginId="net.bioclipse.jseditor"
+			class="net.bioclipse.jseditor.actions.RunRhinoScriptAsJobAction"/>
+   </item>
+   
+   <item
+         title="Step 3: View Gist for Bioclipse">
+      <description>
+
+		Gists are versioned scripts available from http://gist.github.com. &lt;p/&gt;
+		You can find scripts for Bioclipse on Delicious, http://delicious.com/tag/bioclipse+gist.
+
+      </description>
+      <command
+            required="false"
+            serialization="org.eclipse.ui.browser.openBrowser(url=http://delicious.com/tag/bioclipse+gist )"/>
+   </item>
+
+   <item
+         title="Step 4: Download Gists into Bioclipse">
+      <description>
+
+		Bioclipse has Gist support built-in. use the command:<br/><br/>
+	
+		<b>gist.download(95755)</b><br/><br/>
+		
+		The result in the Javascript console tells you the name of teh downloaded file.
+		
+      </description>
+    	<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="gist.download(95755)"/>
+      
+   </item>
+
+   <item
+         title="Step 5: Download Gists to specified file">
+      <description>
+
+		You can say where the Gist should be downloaded to with the command:<br/><br/>
+	
+		<b>gist.download(95779,”/Virtual/dnaiso.js”)</b>
+		
+      </description>
+    	<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="gist.download(95779,&quot;/Virtual/dnaiso.js&quot;)"/>
+      
+   </item>   
+   
+</cheatsheet>

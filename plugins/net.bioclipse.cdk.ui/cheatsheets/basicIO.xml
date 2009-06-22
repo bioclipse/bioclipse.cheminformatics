@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="Scripting CDK from Bioclipse">
+	<intro>
+		<description>
+			This tutorial covers basic I/O of molecules using CDK in Bioclipse.
+		</description>
+	</intro>
+
+
+ <item
+       skip="false"
+       title="Step 1: Create molecule from SMILES">
+    <description>
+    	To create a molecule from SMILES, use the command:<br/><br/>
+ <b>mol=cdk.fromSMILES(&quot;CCCO&quot;</b><br/>
+    </description>
+    <action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="mol=cdk.fromSMILES(&quot;CCCO&quot;)"/>
+ </item>
+
+
+
+ <item
+       skip="false"
+       title="Step 2: Some simple CDK calculations">
+    <description>
+
+    	Try entering the following commands:<br/><br/>
+		 <b>cdk.calculateMass(mol)</b><br/><br/>
+		 <b>cdk.molecularFormula(mol)</b><br/><br/>
+		 
+		 Don't forget Tab-completion!
+
+    </description>
+
+    <!--action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="cdk.calculateMass(mol)"
+			param2="cdk.molecularFormula(mol)"/-->
+ </item>
+
+
+ <item
+       skip="false"
+       title="Step 3: Load molecule from file">
+    <description>
+
+		Note: You need Sample Data installed to complete this step.<br/><br/>
+
+    	To load a molecule, try the following command:<br/><br/>
+
+		 <b>mol=cdk.loadMolecule("/Sample Data/2D structures/ATP.mol")</b><br/>
+    	 </description>
+
+    <action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="mol=cdk.loadMolecule(&quot;/Sample Data/2D structures/ATP.mol&quot;)"/>
+ </item>
+
+ <item
+       skip="false"
+       title="Step 4: Load multiple molecules from file">
+    <description>
+
+		Note: You need Sample Data installed to complete this step.<br/><br/>
+
+    	To load multiple molecules, try the following command:<br/><br/>
+
+		 <b>mols=cdk.loadMolecules("/Sample Data/SDF/Fragments2.sdf")</b><br/>
+    	 </description>
+
+    <action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="mols=cdk.loadMolecules(&quot;/Sample Data/SDF/Fragments2.sdf&quot;)"/>
+ </item>
+
+ <item
+       skip="false"
+       title="Step 5: Manipulate a list of molecules">
+    <description>
+
+    	Try the following commands:<br/><br/>
+
+		<b>mols.size()</b><br/><br/>
+		<b>mol=mols.get(3)</b><br/><br/>
+		<b>cdk.calculateSMILES(mols.get(4))</b><br/><br/>
+
+    	 </description>
+    <!--action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="mols=cdk.loadMolecules(&quot;/Sample Data/SDF/Fragments2.sdf&quot;)"
+			param2="mols.size()"
+			param3="mol=mols.get(3)"
+			param4="cdk.calculateSMILES(mols.get(4))"/-->
+
+ </item>
+
+<item
+       skip="false"
+       title="Step 6: Save a molecule">
+    <description>
+
+    	Try the following commands:<br/><br/>
+
+		
+		<b>cdk.saveMolecule(mols.get(2),"/Sample Data/extracted.cml")</b><br/><br/>
+		<b>cdk.saveMDLMolfile(mols.get(3),"/Sample Data/extracted.mol")</b><br/><br/>
+		
+
+    	 </description>
+    <!--action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="cdk.saveMolecule(mols.get(2),&quot;/Sample Data/extracted.cml&quot;)"
+			param2="cdk.saveMDLMolfile(mols.get(3),&quot;/Sample Data/extracted.mol&quot;)"/-->
+
+ </item>
+
+</cheatsheet>
