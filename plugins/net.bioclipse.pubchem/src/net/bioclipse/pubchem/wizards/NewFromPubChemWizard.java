@@ -11,17 +11,19 @@
 package net.bioclipse.pubchem.wizards;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.pubchem.business.IPubChemManager;
+import net.bioclipse.pubchem.business.PubChemManager;
 import net.bioclipse.scripting.ui.Activator;
 import net.bioclipse.scripting.ui.business.IJsConsoleManager;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
@@ -66,52 +68,46 @@ public class NewFromPubChemWizard extends BasicNewResourceWizard {
 	}
 
 	public boolean performFinish() {
-	    try {
-            getContainer().run(true, true, new FinishRunnable());
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            return false;
-        } catch (InterruptedException exception) {
-            return false; // return, but keep wizard
-        }
+	    Job job = new Job("Searching PubChem...") {
+	        protected IStatus run(IProgressMonitor monitor) {
+	            IJsConsoleManager js = Activator.getDefault().getJsConsoleManager();
+	            PubChemManager pubchem = new PubChemManager();
+
+	            try {
+	                System.out.println("query: " + query);
+	                List<Integer> searchResults =
+	                    pubchem.search(query, monitor);
+
+	                int max = Math.min(15, searchResults.size());
+	                for (int i=0; i<max; i++) {
+	                    int cid = searchResults.get(i);
+	                    String filename = "/Virtual/" + query.replace(" ", "") +
+	                    "." + cid + ".xml";
+	                    js.print("downloading CID " + cid + "...\n");
+	                    pubchem.loadCompound(
+	                        cid,
+	                        ResourcePathTransformer.getInstance()
+	                            .transform(filename),
+	                        monitor
+	                    );
+	                }
+	            } catch (IOException e) {
+	                js.print("Downloading the search results failed: " + e.getMessage());
+	                e.printStackTrace();
+	            } catch (BioclipseException e) {
+	                js.print("Downloading the search results failed: " + e.getMessage());
+	                e.printStackTrace();
+	            } catch (CoreException e) {
+	                js.print("Downloading the search results failed: " + e.getMessage());
+	                e.printStackTrace();
+//	                return Status.
+	            }
+	            return Status.OK_STATUS;
+	        }
+	    };
+	    job.setPriority(Job.SHORT);
+	    job.schedule();
         return true;
 	}
 
-    class FinishRunnable implements IRunnableWithProgress {
-
-        public FinishRunnable() {}
-
-        public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-            downloadGist(monitor);
-        }
-
-        private void downloadGist(IProgressMonitor monitor) throws InvocationTargetException {
-            IJsConsoleManager js = Activator.getDefault().getJsConsoleManager();
-            IPubChemManager pubchem = net.bioclipse.pubchem.Activator.getDefault()
-                .getJavaManager();
-
-            try {
-                System.out.println("query: " + query);
-                List<Integer> searchResults = pubchem.search(query);
-                js.print("Found hits: " + searchResults.size() + "\n");
-
-                int max = Math.min(15, searchResults.size());
-                for (int i=0; i<max; i++) {
-                  int cid = searchResults.get(i);
-                  String filename = "/Virtual/" + query.replace(" ", "") + "." + cid + ".xml";
-                  js.print("downloading CID " + cid + "...\n");
-                  pubchem.loadCompound(cid, filename);
-                }
-            } catch (IOException e) {
-                js.print("Downloading the search results failed: " + e.getMessage());
-                e.printStackTrace();
-            } catch (BioclipseException e) {
-                js.print("Downloading the search results failed: " + e.getMessage());
-                e.printStackTrace();
-            } catch (CoreException e) {
-                js.print("Downloading the search results failed: " + e.getMessage());
-                e.printStackTrace();
-            }
-        }
-    }
 }
