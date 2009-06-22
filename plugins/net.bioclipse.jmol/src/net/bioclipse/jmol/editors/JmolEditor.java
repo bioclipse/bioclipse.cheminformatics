@@ -354,7 +354,7 @@ public class JmolEditor extends MultiPageEditorPart
      * Saves the multi-page editor's document.
      */
     public void doSave(IProgressMonitor monitor) {
-        getEditor(0).doSave(monitor);
+        //Not implemented
     }
     
     /**
@@ -363,12 +363,7 @@ public class JmolEditor extends MultiPageEditorPart
      * editor's input to correspond to the nested editor's.
      */
     public void doSaveAs() {
-        IEditorPart editor = getActiveEditor();
-        if (editor != null) {
-            editor.doSaveAs();
-            setPageText(0, editor.getTitle());
-            setInput(editor.getEditorInput());
-        }
+        //Not implemented
     }
     
     /* (non-Javadoc)
@@ -390,23 +385,16 @@ public class JmolEditor extends MultiPageEditorPart
      * Method declared on IEditorPart.
      */
     public boolean isSaveAsAllowed() {
-        return true;
+        return false;
     }
     
     /**
-     * Calculates the contents of page 2 when the it is activated.
-     */
-    protected void pageChange(int newPageIndex) {
-        super.pageChange(newPageIndex);
-        if (newPageIndex == 0) {
-            //TODO
-        }
-    }
-    
-    /**
-     * Closes all project files on project close.
+     * Handle resource changes
      */
     public void resourceChanged(final IResourceChangeEvent event){
+        /*
+         * Closes all project files on project close.
+         */
         if (event.getType() == IResourceChangeEvent.PRE_CLOSE) {
             Display.getDefault().asyncExec(new Runnable() {
                 public void run() {
