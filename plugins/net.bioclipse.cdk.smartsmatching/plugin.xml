@@ -18,6 +18,14 @@
       </contexts>
    </extension>
    
+       <extension point="org.eclipse.ui.perspectiveExtensions"> 
+        <perspectiveExtension 
+            targetID="net.bioclipse.chemoinformatics.ChemoinformaticsPerspective"> 
+            <viewShortcut id="net.bioclipse.cdk.smartsmatching.views.SmartsMatchingView"/> 
+        </perspectiveExtension> 
+    </extension> 
+   
+   
    <extension point="org.eclipse.core.runtime.preferences">
 		<initializer class="net.bioclipse.cdk.smartsmatching.prefs.SmartsMatchingPrefsInitializer"/>
 	</extension>
