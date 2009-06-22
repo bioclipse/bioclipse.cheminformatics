@@ -3,96 +3,101 @@
 	<intro>
 		<description>
 			This cheat sheet demonstrates general chemistry (or, more strictly speaking, chemoinformatics) tasks you can 
-			do in Bioclipse. These are centered around handling molecular data files and calculating molecular properties. 
+			do in Bioclipse. These are centered around handling molecular data files.
 		</description>
 	</intro>
-	<item title="Step 0: Prerequisites">
-		<description>
- 			You need the Chemoinformatics feature installed to run this cheat
-sheet to run the first steps. Later steps are optional
-and depend on the Speclipse and XMPP features to be installed
-too.
- 		</description>
-	</item>
 	<item
        href="/net.bioclipse.cdk.jchempaint/doc/jcpEditor.html"
-       title="Option 1: Draw and Edit single Structures, handle File Formats">
+       title="Open and Edit structures in 2D">
 		<description>
-			The JChemPaint editor allows graphical viewing and editing of 2D
+			The JChemPaint editor (JCP) allows graphical viewing and editing of 2D
 			diagrams of chemical structures in various formats. You can also
 			draw new chemical structures from scratch, and save in CML and
-			MDL molfile formats. See help via ? on top of this section for
-			details.
+			MDL molfile formats.<br/><br/>
+			Double-click a molecule-file in the Navigator to open it in JCP or click "Perform" below to open a simple molecule.
+			Use the toolbar for selecting the desired tool, and click in the editor to add/remove/move chemical structures.
 		</description>
+	    <action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+	        required="false"
+			param1="ui.open(cdk.fromSMILES(&quot;C1CCCCC1CC(CN(CC))CO&quot;"/>
 	</item>
+
+		<item
+       href="/net.bioclipse.cdk.jchempaint/doc/jcpEditor.html"
+       title="Draw new structures in 2D from scratch">
+		<description>
+			To start drawing a new molecule in 2D, use the top menu <b>File > New... </b>  and select <b>Molecule</b>.
+		</description>
+	  <command
+        required="false"
+        serialization="org.eclipse.ui.newWizard(newWizardId=net.bioclipse.cdk.jchempaint.wizards.NewMoleculeWizard)"/>
+	</item>
+
 	<item
        href="/net.bioclipse.spectrum/html/sdfEditor.html"
-       title="Option 2: Handle Multiple Structure Files">
+       title="Open files with multiple structures">
 		<description>
 			Files with multiple structures (MDL SD files, and SMILES files) are
-			handled by the SDF Editor (use ? for details). This editor also
-			offers extraction of files (e.g. single files for editing in
-			JChemPaint). Creation of new SD files can be performed with
-			a New Wizard.
+			handled by the Molecule Table Editor. Double-click a molecule-file 
+			in the Navigator to open it in JCP or click "Perform" below to open 
+			a generated list of molecules.<br/><br/>
+			
+			Try right-clicking in the MoleculesTable to see available options 
+			that can be performed on the molecules. For example you can select one or more molecules in the table and extract them to a separate file. Another option lets you calculate properties for all molecules in the file.
+			
 		</description>
+		    <action
+				pluginId="net.bioclipse.scripting.ui"
+				class="net.bioclipse.scripting.ui.actions.ScriptAction"
+	        	required="false"
+				param1="lst=cdk.createMoleculeList()"
+				param2="lst.add(cdk.fromSMILES(&quot;CCCCON=O&quot;)"
+				param3="lst.add(cdk.fromSMILES(&quot;S3CC4C1NC1C2CSC(C)C2C4(C3)&quot;)"
+				param4="ui.open(lst)" />
+		
 	</item>
+
 	<item
-       href="/net.bioclipse.cdk.ui/html/maintopic.html#tanimoto"
-       title="Option 3: Compare molecules">
+       title="Create 2D and 3D coordinates">
 		<description>
-			You can calculate Tanimoto scores to compare the similarity of
-			molecules against a reference molecule. See ? for details.
-		</description>
-	</item>
-	<item
-       title="Option 4: Calculate QSAR descriptors">
-		<description>
-			A wide variety of molecular QSAR descriptors (e.g. XLogP, ALogP,
-			Lipinske Rule of Five, Atomic Polarizability) can be calculated in
-			Bioclipse using the QSAR feature. See ? for details.
-		</description>
-	</item>
-	<item
-       href="/net.bioclipse.cdk.jchempaint/doc/convert.html"
-       title="Option 5: Convert file formats">
-		<description>
-			In order to convert from one file formats to another (e.g. convert
-			a MDL molfile to a CML file), you need to open the file in
-			JChemPaint (double-clicking normally does this) and save it via
-			File->Save As.. in the new format. The new files must have
-			either the .mol or .cml file extension. See ? for details.
-		</description>
-	</item>
-	<item
-       href="/net.bioclipse.cdk.ui/html/maintopic.html"
-       title="Option 6: Create 2D and 3D coordinates">
-		<description>
-			You can create 2D and 3D coordinates for molecules (either if they
-			do not yet exist or if there are already some, which means you do
-			a cleanup). Right click on the file and choose "Generate 2D/3D".
-			See ? for details.
+			You can create 2D and 3D coordinates for molecules. 
+			Right click on the file in the Navigator and choose one of the Generate 2D or 3D options.
 		</description>
 	</item>
 	<item
        href="/net.bioclipse.cdk.smartsmatching/html/smartsmatchingview.html"
-       title="Option 7: Do whatever with smarts">
+       title="Smarts matching">
 		<description>
-			TODO the person who did this needs to fill in some high-level text on smarts here
+			Show the view Smarts Matching from the menu <b>Window > Show view > Other...</b> and select <b>SmartsMatching</b> in the <b>Cheminformatics</b> folder.
+			<br/><br/>
+			The opened view has a local toolbar and a context menu (just right-click in the view) with several options that can be used to add/delete and run smarts matching.
 		</description>
+  <command
+        required="false"
+        serialization="org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=net.bioclipse.cdk.smartsmatching.views.SmartsMatchingView)"/>
 	</item>
+
 	<item
        href="/net.bioclipse.webservices/doc/wsplugin.html"
-       title="Option 8: Search in External databases">
+       title="Query and download proteins via web service">
 		<description>
-			You can search in a variety of external (EBI) databases File -> New -> Web Services -> Use 
-			WSDbfetch Web Service at EBI. See ? for details.
+			You can search and query a variety of external (EBI) databases using the Wizard at <b>File > New > Cheminformatics > Query WSDbfetch at EBI</b>.
 		</description>
+	  <command
+        required="false"
+        serialization="org.eclipse.ui.newWizard(newWizardId=net.bioclipse.webservices.wizards.newwizards.WSDbfetchNewWizard)"/>
 	</item>
+
 	<item
-       title="Option 9: Work with Spectral Data">
+       href="/net.bioclipse.webservices/doc/wsplugin.html"
+       title="Search and download chemical structures from PubChem">
 		<description>
-			If you want to work with spectral data (e. g. view spectra and peak pick them, do a structure elucidation), you should install 
-			the Speclipse feature (in case this is not yet the case) via Help -> Software Update -> Speclipse Update Site and read the General Spectrum Cheat Sheet.
+			It is possible to search and download compounds from PubChem using teh Wizard at <b>File > New > Cheminformatics > Get structures from PubChem</b>.
 		</description>
+	  <command
+        required="false"
+        serialization="org.eclipse.ui.newWizard(newWizardId=net.bioclipse.pubchem.wizards.NewFromPubChemWizard)"/>
 	</item>
 </cheatsheet>
