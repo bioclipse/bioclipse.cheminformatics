@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PubChem Plug-in
 Bundle-SymbolicName: net.bioclipse.pubchem;singleton:=true
-Bundle-Version: 1.2.0
+Bundle-Version: 2.0.0.RC3
 Bundle-Activator: net.bioclipse.pubchem.Activator
 Bundle-Vendor: Bioclipse Team
 Require-Bundle: org.eclipse.ui,
