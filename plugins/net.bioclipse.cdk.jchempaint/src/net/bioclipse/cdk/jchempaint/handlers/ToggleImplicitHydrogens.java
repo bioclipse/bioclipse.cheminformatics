@@ -10,45 +10,58 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.handlers;
 
+import java.util.Map;
+
 import net.bioclipse.cdk.jchempaint.Activator;
+import net.bioclipse.cdk.jchempaint.business.IJChemPaintManager;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.State;
+import org.eclipse.ui.commands.IElementUpdater;
+import org.eclipse.ui.menus.UIElement;
 
 /**
  * @author arvid
  *
  */
-public class ToggleImplicitHydrogens extends AbstractHandler {
-    
+public class ToggleImplicitHydrogens extends AbstractHandler implements IElementUpdater {
+
     public static final String STATE_ID = "org.eclipse.ui.commands.toggleState";
 
     public Object execute( ExecutionEvent event ) throws ExecutionException {
 
         Command command = event.getCommand();
-        boolean oldValue = toggleCommandState(command);
-        if(!oldValue)
-            Activator.getDefault().getJavaManager()
-            .updateImplicitHydrogenCounts();
-        Activator.getDefault().getJavaManager()
-        .setShowImplicitHydrogens( !oldValue );
+        IJChemPaintManager jcp = Activator.getDefault().getJavaManager();
+        boolean value = jcp.getShowImplicitHydrogens();
+        boolean oldValue = toggleCommandState( command, value);
 
-       return null; 
+        if(!oldValue)
+            jcp.updateImplicitHydrogenCounts();
+
+        jcp.setShowImplicitHydrogens( !oldValue );
+
+       return null;
     }
 
-    public static boolean toggleCommandState(Command command) throws ExecutionException {
+    public static boolean toggleCommandState( Command command, boolean value)
+                                                    throws ExecutionException {
         State state = command.getState(STATE_ID);
         if(state == null)
-          throw new ExecutionException("The command does not have a toggle state"); //$NON-NLS-1$
+          throw new ExecutionException("The command does not have a toggle state");
          if(!(state.getValue() instanceof Boolean))
-          throw new ExecutionException("The command's toggle state doesn't contain a boolean value"); //$NON-NLS-1$
-           
+          throw new ExecutionException("The command's toggle state doesn't contain a boolean value");
+
         boolean oldValue = ((Boolean) state.getValue()).booleanValue();
-        state.setValue(new Boolean(!oldValue));
-        return oldValue;
+        state.setValue( !value );
+        return value;
+      }
+
+    public void updateElement(UIElement element, Map parameters) {
+        element.setChecked(Activator.getDefault().getJavaManager()
+                                       .getShowImplicitHydrogens());
       }
 
 }
