@@ -24,7 +24,7 @@ public class PubChemManagerFactory implements IExecutableExtension,
 
     public void setInitializationData(IConfigurationElement config,
             String propertyName, Object data) throws CoreException {
-        manager = Activator.getDefault().getManager();
+        manager = Activator.getDefault().getJavaScriptManager();
         
         if (manager == null ) {
             manager = new Object();

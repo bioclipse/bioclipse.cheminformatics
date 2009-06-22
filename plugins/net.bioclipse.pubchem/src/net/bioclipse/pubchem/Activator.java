@@ -11,6 +11,8 @@
 package net.bioclipse.pubchem;
 
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.pubchem.business.IJavaPubChemManager;
+import net.bioclipse.pubchem.business.IJavaScriptPubChemManager;
 import net.bioclipse.pubchem.business.IPubChemManager;
 
 import org.apache.log4j.Logger;
@@ -36,6 +38,7 @@ public class Activator extends AbstractUIPlugin {
 
     // For Spring
     private ServiceTracker finderTracker;
+    private ServiceTracker jsFinderTracker;
 
     public Activator() {}
 
@@ -44,10 +47,16 @@ public class Activator extends AbstractUIPlugin {
         plugin = this;
         finderTracker = new ServiceTracker(
             context, 
-            IPubChemManager.class.getName(), 
+            IJavaPubChemManager.class.getName(), 
             null
         );
         finderTracker.open();
+        jsFinderTracker = new ServiceTracker(
+            context, 
+            IJavaScriptPubChemManager.class.getName(), 
+            null
+        );
+        jsFinderTracker.open();
     }
 
     public void stop(BundleContext context) throws Exception {
@@ -59,10 +68,23 @@ public class Activator extends AbstractUIPlugin {
         return plugin;
     }
 
-    public IPubChemManager getManager() {
+    public IPubChemManager getJavaManager() {
         IPubChemManager manager = null;
         try {
             manager = (IPubChemManager) finderTracker.waitForService(1000*10);
+        } catch (InterruptedException e) {
+            LogUtils.debugTrace(logger, e);
+        }
+        if(manager == null) {
+            throw new IllegalStateException("Could not get the PubChem manager");
+        }
+        return manager;
+    }
+
+    public IPubChemManager getJavaScriptManager() {
+        IPubChemManager manager = null;
+        try {
+            manager = (IPubChemManager)jsFinderTracker.waitForService(1000*10);
         } catch (InterruptedException e) {
             LogUtils.debugTrace(logger, e);
         }

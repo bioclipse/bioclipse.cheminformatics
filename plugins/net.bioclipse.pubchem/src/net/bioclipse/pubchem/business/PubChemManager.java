@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
-import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.managers.business.IBioclipseManager;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Nodes;
@@ -31,7 +31,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
-public class PubChemManager implements IPubChemManager {
+public class PubChemManager implements IBioclipseManager {
 
     private final static String EUTILS_URL_BASE = "http://www.ncbi.nlm.nih.gov/entrez/eutils";
     private final static String PUBCHEM_URL_BASE = "http://pubchem.ncbi.nlm.nih.gov/";
@@ -42,27 +42,17 @@ public class PubChemManager implements IPubChemManager {
         return "pubchem";
     }
 
-    public void loadCompound(int cid, String target) throws IOException,
-            BioclipseException, CoreException {
-        loadCompound(cid, ResourcePathTransformer.getInstance().transform(target), null);
-    }
-
-    public void loadCompound(int cid, IFile target, IProgressMonitor monitor)
+    public IFile loadCompound(int cid, IFile target, IProgressMonitor monitor)
     throws IOException, BioclipseException, CoreException {
-        loadCompoundAny(cid, target, monitor, "DisplayXML");
+        return loadCompoundAny(cid, target, monitor, "DisplayXML");
     }
 
-    public void loadCompound3d(int cid, String target) throws IOException,
-        BioclipseException, CoreException {
-        loadCompound3d(cid, ResourcePathTransformer.getInstance().transform(target), null);
-    }
-
-    public void loadCompound3d(int cid, IFile target, IProgressMonitor monitor)
+    public IFile loadCompound3d(int cid, IFile target, IProgressMonitor monitor)
         throws IOException, BioclipseException, CoreException {
-        loadCompoundAny(cid, target, monitor, "3DDisplaySDF");
+        return loadCompoundAny(cid, target, monitor, "3DDisplaySDF");
     }
 
-    private void loadCompoundAny(int cid, IFile target,
+    private IFile loadCompoundAny(int cid, IFile target,
             IProgressMonitor monitor, String type)
             throws IOException, BioclipseException, CoreException {
         if (monitor == null) {
@@ -96,6 +86,7 @@ public class PubChemManager implements IPubChemManager {
             throw new BioclipseException("Invalid URL.", exception);
         }
         monitor.done();
+        return target;
     }
 
     private String replaceSpaces(String molecule2) {
@@ -108,11 +99,6 @@ public class PubChemManager implements IPubChemManager {
             }
         }
         return result.toString();
-    }
-
-    public List<Integer> search(String query) throws IOException,
-            BioclipseException, CoreException {
-        return search(query, null);
     }
 
     public List<Integer> search(String query, IProgressMonitor monitor)

@@ -88,7 +88,7 @@ public class NewFromPubChemWizard extends BasicNewResourceWizard {
         private void downloadGist(IProgressMonitor monitor) throws InvocationTargetException {
             IJsConsoleManager js = Activator.getDefault().getJsConsoleManager();
             IPubChemManager pubchem = net.bioclipse.pubchem.Activator.getDefault()
-                .getManager();
+                .getJavaManager();
 
             try {
                 System.out.println("query: " + query);

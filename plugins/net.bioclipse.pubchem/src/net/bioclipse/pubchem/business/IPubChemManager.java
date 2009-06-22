@@ -16,6 +16,8 @@ import java.util.List;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.jobs.BioclipseJob;
+import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.eclipse.core.resources.IFile;
@@ -30,11 +32,15 @@ public interface IPubChemManager extends IBioclipseManager {
         methodSummary = "Loads the PubChem Compound XML with the given number" +
         		"to the given path"
     )
-    public void loadCompound(int cid, String target)
+    public String loadCompound(int cid, String target)
         throws IOException, BioclipseException, CoreException;
 
-    @Recorded
-    public void loadCompound(int cid, IFile target, IProgressMonitor monitor )
+    public IFile loadCompound(int cid, IFile target, IProgressMonitor monitor )
+        throws IOException, BioclipseException, CoreException;
+
+    public BioclipseJob<IFile> loadCompound(int cid, 
+                                         IFile target, 
+                                         BioclipseJobUpdateHook<IFile> hook )
         throws IOException, BioclipseException, CoreException;
 
     @Recorded
@@ -43,11 +49,15 @@ public interface IPubChemManager extends IBioclipseManager {
         methodSummary = "Loads the PubChem Compound 3D MDL molfile with the" +
             " given number to the given path"
     )
-    public void loadCompound3d(int cid, String target)
+    public String loadCompound3d(int cid, String target)
         throws IOException, BioclipseException, CoreException;
 
-    @Recorded
-    public void loadCompound3d(int cid, IFile target, IProgressMonitor monitor )
+    public IFile loadCompound3d(int cid, IFile target, IProgressMonitor monitor )
+        throws IOException, BioclipseException, CoreException;
+
+    public BioclipseJob<IFile> loadCompound3d(int cid, 
+                                            IFile target, 
+                                            BioclipseJobUpdateHook<IFile> hook )
         throws IOException, BioclipseException, CoreException;
 
     @Recorded
@@ -58,8 +68,11 @@ public interface IPubChemManager extends IBioclipseManager {
     public List<Integer> search(String query)
         throws IOException, BioclipseException, CoreException;
 
-    @Recorded
     public List<Integer> search(String query, IProgressMonitor monitor )
         throws IOException, BioclipseException, CoreException;
+
+    public BioclipseJob<IFile> search(String query,
+                                      BioclipseJobUpdateHook<IFile> hook)
+          throws IOException, BioclipseException, CoreException;
 
 }

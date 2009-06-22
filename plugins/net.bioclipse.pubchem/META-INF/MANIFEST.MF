@@ -13,7 +13,7 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.core,
  net.bioclipse.ui,
  net.bioclipse.scripting.ui,
- net.bioclipse.chemoinformatics;bundle-version="2.0.0"
+ net.bioclipse.chemoinformatics
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Import-Package: org.apache.log4j
