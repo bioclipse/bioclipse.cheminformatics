@@ -2,13 +2,9 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension point="org.eclipse.ui.newWizards">
-	   <category
-	         name="PubChem"
-	         id="net.bioclipse.BioclipseCategory">
-	   </category>
        <wizard
            canFinishEarly="false"
-           category="net.bioclipse.BioclipseCategory"
+           category="net.bioclipse.cheminformatics"
            class="net.bioclipse.pubchem.wizards.NewFromPubChemWizard"
            hasPages="true"
            id="net.bioclipse.pubchem.wizards.NewFromPubChemWizard"
