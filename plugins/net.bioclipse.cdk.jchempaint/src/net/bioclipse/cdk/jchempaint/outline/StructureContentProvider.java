@@ -11,9 +11,8 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.outline;
 
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.Iterator;
-import java.util.Map;
 
 import net.bioclipse.cdk.domain.CDKChemObject;
 
@@ -21,6 +20,8 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.openscience.cdk.CDKConstants;
+import org.openscience.cdk.PeriodicTableElement;
+import org.openscience.cdk.config.ElementPTFactory;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -28,7 +29,6 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 
-@SuppressWarnings("serial")
 public class StructureContentProvider implements ITreeContentProvider {
 
     public static class CDKAtomChemObject extends CDKChemObject<IAtom> {
@@ -57,27 +57,6 @@ public class StructureContentProvider implements ITreeContentProvider {
     private static final Logger logger = Logger.getLogger(StructureContentProvider.class);
 
     public StructureContentProvider() {}
-
-    private static final String[][] symbolsAndNames = {
-        { "H",  "Hydrogen"  },
-        { "C",  "Carbon"    },
-        { "N",  "Nitrogen"  },
-        { "O",  "Oxygen"    },
-        { "Na", "Sodium"    },
-        { "Mg", "Magnesium" },
-        { "P",  "Phosphorus"},
-        { "S",  "Sulphur"   },
-        { "Cl", "Chlorine"  },
-        { "Ca", "Calcium"   },
-        { "Fe", "Iron"      },
-        { "Si", "Silica"    },
-        { "Br", "Bromine"   },
-    };
-    private static final Map<String,String> elementNames
-        = new HashMap<String,String>() {{
-            for (String[] symbolAndName : symbolsAndNames)
-                put(symbolAndName[0], symbolAndName[1]);
-        }};
 
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof Container) {
@@ -118,13 +97,22 @@ public class StructureContentProvider implements ITreeContentProvider {
     }
 
     public static CDKChemObject<IAtom> createCDKChemObject( IAtom atom ) {
-
-        String symbol = atom.getSymbol(),
-               name = elementNames.containsKey( symbol )
-                          ? elementNames.get( symbol )
-                          : "unknown";
+        String symbol = atom.getSymbol();
+        ElementPTFactory efac;
+        try {
+            efac = ElementPTFactory.getInstance();
+        } catch ( IOException e) {
+            logger.error("Error while opening element info file", e);
+            return new CDKAtomChemObject("unknown" + " (" + symbol + ")", atom);
+        }
+        PeriodicTableElement elem = efac.getElement(symbol);
+        if (elem == null) {
+            return new CDKAtomChemObject("unknown" + " (" + symbol + ")", atom);
+        }
+        String name = efac.getName(elem);
+        if (name == null) name = "unknown";
         CDKChemObject<IAtom> co
-          = new CDKAtomChemObject( name + " (" + symbol + ")", atom );
+          = new CDKAtomChemObject(name + " (" + symbol + ")", atom);
         return co;
     }
 
