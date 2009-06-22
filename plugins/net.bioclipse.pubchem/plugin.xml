@@ -14,6 +14,14 @@
        </wizard>
    </extension>
 
+       <extension point="org.eclipse.ui.perspectiveExtensions"> 
+        <perspectiveExtension 
+            targetID="net.bioclipse.chemoinformatics.ChemoinformaticsPerspective"> 
+            <newWizardShortcut
+                  id="net.bioclipse.pubchem.wizards.NewFromPubChemWizard" />
+        </perspectiveExtension> 
+    </extension> 
+    
    <extension
          point="net.bioclipse.scripting.contribution">
       <scriptContribution
