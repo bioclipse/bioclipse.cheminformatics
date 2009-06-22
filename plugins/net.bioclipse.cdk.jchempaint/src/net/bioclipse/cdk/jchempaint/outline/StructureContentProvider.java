@@ -28,6 +28,7 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IMoleculeSet;
+import org.openscience.cdk.interfaces.IBond.Order;
 
 public class StructureContentProvider implements ITreeContentProvider {
 
@@ -117,25 +118,23 @@ public class StructureContentProvider implements ITreeContentProvider {
     }
 
     public static CDKChemObject<IBond> createCDKChemObject( IBond bond ) {
-
         StringBuilder sb = new StringBuilder();
-        char separator
-          = bond.getOrder() == CDKConstants.BONDORDER_DOUBLE   ? '='
-          : bond.getOrder() == CDKConstants.BONDORDER_TRIPLE   ? '#'
-          : bond.getFlag(CDKConstants.ISAROMATIC) ? '~' : '-';
+        char separator = '-';
+        if (bond.getOrder() == Order.DOUBLE) separator = '='; else
+            if (bond.getOrder() == Order.TRIPLE) separator = '#'; else
+            if (bond.getOrder() == Order.QUADRUPLE) separator = '=';
         for (Iterator<IAtom> it=bond.atoms().iterator(); it.hasNext();) {
             sb.append(it.next().getSymbol());
             if (it.hasNext()) {
                 sb.append(separator);
             }
         }
-        sb.append(   bond.getOrder() == CDKConstants.BONDORDER_DOUBLE
-                       ? " (double)"
-                   : bond.getOrder() == CDKConstants.BONDORDER_TRIPLE
-                       ? " (triple)"
-                   : bond.getFlag(CDKConstants.ISAROMATIC)
-                       ? " (aromatic)"
-                       : "" );
+        String orderWord = bond.getOrder() == null
+                ? ""
+                : ("" + bond.getOrder()).toLowerCase();
+        sb.append(" (").append(orderWord);
+        if (bond.getFlag(CDKConstants.ISAROMATIC)) sb.append(", aromatic");
+        sb.append(')');
         CDKChemObject<IBond> co=new CDKBondChemObject(sb.toString(), bond);
         return co;
     }
