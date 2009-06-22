@@ -33,6 +33,7 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 import javax.swing.JScrollPane;
 
+import net.bioclipse.jmol.Activator;
 import net.bioclipse.jmol.views.JmolPanel;
 import net.bioclipse.jmol.views.JmolCompMouseListener;
 import net.bioclipse.jmol.views.JmolSelection;
@@ -49,8 +50,11 @@ import net.bioclipse.core.util.LogUtils;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -92,7 +96,7 @@ public class JmolEditor extends MultiPageEditorPart
     private static final Logger logger = Logger.getLogger(JmolEditor.class);
 
     /** The text editor used in page 1. */
-    private TextEditor editor;
+//    private TextEditor editor;
 
     /** The ContentOutlinePage for the Outline View */
     JmolContentOutlinePage fOutlinePage;
@@ -274,17 +278,17 @@ public class JmolEditor extends MultiPageEditorPart
      * which contains a text editor.
      */
     void createPage1() {
-        try {
-            editor = new TextEditor();
-            int index = addPage(editor, getEditorInput());
-            setPageText(index, editor.getTitle());
-        } catch (PartInitException e) {
-            ErrorDialog.openError(
-                    getSite().getShell(),
-                    "Error creating nested text editor",
-                    null,
-                    e.getStatus());
-        }
+//        try {
+//            editor = new TextEditor();
+//            int index = addPage(editor, getEditorInput());
+//            setPageText(index, editor.getTitle());
+//        } catch (PartInitException e) {
+//            ErrorDialog.openError(
+//                    getSite().getShell(),
+//                    "Error creating nested text editor",
+//                    null,
+//                    e.getStatus());
+//        }
     }
 
     /**
@@ -392,8 +396,65 @@ public class JmolEditor extends MultiPageEditorPart
      * Handle resource changes
      */
     public void resourceChanged(final IResourceChangeEvent event){
+
+        final IEditorInput input=getEditorInput();
+        if (!( input instanceof IFileEditorInput ))
+            return;
+        final IFile jmolfile=((IFileEditorInput)input).getFile();
+        
         /*
-         * Closes all project files on project close.
+         * Closes editor if resource is deleted
+         */
+        if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
+            
+            IResourceDelta rootDelta = event.getDelta();
+            //get the delta, if any, for the documentation directory
+            
+            final List<IResource> deletedlist = new ArrayList<IResource>();
+            
+            IResourceDelta docDelta = rootDelta.findMember(jmolfile.getFullPath());
+            if (docDelta != null){
+                IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+                    public boolean visit(IResourceDelta delta) {
+                       //only interested in removal changes
+                       if ((delta.getFlags() & IResourceDelta.REMOVED) == 0){
+                           deletedlist.add( delta.getResource() );
+                       }
+                       return true;
+                    }
+                 };
+                 try {
+                    docDelta.accept(visitor);
+                 } catch (CoreException e) {
+                    LogUtils.handleException( e, logger, Activator.PLUGIN_ID );
+                 }
+            }
+                
+            if (deletedlist.size()>0 && deletedlist.contains( jmolfile )){
+                Display.getDefault().asyncExec(new Runnable() {
+                    public void run() {
+                        if (getSite()==null) 
+                            return;
+                        if (getSite().getWorkbenchWindow()==null) 
+                            return;
+                        
+                        IWorkbenchPage[] pages = getSite().getWorkbenchWindow()
+                                                          .getPages();
+                        for (int i = 0; i<pages.length; i++) {
+                                IEditorPart editorPart
+                                  = pages[i].findEditor(input);
+                                pages[i].closeEditor(editorPart,true);
+                        }
+                    }
+                });
+            }
+            
+
+            
+        }
+
+        /*
+         * Closes all editors with this editor input on project close.
          */
         if (event.getType() == IResourceChangeEvent.PRE_CLOSE) {
             Display.getDefault().asyncExec(new Runnable() {
@@ -406,12 +467,10 @@ public class JmolEditor extends MultiPageEditorPart
                     IWorkbenchPage[] pages = getSite().getWorkbenchWindow()
                                                       .getPages();
                     for (int i = 0; i<pages.length; i++) {
-                        if ( ( (FileEditorInput)editor.getEditorInput() )
-                                .getFile()
-                                .getProject()
-                                .equals( event.getResource() ) ) {
+                        if ( jmolfile.getProject()
+                                .equals( event.getResource() )) {
                             IEditorPart editorPart
-                              = pages[i].findEditor(editor.getEditorInput());
+                              = pages[i].findEditor(input);
                             pages[i].closeEditor(editorPart,true);
                         }
                     }
