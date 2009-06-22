@@ -4,7 +4,7 @@
    <extension point="org.eclipse.ui.newWizards">
        <wizard
            canFinishEarly="false"
-           category="net.bioclipse.cheminformatics"
+           category="net.bioclipse.ui.download"
            class="net.bioclipse.pubchem.wizards.NewFromPubChemWizard"
            hasPages="true"
            id="net.bioclipse.pubchem.wizards.NewFromPubChemWizard"
