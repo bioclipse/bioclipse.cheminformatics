@@ -13,6 +13,7 @@
 package net.bioclipse.cdk.jchempaint.widgets;
 
 import static net.bioclipse.cdk.jchempaint.outline.StructureContentProvider.createCDKChemObject;
+import static org.openscience.cdk.geometry.GeometryTools.has2DCoordinatesNew;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,6 +68,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
+import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.ControllerModel;
 import org.openscience.cdk.controller.IChemModelEventRelayHandler;
@@ -77,9 +79,10 @@ import org.openscience.cdk.controller.PhantomBondGenerator;
 import org.openscience.cdk.controller.undoredo.IUndoListener;
 import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.controller.undoredo.UndoRedoHandler;
-import static org.openscience.cdk.geometry.GeometryTools.has2DCoordinatesNew;
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IReaction;
@@ -93,6 +96,7 @@ import org.openscience.cdk.renderer.generators.SelectAtomGenerator;
 import org.openscience.cdk.renderer.generators.SelectBondGenerator;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
+import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 public class JChemPaintEditorWidget extends JChemPaintWidget
@@ -587,11 +591,37 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     }
 
     protected void structureChanged() {
+        IChemModel model = hub.getIChemModel();
+        updateAtomTypesAndHCounts( model );
         if(!this.isDisposed())
             resizeControl();
     }
 
+    private void updateAtomTypesAndHCounts( IChemModel model ) {
+        CDKHydrogenAdder hAdder =
+            CDKHydrogenAdder.getInstance(model.getBuilder());
+        CDKAtomTypeMatcher matcher =
+            CDKAtomTypeMatcher.getInstance(model.getBuilder());
+        for (IAtomContainer container :
+             ChemModelManipulator.getAllAtomContainers(model)) {
+            try {
+                IAtomType[] types = matcher.findMatchingAtomType(container);
+                for (int i=0; i<container.getAtomCount(); i++) {
+                    if (types[i] != null) {
+                        IAtom atom = container.getAtom(i);
+                        atom.setAtomTypeName(types[i].getAtomTypeName());
+                        hAdder.addImplicitHydrogens(container, atom);
+                    }
+                }
+            } catch ( CDKException e ) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     protected void structurePropertiesChanged() {
+        IChemModel model = hub.getIChemModel();
+        updateAtomTypesAndHCounts( model );
     }
 
     public void setDirty( boolean dirty) {
