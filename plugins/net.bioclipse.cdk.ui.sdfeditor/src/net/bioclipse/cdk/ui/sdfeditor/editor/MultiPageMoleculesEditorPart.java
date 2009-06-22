@@ -14,10 +14,7 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -108,7 +105,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                                             new MoleculesEditor(),
                                                 getEditorInput());
                         pageOrder.put(i, page);
-                        setPageText(i,"Molecules");
+                        setPageText(i,"Table");
                         moleculesPage.getMolTableViewer().setDoubleClickHook(
                          new Runnable() {
                             public void run() {
@@ -160,7 +157,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
 
                         });
                         pageOrder.put( i, page );
-                        setPageText( i, "2D-structure" );
+                        setPageText( i, "Single Molecule" );
                         break;
                 }
             }
