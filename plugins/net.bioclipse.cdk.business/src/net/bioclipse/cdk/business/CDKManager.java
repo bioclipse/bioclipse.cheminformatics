@@ -178,10 +178,32 @@ public class CDKManager implements IBioclipseManager {
     public ICDKMolecule loadMolecule(IFile file, IProgressMonitor monitor)
                         throws IOException, BioclipseException, CoreException {
 
+        IChemFormat format = determineIChemFormat(file);
         ICDKMolecule loadedMol = loadMolecule( file.getContents(),
-                                               determineIChemFormat(file),
+                                               format,
                                                monitor
         );
+        if (format == MDLV2000Format.getInstance()) {
+            IAtomContainer container = loadedMol.getAtomContainer();
+            if (container != null && container.getAtomCount() > 0) {
+                CDKHydrogenAdder hAdder =
+                    CDKHydrogenAdder.getInstance(container.getBuilder());
+                CDKAtomTypeMatcher matcher =
+                    CDKAtomTypeMatcher.getInstance(container.getBuilder());
+                try {
+                    IAtomType[] types = matcher.findMatchingAtomType(container);
+                    for (int i=0; i<container.getAtomCount(); i++) {
+                        if (types[i] != null) {
+                            IAtom atom = container.getAtom(i);
+                            atom.setAtomTypeName(types[i].getAtomTypeName());
+                            hAdder.addImplicitHydrogens(container, atom);
+                        }
+                    }
+                } catch ( CDKException e ) {
+                    e.printStackTrace();
+                }
+            }
+        }
         loadedMol.setResource(file);
 
         return loadedMol;
