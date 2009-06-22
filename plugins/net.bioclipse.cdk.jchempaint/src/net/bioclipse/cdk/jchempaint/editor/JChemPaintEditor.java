@@ -310,11 +310,10 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
         IEditorInput input = getEditorInput();
         ICDKMolecule cdkModel = (ICDKMolecule) input
                                 .getAdapter( ICDKMolecule.class );
-        if(cdkModel!=null) {{
+        if(cdkModel!=null) {
             widget.setInput( cdkModel );
             if(cdkModel.getResource()==null)
                 widget.setDirty( true );
-        }
         }else {
             IFile file = (IFile) input.getAdapter( IFile.class );
             if(file != null && file.exists()) {
