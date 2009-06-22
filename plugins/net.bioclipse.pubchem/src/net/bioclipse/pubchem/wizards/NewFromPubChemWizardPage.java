@@ -15,6 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -37,25 +38,28 @@ public class NewFromPubChemWizardPage extends WizardPage {
 
 	public void createControl(Composite parent) {
 		Composite container = new Composite(parent, SWT.NONE);
-		container.setLayoutData(new GridData(GridData.FILL_BOTH));
+		final GridLayout layout = new GridLayout();
+        layout.numColumns = 3;
+        container.setLayout(layout);
+        setControl(container);
 
-		txtName=new Text(container, SWT.BORDER);
-		txtName.setText(query);
-		txtName.setBounds(25, 70, 445, 25);
-		txtName.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
-					checkForCompletion();
-				}
-			});
-		
-		
-		final Label lblSmiles = new Label(container, SWT.NONE);
-		lblSmiles.setBounds(25, 40, 210, 25);
-		lblSmiles.setText("Enter query");
+        final Label label = new Label(container, SWT.NONE);
+        final GridData gridData = new GridData();
+        gridData.horizontalSpan = 3;
+        label.setLayoutData(gridData);
+        label.setText("Enter query:");
+
+        txtName=new Text(container, SWT.BORDER);
+        txtName.setText(query);
+        txtName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        txtName.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                checkForCompletion();
+            }
+        });
 
 		setControl(container);
 		checkForCompletion();
-
 	}
 	
 	public static Object createObject(String className)	throws ClassNotFoundException, InstantiationException, IllegalAccessException {
