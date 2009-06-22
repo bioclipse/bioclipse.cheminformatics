@@ -14,6 +14,11 @@ package net.bioclipse.cdk.domain;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.vecmath.Point2d;
+import javax.vecmath.Point3d;
+
+import net.bioclipse.core.domain.props.BasicPropertySource;
+
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
@@ -27,8 +32,6 @@ import org.openscience.cdk.interfaces.IMonomer;
 import org.openscience.cdk.interfaces.IPseudoAtom;
 import org.openscience.cdk.interfaces.IStrand;
 import org.openscience.cdk.protein.data.PDBAtom;
-
-import net.bioclipse.core.domain.props.BasicPropertySource;
 
 public class ChemObjectPropertySource extends BasicPropertySource {
 
@@ -188,10 +191,10 @@ public class ChemObjectPropertySource extends BasicPropertySource {
             addToValueMap(MASS_NUMBER,String.valueOf(atom.getMassNumber()));
             addToValueMap(ATOM_SYMBOL,atom.getSymbol());
             addToValueMap(ATOM_COORD2D,
-              atom.getPoint2d() != null ? "" + atom.getPoint2d() : null
+              atom.getPoint2d() != null ? "" + format(atom.getPoint2d()) : null
             );
             addToValueMap(ATOM_COORD3D,
-              atom.getPoint3d() != null ? "" + atom.getPoint3d() : null
+              atom.getPoint3d() != null ? "" + format(atom.getPoint3d()) : null
             );
             
             if (chemobj instanceof IPseudoAtom) {
@@ -310,6 +313,21 @@ public class ChemObjectPropertySource extends BasicPropertySource {
           }   
         
           return;
+        }
+
+        private String format( Point2d point2d ) {
+            return "(" + roundThreeDigit(point2d.x) + ", "
+            + roundThreeDigit(point2d.y) + ")";
+        }
+
+        private String format( Point3d point3d ) {
+            return "(" + roundThreeDigit(point3d.x) + ", "
+                   + roundThreeDigit(point3d.y) + ", "
+                   + roundThreeDigit(point3d.z) + ")";
+        }
+
+        private String roundThreeDigit( double x ) {
+            return "" + Math.round(x*1000.0)/1000.0;
         }
 
         /**
