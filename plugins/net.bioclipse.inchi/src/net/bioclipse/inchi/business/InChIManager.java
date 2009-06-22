@@ -21,9 +21,12 @@ import net.sf.jniinchi.INCHI_RET;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.inchi.InChIGenerator;
 import org.openscience.cdk.inchi.InChIGeneratorFactory;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IBond;
 
 public class InChIManager implements IBioclipseManager {
 
@@ -48,7 +51,13 @@ public class InChIManager implements IBioclipseManager {
     	Object adapted = molecule.getAdapter(IAtomContainer.class);
         if (adapted != null) {
             IAtomContainer container = (IAtomContainer)adapted;
-            InChIGenerator gen = getFactory().getInChIGenerator(container);
+            IAtomContainer clone = (IAtomContainer)container.clone();
+            // remove aromaticity flags
+            for (IAtom atom : clone.atoms())
+                atom.setFlag(CDKConstants.ISAROMATIC, false);
+            for (IBond bond : clone.bonds())
+                bond.setFlag(CDKConstants.ISAROMATIC, false);
+            InChIGenerator gen = getFactory().getInChIGenerator(clone);
             INCHI_RET status = gen.getReturnStatus();
             if(monitor.isCanceled())
                 throw new OperationCanceledException();
