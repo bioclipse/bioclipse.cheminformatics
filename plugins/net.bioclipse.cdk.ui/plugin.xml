@@ -364,11 +364,18 @@
             category="net.bioclipse.chemoinformatics.views.category"
             class="net.bioclipse.cdk.ui.views.PeriodicTableView"
             icon="icons/periodictable.png"
-            id="net.bioclipse.cdk.ui.periodictable.view1"
+            id="net.bioclipse.cdk.ui.views.periodictable"
             name="Periodic Table"
             restorable="true">
       </view>
    </extension>
+
+    <extension point="org.eclipse.ui.perspectiveExtensions"> 
+        <perspectiveExtension 
+            targetID="net.bioclipse.chemoinformatics.ChemoinformaticsPerspective"> 
+            <viewShortcut id="net.bioclipse.cdk.ui.views.periodictable"/> 
+        </perspectiveExtension> 
+    </extension> 
 
 
 </plugin>
