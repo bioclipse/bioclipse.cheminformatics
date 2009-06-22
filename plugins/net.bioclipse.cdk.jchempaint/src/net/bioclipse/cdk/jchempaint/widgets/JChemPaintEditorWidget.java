@@ -425,7 +425,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         this.applyGlobalProperties();
         reset();
         super.setModel( model );
-        setDirty( false );
     }
 
     public void setAtomContainer(IAtomContainer atomContainer) {
@@ -488,6 +487,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                     .newAtomContainer( atomContainer );
                     atomContainer.setProperties( new HashMap<Object, Object>(
                             oldAC.getProperties()) );
+                    setDirty( false );
                 }
                 setAtomContainer(atomContainer);
             }
@@ -496,6 +496,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 .newChemModel();
                 source = null;
                 setModel( model );
+                setDirty( false );
             }
     }
 
@@ -592,8 +593,10 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     }
 
     public void setDirty( boolean dirty) {
-        if(!dirty)
+        if(!dirty) {
             new2Dcoordinates = false;
+
+        }
         this.isdirty = dirty;
         if(!this.isDisposed()) {
             Display.getDefault().asyncExec( new Runnable() {
@@ -601,8 +604,10 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                     if(isdirty) {
                         add(Message.DIRTY);
                     }
-                    else
+                    else {
                         remove( Message.DIRTY );
+                        remove( Message.GENERATED);
+                    }
                     redraw();
                 }
             });
