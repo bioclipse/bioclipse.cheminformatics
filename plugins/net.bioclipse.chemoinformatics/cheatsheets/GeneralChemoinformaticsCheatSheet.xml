@@ -21,7 +21,7 @@
 			pluginId="net.bioclipse.scripting.ui"
 			class="net.bioclipse.scripting.ui.actions.ScriptAction"
 	        required="false"
-			param1="ui.open(cdk.fromSMILES(&quot;C1CCCCC1CC(CN(CC))CO&quot;"/>
+			param1="ui.open(cdk.fromSMILES(&quot;C1CCCCC1CC(CN(CC))CO&quot;))"/>
 	</item>
 
 		<item
@@ -53,8 +53,8 @@
 				class="net.bioclipse.scripting.ui.actions.ScriptAction"
 	        	required="false"
 				param1="lst=cdk.createMoleculeList()"
-				param2="lst.add(cdk.fromSMILES(&quot;CCCCON=O&quot;)"
-				param3="lst.add(cdk.fromSMILES(&quot;S3CC4C1NC1C2CSC(C)C2C4(C3)&quot;)"
+				param2="lst.add(cdk.fromSMILES(&quot;CCCCON=O&quot;))"
+				param3="lst.add(cdk.fromSMILES(&quot;S3CC4C1NC1C2CSC(C)C2C4(C3)&quot;))"
 				param4="ui.open(lst)" />
 		
 	</item>
