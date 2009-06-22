@@ -326,11 +326,8 @@
  </extension>
  
     <extension point="org.eclipse.ui.newWizards">
-      <category
-            id="net.bioclipse.cdk.ChemistryFiles"
-            name="Chemistry"/>
       <wizard
-            category="net.bioclipse.cdk.ChemistryFiles"
+            category="net.bioclipse.cheminformatics"
             class="net.bioclipse.cdk.ui.wizards.NewFromSMILESWizard"
             id="net.bioclipse.cdk.ui.wizards.NewFromSMILESWizard"
             icon="icons/molecule3D.png"
