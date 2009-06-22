@@ -139,7 +139,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         setupScrollbars();
 
-        java.awt.Color color = createFromSWT( SWT.COLOR_LIST_SELECTION );
+        // Commented becaus of bug 1100 selectioncolor not good on windows
+        //java.awt.Color color = createFromSWT( SWT.COLOR_LIST_SELECTION );
+        java.awt.Color color = new java.awt.Color(0xc2deff);
         getRenderer().getRenderer2DModel().setSelectedPartColor(color);
 
         setupControllerHub();
