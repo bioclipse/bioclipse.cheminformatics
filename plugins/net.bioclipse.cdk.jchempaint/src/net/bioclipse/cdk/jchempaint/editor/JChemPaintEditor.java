@@ -40,14 +40,18 @@ import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message.Alignment;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.inchi.InChI;
-import net.bioclipse.jobs.BioclipseJob;
+import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.BioclipseUIJob;
 import net.bioclipse.ui.dialogs.SaveAsDialog;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -111,7 +115,8 @@ import org.openscience.cdk.renderer.selection.MultiSelection;
 import org.openscience.cdk.renderer.selection.SingleSelection;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
-public class JChemPaintEditor extends EditorPart implements ISelectionListener {
+public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
+                                                        IResourceChangeListener{
 
     private Logger logger = Logger.getLogger(JChemPaintEditor.class);
 
@@ -130,9 +135,6 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
     private ListenerList propertyChangedListenerList = new ListenerList();
 
     private SubStructureGenerator subStructureGenerator;
-
-    private BioclipseJob<String> SMILESJob;
-    private BioclipseJob<InChI>  InChIJob;
 
     public JChemPaintEditorWidget getWidget() {
         return widget;
@@ -353,6 +355,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
             }
         } );
 
+            ResourcesPlugin.getWorkspace().addResourceChangeListener(
+                  this, IResourceChangeEvent.POST_CHANGE);
         createPartListener();
         IContextService contextService = (IContextService) getSite()
                                         .getService( IContextService.class );
@@ -661,6 +665,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
 
     private void disposeControl( DisposeEvent e ) {
 
+        ResourcesPlugin.getWorkspace().removeResourceChangeListener( this );
         // TODO remove regiistration?
         // getSite().registerContextMenu(
         // "net.bioclipse.cdk.ui.editors.jchempaint.menu",
@@ -786,5 +791,52 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener {
                    new PropertyChangeEvent( this,
                                             STRUCUTRE_CHANGED_EVENT,
                                             null, null) );
+    }
+
+    public void resourceChanged( IResourceChangeEvent event ) {
+
+        switch (event.getType()) {
+            case IResourceChangeEvent.POST_CHANGE:
+                final boolean[] val = new boolean[1];
+                IResourceDelta delta = event.getDelta();
+                IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+
+                    public boolean visit( IResourceDelta delta )
+                                                                throws CoreException {
+                        if( delta.getFlags() != IResourceDelta.MARKERS
+                            && delta.getResource().getType() == IResource.FILE) {
+                            if(delta.getKind() == IResourceDelta.REMOVED) {
+                                IResource resource = delta.getResource();
+                                ICDKMolecule mol = getCDKMolecule();
+                                if( mol != null
+                                    && resource.equals( mol.getResource() )) {
+                                    val[0]=true;
+                                }
+                            }
+                        }
+                        return true;
+                    }
+
+                };
+                try {
+                    delta.accept( visitor );
+                    if(val[0])
+                        Display.getDefault().asyncExec( new Runnable() {
+                            public void run() {
+                                getSite().getPage().closeEditor(
+                                    JChemPaintEditor.this, true );
+                            }
+                        });
+                } catch ( CoreException e ) {
+                    LogUtils.handleException( e, logger,
+                             net.bioclipse.cdk.jchempaint.Activator.PLUGIN_ID );
+                }
+
+
+                break;
+            default:
+                break;
+        }
+
     }
 }
