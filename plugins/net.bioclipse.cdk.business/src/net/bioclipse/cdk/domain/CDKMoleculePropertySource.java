@@ -166,11 +166,12 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
                                             .getActivePage()
                                             .findView(
                                       "org.eclipse.ui.views.PropertySheet" );
-                            
-                            PropertySheetPage pp 
+                            if(p != null) {
+                                PropertySheetPage pp
                                 = (PropertySheetPage) p.getCurrentPage();
-                            
-                            pp.refresh();   
+
+                                pp.refresh();
+                            }
                         }
                     });
                 }
@@ -209,11 +210,12 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
                                             .getActivePage()
                                             .findView(
                                       "org.eclipse.ui.views.PropertySheet" );
-                            
-                            PropertySheetPage pp 
+                            if(p != null) {
+                                PropertySheetPage pp
                                 = (PropertySheetPage) p.getCurrentPage();
-                            
-                            pp.refresh();   
+
+                                pp.refresh();
+                            }
                         }
                     });
                 }
