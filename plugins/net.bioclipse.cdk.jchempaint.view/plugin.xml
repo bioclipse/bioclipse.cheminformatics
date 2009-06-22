@@ -33,4 +33,15 @@
       </command>
    </extension>
 
+    <extension point="org.eclipse.ui.perspectiveExtensions"> 
+        <perspectiveExtension 
+            targetID="net.bioclipse.chemoinformatics.ChemoinformaticsPerspective"> 
+            <viewShortcut id="net.bioclipse.cdk.ui.view.Java2DRendererView"/> 
+            <view id="net.bioclipse.cdk.ui.view.Java2DRendererView" 
+                relative="org.eclipse.ui.views.ContentOutline" 
+                relationship="bottom" 
+                ratio="0.70"/> 
+        </perspectiveExtension> 
+    </extension> 
+
 </plugin>
