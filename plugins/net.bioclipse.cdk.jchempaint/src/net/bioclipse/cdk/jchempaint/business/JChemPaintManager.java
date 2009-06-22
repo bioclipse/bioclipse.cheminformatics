@@ -12,6 +12,7 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.business;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.vecmath.Point2d;
@@ -678,6 +679,30 @@ public class JChemPaintManager implements IJChemPaintManager {
             return model.getZoomFactor();
         } else {
             return 0;
+        }
+    }
+    
+    public void removeExplicitHydrogens()  {
+        JChemPaintEditor editor = findActiveEditor();
+        if(editor != null) {
+            IChemModelRelay relay = editor.getControllerHub();
+            IChemModel model = relay.getIChemModel();
+            List<IAtom> atomsToRemove = new ArrayList<IAtom>();
+            for (IAtomContainer container : ChemModelManipulator
+                                            .getAllAtomContainers( model)) {
+                for(IAtom atom: container.atoms()) {
+                    if(atom.getSymbol().equals( "H" ))
+                        atomsToRemove.add( atom );
+                }
+                for(IAtom atom: atomsToRemove) {
+                    container.removeAtomAndConnectedElectronContainers( atom );
+                }
+                atomsToRemove.clear();
+            }
+            
+        } else {
+            Activator.getDefault().getJsConsoleManager()
+            .say("No opened JChemPaint editor");
         }
     }
 

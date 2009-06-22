@@ -257,6 +257,11 @@ public interface IJChemPaintManager extends IBioclipseManager {
                          "given the current connectivity."
     )
     public void addExplicitHydrogens();
+    
+    @Recorded
+    @PublishedMethod( methodSummary = "Removes explicit hydrogens, "+
+                                      "given the current connectivity")
+    public void removeExplicitHydrogens();
 
     @Recorded
     @PublishedMethod(

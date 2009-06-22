@@ -807,6 +807,15 @@
        </command>
        <command
              commandId="net.bioclipse.cdk.jchempaint.manager.action"
+             label="Remove Explicit Hydrogens"
+             style="push">
+          <parameter
+                name="jcp.manager.method"
+                value="removeExplicitHydrogens">
+          </parameter>
+       </command>
+       <command
+             commandId="net.bioclipse.cdk.jchempaint.manager.action"
              label="Clean Up"
              style="push">
           <parameter
