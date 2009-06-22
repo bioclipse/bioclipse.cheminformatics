@@ -343,7 +343,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         if(lastPage == Pages.JCP) {
             return dirty || jcpPage.isDirty();
         }
-        return dirty ;
+        return dirty || moleculesPage.isDirty();
     }
 
     private void updateJmolPage() {

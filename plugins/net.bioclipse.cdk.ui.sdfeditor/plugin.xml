@@ -228,7 +228,7 @@
      </command>
      <command
            commandId="net.bioclipse.cdk.molTable.column.remove"
-           label="Remove Column"
+           label="Remove Property"
            style="push">
      </command>
   </menuContribution>

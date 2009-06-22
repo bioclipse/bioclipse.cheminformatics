@@ -66,6 +66,7 @@ public class MoleculeTableContentProvider implements
         if(model instanceof SDFIndexEditorModel) {
             ((SDFIndexEditorModel)model).removePropertyKey( key );
             properties.retainAll( getAvailableProperties() );
+            ((SDFIndexEditorModel) model).setDirty( true );
             updateHeaders();
         }
     }

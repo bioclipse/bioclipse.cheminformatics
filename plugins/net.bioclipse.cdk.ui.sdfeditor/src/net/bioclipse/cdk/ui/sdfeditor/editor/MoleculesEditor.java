@@ -52,6 +52,7 @@ import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -116,7 +117,8 @@ public class MoleculesEditor extends EditorPart implements
 
     @Override
     public boolean isDirty() {
-        // TODO Check the index
+        if(getModel() instanceof SDFIndexEditorModel)
+            return ((SDFIndexEditorModel)getModel()).isDirt();
         return false;
     }
 
@@ -414,5 +416,11 @@ public class MoleculesEditor extends EditorPart implements
     public void refresh() {
 
         molTableViewer.refresh();
+    }
+
+    public void setDirty( boolean b ) {
+
+        firePropertyChange( IEditorPart.PROP_DIRTY );
+
     }
 }

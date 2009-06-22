@@ -39,6 +39,7 @@ public class RemoveColumnHandler extends AbstractHandler implements IHandler {
             Object o = contentProvider.getProperties().get( i-1 );
             contentProvider.removeColumn( o );
         }
+        molEditor.setDirty(true);
         return null;
     }
 
