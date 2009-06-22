@@ -33,13 +33,19 @@ import net.bioclipse.jobs.BioclipseUIJob;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -56,7 +62,8 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
-                                                    ISelectionListener {
+                                                    ISelectionListener,
+                                                    IResourceChangeListener{
 
     Logger logger = Logger.getLogger( MultiPageMoleculesEditorPart.class );
 
@@ -169,6 +176,8 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
 
         setPartName( getEditorInput().getName());
         getSite().getPage().addPostSelectionListener( this );
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(
+                                       this, IResourceChangeEvent.POST_CHANGE);
     }
 
     @Override
@@ -389,6 +398,56 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
 //               jcpPage.setInput( element );
 //           }
 //        }
+    }
+
+    public void resourceChanged( IResourceChangeEvent event ) {
+
+        switch (event.getType()) {
+            case IResourceChangeEvent.POST_CHANGE:
+                final boolean[] val = new boolean[1];
+                IResourceDelta delta = event.getDelta();
+                IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+
+                    public boolean visit( IResourceDelta delta )
+                                                                throws CoreException {
+                        if( delta.getFlags() != IResourceDelta.MARKERS
+                            && delta.getResource().getType() == IResource.FILE) {
+                            if(delta.getKind() == IResourceDelta.REMOVED) {
+                                IResource resource = delta.getResource();
+                                IMoleculesEditorModel model = getMoleculesPage()
+                                                                .getModel();
+                                if(model instanceof SDFIndexEditorModel) {
+                                    IResource modelRe = ((SDFIndexEditorModel)
+                                                           model).getResource();
+
+                                    if( resource.equals( modelRe )) {
+                                        val[0]=true;
+                                    }
+                                }
+                            }
+                        }
+                        return true;
+                    }
+
+                };
+                try {
+                    delta.accept( visitor );
+                    if(val[0])
+                        Display.getDefault().asyncExec( new Runnable() {
+                            public void run() {
+                                getSite().getPage().closeEditor(
+                                    MultiPageMoleculesEditorPart.this, true );
+                            }
+                        });
+                } catch ( CoreException e ) {
+                    LogUtils.handleException( e, logger,
+                             net.bioclipse.cdk.jchempaint.Activator.PLUGIN_ID );
+                }
+
+                break;
+            default:
+                break;
+        }
     }
 
     @SuppressWarnings("unchecked")

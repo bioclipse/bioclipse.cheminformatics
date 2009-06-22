@@ -832,11 +832,9 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
                              net.bioclipse.cdk.jchempaint.Activator.PLUGIN_ID );
                 }
 
-
                 break;
             default:
                 break;
         }
-
     }
 }
