@@ -20,16 +20,21 @@
       </category>
    </extension>
    <extension
-         point="org.eclipse.ui.views">
-      <category
-            id="net.bioclipse.chemoinformatics.views.category"
-            name="Chemoinformatics">
-      </category>
-   </extension>
-   <extension
          point="org.eclipse.ui.importWizards">
       <category
             id="net.bioclipse.chemoinformatics.importwizards.category"
+            name="Chemoinformatics">
+      </category>
+   </extension>
+       <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="net.bioclipse.cheminformatics"
+            name="Cheminformatics"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="net.bioclipse.chemoinformatics.views.category"
             name="Chemoinformatics">
       </category>
    </extension>

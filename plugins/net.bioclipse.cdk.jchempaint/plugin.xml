@@ -1061,7 +1061,7 @@
          point="org.eclipse.ui.newWizards">
       <wizard
             canFinishEarly="true"
-            category="net.bioclipse.cdk.ChemistryFiles"
+            category="net.bioclipse.cheminformatics"
             class="net.bioclipse.cdk.jchempaint.wizards.NewMoleculeWizard"
             hasPages="false"
             icon="icons/molecule3D.png"
