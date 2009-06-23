@@ -71,9 +71,6 @@
 
       <extension
          point="org.eclipse.ui.newWizards">
-      <category
-            id="net.bioclipse.cheminformatics"
-            name="Chemistry Files"/>
       <wizard
             canFinishEarly="false"
             category="net.bioclipse.cheminformatics"
