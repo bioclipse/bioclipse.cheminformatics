@@ -699,7 +699,7 @@ public class JChemPaintManager implements IJChemPaintManager {
                 }
                 atomsToRemove.clear();
             }
-            
+            updateView();
         } else {
             Activator.getDefault().getJsConsoleManager()
             .say("No opened JChemPaint editor");
