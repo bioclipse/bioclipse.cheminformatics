@@ -1093,7 +1093,7 @@
       </enablement>
     </commonWizard>
   </extension>
-  <extension
+  <!--extension
         point="org.eclipse.ui.views">
      <view
            class="net.bioclipse.cdk.jchempaint.widgets.GeneratorsView"
@@ -1101,7 +1101,7 @@
            name="Generators View"
            restorable="true">
      </view>
-  </extension>
+  </extension-->
   <extension
         point="org.eclipse.ui.perspectiveExtensions">
      <perspectiveExtension
