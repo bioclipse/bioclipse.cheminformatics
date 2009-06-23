@@ -2,6 +2,7 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="Chemistry Development Kit user interface">
-	<topic label="About CDK user interface plugin"  href="html/maintopic.html"> 
-	</topic>
+  <topic label="About the CDK plugin"  href="html/cdk_home.html"/>
+  <topic label="Exposed Functionality in the User Interface"  href="html/maintopic.html"/>
+  <topic label="License"  href="html/lgpl.html"/>
 </toc>
