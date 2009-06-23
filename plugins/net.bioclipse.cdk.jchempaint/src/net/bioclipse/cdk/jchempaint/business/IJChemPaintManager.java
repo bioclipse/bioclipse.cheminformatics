@@ -32,92 +32,92 @@ import org.openscience.cdk.interfaces.IBond;
 @TestClasses("net.bioclipse.cdk.jchempaint.business.test.jcp.APITest")
 public interface IJChemPaintManager extends IBioclipseManager {
     
-    @PublishedMethod ( params = "double the zoom factor", 
+    @PublishedMethod ( params = "String path",
                        methodSummary = "set the zoom factor" )
     public void snapshot(String path);                      
     
     @Recorded
-    @PublishedMethod ( params = "double the zoom factor", 
+    @PublishedMethod ( params = "double zoom",
                        methodSummary = "set the zoom factor" )
     public void setZoom(double zoom);
     
     @Recorded
-    @PublishedMethod ( params = "double the screen margin", 
+    @PublishedMethod ( params = "double margin",
                        methodSummary = "set the margin of the diagram" )
     public void setMargin(double margin);
     
     @Recorded
-    @PublishedMethod ( params = "double the width on screen of a wedge bond", 
+    @PublishedMethod ( params = "double wedgeWidth",
                        methodSummary = "set the on-screen width of a wedge" )
     public void setWedgeWidth(double wedgeWidth);
     
     @Recorded
-    @PublishedMethod ( params = "boolean true if atom numbers shown", 
+    @PublishedMethod ( params = "boolean setDrawNumbers",
                        methodSummary = "set to show atom numbers" )
     public void setDrawNumbers(boolean setDrawNumbers);
     
     @Recorded
-    @PublishedMethod ( params = "boolean true if hydrogens shown explicitly", 
+    @PublishedMethod ( params = "boolean explicitHydrogens",
                        methodSummary = "set to show hydrogens explicitly" )
     public void setShowExplicitHydrogens(boolean explicitHydrogens);
     
     @Recorded
-    @PublishedMethod ( params = "boolean true if hydrogens shown implicitly", 
+    @PublishedMethod ( params = "boolean implicitHydrogens",
                        methodSummary = "set to show hydrogens implicitly" )
     public void setShowImplicitHydrogens(boolean implicitHydrogens);
     
     @Recorded
-    @PublishedMethod ( params = "boolean true if methyl groups shown explicitly", 
+    @PublishedMethod ( params = "boolean showEndCarbons",
                        methodSummary = "set to show explicit methyl groups" )
     public void setShowEndCarbons(boolean showEndCarbons);
     
     @Recorded
-    @PublishedMethod ( params = "boolean true if CDK aromatic indicators shown", 
+    @PublishedMethod ( params = "boolean showAromaticityCDK",
                        methodSummary = "set to true for CDK indicators" )
     public void setShowAromaticityInCDKStyle(boolean showAromaticityCDK);    
     
     @Recorded
-    @PublishedMethod ( params = "boolean true if aromatic indicators shown", 
+    @PublishedMethod ( params = "boolean showAromaticity",
                        methodSummary = "set to true if aromatic indicators on" )
     public void setShowAromaticity(boolean showAromaticity);
     
     @Recorded
-    @PublishedMethod ( params = "double the fraction of ring diameter to use", 
+    @PublishedMethod ( params = "double ringProportion",
                        methodSummary = "set the position of inner-ring bonds" )
     public void setRingProportion(double ringProportion);
 
     @Recorded
-    @PublishedMethod ( params = "double the highlight distance on screen", 
+    @PublishedMethod ( params = "double highlightDistance",
                        methodSummary = "set the distance to highlight within" )
     public void setHighlightDistance(double highlightDistance);
     
     @Recorded
-    @PublishedMethod ( params = "boolean true if the diagram should fit screen", 
+    @PublishedMethod ( params = "boolean fitToScreen",
                        methodSummary = "set the diagram to fit the screen" )
     public void setFitToScreen(boolean fitToScreen);
 
     @Recorded
-    @PublishedMethod ( params = "double width of a bond", 
+    @PublishedMethod ( params = "double bondWidth",
                        methodSummary = "set the width of bonds" )
     public void setBondWidth(double bondWidth);
   
     @Recorded
-    @PublishedMethod ( params = "double distance on screen between bonds", 
+    @PublishedMethod ( params = "double bondDistance",
                        methodSummary = "set distance between multiple bonds")
     public void setBondDistance(double bondDistance);
     
     @Recorded
-    @PublishedMethod ( params = "boolean atoms should be shown in compact form", 
+    @PublishedMethod ( params = "boolean isCompact",
                        methodSummary = "set to true if atoms are to be compact")
     public void setIsCompact(boolean isCompact);
 
     @Recorded
-    @PublishedMethod ( params = "double length on screen of a typical bond", 
+    @PublishedMethod ( params = "double bondLength",
                        methodSummary = "set the standard bond length" )
     public void setBondLength(double bondLength);
     
     @Recorded
-    @PublishedMethod ( params = "double radius of the atom symbol on screen", 
+    @PublishedMethod ( params = "double atomRadius",
                        methodSummary = "set the radius of an atom symbol" )
     public void setAtomRadius(double atomRadius);
     
@@ -190,7 +190,7 @@ public interface IJChemPaintManager extends IBioclipseManager {
     public double getAtomRadius();
 
     @Recorded
-    @PublishedMethod ( params = "Point2d worldCoordinate", 
+    @PublishedMethod ( params = "Point2d atomRadius",
                        methodSummary = "Returns the IAtom closest to the world coordinate." )
     public IAtom getClosestAtom(Point2d worldCoord);
 
@@ -203,17 +203,17 @@ public interface IJChemPaintManager extends IBioclipseManager {
     public void setModel(ICDKMolecule molecule) throws BioclipseException;
 
     @Recorded
-    @PublishedMethod ( params = "IAtom atom to remove",
+    @PublishedMethod ( params = "IAtom atom",
                        methodSummary = "Removes an IAtom from the data model." )
     public void removeAtom(IAtom atom) throws BioclipseException;
     
     @Recorded
-    @PublishedMethod ( params = "IBond bond to remove",
+    @PublishedMethod ( params = "IBond bond",
                        methodSummary = "Removes a IBond from the data model." )
     public void removeBond(IBond bond) throws BioclipseException;
 
     @Recorded
-    @PublishedMethod ( params = "Point2d worldCoordinate",
+    @PublishedMethod ( params = "Point2d worldCoord",
                        methodSummary = "Returns the IBond closest to the world coordinate." )
     public IBond getClosestBond(Point2d worldCoord);
 
@@ -225,21 +225,21 @@ public interface IJChemPaintManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
-         params = "String element symbol, Point2d world coordinate",
+         params = "String elementSymbol, Point2d worldcoord",
          methodSummary = "Adds a new atom at the given coordinates."
     )
     public IAtom addAtom(String elementSymbol, Point2d worldcoord);
 
     @Recorded
     @PublishedMethod(
-         params = "String element symbol, IAtom atom to attach the new atom too",
+         params = "String elementSymbol, IAtom atom",
          methodSummary = "Adds a new atom bonded to the given atom."
     )
     public IAtom addAtom(String elementSymbol, IAtom atom);
 
     @Recorded
     @PublishedMethod(
-         params = "double x coordinate, double y coordinate",
+         params = "double x, double y",
          methodSummary = "Creates a new javax.vecmath.Point2d."
     )
     public Point2d newPoint2d(double x, double y);
@@ -265,63 +265,63 @@ public interface IJChemPaintManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
-         params = "IAtom atom to move, Point2D point where to move to", 
+         params = "IAtom atom, Point2d point",
          methodSummary = "Moves an atom to the given location."
     )
     public void moveTo(IAtom atom, Point2d point);
 
     @Recorded
     @PublishedMethod(
-         params = "IAtom atom to change, Symbol new element symbol", 
+         params = "IAtom atom, String symbol",
          methodSummary = "Changes the element of this atom."
     )
     public void setSymbol(IAtom atom, String symbol);
 
     @Recorded
     @PublishedMethod(
-         params = "IAtom atom to change, int new formal charge", 
+         params = "IAtom atom, int charge",
          methodSummary = "Changes the formal charge of this atom."
     )
     public void setCharge(IAtom atom, int charge);
 
     @Recorded
     @PublishedMethod(
-         params = "IAtom atom to change, int new mass number", 
+         params = "IAtom atom, int charge",
          methodSummary = "Changes the mass number of this element."
     )
     public void setMassNumber(IAtom atom, int massNumber);
 
     @Recorded
     @PublishedMethod(
-         params = "IAtom first atom in the bond, IAtom second atom in the bond", 
+         params = "IAtom atom, int charge",
          methodSummary = "Create a new bond between the two given atoms."
     )
     public IBond addBond(IAtom fromAtom, IAtom toAtom);
 
     @Recorded
     @PublishedMethod(
-         params = "IBond bond to move, Point2d point to move the atom to", 
+         params = "IBond bond, Point2d point",
          methodSummary = "Moves the center of the bond to the new point."
     )
     public void moveTo(IBond bond, Point2d point);
 
     @Recorded
     @PublishedMethod(
-         params = "IBond bond to change, IBond.Order new bond order", 
+         params = "IBond bond, IBond.Order order",
          methodSummary = "Changes the order of the bond."
     )
     public void setOrder(IBond bond, IBond.Order order);
 
     @Recorded
     @PublishedMethod(
-         params = "IBond bond to change, int new wedge type", 
+         params = "IBond bond, int type",
          methodSummary = "Changes the wedge type of the bond."
     )
     public void setWedgeType(IBond bond, int type);
     
     @Recorded
     @PublishedMethod(
-         params = "int order", 
+         params = "int order",
          methodSummary = "Returns a IBond.Order matching the given order."
     )
     public IBond.Order getBondOrder(int order);
@@ -340,14 +340,14 @@ public interface IJChemPaintManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
-         params = "IAtom atom to add the ring to, int ring size",
+         params = "IAtom atom, int size",
          methodSummary = "Adds a carbon ring of the given size to the given atom."
     )
     public void addRing(IAtom atom, int size);
 
     @Recorded
     @PublishedMethod(
-         params = "IBond bond to add the ring to, int ring size",
+         params = "IBond bond, int size",
          methodSummary = "Adds a carbon ring of the given size fused with " +
                          "the given bond."
     )
@@ -355,14 +355,14 @@ public interface IJChemPaintManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
-         params = "IAtom atom to add the phenyl ring to",
+         params = "IAtom atom",
          methodSummary = "Adds a phenyl ring to the given atom."
     )
     public void addPhenyl(IAtom atom);
 
     @Recorded
     @PublishedMethod(
-         params = "IBond bond to add the phenyl ring to",
+         params = "IBond bond",
          methodSummary = "Adds a phenyl ring fused with the given bond."
     )
     public void addPhenyl(IBond bond);
