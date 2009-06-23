@@ -19,6 +19,8 @@ import net.bioclipse.pubchem.business.PubChemManager;
 import net.bioclipse.scripting.ui.Activator;
 import net.bioclipse.scripting.ui.business.IJsConsoleManager;
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -67,41 +69,77 @@ public class NewFromPubChemWizard extends BasicNewResourceWizard {
 		return (query != null && query.compareTo("") != 0);
 	}
 
-	public boolean performFinish() {
+	private IFolder getResultsFolder(String results, IProgressMonitor monitor)
+	  throws CoreException {
+	    IProject project = net.bioclipse.core.Activator.getVirtualProject();
+	    int counter = 1;
+	    String resultsBase = results;
+	    while (project.findMember(results) != null) {
+	        results = resultsBase + counter;
+	    }
+	    IFolder folder = project.getFolder(results);
+	    return folder;
+	}
+
+    public boolean performFinish() {
 	    Job job = new Job("Searching PubChem...") {
 	        protected IStatus run(IProgressMonitor monitor) {
 	            IJsConsoleManager js = Activator.getDefault().getJsConsoleManager();
+	            IFolder resultsFolder;
+	            try {
+                    resultsFolder = getResultsFolder(
+                        query.replace(' ', '_'),
+                        monitor
+                    );
+                    resultsFolder.create(true, true, monitor);
+                } catch ( CoreException e1 ) {
+                    js.print(
+                         "Could not set up a results folder: " +
+                         e1.getMessage()
+                    );
+                    e1.printStackTrace();
+                    monitor.done();
+                    return Status.CANCEL_STATUS;
+                }
+
 	            PubChemManager pubchem = new PubChemManager();
 
 	            try {
-	                System.out.println("query: " + query);
 	                List<Integer> searchResults =
 	                    pubchem.search(query, monitor);
 
+	                monitor.subTask("Downloading search results...");
 	                int max = Math.min(15, searchResults.size());
-	                for (int i=0; i<max; i++) {
+	                for (int i=0; i<max && !monitor.isCanceled(); i++) {
 	                    int cid = searchResults.get(i);
-	                    String filename = "/Virtual/" + query.replace(" ", "") +
-	                    "." + cid + ".xml";
-	                    js.print("downloading CID " + cid + "...\n");
+	                    String filename =
+	                        resultsFolder.getFullPath().toString() + "/" +
+	                        "cid" + cid + ".xml";
 	                    pubchem.loadCompound(
 	                        cid,
 	                        ResourcePathTransformer.getInstance()
 	                            .transform(filename),
 	                        monitor
 	                    );
+	                    monitor.worked(1);
 	                }
 	            } catch (IOException e) {
 	                js.print("Downloading the search results failed: " + e.getMessage());
 	                e.printStackTrace();
+                    monitor.done();
+                    return Status.CANCEL_STATUS;
 	            } catch (BioclipseException e) {
 	                js.print("Downloading the search results failed: " + e.getMessage());
 	                e.printStackTrace();
+                    monitor.done();
+                    return Status.CANCEL_STATUS;
 	            } catch (CoreException e) {
 	                js.print("Downloading the search results failed: " + e.getMessage());
 	                e.printStackTrace();
-//	                return Status.
+                    monitor.done();
+                    return Status.CANCEL_STATUS;
 	            }
+                monitor.done();
 	            return Status.OK_STATUS;
 	        }
 	    };
