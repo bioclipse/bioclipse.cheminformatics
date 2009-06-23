@@ -86,6 +86,8 @@ public class Create2dHandlerWithReset extends AbstractHandler {
                         .getRoot()
                         .getFile(
                                   result );
+                      }else{
+                          return;
                       }
                   }
               }
