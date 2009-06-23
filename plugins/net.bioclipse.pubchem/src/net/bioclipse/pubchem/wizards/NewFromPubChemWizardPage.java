@@ -77,7 +77,7 @@ public class NewFromPubChemWizardPage extends WizardPage {
 			setErrorMessage(null);
 			((NewFromPubChemWizard)getWizard()).molecule = txtName.getText();
 
-			System.out.println("Found a valid name! -> " + txtName.getText());
+//			System.out.println("Found a valid name! -> " + txtName.getText());
 			this.setPageComplete(true);
 		}
 		getWizard().getContainer().updateButtons();
