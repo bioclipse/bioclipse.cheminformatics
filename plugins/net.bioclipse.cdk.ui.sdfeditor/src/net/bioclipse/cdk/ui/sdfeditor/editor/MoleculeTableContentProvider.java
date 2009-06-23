@@ -174,7 +174,7 @@ public class MoleculeTableContentProvider implements
             return molecule;
         }
         int i = col;
-        if( properties != null && i<properties.size()+1) {
+        if( molecule!=null && properties != null && i<properties.size()+1) {
             Object v = molecule.getProperty( (String)properties.get( i-1 ),
                                                  Property.USE_CACHED );
             if(v != null) {

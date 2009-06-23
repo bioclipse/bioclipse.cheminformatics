@@ -176,8 +176,8 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
 
         setPartName( getEditorInput().getName());
         getSite().getPage().addPostSelectionListener( this );
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(
-                                       this, IResourceChangeEvent.POST_CHANGE);
+//        ResourcesPlugin.getWorkspace().addResourceChangeListener(
+//                                       this, IResourceChangeEvent.POST_CHANGE);
     }
 
     @Override
