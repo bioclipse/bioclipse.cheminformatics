@@ -10,7 +10,7 @@
            id="net.bioclipse.pubchem.wizards.NewFromPubChemWizard"
            icon="icons/world_dl.png"
            name="Get structure from PubChem"
-           project="true">
+           project="false">
        </wizard>
    </extension>
 
