@@ -15,10 +15,10 @@ import java.util.List;
 
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.pubchem.business.PubChemManager;
-import net.bioclipse.scripting.ui.Activator;
-import net.bioclipse.scripting.ui.business.IJsConsoleManager;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -33,6 +33,8 @@ import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 public class NewFromPubChemWizard extends BasicNewResourceWizard {
 	
 	private NewFromPubChemWizardPage newMolPage;
+	private static Logger logger = Logger.getLogger("my.package.classname");
+
 	protected String molecule;
 	
 	private String query = "";
@@ -84,7 +86,6 @@ public class NewFromPubChemWizard extends BasicNewResourceWizard {
     public boolean performFinish() {
 	    Job job = new Job("Searching PubChem...") {
 	        protected IStatus run(IProgressMonitor monitor) {
-	            IJsConsoleManager js = Activator.getDefault().getJsConsoleManager();
 	            IFolder resultsFolder;
 	            try {
                     resultsFolder = getResultsFolder(
@@ -93,7 +94,7 @@ public class NewFromPubChemWizard extends BasicNewResourceWizard {
                     );
                     resultsFolder.create(true, true, monitor);
                 } catch ( CoreException e1 ) {
-                    js.print(
+                    LogUtils.handleException(e1, logger,
                          "Could not set up a results folder: " +
                          e1.getMessage()
                     );
@@ -124,17 +125,26 @@ public class NewFromPubChemWizard extends BasicNewResourceWizard {
 	                    monitor.worked(1);
 	                }
 	            } catch (IOException e) {
-	                js.print("Downloading the search results failed: " + e.getMessage());
-	                e.printStackTrace();
+                    LogUtils.handleException(e, logger,
+                        "Downloading the search results failed: " +
+                        e.getMessage()
+                    );
+                    e.printStackTrace();
                     monitor.done();
                     return Status.CANCEL_STATUS;
 	            } catch (BioclipseException e) {
-	                js.print("Downloading the search results failed: " + e.getMessage());
+                    LogUtils.handleException(e, logger,
+                        "Downloading the search results failed: " +
+                        e.getMessage()
+                    );
 	                e.printStackTrace();
                     monitor.done();
                     return Status.CANCEL_STATUS;
 	            } catch (CoreException e) {
-	                js.print("Downloading the search results failed: " + e.getMessage());
+                    LogUtils.handleException(e, logger,
+                        "Downloading the search results failed: " +
+                        e.getMessage()
+                    );
 	                e.printStackTrace();
                     monitor.done();
                     return Status.CANCEL_STATUS;
