@@ -17,6 +17,7 @@ import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.pubchem.business.PubChemManager;
+import net.bioclipse.ui.business.UIManager;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFolder;
@@ -27,6 +28,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 
@@ -85,8 +87,8 @@ public class NewFromPubChemWizard extends BasicNewResourceWizard {
 
     public boolean performFinish() {
 	    Job job = new Job("Searching PubChem...") {
-	        protected IStatus run(IProgressMonitor monitor) {
-	            IFolder resultsFolder;
+	        protected IStatus run(final IProgressMonitor monitor) {
+	            final IFolder resultsFolder;
 	            try {
                     resultsFolder = getResultsFolder(
                         query.replace(' ', '_'),
@@ -109,7 +111,22 @@ public class NewFromPubChemWizard extends BasicNewResourceWizard {
 	                List<Integer> searchResults =
 	                    pubchem.search(query, monitor);
 
-//                    new UIManager().revealAndSelect(resultsFolder);
+	                Display.getDefault().syncExec(new Runnable() {
+	                    public void run(){
+	                        try {
+                                new UIManager().revealAndSelect(resultsFolder);
+                            } catch ( BioclipseException e ) {
+                                LogUtils.handleException(e, logger,
+                                    "Revealing the results folder failed: " +
+                                    e.getMessage()
+                                );
+                                e.printStackTrace();
+                                monitor.setCanceled(true);
+                            }
+	                    }
+	                });
+	                if (monitor.isCanceled()) return Status.CANCEL_STATUS;
+
 	                monitor.subTask("Downloading search results...");
 	                int max = Math.min(15, searchResults.size());
 	                for (int i=0; i<max && !monitor.isCanceled(); i++) {
