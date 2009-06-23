@@ -12,6 +12,7 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.xom,
  net.bioclipse.core,
  net.bioclipse.ui,
+ net.bioclipse.ui.business,
  net.bioclipse.scripting.ui,
  net.bioclipse.chemoinformatics
 Bundle-ActivationPolicy: lazy

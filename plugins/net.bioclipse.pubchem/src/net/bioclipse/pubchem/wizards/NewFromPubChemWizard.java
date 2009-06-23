@@ -109,6 +109,7 @@ public class NewFromPubChemWizard extends BasicNewResourceWizard {
 	                List<Integer> searchResults =
 	                    pubchem.search(query, monitor);
 
+//                    new UIManager().revealAndSelect(resultsFolder);
 	                monitor.subTask("Downloading search results...");
 	                int max = Math.min(15, searchResults.size());
 	                for (int i=0; i<max && !monitor.isCanceled(); i++) {
