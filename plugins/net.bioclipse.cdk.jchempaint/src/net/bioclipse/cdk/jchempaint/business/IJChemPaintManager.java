@@ -33,173 +33,180 @@ import org.openscience.cdk.interfaces.IBond;
 public interface IJChemPaintManager extends IBioclipseManager {
     
     @PublishedMethod ( params = "String path",
-                       methodSummary = "set the zoom factor" )
+                       methodSummary = "Takes a snapshot." )
     public void snapshot(String path);                      
     
     @Recorded
     @PublishedMethod ( params = "double zoom",
-                       methodSummary = "set the zoom factor" )
+                       methodSummary = "Sets the zoom factor." )
     public void setZoom(double zoom);
     
     @Recorded
     @PublishedMethod ( params = "double margin",
-                       methodSummary = "set the margin of the diagram" )
+                       methodSummary = "Sets the margin of the diagram." )
     public void setMargin(double margin);
     
     @Recorded
     @PublishedMethod ( params = "double wedgeWidth",
-                       methodSummary = "set the on-screen width of a wedge" )
+                       methodSummary = "Sets the on-screen width of a wedge." )
     public void setWedgeWidth(double wedgeWidth);
     
     @Recorded
     @PublishedMethod ( params = "boolean setDrawNumbers",
-                       methodSummary = "set to show atom numbers" )
+                       methodSummary = "Sets to show atom numbers." )
     public void setDrawNumbers(boolean setDrawNumbers);
     
     @Recorded
     @PublishedMethod ( params = "boolean explicitHydrogens",
-                       methodSummary = "set to show hydrogens explicitly" )
+                       methodSummary = "Sets to show the explicit hydrogens." )
     public void setShowExplicitHydrogens(boolean explicitHydrogens);
     
     @Recorded
     @PublishedMethod ( params = "boolean implicitHydrogens",
-                       methodSummary = "set to show hydrogens implicitly" )
+                       methodSummary = "Sets to show implicit hydrogens." )
     public void setShowImplicitHydrogens(boolean implicitHydrogens);
     
     @Recorded
     @PublishedMethod ( params = "boolean showEndCarbons",
-                       methodSummary = "set to show explicit methyl groups" )
+                       methodSummary = "Sets to show explicit methyl groups" +
+                       		" at the end of chains." )
     public void setShowEndCarbons(boolean showEndCarbons);
     
     @Recorded
     @PublishedMethod ( params = "boolean showAromaticityCDK",
-                       methodSummary = "set to true for CDK indicators" )
+                       methodSummary = "Sets to true for CDK indicators " +
+                       		"of aromaticity." )
     public void setShowAromaticityInCDKStyle(boolean showAromaticityCDK);    
     
     @Recorded
     @PublishedMethod ( params = "boolean showAromaticity",
-                       methodSummary = "set to true if aromatic indicators on" )
+                       methodSummary = "Sets to true if aromatic indicators on." )
     public void setShowAromaticity(boolean showAromaticity);
     
     @Recorded
     @PublishedMethod ( params = "double ringProportion",
-                       methodSummary = "set the position of inner-ring bonds" )
+                       methodSummary = "Sets the position of inner-ring bonds." )
     public void setRingProportion(double ringProportion);
 
     @Recorded
     @PublishedMethod ( params = "double highlightDistance",
-                       methodSummary = "set the distance to highlight within" )
+                       methodSummary = "Sets the distance to highlight within." )
     public void setHighlightDistance(double highlightDistance);
     
     @Recorded
     @PublishedMethod ( params = "boolean fitToScreen",
-                       methodSummary = "set the diagram to fit the screen" )
+                       methodSummary = "Sets the diagram to fit the screen." )
     public void setFitToScreen(boolean fitToScreen);
 
     @Recorded
     @PublishedMethod ( params = "double bondWidth",
-                       methodSummary = "set the width of bonds" )
+                       methodSummary = "Sets the width of bonds." )
     public void setBondWidth(double bondWidth);
   
     @Recorded
     @PublishedMethod ( params = "double bondDistance",
-                       methodSummary = "set distance between multiple bonds")
+                       methodSummary = "Sets distance between lines in" +
+                       		" multiple bonds.")
     public void setBondDistance(double bondDistance);
     
     @Recorded
     @PublishedMethod ( params = "boolean isCompact",
-                       methodSummary = "set to true if atoms are to be compact")
+                       methodSummary = "Sets to true if atoms are to be " +
+                       		"drawn compact.")
     public void setIsCompact(boolean isCompact);
 
     @Recorded
     @PublishedMethod ( params = "double bondLength",
-                       methodSummary = "set the standard bond length" )
+                       methodSummary = "Sets the standard bond length." )
     public void setBondLength(double bondLength);
     
     @Recorded
     @PublishedMethod ( params = "double atomRadius",
-                       methodSummary = "set the radius of an atom symbol" )
+                       methodSummary = "Sets the radius of an atom symbol." )
     public void setAtomRadius(double atomRadius);
     
     @Recorded
-    @PublishedMethod ( methodSummary = "get the zoom factor" )
+    @PublishedMethod ( methodSummary = "Gets the zoom factor." )
     public double getZoom();
     
     @Recorded
-    @PublishedMethod ( methodSummary = "get the margin of the diagram" )
+    @PublishedMethod ( methodSummary = "Gets the margin of the diagram." )
     public double getMargin();
 
     @Recorded
-    @PublishedMethod ( methodSummary = "get the on-screen width of a wedge" )
+    @PublishedMethod ( methodSummary = "Gets the on-screen width of a wedge." )
     public double getWedgeWidth();
     
     @Recorded
-    @PublishedMethod ( methodSummary = "showing atom numbers" )
+    @PublishedMethod ( methodSummary = "Showing atom numbers." )
     public boolean getDrawNumbers();
     
     @Recorded
-    @PublishedMethod ( methodSummary = "get to show hydrogens explicitly" )
+    @PublishedMethod (methodSummary = "True if explicit hydrogens are shown.")
     public boolean getShowExplicitHydrogens();
     
     @Recorded
-    @PublishedMethod ( methodSummary = "get to show hydrogens implicitly" )
+    @PublishedMethod (methodSummary = "True if implicit hydrogens are shown.")
     public boolean getShowImplicitHydrogens();
     
     @Recorded
-    @PublishedMethod ( methodSummary = "true if showing explicit methyl groups")
+    @PublishedMethod ( methodSummary = "True if showing explicit methyl groups.")
     public boolean getShowEndCarbons();
     
     @Recorded
-    @PublishedMethod ( methodSummary = "true if CDK indicators are shown" )
+    @PublishedMethod ( methodSummary = "True if CDK-style aromiticity is used." )
     public boolean getShowAromaticityInCDKStyle();    
     
     @Recorded
-    @PublishedMethod ( methodSummary = "true if aromatic indicators on" )
+    @PublishedMethod ( methodSummary = "True if aromatic indicators on." )
     public boolean getShowAromaticity();
     
     @Recorded
-    @PublishedMethod ( methodSummary = "get the position of inner-ring bonds" )
+    @PublishedMethod ( methodSummary = "Gets the position of inner-ring bonds." )
     public double getRingProportion();
 
     @Recorded
-    @PublishedMethod ( methodSummary = "get the distance to highlight within" )
+    @PublishedMethod ( methodSummary = "Gets the distance to highlight within." )
     public double getHighlightDistance();
     
     @Recorded
-    @PublishedMethod ( methodSummary = "get if the diagram fits the screen" )
+    @PublishedMethod ( methodSummary = "Gets if the diagram fits the screen." )
     public boolean getFitToScreen();
 
     @Recorded
-    @PublishedMethod ( methodSummary = "get the width of bonds" )
+    @PublishedMethod ( methodSummary = "Gets the width of bonds." )
     public double getBondWidth();
   
     @Recorded
-    @PublishedMethod ( methodSummary = "get distance between multiple bonds")
+    @PublishedMethod ( methodSummary = "Gets distance between multiple bonds.")
     public double getBondDistance();
     
     @Recorded
-    @PublishedMethod ( methodSummary = "get to true if atoms are to be compact")
+    @PublishedMethod ( methodSummary = "Gets to true if atoms are to be compact.")
     public boolean getIsCompact();
 
     @Recorded
-    @PublishedMethod ( methodSummary = "get the standard bond length" )
+    @PublishedMethod ( methodSummary = "Gets the standard bond length." )
     public double getBondLength();
     
     @Recorded
-    @PublishedMethod ( methodSummary = "get the radius of an atom symbol" )
+    @PublishedMethod ( methodSummary = "Gets the radius of an atom symbol." )
     public double getAtomRadius();
 
     @Recorded
     @PublishedMethod ( params = "Point2d atomRadius",
-                       methodSummary = "Returns the IAtom closest to the world coordinate." )
+                       methodSummary = "Returns the IAtom closest to the " +
+                       		"givenworld coordinate." )
     public IAtom getClosestAtom(Point2d worldCoord);
 
     @Recorded
-    @PublishedMethod ( methodSummary = "Returns the ICDKMolecule of the active JChemPaint editor." )
+    @PublishedMethod ( methodSummary = "Returns the ICDKMolecule of the" +
+    		"active JChemPaint editor." )
     public ICDKMolecule getModel() throws BioclipseException;
     
     @Recorded
-    @PublishedMethod ( methodSummary = "Sets the ICDKMolecule of the active JChemPaint editor." )
+    @PublishedMethod ( methodSummary = "Sets the ICDKMolecule of the active" +
+    		" JChemPaint editor." )
     public void setModel(ICDKMolecule molecule) throws BioclipseException;
 
     @Recorded
@@ -214,7 +221,8 @@ public interface IJChemPaintManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod ( params = "Point2d worldCoord",
-                       methodSummary = "Returns the IBond closest to the world coordinate." )
+                       methodSummary = "Returns the IBond closest to the " +
+                       		"given world coordinate." )
     public IBond getClosestBond(Point2d worldCoord);
 
     @Recorded
@@ -247,20 +255,19 @@ public interface IJChemPaintManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(
          methodSummary = "Updates the implicit hydrogen counts, given the " +
-                         "given the current connectivity."
+                         "current connectivity."
     )
     public void updateImplicitHydrogenCounts();
 
     @Recorded
     @PublishedMethod(
          methodSummary = "Adds explicit hydrogens, given the " +
-                         "given the current connectivity."
+                         "current connectivity."
     )
     public void addExplicitHydrogens();
     
     @Recorded
-    @PublishedMethod( methodSummary = "Removes explicit hydrogens, "+
-                                      "given the current connectivity")
+    @PublishedMethod( methodSummary = "Removes all explicit hydrogens")
     public void removeExplicitHydrogens();
 
     @Recorded
@@ -328,7 +335,7 @@ public interface IJChemPaintManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
-         methodSummary = "Deletes all atoms and bonds."
+         methodSummary = "Deletes all atoms and bonds in the model."
     )
     public void zap();
 
