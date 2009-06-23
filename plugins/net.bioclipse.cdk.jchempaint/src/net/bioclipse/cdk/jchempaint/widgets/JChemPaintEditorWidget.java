@@ -670,6 +670,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             if(!this.operationHistory.canUndo( this.undoContext )) {
                 setDirty( false );
             }
+            structureChanged();
         }
     }
 
@@ -680,6 +681,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             if(!getDirty()) {
                 setDirty( true );
             }
+            structureChanged();
         }
     }
 
