@@ -50,6 +50,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPersistableElement;
+import org.eclipse.ui.ISaveablePart;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartConstants;
@@ -327,16 +328,24 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
        super.pageChange( newPageIndex );
     }
 
+   private ISaveablePart getSaveablePart(Pages page) {
+       switch(page) {
+           case JCP: return jcpPage;
+           case Molecules: return moleculesPage;
+           default: return null;
+       }
+   }
+
    private void syncJCP() {
        ICDKMolecule newMol = jcpPage.getCDKMolecule();
        if(newMol == null) return;
-       if(jcpPage.isDirty())
+       if(jcpPage.isDirty()) {
            setDirty(true);
-       calculateProperties( newMol );
-       moleculesPage.getModel().markDirty(
+           calculateProperties( newMol );
+           moleculesPage.getModel().markDirty(
                        moleculesPage.getMolTableViewer().getFirstSelected(),
                        newMol );
-
+       }
    }
 
     public void setDirty( boolean b ) {
@@ -348,11 +357,9 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
 
     @Override
     public boolean isDirty() {
+        ISaveablePart saveable = getSaveablePart( lastPage );
 
-        if(lastPage == Pages.JCP) {
-            return dirty || jcpPage.isDirty();
-        }
-        return dirty || moleculesPage.isDirty();
+            return dirty || (saveable!=null?saveable.isDirty():false);
     }
 
     private void updateJmolPage() {
