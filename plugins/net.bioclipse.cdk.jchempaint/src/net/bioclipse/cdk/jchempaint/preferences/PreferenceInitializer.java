@@ -68,7 +68,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         );
         store.setDefault(
                 PreferenceConstants.HIGHLIGHT_DISTANCE_DOUBLE,
-                model.getHighlightDistance()
+                14
         );
         store.setDefault(
                 PreferenceConstants.MARGIN_DOUBLE,
