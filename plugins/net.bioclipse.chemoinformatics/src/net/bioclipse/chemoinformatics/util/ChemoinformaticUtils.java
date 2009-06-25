@@ -37,11 +37,13 @@ public class ChemoinformaticUtils {
 
     public final static List<String> SUPPORTED_CONTENT_TYPES =
         new ArrayList<String>() {{
+           add("net.bioclipse.contenttypes.mdlMolFile0D");
            add("net.bioclipse.contenttypes.mdlMolFile2D");
            add("net.bioclipse.contenttypes.mdlMolFile3D");
            add("net.bioclipse.contenttypes.cml.singleMolecule2d");
            add("net.bioclipse.contenttypes.cml.singleMolecule3d");
            add("net.bioclipse.contenttypes.cml.singleMolecule5d");
+           add("net.bioclipse.contenttypes.cml.singleMolecule0d");
         }};
     
     /**
