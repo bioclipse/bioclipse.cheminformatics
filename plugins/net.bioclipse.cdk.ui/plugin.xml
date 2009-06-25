@@ -88,7 +88,7 @@
         <command
            id="net.bioclipse.cdk.ui.handlers.calculatetanimoto"
            defaultHandler="net.bioclipse.cdk.ui.handlers.CalculateTanimotoHandler"
-           name="create3D"/>
+           name="calculateTanimoto"/>
         <command
            id="net.bioclipse.cdk.ui.handlers.create3dwithreset"
            defaultHandler="net.bioclipse.cdk.ui.handlers.Create3dHandlerWithReset"
@@ -293,9 +293,13 @@
 				                <test property="org.eclipse.core.resources.contentTypeId" 
 				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule2d"/>
 				                <test property="org.eclipse.core.resources.contentTypeId" 
+				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule0d"/>
+				                <test property="org.eclipse.core.resources.contentTypeId" 
 				           	    	value="net.bioclipse.contenttypes.mdlMolFile2D"/>
 				                <test property="org.eclipse.core.resources.contentTypeId" 
 				           	    	value="net.bioclipse.contenttypes.mdlMolFile3D"/>
+				                <test property="org.eclipse.core.resources.contentTypeId" 
+				           	    	value="net.bioclipse.contenttypes.mdlMolFile0D"/>
 				                <test property="org.eclipse.core.resources.contentTypeId" 
 				           	    	value="net.bioclipse.contenttypes.pdb"/>
 				            </or>
