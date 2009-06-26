@@ -312,7 +312,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                        mol.removeProperty( o );
                     }
                 }
-                // get calculated properties form extension
+                // Add properties form model/molecule to cdk IMolecule
                 for(IPropertyCalculator<?> property:
                     SDFIndexEditorModel.retriveCalculatorContributions()) {
                     String name = property.getPropertyName();
@@ -461,5 +461,121 @@ public class MoleculeTableManager implements IBioclipseManager {
             logger.debug( "Failed to read properties" );
             throw new RuntimeException(e);
         }
+    }
+
+    public void calculatePropertiesFor( IFile file,
+                                         IPropertyCalculator<?>[] calculators,
+                                         IProgressMonitor monitor)
+                                            throws BioclipseException{
+        SubMonitor progress = SubMonitor.convert( monitor, 3000 );
+
+        IPath filePath = file.getFullPath();
+        IPath renamePath = null;
+        // If we are overwriting a.k.a save to the same file as we are reading
+        if(file.exists()) {
+            renamePath = filePath;
+            filePath = filePath.addFileExtension( "tmp" );
+
+        }
+
+        SDFileIndex index = createIndex( file, progress.newChild( 1000 ) );
+        SDFIndexEditorModel model = new SDFIndexEditorModel(index);
+
+        IFile target = null;
+        SubMonitor loopProgress = progress.newChild( 1000 );
+        loopProgress.setWorkRemaining( 1000*model.getNumberOfMolecules() );
+        loopProgress.subTask( "Writing to file" );
+        for(int i = 0;i<model.getNumberOfMolecules();i++ ) {
+            StringWriter writer = new StringWriter();
+            IChemObjectWriter chemWriter = new SDFWriter(writer);
+            try {
+            SubMonitor firstPart = loopProgress.newChild( 300 );
+            ICDKMolecule molecule = model.getMoleculeAt( i );
+            // copy properties
+            IAtomContainer ac = molecule.getAtomContainer();
+            IMolecule mol = null;
+            if(ac instanceof IMolecule)
+                mol = (IMolecule) ac;
+            else {
+                mol = new Molecule( ac );
+                //Properties are lost in this CDK operation, so copy them
+                mol.setProperties( ac.getProperties() );
+            }
+            firstPart.worked( 100 );
+            calculateProperties( molecule, calculators, new IReturner<Void>() {
+
+                public void completeReturn( Void object ) {
+
+                }
+
+                public void partialReturn( Void object ) {
+
+                }
+
+            },
+                                 firstPart.newChild( 100 ) );
+            for(IPropertyCalculator<?> property:
+                calculators) {
+                String name = property.getPropertyName();
+                Object value = molecule
+                .getProperty( name,Property.USE_CACHED );
+                if(value != null ) {
+                    String text = property.toString(value );
+                    mol.setProperty( name, text );
+                }
+            }
+
+            chemWriter.write( mol );
+            chemWriter.close();
+            firstPart.worked( 100 );
+            // If  it is the first time we need to create or write over the file
+            if(target==null) {
+                target = file.getWorkspace().getRoot().getFile( filePath );
+                if(target.exists()) {
+                    target.setContents( convertToByteArrayIs( writer ),
+                                                                  false,
+                                                                  true,
+                                                 loopProgress.newChild( 500 ) );
+                }else {
+                    target.create( convertToByteArrayIs( writer ),
+                                                           false,
+                                                 loopProgress.newChild( 500 ) );
+                }
+            }else {
+                target.appendContents( convertToByteArrayIs( writer ),
+                                                                false,
+                                                                true,
+                                                 loopProgress.newChild( 500 ) );
+            }
+            }catch(Exception e) {
+                LogUtils.debugTrace( logger, e );
+                throw new BioclipseException("Faild to save file: "+
+                                             e.getMessage());
+            }
+        }
+        progress.setWorkRemaining( 1000 );
+
+        try {
+            if(renamePath != null) {
+                progress.subTask( "Renaming file" );
+                file.delete( true, progress.newChild( 1000 ) );
+                target.move( renamePath, true, progress.newChild( 1000 ) );
+            }
+        } catch ( CoreException e1 ) {
+            logger.warn( "Could not rename original" );
+            throw new BioclipseException( "Failed to create new index: "
+                                          + e1.getMessage());
+        }
+        progress.done();
+    }
+
+    public IPropertyCalculator<?> getCalculator(String id) {
+        Collection<IPropertyCalculator<?>> calculators =
+            SDFIndexEditorModel.retriveCalculatorContributions();
+        for(IPropertyCalculator<?> calculator:calculators) {
+            if(calculator.getPropertyName().endsWith( id ))
+                return calculator;
+        }
+        throw new IllegalArgumentException("Id "+id+" dose not exist");
     }
 }

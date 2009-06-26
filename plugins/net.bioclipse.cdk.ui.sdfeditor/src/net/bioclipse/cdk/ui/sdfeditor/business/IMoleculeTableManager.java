@@ -85,4 +85,9 @@ public interface IMoleculeTableManager extends IBioclipseManager {
     public BioclipseJob<Void> parseProperties( SDFIndexEditorModel model,
                                  Collection<String> propertyKeys,
                                  BioclipseJobUpdateHook<Void> hook);
+
+
+    public String calculatePropertiesFor( IFile file,
+                                        IPropertyCalculator<?>[] calculator)
+                                           throws BioclipseException;
 }
