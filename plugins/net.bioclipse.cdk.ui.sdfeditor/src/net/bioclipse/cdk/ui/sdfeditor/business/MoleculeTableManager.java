@@ -417,7 +417,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                                  IReturner<Void> returner,
                                  IProgressMonitor monitor) {
 
-        Pattern pNamePattern = Pattern.compile( "^>.*<(.*)>*.\n");
+        Pattern pNamePattern = Pattern.compile( "^>.*<([^>]+)>.*\n" );
         try {
             monitor.beginTask( "Parsing properties", model.getNumberOfMolecules() );
         for(int i=0;i<model.getNumberOfMolecules();i++) {
