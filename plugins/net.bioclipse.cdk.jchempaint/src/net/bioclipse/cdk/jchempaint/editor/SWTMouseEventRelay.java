@@ -31,6 +31,10 @@ public class SWTMouseEventRelay implements  Listener {
     }
 
     public void handleEvent(Event event) {
+        if(isMenuClick( event )) {
+            logger.debug( "Ignoring right moue button" );
+            return;
+        }
         switch (event.type) {
 
             case SWT.MouseEnter:
@@ -71,7 +75,8 @@ public class SWTMouseEventRelay implements  Listener {
             dragFromX=event.x;
             dragFromY=event.y;
             isDragging=true;
-        }
+        }else
+            isDragging = false;
     }
 
     public void mouseUp( Event event ) {

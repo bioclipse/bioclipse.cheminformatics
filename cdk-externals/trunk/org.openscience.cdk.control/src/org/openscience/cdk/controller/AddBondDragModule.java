@@ -146,12 +146,14 @@ public class AddBondDragModule extends ControllerModuleAdapter {
         if(merge!=null) {
                 chemModelRelay.addBond( newAtom , merge );
         } else {
-            if(start.distance( worldCoord )<getHighlightDistance()) {
+            if( start!=null && start.distance( worldCoord )<getHighlightDistance()) {
                 if(!newSource)
                     chemModelRelay.addAtom( "C", newAtom );
             }else {
-                IAtom atom = chemModelRelay.addAtom( "C", dest );
-                chemModelRelay.addBond( newAtom, atom );
+                if(dest != null) {
+                    IAtom atom = chemModelRelay.addAtom( "C", dest );
+                    chemModelRelay.addBond( newAtom, atom );
+                }
             }
         }
     }
