@@ -123,12 +123,75 @@
               id="net.bioclipse.cdk.molTable.column.remove"
               name="Remove Column">
         </command>
+        <command
+              defaultHandler="net.bioclipse.cdk.ui.sdfeditor.handlers.CalculatePropertyForFileHandler"
+              id="net.bioclipse.cdk.ui.sdfeditor.addPropertyFile"
+              name="Add Property for File">
+           <commandParameter
+                 id="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
+                 name="calculatorId"
+                 optional="false">
+           </commandParameter>
+        </command>
   	</extension>
 
 	<extension
   		point="org.eclipse.ui.menus">
 		<menuContribution
 			locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+     <menu
+           id="net.bioclipse.sdfeditor.popup.calculateProperty"
+           label="Calculate property">
+        <command
+              commandId="net.bioclipse.cdk.ui.sdfeditor.addPropertyFile"
+              label="Number of Atoms"
+              style="push">
+           <parameter
+                 name="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
+                 value="net.bioclipse.cdk.calculator.numberOfAtoms">
+           </parameter>
+           <visibleWhen
+                 checkEnabled="true">
+              <iterate
+                    ifEmpty="false"
+                    operator="and">
+                 <adapt
+                       type="org.eclipse.core.resources.IResource">
+                    <or>
+                       <test
+                             property="org.eclipse.core.resources.contentTypeId"
+                             value="net.bioclipse.contenttypes.sdf2d">
+                       </test>
+                       <test
+                             property="org.eclipse.core.resources.contentTypeId"
+                             value="net.bioclipse.contenttypes.sdf3d">
+                       </test>
+                    </or>
+                 </adapt>
+              </iterate>
+           </visibleWhen>
+        </command>
+        <visibleWhen
+              checkEnabled="true">
+           <iterate
+                 ifEmpty="false"
+                 operator="and">
+              <adapt
+                    type="org.eclipse.core.resources.IResource">
+                 <or>
+                    <test
+                          property="org.eclipse.core.resources.contentTypeId"
+                          value="net.bioclipse.contenttypes.sdf2d">
+                    </test>
+                    <test
+                          property="org.eclipse.core.resources.contentTypeId"
+                          value="net.bioclipse.contenttypes.sdf3d">
+                    </test>
+                 </or>
+              </adapt>
+           </iterate>
+        </visibleWhen>
+     </menu>
 		    <command
 		    	commandId="net.bioclipse.cdk.sdfeditor.handlers.extractEntries"
 		    	label="Extract Entries"

@@ -46,7 +46,7 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
 
     Logger logger = Logger.getLogger( CalculatePropertyHandler.class );
 
-    private static final String PARAMETER_ID = "net.bioclipse.cdk.ui.sdfeditor.calculatorId";
+    protected static final String PARAMETER_ID = "net.bioclipse.cdk.ui.sdfeditor.calculatorId";
 
     public Object execute( ExecutionEvent event ) throws ExecutionException {
         IEditorPart editorPart = HandlerUtil.getActiveEditor( event );
@@ -86,7 +86,7 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
         return registry.getConfigurationElementsFor(
                                        "net.bioclipse.cdk.propertyCalculator" );
     }
-    private Collection<IPropertyCalculator<?>> getCalculators(
+    protected Collection<IPropertyCalculator<?>> getCalculators(
                                               IConfigurationElement[] elements,
                                               Collection<String> ids) {
         if(elements.length==0) return Collections.emptyList();
