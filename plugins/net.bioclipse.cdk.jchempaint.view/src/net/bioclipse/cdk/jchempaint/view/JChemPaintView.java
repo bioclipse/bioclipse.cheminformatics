@@ -414,4 +414,8 @@ public class JChemPaintView extends ViewPart
                 ((ISelectionChangedListener)o).selectionChanged( event );
             }
     }
+
+    public void refresh() {
+        canvasView.redraw();
+    }
 }
