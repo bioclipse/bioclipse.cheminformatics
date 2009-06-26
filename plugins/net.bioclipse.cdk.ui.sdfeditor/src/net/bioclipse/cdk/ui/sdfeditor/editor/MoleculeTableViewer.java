@@ -202,6 +202,7 @@ public class MoleculeTableViewer extends ContentViewer {
         final IMoleculesEditorModel model;
         final int index;
 
+        CDKMoleculePropertySource pSource;
         public MolTableElement(int index, IMoleculesEditorModel model) {
             this.model = model;
             this.index = index;
@@ -215,9 +216,11 @@ public class MoleculeTableViewer extends ContentViewer {
             }
             if (adapter.isAssignableFrom(IPropertySource.class)) {
                 ICDKMolecule mol = model.getMoleculeAt( index );
-                if(mol instanceof CDKMolecule)
-                    return new CDKMoleculePropertySource((CDKMolecule) mol);
-                else
+                if(mol instanceof CDKMolecule) {
+                    if(pSource == null)
+                        pSource=  new CDKMoleculePropertySource((CDKMolecule) mol);
+                    return pSource;
+                } else
                     return null;
             }
             return Platform.getAdapterManager().getAdapter(this, adapter);
