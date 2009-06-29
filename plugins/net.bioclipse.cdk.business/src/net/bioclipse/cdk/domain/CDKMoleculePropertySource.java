@@ -211,10 +211,17 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
                                             .findView(
                                       "org.eclipse.ui.views.PropertySheet" );
                             if(p != null) {
-                                PropertySheetPage pp
-                                = (PropertySheetPage) p.getCurrentPage();
+                                //The page might be a TabbedPropertySheetPage
+                                //in the future but we ignore it for now
+                                if ( p.getCurrentPage() 
+                                        instanceof 
+                                     PropertySheetPage ) {
+                                    
+                                    PropertySheetPage pp
+                                    = (PropertySheetPage) p.getCurrentPage();
 
-                                pp.refresh();
+                                    pp.refresh();
+                                }
                             }
                         }
                     });
