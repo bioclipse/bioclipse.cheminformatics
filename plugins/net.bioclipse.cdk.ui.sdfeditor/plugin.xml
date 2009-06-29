@@ -123,16 +123,6 @@
               id="net.bioclipse.cdk.molTable.column.remove"
               name="Remove Column">
         </command>
-        <command
-              defaultHandler="net.bioclipse.cdk.ui.sdfeditor.handlers.CalculatePropertyForFileHandler"
-              id="net.bioclipse.cdk.ui.sdfeditor.addPropertyFile"
-              name="Add Property for File">
-           <commandParameter
-                 id="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
-                 name="calculatorId"
-                 optional="false">
-           </commandParameter>
-        </command>
   	</extension>
 
 	<extension
@@ -143,7 +133,7 @@
            id="net.bioclipse.sdfeditor.popup.calculateProperty"
            label="Calculate property">
         <command
-              commandId="net.bioclipse.cdk.ui.sdfeditor.addPropertyFile"
+              commandId="net.bioclipse.cdk.ui.sdfeditor.addProperty"
               label="Number of Atoms"
               style="push">
            <parameter
