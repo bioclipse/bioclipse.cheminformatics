@@ -17,16 +17,20 @@ import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculePropertySource;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+import net.sourceforge.nattable.GridRegionEnum;
 import net.sourceforge.nattable.NatTable;
+import net.sourceforge.nattable.action.SelectCellAction;
 import net.sourceforge.nattable.config.DefaultBodyConfig;
 import net.sourceforge.nattable.config.DefaultColumnHeaderConfig;
 import net.sourceforge.nattable.config.DefaultRowHeaderConfig;
 import net.sourceforge.nattable.config.SizeConfig;
 import net.sourceforge.nattable.data.IColumnHeaderLabelProvider;
 import net.sourceforge.nattable.data.IDataProvider;
+import net.sourceforge.nattable.event.matcher.MouseEventMatcher;
 import net.sourceforge.nattable.model.DefaultNatTableModel;
 import net.sourceforge.nattable.painter.cell.ICellPainter;
 import net.sourceforge.nattable.renderer.AbstractCellRenderer;
+import net.sourceforge.nattable.support.EventBindingSupport;
 import net.sourceforge.nattable.typeconfig.style.DefaultStyleConfig;
 import net.sourceforge.nattable.typeconfig.style.DisplayModeEnum;
 import net.sourceforge.nattable.typeconfig.style.IStyleConfig;
@@ -168,6 +172,13 @@ public class MoleculeTableViewer extends ContentViewer {
                      | SWT.DOUBLE_BUFFERED | SWT.V_SCROLL | SWT.H_SCROLL,
                      model
         );
+
+        EventBindingSupport eventBindingSupport =table.getEventBindingSupport();
+        eventBindingSupport.registerSingleClickBinding(
+                 new MouseEventMatcher( SWT.COMMAND,
+                                        GridRegionEnum.BODY.toString(), 1),
+                                      new SelectCellAction(table, false, true));
+
         Listener listener = new Listener() {
 
             public void handleEvent( Event event ) {
