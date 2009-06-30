@@ -485,7 +485,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                     else
                         atomContainer = null;
                     new2Dcoordinates = true;
-                    setDirty( true );
+                 // Editor not dirty when generated coordinates see bug 1372
+                    //setDirty( true );
                     add( Message.GENERATED );
                 }else {
                     IAtomContainer oldAC = atomContainer;
@@ -635,6 +636,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 public void run() {
                     if(isdirty) {
                         add(Message.DIRTY);
+                        remove(Message.GENERATED);
                     }
                     else {
                         remove( Message.DIRTY );
