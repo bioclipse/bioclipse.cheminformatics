@@ -398,8 +398,11 @@ public class MoleculeTableManager implements IBioclipseManager {
             if(read =='\n') {
                 newLineCount++;
                 if(newLineCount>=2) {
-                    builder.deleteCharAt( builder.length()-1 );
-                    properties.add( builder.toString() );
+                    if(builder.length()>0) {
+                        builder.deleteCharAt( builder.length()-1 );
+                        properties.add( builder.toString() );
+                    }else
+                        logger.warn( "Empty line in file near position "+start );
                     builder = new StringBuilder();
                     continue;
                 }
