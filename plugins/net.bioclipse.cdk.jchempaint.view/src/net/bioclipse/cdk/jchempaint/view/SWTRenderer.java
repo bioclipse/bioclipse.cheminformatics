@@ -416,10 +416,13 @@ public class SWTRenderer implements IDrawVisitor{
             try {
                 method.invoke( this, new Object[] {element} );
             } catch ( IllegalArgumentException e ) {
+                logger.debug(e.getMessage(), e );
                 visitDefault( element );
             } catch ( IllegalAccessException e ) {
+                logger.debug(e.getMessage(), e );
                 visitDefault( element );
             } catch ( InvocationTargetException e ) {
+                logger.debug(e.getMessage(), e );
                 visitDefault( element );
             }
         }
@@ -437,7 +440,7 @@ public class SWTRenderer implements IDrawVisitor{
                 cl = cl.getSuperclass();
             }
         }
-
+        logger.debug( "Encounter Object class" );
         return null;
     }
 
