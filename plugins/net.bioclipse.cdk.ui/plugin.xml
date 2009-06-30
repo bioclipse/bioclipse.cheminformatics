@@ -362,6 +362,7 @@
             name="Scripting CDK in Bioclipse"/>
    </extension>
 
+
    <extension
          point="org.eclipse.ui.views">
       <view

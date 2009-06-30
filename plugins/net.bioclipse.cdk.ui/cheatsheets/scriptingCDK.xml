@@ -10,18 +10,6 @@ This cheat sheet is a tutorial for scripting CDK in Bioclipse.
 This is a collection of tutorials for scripting CDK in Bioclipse.<br/><br/>
 Comments and suggestions are welcome to &lt;ola.spjuth(AT)farmbio.uu.se&gt;
       </onCompletion>
-      <task kind="cheatsheet" name="Scripting basics" skip="true">
-         <intro>
-            <b>Introduction</b><br/>
-This tutorial demonstrates the basics of scripting in Bioclipse.
-         </intro>
-         <onCompletion>
-            <b>Conclusion</b><br/>
-Scripting in Bioclipse is easy. Its is very powerful to combine Javascript and Managers which enables creation of advanced scripts.
-         </onCompletion>
-         <param name="path" value="basicScripting.xml">
-         </param>
-      </task>
       <task kind="cheatsheet" name="Basic I/O" skip="true">
          <intro>
             <b>Introduction</b><br/>

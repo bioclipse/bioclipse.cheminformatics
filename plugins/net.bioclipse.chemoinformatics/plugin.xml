@@ -197,7 +197,7 @@
             composite="false"
             contentFile="cheatsheets/GeneralChemoinformaticsCheatSheet.xml"
             id="net.bioclipse.chemoinformatics.cheatsheet.GeneralChemoinformaticsCheatsheet"
-            name="General Chemistry Cheat Sheet"/>
+            name="Basic Chemistry Tasks"/>
    </extension>
 
    <extension point="org.eclipse.ui.intro.configExtension">
