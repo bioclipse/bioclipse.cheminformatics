@@ -26,11 +26,9 @@ import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.eclipse.core.resources.IFile;
 
-@PublishedClass(value = "Contains methods for interacting with lists of molecules")
 public interface IMoleculeTableManager extends IBioclipseManager {
 
     @Recorded
-    @PublishedMethod(methodSummary="Log a value and tests ")
     public void dummy(String... strings);
 
     @Recorded
@@ -40,15 +38,9 @@ public interface IMoleculeTableManager extends IBioclipseManager {
     public BioclipseJob<SDFIndexEditorModel> createSDFIndex(IFile file,
                              BioclipseJobUpdateHook<SDFIndexEditorModel> hook);
     @Recorded
-    @PublishedMethod(params = "String file",
-      methodSummary = "Creates a index of the molecules positons in a SDFile")
     public SDFIndexEditorModel createSDFIndex( String file );
 
     @Recorded
-    @PublishedMethod(params = "SDFIndexEditorModel model,"
-                             +" IPropertyCalculator calculator",
-      methodSummary = "Calculate a property and sets it on the model for each"
-                      +" molecule in the model")
     public void calculateProperty( SDFIndexEditorModel model,
                                    IPropertyCalculator<?> calculator);
     @Recorded
@@ -73,8 +65,6 @@ public interface IMoleculeTableManager extends IBioclipseManager {
                                                       throws BioclipseException;
 
     @Recorded
-    @PublishedMethod(params = "SDFIndexEdiorModel model, String file",
-                     methodSummary = "Saved the model to the file as SDF")
     public String saveSDF(IMoleculesEditorModel model, String file)
                                                       throws BioclipseException;
 
