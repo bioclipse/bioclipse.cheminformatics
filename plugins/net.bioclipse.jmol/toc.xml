@@ -7,6 +7,6 @@
     <topic label="Mouse Gestures in jmol" href="doc/mouseGestures.html"/>
   </topic>
   <topic label="JmolScript editor" href="doc/jmolScriptEditor.html"/>
-  <topic label="Scripting Language Reference" href="doc/script/help.html"/> 
+  <topic label="Jmol Scripting Reference" href="doc/script/help.html"/> 
 
 </toc>
