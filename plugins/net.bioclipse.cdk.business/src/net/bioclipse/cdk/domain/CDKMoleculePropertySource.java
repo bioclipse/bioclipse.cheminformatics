@@ -19,6 +19,7 @@ import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMoleculeUtils.MolProperty;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.domain.props.BioObjectPropertySource;
 import net.bioclipse.core.util.LogUtils;
@@ -167,10 +168,16 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
                                             .findView(
                                       "org.eclipse.ui.views.PropertySheet" );
                             if(p != null) {
-                                PropertySheetPage pp
-                                = (PropertySheetPage) p.getCurrentPage();
+                                //The page might be a TabbedPropertySheetPage
+                                //in the future but we ignore it for now
+                                if ( p.getCurrentPage() 
+                                        instanceof 
+                                        PropertySheetPage ) {
+                                    PropertySheetPage pp
+                                    = (PropertySheetPage) p.getCurrentPage();
 
-                                pp.refresh();
+                                    pp.refresh();
+                                }
                             }
                         }
                     });
@@ -349,6 +356,22 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
     }
 
     public Object getPropertyValue(Object id) {
+        
+        if (id.equals( PROPERTY_INCHI ) || id.equals( PROPERTY_INCHIKEY )){
+            InChI inchi = (InChI) cdkMol.getProperty(CDKMoleculeUtils.MolProperty.InChI.name() ,
+                                       Property.USE_CACHED );
+            if (inchi==null)
+                return null;
+
+            if (id.equals( PROPERTY_INCHI ))
+                return inchi.getValue();
+            else
+                return inchi.getKey();
+        }
+        else if (id.equals( PROPERTY_SMILES))
+            return cdkMol.getProperty(CDKMoleculeUtils.MolProperty.SMILES.name() ,
+                                      Property.USE_CACHED );
+        
         if (cdkValueMap.containsKey(id))
             return cdkValueMap.get(id);
 
