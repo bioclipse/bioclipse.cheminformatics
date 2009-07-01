@@ -83,6 +83,16 @@
         <content-type
               base-type="net.bioclipse.contenttypes.sdf"
               file-extensions="sdf"
+              id="net.bioclipse.contenttypes.sdf0d"
+              name="MDL SD file (0D)"
+              priority="high">
+		   <describer class="net.bioclipse.chemoinformatics.contenttypes.MdlMolFileCoordinatesDescriber">
+              <parameter name="type" value="0D"/>
+       	   </describer>
+        </content-type>
+        <content-type
+              base-type="net.bioclipse.contenttypes.sdf"
+              file-extensions="sdf"
               id="net.bioclipse.contenttypes.sdf2d"
               name="MDL SD file (2D)"
               priority="high">
