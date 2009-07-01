@@ -505,6 +505,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 setModel( model );
                 setDirty( false );
             }
+            setSelection( getSelection() );
     }
 
     /*
