@@ -77,7 +77,7 @@ public interface IMoleculeTableManager extends IBioclipseManager {
                                  BioclipseJobUpdateHook<Void> hook);
 
 
-    public String calculatePropertiesFor( IFile file,
+    public void calculatePropertiesFor( IFile file,
                                         IPropertyCalculator<?>[] calculator)
                                            throws BioclipseException;
 }
