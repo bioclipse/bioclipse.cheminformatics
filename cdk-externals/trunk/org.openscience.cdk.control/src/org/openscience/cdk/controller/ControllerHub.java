@@ -583,7 +583,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		changedBondsStereo.put(bond, stereos);
         updateAtom(bond.getAtom(0));
         updateAtom(bond.getAtom(1));
-		structureChanged();
+		structurePropertiesChanged();
 	    if(undoredofactory!=null && undoredohandler!=null){
 	    	IUndoRedoable undoredo = undoredofactory.getAdjustBondOrdersEdit(changedBonds, changedBondsStereo, "Adjust Bond Order",this);
 		    undoredohandler.postEdit(undoredo);
