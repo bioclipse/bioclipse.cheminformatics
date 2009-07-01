@@ -68,6 +68,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
+import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.ControllerModel;
@@ -612,9 +613,11 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                     if (types[i] != null) {
                         IAtom atom = container.getAtom(i);
                         atom.setAtomTypeName(types[i].getAtomTypeName());
+                        atom.setHybridization(types[i].getHybridization());
                         hAdder.addImplicitHydrogens(container, atom);
                     }
                 }
+                CDKHueckelAromaticityDetector.detectAromaticity(container);
             } catch ( CDKException e ) {
                 e.printStackTrace();
             }
