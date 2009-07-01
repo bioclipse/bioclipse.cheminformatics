@@ -217,95 +217,69 @@ public class CDKManager implements IBioclipseManager {
         if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
-    
-        List<ICDKMolecule> moleculesList = new RecordableList<ICDKMolecule>();
-    
+
+        // Create the reader
+        ISimpleChemObjectReader reader = readerFactory.createReader(format);
+        if (reader == null) {
+            throw new BioclipseException("Could not create reader in CDK.");
+        }
+
         try {
-            // Create the reader
-            ISimpleChemObjectReader reader
-                = readerFactory.createReader(format);
-    
-            if (reader == null) {
-                throw new BioclipseException("Could not create reader in CDK.");
-            }
-      
-            try {
-                reader.setReader(instream);
-            }
-            catch ( CDKException e1 ) {
-                throw new RuntimeException(
-                    "Failed to set the reader's inputstream", e1);
-            }
-    
-            // Do some customizations...
-            CDKManagerHelper.customizeReading(reader);
-      
-            List<IAtomContainer> atomContainersList =
-                new ArrayList<IAtomContainer>();
-    
-            // Read file
-            try {
-                if (reader.accepts(ChemFile.class)) {
-                    IChemFile chemFile =
-                        (IChemFile) reader.read(new NNChemFile());
-                    atomContainersList =
-                        ChemFileManipulator.getAllAtomContainers(chemFile);
-                } else if (reader.accepts(Molecule.class)) {
-                    atomContainersList.add(
-                        (NNMolecule) reader.read(new NNMolecule())
-                    );
-                } else {
-                    throw new RuntimeException("Failed to read file.");
-                }
-            }
-            catch (CDKException e) {
-                throw new RuntimeException("Failed to read file", e);
-            }
-    
-            // Store the chemFormat used for the reader
-            IResourceFormat chemFormat = reader.getFormat();
-            logger.debug("Read CDK chemfile with format: "
-                         + chemFormat.getFormatName());
-    
-            int nuMols = atomContainersList.size();
-            logger.debug("This file contained: " + nuMols + " molecules");
-    
-            // If we have one AtomContainer, return a CDKMolecule with this ac
-            // If we have more than one AtomContainer, return a list of the
-            // molecules
-            // FIXME: requires common interface for CDKImplementations
-            if (atomContainersList.size() == 1) {
-                CDKMolecule retmol
-                    = new CDKMolecule(
-                        (IAtomContainer) atomContainersList.get(0) );
-                return retmol;
-            }
-    
-            for (int i = 0; i < atomContainersList.size(); i++) {
-                IAtomContainer ac = null;
-                Object obj = atomContainersList.get(i);
-                if (obj instanceof org.openscience.cdk.interfaces.IMolecule) {
-                    ac = (org.openscience.cdk.interfaces.IMolecule) obj;
-                }
-                else if (obj instanceof IAtomContainer) {
-                    ac = (IAtomContainer) obj;
-                }
-                CDKMolecule mol = new CDKMolecule(ac);
-                String molName = (String)ac.getProperty(CDKConstants.TITLE);
-                if (molName != null && !(molName.length() > 0)) {
-                    mol.setName(molName);
-                }
-                else {
-                    mol.setName("Molecule " + i);
-                }
-                moleculesList.add(mol);
+            reader.setReader(instream);
+        }
+        catch ( CDKException e1 ) {
+            throw new RuntimeException(
+                "Failed to set the reader's inputstream", e1
+            );
+        }
+
+        // Do some customizations...
+        CDKManagerHelper.customizeReading(reader);
+
+        List<IAtomContainer> atomContainersList =
+            new ArrayList<IAtomContainer>();
+
+        // Read file
+        try {
+            if (reader.accepts(ChemFile.class)) {
+                IChemFile chemFile =
+                    (IChemFile) reader.read(new NNChemFile());
+                atomContainersList =
+                    ChemFileManipulator.getAllAtomContainers(chemFile);
+            } else if (reader.accepts(Molecule.class)) {
+                atomContainersList.add(
+                                       (NNMolecule) reader.read(new NNMolecule())
+                );
+            } else {
+                throw new RuntimeException("Failed to read file.");
             }
         }
-        finally {
-            monitor.done();
+        catch (CDKException e) {
+            throw new RuntimeException("Failed to read file", e);
         }
+
+        // Store the chemFormat used for the reader
+        IResourceFormat chemFormat = reader.getFormat();
+        logger.debug("Read CDK chemfile with format: "
+                     + chemFormat.getFormatName());
+
+        int nuMols = atomContainersList.size();
+        logger.debug("This file contained: " + nuMols + " molecules");
+        if (atomContainersList.size() == 0)
+            throw new RuntimeException("File did not contain any molecule");
+        if (atomContainersList.size() > 1)
+            logger.debug("Ignoring all but the first molecule.");
+
+        IAtomContainer containerToReturn = atomContainersList.get(0);
+        CDKMolecule retmol = new CDKMolecule(containerToReturn);
+        String molName = (String)containerToReturn
+            .getProperty(CDKConstants.TITLE);
+        if (molName != null && !(molName.length() > 0)) {
+            retmol.setName(molName);
+        }
+        monitor.done();
         // Just return the first molecule. To return all, use loadMolecules(..)
-        return moleculesList.get(0);
+        return retmol;
     }
 
     /**
