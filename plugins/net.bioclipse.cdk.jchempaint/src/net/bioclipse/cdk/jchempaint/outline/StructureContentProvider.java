@@ -112,8 +112,13 @@ public class StructureContentProvider implements ITreeContentProvider {
         }
         String name = efac.getName(elem);
         if (name == null) name = "unknown";
-        CDKChemObject<IAtom> co
-          = new CDKAtomChemObject(name + " (" + symbol + ")", atom);
+        CDKChemObject<IAtom> co = new CDKAtomChemObject(
+            name + " (" + symbol + ")"
+            + (atom.getAtomTypeName() != null
+               ? ": " + atom.getAtomTypeName()
+               : ""),
+            atom
+        );
         return co;
     }
 
