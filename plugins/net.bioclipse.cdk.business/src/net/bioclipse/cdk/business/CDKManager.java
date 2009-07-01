@@ -183,27 +183,6 @@ public class CDKManager implements IBioclipseManager {
                                                format,
                                                monitor
         );
-        if (format == MDLV2000Format.getInstance()) {
-            IAtomContainer container = loadedMol.getAtomContainer();
-            if (container != null && container.getAtomCount() > 0) {
-                CDKHydrogenAdder hAdder =
-                    CDKHydrogenAdder.getInstance(container.getBuilder());
-                CDKAtomTypeMatcher matcher =
-                    CDKAtomTypeMatcher.getInstance(container.getBuilder());
-                try {
-                    IAtomType[] types = matcher.findMatchingAtomType(container);
-                    for (int i=0; i<container.getAtomCount(); i++) {
-                        if (types[i] != null) {
-                            IAtom atom = container.getAtom(i);
-                            atom.setAtomTypeName(types[i].getAtomTypeName());
-                            hAdder.addImplicitHydrogens(container, atom);
-                        }
-                    }
-                } catch ( CDKException e ) {
-                    e.printStackTrace();
-                }
-            }
-        }
         loadedMol.setResource(file);
 
         return loadedMol;
@@ -271,16 +250,50 @@ public class CDKManager implements IBioclipseManager {
             logger.debug("Ignoring all but the first molecule.");
 
         IAtomContainer containerToReturn = atomContainersList.get(0);
+        // sanatize the input for certain file formats
         CDKMolecule retmol = new CDKMolecule(containerToReturn);
         String molName = (String)containerToReturn
             .getProperty(CDKConstants.TITLE);
         if (molName != null && !(molName.length() > 0)) {
             retmol.setName(molName);
         }
+        // try to recover certain information for certain content types
+        sanatizeFileInput(format, retmol);
+        // OK, and we're done
         monitor.done();
-        // Just return the first molecule. To return all, use loadMolecules(..)
         return retmol;
     }
+
+    private void sanatizeFileInput(IChemFormat format,
+                                   CDKMolecule molecule) {
+        if (format == MDLV2000Format.getInstance()) {
+            sanatizeMDLV2000MolFileInput(molecule);
+        }
+    }
+
+    private void sanatizeMDLV2000MolFileInput(CDKMolecule molecule) {
+        IAtomContainer container = molecule.getAtomContainer();
+        if (container != null && container.getAtomCount() > 0) {
+            CDKHydrogenAdder hAdder =
+                CDKHydrogenAdder.getInstance(container.getBuilder());
+            CDKAtomTypeMatcher matcher =
+                CDKAtomTypeMatcher.getInstance(container.getBuilder());
+            try {
+                // perceive atom types
+                IAtomType[] types = matcher.findMatchingAtomType(container);
+                for (int i=0; i<container.getAtomCount(); i++) {
+                    if (types[i] != null) {
+                        IAtom atom = container.getAtom(i);
+                        atom.setAtomTypeName(types[i].getAtomTypeName());
+                        hAdder.addImplicitHydrogens(container, atom);
+                    }
+                }
+            } catch ( CDKException e ) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     /**
      * Load one or more molecules from an InputStream and return a
