@@ -208,7 +208,7 @@
         <content-type
               base-type="net.bioclipse.contenttypes.cml"
 	          id="net.bioclipse.contenttypes.cml.multipleMolecule5d"
-              name="CMLMultipleMoleculeContentType5D"
+              name="CML (Multiple 2D+3D Molecules)"
               priority="high">
 		 	<describer class="net.bioclipse.cml.contenttypes.CmlFileDescriber">
             	<parameter
