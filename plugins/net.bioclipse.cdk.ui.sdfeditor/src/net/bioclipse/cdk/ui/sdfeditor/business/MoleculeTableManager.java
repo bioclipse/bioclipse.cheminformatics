@@ -44,6 +44,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -531,6 +532,8 @@ public class MoleculeTableManager implements IBioclipseManager {
             chemWriter.write( mol );
             chemWriter.close();
             firstPart.worked( 100 );
+            if(firstPart.isCanceled())
+                throw new OperationCanceledException();
             // If  it is the first time we need to create or write over the file
             if(target==null) {
                 target = file.getWorkspace().getRoot().getFile( filePath );
@@ -542,7 +545,10 @@ public class MoleculeTableManager implements IBioclipseManager {
                 }else {
                     target.create( convertToByteArrayIs( writer ),
                                                            false,
-                                                 loopProgress.newChild( 500 ) );
+                                                 loopProgress.newChild( 400 ) );
+                    target.setHidden( true );
+                    target.getParent().refreshLocal( IResource.DEPTH_INFINITE ,
+                                                   loopProgress.newChild( 100));
                 }
             }else {
                 target.appendContents( convertToByteArrayIs( writer ),
@@ -552,9 +558,11 @@ public class MoleculeTableManager implements IBioclipseManager {
             }
             }catch(Exception e) {
                 LogUtils.debugTrace( logger, e );
-                throw new BioclipseException("Faild to save file: "+
-                                             e.getMessage());
+                throw new BioclipseException("Faild to save file. "+
+                           e.getMessage()!=null?e.getMessage():"");
             }
+            loopProgress.subTask( String.format( "%d/%d", i,
+                                               model.getNumberOfMolecules() ) );
         }
         progress.setWorkRemaining( 1000 );
 
@@ -562,6 +570,7 @@ public class MoleculeTableManager implements IBioclipseManager {
             if(renamePath != null) {
                 progress.subTask( "Renaming file" );
                 file.delete( true, progress.newChild( 1000 ) );
+                target.setHidden( false );
                 target.move( renamePath, true, progress.newChild( 1000 ) );
             }
         } catch ( CoreException e1 ) {
