@@ -284,10 +284,14 @@ public class CDKManager implements IBioclipseManager {
                 for (int i=0; i<container.getAtomCount(); i++) {
                     if (types[i] != null) {
                         IAtom atom = container.getAtom(i);
+                        // set properties needed for H adding and aromaticity
                         atom.setAtomTypeName(types[i].getAtomTypeName());
+                        atom.setHybridization(types[i].getHybridization());
                         hAdder.addImplicitHydrogens(container, atom);
                     }
                 }
+                // perceive aromaticity
+                CDKHueckelAromaticityDetector.detectAromaticity(container);
             } catch ( CDKException e ) {
                 e.printStackTrace();
             }
