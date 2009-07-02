@@ -1,14 +1,22 @@
+/*******************************************************************************
+ * Copyright (c) 2009  Arvid Berg <goglepox@users.sourceforge.net>
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * <http://www.eclipse.org/legal/epl-v10.html>
+ *
+ * Contact: http://www.bioclipse.net/
+ ******************************************************************************/
 package net.bioclipse.cdk.domain;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.Scanner;
 
 import net.bioclipse.cdk.business.Activator;
-import net.bioclipse.core.BioclipseStore;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 
