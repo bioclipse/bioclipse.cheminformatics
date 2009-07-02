@@ -140,46 +140,30 @@
                  name="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
                  value="net.bioclipse.cdk.calculator.numberOfAtoms">
            </parameter>
-           <visibleWhen
-                 checkEnabled="true">
-              <iterate
-                    ifEmpty="false"
-                    operator="and">
-                 <adapt
-                       type="org.eclipse.core.resources.IResource">
-                    <or>
-                       <test
-                             property="org.eclipse.core.resources.contentTypeId"
-                             value="net.bioclipse.contenttypes.sdf2d">
-                       </test>
-                       <test
-                             property="org.eclipse.core.resources.contentTypeId"
-                             value="net.bioclipse.contenttypes.sdf3d">
-                       </test>
-                    </or>
-                 </adapt>
-              </iterate>
-           </visibleWhen>
+        </command>
+        <command
+              commandId="net.bioclipse.cdk.ui.sdfeditor.addProperty"
+              label="InChI"
+              style="push">
+           <parameter
+                 name="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
+                 value="net.bioclipse.cdk.InChI">
+           </parameter>
+        </command>
+        <command
+              commandId="net.bioclipse.cdk.ui.sdfeditor.addProperty"
+              label="Fingerprint"
+              style="push">
+           <parameter
+                 name="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
+                 value="net.bioclipse.cdk.fingerprint">
+           </parameter>
         </command>
         <visibleWhen
               checkEnabled="true">
-           <iterate
-                 ifEmpty="false"
-                 operator="and">
-              <adapt
-                    type="org.eclipse.core.resources.IResource">
-                 <or>
-                    <test
-                          property="org.eclipse.core.resources.contentTypeId"
-                          value="net.bioclipse.contenttypes.sdf2d">
-                    </test>
-                    <test
-                          property="org.eclipse.core.resources.contentTypeId"
-                          value="net.bioclipse.contenttypes.sdf3d">
-                    </test>
-                 </or>
-              </adapt>
-           </iterate>
+           <reference
+                 definitionId="net.bioclipse.cdk.ui.sdfeditor.menu.fileOrEditor">
+           </reference>
         </visibleWhen>
      </menu>
 		    <command
@@ -200,42 +184,6 @@
 		</menuContribution>
   <menuContribution
         locationURI="popup:net.bioclipse.cdk.ui.sdfeditor.menu?after=additions">
-     <command
-           commandId="net.bioclipse.cdk.ui.sdfeditor.addProperty"
-           label="Calculate number of atoms property"
-           style="push">
-        <parameter
-              name="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
-              value="net.bioclipse.cdk.calculator.numberOfAtoms">
-        </parameter>
-        <visibleWhen
-              checkEnabled="false">
-           <with
-                 variable="activeEditor">
-              <instanceof
-                    value="net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart">
-              </instanceof>
-           </with>
-        </visibleWhen>
-     </command>
-     <command
-           commandId="net.bioclipse.cdk.ui.sdfeditor.addProperty"
-           label="Calculate fingerprint"
-           style="push">
-        <parameter
-              name="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
-              value="net.bioclipse.cdk.fingerprint">
-        </parameter>
-        <visibleWhen
-              checkEnabled="false">
-           <with
-                 variable="activeEditor">
-              <instanceof
-                    value="net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart">
-              </instanceof>
-           </with>
-        </visibleWhen>
-     </command>
   </menuContribution>
   <menuContribution
         locationURI="popup:net.bioclipse.cdk.ui.sdfeditor.menu?before=additions">
@@ -304,5 +252,65 @@
           class="net.bioclipse.cdk.ui.sdfeditor.InChIPropertyCalculator"
           id="net.bioclipse.cdk.InChI">
     </Calculator>
+ </extension>
+ <extension
+       point="org.eclipse.core.expressions.definitions">
+    <definition
+          id="net.bioclipse.cdk.ui.sdfeditor.menu.file">
+       <iterate
+             ifEmpty="false"
+             operator="and">
+          <adapt
+                type="org.eclipse.core.resources.IResource">
+             <or>
+                <test
+                      property="org.eclipse.core.resources.contentTypeId"
+                      value="net.bioclipse.contenttypes.sdf2d">
+                </test>
+                <test
+                      property="org.eclipse.core.resources.contentTypeId"
+                      value="net.bioclipse.contenttypes.sdf3d">
+                </test>
+             </or>
+          </adapt>
+       </iterate>
+    </definition>
+    <definition
+          id="net.bioclipse.cdk.ui.sdfeditor.menu.editor">
+       <with
+             variable="activeEditor">
+          <instanceof
+                value="net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart">
+          </instanceof>
+       </with>
+    </definition>
+    <definition
+          id="net.bioclipse.cdk.ui.sdfeditor.menu.fileOrEditor">
+       <or>
+          <iterate
+                ifEmpty="false"
+                operator="and">
+             <adapt
+                   type="org.eclipse.core.resources.IResource">
+                <or>
+                   <test
+                         property="org.eclipse.core.resources.contentTypeId"
+                         value="net.bioclipse.contenttypes.sdf2d">
+                   </test>
+                   <test
+                         property="org.eclipse.core.resources.contentTypeId"
+                         value="net.bioclipse.contenttypes.sdf3d">
+                   </test>
+                </or>
+             </adapt>
+          </iterate>
+          <with
+                variable="activeEditor">
+             <instanceof
+                   value="net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart">
+             </instanceof>
+          </with>
+       </or>
+    </definition>
  </extension>
 </plugin>
