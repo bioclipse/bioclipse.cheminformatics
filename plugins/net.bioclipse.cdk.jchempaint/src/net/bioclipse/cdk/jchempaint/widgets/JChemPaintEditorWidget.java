@@ -68,6 +68,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
+import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.controller.ControllerHub;
@@ -607,19 +608,24 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             CDKAtomTypeMatcher.getInstance(model.getBuilder());
         for (IAtomContainer container :
              ChemModelManipulator.getAllAtomContainers(model)) {
+            // erase old information
+            for (IAtom atom : container.atoms()) {
+                atom.setAtomTypeName(null);
+                atom.setHybridization(null);
+                atom.setHydrogenCount(0);
+                atom.setFlag(CDKConstants.ISAROMATIC, false);
+            }
+            for (IBond bond : container.bonds())
+                bond.setFlag(CDKConstants.ISAROMATIC, false);
+            // determine new information
             try {
                 IAtomType[] types = matcher.findMatchingAtomType(container);
                 for (int i=0; i<container.getAtomCount(); i++) {
-                    System.out.println("type: " + (types[i] == null ? "null" : types[i].getAtomTypeName()));
                     IAtom atom = container.getAtom(i);
                     if (types[i] != null) {
                         atom.setAtomTypeName(types[i].getAtomTypeName());
                         atom.setHybridization(types[i].getHybridization());
                         hAdder.addImplicitHydrogens(container, atom);
-                    } else {
-                        atom.setAtomTypeName(null);
-                        atom.setHybridization(null);
-                        atom.setHydrogenCount(0);
                     }
                 }
                 CDKHueckelAromaticityDetector.detectAromaticity(container);
