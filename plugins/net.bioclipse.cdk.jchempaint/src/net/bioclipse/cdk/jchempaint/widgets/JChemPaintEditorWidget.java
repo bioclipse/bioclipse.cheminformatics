@@ -610,11 +610,16 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             try {
                 IAtomType[] types = matcher.findMatchingAtomType(container);
                 for (int i=0; i<container.getAtomCount(); i++) {
+                    System.out.println("type: " + (types[i] == null ? "null" : types[i].getAtomTypeName()));
+                    IAtom atom = container.getAtom(i);
                     if (types[i] != null) {
-                        IAtom atom = container.getAtom(i);
                         atom.setAtomTypeName(types[i].getAtomTypeName());
                         atom.setHybridization(types[i].getHybridization());
                         hAdder.addImplicitHydrogens(container, atom);
+                    } else {
+                        atom.setAtomTypeName(null);
+                        atom.setHybridization(null);
+                        atom.setHydrogenCount(0);
                     }
                 }
                 CDKHueckelAromaticityDetector.detectAromaticity(container);
