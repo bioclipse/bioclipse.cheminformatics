@@ -21,6 +21,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -327,7 +328,8 @@ public class MoleculeTableManager implements IBioclipseManager {
                     String name = property.getPropertyName();
                     Object value = molecule
                     .getProperty( name,Property.USE_CACHED );
-                    if(value != null && availableProperties.contains( name )) {
+                    if( value != null && (availableProperties == null
+                        || availableProperties.contains( name ))) {
                         String text = property.toString(value );
                         mol.setProperty( name, text );
                     }

@@ -10,7 +10,6 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.bioclipse.cdk.domain.CDKMolecule;
@@ -282,7 +281,6 @@ public class MoleculeTableViewer extends ContentViewer {
             }
             return null;
         }
-
     }
 
     @Override
@@ -307,7 +305,8 @@ public class MoleculeTableViewer extends ContentViewer {
                                new MolTableElement( selected[0], model));
                 }else {
 
-                    return new MolTableSelection(selected,model);
+                    return new  StructuredSelection(
+                             new MolTableSelection(selected,model));
                 }
             }
         }

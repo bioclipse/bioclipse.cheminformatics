@@ -59,88 +59,98 @@ public class ExtractMolecules extends AbstractHandler implements IHandler {
 
     Logger logger = Logger.getLogger( ExtractMolecules.class );
 
+    private IMoleculeTableManager getMolTable() {
+        return Activator.getDefault().getMoleculeTableManager();
+    }
+
     /* (non-Javadoc)
      * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
      */
     public Object execute( ExecutionEvent event ) throws ExecutionException {
 
-        IMoleculeTableManager molTable = Activator.getDefault()
-                                        .getMoleculeTableManager();
-
         ISelection sel = HandlerUtil.getCurrentSelection( event );
         if(sel instanceof IStructuredSelection) {
             final IStructuredSelection selection = (IStructuredSelection) sel;
             if(selection.size()==1) {
-                ICDKMolecule model = (ICDKMolecule)((IAdaptable)selection
-                        .getFirstElement()).getAdapter( ICDKMolecule.class );
-                if(model == null) return null;
+                Object firstElement = selection.getFirstElement();
+                if(firstElement instanceof MolTableSelection) {
+                    handleMolTableSelection( (MolTableSelection) firstElement,
+                                             event );
+                }else {
+                    ICDKMolecule model = (ICDKMolecule)((IAdaptable)selection
+                            .getFirstElement()).getAdapter( ICDKMolecule.class );
+                    if(model == null) return null;
 
-                Collection<IPropertyCalculator<?>> calculators
-                         = SDFIndexEditorModel.retriveCalculatorContributions();
-                IAtomContainer ac = model.getAtomContainer();
-                for(IPropertyCalculator<?> calculator:calculators) {
-                    String key = calculator.getPropertyName();
-                    ac.setProperty( key , model.getProperty( key,
+                    Collection<IPropertyCalculator<?>> calculators
+                    = SDFIndexEditorModel.retriveCalculatorContributions();
+                    IAtomContainer ac = model.getAtomContainer();
+                    for(IPropertyCalculator<?> calculator:calculators) {
+                        String key = calculator.getPropertyName();
+                        ac.setProperty( key , model.getProperty( key,
                                                         Property.USE_CACHED ) );
-                }
-
-                List<IResourceFormat> formats =new ArrayList<IResourceFormat>();
-                formats.add(CMLFormat.getInstance());
-                formats.add(SDFFormat.getInstance());
-                formats.add(MDLV2000Format.getInstance());
-
-                IFile file= doSaveAs( HandlerUtil.getActiveShell( event ),
-                                      formats );
-                if(file == null) return null;
-                IPath path = file.getLocation();
-                try {
-                    // do a nasty trick... the SaveAs dialog does not allow us to
-                    // ask for a format (yet), so guess something from the file
-                    // extension
-                    ICDKManager cdk = net.bioclipse.cdk.business.Activator
-                                        .getDefault().getJavaCDKManager();
-                    IChemFormat format =
-                                  cdk.guessFormatFromExtension(path.toString());
-                    if (format == null)
-                        format = (IChemFormat)CMLFormat.getInstance();
-
-                    if (format instanceof MDLV2000Format) {
-                        Properties properties = new Properties();
-                        properties.setProperty( "ForceWriteAs2DCoordinates",
-                                                "true");
-                        cdk.saveMolecule(model, file, format, true, properties);
-                    } else {
-                        cdk.saveMolecule( model, file, format, true);
                     }
-                } catch ( BioclipseException e ) {
-                    logger.warn( "Failed to save molecule. " + e.getMessage() );
-                } catch ( CDKException e ) {
-                    logger.warn( "Failed to save molecule. " + e.getMessage() );
-                } catch ( CoreException e ) {
-                    logger.warn( "Failed to save molecule. " + e.getMessage() );
-                }
 
+                    List<IResourceFormat> formats =new ArrayList<IResourceFormat>();
+                    formats.add(CMLFormat.getInstance());
+                    formats.add(SDFFormat.getInstance());
+                    formats.add(MDLV2000Format.getInstance());
+
+                    IFile file= doSaveAs( HandlerUtil.getActiveShell( event ),
+                                          formats );
+                    if(file == null) return null;
+                    IPath path = file.getLocation();
+                    try {
+                        // do a nasty trick... the SaveAs dialog does not allow us to
+                        // ask for a format (yet), so guess something from the file
+                        // extension
+                        ICDKManager cdk = net.bioclipse.cdk.business.Activator
+                        .getDefault().getJavaCDKManager();
+                        IChemFormat format =
+                            cdk.guessFormatFromExtension(path.toString());
+                        if (format == null)
+                            format = (IChemFormat)CMLFormat.getInstance();
+
+                        if (format instanceof MDLV2000Format) {
+                            Properties properties = new Properties();
+                            properties.setProperty( "ForceWriteAs2DCoordinates",
+                            "true");
+                            cdk.saveMolecule(model, file, format, true, properties);
+                        } else {
+                            cdk.saveMolecule( model, file, format, true);
+                        }
+                    } catch ( BioclipseException e ) {
+                        logger.warn( "Failed to save molecule. " + e.getMessage() );
+                    } catch ( CDKException e ) {
+                        logger.warn( "Failed to save molecule. " + e.getMessage() );
+                    } catch ( CoreException e ) {
+                        logger.warn( "Failed to save molecule. " + e.getMessage() );
+                    }
+                }
             }}else {
                 if(sel instanceof MolTableSelection) {
-
-                    IMoleculesEditorModel model = (IMoleculesEditorModel)
-                    ((MolTableSelection)sel)
-                    .getAdapter( IMoleculesEditorModel.class );
-
-                    List<IResourceFormat> formats = new ArrayList<IResourceFormat>();
-                    formats.add( SDFFormat.getInstance() );
-                    IFile file = doSaveAs( HandlerUtil.getActiveShell( event ),
-                                           formats);
-                    if(file != null)
-                        try {
-                            molTable.saveSDF( model, file );
-                        } catch ( BioclipseException e ) {
-                            LogUtils.handleException( e, logger ,
-                                                      Activator.PLUGIN_ID);
-                        }
+                    handleMolTableSelection( ((MolTableSelection)sel) ,event);
                 }
             }
         return null;
+    }
+
+    private void handleMolTableSelection( MolTableSelection selection,
+                                          ExecutionEvent event) {
+
+        IMoleculesEditorModel model = (IMoleculesEditorModel)
+            selection.getAdapter( IMoleculesEditorModel.class );
+
+        List<IResourceFormat> formats = new ArrayList<IResourceFormat>();
+        formats.add( SDFFormat.getInstance() );
+        IFile file = doSaveAs( HandlerUtil.getActiveShell( event ),
+                               formats);
+        if(file != null)
+            try {
+                getMolTable().saveSDF( model, file );
+            } catch ( BioclipseException e ) {
+                LogUtils.handleException( e, logger ,
+                                          Activator.PLUGIN_ID);
+            }
     }
 
     private IFile doSaveAs(Shell shell,List<IResourceFormat> formats) {

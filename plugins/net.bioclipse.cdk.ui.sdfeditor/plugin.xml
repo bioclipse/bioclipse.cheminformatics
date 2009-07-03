@@ -212,16 +212,21 @@
            style="push">
         <visibleWhen
               checkEnabled="true">
-           <iterate>
-              <or>
-                 <instanceof
-                       value="net.bioclipse.cdk.domain.ICDKMolecule">
-                 </instanceof>
-                 <instanceof
-                       value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
-                 </instanceof>
-              </or>
-           </iterate>
+           <or>
+              <iterate>
+                 <or>
+                    <instanceof
+                          value="net.bioclipse.cdk.domain.ICDKMolecule">
+                    </instanceof>
+                    <instanceof
+                          value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
+                    </instanceof>
+                    <instanceof
+                          value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableSelection">
+                    </instanceof>
+                 </or>
+              </iterate>
+           </or>
         </visibleWhen>
      </command>
      <command
