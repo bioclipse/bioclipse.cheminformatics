@@ -180,6 +180,8 @@ public class MoleculeTableManager implements IBioclipseManager {
                 num++;
             }
             fc.close();
+        }catch (OperationCanceledException e) {
+            throw new OperationCanceledException(e.getMessage());
         }
         catch (Exception exception) {
             // ok, I give up...
@@ -556,7 +558,17 @@ public class MoleculeTableManager implements IBioclipseManager {
                                                                 true,
                                                  loopProgress.newChild( 500 ) );
             }
-            }catch(Exception e) {
+            }catch(OperationCanceledException e) {
+                try {
+                    target.delete( true, progress.newChild( 1000 ) );
+                    target.refreshLocal( IResource.DEPTH_ZERO,
+                                                     progress.newChild( 1000 ) );
+                } catch ( CoreException e1 ) {
+                    logger.debug( "Failed to clean up after cancelation" );
+                }
+                throw new OperationCanceledException(e.getMessage());
+            }
+            catch(Exception e) {
                 LogUtils.debugTrace( logger, e );
                 throw new BioclipseException("Faild to save file. "+
                            e.getMessage()!=null?e.getMessage():"");
