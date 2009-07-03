@@ -21,6 +21,7 @@ import net.bioclipse.cdk.ui.sdfeditor.Activator;
 import net.bioclipse.cdk.ui.sdfeditor.business.IMoleculeTableManager;
 import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator;
 import net.bioclipse.cdk.ui.sdfeditor.editor.SDFIndexEditorModel;
+import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer.MolTableSelection;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule.Property;
@@ -119,55 +120,26 @@ public class ExtractMolecules extends AbstractHandler implements IHandler {
                     logger.warn( "Failed to save molecule. " + e.getMessage() );
                 }
 
-            }else {
-                final List<Object> selected = selection.toList();
+            }}else {
+                if(sel instanceof MolTableSelection) {
 
-                IMoleculesEditorModel model = new IMoleculesEditorModel() {
+                    IMoleculesEditorModel model = (IMoleculesEditorModel)
+                    ((MolTableSelection)sel)
+                    .getAdapter( IMoleculesEditorModel.class );
 
-
-                    public ICDKMolecule getMoleculeAt( int index ) {
-
-                        Object o = selected.get( index );
-                        if(o instanceof IAdaptable) {
-                            ICDKMolecule mol = (ICDKMolecule) ((IAdaptable)o)
-                            .getAdapter( ICDKMolecule.class );
-                            if(mol!=null)
-                                return mol;
+                    List<IResourceFormat> formats = new ArrayList<IResourceFormat>();
+                    formats.add( SDFFormat.getInstance() );
+                    IFile file = doSaveAs( HandlerUtil.getActiveShell( event ),
+                                           formats);
+                    if(file != null)
+                        try {
+                            molTable.saveSDF( model, file );
+                        } catch ( BioclipseException e ) {
+                            LogUtils.handleException( e, logger ,
+                                                      Activator.PLUGIN_ID);
                         }
-                        throw new RuntimeException("Selection is not a molecule "
-                                                    + o);
-                    }
-
-                    public int getNumberOfMolecules() {
-
-                        return selected.size();
-                    }
-
-                    public void markDirty( int index,
-                                           ICDKMolecule moleculeToSave ) {
-
-                        throw new UnsupportedOperationException();
-
-                    }
-
-                    public void save() {
-                        throw new UnsupportedOperationException();
-                    }
-
-                };
-                List<IResourceFormat> formats = new ArrayList<IResourceFormat>();
-                formats.add( SDFFormat.getInstance() );
-                IFile file = doSaveAs( HandlerUtil.getActiveShell( event ),
-                                       formats);
-                if(file != null)
-                    try {
-                        molTable.saveSDF( model, file );
-                    } catch ( BioclipseException e ) {
-                        LogUtils.handleException( e, logger ,
-                                                  Activator.PLUGIN_ID);
-                    }
+                }
             }
-        }
         return null;
     }
 

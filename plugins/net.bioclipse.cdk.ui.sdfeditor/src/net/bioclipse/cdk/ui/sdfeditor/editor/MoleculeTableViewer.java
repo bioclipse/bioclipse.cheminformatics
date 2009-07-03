@@ -238,6 +238,53 @@ public class MoleculeTableViewer extends ContentViewer {
         }
     }
 
+    public static class MolTableSelection implements ISelection, IAdaptable{
+
+        IMoleculesEditorModel model;
+        int[] selection;
+
+        public MolTableSelection(int[] selection,IMoleculesEditorModel model) {
+            this.selection = selection;
+            this.model = model;
+        }
+
+        public boolean isEmpty() {
+            return selection.length==0;
+        }
+
+        @SuppressWarnings("unchecked")
+        public Object getAdapter( Class adapter ) {
+
+            if(adapter.isAssignableFrom( IMoleculesEditorModel.class ) ) {
+                final IMoleculesEditorModel editorModel = new IMoleculesEditorModel() {
+
+                    public ICDKMolecule getMoleculeAt( int index ) {
+                        return model.getMoleculeAt( selection[index] );
+                    }
+
+                    public int getNumberOfMolecules() {
+                        return selection.length;
+                    }
+
+                    public void markDirty( int index,
+                                           ICDKMolecule moleculeToSave ) {
+
+                        throw new UnsupportedOperationException();
+
+                    }
+
+                    public void save() {
+                        throw new UnsupportedOperationException();
+                    }
+
+                };
+                return editorModel;
+            }
+            return null;
+        }
+
+    }
+
     @Override
     public ISelection getSelection() {
 
@@ -255,12 +302,13 @@ public class MoleculeTableViewer extends ContentViewer {
             IMoleculesEditorModel model;
             if(getInput() instanceof IMoleculesEditorModel) {
                 model = (IMoleculesEditorModel) getInput();
-                List<IAdaptable> mols = new ArrayList<IAdaptable>(selected.length);
-                for(int i:selected) {
-                    if(i != max)
-                        mols.add( new MolTableElement(i,model));
+                if(selected.length == 1) {
+                    return new StructuredSelection(
+                               new MolTableElement( selected[0], model));
+                }else {
+
+                    return new MolTableSelection(selected,model);
                 }
-                return new StructuredSelection(mols);
             }
         }
 
