@@ -90,14 +90,14 @@ public class MoleculeTableManager implements IBioclipseManager {
     private SDFileIndex createIndex( IFile file,
                                      IProgressMonitor monitor) {
 
-        SubMonitor progress = SubMonitor.convert( monitor ,1000);
+        SubMonitor progress = SubMonitor.convert( monitor );
         long size = -1;
         if(file != null) {
             try {
                 size = EFS.getStore( file.getLocationURI() )
                 .fetchInfo().getLength();
                 progress.beginTask( "Parsing SDFile",
-                                    1000);
+                             (int) (size/1048576));
 
             }catch (CoreException e) {
                 logger.debug( "Failed to get size of file" );
@@ -116,17 +116,18 @@ public class MoleculeTableManager implements IBioclipseManager {
         long start = 0;
         int work = 0;
 
+        long workBits = 0;
+
         try {
             InputStream is;
                 IFileStore store = EFS.getStore( file.getLocationURI() );
-                is = store.openInputStream( EFS.NONE, progress.newChild( 1000 ) );
+                is = store.openInputStream( EFS.NONE, progress.newChild( 10 ) );
             ReadableByteChannel fc = Channels.newChannel( is );
             ByteBuffer byteBuffer = ByteBuffer.allocateDirect( 200 );
             int dollarCount = 0;
             boolean firstInLine = true;
             int bytesRead = 0;
             int c;
-            progress.setWorkRemaining( (int)size );
             while( bytesRead >=0) {
                 byteBuffer.rewind();
                 bytesRead = fc.read( byteBuffer );
@@ -148,7 +149,12 @@ public class MoleculeTableManager implements IBioclipseManager {
                             values.add( start );
                             dollarCount = 0;
                             // progress code
-                            progress.worked( (int) (pos-work) );
+                            if(workBits/1048576 >0) {
+                                progress.worked( (int) (workBits/1048576) );
+                                progress.setWorkRemaining( (int) ((size-pos)/1048576) );
+                                workBits =0;
+                            }
+                            workBits += pos-work;
                             if(size >-1) {
                                 progress.subTask(
                                    String.format( "Read: %dMB\\%dMB",
@@ -158,7 +164,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                                    String.format( "Read: %dMB",
                                    pos/(1048576)));
                             }
-                            if ( monitor.isCanceled() ) {
+                            if ( progress.isCanceled() ) {
                                 throw new OperationCanceledException();
                             }
                             // clear builder for the next line
@@ -473,7 +479,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                                          IPropertyCalculator<?>[] calculators,
                                          IProgressMonitor monitor)
                                             throws BioclipseException{
-        SubMonitor progress = SubMonitor.convert( monitor, 3000 );
+        SubMonitor progress = SubMonitor.convert( monitor, 10000 );
 
         IPath filePath = file.getFullPath();
         IPath renamePath = null;
@@ -488,14 +494,15 @@ public class MoleculeTableManager implements IBioclipseManager {
         SDFIndexEditorModel model = new SDFIndexEditorModel(index);
 
         IFile target = null;
-        SubMonitor loopProgress = progress.newChild( 1000 );
-        loopProgress.setWorkRemaining( 1000*model.getNumberOfMolecules() );
+        SubMonitor loopProgress = progress.newChild( 8000 );
+        loopProgress.setWorkRemaining( model.getNumberOfMolecules()*20 );
         loopProgress.subTask( "Writing to file" );
         for(int i = 0;i<model.getNumberOfMolecules();i++ ) {
+            //loopProgress.setWorkRemaining( (model.getNumberOfMolecules()-i) );
             StringWriter writer = new StringWriter();
             IChemObjectWriter chemWriter = new SDFWriter(writer);
             try {
-            SubMonitor firstPart = loopProgress.newChild( 300 );
+            //SubMonitor firstPart = loopProgress.newChild( 300 );
             ICDKMolecule molecule = model.getMoleculeAt( i );
             // copy properties
             IAtomContainer ac = molecule.getAtomContainer();
@@ -507,19 +514,13 @@ public class MoleculeTableManager implements IBioclipseManager {
                 //Properties are lost in this CDK operation, so copy them
                 mol.setProperties( ac.getProperties() );
             }
-            firstPart.worked( 100 );
+            loopProgress.worked( 5 );
             calculateProperties( molecule, calculators, new IReturner<Void>() {
-
                 public void completeReturn( Void object ) {
-
                 }
-
                 public void partialReturn( Void object ) {
-
                 }
-
-            },
-                                 firstPart.newChild( 100 ) );
+            }, loopProgress.newChild( 5 ) );
             for(IPropertyCalculator<?> property:
                 calculators) {
                 String name = property.getPropertyName();
@@ -533,8 +534,8 @@ public class MoleculeTableManager implements IBioclipseManager {
 
             chemWriter.write( mol );
             chemWriter.close();
-            firstPart.worked( 100 );
-            if(firstPart.isCanceled())
+            loopProgress.worked( 5 );
+            if(loopProgress.isCanceled())
                 throw new OperationCanceledException();
             // If  it is the first time we need to create or write over the file
             if(target==null) {
@@ -543,26 +544,26 @@ public class MoleculeTableManager implements IBioclipseManager {
                     target.setContents( convertToByteArrayIs( writer ),
                                                                   false,
                                                                   true,
-                                                 loopProgress.newChild( 500 ) );
+                                                 loopProgress.newChild( 5 ) );
                 }else {
                     target.create( convertToByteArrayIs( writer ),
                                                            false,
-                                                 loopProgress.newChild( 400 ) );
+                                                 loopProgress.newChild( 4 ) );
                     target.setHidden( true );
                     target.getParent().refreshLocal( IResource.DEPTH_INFINITE ,
-                                                   loopProgress.newChild( 100));
+                                                   loopProgress.newChild( 1));
                 }
             }else {
                 target.appendContents( convertToByteArrayIs( writer ),
                                                                 false,
                                                                 true,
-                                                 loopProgress.newChild( 500 ) );
+                                                 loopProgress.newChild( 5 ) );
             }
             }catch(OperationCanceledException e) {
                 try {
                     target.delete( true, progress.newChild( 1000 ) );
                     target.refreshLocal( IResource.DEPTH_ZERO,
-                                                     progress.newChild( 1000 ) );
+                                                     progress.newChild( 1000 ));
                 } catch ( CoreException e1 ) {
                     logger.debug( "Failed to clean up after cancelation" );
                 }
@@ -581,9 +582,9 @@ public class MoleculeTableManager implements IBioclipseManager {
         try {
             if(renamePath != null) {
                 progress.subTask( "Renaming file" );
-                file.delete( true, progress.newChild( 1000 ) );
+                file.delete( true, progress.newChild( 500 ) );
                 target.setHidden( false );
-                target.move( renamePath, true, progress.newChild( 1000 ) );
+                target.move( renamePath, true, progress.newChild( 500 ) );
             }
         } catch ( CoreException e1 ) {
             logger.warn( "Could not rename original" );
