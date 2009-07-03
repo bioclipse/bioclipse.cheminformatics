@@ -26,6 +26,8 @@ import net.bioclipse.cdk.ui.sdfeditor.business.IMoleculeTableManager;
 import net.bioclipse.cdk.ui.sdfeditor.business.SDFileIndex;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.jobs.BioclipseJob;
+import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.jobs.BioclipseUIJob;
 
 import org.apache.log4j.Logger;
@@ -50,6 +52,7 @@ import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -74,6 +77,10 @@ public class MoleculesEditor extends EditorPart implements
     public List<String> propertyHeaders = new ArrayList<String>();
 
     private MoleculeTableViewer molTableViewer;
+
+    private BioclipseJob<Void> parseJob;
+
+    private BioclipseJob<SDFIndexEditorModel> indexJob;
 
     public MoleculesEditor() {
     }
@@ -146,6 +153,7 @@ public class MoleculesEditor extends EditorPart implements
         logger.debug( "Menu id for SDFEditor " +menuMgr.getId());
 
         getSite().setSelectionProvider( molTableViewer );
+
     }
 
     @SuppressWarnings("unchecked")
@@ -235,22 +243,31 @@ public class MoleculesEditor extends EditorPart implements
                     net.bioclipse.cdk.ui.sdfeditor.Activator.getDefault()
                     .getMoleculeTableManager();
 
-                    molTable.createSDFIndex( file,
-                    new BioclipseUIJob<SDFIndexEditorModel>() {
-
-                        @Override
-                        public void runInUI() {
-                            SDFIndexEditorModel m = getReturnValue();
-                            molTableViewer.setContentProvider(
-                                new MoleculeTableContentProvider() );
-
-                            molTableViewer.setInput( m );
-                            molTable.parseProperties( m ,
-                                                Collections.<String>emptySet());
-                            molTableViewer.refresh();
-                        }
-
-                    });
+                    indexJob = molTable.createSDFIndex( file,
+                         new BioclipseJobUpdateHook<SDFIndexEditorModel>(
+                                                  "Create Index fro SDFile") {
+                        public void completeReturn(final SDFIndexEditorModel object) {
+                            indexJob = null;
+                            Display.getDefault().asyncExec( new Runnable() {
+                               public void run() {
+                                   SDFIndexEditorModel m = object;
+                                   molTableViewer.setContentProvider(
+                                       new MoleculeTableContentProvider() );
+                                   molTableViewer.setInput( m );
+                                   molTableViewer.refresh();
+                               };
+                            });
+                            parseJob = molTable.parseProperties( object ,
+                                  Collections.<String>emptySet(),
+                             new BioclipseJobUpdateHook<Void>("Parse SDFile") {
+                                @Override
+                                public void completeReturn( Void object ) {
+                                    parseJob = null;
+                                }
+                            });
+                        };
+                    }
+                    );
                 }
             }else {
             final List<ICDKMolecule> list = adapt(editorInput,List.class);
@@ -422,5 +439,11 @@ public class MoleculesEditor extends EditorPart implements
 
         firePropertyChange( IEditorPart.PROP_DIRTY );
 
+    }
+    @Override
+    public void dispose() {
+        if(parseJob!=null) parseJob.cancel();
+        if(indexJob!=null) indexJob.cancel();
+        super.dispose();
     }
 }
