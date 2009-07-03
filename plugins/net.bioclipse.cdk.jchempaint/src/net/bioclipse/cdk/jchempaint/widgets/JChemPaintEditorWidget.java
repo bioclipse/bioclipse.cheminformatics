@@ -16,9 +16,13 @@ import static net.bioclipse.cdk.jchempaint.outline.StructureContentProvider.crea
 import static org.openscience.cdk.geometry.GeometryTools.has2DCoordinatesNew;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.vecmath.Point2d;
 
@@ -149,6 +153,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         //java.awt.Color color = createFromSWT( SWT.COLOR_LIST_SELECTION );
         java.awt.Color color = new java.awt.Color(0xc2deff);
         getRenderer().getRenderer2DModel().setSelectedPartColor(color);
+        getRenderer().getRenderer2DModel().setToolTipTextMap( new DefaultTooltip() );
 
         setupControllerHub();
 
@@ -378,7 +383,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         RendererModel rendererModel = getRenderer2DModel();
         IAtom atom = rendererModel.getHighlightedAtom();
         IBond bond = rendererModel.getHighlightedBond();
-
         if (atom != prevHighlightedAtom || bond != prevHighlightedBond) {
             prevHighlightedAtom = atom;
             prevHighlightedBond = bond;
@@ -746,5 +750,70 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         DropTarget dropTarget = new DropTarget(control, operations);
         dropTarget.setTransfer(transferTypes);
         dropTarget.addDropListener(listener);
+    }
+
+    private static class DefaultTooltip implements Map<IAtom,String> {
+
+        public void clear() {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean containsKey( Object key ) {
+
+            return true;
+        }
+
+        public boolean containsValue( Object value ) {
+
+            return false;
+        }
+
+        public Set<java.util.Map.Entry<IAtom, String>> entrySet() {
+
+            return Collections.emptySet();
+        }
+
+        public String get( Object key ) {
+            IAtom atom = (IAtom)key;
+            return String.format( "%s, [%s]",
+                                  atom.getSymbol(),
+                                  atom.getAtomTypeName() ); //C8, [sp3]
+
+        }
+
+        public boolean isEmpty() {
+
+            return false;
+        }
+
+        public Set<IAtom> keySet() {
+
+            return Collections.emptySet();
+        }
+
+        public String put( IAtom key, String value ) {
+
+            throw new UnsupportedOperationException();
+        }
+
+        public void putAll( Map<? extends IAtom, ? extends String> t ) {
+
+            throw new UnsupportedOperationException();
+        }
+
+        public String remove( Object key ) {
+
+            throw new UnsupportedOperationException();
+        }
+
+        public int size() {
+
+            return 0;
+        }
+
+        public Collection<String> values() {
+
+            return Collections.emptySet();
+        }
     }
 }
