@@ -53,6 +53,8 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.window.DefaultToolTip;
+import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
@@ -153,7 +155,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         //java.awt.Color color = createFromSWT( SWT.COLOR_LIST_SELECTION );
         java.awt.Color color = new java.awt.Color(0xc2deff);
         getRenderer().getRenderer2DModel().setSelectedPartColor(color);
-        getRenderer().getRenderer2DModel().setToolTipTextMap( new DefaultTooltip() );
 
         setupControllerHub();
 
@@ -233,6 +234,40 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         });
 
+
+     // create a tooltip
+        ToolTip tooltip = new DefaultToolTip(this) {
+            @Override
+            protected String getText( Event event ) {
+
+                RendererModel rmodel = getRenderer2DModel();
+                IAtom atom = rmodel.getHighlightedAtom();
+                if(atom != null && rmodel.getToolTipTextMap().isEmpty()) {
+                    List<IAtomContainer> acs= ChemModelManipulator
+                                            .getAllAtomContainers(
+                                          getControllerHub().getIChemModel());
+                    int num =-1;
+                    for(IAtomContainer ac:acs) {
+                        num = ac.getAtomNumber( atom );
+                        if(num>-1) break;
+                    }
+                    if(num<0) return "";
+                    String atomType = atom.getAtomTypeName();
+                    if(atomType!= null)
+                        atomType= atomType.replaceFirst(  "^[^\\.]+\\.","" );
+                    return String.format( "%s%d, [%s]",
+                                          atom.getSymbol(),
+                                          num,
+                                          atomType);
+                }else {
+                    return rmodel.getToolTipText( atom );
+                }
+            }
+        };
+        tooltip.setShift( new Point(10,0) );
+        tooltip.setPopupDelay(200);
+
+
     }
 
     private void setupControllerHub( ) {
@@ -286,13 +321,15 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         );
 
         setupListeners();
-        addListener( SWT.MouseHover, new Listener() {
-           public void handleEvent( Event event ) {
-               if(event.type == SWT.MouseHover) {
-                   updateToolTip();
-               }
-            }
-        });
+//        addListener( SWT.MouseHover, new Listener() {
+//           public void handleEvent( Event event ) {
+//               if(event.type == SWT.MouseHover) {
+//                   updateToolTip();
+//               }
+//            }
+//        });
+
+
         hub.setActiveDrawModule(new MoveModule(hub));
 
         applyGlobalProperties();
@@ -750,70 +787,5 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         DropTarget dropTarget = new DropTarget(control, operations);
         dropTarget.setTransfer(transferTypes);
         dropTarget.addDropListener(listener);
-    }
-
-    private static class DefaultTooltip implements Map<IAtom,String> {
-
-        public void clear() {
-            throw new UnsupportedOperationException();
-        }
-
-        public boolean containsKey( Object key ) {
-
-            return true;
-        }
-
-        public boolean containsValue( Object value ) {
-
-            return false;
-        }
-
-        public Set<java.util.Map.Entry<IAtom, String>> entrySet() {
-
-            return Collections.emptySet();
-        }
-
-        public String get( Object key ) {
-            IAtom atom = (IAtom)key;
-            return String.format( "%s, [%s]",
-                                  atom.getSymbol(),
-                                  atom.getAtomTypeName() ); //C8, [sp3]
-
-        }
-
-        public boolean isEmpty() {
-
-            return false;
-        }
-
-        public Set<IAtom> keySet() {
-
-            return Collections.emptySet();
-        }
-
-        public String put( IAtom key, String value ) {
-
-            throw new UnsupportedOperationException();
-        }
-
-        public void putAll( Map<? extends IAtom, ? extends String> t ) {
-
-            throw new UnsupportedOperationException();
-        }
-
-        public String remove( Object key ) {
-
-            throw new UnsupportedOperationException();
-        }
-
-        public int size() {
-
-            return 0;
-        }
-
-        public Collection<String> values() {
-
-            return Collections.emptySet();
-        }
     }
 }
