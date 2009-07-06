@@ -258,6 +258,7 @@
           id="net.bioclipse.cdk.InChI">
     </Calculator>
  </extension>
+ 
  <extension
        point="org.eclipse.core.expressions.definitions">
     <definition
@@ -268,6 +269,10 @@
           <adapt
                 type="org.eclipse.core.resources.IResource">
              <or>
+                <test
+                      property="org.eclipse.core.resources.contentTypeId"
+                      value="net.bioclipse.contenttypes.sdf0d">
+                </test>
                 <test
                       property="org.eclipse.core.resources.contentTypeId"
                       value="net.bioclipse.contenttypes.sdf2d">
@@ -298,6 +303,10 @@
              <adapt
                    type="org.eclipse.core.resources.IResource">
                 <or>
+	                <test
+    	                  property="org.eclipse.core.resources.contentTypeId"
+    	                  value="net.bioclipse.contenttypes.sdf0d">
+	                </test>
                    <test
                          property="org.eclipse.core.resources.contentTypeId"
                          value="net.bioclipse.contenttypes.sdf2d">
