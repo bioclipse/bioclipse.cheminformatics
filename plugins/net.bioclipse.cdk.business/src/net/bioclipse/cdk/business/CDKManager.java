@@ -546,6 +546,7 @@ public class CDKManager implements IBioclipseManager {
                             if (nodeToAdd instanceof Element) {
                                 Element element = (Element)nodeToAdd;
                                 CMLAtomType atomType = new CMLAtomType();
+                                atomType.setConvention("bioclipse:atomType");
                                 atomType.appendChild(atom.getAtomTypeName());
                                 element.appendChild(atomType);
                             }

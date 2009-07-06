@@ -16,15 +16,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
-import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.io.FormatFactory;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.PDBReader;
 import org.openscience.cdk.io.ReaderFactory;
+import org.openscience.cdk.io.cml.CMLCoreModule;
+import org.openscience.cdk.io.cml.CMLStack;
 import org.openscience.cdk.io.cml.MDMoleculeConvention;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormatMatcher;
@@ -34,7 +37,6 @@ import org.openscience.cdk.io.formats.MDLV3000Format;
 import org.openscience.cdk.io.formats.PDBFormat;
 import org.openscience.cdk.io.formats.SDFFormat;
 import org.openscience.cdk.io.listener.PropertiesListener;
-import org.openscience.cdk.nonotify.NNChemFile;
 
 public class CDKManagerHelper {
 
@@ -102,7 +104,51 @@ public class CDKManagerHelper {
                 new MDMoleculeConvention((IChemFile)null)
             );
             System.out.println("****** CmlReader, registered MDMoleculeConvention");
+            
+            ((CMLReader)reader).registerConvention(
+                "bioclipse:atomType",
+                new CMLCoreModule((IChemFile)null) {
+                    
+                    List<String> atomTypes = new ArrayList<String>();
 
+                    @Override
+                    protected void newAtomData() {
+                        super.newAtomData();
+                        atomTypes = new ArrayList<String>();
+                    };
+                    
+                    @Override
+                    protected void storeAtomData() {
+                        super.storeAtomData();
+
+                        boolean hasAtomType = false;
+                        if (atomTypes.size() == atomCounter) {
+                            hasAtomType = true;
+                        } else {
+                            logger.debug("No atom types: " + elid.size(),
+                                         " != " + atomCounter);
+                        }
+                        if (hasAtomType) {
+                            for (int i = 0; i < atomCounter; i++) {
+                                currentAtom = currentMolecule.getAtom(i);
+                                currentAtom.setAtomTypeName(atomTypes.get(i));
+                            }
+                        }                        
+                    }
+                    
+                    @Override
+                    public void endElement(CMLStack xpath, String uri,
+                                            String name, String raw) {
+                        if (xpath.endsWith("atom", "atomType")) {
+                            while ((atomTypes.size()+1) < atomCounter)
+                                atomTypes.add(null);
+                            atomTypes.add(currentChars);
+                        } else {
+                            super.endElement( xpath, uri, name, raw );
+                        }
+                    }
+                }
+            );
         }
 
     }
