@@ -1468,7 +1468,6 @@ public class CMLCoreModule implements ICMLModule {
             // assume this is the current working list
             bondElid = elid;
         }
-        newAtomData();
     }
     
     protected void storeBondData() {
@@ -1566,7 +1565,6 @@ public class CMLCoreModule implements ICMLModule {
                 currentMolecule.addBond(currentBond);
             }
         }
-        newBondData();
     }
 
     protected int addArrayElementsTo(List<String> toAddto, String array) {
