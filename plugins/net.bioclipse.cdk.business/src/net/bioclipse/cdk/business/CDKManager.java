@@ -51,6 +51,7 @@ import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.jobs.IReturner;
 import net.bioclipse.managers.business.IBioclipseManager;
+import nu.xom.Element;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.EFS;
@@ -126,6 +127,7 @@ import org.openscience.cdk.isomorphism.matchers.QueryAtomContainer;
 import org.openscience.cdk.isomorphism.matchers.smarts.AromaticQueryBond;
 import org.openscience.cdk.isomorphism.mcss.RMap;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
+import org.openscience.cdk.libio.cml.ICMLCustomizer;
 import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
 import org.openscience.cdk.nonotify.NNAtomContainer;
 import org.openscience.cdk.nonotify.NNChemFile;
@@ -142,6 +144,7 @@ import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
+import org.xmlcml.cml.element.CMLAtomType;
 
 /**
  * The manager class for CDK. Contains CDK related methods.
@@ -532,6 +535,28 @@ public class CDKManager implements IBioclipseManager {
                     writerProperties
                 );
                 chemWriter.addChemObjectIOListener(listener);
+            }
+            // if CMLWriter, add a customizer to cause writing of atom types
+            if (chemWriter instanceof CMLWriter) {
+                CMLWriter cmlWriter = (CMLWriter)chemWriter;
+                cmlWriter.registerCustomizer(new ICMLCustomizer() {
+                    public void customize( IAtom atom, Object nodeToAdd )
+                        throws Exception {
+                        if (atom.getAtomTypeName() != null) {
+                            if (nodeToAdd instanceof Element) {
+                                Element element = (Element)nodeToAdd;
+                                CMLAtomType atomType = new CMLAtomType();
+                                atomType.appendChild(atom.getAtomTypeName());
+                                element.appendChild(atomType);
+                            }
+                        }
+                    }
+                    // don't customize the rest
+                    public void customize( IBond bond, Object nodeToAdd )
+                        throws Exception {}
+                    public void customize( IAtomContainer molecule,
+                        Object nodeToAdd ) throws Exception {}
+                });
             }
 
             // write the model
