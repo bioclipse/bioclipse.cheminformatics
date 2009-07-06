@@ -40,6 +40,7 @@ import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.WriterFactory;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.setting.IOSetting;
+import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.tools.diff.AtomContainerDiff;
 import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
 
@@ -49,6 +50,18 @@ public class CDKDebugManager implements IBioclipseManager {
     private static final CDKManager cdk = new CDKManager();
     private static final WriterFactory writerFactory = new WriterFactory();
     private static final ReaderFactory readerFactory = new ReaderFactory();
+
+    private static AtomTypeFactory factory;
+    
+    static {
+        InputStream iStream 
+            = org.openscience.cdk.atomtype.Activator.class.getResourceAsStream(
+                "/org/openscience/cdk/dict/data/sybyl-atom-types.owl");
+        factory = AtomTypeFactory.getInstance( iStream, "owl",
+            NoNotificationChemObjectBuilder.getInstance()
+        );
+    }
+
     
     public String diff(ICDKMolecule mol, ICDKMolecule mol2) {
         return AtomContainerDiff.diff(
@@ -84,12 +97,7 @@ public class CDKDebugManager implements IBioclipseManager {
         AtomTypeMapper mapper 
             = AtomTypeMapper.getInstance(
                  "org/openscience/cdk/dict/data/cdk-sybyl-mappings.owl" );
-        InputStream iStream 
-            = org.openscience.cdk.atomtype.Activator.class.getResourceAsStream(
-                 "/org/openscience/cdk/dict/data/sybyl-atom-types.owl");
-        AtomTypeFactory factory 
-            = AtomTypeFactory.getInstance( iStream, "owl", ac.getBuilder() );
-        
+
         IAtomType[] sybylTypes = new IAtomType[ac.getAtomCount()];
         
         int atomCounter = 0;
