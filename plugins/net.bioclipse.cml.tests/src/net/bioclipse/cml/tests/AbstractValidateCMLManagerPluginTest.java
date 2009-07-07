@@ -15,7 +15,9 @@ package net.bioclipse.cml.tests;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cml.managers.IValidateCMLManager;
+import net.bioclipse.core.ResourcePathTransformer;
 
+import org.eclipse.core.resources.IFile;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openscience.cdk.io.formats.CMLFormat;
@@ -41,5 +43,18 @@ public class AbstractValidateCMLManagerPluginTest {
         );
         Assert.assertTrue(cmlElem.getClass().getName().contains("CMLMolecule"));
     }
+    
+    @Test public void testParseFile_IFile() throws Exception{
+        ICDKMolecule mol = cdk.fromSMILES("CNC");
+        cdk.saveMolecule(mol, "/Virtual/testparse.cml",
+                (IChemFormat)CMLFormat.getInstance(), true);
+        cml.parseFile( ResourcePathTransformer.getInstance().transform("/Virtual/testparse.cml"));
+    }
 
+    @Test public void testParseFile_String() throws Exception{
+        ICDKMolecule mol = cdk.fromSMILES("CNC");
+        cdk.saveMolecule(mol, "/Virtual/testparse.cml",
+                (IChemFormat)CMLFormat.getInstance(), true);
+        cml.parseFile( "/Virtual/testparse.cml");
+    }
 }
