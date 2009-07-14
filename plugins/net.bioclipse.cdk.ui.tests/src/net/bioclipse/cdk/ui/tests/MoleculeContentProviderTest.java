@@ -8,35 +8,27 @@
  *******************************************************************************/
 package net.bioclipse.cdk.ui.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import net.bioclipse.cdk.ui.views.MoleculeContentProvider;
-import net.bioclipse.core.domain.IAASequence;
-import net.bioclipse.core.domain.IDNASequence;
 import net.bioclipse.core.domain.IMolecule;
-import net.bioclipse.core.domain.ISequence;
 
-import org.eclipse.core.internal.resources.File;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.SubProgressMonitor;
-import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class MoleculeContentProviderTest {
 
