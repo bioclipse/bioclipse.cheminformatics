@@ -1552,7 +1552,10 @@ public abstract class AbstractCDKManagerPluginTest {
         assertEquals(1, molecule.getAtomContainer().getAtomCount());
         cdk.addExplicitHydrogens(molecule);
         assertEquals(5, molecule.getAtomContainer().getAtomCount());
-        assertEquals(0, molecule.getAtomContainer().getAtom(0).getHydrogenCount());
+        assertEquals(
+        	0,
+        	molecule.getAtomContainer().getAtom(0).getHydrogenCount().intValue()
+        );
     }
 
     @Test public void testBug691() throws Exception {
@@ -1560,7 +1563,10 @@ public abstract class AbstractCDKManagerPluginTest {
         assertEquals(12, molecule.getAtomContainer().getAtomCount());
         cdk.addExplicitHydrogens(molecule);
         assertEquals(24, molecule.getAtomContainer().getAtomCount());
-        assertEquals(0, molecule.getAtomContainer().getAtom(0).getHydrogenCount());
+        assertEquals(
+        	0,
+        	molecule.getAtomContainer().getAtom(0).getHydrogenCount().intValue()
+        );
     }
 
     @Test public void testAddImplicitHydrogens() throws Exception {
@@ -1568,7 +1574,10 @@ public abstract class AbstractCDKManagerPluginTest {
         assertEquals(1, molecule.getAtomContainer().getAtomCount());
         cdk.addImplicitHydrogens(molecule);
         assertEquals(1, molecule.getAtomContainer().getAtomCount());
-        assertEquals(4, molecule.getAtomContainer().getAtom(0).getHydrogenCount());
+        assertEquals(
+        	4,
+        	molecule.getAtomContainer().getAtom(0).getHydrogenCount().intValue()
+        );
     }
 
     @Test public void testGenerate3DCoordinates() throws Exception {
