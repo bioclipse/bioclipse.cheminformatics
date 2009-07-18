@@ -61,6 +61,7 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.part.Page;
 
 public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                                                     ISelectionListener,
@@ -466,4 +467,14 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
             return jcpPage;
         return super.getAdapter( adapter );
     }
+
+    /**
+     * @return true if JCP is current editor
+     */
+    public boolean isJCPVisible() {
+        if (getActiveEditor() instanceof JChemPaintEditor)
+            return true;
+        return false;
+    }
+    
 }
