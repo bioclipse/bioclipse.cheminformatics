@@ -1490,7 +1490,7 @@ public class CDKManager implements IBioclipseManager {
                                         IReturner returner,
                                         IProgressMonitor monitor)
                        throws Exception {
-          monitor.beginTask( "Creating 3d coordinates", IProgressMonitor.UNKNOWN );
+          monitor.beginTask( "Creating 2d coordinates", IProgressMonitor.UNKNOWN );
           List<IMolecule> molecules = new ArrayList<IMolecule>();
           molecules.add( molecule );
           returner.completeReturn( generate2dCoordinates( molecules,
