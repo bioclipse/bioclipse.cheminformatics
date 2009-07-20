@@ -45,6 +45,15 @@ public class ChemoinformaticUtils {
            add("net.bioclipse.contenttypes.cml.singleMolecule5d");
            add("net.bioclipse.contenttypes.cml.singleMolecule0d");
         }};
+        
+        public final static List<String> SUPPORTED_MULTIPLE_CONTENT_TYPES =
+            new ArrayList<String>() {{
+                add("net.bioclipse.contenttypes.sdf");
+                add("net.bioclipse.contenttypes.sdf0d");
+                add("net.bioclipse.contenttypes.sdf2d");
+                add("net.bioclipse.contenttypes.sdf3d");
+            }};
+
     
     /**
      * Tells if a file is a molecule according to Bioclipse content types.
@@ -73,5 +82,34 @@ public class ChemoinformaticUtils {
         else
             return false;
     }
+    
+    /**
+     * Tells if a file is a molecule according to Bioclipse content types.
+     * 
+     * @param file The file to check
+     * @return true=is any of the molecule content types, false= is not.
+     * @exception CoreException if this method fails. Reasons include:
+     * <ul>
+     * <li> This resource does not exist.</li>
+     * <li> This resource is not local.</li>
+     * <li> The workspace is not in sync with the corresponding location
+     *       in the local file system.</li>
+     * </ul>
+     * @throws IOException if an error occurs while reading the contents 
+     */
+    public static boolean isMultipleMolecule(IFile file) throws CoreException, IOException{
+        if(!file.exists())
+            return false;
+        IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
+        InputStream stream = file.getContents();
+        IContentType contentType = contentTypeManager.findContentTypeFor(stream, file.getName());
+        stream.close();
+        if (contentType != null &&
+            SUPPORTED_MULTIPLE_CONTENT_TYPES.contains(contentType.getId()))
+            return true;
+        else
+            return false;
+    }
+
 
 }
