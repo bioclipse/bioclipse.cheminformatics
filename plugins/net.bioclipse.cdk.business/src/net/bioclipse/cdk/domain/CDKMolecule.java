@@ -32,6 +32,7 @@ import net.bioclipse.inchi.business.IInChIManager;
 
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.fingerprint.Fingerprinter;
 import org.openscience.cdk.geometry.GeometryTools;
@@ -115,7 +116,16 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     }
 
     public String getName() {
-        return name;
+        String returnValue = name;
+        if ( returnValue == null ) {
+            returnValue = (String) 
+                          atomContainer.getProperty(CDKConstants.TITLE);
+        }
+        if ( returnValue == null ) {
+            returnValue = Activator.getDefault().getJavaCDKManager()
+                                                .molecularFormula(this);
+        }
+        return returnValue;
     }
 
     public void setName(String name) {
