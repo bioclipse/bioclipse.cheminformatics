@@ -134,8 +134,7 @@ public interface ICDKManager extends IBioclipseManager {
      * @throws CoreException
      */
     @Recorded
-    public ICDKMolecule loadMolecule( IFile file )
-                        throws IOException, BioclipseException, CoreException;
+    public ICDKMolecule loadMolecule( IFile file );
 
     @Recorded
     @PublishedMethod( 

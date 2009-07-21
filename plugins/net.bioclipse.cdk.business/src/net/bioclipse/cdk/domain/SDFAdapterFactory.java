@@ -91,10 +91,8 @@ public class SDFAdapterFactory implements IAdapterFactory {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             LogUtils.debugTrace( logger,e);
-        } catch (BioclipseException e) {
-            // TODO Auto-generated catch block
-            LogUtils.debugTrace( logger,e);
-        }finally{
+        } 
+        finally {
             try {                
                 if(file!=null) file.delete(true,null);
                 if(folder!=null) folder.delete(true,null );
@@ -102,7 +100,6 @@ public class SDFAdapterFactory implements IAdapterFactory {
                 // TODO Auto-generated catch block
                 LogUtils.debugTrace( logger,e);
             } 
-               
         }
         
         return null;
