@@ -13,13 +13,15 @@ package net.bioclipse.cdk.ui.wizards;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.Activator;
-import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
+import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
+import org.openscience.cdk.interfaces.IAtomType;
+import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 
 public class NewFromSMILESWizard extends BasicNewResourceWizard {
 
@@ -63,9 +65,22 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
         ICDKManager cdk = net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
         try {
             ICDKMolecule mol = cdk.fromSMILES(getSMILES());
-            IMolecule newMol = cdk.generate2dCoordinates(mol);
+            mol = cdk.generate2dCoordinates(mol);
+            CDKAtomTypeMatcher matcher = CDKAtomTypeMatcher.getInstance(
+                NoNotificationChemObjectBuilder.getInstance()
+            );
+            IAtomType[] types = matcher.findMatchingAtomType(
+            	mol.getAtomContainer()
+            );
+            for (int i=0; i<types.length; i++) {
+            	mol.getAtomContainer().getAtom(i).setAtomTypeName(
+            		types[i].getAtomTypeName()
+            	);
+            }
             net.bioclipse.ui.business.Activator.getDefault().getUIManager()
-                .open(newMol, "net.bioclipse.cdk.ui.editors.jchempaint.cml");
+                .open(mol, "net.bioclipse.cdk.ui.editors.jchempaint.cml");
+
+            
         } catch (Exception e) {
             LogUtils.handleException(
                 e, logger,

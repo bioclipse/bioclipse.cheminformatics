@@ -29,6 +29,7 @@ import net.bioclipse.core.domain.BioObject;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.inchi.InChI;
 import net.bioclipse.inchi.business.IInChIManager;
+import nu.xom.Element;
 
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -36,12 +37,16 @@ import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.fingerprint.Fingerprinter;
 import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.listener.PropertiesListener;
 import org.openscience.cdk.libio.cml.Convertor;
+import org.openscience.cdk.libio.cml.ICMLCustomizer;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
+import org.xmlcml.cml.element.CMLAtomType;
 import org.xmlcml.cml.element.CMLMolecule;
 
 /**
@@ -146,6 +151,25 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
             ByteArrayOutputStream bo=new ByteArrayOutputStream();
 
             CMLWriter writer=new CMLWriter(bo);
+            writer.registerCustomizer(new ICMLCustomizer() {
+            	public void customize( IAtom atom, Object nodeToAdd )
+            	throws Exception {
+            		if (atom.getAtomTypeName() != null) {
+            			if (nodeToAdd instanceof Element) {
+            				Element element = (Element)nodeToAdd;
+            				CMLAtomType atomType = new CMLAtomType();
+            				atomType.setConvention("bioclipse:atomType");
+            				atomType.appendChild(atom.getAtomTypeName());
+            				element.appendChild(atomType);
+            			}
+            		}
+            	}
+            	// don't customize the rest
+            	public void customize( IBond bond, Object nodeToAdd )
+            	throws Exception {}
+            	public void customize( IAtomContainer molecule,
+            			Object nodeToAdd ) throws Exception {}
+            });
             writer.addChemObjectIOListener(new PropertiesListener(cmlPrefs));
             try {
                 writer.write(getAtomContainer());
