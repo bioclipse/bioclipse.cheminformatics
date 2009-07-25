@@ -13,7 +13,6 @@ package net.bioclipse.cdk.ui.wizards;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.chemoinformatics.wizards.WizardHelper;
@@ -31,6 +30,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
+import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
+import org.openscience.cdk.interfaces.IAtomType;
+import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 
 public class NewFromSMILESWizard extends BasicNewResourceWizard {
 
@@ -78,7 +80,19 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
         ICDKManager cdk = net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
         try {
             ICDKMolecule cdkMol = cdk.fromSMILES(getSMILES());
+            CDKAtomTypeMatcher matcher = CDKAtomTypeMatcher.getInstance(
+                NoNotificationChemObjectBuilder.getInstance()
+            );
+            IAtomType[] types = matcher.findMatchingAtomType(
+            	cdkMol.getAtomContainer()
+            );
+            for (int i=0; i<types.length; i++) {
+            	cdkMol.getAtomContainer().getAtom(i).setAtomTypeName(
+            		types[i].getAtomTypeName()
+            	);
+            }
             IMolecule newMol = cdk.generate2dCoordinates(cdkMol);
+            
             InputStream source = new ByteArrayInputStream(newMol.toCML().getBytes());
             file.setContents(source, true, false, null);
         } catch (CoreException e1) {
