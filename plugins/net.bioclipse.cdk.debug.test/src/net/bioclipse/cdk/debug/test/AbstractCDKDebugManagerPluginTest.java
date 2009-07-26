@@ -97,10 +97,10 @@ public abstract class AbstractCDKDebugManagerPluginTest {
 
         ICDKMolecule mol = cdk.fromSMILES("C1CCCCC1CCOC");
 
-        ICDKMolecule mol2 = debug.perceiveSybylAtomTypes(mol);
+        debug.perceiveSybylAtomTypes(mol);
 
-        for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
-            IAtom a=mol2.getAtomContainer().getAtom(i);
+        for (int i=0; i<mol.getAtomContainer().getAtomCount(); i++){
+            IAtom a=mol.getAtomContainer().getAtom(i);
             System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
         }
 
@@ -114,10 +114,10 @@ public abstract class AbstractCDKDebugManagerPluginTest {
 
         System.out.println("mol: " + mol.toString());
 
-        ICDKMolecule mol2 = debug.perceiveSybylAtomTypes(mol);
+        debug.perceiveSybylAtomTypes(mol);
 
-        for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
-            IAtom a=mol2.getAtomContainer().getAtom(i);
+        for (int i=0; i<mol.getAtomContainer().getAtomCount(); i++){
+            IAtom a=mol.getAtomContainer().getAtom(i);
             System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
         }
 
@@ -133,10 +133,10 @@ public abstract class AbstractCDKDebugManagerPluginTest {
 
         System.out.println("mol: " + mol.toString());
 
-        ICDKMolecule mol2 = debug.perceiveSybylAtomTypes(mol);
+        debug.perceiveSybylAtomTypes(mol);
 
-        for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
-            IAtom a=mol2.getAtomContainer().getAtom(i);
+        for (int i=0; i<mol.getAtomContainer().getAtomCount(); i++){
+            IAtom a=mol.getAtomContainer().getAtom(i);
             System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
         }
 
@@ -152,12 +152,12 @@ public abstract class AbstractCDKDebugManagerPluginTest {
 
         System.out.println("mol: " + mol.toString());
 
-        ICDKMolecule mol2 = debug.perceiveSybylAtomTypes(mol);
+        debug.perceiveSybylAtomTypes(mol);
 
-        assertEquals("C.ar", mol2.getAtomContainer().getAtom(1).getAtomTypeName());
+        assertEquals("C.ar", mol.getAtomContainer().getAtom(1).getAtomTypeName());
 
-        for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
-            IAtom a=mol2.getAtomContainer().getAtom(i);
+        for (int i=0; i<mol.getAtomContainer().getAtomCount(); i++){
+            IAtom a=mol.getAtomContainer().getAtom(i);
             System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
         }
 
@@ -170,22 +170,22 @@ public abstract class AbstractCDKDebugManagerPluginTest {
 
         ICDKMolecule mol = new CDKMolecule(ac);
 
-        ICDKMolecule mol2 = debug.perceiveSybylAtomTypes(mol);
+        debug.perceiveSybylAtomTypes(mol);
 
         System.out.println("** BENZENE **");
 
-        System.out.println(AtomContainerDiff.diff( ac, mol2.getAtomContainer()));
+        System.out.println(AtomContainerDiff.diff( ac, mol.getAtomContainer()));
 
-        for (int i=0; i<mol2.getAtomContainer().getAtomCount(); i++){
-            IAtom a=mol2.getAtomContainer().getAtom(i);
+        for (int i=0; i<mol.getAtomContainer().getAtomCount(); i++){
+            IAtom a=mol.getAtomContainer().getAtom(i);
             System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
         }
 
-        assertEquals("C.ar", mol2.getAtomContainer().getAtom(0).getAtomTypeName());
-        assertEquals("C.ar", mol2.getAtomContainer().getAtom(1).getAtomTypeName());
-        assertEquals("C.ar", mol2.getAtomContainer().getAtom(2).getAtomTypeName());
-        assertEquals("C.ar", mol2.getAtomContainer().getAtom(3).getAtomTypeName());
-        assertEquals("C.ar", mol2.getAtomContainer().getAtom(4).getAtomTypeName());
-        assertEquals("C.ar", mol2.getAtomContainer().getAtom(5).getAtomTypeName());
+        assertEquals("C.ar", mol.getAtomContainer().getAtom(0).getAtomTypeName());
+        assertEquals("C.ar", mol.getAtomContainer().getAtom(1).getAtomTypeName());
+        assertEquals("C.ar", mol.getAtomContainer().getAtom(2).getAtomTypeName());
+        assertEquals("C.ar", mol.getAtomContainer().getAtom(3).getAtomTypeName());
+        assertEquals("C.ar", mol.getAtomContainer().getAtom(4).getAtomTypeName());
+        assertEquals("C.ar", mol.getAtomContainer().getAtom(5).getAtomTypeName());
     }
 }
