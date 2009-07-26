@@ -77,7 +77,7 @@ public class CDKDebugManager implements IBioclipseManager {
         return "cdx";
     }
    
-    public ICDKMolecule perceiveSybylAtomTypes(IMolecule mol)
+    public String perceiveSybylAtomTypes(IMolecule mol)
                         throws InvocationTargetException {
         
         ICDKMolecule cdkmol;
@@ -145,6 +145,7 @@ public class CDKDebugManager implements IBioclipseManager {
 			      }
             atomCounter++;
         }
+        StringBuffer result = new StringBuffer();
         // now that full perception is finished, we can set atom type names:
         for (int i = 0; i < sybylTypes.length; i++) {
             if (sybylTypes[i] != null) {
@@ -153,8 +154,12 @@ public class CDKDebugManager implements IBioclipseManager {
             else {
                 ac.getAtom(i).setAtomTypeName("X");
             }
+            
+            result.append(i).append(':').append(ac.getAtom(i).getAtomTypeName())
+                  /*.append("\n")*/;
+
         }
-        return cdkmol;
+        return result.toString();
     }
     
     public String perceiveCDKAtomTypes(IMolecule mol)
