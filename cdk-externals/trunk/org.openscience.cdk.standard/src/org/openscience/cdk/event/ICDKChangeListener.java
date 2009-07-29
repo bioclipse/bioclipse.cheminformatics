@@ -34,7 +34,7 @@ import java.util.EventObject;
  * A ChangeListener for the CDK, to be independent from the Swing package.
  *
  * @cdk.module standard
- * @cdk.svnrev  $Revision$
+ * @cdk.githash
  */ 
 public interface ICDKChangeListener extends EventListener
 {
@@ -44,12 +44,5 @@ public interface ICDKChangeListener extends EventListener
 	 * @param   event  The EventObject
 	 */
     void stateChanged(EventObject event);
-    
-	/**
-	 * Invoked when the target of the listener has changed its zoom factor.
-	 *
-	 * @param   event  The EventObject
-	 */
-	void zoomFactorChanged(EventObject event);
 }
 

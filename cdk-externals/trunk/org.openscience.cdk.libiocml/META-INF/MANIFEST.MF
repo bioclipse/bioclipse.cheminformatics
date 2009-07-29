@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDK plugin
 Bundle-SymbolicName: org.openscience.cdk.libiocml;singleton:=true
-Bundle-Version: 1.2.2
+Bundle-Version: 1.2.3.0bioclipse1
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openscience.cdk.libiocml.Activator
@@ -19,6 +19,7 @@ Require-Bundle: org.openscience.cdk.annotation,
  net.bioclipse.xom,
  org.xmlcml.cmlxom,
  org.eclipse.core.runtime
-Export-Package: org.openscience.cdk.io,
+Export-Package: nu.xom,
+ org.openscience.cdk.io,
  org.openscience.cdk.libio.cml,
  org.openscience.cdk.libiocml

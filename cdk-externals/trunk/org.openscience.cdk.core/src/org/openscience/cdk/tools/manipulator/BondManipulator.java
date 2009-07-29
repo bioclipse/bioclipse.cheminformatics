@@ -42,7 +42,7 @@ import java.util.List;
  * it participates too.
  *
  * @cdk.module  core
- * @cdk.svnrev  $Revision$
+ * @cdk.githash
  *
  * @author  Egon Willighagen
  * @cdk.created 2003-08-07
@@ -255,6 +255,37 @@ public class BondManipulator {
 			if (isHigherOrder(bond.getOrder(), maxOrder)) maxOrder = bond.getOrder();
 		}
 		return maxOrder;
+	}
+
+	/**
+	 * Returns the minimum bond order for a List of bonds.
+	 *
+	 * @param bonds The list of bonds to search through
+	 * @return  The maximum bond order found
+     * @see #getMinimumBondOrder(java.util.Iterator)
+	 */
+    @TestMethod("testGetMinimumBondOrder_List")
+    public static IBond.Order getMinimumBondOrder(List<IBond> bonds) {
+		return getMinimumBondOrder(bonds.iterator());
+	}
+
+    /**
+     * Returns the minimum bond order for a List of bonds, given an iterator
+     * to the list.
+     *
+     * @param bonds An iterator for the list of bonds
+     * @return The minimum bond order found
+     * @see #getMinimumBondOrder(java.util.List)
+     */
+    @TestMethod("testGetMinimumBondOrder_Iterator")
+    public static IBond.Order getMinimumBondOrder(Iterator<IBond> bonds) {
+		IBond.Order minOrder = IBond.Order.QUADRUPLE;
+		while (bonds.hasNext()) {
+			IBond bond = bonds.next();
+			if (isLowerOrder(bond.getOrder(), minOrder))
+				minOrder = bond.getOrder();
+		}
+		return minOrder;
 	}
 
     /**

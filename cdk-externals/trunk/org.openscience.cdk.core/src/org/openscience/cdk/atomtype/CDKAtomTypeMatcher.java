@@ -51,7 +51,7 @@ import org.openscience.cdk.interfaces.IAtomType.Hybridization;
  * @author         egonw
  * @cdk.created    2007-07-20
  * @cdk.module     core
- * @cdk.svnrev     $Revision$
+ * @cdk.githash
  * @cdk.bug        1802998
  */
 @TestClass("org.openscience.cdk.atomtype.CDKAtomTypeMatcherTest")
@@ -300,6 +300,10 @@ public class CDKAtomTypeMatcher implements IAtomTypeMatcher {
 	                if (isAcceptable(atom, atomContainer, type)) return type;
 	            }
 	        } else {
+	            if (hasAromaticBond(atomContainer, atom)) {
+	                IAtomType type = getAtomType("C.sp2");
+	                if (isAcceptable(atom, atomContainer, type)) return type;
+	            }
 	            IAtomType type = getAtomType("C.sp3");
 	            if (isAcceptable(atom, atomContainer, type)) return type;
 	        }
@@ -670,7 +674,19 @@ public class CDKAtomTypeMatcher implements IAtomTypeMatcher {
                 int connectedHeavyAtoms = atomContainer.getConnectedBondsCount(atom) - explicitHydrogens;
                 if (connectedHeavyAtoms == 2) {
                 	List<IBond> bonds = atomContainer.getConnectedBondsList(atom);
-                	if (bothNeighborsAreSp2(atom, atomContainer) && isRingAtom(atom, atomContainer)) {
+                    if (bonds.get(0).getFlag(CDKConstants.ISAROMATIC) &&
+                            bonds.get(1).getFlag(CDKConstants.ISAROMATIC)) {
+                        Integer hCount = atom.getHydrogenCount();
+                        if (hCount == CDKConstants.UNSET || hCount == 0) {
+                            IAtomType type = getAtomType("N.sp2");
+                            if (isAcceptable(atom, atomContainer, type))
+                                return type;
+                        } else if (hCount == 1) {
+                            IAtomType type = getAtomType("N.planar3");
+                            if (isAcceptable(atom, atomContainer, type))
+                                return type;
+                        }
+                	} else if (bothNeighborsAreSp2(atom, atomContainer) && isRingAtom(atom, atomContainer)) {
                 		// a N.sp3 which is expected to take part in an aromatic system
                 		IAtomType type = getAtomType("N.planar3");
                 		if (isAcceptable(atom, atomContainer, type)) return type;
@@ -1455,6 +1471,14 @@ public class CDKAtomTypeMatcher implements IAtomTypeMatcher {
 
     private int countAttachedDoubleBonds(IAtomContainer container, IAtom atom) {
     	return countAttachedDoubleBonds(container, atom, null);
+    }
+
+    private boolean hasAromaticBond(IAtomContainer container, IAtom atom) {
+        List<IBond> neighbors = container.getConnectedBondsList(atom);
+        for (IBond bond : neighbors) {
+            if (bond.getFlag(CDKConstants.ISAROMATIC)) return true;
+        }
+        return false;
     }
 
     /**

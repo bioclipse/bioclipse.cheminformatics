@@ -1,3 +1,4 @@
+nu/xom/CustomSerializer.java
 org/openscience/cdk/io/CMLWriter.java
 org/openscience/cdk/io/RssWriter.java
 org/openscience/cdk/libio/cml/Convertor.java

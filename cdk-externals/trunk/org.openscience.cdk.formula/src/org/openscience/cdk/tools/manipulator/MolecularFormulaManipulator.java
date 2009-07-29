@@ -586,7 +586,7 @@ public class MolecularFormulaManipulator {
 		  if(charge > 0)
 			mass -= massE*charge;
 		 else if(charge < 0)
-			mass += massE*charge; 
+			mass += massE*Math.abs(charge); 
 		 return mass;
 	}
 
@@ -728,10 +728,12 @@ public class MolecularFormulaManipulator {
 	 */
 	@TestMethod("testGetMolecularFormula_IAtomContainer_IMolecularFormula")
 	public static IMolecularFormula getMolecularFormula(IAtomContainer atomContainer, IMolecularFormula formula) {
-
+		int charge = 0;
         for (IAtom iAtom : atomContainer.atoms()) {
             formula.addIsotope(iAtom);
+            charge += iAtom.getFormalCharge();
         }
+        formula.setCharge(charge);
 		return formula;
 	}
 	/**

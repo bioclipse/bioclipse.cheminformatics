@@ -40,7 +40,7 @@ import java.util.Hashtable;
  * and entities.
  *
  * @author     Egon Willighagen
- * @cdk.svnrev  $Revision$
+ * @cdk.githash
  * @cdk.created    2003-04-06
  * @cdk.keyword    dictionary
  * @cdk.depends    xom.jar
@@ -56,7 +56,7 @@ public class DictionaryDatabase {
         "chemical", "elements", "descriptor-algorithms","reaction-processes"
     };
     private String[] dictionaryTypes = {
-        "xml", "xml", "owl", "owl_React"
+        "xml", "owl", "owl", "owl_React"
     };
     
     private Hashtable<String, Dictionary> dictionaries;
@@ -75,8 +75,6 @@ public class DictionaryDatabase {
             if (dictionary != null) {
                 dictionaries.put(name.toLowerCase(), dictionary);
                 logger.debug("Read dictionary: ", name);
-            } else {
-                logger.warn("Could not load dictionary: " + name);
             }
         }
     }

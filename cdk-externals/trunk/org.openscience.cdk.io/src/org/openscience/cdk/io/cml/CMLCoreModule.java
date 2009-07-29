@@ -66,7 +66,7 @@ import org.xml.sax.Attributes;
  * a certain element or attribute value in a valid CML document.
  *
  * @cdk.module io
- * @cdk.svnrev  $Revision$
+ * @cdk.githash
  *
  * @author Egon Willighagen <egonw@sci.kun.nl>
  **/
@@ -1464,6 +1464,7 @@ public class CMLCoreModule implements ICMLModule {
             // assume this is the current working list
             bondElid = elid;
         }
+        newAtomData();
     }
     
     protected void storeBondData() {
@@ -1561,6 +1562,7 @@ public class CMLCoreModule implements ICMLModule {
                 currentMolecule.addBond(currentBond);
             }
         }
+        newBondData();
     }
 
     protected int addArrayElementsTo(List<String> toAddto, String array) {
