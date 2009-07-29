@@ -1,0 +1,33 @@
+From c17e82ac7840892d6ba1d1d5d10d988e24c6bf28 Mon Sep 17 00:00:00 2001
+From: goglepox <goglepox@fcb5ba71-d80d-0410-8237-ba3920747fcc>
+Date: Thu, 4 Jun 2009 12:07:51 +0000
+Subject: [PATCH] Add call to chemModelRelay.moveAtom() when mouse is released
+
+This makes sure that a coordinate changed get
+fired but only once for a move.
+Fixes bug #1184
+
+[jchempaint-primary] r14601
+
+git-svn-id: https://bioclipse.svn.sourceforge.net/svnroot/bioclipse/bioclipse2/trunk@11027 fcb5ba71-d80d-0410-8237-ba3920747fcc
+---
+ .../org/openscience/cdk/controller/MoveModule.java |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/MoveModule.java b/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/MoveModule.java
+index 08ba45d..32a9db2 100644
+--- a/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/MoveModule.java
++++ b/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/MoveModule.java
+@@ -100,6 +100,9 @@ public class MoveModule extends ControllerModuleAdapter {
+                     .isEmpty()) {
+                 mergeMolecules(end);
+             } else {
++                for(IAtom atom:selection.getConnectedAtomContainer().atoms()) {
++                    chemModelRelay.moveTo( atom, worldCoord );
++                }
+                 IUndoRedoFactory factory = chemModelRelay.getUndoRedoFactory();
+                 UndoRedoHandler handler = chemModelRelay.getUndoRedoHandler();
+                 if (factory != null && handler != null) {
+-- 
+1.6.0.4
+

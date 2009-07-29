@@ -1,0 +1,31 @@
+From 5e4bebdcb7d4da78ef437be0ea612e5ce77481ba Mon Sep 17 00:00:00 2001
+From: goglepox <goglepox@fcb5ba71-d80d-0410-8237-ba3920747fcc>
+Date: Mon, 8 Jun 2009 13:47:42 +0000
+Subject: [PATCH] Changed for < to <= in font mangaer code
+
+If the sacale is the same or less than the lowest value
+the lowest should be returned
+[jchempaint-primary] r14604
+Fixes bug #1207, #938
+
+git-svn-id: https://bioclipse.svn.sourceforge.net/svnroot/bioclipse/bioclipse2/trunk@11129 fcb5ba71-d80d-0410-8237-ba3920747fcc
+---
+ .../cdk/renderer/font/AbstractFontManager.java     |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/font/AbstractFontManager.java b/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/font/AbstractFontManager.java
+index 286f741..1150fb0 100644
+--- a/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/font/AbstractFontManager.java
++++ b/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/font/AbstractFontManager.java
+@@ -63,7 +63,7 @@ public abstract class AbstractFontManager implements IFontManager {
+ 		for (double upper : this.zoomToFontSizeMap.keySet()) {
+ 			if (lower == -1) {
+ 				lower = upper;
+-				if(zoom<lower)
++				if(zoom<=lower)
+ 				    return this.zoomToFontSizeMap.get(upper);
+ 				continue;
+ 			}
+-- 
+1.6.0.4
+

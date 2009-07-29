@@ -1,0 +1,30 @@
+From fded5f55859390a4637a60d14a47dac275179c90 Mon Sep 17 00:00:00 2001
+From: goglepox <goglepox@fcb5ba71-d80d-0410-8237-ba3920747fcc>
+Date: Mon, 22 Jun 2009 09:00:34 +0000
+Subject: [PATCH] Changed Controller hub to not send structure changed event when a new model is set.
+
+Not synced with jchempaint-primary, I am not entierly sure
+this is the right thing to do.
+
+git-svn-id: https://bioclipse.svn.sourceforge.net/svnroot/bioclipse/bioclipse2/trunk@11430 fcb5ba71-d80d-0410-8237-ba3920747fcc
+---
+ .../openscience/cdk/controller/ControllerHub.java  |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/ControllerHub.java b/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/ControllerHub.java
+index 67488fb..2f50954 100644
+--- a/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/ControllerHub.java
++++ b/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/ControllerHub.java
+@@ -161,7 +161,8 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
+   public void setChemModel(IChemModel model) {
+       this.chemModel = model;
+       //updateAtoms(ring, ring.atoms());
+-      structureChanged();
++//      structureChanged();
++      updateView();
+     }
+ 
+ 	/**
+-- 
+1.6.0.4
+

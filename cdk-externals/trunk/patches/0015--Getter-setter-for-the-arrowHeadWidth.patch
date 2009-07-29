@@ -1,0 +1,107 @@
+From b61bec2b844b0f17d85e3610985cf181f7f40543 Mon Sep 17 00:00:00 2001
+From: gilleain <gilleain@fcb5ba71-d80d-0410-8237-ba3920747fcc>
+Date: Wed, 13 May 2009 15:19:10 +0000
+Subject: [PATCH] - Getter/setter for the arrowHeadWidth.
+ - Tidied code in the AWTDrawVisitor.
+
+git-svn-id: https://bioclipse.svn.sourceforge.net/svnroot/bioclipse/bioclipse2/trunk@10335 fcb5ba71-d80d-0410-8237-ba3920747fcc
+---
+ .../openscience/cdk/renderer/RendererModel.java    |   11 +++++++--
+ .../cdk/renderer/RenderingParameters.java          |   12 +++++++++++
+ .../cdk/renderer/visitor/AWTDrawVisitor.java       |   21 ++++++++++---------
+ 3 files changed, 31 insertions(+), 13 deletions(-)
+
+diff --git a/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/RendererModel.java b/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/RendererModel.java
+index 3ee80e2..4173e1a 100644
+--- a/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/RendererModel.java
++++ b/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/RendererModel.java
+@@ -67,9 +67,6 @@ public class RendererModel implements Serializable, Cloneable {
+     /** Determines how much the image is zoomed into on. */
+     private double zoomFactor = 1.0;
+ 
+-    //this is used for the size of the arrowhead, might become configurable
+-    public static final int arrowHeadWidth = 10;
+-
+     /**
+      * The color hash is used to color substructures.
+      *
+@@ -101,6 +98,14 @@ public class RendererModel implements Serializable, Cloneable {
+     public RendererModel(RenderingParameters parameters) {
+         this.parameters = parameters;
+     }
++    
++    public int getArrowHeadWidth() {
++        return this.parameters.getArrowHeadWidth();
++    }
++    
++    public void setArrowHeadWidth(int width) {
++        this.parameters.setArrowHeadWidth(width);
++    }
+ 
+     public boolean getHighlightShapeFilled() {
+         return this.parameters.isHighlightShapeFilled();
+diff --git a/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/RenderingParameters.java b/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/RenderingParameters.java
+index 27921dd..f1cceca 100644
+--- a/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/RenderingParameters.java
++++ b/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/RenderingParameters.java
+@@ -8,6 +8,11 @@ import org.openscience.cdk.renderer.font.IFontManager;
+  * @cdk.module render
+  */
+ public class RenderingParameters {
++    
++    /**
++     * The width of an arrow head.
++     */
++    private int arrowHeadWidth = 10;
+ 
+     /**
+      * The size on screen of a compact mode shape
+@@ -163,6 +168,13 @@ public class RenderingParameters {
+      */
+     private double wedgeWidth = 2.0;
+ 
++    public int getArrowHeadWidth() {
++        return this.arrowHeadWidth;
++    }
++    
++    public void setArrowHeadWidth(int width) {
++        this.arrowHeadWidth = width;
++    }
+ 
+     public boolean isHighlightShapeFilled() {
+         return highlightShapeFilled;
+diff --git a/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/visitor/AWTDrawVisitor.java b/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/visitor/AWTDrawVisitor.java
+index 0764883..920040e 100644
+--- a/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/visitor/AWTDrawVisitor.java
++++ b/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/visitor/AWTDrawVisitor.java
+@@ -101,16 +101,17 @@ public class AWTDrawVisitor extends AbstractAWTDrawVisitor {
+         int[] a = this.transformPoint(line.x1, line.y1);
+         int[] b = this.transformPoint(line.x2, line.y2);
+         this.g.drawLine(a[0], a[1], b[0], b[1]);
+-        if(line.direction){
+-	        int[] c = this.transformPoint(line.x1-rendererModel.arrowHeadWidth / this.rendererModel.getScale(), line.y1-rendererModel.arrowHeadWidth / this.rendererModel.getScale());
+-	        int[] d = this.transformPoint(line.x1-rendererModel.arrowHeadWidth / this.rendererModel.getScale(), line.y1+rendererModel.arrowHeadWidth / this.rendererModel.getScale());
+-	        this.g.drawLine(a[0], a[1], c[0], c[1]);
+-	        this.g.drawLine(a[0], a[1], d[0], d[1]);
+-        }else{
+-	        int[] c = this.transformPoint(line.x2+rendererModel.arrowHeadWidth / this.rendererModel.getScale(), line.y2-rendererModel.arrowHeadWidth / this.rendererModel.getScale());
+-	        int[] d = this.transformPoint(line.x2+rendererModel.arrowHeadWidth / this.rendererModel.getScale(), line.y2+rendererModel.arrowHeadWidth / this.rendererModel.getScale());
+-	        this.g.drawLine(b[0], b[1], c[0], c[1]);
+-	        this.g.drawLine(b[0], b[1], d[0], d[1]);
++        double aW = rendererModel.getArrowHeadWidth() / rendererModel.getScale();
++        if (line.direction) {
++            int[] c = this.transformPoint(line.x1 - aW, line.y1 - aW);
++            int[] d = this.transformPoint(line.x1 - aW, line.y1 + aW);
++            this.g.drawLine(a[0], a[1], c[0], c[1]);
++            this.g.drawLine(a[0], a[1], d[0], d[1]);
++        } else {
++            int[] c = this.transformPoint(line.x2 + aW, line.y2 - aW);
++            int[] d = this.transformPoint(line.x2 + aW, line.y2 + aW);
++            this.g.drawLine(b[0], b[1], c[0], c[1]);
++            this.g.drawLine(b[0], b[1], d[0], d[1]);
+         }        
+         this.g.setStroke(savedStroke);
+     }
+-- 
+1.6.0.4
+

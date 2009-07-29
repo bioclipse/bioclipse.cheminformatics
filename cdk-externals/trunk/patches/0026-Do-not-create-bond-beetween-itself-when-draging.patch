@@ -1,0 +1,32 @@
+From d0737959309e8c3ba56b5536b11a63b6b508c76e Mon Sep 17 00:00:00 2001
+From: goglepox <goglepox@fcb5ba71-d80d-0410-8237-ba3920747fcc>
+Date: Wed, 17 Jun 2009 12:32:56 +0000
+Subject: [PATCH] Do not create bond beetween itself when draging
+
+Fixes bug #1325
+[jchempaint-primary] r14618
+
+git-svn-id: https://bioclipse.svn.sourceforge.net/svnroot/bioclipse/bioclipse2/trunk@11392 fcb5ba71-d80d-0410-8237-ba3920747fcc
+---
+ .../cdk/controller/AddBondDragModule.java          |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/AddBondDragModule.java b/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/AddBondDragModule.java
+index 5367314..297470f 100644
+--- a/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/AddBondDragModule.java
++++ b/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/AddBondDragModule.java
+@@ -98,10 +98,10 @@ public class AddBondDragModule extends ControllerModuleAdapter {
+ 
+         merge =  (IAtom) getHighlighted(worldCoordTo, closestAtom);
+ 
+-
+         chemModelRelay.clearPhantoms();
+         if(start.distance( worldCoordTo )<getHighlightDistance()) {
+             // clear phantom
++            merge = null;
+             dest = null;
+         }else if (merge != null) {
+             // set bond
+-- 
+1.6.0.4
+

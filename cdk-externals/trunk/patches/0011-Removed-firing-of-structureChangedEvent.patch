@@ -1,0 +1,28 @@
+From 72e48af530eb14bae937c545de5e1f55bcb44f45 Mon Sep 17 00:00:00 2001
+From: goglepox <goglepox@fcb5ba71-d80d-0410-8237-ba3920747fcc>
+Date: Wed, 13 May 2009 12:43:43 +0000
+Subject: [PATCH] Removed firing of structureChangedEvent
+
+[jchempaint-primary@14591]
+
+git-svn-id: https://bioclipse.svn.sourceforge.net/svnroot/bioclipse/bioclipse2/trunk@10307 fcb5ba71-d80d-0410-8237-ba3920747fcc
+---
+ .../org/openscience/cdk/controller/MoveModule.java |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+diff --git a/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/MoveModule.java b/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/MoveModule.java
+index 1b4392a..08ba45d 100644
+--- a/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/MoveModule.java
++++ b/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/MoveModule.java
+@@ -199,8 +199,6 @@ public class MoveModule extends ControllerModuleAdapter {
+                     model.getMerge().put( moveAtom, inRange );
+                 }
+             }
+-             //FIXME hack to get structure changed when move is completed
+-            chemModelRelay.fireStructureChangedEvent();
+             chemModelRelay.updateView();
+ 
+         } else {
+-- 
+1.6.0.4
+

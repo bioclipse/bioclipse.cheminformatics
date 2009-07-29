@@ -1,0 +1,28 @@
+From 85f333cb14236b57ca8fffc9d9adb35bccc96853 Mon Sep 17 00:00:00 2001
+From: egonw <egonw@fcb5ba71-d80d-0410-8237-ba3920747fcc>
+Date: Wed, 13 May 2009 13:38:26 +0000
+Subject: [PATCH] Removed debug to STDOUT
+
+git-svn-id: https://bioclipse.svn.sourceforge.net/svnroot/bioclipse/bioclipse2/trunk@10313 fcb5ba71-d80d-0410-8237-ba3920747fcc
+---
+ .../openscience/cdk/dict/DictionaryDatabase.java   |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+diff --git a/cdk-externals/trunk/org.openscience.cdk.dict/src/org/openscience/cdk/dict/DictionaryDatabase.java b/cdk-externals/trunk/org.openscience.cdk.dict/src/org/openscience/cdk/dict/DictionaryDatabase.java
+index 53cd6b4..4876273 100644
+--- a/cdk-externals/trunk/org.openscience.cdk.dict/src/org/openscience/cdk/dict/DictionaryDatabase.java
++++ b/cdk-externals/trunk/org.openscience.cdk.dict/src/org/openscience/cdk/dict/DictionaryDatabase.java
+@@ -75,9 +75,8 @@ public class DictionaryDatabase {
+             if (dictionary != null) {
+                 dictionaries.put(name.toLowerCase(), dictionary);
+                 logger.debug("Read dictionary: ", name);
+-                System.out.println("Read dictionary: " + name);
+             } else {
+-                System.out.println("Could not load dictionary: " + name);
++                logger.warn("Could not load dictionary: " + name);
+             }
+         }
+     }
+-- 
+1.6.0.4
+

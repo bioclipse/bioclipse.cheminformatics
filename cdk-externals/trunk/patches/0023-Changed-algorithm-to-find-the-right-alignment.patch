@@ -1,0 +1,44 @@
+From 86d6ce4bc6978ef25a03f38432cd4f0293fbf19d Mon Sep 17 00:00:00 2001
+From: goglepox <goglepox@fcb5ba71-d80d-0410-8237-ba3920747fcc>
+Date: Wed, 10 Jun 2009 08:08:39 +0000
+Subject: [PATCH] Changed algorithm to find the right alignment
+
+It now switch on 45,135,225,315 degrees
+
+not patch in cdk only bioclipse-cdk
+
+git-svn-id: https://bioclipse.svn.sourceforge.net/svnroot/bioclipse/bioclipse2/trunk@11186 fcb5ba71-d80d-0410-8237-ba3920747fcc
+---
+ .../openscience/cdk/geometry/GeometryTools.java    |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/cdk-externals/trunk/org.openscience.cdk.standard/src/org/openscience/cdk/geometry/GeometryTools.java b/cdk-externals/trunk/org.openscience.cdk.standard/src/org/openscience/cdk/geometry/GeometryTools.java
+index 6166c83..5a24f3c 100644
+--- a/cdk-externals/trunk/org.openscience.cdk.standard/src/org/openscience/cdk/geometry/GeometryTools.java
++++ b/cdk-externals/trunk/org.openscience.cdk.standard/src/org/openscience/cdk/geometry/GeometryTools.java
+@@ -1109,16 +1109,16 @@ public class GeometryTools {
+ 			overallDiffX += connectedAtom.getPoint2d().x - atom.getPoint2d().x;
+ 			overallDiffY += connectedAtom.getPoint2d().y - atom.getPoint2d().y;
+ 		}
+-		if (overallDiffX <= 0) {
+-			if (overallDiffX < overallDiffY)
++		if ( Math.abs( overallDiffX) > Math.abs(overallDiffY) ) {
++			if (overallDiffX <= 0)
+ 				return 1;//right aligned
+ 			else
+-				return 2;//top aligned.
+-		} else {
+-			if (overallDiffX > overallDiffY)
+ 				return -1;//left aligned
++		} else {
++			if ( overallDiffY <= 0)
++				return 2;//top aligned.
+ 			else
+-				return -2;//H below aligned
++				return -2;//bottom aligned
+ 		}
+ 	}
+ 
+-- 
+1.6.0.4
+

@@ -1,0 +1,30 @@
+From 96dcc5770bbdb346b00baf122e2213a40b8011e4 Mon Sep 17 00:00:00 2001
+From: egonw <egonw@fcb5ba71-d80d-0410-8237-ba3920747fcc>
+Date: Wed, 1 Jul 2009 13:14:11 +0000
+Subject: [PATCH] Applied fix for CDK bug #2815172 solving no atom type perception for certain nitrogens (fixes #1382)
+
+git-svn-id: https://bioclipse.svn.sourceforge.net/svnroot/bioclipse/bioclipse2/trunk@11575 fcb5ba71-d80d-0410-8237-ba3920747fcc
+---
+ .../cdk/atomtype/CDKAtomTypeMatcher.java           |    6 +-----
+ 1 files changed, 1 insertions(+), 5 deletions(-)
+
+diff --git a/cdk-externals/trunk/org.openscience.cdk.core/src/org/openscience/cdk/atomtype/CDKAtomTypeMatcher.java b/cdk-externals/trunk/org.openscience.cdk.core/src/org/openscience/cdk/atomtype/CDKAtomTypeMatcher.java
+index 7bcc6d6..92f443f 100644
+--- a/cdk-externals/trunk/org.openscience.cdk.core/src/org/openscience/cdk/atomtype/CDKAtomTypeMatcher.java
++++ b/cdk-externals/trunk/org.openscience.cdk.core/src/org/openscience/cdk/atomtype/CDKAtomTypeMatcher.java
+@@ -670,11 +670,7 @@ public class CDKAtomTypeMatcher implements IAtomTypeMatcher {
+                 int connectedHeavyAtoms = atomContainer.getConnectedBondsCount(atom) - explicitHydrogens;
+                 if (connectedHeavyAtoms == 2) {
+                 	List<IBond> bonds = atomContainer.getConnectedBondsList(atom);
+-                	if (bonds.get(0).getFlag(CDKConstants.ISAROMATIC) &&
+-                			bonds.get(1).getFlag(CDKConstants.ISAROMATIC)) {
+-                		IAtomType type = getAtomType("N.sp2");
+-                		if (isAcceptable(atom, atomContainer, type)) return type;
+-                	} else if (bothNeighborsAreSp2(atom, atomContainer) && isRingAtom(atom, atomContainer)) {
++                	if (bothNeighborsAreSp2(atom, atomContainer) && isRingAtom(atom, atomContainer)) {
+                 		// a N.sp3 which is expected to take part in an aromatic system
+                 		IAtomType type = getAtomType("N.planar3");
+                 		if (isAcceptable(atom, atomContainer, type)) return type;
+-- 
+1.6.0.4
+
