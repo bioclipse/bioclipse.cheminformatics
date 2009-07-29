@@ -1,0 +1,28 @@
+From c82c2eb47d5ad88ea788a8480c7d46686ff5b06d Mon Sep 17 00:00:00 2001
+From: goglepox <goglepox@fcb5ba71-d80d-0410-8237-ba3920747fcc>
+Date: Thu, 7 May 2009 09:42:55 +0000
+Subject: [PATCH] Activated zoom to cursor
+
+Fixes bug #770
+
+git-svn-id: https://bioclipse.svn.sourceforge.net/svnroot/bioclipse/bioclipse2/trunk@10110 fcb5ba71-d80d-0410-8237-ba3920747fcc
+---
+ .../org/openscience/cdk/controller/ZoomModule.java |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/ZoomModule.java b/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/ZoomModule.java
+index d18aa9d..8665e4f 100644
+--- a/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/ZoomModule.java
++++ b/cdk-externals/trunk/org.openscience.cdk.control/src/org/openscience/cdk/controller/ZoomModule.java
+@@ -39,7 +39,7 @@ public class ZoomModule extends ControllerModuleAdapter {
+         
+         Vector2d v= new Vector2d();
+         v.sub( screenCoord, newScreenCoords );
+-//        renderer.shiftDrawCenter( v.x, v.y );
++        renderer.shiftDrawCenter( v.x, v.y );
+     }
+     
+     private void zoom(double zoomFactor) {
+-- 
+1.6.0.4
+

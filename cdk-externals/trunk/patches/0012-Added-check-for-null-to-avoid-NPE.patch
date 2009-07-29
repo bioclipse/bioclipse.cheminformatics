@@ -1,0 +1,42 @@
+From eabe2b2b21aeb4d6bd787e7b9156219c561a69a2 Mon Sep 17 00:00:00 2001
+From: goglepox <goglepox@fcb5ba71-d80d-0410-8237-ba3920747fcc>
+Date: Wed, 13 May 2009 12:44:09 +0000
+Subject: [PATCH] Added check for null to avoid NPE
+
+[jchempaint-primary@14590]
+
+git-svn-id: https://bioclipse.svn.sourceforge.net/svnroot/bioclipse/bioclipse2/trunk@10308 fcb5ba71-d80d-0410-8237-ba3920747fcc
+---
+ .../openscience/cdk/renderer/RendererModel.java    |   16 +++++++++-------
+ 1 files changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/RendererModel.java b/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/RendererModel.java
+index 70e2d11..3ee80e2 100644
+--- a/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/RendererModel.java
++++ b/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/RendererModel.java
+@@ -856,13 +856,15 @@ public class RendererModel implements Serializable, Cloneable {
+     public void setExternalSelectedPart(IAtomContainer externalSelectedPart) {
+         this.externalSelectedPart = externalSelectedPart;
+         getColorHash().clear();
+-        for (int i = 0; i < externalSelectedPart.getAtomCount(); i++) {
+-            getColorHash().put(externalSelectedPart.getAtom(i),
+-                    this.getExternalHighlightColor());
+-        }
+-        Iterator<IBond> bonds = externalSelectedPart.bonds().iterator();
+-        while (bonds.hasNext()) {
+-            getColorHash().put(bonds.next(), getExternalHighlightColor());
++        if(externalSelectedPart !=null) {
++            for (int i = 0; i < externalSelectedPart.getAtomCount(); i++) {
++                getColorHash().put(externalSelectedPart.getAtom(i),
++                                   this.getExternalHighlightColor());
++            }
++            Iterator<IBond> bonds = externalSelectedPart.bonds().iterator();
++            while (bonds.hasNext()) {
++                getColorHash().put(bonds.next(), getExternalHighlightColor());
++            }
+         }
+         fireChange();
+     }
+-- 
+1.6.0.4
+

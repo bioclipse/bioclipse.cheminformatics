@@ -1,0 +1,68 @@
+From 5ff7c37b1ad799bf3498f53a731fc64767dc5b37 Mon Sep 17 00:00:00 2001
+From: egonw <egonw@fcb5ba71-d80d-0410-8237-ba3920747fcc>
+Date: Tue, 5 May 2009 13:19:37 +0000
+Subject: [PATCH] Applied jchempaint-primary commit 14507
+
+git-svn-id: https://bioclipse.svn.sourceforge.net/svnroot/bioclipse/bioclipse2/trunk@10074 fcb5ba71-d80d-0410-8237-ba3920747fcc
+---
+ .../openscience/cdk/geometry/GeometryTools.java    |   24 ++++++++++++++++++-
+ 1 files changed, 22 insertions(+), 2 deletions(-)
+
+diff --git a/cdk-externals/trunk/org.openscience.cdk.standard/src/org/openscience/cdk/geometry/GeometryTools.java b/cdk-externals/trunk/org.openscience.cdk.standard/src/org/openscience/cdk/geometry/GeometryTools.java
+index b02d556..1556277 100644
+--- a/cdk-externals/trunk/org.openscience.cdk.standard/src/org/openscience/cdk/geometry/GeometryTools.java
++++ b/cdk-externals/trunk/org.openscience.cdk.standard/src/org/openscience/cdk/geometry/GeometryTools.java
+@@ -29,10 +29,12 @@ import org.openscience.cdk.exception.CDKException;
+ import org.openscience.cdk.interfaces.IAtom;
+ import org.openscience.cdk.interfaces.IAtomContainer;
+ import org.openscience.cdk.interfaces.IBond;
++import org.openscience.cdk.interfaces.IChemModel;
+ import org.openscience.cdk.interfaces.IReaction;
+ import org.openscience.cdk.interfaces.IRing;
+ import org.openscience.cdk.interfaces.IRingSet;
+ import org.openscience.cdk.tools.LoggingTool;
++import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
+ 
+ import javax.vecmath.Point2d;
+ import javax.vecmath.Point3d;
+@@ -984,10 +986,10 @@ public class GeometryTools {
+ 
+ 
+ 	/**
+-	 *  Determines if this model contains 3D coordinates
++	 *  Determines if this model contains 3D coordinates for all atoms.
+ 	 *
+ 	 *@param container the molecule to consider
+-	 *@return    boolean indication that 3D coordinates are available
++	 *@return    boolean indication that 3D coordinates are available for all atoms.
+ 	 */
+ 	public static boolean has3DCoordinates(IAtomContainer container) {
+ 		boolean hasinfo = true;
+@@ -1001,6 +1003,24 @@ public class GeometryTools {
+ 
+ 
+ 	/**
++	 *  Determines if this model contains 3D coordinates for all atoms.
++	 *
++	 *@param chemmodel the ChemModel to consider
++	 *@return    boolean indication that 3D coordinates are available for all atoms.
++	 */
++	public static boolean has3DCoordinates(IChemModel chemModel) {
++		List<IAtomContainer> acs = ChemModelManipulator.getAllAtomContainers(chemModel);
++		Iterator<IAtomContainer> it = acs.iterator();
++        while(it.hasNext()){
++            if (!has3DCoordinates(it.next())) {
++                return false;
++            }
++        }
++		return true;
++	}
++
++	
++	/**
+ 	 *  Determines the normalized vector orthogonal on the vector p1->p2.
+ 	 *
+ 	 *@param  point1  Description of the Parameter
+-- 
+1.6.0.4
+

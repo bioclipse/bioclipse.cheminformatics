@@ -1,0 +1,40 @@
+From aaa1b21b20fe587238774e1959992ba74a1093b5 Mon Sep 17 00:00:00 2001
+From: egonw <egonw@fcb5ba71-d80d-0410-8237-ba3920747fcc>
+Date: Thu, 4 Jun 2009 07:47:20 +0000
+Subject: [PATCH] Bumped version numbers for changes after beta5
+
+git-svn-id: https://bioclipse.svn.sourceforge.net/svnroot/bioclipse/bioclipse2/trunk@11009 fcb5ba71-d80d-0410-8237-ba3920747fcc
+---
+ .../META-INF/MANIFEST.MF                           |    2 +-
+ .../META-INF/MANIFEST.MF                           |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/cdk-externals/trunk/org.openscience.cdk.control/META-INF/MANIFEST.MF b/cdk-externals/trunk/org.openscience.cdk.control/META-INF/MANIFEST.MF
+index 4260bf1..e9fc273 100644
+--- a/cdk-externals/trunk/org.openscience.cdk.control/META-INF/MANIFEST.MF
++++ b/cdk-externals/trunk/org.openscience.cdk.control/META-INF/MANIFEST.MF
+@@ -2,7 +2,7 @@ Manifest-Version: 1.0
+ Bundle-ManifestVersion: 2
+ Bundle-Name: CDK plugin
+ Bundle-SymbolicName: org.openscience.cdk.control;singleton:=true
+-Bundle-Version: 1.2.1.20090429
++Bundle-Version: 1.2.2.20090602
+ Bundle-Vendor: The Chemistry Development Kit Project
+ Bundle-ActivationPolicy: lazy
+ Bundle-Activator: org.openscience.cdk.control.Activator
+diff --git a/cdk-externals/trunk/org.openscience.cdk.render/META-INF/MANIFEST.MF b/cdk-externals/trunk/org.openscience.cdk.render/META-INF/MANIFEST.MF
+index 701ad96..c09c9cb 100644
+--- a/cdk-externals/trunk/org.openscience.cdk.render/META-INF/MANIFEST.MF
++++ b/cdk-externals/trunk/org.openscience.cdk.render/META-INF/MANIFEST.MF
+@@ -2,7 +2,7 @@ Manifest-Version: 1.0
+ Bundle-ManifestVersion: 2
+ Bundle-Name: CDK plugin
+ Bundle-SymbolicName: org.openscience.cdk.render;singleton:=true
+-Bundle-Version: 1.2.1.20090429
++Bundle-Version: 1.2.2.20090602
+ Bundle-Vendor: The Chemistry Development Kit Project
+ Bundle-ActivationPolicy: lazy
+ Bundle-Activator: org.openscience.cdk.render.Activator
+-- 
+1.6.0.4
+

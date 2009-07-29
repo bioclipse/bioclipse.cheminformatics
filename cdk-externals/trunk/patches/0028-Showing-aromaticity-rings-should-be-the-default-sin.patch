@@ -1,0 +1,26 @@
+From 44bbf6b4fc6a9777449f47ec326de73232bef299 Mon Sep 17 00:00:00 2001
+From: egonw <egonw@fcb5ba71-d80d-0410-8237-ba3920747fcc>
+Date: Tue, 23 Jun 2009 10:41:04 +0000
+Subject: [PATCH] Showing aromaticity rings should be the default, since we can now properly draw them (upstream in jchempaint-primary as commit 14619, fixes #504).
+
+git-svn-id: https://bioclipse.svn.sourceforge.net/svnroot/bioclipse/bioclipse2/trunk@11477 fcb5ba71-d80d-0410-8237-ba3920747fcc
+---
+ .../cdk/renderer/RenderingParameters.java          |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/RenderingParameters.java b/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/RenderingParameters.java
+index f1cceca..1a93134 100644
+--- a/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/RenderingParameters.java
++++ b/cdk-externals/trunk/org.openscience.cdk.render/src/org/openscience/cdk/renderer/RenderingParameters.java
+@@ -133,7 +133,7 @@ public class RenderingParameters {
+      * Determines whether rings should be drawn with a circle if they are
+      * aromatic.
+      */
+-    private boolean showAromaticity = false;
++    private boolean showAromaticity = true;
+ 
+     private boolean showAromaticityInCDKStyle = false;
+ 
+-- 
+1.6.0.4
+
