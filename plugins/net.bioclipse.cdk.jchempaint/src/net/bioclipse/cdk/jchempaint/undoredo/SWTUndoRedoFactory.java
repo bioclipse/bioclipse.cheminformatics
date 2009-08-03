@@ -19,6 +19,7 @@ import javax.vecmath.Vector2d;
 
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.openscience.cdk.controller.IChemModelRelay;
+import org.openscience.cdk.controller.edit.IEdit;
 import org.openscience.cdk.controller.undoredo.IUndoRedoFactory;
 import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.interfaces.IAtom;
@@ -162,5 +163,10 @@ public class SWTUndoRedoFactory implements IUndoRedoFactory {
 
         return new SWTLoadNewModelEdit(chemModel,oldsom,oldsor,newsom,newsor,type,this.context);
     }
+
+	public IUndoRedoable getEditOperation(IEdit edit) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

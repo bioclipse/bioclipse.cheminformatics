@@ -16,13 +16,9 @@ import static net.bioclipse.cdk.jchempaint.outline.StructureContentProvider.crea
 import static org.openscience.cdk.geometry.GeometryTools.has2DCoordinatesNew;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.vecmath.Point2d;
 
@@ -72,7 +68,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
@@ -591,7 +586,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         List<CDKChemObject<?>> selection = new LinkedList<CDKChemObject<?>>();
 
         IChemObjectSelection sel = rendererModel.getSelection();
-        IAtomContainer modelSelection = sel.getConnectedAtomContainer();
+        IAtomContainer modelSelection = null;
+        if (sel != null)
+        	modelSelection = sel.getConnectedAtomContainer();
 
         if (modelSelection != null) {
             for (IAtom atom : modelSelection.atoms()) {
