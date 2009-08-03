@@ -1774,13 +1774,13 @@ public abstract class AbstractCDKManagerPluginTest {
         mf=new MockIFile(path);
         ICDKMolecule mol2 = cdk.loadMolecule(mf);
         float similarity2 = cdk.calculateTanimoto( mol,mol2 );
-        Assert.assertEquals( 0.1972, similarity2, 0.0001 );
+        Assert.assertEquals( 0.2266, similarity2, 0.0001 );
     }
 
     @Test public void testMultipleTanimoto() throws Exception {
         List<Float> expected= new ArrayList<Float>();
         expected.add((float)1);
-        expected.add((float)0.19720767);
+        expected.add((float)0.22661123);
         List<Float> actuals= new ArrayList<Float>();
         URI uri = getClass().getResource("/testFiles/aromatic.mol").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());
