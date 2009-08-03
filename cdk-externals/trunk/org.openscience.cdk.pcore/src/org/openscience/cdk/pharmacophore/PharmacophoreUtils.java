@@ -30,16 +30,12 @@ import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.isomorphism.matchers.IQueryAtom;
-import org.openscience.cdk.isomorphism.matchers.IQueryAtomContainer;
-import org.openscience.cdk.isomorphism.matchers.QueryAtomContainer;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -47,7 +43,7 @@ import java.util.List;
  *
  * @author Rajarshi Guha
  * @cdk.module pcore
- * @cdk.svnrev $Revision$
+ * @cdk.githash
  * @cdk.keyword pharmacophore
  * @cdk.keyword 3D isomorphism
  * @cdk.builddepends xom-1.1.jar
@@ -61,7 +57,7 @@ public class PharmacophoreUtils {
      * <p/>
      * Pharmacophore queries can be saved in an XML format which is described XXX. The
      * file can contain multiple definitions. This method will process all the definitions
-     * and return a list fo {@link IQueryAtomContainer} objects which can be used with
+     * and return a list fo {@link org.openscience.cdk.pharmacophore.PharmacophoreQuery} objects which can be used with
      * the {@link PharmacophoreMatcher} class.
      * <p/>
      * The current schema for the document allows one to specify angle and distance
@@ -72,11 +68,11 @@ public class PharmacophoreUtils {
      * current reader ignores this and assumes that all distances are in Angstroms.
      * <p/>
      * Finally, if there is a description associated with a pharmacophore definition, it is
-     * available as the <i>"description"</i> property of the {@link IQueryAtomContainer} object.
+     * available as the <i>"description"</i> property of the {@link org.openscience.cdk.pharmacophore.PharmacophoreQuery} object.
      * <p/>
      * Example usage is
      * <pre>
-     * List<IQueryAtomContainer> defs = readPharmacophoreDefinitions"mydefs.xml");
+     * List<PharmacophoreQuery> defs = readPharmacophoreDefinitions("mydefs.xml");
      * System.out.println("Number of definitions = "+defs.size());
      * for (int i = 0; i < defs.size(); i++) {
      *     System.out.println("Desc: "+defs.get(i).getProperty("description");
@@ -84,15 +80,16 @@ public class PharmacophoreUtils {
      * </pre>
      *
      * @param filename The file to read the definitions from
-     * @return A list of {@link IQueryAtomContainer} objects
+     * @return A list of {@link org.openscience.cdk.pharmacophore.PharmacophoreQuery} objects
      * @throws CDKException if there is an error in the format
      * @throws IOException  if there is an error in opening the file
-     * @see PharmacophoreQueryAtom
-     * @see PharmacophoreQueryBond
-     * @see PharmacophoreMatcher
+     * @see org.openscience.cdk.pharmacophore.PharmacophoreQueryAtom
+     * @see org.openscience.cdk.pharmacophore.PharmacophoreQueryBond
+     * @see org.openscience.cdk.pharmacophore.PharmacophoreQuery
+     * @see org.openscience.cdk.pharmacophore.PharmacophoreMatcher
      */
     @TestMethod("testReadPcoreDef, testInvalidPcoreXML")
-    public static List<IQueryAtomContainer> readPharmacophoreDefinitions(String filename) throws CDKException, IOException {
+    public static List<PharmacophoreQuery> readPharmacophoreDefinitions(String filename) throws CDKException, IOException {
         Builder parser = new Builder();
         Document doc;
         try {
@@ -108,7 +105,7 @@ public class PharmacophoreUtils {
      * <p/>
      * Pharmacophore queries can be saved in an XML format which is described XXX. The
      * file can contain multiple definitions. This method will process all the definitions
-     * and return a list of {@link IQueryAtomContainer} objects which can be used with
+     * and return a list of {@link org.openscience.cdk.pharmacophore.PharmacophoreQuery} objects which can be used with
      * the {@link PharmacophoreMatcher} class.
      * <p/>
      * The current schema for the document allows one to specify angle and distance
@@ -119,11 +116,11 @@ public class PharmacophoreUtils {
      * angles are in degrees.
      * <p/>
      * Finally, if there is a description associated with a pharmacophore definition, it is
-     * available as the <i>"description"</i> property of the {@link IQueryAtomContainer} object.
+     * available as the <i>"description"</i> property of the {@link org.openscience.cdk.pharmacophore.PharmacophoreQuery} object.
      * <p/>
      * Example usage is
      * <pre>
-     * List<IQueryAtomContainer> defs = readPharmacophoreDefinitions"mydefs.xml");
+     * List<PharmacophoreQuery> defs = readPharmacophoreDefinitions"mydefs.xml");
      * System.out.println("Number of definitions = "+defs.size());
      * for (int i = 0; i < defs.size(); i++) {
      *     System.out.println("Desc: "+defs.get(i).getProperty("description");
@@ -131,15 +128,16 @@ public class PharmacophoreUtils {
      * </pre>
      *
      * @param ins The stream to read the definitions from
-     * @return A list of {@link IQueryAtomContainer} objects
+     * @return A list of {@link org.openscience.cdk.pharmacophore.PharmacophoreQuery} objects
      * @throws CDKException if there is an error in the format
      * @throws IOException  if there is an error in opening the file
-     * @see PharmacophoreQueryAtom
-     * @see PharmacophoreQueryBond
-     * @see PharmacophoreMatcher
+     * @see org.openscience.cdk.pharmacophore.PharmacophoreQueryAtom
+     * @see org.openscience.cdk.pharmacophore.PharmacophoreQueryBond
+     * @see org.openscience.cdk.pharmacophore.PharmacophoreMatcher
+     * @see org.openscience.cdk.pharmacophore.PharmacophoreQuery
      */
     @TestMethod("testReadPcoreDef, testReadPcoreAngleDef, testInvalidPcoreXML")
-    public static List<IQueryAtomContainer> readPharmacophoreDefinitions(InputStream ins) throws IOException, CDKException {
+    public static List<PharmacophoreQuery> readPharmacophoreDefinitions(InputStream ins) throws IOException, CDKException {
         Builder parser = new Builder();
         Document doc;
         try {
@@ -158,8 +156,8 @@ public class PharmacophoreUtils {
      * @throws IOException if there is a problem writing the XML document
      */
     @TestMethod("testPCoreWrite")
-    public static void writePharmacophoreDefinition(IQueryAtomContainer query, OutputStream out) throws IOException {
-        writePharmacophoreDefinition(new IQueryAtomContainer[]{query}, out);
+    public static void writePharmacophoreDefinition(PharmacophoreQuery query, OutputStream out) throws IOException {
+        writePharmacophoreDefinition(new PharmacophoreQuery[]{query}, out);
     }
 
     /**
@@ -170,8 +168,8 @@ public class PharmacophoreUtils {
      * @throws IOException if there is a problem writing the XML document
      */
     @TestMethod("testPCoreWrite")
-    public static void writePharmacophoreDefinition(List<IQueryAtomContainer> queries, OutputStream out) throws IOException {
-        writePharmacophoreDefinition(queries.toArray(new IQueryAtomContainer[]{}), out);
+    public static void writePharmacophoreDefinition(List<PharmacophoreQuery> queries, OutputStream out) throws IOException {
+        writePharmacophoreDefinition(queries.toArray(new PharmacophoreQuery[]{}), out);
     }
 
     /**
@@ -182,10 +180,10 @@ public class PharmacophoreUtils {
      * @throws IOException if there is a problem writing the XML document
      */
     @TestMethod("testPCoreWrite")
-    public static void writePharmacophoreDefinition(IQueryAtomContainer[] queries, OutputStream out) throws IOException {
+    public static void writePharmacophoreDefinition(PharmacophoreQuery[] queries, OutputStream out) throws IOException {
         Element root = new Element("pharmacophoreContainer");
         root.addAttribute(new Attribute("version", "1.0"));
-        for (IQueryAtomContainer query : queries) {
+        for (PharmacophoreQuery query : queries) {
             Element pcore = new Element("pharmacophore");
 
             Object description = query.getProperty("description");
@@ -197,9 +195,7 @@ public class PharmacophoreUtils {
                 pcore.addAttribute(new Attribute("name", (String) name));
 
             // we add the pcore groups for this query as local to the group
-            Iterator<IAtom> atoms = query.atoms().iterator();
-            while (atoms.hasNext()) {
-                IAtom atom = atoms.next();
+            for (IAtom atom : query.atoms()) {
                 Element group = new Element("group");
                 group.addAttribute(new Attribute("id", atom.getSymbol()));
                 group.appendChild(((PharmacophoreQueryAtom) atom).getSmarts());
@@ -207,9 +203,7 @@ public class PharmacophoreUtils {
             }
 
             // now add the constraints
-            Iterator<IBond> bonds = query.bonds().iterator();
-            while (bonds.hasNext()) {
-                IBond bond = bonds.next();
+            for (IBond bond : query.bonds()) {
                 Element elem = null;
                 if (bond instanceof PharmacophoreQueryBond) {
                     PharmacophoreQueryBond dbond = (PharmacophoreQueryBond) bond;
@@ -226,9 +220,8 @@ public class PharmacophoreUtils {
                 }
 
                 // now add the group associated with this constraint
-                Iterator<IAtom> constraintGroups = bond.atoms().iterator();
-                while (constraintGroups.hasNext()) {
-                    PharmacophoreQueryAtom atom = (PharmacophoreQueryAtom) constraintGroups.next();
+                for (IAtom iAtom : bond.atoms()) {
+                    PharmacophoreQueryAtom atom = (PharmacophoreQueryAtom) iAtom;
                     Element gelem = new Element("groupRef");
                     gelem.addAttribute(new Attribute("id", atom.getSymbol()));
                     if (elem != null) {
@@ -246,12 +239,12 @@ public class PharmacophoreUtils {
         serializer.write(doc);
     }
 
-    private static List<IQueryAtomContainer> getdefs(Document doc) throws CDKException {
+    private static List<PharmacophoreQuery> getdefs(Document doc) throws CDKException {
         Element root = doc.getRootElement();
 
         // ltes get the children of the container
         // these will be either group or pharmacophore elems
-        List<IQueryAtomContainer> ret = new ArrayList<IQueryAtomContainer>();
+        List<PharmacophoreQuery> ret = new ArrayList<PharmacophoreQuery>();
 
         // get global group defs
         HashMap<String, String> groups = getGroupDefinitions(root);
@@ -283,9 +276,9 @@ public class PharmacophoreUtils {
     }
 
     /* process a single pcore definition */
-    private static IQueryAtomContainer processPharmacophoreElement(Element e,
+    private static PharmacophoreQuery processPharmacophoreElement(Element e,
                                                                    HashMap<String, String> global) throws CDKException {
-        QueryAtomContainer ret = new QueryAtomContainer();
+        PharmacophoreQuery ret = new PharmacophoreQuery();
         ret.setProperty("description", e.getAttributeValue("description"));
         ret.setProperty(CDKConstants.TITLE, e.getAttributeValue("name"));
 
@@ -308,7 +301,7 @@ public class PharmacophoreUtils {
     private static void processDistanceConstraint(Element child,
                                                   HashMap<String, String> local,
                                                   HashMap<String, String> global,
-                                                  QueryAtomContainer ret) throws CDKException {
+                                                  PharmacophoreQuery ret) throws CDKException {
         double lower;
         String tmp = child.getAttributeValue("lower");
         if (tmp == null) throw new CDKException("Must have a 'lower' attribute");
@@ -349,9 +342,7 @@ public class PharmacophoreUtils {
 
         // now add the constraint as a bond
         IAtom a1 = null, a2 = null;
-        Iterator<IAtom> atoms = ret.atoms().iterator();
-        while (atoms.hasNext()) {
-            IAtom queryAtom = atoms.next();
+        for (IAtom queryAtom : ret.atoms()) {
             if (queryAtom.getSymbol().equals(id1)) a1 = queryAtom;
             if (queryAtom.getSymbol().equals(id2)) a2 = queryAtom;
         }
@@ -361,7 +352,7 @@ public class PharmacophoreUtils {
     private static void processAngleConstraint(Element child,
                                                HashMap<String, String> local,
                                                HashMap<String, String> global,
-                                               QueryAtomContainer ret) throws CDKException {
+                                               PharmacophoreQuery ret) throws CDKException {
         double lower;
         String tmp = child.getAttributeValue("lower");
         if (tmp == null) throw new CDKException("Must have a 'lower' attribute");
@@ -412,9 +403,7 @@ public class PharmacophoreUtils {
         // now add the constraint as a bond
         IAtom a1 = null, a2 = null;
         IAtom a3 = null;
-        Iterator<IAtom> atoms = ret.atoms().iterator();
-        while (atoms.hasNext()) {
-            IAtom queryAtom = atoms.next();
+        for (IAtom queryAtom : ret.atoms()) {            
             if (queryAtom.getSymbol().equals(id1)) a1 = queryAtom;
             if (queryAtom.getSymbol().equals(id2)) a2 = queryAtom;
             if (queryAtom.getSymbol().equals(id3)) a3 = queryAtom;
@@ -425,10 +414,8 @@ public class PharmacophoreUtils {
                 (PharmacophoreQueryAtom) a3, lower, upper));
     }
 
-    private static boolean containsPatom(IQueryAtomContainer q, String id) {
-        Iterator<IAtom> atoms = q.atoms().iterator();
-        while (atoms.hasNext()) {
-            IQueryAtom queryAtom = (IQueryAtom) atoms.next();
+    private static boolean containsPatom(PharmacophoreQuery q, String id) {
+        for (IAtom queryAtom : q.atoms()) {
             if (queryAtom.getSymbol().equals(id)) return true;
         }
         return false;

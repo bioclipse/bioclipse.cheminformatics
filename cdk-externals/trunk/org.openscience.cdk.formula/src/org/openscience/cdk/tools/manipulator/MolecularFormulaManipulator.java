@@ -603,7 +603,7 @@ public class MolecularFormulaManipulator {
 		 for (IIsotope isotope : formula.isotopes()) {
 			try {
 				IIsotope isotope2 = IsotopeFactory.getInstance(formula.getBuilder()).getMajorIsotope(isotope.getSymbol());
-				mass += isotope2.getMassNumber() * formula.getIsotopeCount(isotope);
+				mass += isotope2.getAtomicNumber() * formula.getIsotopeCount(isotope);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -728,10 +728,12 @@ public class MolecularFormulaManipulator {
 	 */
 	@TestMethod("testGetMolecularFormula_IAtomContainer_IMolecularFormula")
 	public static IMolecularFormula getMolecularFormula(IAtomContainer atomContainer, IMolecularFormula formula) {
-
+		int charge = 0;
         for (IAtom iAtom : atomContainer.atoms()) {
             formula.addIsotope(iAtom);
+            charge += iAtom.getFormalCharge();
         }
+        formula.setCharge(charge);
 		return formula;
 	}
 	/**

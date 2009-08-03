@@ -40,6 +40,8 @@ org/openscience/cdk/interfaces/IReactionSet.java
 org/openscience/cdk/interfaces/IPDBStructure.java
 org/openscience/cdk/interfaces/IPDBPolymer.java
 org/openscience/cdk/interfaces/ICrystal.java
+org/openscience/cdk/event/ICDKChangeListener.java
+org/openscience/cdk/renderer/color/IAtomColorer.java
 org/openscience/cdk/isomorphism/matchers/IQueryAtomContainer.java
 org/openscience/cdk/isomorphism/matchers/IQueryAtom.java
 org/openscience/cdk/isomorphism/matchers/IQueryBond.java

@@ -28,8 +28,9 @@ import java.io.IOException;
 import java.util.Collection;
 
 import javax.vecmath.Point2d;
+import javax.vecmath.Vector2d;
 
-import org.openscience.cdk.controller.ControllerHub.Direction;
+import org.openscience.cdk.controller.edit.IEdit;
 import org.openscience.cdk.controller.undoredo.IUndoRedoFactory;
 import org.openscience.cdk.controller.undoredo.UndoRedoHandler;
 import org.openscience.cdk.exception.CDKException;
@@ -38,7 +39,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IRing;
-import org.openscience.cdk.renderer.Renderer;
+import org.openscience.cdk.renderer.IRenderer;
 import org.openscience.cdk.renderer.selection.IncrementalSelection;
 
 /**
@@ -46,9 +47,11 @@ import org.openscience.cdk.renderer.selection.IncrementalSelection;
  */
 public interface IChemModelRelay {
 
+	public enum Direction { UP, DOWN };
+
     /* Interaction*/
     public IControllerModel getController2DModel();
-    public Renderer getRenderer();
+    public IRenderer getRenderer();
     public IChemModel getIChemModel();
     public void setChemModel(IChemModel model);
     public IAtom getClosestAtom(Point2d worldCoord);
@@ -165,6 +168,7 @@ public interface IChemModelRelay {
     public void addSingleElectron(IAtom atom);
     public void updateAtoms(IAtomContainer container, Iterable<IAtom> atoms);
     public void updateAtom(IAtom atom);
+    public void mergeMolecules(Vector2d movedDistance);
 
     /* Editing actions for bonds */
     public IBond addBond(IAtom fromAtom, IAtom toAtom);
@@ -181,4 +185,5 @@ public interface IChemModelRelay {
 
     public IUndoRedoFactory getUndoRedoFactory();
     public UndoRedoHandler getUndoRedoHandler();
+    public void execute( IEdit edit );
 }

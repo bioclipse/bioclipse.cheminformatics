@@ -5,6 +5,7 @@
  *  $Revision: 7634 $
  *
  *  Copyright (C) 1997-2008 Stefan Kuhn
+ *  Copyright (C) 2009 Arvid Berg
  *
  *  Contact: cdk-devel@lists.sourceforge.net
  *
@@ -36,6 +37,7 @@ import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
 import org.openscience.cdk.controller.IChemModelRelay;
+import org.openscience.cdk.controller.edit.IEdit;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -52,6 +54,7 @@ import org.openscience.cdk.interfaces.IReactionSet;
  * @cdk.module control
  */
 public interface IUndoRedoFactory {
+    public IUndoRedoable getEditOperation(IEdit edit);
 	public IUndoRedoable getAddAtomsAndBondsEdit(IChemModel chemModel, IAtomContainer undoRedoContainer, String type, IChemModelRelay c2dm);
 	public IUndoRedoable getAdjustBondOrdersEdit(Map<IBond, IBond.Order[]> changedBonds, Map<IBond, Integer[]> changedBondsStereo, String type, IChemModelRelay chemModelRelay);
 	public IUndoRedoable getChangeAtomSymbolEdit(IAtom atom, String formerSymbol, String symbol, String type, IChemModelRelay chemModelRelay);

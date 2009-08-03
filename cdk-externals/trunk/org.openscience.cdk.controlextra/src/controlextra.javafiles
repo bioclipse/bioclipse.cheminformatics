@@ -1,0 +1,7 @@
+org/openscience/cdk/controller/AtomAtomMappingModule.java
+org/openscience/cdk/controller/undoredo/MergeMoleculesEdit.java
+org/openscience/cdk/controller/undoredo/ConvertToRadicalEdit.java
+org/openscience/cdk/controller/undoredo/MakeReactantOrProductInNewReactionEdit.java
+org/openscience/cdk/controller/undoredo/MakeReactantOrProductInExistingReactionEdit.java
+org/openscience/cdk/controller/undoredo/ChangeIsotopeEdit.java
+org/openscience/cdk/controller/undoredo/LoadNewModelEdit.java

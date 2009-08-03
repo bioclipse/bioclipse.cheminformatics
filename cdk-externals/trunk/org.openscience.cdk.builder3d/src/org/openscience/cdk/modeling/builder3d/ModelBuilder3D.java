@@ -34,7 +34,6 @@ import javax.vecmath.Vector3d;
 
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.exception.NoSuchAtomTypeException;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.interfaces.IAtom;
@@ -69,7 +68,7 @@ import org.openscience.cdk.tools.manipulator.RingSetManipulator;
  * @author      steinbeck
  * @cdk.created 2004-09-07
  * @cdk.module  builder3d
- * @cdk.svnrev  $Revision$
+ * @cdk.githash
  * @cdk.keyword 3D coordinates
  * @cdk.keyword coordinate generation, 3D
  */
@@ -151,7 +150,7 @@ public class ModelBuilder3D {
 	/**
 	 * Generate 3D coordinates with force field information.
 	 */
-	public IMolecule generate3DCoordinates(IMolecule molecule, boolean clone) throws NoSuchAtomTypeException, Exception {
+	public IMolecule generate3DCoordinates(IMolecule molecule, boolean clone) throws Exception {
 	    String[] originalAtomTypeNames = new String[molecule.getAtomCount()];
 	    for (int i=0; i<originalAtomTypeNames.length; i++) {
 	        originalAtomTypeNames[i] = molecule.getAtom(i).getAtomTypeName();

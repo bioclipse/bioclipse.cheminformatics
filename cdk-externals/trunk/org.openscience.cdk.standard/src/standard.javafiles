@@ -18,7 +18,6 @@ org/openscience/cdk/ringsearch/SSSRFinder.java
 org/openscience/cdk/ringsearch/AllRingsFinder.java
 org/openscience/cdk/ringsearch/Queue.java
 org/openscience/cdk/event/ICDKSelectionChangeListener.java
-org/openscience/cdk/event/ICDKChangeListener.java
 org/openscience/cdk/geometry/CrystalGeometryTools.java
 org/openscience/cdk/geometry/GeometryTools.java
 org/openscience/cdk/geometry/BondTools.java
@@ -50,7 +49,6 @@ org/openscience/cdk/math/FortranFormat.java
 org/openscience/cdk/fingerprint/FingerprinterTool.java
 org/openscience/cdk/fingerprint/Fingerprinter.java
 org/openscience/cdk/fingerprint/GraphOnlyFingerprinter.java
-org/openscience/cdk/renderer/color/IAtomColorer.java
 org/openscience/cdk/aromaticity/AromaticityCalculator.java
 org/openscience/cdk/aromaticity/CDKHueckelAromaticityDetector.java
 org/openscience/cdk/isomorphism/mcss/RGraph.java

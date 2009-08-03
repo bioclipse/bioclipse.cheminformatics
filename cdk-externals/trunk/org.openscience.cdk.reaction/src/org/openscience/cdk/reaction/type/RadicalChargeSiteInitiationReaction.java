@@ -74,7 +74,7 @@ import org.openscience.cdk.tools.LoggingTool;
  * 
  * @cdk.created    2006-05-05
  * @cdk.module     reaction
- * @cdk.svnrev  $Revision$
+ * @cdk.githash
  * @cdk.set        reaction-types
  * 
  * @see RadicalSiteIonizationMechanism
@@ -142,9 +142,7 @@ public class RadicalChargeSiteInitiationReaction extends ReactionEngine implemen
 				while (bondis.hasNext()) {
 		            IBond bondi = bondis.next();
 		            
-					if(bondi.getFlag(CDKConstants.REACTIVE_CENTER)
-//							&& bondi.getOrder() == IBond.Order.SINGLE
-							){
+					if(bondi.getFlag(CDKConstants.REACTIVE_CENTER)&& bondi.getOrder() == IBond.Order.SINGLE){
 						
 						IAtom atomj = bondi.getConnectedAtom(atomi);
 						if(atomj.getFlag(CDKConstants.REACTIVE_CENTER) && atomj.getFormalCharge() == 0){
@@ -216,7 +214,7 @@ public class RadicalChargeSiteInitiationReaction extends ReactionEngine implemen
 				while (bondis.hasNext()) {
 		            IBond bondi = bondis.next();
 		            
-//					if(bondi.getOrder() == IBond.Order.SINGLE){
+					if(bondi.getOrder() == IBond.Order.SINGLE){
 						
 						IAtom atomj = bondi.getConnectedAtom(atomi);
 						if(atomj.getFormalCharge() == 0){
@@ -241,7 +239,7 @@ public class RadicalChargeSiteInitiationReaction extends ReactionEngine implemen
 					            }
 							}
 						}
-//					}
+					}
 				}
 			}
 		}

@@ -38,7 +38,7 @@ import org.openscience.cdk.isomorphism.matchers.IQueryAtom;
  *
  * @author Rajarshi Guha
  * @cdk.module pcore
- * @cdk.svnrev  $Revision$
+ * @cdk.githash
  * @cdk.keyword pharmacophore
  * @cdk.keyword 3D isomorphism
  * @see org.openscience.cdk.pharmacophore.PharmacophoreQueryBond
@@ -90,5 +90,17 @@ public class PharmacophoreQueryAtom extends Atom implements IQueryAtom {
     @TestMethod("testSetOperator")
     public void setOperator(String ID) {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    /**
+     * String representation of this pharmacophore group.
+     *
+     * @return String representation of this pharmacophore group
+     */
+    @TestMethod("testToString")
+    public String toString() {
+        StringBuffer s = new StringBuffer();
+        s.append(getSymbol()).append(" [").append(getSmarts()).append(']');
+        return s.toString();
     }
 }

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDK plugin
 Bundle-SymbolicName: org.openscience.cdk.control;singleton:=true
-Bundle-Version: 1.2.2.20090602
+Bundle-Version: 1.3.0.0bioclipse1
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openscience.cdk.control.Activator
@@ -11,6 +11,9 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.core,
  org.openscience.cdk.standard,
  org.openscience.cdk.render,
+ org.openscience.cdk.renderbasic,
+ org.openscience.cdk.renderextra,
+ org.openscience.cdk.rendercontrol,
  org.openscience.cdk.io,
  org.openscience.cdk.valencycheck,
  org.openscience.cdk.sdg,
@@ -19,4 +22,5 @@ Require-Bundle: org.openscience.cdk.interfaces,
  org.eclipse.core.runtime
 Export-Package: org.openscience.cdk.controller,
  org.openscience.cdk.controller.undoredo,
+ org.openscience.cdk.controller.edit,
  org.openscience.cdk.control

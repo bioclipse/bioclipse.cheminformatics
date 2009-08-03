@@ -1,6 +1,6 @@
-/* $Revision$ $Author$ $Date$
- *
- * Copyright (C) 1997-2007  The Chemistry Development Kit (CDK) project
+/* Copyright (C) 2008-2009  Gilleain Torrance <gilleain@users.sf.net>
+ *               2008-2009  Arvid Berg <goglepox@users.sf.net>
+ *                    2009  Stefan Kuhn <shk3@users.sf.net>
  *
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -44,7 +44,6 @@ import org.openscience.cdk.renderer.color.CDK2DAtomColors;
 import org.openscience.cdk.renderer.color.IAtomColorer;
 import org.openscience.cdk.renderer.font.IFontManager;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
-import org.openscience.cdk.renderer.selection.LassoSelection;
 
 /**
  * Model for {@link Renderer} that contains settings for drawing objects.
@@ -67,6 +66,9 @@ public class RendererModel implements Serializable, Cloneable {
     /** Determines how much the image is zoomed into on. */
     private double zoomFactor = 1.0;
 
+    //this is used for the size of the arrowhead, might become configurable
+    public static final int arrowHeadWidth = 10;
+
     /**
      * The color hash is used to color substructures.
      *
@@ -87,7 +89,7 @@ public class RendererModel implements Serializable, Cloneable {
 
     private IAtomContainer clipboardContent = null;
 
-    private IChemObjectSelection selection = new LassoSelection();
+    private IChemObjectSelection selection;
 
 	private Map<IAtom, IAtom> merge=new HashMap<IAtom, IAtom>();
 
@@ -103,8 +105,8 @@ public class RendererModel implements Serializable, Cloneable {
         return this.parameters.getArrowHeadWidth();
     }
     
-    public void setArrowHeadWidth(int width) {
-        this.parameters.setArrowHeadWidth(width);
+    public void setArrowHeadWidth(int arrowHeadWidth) {
+        this.parameters.setArrowHeadWidth(arrowHeadWidth);
     }
 
     public boolean getHighlightShapeFilled() {
@@ -314,6 +316,26 @@ public class RendererModel implements Serializable, Cloneable {
     }
 
     /**
+     * Returns the thickness of an atom atom mapping line.
+     *
+     * @return the thickness of an atom atom mapping line
+     */
+    public double getMappingLineWidth() {
+        return this.parameters.getMappingLineWidth();
+    }
+
+    /**
+     * Sets the thickness of an atom atom mapping line.
+     *
+     * @param mappingLineWidth
+     *            the thickness of an atom atom mapping line
+     */
+    public void setMappingLineWidth(double mappingLineWidth) {
+        this.parameters.setMappingLineWidth(mappingLineWidth);
+        fireChange();
+    }
+
+    /**
      * A zoom factor for the drawing.
      *
      * @return a zoom factor for the drawing
@@ -331,12 +353,6 @@ public class RendererModel implements Serializable, Cloneable {
     public void setZoomFactor(double zoomFactor) {
         this.zoomFactor = zoomFactor;
         fireChange();
-        if (getNotification() && listeners != null) {
-            EventObject event = new EventObject(this);
-            for (int i = 0; i < listeners.size(); i++) {
-                listeners.get(i).zoomFactorChanged(event);
-            }
-        }
     }
 
     public boolean isFitToScreen() {

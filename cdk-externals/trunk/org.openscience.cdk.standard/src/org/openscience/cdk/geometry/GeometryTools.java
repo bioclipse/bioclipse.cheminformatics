@@ -24,6 +24,20 @@
  */
 package org.openscience.cdk.geometry;
 
+import java.awt.Dimension;
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import javax.vecmath.Point2d;
+import javax.vecmath.Point3d;
+import javax.vecmath.Vector2d;
+import javax.vecmath.Vector3d;
+
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
@@ -36,20 +50,10 @@ import org.openscience.cdk.interfaces.IRingSet;
 import org.openscience.cdk.tools.LoggingTool;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
-import javax.vecmath.Point2d;
-import javax.vecmath.Point3d;
-import javax.vecmath.Vector2d;
-import javax.vecmath.Vector3d;
-import java.awt.*;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.*;
-import java.util.List;
-
 /**
  * A set of static utility classes for geometric calculations and operations.
  * This class is extensively used, for example, by JChemPaint to edit molecule.
- * All methods in this class change the coordinates of the atoms. Use GeometryTools if you use an external set of coordinates (e. g. rendeirngCoordinates from RendererModel)
+ * All methods in this class change the coordinates of the atoms. Use GeometryTools if you use an external set of coordinates (e. g. renderingCoordinates from RendererModel)
  *
  * @author        seb
  * @author        Stefan Kuhn
@@ -59,7 +63,7 @@ import java.util.List;
  * @author        Niels Out
  * 
  * @cdk.module    standard
- * @cdk.svnrev    $Revision$
+ * @cdk.githash
  */
 public class GeometryTools {
 
@@ -864,34 +868,9 @@ public class GeometryTools {
 				bondLengthSum += getLength2D(bond);
 			}
 		}
-        if(bondLengthSum==0)
-        	return 0;
-        else
-        	return bondLengthSum / bondCounter;
+		return bondLengthSum / bondCounter;
 	}
 
-	/**
-	 *  An average of all 2D bond length values of all products and reactants is produced. Bonds which have
-	 *  Atom's with no coordinates are disregarded.
-	 *  See comment for center(IAtomContainer atomCon, Dimension areaDim, HashMap renderingCoordinates) for details on coordinate sets
-	 *
-	 *@param  reaction  The Reaction for which the average bond length is to be
-	 *      calculated
-	 *@return     the average bond length
-	 */
-	public static double getBondLengthAverage(IReaction reaction) {
-		double bondlenghtsum=0;
-		int containercount=0;
-		for(IAtomContainer container : reaction.getReactants().atomContainers()){
-			containercount++;
-			bondlenghtsum+=getBondLengthAverage(container);
-		}
-		for(IAtomContainer container : reaction.getProducts().atomContainers()){
-			containercount++;
-			bondlenghtsum+=getBondLengthAverage(container);
-		}
-		return bondlenghtsum/containercount;
-	}
 
 	/**
 	 *  Returns the geometric length of this bond in 2D space.
@@ -986,10 +965,10 @@ public class GeometryTools {
 
 
 	/**
-	 *  Determines if this model contains 3D coordinates for all atoms.
+	 *  Determines if this model contains 3D coordinates
 	 *
 	 *@param container the molecule to consider
-	 *@return    boolean indication that 3D coordinates are available for all atoms.
+	 *@return    boolean indication that 3D coordinates are available
 	 */
 	public static boolean has3DCoordinates(IAtomContainer container) {
 		boolean hasinfo = true;
@@ -1002,24 +981,6 @@ public class GeometryTools {
 	}
 
 
-	/**
-	 *  Determines if this model contains 3D coordinates for all atoms.
-	 *
-	 *@param chemmodel the ChemModel to consider
-	 *@return    boolean indication that 3D coordinates are available for all atoms.
-	 */
-	public static boolean has3DCoordinates(IChemModel chemModel) {
-		List<IAtomContainer> acs = ChemModelManipulator.getAllAtomContainers(chemModel);
-		Iterator<IAtomContainer> it = acs.iterator();
-        while(it.hasNext()){
-            if (!has3DCoordinates(it.next())) {
-                return false;
-            }
-        }
-		return true;
-	}
-
-	
 	/**
 	 *  Determines the normalized vector orthogonal on the vector p1->p2.
 	 *
@@ -1083,7 +1044,7 @@ public class GeometryTools {
 	public static int getBestAlignmentForLabel(IAtomContainer container, IAtom atom) {
 		double overallDiffX = 0;
 		for (IAtom connectedAtom : container.getConnectedAtomsList(atom)) {
-			overallDiffX = overallDiffX +  (connectedAtom.getPoint2d().x - atom.getPoint2d().x);
+			overallDiffX += connectedAtom.getPoint2d().x - atom.getPoint2d().x;
 		}
 		if (overallDiffX <= 0) {
 			return 1;
@@ -1109,16 +1070,16 @@ public class GeometryTools {
 			overallDiffX += connectedAtom.getPoint2d().x - atom.getPoint2d().x;
 			overallDiffY += connectedAtom.getPoint2d().y - atom.getPoint2d().y;
 		}
-		if ( Math.abs( overallDiffX) > Math.abs(overallDiffY) ) {
-			if (overallDiffX <= 0)
+		if (overallDiffX <= 0) {
+			if (overallDiffX < overallDiffY)
 				return 1;//right aligned
 			else
-				return -1;//left aligned
-		} else {
-			if ( overallDiffY <= 0)
 				return 2;//top aligned.
+		} else {
+			if (overallDiffX > overallDiffY)
+				return -1;//left aligned
 			else
-				return -2;//bottom aligned
+				return -2;//H below aligned
 		}
 	}
 
@@ -1386,7 +1347,7 @@ public class GeometryTools {
 	 *@param  firstAtomContainer                the (largest) first aligned AtomContainer which is the reference
 	 *@param  secondAtomContainer               the second aligned AtomContainer
 	 *@param  mappedAtoms             			Map: a Map of the mapped atoms
-	 *@param  Coords3d            			    boolean: true if moecules has 3D coords, false if molecules has 2D coords
+	 *@param  Coords3d            			    boolean: true if molecules has 3D coords, false if molecules has 2D coords
 	 *@return                   				double: the value of the RMSD 
 	 *@exception  CDKException  if there is an error in getting mapped atoms
 	 *
@@ -1427,7 +1388,7 @@ public class GeometryTools {
 	 *@param  secondAtomContainer               the second aligned AtomContainer
 	 *@param  mappedAtoms             			Map: a Map of the mapped atoms
 	 *@param hetAtomOnly                        boolean: true if only hetero atoms should be considered
-	 *@param  Coords3d            			    boolean: true if moecules has 3D coords, false if molecules has 2D coords
+	 *@param  Coords3d            			    boolean: true if molecules has 3D coords, false if molecules has 2D coords
 	 *@return                   				double: the value of the RMSD 
 	 *
 	 **/
@@ -1507,7 +1468,7 @@ public class GeometryTools {
     public static Rectangle2D shiftContainer(
             IAtomContainer container, Rectangle2D bounds, Rectangle2D last, double gap) {
 
-    	if (bounds.intersects(last) || (bounds.getWidth()==0 && bounds.getHeight()==0 && last.contains(new Point2D.Double(bounds.getX(), bounds.getY())))) {
+        if (bounds.intersects(last)) {
 
             // XXX always displace across width - could be improved
             double d = bounds.getWidth() + last.getWidth() + gap;
@@ -1522,17 +1483,58 @@ public class GeometryTools {
             return bounds;
         }
     }
-    
+
+    /*
+     *  An average of all 2D bond length values of all products and reactants is produced. Bonds wh$
+     *  Atom's with no coordinates are disregarded.
+     *  See comment for center(IAtomContainer atomCon, Dimension areaDim, HashMap renderingCoordina$
+     *
+     *@param  reaction  The Reaction for which the average bond length is to be
+     *      calculated
+     *@return     the average bond length
+     */
+    public static double getBondLengthAverage(IReaction reaction) {
+    	double bondlenghtsum=0;
+    	int containercount=0;
+    	for(IAtomContainer container : reaction.getReactants().atomContainers()){
+    		containercount++;
+    		bondlenghtsum+=getBondLengthAverage(container);
+    	}
+    	for(IAtomContainer container : reaction.getProducts().atomContainers()){
+    		containercount++;
+    		bondlenghtsum+=getBondLengthAverage(container);
+    	}
+    	return bondlenghtsum/containercount;
+    }
+
     /**
-     * Shift the containers in a rection vertically so that the reaction does not overlap with the previous.
+     * Determines if this model contains 3D coordinates for all atoms.
+     *
+     * @param  chemModel the ChemModel to consider
+     * @return Boolean indication that 3D coordinates are available for all atoms.
+     */
+    public static boolean has3DCoordinates(IChemModel chemModel) {
+    	List<IAtomContainer> acs = ChemModelManipulator.getAllAtomContainers(chemModel);
+    	Iterator<IAtomContainer> it = acs.iterator();
+    	while(it.hasNext()){
+    		if (!has3DCoordinates(it.next())) {
+    			return false;
+    		}
+    	}
+    	return true;
+    }
+
+
+    /**
+     * Shift the containers in a rection vertically so that the reaction does not overlap with the pre$
      * @param reaction the reaction to shift
      * @param bounds the bounds of the reaction to shift
      * @param last the bounds of the last reaction
      */
     public static Rectangle2D shiftReactionVertical(
-            IReaction reaction, Rectangle2D bounds, Rectangle2D last, double gap) {
+    		IReaction reaction, Rectangle2D bounds, Rectangle2D last, double gap) {
     	if (bounds.intersects(last)) {
-            double d = bounds.getHeight() + last.getHeight() + gap;
+    		double d = bounds.getHeight() + last.getHeight() + gap;
     		for(IAtomContainer container : reaction.getReactants().atomContainers()){
     			for(IAtom atom: container.atoms()){
     				atom.setPoint2d(new Point2d(atom.getPoint2d().x,atom.getPoint2d().y+d));
@@ -1543,12 +1545,13 @@ public class GeometryTools {
     				atom.setPoint2d(new Point2d(atom.getPoint2d().x,atom.getPoint2d().y+d));
     			}
     		}
-            return new Rectangle2D.Double(bounds.getX(),
-                    bounds.getY() + d,
-                    bounds.getWidth(),
-                    bounds.getHeight());
-        } else {
-            return bounds;
-        }
+    		return new Rectangle2D.Double(bounds.getX(),
+    				bounds.getY() + d,
+    				bounds.getWidth(),
+    				bounds.getHeight());
+    	} else {
+    		return bounds;
+    	}
     }
+
 }

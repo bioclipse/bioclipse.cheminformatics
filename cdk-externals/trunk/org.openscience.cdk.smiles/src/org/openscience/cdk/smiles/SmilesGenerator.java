@@ -83,7 +83,7 @@ import java.util.Vector;
  * @cdk.created    2002-02-26
  * @cdk.keyword    SMILES, generator
  * @cdk.module     smiles
- * @cdk.svnrev  $Revision$
+ * @cdk.githash
  * @cdk.bug        1793446
  */
 @TestClass("org.openscience.cdk.smiles.SmilesGeneratorTest")
@@ -126,6 +126,14 @@ public class SmilesGenerator
 	 *  Create the SMILES generator.
 	 */
 	public SmilesGenerator() {}
+
+	/**
+	 *  Create the SMILES generator.
+	 *  @param userAromaticityFlag if false only SP2-hybridized atoms will be lower case (default), true=SP2 or aromaticity trigger lower case (same as using setUseAromaticityFlag later)
+	 */
+	public SmilesGenerator(boolean useAromaticityFlag) {
+		this.useAromaticityFlag=useAromaticityFlag;
+	}
 
 	/**
 	 *  Tells if a certain bond is center of a valid double bond configuration.

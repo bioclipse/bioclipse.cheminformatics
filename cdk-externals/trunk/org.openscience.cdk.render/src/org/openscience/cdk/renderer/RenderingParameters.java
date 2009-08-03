@@ -1,3 +1,24 @@
+/* Copyright (C) 2009  Gilleain Torrance <gilleain@users.sf.net>
+ *               2009  Arvid Berg <goglepox@users.sf.net>
+ *               2009  Egon Willighagen <egonw@users.sf.net>
+ *               2009  Stefan Kuhn <shk3@users.sf.net>
+ *
+ * Contact: cdk-devel@list.sourceforge.net
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2.1
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 package org.openscience.cdk.renderer;
 
 import java.awt.Color;
@@ -8,11 +29,6 @@ import org.openscience.cdk.renderer.font.IFontManager;
  * @cdk.module render
  */
 public class RenderingParameters {
-    
-    /**
-     * The width of an arrow head.
-     */
-    private int arrowHeadWidth = 10;
 
     /**
      * The size on screen of a compact mode shape
@@ -24,6 +40,11 @@ public class RenderingParameters {
      * be covered by a shape determined by this enumeration
      */
     public enum AtomShape { OVAL, SQUARE };
+    
+    /**
+     * The width of an arrow head
+     */
+    private int arrowHeadWidth = 10;
 
     /**
      * The background color of the rendered image
@@ -45,6 +66,11 @@ public class RenderingParameters {
      */
     private double bondWidth = 1.0;
 
+    /**
+     * The width on screen of an atom-atom mapping line
+     */
+    private double mappingLineWidth = 1.0;
+    
     /**
      * The color of the box drawn at the bounds of a
      * molecule, molecule set, or reaction
@@ -168,12 +194,13 @@ public class RenderingParameters {
      */
     private double wedgeWidth = 2.0;
 
+
     public int getArrowHeadWidth() {
-        return this.arrowHeadWidth;
+        return arrowHeadWidth;
     }
-    
-    public void setArrowHeadWidth(int width) {
-        this.arrowHeadWidth = width;
+
+    public void setArrowHeadWidth(int arrowHeadWidth) {
+        this.arrowHeadWidth = arrowHeadWidth;
     }
 
     public boolean isHighlightShapeFilled() {
@@ -300,6 +327,10 @@ public class RenderingParameters {
         return bondWidth;
     }
 
+    public double getMappingLineWidth() {
+        return mappingLineWidth;
+    }
+    
     public Color getExternalHighlightColor() {
         return externalHighlightColor;
     }
@@ -404,6 +435,10 @@ public class RenderingParameters {
         this.bondWidth = bondWidth;
     }
 
+    public void setMappingLineWidth(double mappingLineWidth) {
+        this.mappingLineWidth = mappingLineWidth;
+    }
+    
     public void setColorAtomsByType(boolean colorAtomsByType) {
         this.colorAtomsByType = colorAtomsByType;
     }

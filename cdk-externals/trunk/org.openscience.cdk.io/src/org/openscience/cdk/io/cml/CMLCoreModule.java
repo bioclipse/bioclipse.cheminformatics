@@ -66,7 +66,7 @@ import org.xml.sax.Attributes;
  * a certain element or attribute value in a valid CML document.
  *
  * @cdk.module io
- * @cdk.svnrev  $Revision$
+ * @cdk.githash
  *
  * @author Egon Willighagen <egonw@sci.kun.nl>
  **/
@@ -1014,6 +1014,10 @@ public class CMLCoreModule implements ICMLModule {
                 	moleculeCustomProperty.add(elementTitle);
                 	moleculeCustomProperty.add(cData.trim());
                 }
+            } else if (xpath.endsWith("reaction", "scalar")) {
+                if (DICTREF.equals("cdk:reactionProperty")) {
+                	currentReaction.setProperty(elementTitle, cData);
+                }
             } else {
                 logger.warn("Ignoring scalar: " + xpath);
             }
@@ -1464,6 +1468,7 @@ public class CMLCoreModule implements ICMLModule {
             // assume this is the current working list
             bondElid = elid;
         }
+        newAtomData();
     }
     
     protected void storeBondData() {
@@ -1561,6 +1566,7 @@ public class CMLCoreModule implements ICMLModule {
                 currentMolecule.addBond(currentBond);
             }
         }
+        newBondData();
     }
 
     protected int addArrayElementsTo(List<String> toAddto, String array) {

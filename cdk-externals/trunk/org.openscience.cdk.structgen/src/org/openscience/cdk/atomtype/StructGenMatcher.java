@@ -41,7 +41,7 @@ import org.openscience.cdk.tools.manipulator.BondManipulator;
  * @author         egonw
  * @cdk.created    2006-09-22
  * @cdk.module     structgen
- * @cdk.svnrev  $Revision: 9162 $
+ * @cdk.githash
  */
 public class StructGenMatcher implements IAtomTypeMatcher {
 
@@ -56,15 +56,15 @@ public class StructGenMatcher implements IAtomTypeMatcher {
 	}
 
 	@TestMethod("testFindMatchingAtomType_IAtomContainer")
-  public IAtomType[] findMatchingAtomType(IAtomContainer atomContainer) throws CDKException {
-      IAtomType[] types = new IAtomType[atomContainer.getAtomCount()];
-      int typeCounter = 0;
-      for (IAtom atom : atomContainer.atoms()) {
-          types[typeCounter] = findMatchingAtomType(atomContainer, atom);
-          typeCounter++;
-      }
-      return types;
-  }
+	public IAtomType[] findMatchingAtomType(IAtomContainer atomContainer) throws CDKException {
+	    IAtomType[] types = new IAtomType[atomContainer.getAtomCount()];
+	    int typeCounter = 0;
+	    for (IAtom atom : atomContainer.atoms()) {
+	        types[typeCounter] = findMatchingAtomType(atomContainer, atom);
+	        typeCounter++;
+	    }
+	    return types;
+	}
 
 	/**
 	 * Finds the AtomType matching the Atom's element symbol, formal charge and 
