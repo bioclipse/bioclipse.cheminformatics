@@ -14,10 +14,7 @@ package net.bioclipse.jmol.views;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Hashtable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.scripting.ui.Activator;
 
 import org.apache.log4j.Logger;
@@ -150,4 +147,13 @@ public class JmolListener implements JmolStatusListener,
     public void toggleReportErrorToJSConsole() {
         repportErrorToJS = true;
     }
+
+	public float[][][] functionXYZ(String functionName,
+			                       int x, int y, int z) {
+		logger.debug( "JmolListener.functionXYZ( " +
+                "functionName=" + functionName + "," +
+                "x=" + x + ", y=" + y + ", z=" + z + " )" );
+		return new float[0][0][0];
+	}
+
 }

@@ -12,10 +12,8 @@
 package net.bioclipse.jmol.cdk.views;
 
 import java.awt.event.MouseListener;
-import java.io.ByteArrayOutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -24,22 +22,18 @@ import java.util.Map;
 import javax.swing.JScrollPane;
 
 import net.bioclipse.cdk.business.ICDKManager;
-import net.bioclipse.cdk.domain.CDKConformer;
-import net.bioclipse.cdk.domain.CDKMolecule;
-import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.AtomContainerSelection;
+import net.bioclipse.cdk.domain.CDKConformer;
+import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.providers.IPharmacophoreProvider;
-import net.bioclipse.cdk.providers.PharmacophoreDistanceConstraint;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.AtomIndexSelection;
 import net.bioclipse.core.domain.IChemicalSelection;
-import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.domain.ModelSelection;
 import net.bioclipse.core.domain.ScriptSelection;
 import net.bioclipse.jmol.cdk.adapter.CdkJmolAdapter;
 import net.bioclipse.jmol.views.JmolCompMouseListener;
 import net.bioclipse.jmol.views.JmolPolymerSelection;
-import net.bioclipse.jmol.views.outline.JmolModelSet;
 import net.bioclipse.jmol.views.outline.JmolModelString;
 
 import org.apache.log4j.Logger;
@@ -51,14 +45,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
@@ -66,18 +56,13 @@ import org.eclipse.ui.part.ViewPart;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.ChemModel;
 import org.openscience.cdk.ChemSequence;
-import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.MoleculeSet;
-import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
-import org.openscience.cdk.interfaces.IMoleculeSet;
-import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.pharmacophore.PharmacophoreBond;
-import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 
 //import quicktime.app.image.Redrawable;
 
@@ -903,12 +888,6 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
         //Maybe fork off a new thread?? TODO!
         jmolPanel.openClientFile("", "", cf);
-
-        String strError = jmolPanel.getOpenFileError();
-        if (strError != null){
-            logger.error(strError);
-            text.setEnabled(false);
-        }
     }
 
     /**

@@ -13,14 +13,17 @@ package net.bioclipse.jmol.cdk.adapter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.jmol.api.JmolAdapter;
+import org.jmol.api.JmolFileReaderInterface;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.config.AtomTypeFactory;
 import org.openscience.cdk.exception.CDKException;
@@ -568,4 +571,85 @@ public class CdkJmolAdapter extends JmolAdapter {
             return 1;
         }
     }
+
+	@Override
+	public boolean coordinatesAreFractional(Object arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Hashtable getAtomSetAuxiliaryInfo(Object arg0, int arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Hashtable getAtomSetCollectionAuxiliaryInfo(Object arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getAtomSetCollectionFromDOM(Object arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getAtomSetCollectionFromReader(String arg0, String arg1,
+			BufferedReader arg2, Hashtable arg3) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getAtomSetCollectionFromReaders(JmolFileReaderInterface arg0,
+			String[] arg1, String[] arg2, Hashtable[] arg3) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getAtomSetCollectionOrBufferedReaderFromZip(InputStream arg0,
+			String arg1, String[] arg2, Hashtable arg3, boolean arg4) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Properties getAtomSetCollectionProperties(Object arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getAtomSetName(Object arg0, int arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getAtomSetNumber(Object arg0, int arg1) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Properties getAtomSetProperties(Object arg0, int arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public float[] getPdbScaleMatrix(Object arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public float[] getPdbScaleTranslate(Object arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

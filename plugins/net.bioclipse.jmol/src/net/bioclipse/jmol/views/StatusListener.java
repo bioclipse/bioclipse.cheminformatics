@@ -16,7 +16,6 @@ import java.util.Hashtable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.scripting.ui.Activator;
 
 import org.apache.log4j.Logger;
@@ -223,4 +222,12 @@ public class StatusListener implements JmolStatusListener {
                       + callback_pick + ") called" );
         return false;
     }
+
+	public float[][][] functionXYZ(String functionName,
+                                   int x, int y, int z) {
+		logger.debug( "StatusListener.functionXYZ( " +
+                "functionName=" + functionName + "," +
+                "x=" + x + ", y=" + y + ", z=" + z + " )" );
+		return new float[0][0][0];
+	}
 }

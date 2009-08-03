@@ -15,21 +15,16 @@ package net.bioclipse.jmol.views;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.util.BitSet;
 
 import javax.swing.JPanel;
 
-import net.bioclipse.jmol.views.outline.JmolModelSet;
-
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.jmol.adapter.smarter.AtomSetCollection;
 import org.jmol.adapter.smarter.SmarterJmolAdapter;
 import org.jmol.api.JmolAdapter;
-import org.jmol.api.JmolSelectionListener;
 import org.jmol.api.JmolViewer;
-import org.jmol.modelset.ModelSet;
 import org.jmol.viewer.Viewer;
-import org.apache.log4j.Logger;
 
 /**
  * Extends Jpanel with a JmolViewer
@@ -115,10 +110,6 @@ public class JmolPanel extends JPanel {
                     "JmolPanel Can't open client file.");
             return;
         }
-    }
-
-    public String getOpenFileError() {
-        return viewer.getOpenFileError();
     }
 
     public JmolListener getJmolListener() {

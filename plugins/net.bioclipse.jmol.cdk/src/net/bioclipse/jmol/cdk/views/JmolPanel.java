@@ -125,8 +125,4 @@ public class JmolPanel extends JPanel {
         }
     }
 
-    public String getOpenFileError() {
-        return viewer.getOpenFileError();
-    }
-
 }
