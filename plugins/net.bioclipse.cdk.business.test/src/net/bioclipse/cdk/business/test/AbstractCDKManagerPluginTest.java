@@ -1649,9 +1649,7 @@ public abstract class AbstractCDKManagerPluginTest {
         String path=url.getFile();
         MockIFile mf=new MockIFile(path);
         ICDKMolecule mol = cdk.loadMolecule(mf);
-        Assert.assertFalse( mol.getAtomContainer().getAtom( 6 ).getFlag( CDKConstants.ISAROMATIC ) );
-        ICDKMolecule molwitharomaticity = (ICDKMolecule)cdk.perceiveAromaticity( mol );
-        Assert.assertTrue( molwitharomaticity.getAtomContainer().getAtom( 6 ).getFlag( CDKConstants.ISAROMATIC ) );
+        Assert.assertTrue( mol.getAtomContainer().getAtom( 6 ).getFlag( CDKConstants.ISAROMATIC ) );
     }
 
     @Test public void testHas2d() throws Exception {
