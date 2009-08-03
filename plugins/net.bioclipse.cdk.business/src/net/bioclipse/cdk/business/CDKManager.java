@@ -383,7 +383,7 @@ public class CDKManager implements IBioclipseManager {
             }
 
             // Store the chemFormat used for the reader
-            IResourceFormat chemFormat = reader.getFormat();
+            IChemFormat chemFormat = (IChemFormat)reader.getFormat();
               System.out.println( "Read CDK chemfile with format: "
                                 + chemFormat.getFormatName() );
 
@@ -409,6 +409,9 @@ public class CDKManager implements IBioclipseManager {
                 }
 
                 CDKMolecule mol = new CDKMolecule(ac);
+
+                // try to recover certain information for certain content types
+                sanatizeFileInput(chemFormat, mol);
 
                 //Associate molecule with the file it comes from
                 mol.setResource( file );
