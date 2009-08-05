@@ -877,11 +877,13 @@ public class CDKManager implements IBioclipseManager {
         if (molstring.length() == 0)
             throw new BioclipseException("Input cannot be empty.");
 
+        IChemFormat format = formatsFactory.guessFormat(
+                new ByteArrayInputStream(molstring.getBytes())
+        );
+        System.out.println("Format: " + format);
         return loadMolecule(
             new ByteArrayInputStream(molstring.getBytes()),
-            formatsFactory.guessFormat(
-                 new ByteArrayInputStream(molstring.getBytes())
-            ),
+            format,
             new NullProgressMonitor()
         );
     }
