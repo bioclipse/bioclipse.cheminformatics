@@ -237,6 +237,71 @@ public abstract class AbstractCDKManagerPluginTest {
     }
     
     @Test
+    public void testLoadPubChemFile() throws Exception {
+        URI uri = getClass().getResource("/testFiles/cid176.xml").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        ICDKMolecule mol = cdk.loadMolecule( path);
+
+        System.out.println("mol: " + mol.toString());
+        assertNotNull(mol);
+    }
+
+    @Test
+    public void testLoadPubChemFileFromString() throws Exception {
+        ICDKMolecule mol = cdk.fromString("<PC-Compound " +
+        		"xmlns=\"http://www.ncbi.nlm.nih.gov\">" +
+                "  <PC-Compound_id>" +
+                "    <PC-CompoundType>" +
+                "      <PC-CompoundType_id>" +
+                "        <PC-CompoundType_id_cid>1145</PC-CompoundType_id_cid>" +
+                "      </PC-CompoundType_id>" +
+                "    </PC-CompoundType>" +
+                "  </PC-Compound_id>" +
+                "  <PC-Compound_atoms>" +
+                "    <PC-Atoms>" +
+                "      <PC-Atoms_aid>" +
+                "        <PC-Atoms_aid_E>1</PC-Atoms_aid_E>" +
+                "        <PC-Atoms_aid_E>2</PC-Atoms_aid_E>" +
+                "      </PC-Atoms_aid>" +
+                "      <PC-Atoms_element>" +
+                "        <PC-Element value=\"o\">8</PC-Element>" +
+                "        <PC-Element value=\"n\">7</PC-Element>" +
+                "      </PC-Atoms_element>" +
+                "      <PC-Atoms_charge>" +
+                "        <PC-AtomInt>" +
+                "          <PC-AtomInt_aid>1</PC-AtomInt_aid>" +
+                "          <PC-AtomInt_value>-1</PC-AtomInt_value>" +
+                "        </PC-AtomInt>" +
+                "        <PC-AtomInt>" +
+                "          <PC-AtomInt_aid>2</PC-AtomInt_aid>" +
+                "          <PC-AtomInt_value>1</PC-AtomInt_value>" +
+                "        </PC-AtomInt>" +
+                "      </PC-Atoms_charge>" +
+                "    </PC-Atoms>" +
+                "  </PC-Compound_atoms>" +
+                "  <PC-Compound_bonds>" +
+                "    <PC-Bonds>" +
+                "      <PC-Bonds_aid1>" +
+                "        <PC-Bonds_aid1_E>1</PC-Bonds_aid1_E>" +
+                "      </PC-Bonds_aid1>" +
+                "      <PC-Bonds_aid2>" +
+                "        <PC-Bonds_aid2_E>2</PC-Bonds_aid2_E>" +
+                "      </PC-Bonds_aid2>" +
+                "      <PC-Bonds_order>" +
+                "        <PC-BondType value=\"single\">1</PC-BondType>" +
+                "      </PC-Bonds_order>" +
+                "    </PC-Bonds>" +
+                "  </PC-Compound_bonds>" +
+                "</PC-Compound>");
+
+        System.out.println("mol: " + mol.toString());
+        assertNotNull(mol);
+        assertEquals(2, mol.getAtomContainer().getAtomCount());
+        assertEquals(1, mol.getAtomContainer().getBondCount());
+    }
+
+    @Test
     public void testLoadATP() throws IOException, 
                                      BioclipseException, 
                                      CoreException, URISyntaxException,
