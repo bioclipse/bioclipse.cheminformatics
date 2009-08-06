@@ -10,7 +10,10 @@
  ******************************************************************************/
 package net.bioclipse.pubchem.business;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -18,7 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
+import net.bioclipse.cdk.business.CDKManager;
+import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.managers.business.IBioclipseManager;
 import nu.xom.Builder;
 import nu.xom.Document;
@@ -37,6 +43,8 @@ public class PubChemManager implements IBioclipseManager {
     private final static String PUBCHEM_URL_BASE = "http://pubchem.ncbi.nlm.nih.gov/";
 
     private final static String TOOL = "bioclipse.net";
+    
+    private static final CDKManager cdk = new CDKManager();
 
     public String getManagerName() {
         return "pubchem";
@@ -62,29 +70,21 @@ public class PubChemManager implements IBioclipseManager {
         if (target == null) {
             throw new BioclipseException("Cannot save to a NULL file.");
         }
+
+        String molString = downloadAsString(cid, type, monitor);
         
-        monitor.beginTask("Downloading CID " + cid, 2);
-
-        try {                
-            String efetch = PUBCHEM_URL_BASE + "summary/summary.cgi?cid=" +
-                            cid + "&disopt=" + type;
-            monitor.subTask("Downloading from " + efetch);
-            URL rawURL = new URL(efetch);
-            URLConnection rawConn = rawURL.openConnection();
-            if (target.exists()) {
-                target.setContents(rawConn.getInputStream(), true, false, null);
-            } else {
-                target.create(rawConn.getInputStream(), false, null);
-            }
-
-            monitor.worked(1);
-        } catch (PatternSyntaxException exception) {
-            exception.printStackTrace();
-            throw new BioclipseException("Invalid Pattern.", exception);
-        } catch (MalformedURLException exception) {
-            exception.printStackTrace();
-            throw new BioclipseException("Invalid URL.", exception);
+        if (target.exists()) {
+            target.setContents(
+                new ByteArrayInputStream(molString.getBytes()),
+                true, false, null
+            );
+        } else {
+            target.create(
+                new ByteArrayInputStream(molString.getBytes()),
+                false, null
+            );
         }
+        
         monitor.done();
         return target;
     }
@@ -151,6 +151,106 @@ public class PubChemManager implements IBioclipseManager {
             monitor.done();
         }
 
+        return results;
+    }
+
+    public IMolecule download(Integer cid, IProgressMonitor monitor)
+        throws IOException, BioclipseException, CoreException {
+        monitor.beginTask("Downloading Compound from PubChem...", 2);
+        String molstring = downloadAsString(cid, monitor);
+        if (monitor.isCanceled()) return null;
+        
+        ICDKMolecule molecule = cdk.fromString(molstring);
+        monitor.worked(1);
+        return molecule;
+    }
+
+    public IMolecule download3d(Integer cid, IProgressMonitor monitor)
+        throws IOException, BioclipseException, CoreException{
+        monitor.beginTask("Downloading Compound 3D from PubChem...", 2);
+        String molstring = downloadAsString(cid, monitor);
+        if (monitor.isCanceled()) return null;
+        
+        ICDKMolecule molecule = cdk.fromString(molstring);
+        monitor.worked(1);
+        return molecule;
+    }
+
+    private String downloadAsString(Integer cid, String type,
+                                   IProgressMonitor monitor)
+        throws IOException, BioclipseException, CoreException {
+        if (monitor == null) monitor = new NullProgressMonitor();
+        
+        monitor.subTask("Downloading CID " + cid);
+        StringBuffer fileContent = new StringBuffer(); 
+        try {                
+            String efetch = PUBCHEM_URL_BASE + "summary/summary.cgi?cid=" +
+                            cid + "&disopt=" + type;
+            monitor.subTask("Downloading from " + efetch);
+            URL rawURL = new URL(efetch);
+            URLConnection rawConn = rawURL.openConnection();
+            
+            BufferedReader reader = new BufferedReader(
+                new InputStreamReader(rawConn.getInputStream())
+            );
+            String line = reader.readLine();
+            while (line != null && !monitor.isCanceled()) {
+                fileContent.append(line).append('\n');
+                line = reader.readLine();
+            }
+            reader.close();
+            monitor.worked(1);
+        } catch (PatternSyntaxException exception) {
+            exception.printStackTrace();
+            throw new BioclipseException("Invalid Pattern.", exception);
+        } catch (MalformedURLException exception) {
+            exception.printStackTrace();
+            throw new BioclipseException("Invalid URL.", exception);
+        }
+        return fileContent.toString();
+    }
+
+    public String downloadAsString(Integer cid, IProgressMonitor monitor)
+        throws IOException, BioclipseException, CoreException {
+        return downloadAsString(cid, "DisplayXML", monitor);
+    }
+
+    public String download3dAsString3d(Integer cid, IProgressMonitor monitor)
+        throws IOException, BioclipseException, CoreException{
+        return downloadAsString(cid, "3DDisplaySDF", monitor);
+    }
+
+    public List<IMolecule> download(List<Integer> cids,
+                                    IProgressMonitor monitor)
+        throws IOException, BioclipseException, CoreException {
+        if (monitor == null) monitor = new NullProgressMonitor();
+        monitor.beginTask(
+            "Downloading Compounds from PubChem...",
+            cids.size()
+        );
+        List<IMolecule> results = new ArrayList<IMolecule>();
+        for (Integer cid : cids) {
+            if (monitor.isCanceled()) return null;
+            results.add(download(cid, monitor));
+            monitor.worked(1);
+        }
+        return results;
+    }
+
+    public List<IMolecule> download3d(List<Integer> cids,
+                                      IProgressMonitor monitor)
+        throws IOException, BioclipseException, CoreException {
+        if (monitor == null) monitor = new NullProgressMonitor();
+        monitor.beginTask(
+            "Downloading Compounds 3D from PubChem...",
+            cids.size()
+        );
+        List<IMolecule> results = new ArrayList<IMolecule>();
+        for (Integer cid : cids) {
+            if (monitor.isCanceled()) return null;
+            results.add(download3d(cid, monitor));
+            monitor.worked(1);
+        }
         return results;
     }
 

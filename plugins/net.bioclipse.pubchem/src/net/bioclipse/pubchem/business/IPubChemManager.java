@@ -16,6 +16,7 @@ import java.util.List;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.managers.business.IBioclipseManager;
@@ -58,6 +59,60 @@ public interface IPubChemManager extends IBioclipseManager {
     public BioclipseJob<IFile> loadCompound3d(int cid, 
                                             IFile target, 
                                             BioclipseJobUpdateHook<IFile> hook )
+        throws IOException, BioclipseException, CoreException;
+
+    @Recorded
+    @PublishedMethod(
+        params = "Integer cid", 
+        methodSummary = "Loads the PubChem Compound XML with the given " +
+                "compound identifier into a IMolecule."
+    )
+    public IMolecule download(Integer cid)
+        throws IOException, BioclipseException, CoreException;
+
+    @Recorded
+    @PublishedMethod(
+        params = "Integer cid", 
+        methodSummary = "Loads the PubChem Compound 3D MDL molfile with the " +
+        		"given compound identifier into a IMolecule."
+    )
+    public IMolecule download3d(Integer cid)
+        throws IOException, BioclipseException, CoreException;
+
+    @Recorded
+    @PublishedMethod(
+        params = "Integer cid", 
+        methodSummary = "Loads the PubChem Compound XML with the given " +
+                "compound identifier into a String."
+    )
+    public String downloadAsString(Integer cid)
+        throws IOException, BioclipseException, CoreException;
+
+    @Recorded
+    @PublishedMethod(
+        params = "Integer cid", 
+        methodSummary = "Loads the PubChem Compound 3D MDL molfile with the " +
+                "given compound identifier into a String."
+    )
+    public String download3dAsString(Integer cid)
+        throws IOException, BioclipseException, CoreException;
+
+    @Recorded
+    @PublishedMethod(
+        params = "List<Integer> cids", 
+        methodSummary = "Loads the PubChem Compound XMLs for the given " +
+                "list of compound identifiers into a List<IMolecule>."
+    )
+    public List<IMolecule> download(List<Integer> cids)
+        throws IOException, BioclipseException, CoreException;
+
+    @Recorded
+    @PublishedMethod(
+        params = "List<Integer> cids", 
+        methodSummary = "Loads the PubChem Compound 3D MDL molfiles for the " +
+                "given list of compound identifiers into a List<IMolecule>."
+    )
+    public List<IMolecule> download3d(List<Integer> cids)
         throws IOException, BioclipseException, CoreException;
 
     @Recorded
