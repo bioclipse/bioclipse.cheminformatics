@@ -442,12 +442,13 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
                 IChemObjectSelection localSelection = rModel.getSelection();
                 IChemObject chemObject = atom!=null?atom:bond;
 
-                if(!localSelection.contains( chemObject )) {
+                if(localSelection!=null && !localSelection.contains( chemObject )) {
                     if(chemObject != null)
                         localSelection = new SingleSelection<IChemObject>(chemObject);
                     else
                         localSelection = AbstractSelection.EMPTY_SELECTION;
                 }
+                if(localSelection==null) localSelection = AbstractSelection.EMPTY_SELECTION;
                 rModel.setSelection( localSelection);
                 widget.setSelection( widget.getSelection() );
                 e.doit = true;
