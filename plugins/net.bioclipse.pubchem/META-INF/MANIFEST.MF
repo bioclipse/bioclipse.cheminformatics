@@ -18,4 +18,6 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Import-Package: org.apache.log4j
-Export-Package: net.bioclipse.pubchem.wizards
+Export-Package: net.bioclipse.pubchem,
+ net.bioclipse.pubchem.business,
+ net.bioclipse.pubchem.wizards
