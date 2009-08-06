@@ -465,10 +465,10 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     @Override
     public void setModel( IChemModel model ) {
-        hub.setChemModel(model);
         this.applyGlobalProperties();
         reset();
         super.setModel( model );
+        hub.setChemModel(model);
     }
 
     public void setAtomContainer(IAtomContainer atomContainer) {
