@@ -144,6 +144,22 @@ public interface ICDKManager extends IBioclipseManager {
     public String determineFormat(String path) 
                   throws IOException, CoreException;
 
+    @Recorded
+    @PublishedMethod( 
+        params = "String path",
+        methodSummary = "Determines the file format of the file, if chemical")
+    @TestMethods("testDetermineChemFormatPubChemFile")
+    public IChemFormat determineIChemFormat(String path) 
+                  throws IOException, CoreException;
+
+    @Recorded
+    @PublishedMethod( 
+        params = "String fileContent",
+        methodSummary = "Determines the file format of the file in the String")
+    @TestMethods("testDetermineChemFormatPubChemFile")
+    public IChemFormat determineIChemFormatOfString(String fileContent) 
+                  throws IOException;
+
     /**
      * Loads molecules from a file at a given path.
      *

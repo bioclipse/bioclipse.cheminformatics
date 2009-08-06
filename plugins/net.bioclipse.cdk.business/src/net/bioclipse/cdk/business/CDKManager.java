@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.PrintStream;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -877,9 +878,7 @@ public class CDKManager implements IBioclipseManager {
         if (molstring.length() == 0)
             throw new BioclipseException("Input cannot be empty.");
 
-        IChemFormat format = formatsFactory.guessFormat(
-                new ByteArrayInputStream(molstring.getBytes())
-        );
+        IChemFormat format = determineIChemFormatOfString(molstring);
         System.out.println("Format: " + format);
         return loadMolecule(
             new ByteArrayInputStream(molstring.getBytes()),
@@ -1837,6 +1836,13 @@ public class CDKManager implements IBioclipseManager {
                          CDKException,
                          CoreException {
           saveMolecule(mol, filename, (IChemFormat)MDLV2000Format.getInstance());
+      }
+
+      public IChemFormat determineIChemFormatOfString(String fileContent)
+          throws IOException {
+          return formatsFactory.guessFormat(
+              new StringReader(fileContent)
+          );
       }
 
     public IChemFormat determineIChemFormat(IFile file)

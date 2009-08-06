@@ -81,6 +81,7 @@ import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
 import org.openscience.cdk.io.formats.Mol2Format;
+import org.openscience.cdk.io.formats.PubChemCompoundXMLFormat;
 import org.openscience.cdk.io.formats.SDFFormat;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.templates.MoleculeFactory;
@@ -237,6 +238,15 @@ public abstract class AbstractCDKManagerPluginTest {
     }
     
     @Test
+    public void testDetermineChemFormatPubChemFile() throws Exception {
+        URI uri = getClass().getResource("/testFiles/cid176.xml").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        IChemFormat format = cdk.determineIChemFormat(path);
+        Assert.assertEquals(PubChemCompoundXMLFormat.getInstance(), format);
+    }
+
+    @Test
     public void testLoadPubChemFile() throws Exception {
         URI uri = getClass().getResource("/testFiles/cid176.xml").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());
@@ -249,8 +259,8 @@ public abstract class AbstractCDKManagerPluginTest {
 
     @Test
     public void testLoadPubChemFileFromString() throws Exception {
-        ICDKMolecule mol = cdk.fromString("<PC-Compound " +
-        		"xmlns=\"http://www.ncbi.nlm.nih.gov\">" +
+        ICDKMolecule mol = cdk.fromString("<?xml version=\"1.0\"?>" +
+        		"<PC-Compound xmlns=\"http://www.ncbi.nlm.nih.gov\">" +
                 "  <PC-Compound_id>" +
                 "    <PC-CompoundType>" +
                 "      <PC-CompoundType_id>" +
