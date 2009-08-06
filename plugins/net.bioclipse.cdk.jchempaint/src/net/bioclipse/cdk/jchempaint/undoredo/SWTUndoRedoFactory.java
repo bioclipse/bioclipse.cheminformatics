@@ -165,8 +165,9 @@ public class SWTUndoRedoFactory implements IUndoRedoFactory {
     }
 
 	public IUndoRedoable getEditOperation(IEdit edit) {
-		// TODO Auto-generated method stub
-		return null;
+		EditWrapper wrapper = new EditWrapper(edit);
+        wrapper.addContext( context );
+        return wrapper;
 	}
 
 }
