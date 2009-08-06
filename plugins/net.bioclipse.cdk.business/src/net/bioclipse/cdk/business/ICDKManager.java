@@ -497,6 +497,18 @@ public interface ICDKManager extends IBioclipseManager {
                                         ICDKMolecule subStructure );
 
     @PublishedMethod (
+        params = "ICDKMolecule molecules, ICDKMolecule subStructure",
+        methodSummary = "Returns all molecules in the given list which have " +
+                        "a given subStructure as subgraph.\n" +
+                        "(Performs an isomophism test without checking " +
+                        "fingerprints)"
+    )
+    @Recorded
+    @TestMethods("testSubStructureMatches_List")
+    public List<ICDKMolecule> subStructureMatches(List<ICDKMolecule> molecules,
+                                                  ICDKMolecule subStructure);
+
+    @PublishedMethod (
         params = "ICDKMolecule molecule, ICDKMolecule subStructure",
         methodSummary = "Returns the substructure matches in the molecule for" +
             "the given substructure"

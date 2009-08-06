@@ -520,6 +520,22 @@ public abstract class AbstractCDKManagerPluginTest {
     }
     
     @Test
+    public void testSubStructureMatch_List() throws BioclipseException {
+        List<ICDKMolecule> molecules = new ArrayList<ICDKMolecule>();
+        molecules.add(cdk.fromSMILES("CCOCC")); // 5 atoms
+        molecules.add(cdk.fromSMILES("CCNCCC")); // 6 atoms
+        molecules.add(cdk.fromSMILES("CCNCCCl")); // 6 atoms
+        ICDKMolecule query = cdk.fromSMILES("CNC");
+        
+        List<ICDKMolecule> matches = cdk.subStructureMatches(molecules, query);
+        Assert.assertNotNull(matches);
+        Assert.assertEquals(2, matches.size());
+        for (ICDKMolecule molecule : matches) {
+            Assert.assertEquals(6, molecule.getAtomContainer().getAtomCount());
+        }
+    }
+    
+    @Test
     public void testCDKMoleculeFromIMolecule() throws BioclipseException {
         final String indoleSmiles  = new SmilesGenerator().createSMILES(
         	MoleculeFactory.makeIndole()
