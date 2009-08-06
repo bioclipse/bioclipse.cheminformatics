@@ -161,7 +161,10 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
   public void setChemModel(IChemModel model) {
       this.chemModel = model;
       //updateAtoms(ring, ring.atoms());
-      structureChanged();
+      //FIXME setChemModel can't fire structureChanged
+      // event if there is interest in knowing this
+      // a model changed event should be introduced
+      //structureChanged();
     }
 
 	/**
