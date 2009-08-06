@@ -497,7 +497,7 @@ public interface ICDKManager extends IBioclipseManager {
                                         ICDKMolecule subStructure );
 
     @PublishedMethod (
-        params = "ICDKMolecule molecules, ICDKMolecule subStructure",
+        params = "List<ICDKMolecule> molecules, ICDKMolecule subStructure",
         methodSummary = "Returns all molecules in the given list which have " +
                         "a given subStructure as subgraph.\n" +
                         "(Performs an isomophism test without checking " +
