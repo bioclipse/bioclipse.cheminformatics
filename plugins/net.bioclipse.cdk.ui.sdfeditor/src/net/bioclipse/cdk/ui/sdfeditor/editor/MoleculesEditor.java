@@ -302,6 +302,15 @@ public class MoleculesEditor extends EditorPart implements
                                new MoleculeTableContentProvider() );
                   molTableViewer.setInput( inp );
                   molTableViewer.refresh();
+            }else {
+                IMoleculesEditorModel molEditorModel = (IMoleculesEditorModel)
+                    editorInput.getAdapter( IMoleculesEditorModel.class );
+                if(molEditorModel!=null) {
+                    molTableViewer.setContentProvider(
+                                           new MoleculeTableContentProvider() );
+                                         molTableViewer.setInput( molEditorModel );
+                                         molTableViewer.refresh();
+                }
             }
         }
         }

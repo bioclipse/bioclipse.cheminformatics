@@ -171,12 +171,17 @@ public class JChemPaintWidget extends Canvas {
         if ( model != null ) {
             this.model = model;
             setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
+            renderer.setup(model, adaptRectangle(getClientArea()));
             updateView( true );
         } else {
             this.model = null;
             setBackground( getParent().getBackground() );
             updateView( false );
         }
+    }
+
+    private java.awt.Rectangle adaptRectangle(Rectangle rect) {
+    	return new java.awt.Rectangle(rect.x,rect.y,rect.width,rect.height);
     }
 
     public void setRenderer2DModel( RendererModel renderer2DModel ) {
