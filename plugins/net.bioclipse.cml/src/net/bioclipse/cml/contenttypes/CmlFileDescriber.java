@@ -45,6 +45,8 @@ public class CmlFileDescriber extends TextContentDescriber
 	private Hashtable elements = null;
 	
 	public final static String NS_CML = "http://www.xml-cml.org/schema";
+	
+	public final int MAX_START_TAGS_TO_PROCESS = 5000; 
 
 	/**
 	 * Store parameters
@@ -116,8 +118,11 @@ public class CmlFileDescriber extends TextContentDescriber
 
 			XmlPullParser parser = factory.newPullParser();
 			parser.setInput(input);
-			while (parser.next() != XmlPullParser.END_DOCUMENT) {
+			int startTagsProcessed = 0;
+			while (parser.next() != XmlPullParser.END_DOCUMENT &&
+			       startTagsProcessed < MAX_START_TAGS_TO_PROCESS) {
 				if (parser.getEventType() == XmlPullParser.START_TAG) {
+				    startTagsProcessed++;
 				    String tagName = parser.getName();
 				    
 				    if (!checkedNamespace && tagName.equalsIgnoreCase("cml")) {
