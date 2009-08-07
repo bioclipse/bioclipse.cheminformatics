@@ -114,7 +114,8 @@ public class PickMoleculeDialog extends TitleAreaDialog
         }
     }
 
-    public ArrayList<IFile> getSelectedFiles() {
-        return selectedFiles;
+    public IFile getSelectedFile() {
+        assert selectedFiles.size() == 1;
+        return selectedFiles.get( 0 );
     }
 }
