@@ -17,7 +17,9 @@ public class MoleculeContentTypeViewerFilter extends ViewerFilter {
     = Logger.getLogger( MoleculeContentTypeViewerFilter.class );
 
     @Override
-    public boolean select( Viewer viewer, Object parentElement, Object element ) {
+    public boolean select( Viewer viewer, 
+                           Object parentElement, 
+                           Object element ) {
 
         //Filter out all mols and folders starting with '.'
         if ( element instanceof IResource ) {
