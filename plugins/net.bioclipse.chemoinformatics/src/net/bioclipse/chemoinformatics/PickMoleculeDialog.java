@@ -13,6 +13,7 @@ package net.bioclipse.chemoinformatics;
 import java.util.ArrayList;
 
 import net.bioclipse.chemoinformatics.util.MoleculeContentTypeViewerFilter;
+import net.bioclipse.chemoinformatics.util.SingleMoleculeContentTypeViewerFilter;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -91,7 +92,7 @@ public class PickMoleculeDialog extends TitleAreaDialog
         viewer.setUseHashlookup( true );
         viewer.setContentProvider( new WorkbenchContentProvider() );
         viewer.setLabelProvider( new WorkbenchLabelProvider() );
-        viewer.addFilter( new MoleculeContentTypeViewerFilter() );
+        viewer.addFilter( new SingleMoleculeContentTypeViewerFilter() );
         viewer.setInput( ResourcesPlugin.getWorkspace().getRoot() );
         viewer.expandToLevel(2);
         return viewer;
