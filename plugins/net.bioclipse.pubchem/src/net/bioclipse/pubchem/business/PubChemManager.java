@@ -25,6 +25,7 @@ import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.domain.RecordableList;
 import net.bioclipse.managers.business.IBioclipseManager;
 import nu.xom.Builder;
 import nu.xom.Document;
@@ -228,7 +229,7 @@ public class PubChemManager implements IBioclipseManager {
             "Downloading Compounds from PubChem...",
             cids.size()
         );
-        List<IMolecule> results = new ArrayList<IMolecule>();
+        List<IMolecule> results = new RecordableList<IMolecule>();
         for (Integer cid : cids) {
             if (monitor.isCanceled()) return null;
             results.add(download(cid, monitor));
@@ -245,7 +246,7 @@ public class PubChemManager implements IBioclipseManager {
             "Downloading Compounds 3D from PubChem...",
             cids.size()
         );
-        List<IMolecule> results = new ArrayList<IMolecule>();
+        List<IMolecule> results = new RecordableList<IMolecule>();
         for (Integer cid : cids) {
             if (monitor.isCanceled()) return null;
             results.add(download3d(cid, monitor));
