@@ -48,6 +48,7 @@ public class PickMoleculeDialog extends TitleAreaDialog
 
     /**
      * @param parentShell
+     * @wbp.parser.constructor
      */
     public PickMoleculeDialog( Shell parentShell ) {
         super( parentShell );
@@ -64,7 +65,8 @@ public class PickMoleculeDialog extends TitleAreaDialog
     @Override
     protected Control createDialogArea(Composite parent) {
 
-        Composite dialogArea = new Composite( parent, SWT.NONE  );
+        Composite dialogArea = (Composite) super.createDialogArea( parent );
+        
         GridLayout layout = new GridLayout();
         dialogArea.setLayout( layout );
 
@@ -117,5 +119,10 @@ public class PickMoleculeDialog extends TitleAreaDialog
     public IFile getSelectedFile() {
         assert selectedFiles.size() == 1;
         return selectedFiles.get( 0 );
+    }
+
+    @Override
+    protected boolean isResizable() {
+        return true;
     }
 }
