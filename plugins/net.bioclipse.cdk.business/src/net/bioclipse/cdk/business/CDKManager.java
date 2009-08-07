@@ -1014,7 +1014,7 @@ public class CDKManager implements IBioclipseManager {
 
       public List<ICDKMolecule> subStructureMatches(
           List<ICDKMolecule> molecules, ICDKMolecule subStructure ) {
-          List<ICDKMolecule> matches = new ArrayList<ICDKMolecule>();
+          List<ICDKMolecule> matches = new RecordableList<ICDKMolecule>();
           for (ICDKMolecule molecule : molecules) {
               try {
                   if (subStructureMatches(molecule, subStructure)) {
