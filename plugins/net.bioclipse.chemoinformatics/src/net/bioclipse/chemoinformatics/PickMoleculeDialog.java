@@ -85,7 +85,7 @@ public class PickMoleculeDialog extends TitleAreaDialog
     }
 
     protected TreeViewer createViewer(Composite parent) {
-        TreeViewer viewer = new TreeViewer( parent, SWT.MULTI 
+        TreeViewer viewer = new TreeViewer( parent, SWT.SINGLE 
                                                   | SWT.H_SCROLL 
                                                   | SWT.V_SCROLL 
                                                   | SWT.BORDER );
