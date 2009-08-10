@@ -54,7 +54,9 @@ public class AddMoleculeWizardPage extends WizardPage {
      * @param multipleSelection true=multiple selection possible, 
      * false= one selection only.
      */
-    public AddMoleculeWizardPage(String title, String description, boolean multipleSelection) {
+    public AddMoleculeWizardPage( String title, 
+                                  String description, 
+                                  boolean multipleSelection ) {
 
         this( title, description, null, multipleSelection );
     }
@@ -80,9 +82,6 @@ public class AddMoleculeWizardPage extends WizardPage {
         this.multipleSelection = multipleSelection;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-     */
     public void createControl( Composite parent ) {
 
         Composite container = new Composite( parent, SWT.NULL );
@@ -115,7 +114,8 @@ public class AddMoleculeWizardPage extends WizardPage {
         treeViewer
                 .addSelectionChangedListener( new ISelectionChangedListener() {
 
-                    public void selectionChanged( SelectionChangedEvent event ) {
+                    public void selectionChanged( 
+                                    SelectionChangedEvent event ) {
 
                         updateMessage();
                     }
@@ -148,7 +148,8 @@ public class AddMoleculeWizardPage extends WizardPage {
     }
 
     /**
-     * Updates the error message and disables next/finish if no molecule is choosen.
+     * Updates the error message and disables next/finish 
+     * if no molecule is choosen.
      */
     protected void updateMessage() {
 
@@ -161,7 +162,8 @@ public class AddMoleculeWizardPage extends WizardPage {
                     selectedFiles.add(file);
                 }
             }
-            if ( selectedFiles.size()>0 || (checkBox != null && checkBox.getSelection() )) {
+            if ( selectedFiles.size()>0 
+                 || (checkBox != null && checkBox.getSelection() )) {
                 setErrorMessage( null );
                 setPageComplete( true );
             }else{
