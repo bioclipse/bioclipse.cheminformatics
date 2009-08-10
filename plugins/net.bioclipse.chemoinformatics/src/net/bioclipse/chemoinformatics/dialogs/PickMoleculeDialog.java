@@ -8,7 +8,7 @@
  *
  * Contact: http://www.bioclipse.net/
  ******************************************************************************/
-package net.bioclipse.chemoinformatics;
+package net.bioclipse.chemoinformatics.dialogs;
 
 import java.util.ArrayList;
 
