@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculeUtils;
@@ -37,6 +36,7 @@ import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -71,6 +71,8 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
     protected ISimpleChemObjectReader chemReader;
     protected IChemObjectBuilder builder;
 
+    private IFile saveAs;
+
     int lastIndex = -1;
     ICDKMolecule lastRead = null;
 
@@ -87,7 +89,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
 
     private boolean dirty = false;
 
-    public SDFIndexEditorModel() {
+    private SDFIndexEditorModel() {
         molProps = new HashMap<Integer, Map<String,Object>>();
         propertyList = new HashMap<String, Class<?>>();
         chemReader = new MDLV2000Reader();
@@ -102,6 +104,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
     public SDFIndexEditorModel(SDFileIndex input) {
         this();
         this.input = input;
+        this.saveAs = input.file();
     }
 
     public IResource getResource() {
@@ -115,6 +118,10 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
+
+    public  IFile getSaveFile() { return saveAs;}
+    public void setSaveFile(IFile file) { saveAs = file;}
+
     /* (non-Javadoc)
      * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#getMoleculeAt(int)
      */

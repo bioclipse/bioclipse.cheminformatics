@@ -59,9 +59,7 @@ import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.handlers.IHandlerService;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
-import org.eclipse.ui.part.Page;
 
 public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                                                     ISelectionListener,
@@ -198,15 +196,15 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
     @Override
     public void doSave( IProgressMonitor monitor ) {
         IMoleculesEditorModel model = moleculesPage.getModel();
-        IResource original = null;
-        if(model instanceof SDFIndexEditorModel) {
-            original = ((SDFIndexEditorModel)model).getResource();
-        }
-        if(original instanceof IFile) {
+
             syncJCP();
-            save((IFile)original,model);
-        }else
-            doSaveAs();
+            if(model instanceof SDFIndexEditorModel)
+            	save(model,((SDFIndexEditorModel)model).getSaveFile());
+            else {
+            	model.save();
+            	jcpPage.getWidget().setDirty( false );
+                setDirty( false );
+            }
     }
 
     @Override
@@ -228,24 +226,32 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         moleculesPage.getMolTableViewer().setInput( null );
         IPath path = saveAsDialog.getResult();
         IFile file= ResourcesPlugin.getWorkspace().getRoot().getFile( path );
-        save(file,model);
+        if(model instanceof SDFIndexEditorModel) {
+            ((SDFIndexEditorModel)model).setSaveFile(file);
+        }
+        save(model,file);
     }
 
-    private void save(IFile file,IMoleculesEditorModel model) {
+    private void save(IMoleculesEditorModel model, IFile file) {
         try {
             Activator.getDefault().getMoleculeTableManager()
-            .saveSDF( model, file ,new BioclipseUIJob<SDFIndexEditorModel>() {
+            .saveSDF( model,file,new BioclipseUIJob<IMoleculesEditorModel>() {
 
                 @Override
                 public void runInUI() {
-                    SDFIndexEditorModel model =getReturnValue();
+                	IMoleculesEditorModel model =getReturnValue();
                     moleculesPage.getMolTableViewer().setInput( model );
                     moleculesPage.getMolTableViewer().refresh();
-                    IFile file = (IFile)model.getResource();
-                    setInput( new FileEditorInput(file) );
-                    setPartName( file.getName() );
-                    firePropertyChange( IWorkbenchPartConstants.PROP_PART_NAME);
-                    firePropertyChange( IWorkbenchPartConstants.PROP_INPUT);
+
+//                    IFile file = (IFile)model.getResource();
+//                    setInput( new FileEditorInput(file) );
+                    if(model instanceof SDFIndexEditorModel) {
+                        IResource origin = ((SDFIndexEditorModel)model).getResource();
+                        if(origin !=null)
+                        	setPartName(origin.getName() );
+                        firePropertyChange( IWorkbenchPartConstants.PROP_PART_NAME);
+                        firePropertyChange( IWorkbenchPartConstants.PROP_INPUT);
+                    }
                     jcpPage.getWidget().setDirty( false );
                     setDirty( false );
                 }
@@ -476,5 +482,5 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
             return true;
         return false;
     }
-    
+
 }

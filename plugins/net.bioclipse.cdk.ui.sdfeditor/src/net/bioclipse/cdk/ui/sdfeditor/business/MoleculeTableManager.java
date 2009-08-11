@@ -21,7 +21,6 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -267,10 +266,8 @@ public class MoleculeTableManager implements IBioclipseManager {
                          IReturner<IMoleculesEditorModel> returner,
                          IProgressMonitor monitor)
                                             throws BioclipseException {
-        SDFIndexEditorModel index = saveSDF( model, file, monitor );
-        returner.completeReturn( index);
-//        return index.getResource().getFullPath().toPortableString();
-
+    		SDFIndexEditorModel index = saveSDF( model, file, monitor );
+    		returner.completeReturn( index);
     }
 
     private SDFIndexEditorModel saveSDF(IMoleculesEditorModel model, IFile file,
@@ -292,8 +289,9 @@ public class MoleculeTableManager implements IBioclipseManager {
 
         IFile target = null;
         Collection<Object> availableProperties = null;
-        if(model instanceof SDFIndexEditorModel)
+        if(model instanceof SDFIndexEditorModel) // FIXME save properties to sDB
             availableProperties = ((SDFIndexEditorModel) model).getPropertyKeys();
+
         SubMonitor loopProgress = subMonitor.newChild( 1000 );
         loopProgress.setWorkRemaining( 1000*model.getNumberOfMolecules() );
         loopProgress.subTask( "Writing to file" );
