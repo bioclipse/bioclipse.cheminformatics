@@ -43,6 +43,7 @@ import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesInfo;
+import net.bioclipse.cdk.exceptions.CDKTimedOutException;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
@@ -1187,6 +1188,11 @@ public class CDKManager implements IBioclipseManager {
               return querytool.matches(molecule.getAtomContainer());
           }
           catch (CDKException e) {
+              if ( e.getMessage().contains( 
+                       "Timeout for AllringsFinder exceeded" ) ) {
+                  throw new CDKTimedOutException( "The AllringsFinder in CDK " +
+                  		                          "did not succed in time", e );
+              }
               throw new BioclipseException("A problem occured trying "
                                            + "to match SMARTS query", e);
           }

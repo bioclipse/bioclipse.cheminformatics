@@ -48,5 +48,6 @@ Require-Bundle: org.openscience.cdk.io,
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.cdk.business,
  net.bioclipse.cdk.domain,
+ net.bioclipse.cdk.exceptions,
  net.bioclipse.cdk.providers
 Import-Package: org.apache.log4j
