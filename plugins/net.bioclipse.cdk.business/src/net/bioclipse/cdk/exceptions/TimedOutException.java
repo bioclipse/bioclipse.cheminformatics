@@ -19,7 +19,7 @@ import net.bioclipse.core.business.BioclipseException;
  * @author jonalv
  *
  */
-public class CDKTimedOutException extends BioclipseException {
+public class TimedOutException extends BioclipseException {
 
     private static final long serialVersionUID = 1L;
 
@@ -27,7 +27,7 @@ public class CDKTimedOutException extends BioclipseException {
      * @param message
      * @param cause
      */
-    public CDKTimedOutException(String message, Throwable cause) {
+    public TimedOutException(String message, Throwable cause) {
         super( message, cause );
     }
 
