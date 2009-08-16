@@ -494,7 +494,7 @@ public class CDKManager implements IBioclipseManager {
 
       public void save(IChemModel model, String target, IChemFormat filetype,
                         Properties writerProperties)
-                  throws BioclipseException, CDKException, CoreException {
+                  throws BioclipseException, CoreException {
           save( model,
                 ResourcePathTransformer.getInstance().transform(target),
                 filetype,
@@ -507,7 +507,7 @@ public class CDKManager implements IBioclipseManager {
                         IChemFormat filetype,
                         IProgressMonitor monitor,
                         Properties writerProperties )
-                  throws BioclipseException, CDKException, CoreException {
+                  throws BioclipseException, CoreException {
 
           if (monitor == null)
               monitor = new NullProgressMonitor();
@@ -608,23 +608,28 @@ public class CDKManager implements IBioclipseManager {
           } catch (IOException exception) {
             throw new BioclipseException("Failed to write file: " +
                     exception.getMessage());
-          } finally {
+          } catch (CDKException exception) {
+              throw new BioclipseException(
+                  "Failed to write file: " + exception.getMessage(),
+                  exception
+              );
+        } finally {
               monitor.done();
           }
       }
 
       public void saveMolecule(IMolecule mol)
-                  throws BioclipseException, CDKException, CoreException {
+                  throws BioclipseException, CoreException {
           saveMolecule(mol, false);
       }
 
       public void saveMolecule(IMolecule mol, String filename)
-                  throws BioclipseException, CDKException, CoreException {
+                  throws BioclipseException, CoreException {
           saveMolecule(mol, filename, false);
       }
 
       public void saveMolecule(IMolecule mol, boolean overwrite)
-                  throws BioclipseException, CDKException, CoreException {
+                  throws BioclipseException, CoreException {
 
           if (mol.getResource() == null ||
               !(mol.getResource() instanceof IFile))
@@ -653,14 +658,14 @@ public class CDKManager implements IBioclipseManager {
     }
 
     public void saveMolecule(IMolecule mol, String filename, boolean overwrite)
-                throws BioclipseException, CDKException, CoreException {
+                throws BioclipseException, CoreException {
 
         IFile file = ResourcePathTransformer.getInstance().transform(filename);
         saveMolecule(mol, file, overwrite);
     }
 
     public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
-                throws BioclipseException, CDKException, CoreException {
+                throws BioclipseException, CoreException {
 
         IChemFormat format = null;
 
@@ -713,12 +718,12 @@ public class CDKManager implements IBioclipseManager {
     public void saveMolecule( IMolecule mol_in,
                               String filename,
                               IChemFormat filetype )
-                throws BioclipseException, CDKException, CoreException {
+                throws BioclipseException, CoreException {
           this.saveMolecule(mol_in, filename, filetype, false);
       }
 
       public void saveMolecule(IMolecule mol_in, IFile target, IChemFormat filetype)
-                  throws BioclipseException, CDKException, CoreException {
+                  throws BioclipseException, CoreException {
           this.saveMolecule(mol_in, target, filetype, false);
       }
 
@@ -726,7 +731,7 @@ public class CDKManager implements IBioclipseManager {
                                 IFile target,
                                 IChemFormat filetype,
                                 boolean overwrite)
-                throws BioclipseException, CDKException, CoreException {
+                throws BioclipseException, CoreException {
           saveMolecule(mol_in, target, filetype, overwrite, null);
       }
 
@@ -735,7 +740,7 @@ public class CDKManager implements IBioclipseManager {
                                 IChemFormat filetype,
                                 boolean overwrite,
                                 Properties writerProperties)
-                throws BioclipseException, CDKException, CoreException {
+                throws BioclipseException, CoreException {
 
           if ( target.exists() && overwrite == false ) {
               throw new BioclipseException("File already exists!");
@@ -756,7 +761,7 @@ public class CDKManager implements IBioclipseManager {
                                 String filename,
                                 IChemFormat filetype,
                                 boolean overwrite)
-                  throws BioclipseException, CDKException, CoreException {
+                  throws BioclipseException, CoreException {
           saveMolecule(mol, filename, filetype, overwrite, null);
       }
 
@@ -765,7 +770,7 @@ public class CDKManager implements IBioclipseManager {
                                 IChemFormat filetype,
                                 boolean overwrite,
                                 Properties writerProperties)
-                  throws BioclipseException, CDKException, CoreException {
+                  throws BioclipseException, CoreException {
 
           saveMolecule( mol,
                         ResourcePathTransformer.getInstance()
@@ -781,7 +786,7 @@ public class CDKManager implements IBioclipseManager {
       public void saveMolecules( List<? extends IMolecule> molecules,
                                  String path,
                                IChemFormat filetype )
-                  throws BioclipseException, CDKException, CoreException {
+                  throws BioclipseException, CoreException {
 
           saveMolecules( molecules,
                          ResourcePathTransformer.getInstance().transform(path),
@@ -794,7 +799,7 @@ public class CDKManager implements IBioclipseManager {
       public void saveMolecules( List<? extends IMolecule> molecules,
                                  IFile target,
                                  IChemFormat filetype )
-                  throws BioclipseException, CDKException, CoreException {
+                  throws BioclipseException, CoreException {
 
           if ( filetype == CMLFormat.getInstance() ||
                filetype == MDLV2000Format.getInstance() ||
@@ -1574,7 +1579,6 @@ public class CDKManager implements IBioclipseManager {
       public void saveMol2(ICDKMolecule mol, String filename)
                   throws InvocationTargetException,
                          BioclipseException,
-                         CDKException,
                          CoreException {
           saveMolecule(mol, filename, (IChemFormat)Mol2Format.getInstance());
       }
@@ -1846,7 +1850,6 @@ public class CDKManager implements IBioclipseManager {
       public void saveCML(ICDKMolecule cml,  String filename)
                   throws InvocationTargetException,
                          BioclipseException,
-                         CDKException,
                          CoreException {
           saveMolecule(cml, filename, (IChemFormat)CMLFormat.getInstance());
       }
@@ -1854,7 +1857,6 @@ public class CDKManager implements IBioclipseManager {
       public void saveMDLMolfile(ICDKMolecule mol, String filename)
                   throws InvocationTargetException,
                          BioclipseException,
-                         CDKException,
                          CoreException {
           saveMolecule(mol, filename, (IChemFormat)MDLV2000Format.getInstance());
       }

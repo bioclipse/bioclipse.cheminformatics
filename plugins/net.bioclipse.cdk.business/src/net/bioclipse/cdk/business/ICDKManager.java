@@ -40,7 +40,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.content.IContentType;
-import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.io.formats.IChemFormat;
@@ -200,7 +199,7 @@ public interface ICDKManager extends IBioclipseManager {
             methodSummary="Saves molecule to file, if read from file.")
     @TestMethods("testSaveMolecule_IMolecule")
     public void saveMolecule(IMolecule mol)
-    	          throws BioclipseException, CDKException, CoreException;
+    	          throws BioclipseException, CoreException;
 
     /**
      * Save a molecule in same format as loaded to same filename, if exists
@@ -216,7 +215,7 @@ public interface ICDKManager extends IBioclipseManager {
             		        "overwritten." )
     @TestMethods("testSaveMolecule_IMolecule_boolean")
     public void saveMolecule(IMolecule mol, boolean overwrite)
-    	          throws BioclipseException, CDKException, CoreException;
+    	          throws BioclipseException, CoreException;
 
     /**
      * Save a molecule in same format as loaded
@@ -233,7 +232,7 @@ public interface ICDKManager extends IBioclipseManager {
         		            "getPossibleFiletypes" )
     @TestMethods("testSaveMolecule_IMolecule_String")
     public void saveMolecule(IMolecule mol, String filename)
-    	          throws BioclipseException, CDKException, CoreException;
+    	          throws BioclipseException, CoreException;
 
     /**
      * Save a molecule in same format as loaded
@@ -253,7 +252,7 @@ public interface ICDKManager extends IBioclipseManager {
         		            "extension is used to make a somewhat educated guess." )
     @TestMethods("testSaveMolecule_IMolecule_String_boolean")
     public void saveMolecule(IMolecule mol, String filename, boolean overwrite)
-    	          throws BioclipseException, CDKException, CoreException;
+    	          throws BioclipseException, CoreException;
 
     /**
      * Save a molecule in same format as loaded
@@ -265,7 +264,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @TestMethods("testSaveMolecule_IMolecule_IFile_boolean")
     public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
-    	          throws BioclipseException, CDKException, CoreException;
+    	          throws BioclipseException, CoreException;
 
     /**
      * @param mol The molecule to save
@@ -283,7 +282,7 @@ public interface ICDKManager extends IBioclipseManager {
     public void saveMolecule( IMolecule mol, 
                               String filename, 
                               IChemFormat filetype )
-    	          throws BioclipseException, CDKException, CoreException;
+    	          throws BioclipseException, CoreException;
 
     /**
      * @param mol The molecule to save
@@ -295,7 +294,7 @@ public interface ICDKManager extends IBioclipseManager {
     public void saveMolecule( IMolecule mol, 
                               IFile target, 
                               IChemFormat filetype )
-    	          throws BioclipseException, CDKException, CoreException;
+    	          throws BioclipseException, CoreException;
 
     /**
      * @param mol The molecule to save
@@ -317,7 +316,7 @@ public interface ICDKManager extends IBioclipseManager {
                               String filename, 
                               IChemFormat filetype, 
                               boolean overwrite )
-    	          throws BioclipseException, CDKException, CoreException;
+    	          throws BioclipseException, CoreException;
 
     @Recorded
     @PublishedMethod(
@@ -335,7 +334,7 @@ public interface ICDKManager extends IBioclipseManager {
                               IChemFormat filetype, 
                               boolean overwrite,
                               Properties writerProperties)
-                  throws BioclipseException, CDKException, CoreException;
+                  throws BioclipseException, CoreException;
 
     /**
      * @param mol The molecule to save
@@ -349,7 +348,7 @@ public interface ICDKManager extends IBioclipseManager {
                               IFile target, 
                               IChemFormat filetype, 
                               boolean overwrite )
-    	          throws BioclipseException, CDKException, CoreException;
+    	          throws BioclipseException, CoreException;
 
     /**
      * @param mol The molecule to save
@@ -365,7 +364,7 @@ public interface ICDKManager extends IBioclipseManager {
                               IChemFormat filetype, 
                               boolean overwrite,
                               Properties writerProperties)
-                  throws BioclipseException, CDKException, CoreException;
+                  throws BioclipseException, CoreException;
 
     /**
      * Save a list of molecules to file
@@ -373,14 +372,13 @@ public interface ICDKManager extends IBioclipseManager {
      * @param target The IFile to save to
      * @param filetype either CML or SDF
      * @throws BioclipseException
-     * @throws CDKException
      * @throws CoreException
      */
     @Recorded
     public void saveMolecules( List<? extends IMolecule> molecules, 
                                IFile target, 
                                IChemFormat filetype )
-    	          throws BioclipseException, CDKException, CoreException;
+    	          throws BioclipseException, CoreException;
 
     /**
      * Save a list of molecules to file
@@ -388,14 +386,13 @@ public interface ICDKManager extends IBioclipseManager {
      * @param path Path to file to save to
      * @param filetype either CML or SDF
      * @throws BioclipseException
-     * @throws CDKException
      * @throws CoreException
      */
     @Recorded
     public void saveMolecules( List<? extends IMolecule> molecules, 
                                String path, 
                                IChemFormat filetype )
-    	          throws BioclipseException, CDKException, CoreException;
+    	          throws BioclipseException, CoreException;
 
 
     /**
@@ -407,7 +404,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     public void save( IChemModel model, String target, IChemFormat filetype,
                       Properties writerProperties)
-    	          throws BioclipseException, CDKException, CoreException;
+    	          throws BioclipseException, CoreException;
 
     /**
      * Calculate SMILES string for an IMolecule
@@ -707,7 +704,6 @@ public interface ICDKManager extends IBioclipseManager {
 	  public void saveMol2(ICDKMolecule mol2, String filename) 
                 throws InvocationTargetException, 
                        BioclipseException, 
-                       CDKException, 
                        CoreException;
 
     @Recorded
@@ -720,7 +716,6 @@ public interface ICDKManager extends IBioclipseManager {
     public void saveMDLMolfile(ICDKMolecule mol, String filename) 
                 throws InvocationTargetException, 
                        BioclipseException, 
-                       CDKException, 
                        CoreException;
 
     @Recorded
@@ -734,7 +729,6 @@ public interface ICDKManager extends IBioclipseManager {
     public void saveCML(ICDKMolecule cml, String filename) 
                 throws InvocationTargetException, 
                        BioclipseException, 
-                       CDKException, 
                        CoreException;
 
     /**
