@@ -120,8 +120,6 @@ public class ExtractMolecules extends AbstractHandler implements IHandler {
                         }
                     } catch ( BioclipseException e ) {
                         logger.warn( "Failed to save molecule. " + e.getMessage() );
-                    } catch ( CDKException e ) {
-                        logger.warn( "Failed to save molecule. " + e.getMessage() );
                     } catch ( CoreException e ) {
                         logger.warn( "Failed to save molecule. " + e.getMessage() );
                     }

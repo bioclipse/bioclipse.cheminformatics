@@ -96,7 +96,6 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.controller.IControllerModel;
-import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -200,9 +199,6 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
         } catch ( BioclipseException e ) {
             monitor.isCanceled();
             logger.debug( "Failed to save file: " + e.getMessage() );
-        } catch ( CDKException e ) {
-            monitor.isCanceled();
-            logger.debug( "Failed to save file: " + e.getMessage() );
         } catch ( CoreException e ) {
             monitor.isCanceled();
             logger.debug( "Failed to save file: " + e.getMessage() );
@@ -252,8 +248,6 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
             firePropertyChange( IWorkbenchPartConstants.PROP_PART_NAME);
             firePropertyChange( IWorkbenchPartConstants.PROP_INPUT);
         } catch ( BioclipseException e ) {
-            logger.warn( "Failed to save molecule. " + e.getMessage() );
-        } catch ( CDKException e ) {
             logger.warn( "Failed to save molecule. " + e.getMessage() );
         } catch ( CoreException e ) {
             logger.warn( "Failed to save molecule. " + e.getMessage() );

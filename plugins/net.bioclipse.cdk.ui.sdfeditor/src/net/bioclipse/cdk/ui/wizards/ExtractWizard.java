@@ -28,7 +28,6 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.MDLFormat;
 import org.openscience.cdk.io.formats.SDFFormat;
@@ -77,9 +76,7 @@ public class ExtractWizard extends Wizard implements INewWizard {
 			LogUtils.handleException(e,logger);
 		} catch (CoreException e) {
 			LogUtils.handleException(e,logger);
-		} catch (CDKException e) {
-      LogUtils.handleException(e,logger);
-    }
+		}
 		return false;
 	}
 }
