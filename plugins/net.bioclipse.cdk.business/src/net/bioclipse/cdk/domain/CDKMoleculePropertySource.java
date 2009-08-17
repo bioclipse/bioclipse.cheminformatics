@@ -19,15 +19,12 @@ import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMoleculeUtils.MolProperty;
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.domain.props.BioObjectPropertySource;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.inchi.InChI;
 import net.bioclipse.inchi.business.IInChIManager;
-import net.bioclipse.inchi.business.InChIManager;
 import net.bioclipse.jobs.BioclipseJob;
-import net.bioclipse.jobs.BioclipseJobUpdateHook;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -89,12 +86,12 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
             new TextPropertyDescriptor(PROPERTY_INCHIKEY,PROPERTY_INCHIKEY)}
     };
 
-    private CDKMolecule cdkMol;
+    private ICDKMolecule cdkMol;
     private ArrayList<IPropertyDescriptor> cdkProperties;
 
     private HashMap<String, Object> cdkValueMap;
 
-    public CDKMoleculePropertySource(CDKMolecule item) {
+    public CDKMoleculePropertySource(ICDKMolecule item) {
         super(item);
         cdkMol = item;
         
@@ -114,7 +111,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
     /**
      * 
      */
-    private void createPropertiesJobs(final CDKMolecule item) {
+    private void createPropertiesJobs(final ICDKMolecule item) {
 
         final ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
         final IInChIManager inchi = net.bioclipse.inchi.business.Activator
@@ -241,7 +238,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
     /**
      * @param item
      */
-    private HashMap<String, Object> getPropertyValues(CDKMolecule item) {
+    private HashMap<String, Object> getPropertyValues(ICDKMolecule item) {
         HashMap<String, Object> valueMap = new HashMap<String, Object>();
         valueMap.put(
             PROPERTY_HAS2D,
