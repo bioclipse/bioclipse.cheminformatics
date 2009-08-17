@@ -68,6 +68,8 @@ public interface ICDKMolecule extends IMolecule{
      */
     public Object getProperty(String propertyKey,Property urgency);
 
+    public void setProperty(String propertyKey, Object value);
+    
     /**
      * AtomContainer is the CDK model for a molecule
      * @return

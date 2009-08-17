@@ -297,7 +297,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         return null;
     }
 
-    void setProperty(String propertyKey, Object value) {
+    public void setProperty(String propertyKey, Object value) {
         if(MolProperty.InChI.name().equals( propertyKey ))
             cachedInchi = (InChI) value;
         else if(MolProperty.Fingerprint.name().equals( propertyKey ))
