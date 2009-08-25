@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.chemoinformatics.wizards.AddMoleculeWizardPage;
 import net.bioclipse.chemoinformatics.wizards.WizardHelper;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
@@ -36,7 +37,7 @@ import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
  *
  */
 public class NewSdfWizard extends BasicNewResourceWizard{
-        private SelectFilesWizardPage specPage;
+        private AddMoleculeWizardPage specPage;
         private WizardNewFileCreationPage newsdPage;
         private static final Logger logger = Logger.getLogger(NewSdfWizard.class);
         public NewSdfWizard() {
@@ -57,7 +58,7 @@ public class NewSdfWizard extends BasicNewResourceWizard{
             newsdPage.setTitle("Choose name and location for new file");
             newsdPage.setDescription("Extension will be .sdf if none is given");
             addPage(newsdPage);
-            specPage = new SelectFilesWizardPage(true, sel);
+            specPage = new AddMoleculeWizardPage("Select files to include","All structures you select will be added to the sd file.","Include directories recursivly",true,false);
             addPage(specPage);
 
         }
@@ -80,7 +81,7 @@ public class NewSdfWizard extends BasicNewResourceWizard{
                                           failures.add((IFile)selection);
                                   }
                           }
-                          if(selection instanceof IContainer && specPage.doRecursive()){
+                          if(selection instanceof IContainer && specPage.isCheckboxChecked()){
                                   try {
                                           doRecursion((IContainer)selection,entries,failures);
                                   } catch (CoreException e) {
