@@ -16,6 +16,7 @@ import java.util.List;
 import net.bioclipse.chemoinformatics.contentlabelproviders.MoleculeFileContentProvider;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -40,11 +41,12 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  */
 public class AddMoleculeWizardPage extends WizardPage {
 
-    private ArrayList<IFile> selectedFiles;
+    private ArrayList<IResource> selectedFiles;
     private Button     checkBox;
     private String     checkBoxLabel;
     private TreeViewer treeViewer;
     private boolean    multipleSelection;
+    private boolean    selectFilesOnly=true;
 
     /**
      * Constructor for the wizard page.
@@ -58,7 +60,7 @@ public class AddMoleculeWizardPage extends WizardPage {
                                   String description, 
                                   boolean multipleSelection ) {
 
-        this( title, description, null, multipleSelection );
+        this( title, description, null, multipleSelection, true);
     }
 
     /**
@@ -74,12 +76,32 @@ public class AddMoleculeWizardPage extends WizardPage {
      */
     public AddMoleculeWizardPage(String title, String description,
             String checkBoxLabel, boolean multipleSelection) {
+    	
+    	this( title, description, checkBoxLabel, multipleSelection, true);
+    }
+    
+    /**
+     * Constructor for the wizard page. Using this constructor adds a checkbox 
+     * with the label checkBoxLabel to the page. isCheckboxChecked can be used 
+     * to get the value of the checkbox.
+     * 
+     * @param title        Will be used as title of the page.
+     * @param description  Will be used as description of the page.
+     * @param checkBoxLabel The label of the check box.
+     * @param multipleSelection true=multiple selection possible, 
+     * false= one selection only.
+     * @param selectFilesOnlay true=only if a file is selected the page is 
+     * considered finished, false=any selection makes the page finished.
+     */
+    public AddMoleculeWizardPage(String title, String description,
+            String checkBoxLabel, boolean multipleSelection, boolean selectFilesOnly) {
 
         super( title );
         setTitle( title );
         setDescription( description );
         this.checkBoxLabel = checkBoxLabel;
         this.multipleSelection = multipleSelection;
+        this.selectFilesOnly=selectFilesOnly;
     }
 
     public void createControl( Composite parent ) {
@@ -155,10 +177,10 @@ public class AddMoleculeWizardPage extends WizardPage {
 
         ISelection sel = treeViewer.getSelection();
         if ( sel instanceof IStructuredSelection ) {
-            selectedFiles = new ArrayList<IFile>();
+            selectedFiles = new ArrayList<IResource>();
             for (Object obj : ((IStructuredSelection)sel).toList()){
-                if ( obj instanceof IFile ) {
-                    IFile file = (IFile) obj;
+                if ( !selectFilesOnly || obj instanceof IFile ) {
+                    IResource file = (IResource) obj;
                     selectedFiles.add(file);
                 }
             }
@@ -178,7 +200,7 @@ public class AddMoleculeWizardPage extends WizardPage {
      * 
      * @return The molecule file selected by the user.
      */
-    public List<IFile> getSelectedRes() {
+    public List<IResource> getSelectedRes() {
 
         return this.selectedFiles;
     }
