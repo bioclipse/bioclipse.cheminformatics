@@ -95,6 +95,7 @@ import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.ExternalHighlightGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.MergeAtomsGenerator;
 import org.openscience.cdk.renderer.generators.SelectAtomGenerator;
 import org.openscience.cdk.renderer.generators.SelectBondGenerator;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
@@ -456,6 +457,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         generatorList.add(new ExternalHighlightGenerator());
         generatorList.addAll( super.createGenerators() );
+        generatorList.add( new MergeAtomsGenerator());
         generatorList.add( phantomGenerator = new PhantomBondGenerator());
         generatorList.add(new SelectAtomGenerator());
         generatorList.add(new SelectBondGenerator());
