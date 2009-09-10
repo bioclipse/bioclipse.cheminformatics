@@ -238,31 +238,42 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
                 RendererModel rmodel = getRenderer2DModel();
                 IAtom atom = rmodel.getHighlightedAtom();
-                if(atom != null && rmodel.getToolTipTextMap().isEmpty()) {
-                    List<IAtomContainer> acs= ChemModelManipulator
-                                            .getAllAtomContainers(
-                                          getControllerHub().getIChemModel());
-                    int num =-1;
-                    for(IAtomContainer ac:acs) {
-                        num = ac.getAtomNumber( atom );
-                        if(num>-1) break;
-                    }
-                    if(num<0) return "";
-                    String atomType = atom.getAtomTypeName();
-                    if(atomType!= null)
-                        atomType= atomType.replaceFirst(  "^[^\\.]+\\.","" );
-                    return String.format( "%s%d, [%s]",
-                                          atom.getSymbol(),
-                                          num,
-                                          atomType);
+                if(atom == null) {
+                    return null;
                 }else {
-                    return rmodel.getToolTipText( atom );
+                    if(rmodel.getToolTipTextMap().isEmpty()) {
+                        List<IAtomContainer> acs= ChemModelManipulator
+                                            .getAllAtomContainers(
+                                            getControllerHub().getIChemModel());
+                        int num =-1;
+                        for(IAtomContainer ac:acs) {
+                            num = ac.getAtomNumber( atom );
+                            if(num!=-1) break;
+                        }
+                        if(num<0) return null;
+                        String atomType = atom.getAtomTypeName();
+                        if(atomType!= null)
+                            atomType= atomType.replaceFirst(  "^[^\\.]+\\.","" );
+                        return String.format( "%s%d, [%s]",
+                                              atom.getSymbol(),
+                                              num,
+                                              atomType);
+                    }else {
+                        String text = rmodel.getToolTipText( atom );
+                        return text.length()!=0?text:null;
+                    }
                 }
+            }
+
+            @Override
+            protected boolean shouldCreateToolTip( Event event ) {
+                RendererModel rmodel = getRenderer2DModel();
+                IAtom atom = rmodel.getHighlightedAtom();
+                return atom!=null && super.shouldCreateToolTip( event );
             }
         };
         tooltip.setShift( new Point(10,0) );
         tooltip.setPopupDelay(200);
-
 
     }
 
@@ -426,7 +437,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 // put getToolTipText(prevHighlightedBond) here
                 setToolTipText( null );
             } else {
-                setToolTipText( "" );
+                setToolTipText( null );
             }
         }
     }
