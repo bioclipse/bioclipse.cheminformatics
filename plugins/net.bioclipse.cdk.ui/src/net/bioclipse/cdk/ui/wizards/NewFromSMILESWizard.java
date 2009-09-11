@@ -10,35 +10,26 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.wizards;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
-import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.chemoinformatics.wizards.WizardHelper;
-import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.cdk.ui.Activator;
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.util.LogUtils;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.ISelection;
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
-import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 
 public class NewFromSMILESWizard extends BasicNewResourceWizard {
+
+    private static final Logger logger =
+        Logger.getLogger(NewFromSMILESWizard.class);
 
     public static final String WIZARD_ID =
         "net.bioclipse.cdk.ui.wizards.NewFromSMILESWizard"; //$NON-NLS-1$
     
     private SMILESInputWizardPage mainPage;
-    private WizardNewFileCreationPage selectFilePage;
     
     private String smiles = null;
     
@@ -51,7 +42,7 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
     }
 
     public boolean canFinish() {
-        return (mainPage.canFlipToNextPage()) && (selectFilePage.isPageComplete());
+        return mainPage.canFlipToNextPage();
     }
     
     public void addPages() {
@@ -60,53 +51,27 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
         mainPage.setTitle("Open SMILES");
         mainPage.setDescription("Create a new resource from a SMILES"); 
         addPage(mainPage);
-        
-        selectFilePage = new WizardNewFileCreationPage("newFilePage1", getSelection());//$NON-NLS-1$
-        selectFilePage.setTitle("Select File");
-        selectFilePage.setDescription("Select target file");
-        ISelection sel=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
-        if(sel instanceof IStructuredSelection)
-            selectFilePage.setFileName( WizardHelper.findUnusedFileName((IStructuredSelection)sel, "unnamed", ".cml") );
-        addPage(selectFilePage);
+    }
+
+    public void init(IWorkbench workbench, IStructuredSelection currentSelection) {
+        setWindowTitle("New Molecule From SMILES");
+        setNeedsProgressMonitor(true);
     }
 
     public boolean performFinish() {
-        IFile file = selectFilePage.createNewFile();
-        if (file == null) {
-            return false;
-        }
+        //Open editor with content (String) as content
         ICDKManager cdk = net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
         try {
-            ICDKMolecule cdkMol = cdk.fromSMILES(getSMILES());
-            IMolecule newMol = cdk.generate2dCoordinates(cdkMol);
-            InputStream source = new ByteArrayInputStream(newMol.toCML().getBytes());
-            file.setContents(source, true, false, null);
-        } catch (CoreException e1) {
-            e1.printStackTrace();
-            return false;
-        } catch (BioclipseException e) {
-            e.printStackTrace();
-            return false;
+            ICDKMolecule mol = cdk.fromSMILES(getSMILES());
+            IMolecule newMol = cdk.generate2dCoordinates(mol);
+            net.bioclipse.ui.business.Activator.getDefault().getUIManager()
+                .open(newMol, "net.bioclipse.cdk.ui.editors.jchempaint.cml");
         } catch (Exception e) {
-            // thrown by cdk.generate2dCoordinates()
-            e.printStackTrace();
-            return false;
+            LogUtils.handleException(
+                e, logger,
+                Activator.PLUGIN_ID
+            );
         }
-
-        selectAndReveal(file);
-
-        IWorkbenchWindow bench = getWorkbench().getActiveWorkbenchWindow();
-        try {
-            if (bench != null) {
-                IWorkbenchPage page = bench.getActivePage();
-                if (page != null) {
-                    IDE.openEditor(page, file, true);
-                }
-            }
-        } catch (PartInitException e) {
-            e.printStackTrace();
-        }
-
         return true;
     }
     
