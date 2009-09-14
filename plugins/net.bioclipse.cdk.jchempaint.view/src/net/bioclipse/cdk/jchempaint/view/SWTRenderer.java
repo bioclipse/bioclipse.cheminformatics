@@ -46,15 +46,15 @@ public class SWTRenderer implements IDrawVisitor{
     private Logger logger = Logger.getLogger( SWTRenderer.class );
 
     private GC gc;
-    
+
     private RendererModel model;
-    
+
     private AffineTransform transform;
 
     private SWTFontManager fontManager;
 
     private Map<java.awt.Color, Color> cleanUp;
-    
+
     public SWTRenderer(GC graphics) {
         transform = new AffineTransform();
         this.model = new RendererModel();
@@ -68,11 +68,11 @@ public class SWTRenderer implements IDrawVisitor{
     private int transformX(double x) {
         return (int) transform( x, 1 )[0];
     }
-    
+
     private int transformY(double y) {
         return (int) transform( 1, y )[1];
     }
-    
+
     private double[] transform(double x, double y) {
         double [] result = new double[2];
         transform.transform( new double[] {x,y}, 0, result, 0, 1 );
@@ -104,7 +104,7 @@ public class SWTRenderer implements IDrawVisitor{
         Color colorOld = gc.getBackground();
         int radius = scaleX(element.radius);
         int diameter = scaleX(element.radius * 2);
-        
+
         if (element.fill) {
             gc.setBackground(toSWTColor(gc, element.color));
 
@@ -147,31 +147,31 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     private void drawWedge(WedgeLineElement wedge) {
-      
-        Vector2d normal = 
+
+        Vector2d normal =
             new Vector2d(wedge.y1 - wedge.y2, wedge.x2 - wedge.x1);
         normal.normalize();
         normal.scale(model.getWedgeWidth() / model.getScale());
-        
+
         // make the triangle corners
         Point2d vertexA = new Point2d(wedge.x1, wedge.y1);
         Point2d vertexB = new Point2d(wedge.x2, wedge.y2);
         Point2d vertexC = new Point2d(vertexB);
         vertexB.add(normal);
         vertexC.sub(normal);
-        
+
         if (wedge.isDashed)
             drawDashedWedge( vertexA, vertexB, vertexC);
         else
             drawFilledWedge(vertexA, vertexB, vertexC);
 
     }
-    
+
     private void drawFilledWedge(Point2d pA, Point2d pB, Point2d pC) {
         double[] a = transform(pA.x, pA.y);
         double[] b = transform(pB.x, pB.y);
         double[] c = transform(pC.x, pC.y);
-        
+
         Path path = new Path(gc.getDevice());
         path.moveTo((float) a[0], (float) a[1]);
         path.lineTo((float) b[0], (float) b[1]);
@@ -182,7 +182,7 @@ public class SWTRenderer implements IDrawVisitor{
 
         path.dispose();
     }
-    
+
     private void drawDashedWedge(Point2d pA, Point2d pB, Point2d pC) {
         // calculate the distances between lines
         double distance = pB.distance(pA);
@@ -190,7 +190,7 @@ public class SWTRenderer implements IDrawVisitor{
         double gap = distance * gapFactor;
         double numberOfDashes = distance / gap;
         double d = 0;
-        
+
         // draw by interpolating along the edges of the triangle
         Path path = new Path(gc.getDevice());
         for (int i = 0; i < numberOfDashes; i++) {
@@ -219,7 +219,7 @@ public class SWTRenderer implements IDrawVisitor{
     private Color getBackgroundColor() {
         return toSWTColor( gc, getModel().getBackColor() );
     }
-    
+
 
     private void drawLine(LineElement element) {
         Path path = new Path(gc.getDevice());
@@ -240,7 +240,7 @@ public class SWTRenderer implements IDrawVisitor{
 
         return fontManager.getSmallFont();
     }
-    
+
     public void visit(ArrowElement element) {
         Path path = new Path(gc.getDevice());
         double[] a=transform( element.x1, element.y1 );
@@ -336,16 +336,16 @@ public class SWTRenderer implements IDrawVisitor{
 
         }
     }
-    
+
     public Color toSWTColor(GC graphics,java.awt.Color color) {
         if (cleanUp == null) {
             cleanUp = new HashMap<java.awt.Color,Color>();
         }
-        
+
         if (color == null) {
             return graphics.getDevice().getSystemColor(SWT.COLOR_MAGENTA);
         }
-        
+
         assert(color != null);
         Color otherColor = cleanUp.get(color);
         if (otherColor == null) {
@@ -456,7 +456,7 @@ public class SWTRenderer implements IDrawVisitor{
             }
         }
     }
-    
+
     private Method getMethod( IRenderingElement element ) {
 
         Class<?> cl = element.getClass();
