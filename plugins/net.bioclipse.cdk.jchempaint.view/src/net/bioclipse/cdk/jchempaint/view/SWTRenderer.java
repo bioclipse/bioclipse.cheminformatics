@@ -30,6 +30,7 @@ import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.ArrowElement;
 import org.openscience.cdk.renderer.elements.AtomSymbolElement;
 import org.openscience.cdk.renderer.elements.ElementGroup;
+import org.openscience.cdk.renderer.elements.GeneralPath;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.LineElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
@@ -77,7 +78,13 @@ public class SWTRenderer implements IDrawVisitor{
         transform.transform( new double[] {x,y}, 0, result, 0, 1 );
         return result;
     }
-    
+
+    private float[] transform(float[] values) {
+        float[] result = new float[values.length];
+        transform.transform( values, 0, result, 0, result.length/2 );
+        return result;
+    }
+
     private int scaleX(double x) {
         return (int) (x*transform.getScaleX());
     }
@@ -404,6 +411,28 @@ public class SWTRenderer implements IDrawVisitor{
         }
         gc.drawPath( path );
         path.dispose();
+    }
+
+    public void visit(GeneralPath element) {
+        gc.setForeground( toSWTColor( gc, element.color ) );
+        int oldStyle = gc.getLineStyle();
+        gc.setLineStyle( SWT.LINE_DOT );
+        Path path = new Path(gc.getDevice());
+
+        for(org.openscience.cdk.renderer.elements.path.PathElement e:element.elements) {
+            float[] v = transform( e.points());
+
+            switch ( e.type() ) {
+                case MoveTo: path.moveTo( v[0],v[1] );break;
+                case LineTo: path.lineTo( v[0], v[1] );break;
+                case QuadTo: path.quadTo( v[0], v[1], v[2], v[3] );break;
+                case CubicTo: path.cubicTo( v[0], v[1], v[2], v[3], v[4], v[5] );break;
+                case Close: path.close();
+            }
+        }
+        gc.drawPath( path );
+        path.dispose();
+        gc.setLineStyle( oldStyle );
     }
 
     public void visit(IRenderingElement element)  {
