@@ -64,7 +64,7 @@ public interface ICDKMolecule extends IMolecule{
      * @param propertyKey indicating which property to get
      * @param urgency indicates it value should be recalculated or cached value
      * used
-     * @return value for property indicated by key
+     * @return value for property indicated by key or null
      */
     public Object getProperty(String propertyKey,Property urgency);
 
