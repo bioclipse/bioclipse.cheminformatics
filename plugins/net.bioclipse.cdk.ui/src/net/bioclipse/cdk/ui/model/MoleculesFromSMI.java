@@ -11,6 +11,7 @@
 package net.bioclipse.cdk.ui.model;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -124,5 +125,9 @@ public class MoleculesFromSMI implements IMoleculesFromFile {
      public void save() {
 
          throw new UnsupportedOperationException("Can't save SMILES yet.");
+    }
+
+     public Collection<Object> getAvailableProperties() {
+         return Collections.emptySet();
     }
 }

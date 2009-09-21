@@ -289,8 +289,7 @@ public class MoleculeTableManager implements IBioclipseManager {
 
         IFile target = null;
         Collection<Object> availableProperties = null;
-        if(model instanceof SDFIndexEditorModel) // FIXME save properties to sDB
-            availableProperties = ((SDFIndexEditorModel) model).getPropertyKeys();
+            availableProperties = model.getAvailableProperties();
 
         SubMonitor loopProgress = subMonitor.newChild( 1000 );
         loopProgress.setWorkRemaining( 1000*model.getNumberOfMolecules() );

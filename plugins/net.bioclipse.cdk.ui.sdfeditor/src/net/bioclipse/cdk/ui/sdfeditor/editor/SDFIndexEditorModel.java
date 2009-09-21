@@ -249,7 +249,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
         }
     }
 
-    public Collection<Object> getPropertyKeys() {
+    public Collection<Object> getAvailableProperties() {
         if(availableProperties==null) return Collections.emptySet();
         availableProperties.addAll( propertyList.keySet() );
         return new HashSet<Object>(availableProperties);

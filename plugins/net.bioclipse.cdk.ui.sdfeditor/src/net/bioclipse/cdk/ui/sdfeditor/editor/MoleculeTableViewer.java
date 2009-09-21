@@ -10,6 +10,7 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
+import java.util.Collection;
 import java.util.List;
 
 import net.bioclipse.cdk.domain.CDKMolecule;
@@ -275,7 +276,10 @@ public class MoleculeTableViewer extends ContentViewer {
                     public void save() {
                         throw new UnsupportedOperationException();
                     }
+                    public Collection<Object> getAvailableProperties() {
 
+                        return model.getAvailableProperties();
+                    }
                 };
                 return editorModel;
             }
@@ -289,7 +293,6 @@ public class MoleculeTableViewer extends ContentViewer {
         if(getContentProvider() instanceof MoleculeTableContentProvider) {
 
             int[] selected = table.getSelectionModel().getSelectedRows();
-            int max = getDataProvider().getRowCount();
 
             if(selected.length==0) {
                 currentSelected = -1;

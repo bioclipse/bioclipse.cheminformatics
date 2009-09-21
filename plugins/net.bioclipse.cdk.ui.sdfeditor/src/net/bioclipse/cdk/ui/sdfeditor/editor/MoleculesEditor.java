@@ -14,6 +14,7 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -222,6 +223,14 @@ public class MoleculesEditor extends EditorPart implements
                                         public void save() {
                                             throw new UnsupportedOperationException();
                                             }
+                                        public Collection<Object> getAvailableProperties() {
+
+                                            return new ArrayList<Object>(
+                                                            molecules.get( 0 )
+                                                            .getAtomContainer()
+                                                            .getProperties()
+                                                            .keySet());
+                                        }
                                     };
 
 
@@ -296,6 +305,14 @@ public class MoleculesEditor extends EditorPart implements
 
                             public void save() {
                                 }
+                            public Collection<Object> getAvailableProperties() {
+
+                                return new ArrayList<Object>(
+                                                molecules.get( 0 )
+                                                .getAtomContainer()
+                                                .getProperties()
+                                                .keySet());
+                            }
                         };
 
                   molTableViewer.setContentProvider(

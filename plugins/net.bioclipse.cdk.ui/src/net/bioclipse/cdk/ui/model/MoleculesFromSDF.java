@@ -12,6 +12,7 @@
 package net.bioclipse.cdk.ui.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -149,5 +150,9 @@ public class MoleculesFromSDF implements IMoleculesFromFile{
     public void save() {
         throw new UnsupportedOperationException(this.getClass().getName()+
         " does not support this operation yet");
+    }
+
+    public Collection<Object> getAvailableProperties() {
+        return Collections.emptySet();
     }
 }

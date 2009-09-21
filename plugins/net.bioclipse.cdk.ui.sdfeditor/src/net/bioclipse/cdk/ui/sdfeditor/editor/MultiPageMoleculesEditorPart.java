@@ -273,13 +273,12 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         Collection<IPropertyCalculator<?>> calculators = CalculatePropertyHandler
         .gatherCalculators( CalculatePropertyHandler
                             .getConfigurationElements(), null );
-        if(moleculesPage.getModel() instanceof SDFIndexEditorModel) {
-            Collection<Object> idsx = ((SDFIndexEditorModel)moleculesPage.getModel())
-                .getPropertyKeys();
-            for(IPropertyCalculator<?> calculator:calculators) {
-                if( idsx.contains( calculator.getPropertyName() )) {
-                   ids.add( calculator );
-                }
+
+        Collection<Object> idsx =
+                        moleculesPage.getModel().getAvailableProperties();
+        for ( IPropertyCalculator<?> calculator : calculators ) {
+            if ( idsx.contains( calculator.getPropertyName() ) ) {
+                ids.add( calculator );
             }
         }
 

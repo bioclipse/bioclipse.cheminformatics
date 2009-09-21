@@ -11,6 +11,8 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.views;
 
+import java.util.Collection;
+
 import net.bioclipse.cdk.domain.ICDKMolecule;
 
 /**
@@ -26,4 +28,6 @@ public interface IMoleculesEditorModel {
     public void markDirty(int index,ICDKMolecule moleculeToSave);
 
     public void save();
+
+    public Collection<Object> getAvailableProperties();
 }

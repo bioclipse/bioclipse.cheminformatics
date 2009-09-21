@@ -12,7 +12,6 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -57,9 +56,7 @@ public class MoleculeTableContentProvider implements
     }
 
     public Collection<Object> getAvailableProperties() {
-        if(model instanceof SDFIndexEditorModel)
-            return ((SDFIndexEditorModel)model).getPropertyKeys();
-        return Collections.emptySet();
+        return model.getAvailableProperties();
     }
 
     public void removeColumn(Object key) {
