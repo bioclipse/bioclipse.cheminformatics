@@ -12,14 +12,22 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+import net.bioclipse.cdk.ui.views.ISortable;
+import net.bioclipse.cdk.ui.views.ISortable.SortProperty;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.sourceforge.nattable.NatTable;
 import net.sourceforge.nattable.data.IDataProvider;
+import net.sourceforge.nattable.model.DefaultNatTableModel;
+import net.sourceforge.nattable.model.INatTableModel;
+import net.sourceforge.nattable.sorting.ISortingDirectionChangeListener;
+import net.sourceforge.nattable.sorting.SortingDirection;
+import net.sourceforge.nattable.sorting.SortingDirection.DirectionEnum;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
@@ -46,6 +54,8 @@ public class MoleculeTableContentProvider implements
     MoleculesEditorLabelProvider melp = new MoleculesEditorLabelProvider(
                                     MoleculeTableViewer.STRUCTURE_COLUMN_WIDTH);
 
+    private ISortingDirectionChangeListener sortDirListener;
+
     public MoleculesEditorLabelProvider getLabelProvider() {
         return melp;
     }
@@ -70,6 +80,7 @@ public class MoleculeTableContentProvider implements
 
     private void setModel(IMoleculesEditorModel model) {
         this.model = model;
+
         if(viewer !=null)
             viewer.refresh();
     }
@@ -97,7 +108,7 @@ public class MoleculeTableContentProvider implements
             this.viewer = (MoleculeTableViewer)viewer;
         }
 
-        
+
         if(newInput instanceof IMoleculesEditorModel)
             setModel((IMoleculesEditorModel) newInput);
         else if(newInput instanceof IAdaptable){
@@ -105,7 +116,6 @@ public class MoleculeTableContentProvider implements
                       ((IAdaptable)newInput).getAdapter(
                                                  IMoleculesEditorModel.class ));
         }
-
         if(this.viewer != null)
             updateSize( (model!=null?model.getNumberOfMolecules():0) );
 
@@ -117,6 +127,53 @@ public class MoleculeTableContentProvider implements
                 properties.add(iter.next());
         }
         updateHeaders();
+
+        NatTable table = this.viewer.table;
+        if ( model instanceof ISortable ) {
+            table.removeSortingDirectionChangeListener( sortDirListener );
+            final ISortable sortModel = (ISortable) model;
+
+            ISortingDirectionChangeListener listener
+                                    = new ISortingDirectionChangeListener() {
+
+          public void sortingDirectionChanged( SortingDirection[] directions ) {
+
+                    List<SortProperty<?>> sortOrder;
+                    if ( directions.length <= 0 ) {
+                        sortOrder = Collections.emptyList();
+                        sortModel.setSortingProperties( sortOrder );
+                        return;
+                    }
+                    sortOrder = new ArrayList<SortProperty<?>>();
+                    for(SortingDirection sDir:directions) {
+                        if(sDir.getColumn() == 0) continue;
+                        sortOrder.add( new SortProperty<Object>(
+                                        properties.get(sDir.getColumn()-1),
+                                        sDir.getDirection()==DirectionEnum.UP
+                                         ?ISortable.SortDirection.Ascending
+                                         :ISortable.SortDirection.Descending) );
+                    }
+                    sortModel.setSortingProperties( sortOrder );
+               }
+            };
+            setSortListener( listener );
+        }else {
+            setSortListener( null );
+        }
+
+    }
+
+    private void setSortListener( ISortingDirectionChangeListener listener) {
+        NatTable table = this.viewer.table;
+        if(listener==null)
+            table.removeSortingDirectionChangeListener( sortDirListener );
+        else
+            table.addSortingDirectionChangeListener( listener );
+        sortDirListener = listener;
+        INatTableModel mod = table.getNatTableModel();
+        if(mod instanceof DefaultNatTableModel)
+            ((DefaultNatTableModel)mod)
+                .setSortingEnabled( listener==null?false:true );
     }
 
     public void updateHeaders() {
