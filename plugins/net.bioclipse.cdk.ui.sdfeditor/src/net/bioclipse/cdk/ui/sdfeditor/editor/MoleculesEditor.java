@@ -198,40 +198,7 @@ public class MoleculesEditor extends EditorPart implements
                                 final List<ICDKMolecule> list = getReturnValue();
 
                                 // FIXME there should be a IMoleculesEditorModel content provider
-                                Object input = new IMoleculesEditorModel() {
-                                            List<ICDKMolecule> molecules;
-                                            {
-                                                molecules = list;
-                                            }
-                                            public ICDKMolecule getMoleculeAt( int index ) {
-
-                                            return molecules.get( index );
-                                        }
-
-                                        public int getNumberOfMolecules() {
-
-                                            return molecules.size();
-                                        }
-
-                                        public void markDirty(
-                                                              int index,
-                                                              ICDKMolecule moleculeToSave ) {
-
-                                               list.set(index,moleculeToSave);
-
-                                            }
-                                        public void save() {
-                                            throw new UnsupportedOperationException();
-                                            }
-                                        public Collection<Object> getAvailableProperties() {
-
-                                            return new ArrayList<Object>(
-                                                            molecules.get( 0 )
-                                                            .getAtomContainer()
-                                                            .getProperties()
-                                                            .keySet());
-                                        }
-                                    };
+                                Object input = new ListMoleculesEditorModel( list );
 
 
                               molTableViewer.setContentProvider(
@@ -282,38 +249,7 @@ public class MoleculesEditor extends EditorPart implements
             final List<ICDKMolecule> list = adapt(editorInput,List.class);
             if(list!=null) {
 
-                Object inp =  new IMoleculesEditorModel() {
-                            List<ICDKMolecule> molecules;
-                            {
-                                molecules = list;
-                            }
-                            public ICDKMolecule getMoleculeAt( int index ) {
-
-                                return molecules.get( index );
-                            }
-
-                            public int getNumberOfMolecules() {
-
-                                return molecules.size();
-                            }
-
-                            public void markDirty( int index,
-                                                  ICDKMolecule moleculeToSave ) {
-
-                                molecules.set( index, moleculeToSave );
-                            }
-
-                            public void save() {
-                                }
-                            public Collection<Object> getAvailableProperties() {
-
-                                return new ArrayList<Object>(
-                                                molecules.get( 0 )
-                                                .getAtomContainer()
-                                                .getProperties()
-                                                .keySet());
-                            }
-                        };
+                Object inp =  new ListMoleculesEditorModel( list );
 
                   molTableViewer.setContentProvider(
                                new MoleculeTableContentProvider() );
