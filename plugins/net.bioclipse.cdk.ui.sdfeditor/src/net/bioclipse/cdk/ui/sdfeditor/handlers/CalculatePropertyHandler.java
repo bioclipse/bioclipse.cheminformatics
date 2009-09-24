@@ -21,7 +21,6 @@ import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableContentProvider;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart;
-import net.bioclipse.cdk.ui.sdfeditor.editor.SDFIndexEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
@@ -89,7 +88,11 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
             .getAdapter( MoleculesEditor.class );
             // FIXME there can be other models besides SDFIndexEditorModel
             if(editor!=null) {
-                SDFIndexEditorModel model = findModel( editor );
+                IMoleculesEditorModel model = findModel( editor );
+                if(model==null) {
+                    logger.warn( "Failed to calculate property, model is null" );
+                    return null;
+                }
                 executeCalculators( model, editor, calcList  );
                 mpmep.setDirty( true );
             }
@@ -100,18 +103,9 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
         return null;
     }
 
-    private SDFIndexEditorModel findModel(MoleculesEditor editor) {
+    private IMoleculesEditorModel findModel(MoleculesEditor editor) {
 
-            IMoleculesEditorModel model = editor.getModel();
-            if(model instanceof SDFIndexEditorModel)
-                return (SDFIndexEditorModel) model;
-            else {
-                IllegalArgumentException e = new IllegalArgumentException(
-                                                 "Only SDF model in supported");
-                LogUtils.handleException( e, logger,
-                                          "net.bioclipse.cdk.ui.sdfeditor" );
-                throw e;
-            }
+            return editor.getModel();
     }
     private IPropertyCalculator<?>[] getCalculators(String calc) {
 
@@ -183,7 +177,7 @@ public class CalculatePropertyHandler extends AbstractHandler implements IHandle
             LogUtils.handleException( e, logger, Activator.PLUGIN_ID );
         }
     }
-    private void executeCalculators( SDFIndexEditorModel model,
+    private void executeCalculators( IMoleculesEditorModel model,
                                      final MoleculesEditor editor,
                          final IPropertyCalculator<?>[] calculators) {
 

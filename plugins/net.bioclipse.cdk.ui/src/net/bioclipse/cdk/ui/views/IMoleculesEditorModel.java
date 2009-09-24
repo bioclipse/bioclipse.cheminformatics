@@ -30,4 +30,6 @@ public interface IMoleculesEditorModel {
     public void save();
 
     public Collection<Object> getAvailableProperties();
+
+    public <T> void setPropertyFor( int index, String property,  T value);
 }

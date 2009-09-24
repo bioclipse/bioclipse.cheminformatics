@@ -130,4 +130,8 @@ public class MoleculesFromSMI implements IMoleculesFromFile {
      public Collection<Object> getAvailableProperties() {
          return Collections.emptySet();
     }
+
+    public <T> void setPropertyFor( int moleculeIndex, String property, T value ) {
+        logger.error( "SMI model dose not support changing properties." );
+    }
 }

@@ -39,15 +39,15 @@ public interface IMoleculeTableManager extends IBioclipseManager {
     public SDFIndexEditorModel createSDFIndex( String file );
 
     @Recorded
-    public void calculateProperty( SDFIndexEditorModel model,
+    public void calculateProperty( IMoleculesEditorModel model,
                                    IPropertyCalculator<?> calculator);
     @Recorded
-    public void calculateProperty( SDFIndexEditorModel model,
+    public void calculateProperty( IMoleculesEditorModel model,
                                    IPropertyCalculator<?> calculator,
                                    BioclipseUIJob<Void> uiJob);
 
     @Recorded
-    public void calculateProperty( SDFIndexEditorModel model,
+    public void calculateProperty( IMoleculesEditorModel model,
                                    IPropertyCalculator<?>[] calculators,
                                    BioclipseUIJob<Void> uiJob);
 

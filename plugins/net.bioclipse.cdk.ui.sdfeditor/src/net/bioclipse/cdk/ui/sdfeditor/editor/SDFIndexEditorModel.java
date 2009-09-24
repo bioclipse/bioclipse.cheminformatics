@@ -297,6 +297,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
         if(props==null)
             molProps.put( moleculeIndex, props = new HashMap<String, Object>() );
         props.put( property, value );
+        setDirty( true );
     }
 
     public Iterator<ICDKMolecule> iterator() {

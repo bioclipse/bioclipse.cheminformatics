@@ -280,6 +280,13 @@ public class MoleculeTableViewer extends ContentViewer {
 
                         return model.getAvailableProperties();
                     }
+
+                    public <T> void setPropertyFor( int moleculeIndex,
+                                                    String property, T value ) {
+
+                        model.setPropertyFor( moleculeIndex, property, value );
+
+                    }
                 };
                 return editorModel;
             }

@@ -203,14 +203,14 @@ public class MoleculeTableManager implements IBioclipseManager {
        return new SDFileIndex(file,values,propMap);
     }
 
-    public void calculateProperty( SDFIndexEditorModel model,
+    public void calculateProperty( IMoleculesEditorModel model,
                                    IPropertyCalculator<?> calculator,
                                    IProgressMonitor monitor) {
         calculateProperty( model, new IPropertyCalculator<?>[] {calculator},
                            monitor );
     }
 
-    public void calculateProperty( SDFIndexEditorModel model,
+    public void calculateProperty( IMoleculesEditorModel model,
                                    IPropertyCalculator<?>[] calculators,
                                    IProgressMonitor monitor) {
         SubMonitor progress = SubMonitor.convert( monitor,1000 );
@@ -233,7 +233,6 @@ public class MoleculeTableManager implements IBioclipseManager {
             }
             calculateProgress.done();
         }
-        model.setDirty(true);
         progress.done();
     }
 
