@@ -210,16 +210,16 @@ public class IteratingMDLReader extends DefaultIteratingChemObjectReader impleme
                     currentLine = input.readLine();
                     str = new String(currentLine);
                 }
-                String data = "";
+                StringBuilder data = new StringBuilder();
                 while (str.trim().length() > 0) {
                     logger.debug("data line: ", currentLine);
-                    data += str;
+                    data.append(str);
                     currentLine = input.readLine();
                     str = new String(currentLine).trim();
                 }
                 if (fieldName != null) {
-                    logger.info("fieldName, data: ", fieldName, ", ", data);
-                    m.setProperty(fieldName, data);
+                    logger.info("fieldName, data: ", fieldName, ", ", data.toString());
+                    m.setProperty(fieldName, data.toString());
                 }
             }
             currentLine = input.readLine();
