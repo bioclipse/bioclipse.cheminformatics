@@ -65,7 +65,7 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
         
         selectFilePage = new WizardNewFileCreationPage("newFilePage1", getSelection());//$NON-NLS-1$
         selectFilePage.setTitle("Select File");
-        selectFilePage.setDescription("Select target file");
+        selectFilePage.setDescription("Select target (CML) file )");
         ISelection sel=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
         if(sel instanceof IStructuredSelection)
             selectFilePage.setFileName( WizardHelper.findUnusedFileName((IStructuredSelection)sel, "unnamed", ".cml") );
