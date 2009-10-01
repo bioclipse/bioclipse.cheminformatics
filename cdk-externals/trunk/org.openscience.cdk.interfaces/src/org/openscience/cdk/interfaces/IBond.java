@@ -49,6 +49,34 @@ public interface IBond extends IElectronContainer {
 	}
 	
 	/**
+	 * Enumeration of possible stereo types of bonds.
+	 */
+	public enum Stereo {
+	    /** A bonds for which there is no stereochemistry. */
+		NONE,
+		/** A bonds pointing up of which end is above the drawing plane. */
+		UP,
+		/** A bonds pointing up of which start is above the drawing plane. */
+		UP_INVERTED,
+		/** A bonds pointing down of which start is above the drawing plane. */
+		DOWN,
+		/** A bonds pointing down of which end is above the drawing plane. */
+		DOWN_INVERTED,
+		/** A bond for which there is stereochemistry, we just don't know
+		 *  which one.
+		 */
+		UP_OR_DOWN,
+		/** Indication that this double bond has a fixed, but unknown E/Z
+		 * configuration.
+		 */
+		E_OR_Z,
+		/** Indication that this double bond has a fixed configuration, defined
+		 * by the 2D and/or 3D coordinates.
+		 */
+		E_Z_BY_COORDINATES
+	}
+	
+	/**
 	 *  Returns the Iterable to atoms making up this bond.
 	 *
 	 *@return    An Iterable to atoms participating in this bond
@@ -138,18 +166,16 @@ public interface IBond extends IElectronContainer {
 	 *
 	 * @return    The stereo descriptor for this bond
 	 * @see       #setStereo
-	 * @see       org.openscience.cdk.CDKConstants for predefined values.
 	 */
-	public int getStereo();
+	public IBond.Stereo getStereo();
 
 	/**
 	 * Sets the stereo descriptor for this bond.
 	 *
 	 * @param  stereo  The stereo descriptor to be assigned to this bond.
 	 * @see            #getStereo
-	 * @see            org.openscience.cdk.CDKConstants for predefined values.
 	 */
-	public void setStereo(int stereo);
+	public void setStereo(IBond.Stereo stereo);
 
 	/**
 	 * Returns the geometric 2D center of the bond.

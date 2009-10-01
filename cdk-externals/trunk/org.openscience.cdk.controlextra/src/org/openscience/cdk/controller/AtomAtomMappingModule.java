@@ -79,10 +79,6 @@ public class AtomAtomMappingModule extends ControllerModuleAdapter {
 		startAtom = null;
 	}
 
-	public void setChemModelRelay(IChemModelRelay relay) {
-		this.chemModelRelay = relay;
-	}
-
 	public String getDrawModeString() {
 		return "Do Atom-Atom Mapping";
 	}

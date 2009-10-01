@@ -19,17 +19,13 @@
  */
 package org.openscience.cdk.renderer.generators;
 
-import static org.openscience.cdk.CDKConstants.STEREO_BOND_DOWN;
-import static org.openscience.cdk.CDKConstants.STEREO_BOND_DOWN_INV;
-import static org.openscience.cdk.CDKConstants.STEREO_BOND_NONE;
-import static org.openscience.cdk.CDKConstants.STEREO_BOND_UNDEFINED;
-import static org.openscience.cdk.CDKConstants.STEREO_BOND_UP_INV;
-
 import java.awt.Color;
+import java.util.List;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
+import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.interfaces.IAtom;
@@ -288,12 +284,14 @@ public class BasicBondGenerator implements IGenerator {
 	private IRenderingElement generateStereoElement(
 	        IBond bond, RendererModel model) {
 
-		int stereo = bond.getStereo();
+		IBond.Stereo stereo = bond.getStereo();
 		boolean dashed = false;
 		Direction dir = Direction.toSecond;
-		if (stereo == STEREO_BOND_DOWN || stereo == STEREO_BOND_DOWN_INV)
+		if (stereo == IBond.Stereo.DOWN ||
+		    stereo == IBond.Stereo.DOWN_INVERTED)
 			dashed = true;
-		if (stereo == STEREO_BOND_DOWN_INV || stereo == STEREO_BOND_UP_INV)
+		if (stereo == IBond.Stereo.DOWN_INVERTED ||
+		    stereo == IBond.Stereo.UP_INVERTED)
 			dir = Direction.toFirst;
 
 		IRenderingElement base = generateBondElement(
@@ -311,8 +309,8 @@ public class BasicBondGenerator implements IGenerator {
 	}
 
 	public boolean isStereoBond(IBond bond) {
-		return bond.getStereo() != STEREO_BOND_NONE
-				&& bond.getStereo() != STEREO_BOND_UNDEFINED;
+		return bond.getStereo() != IBond.Stereo.NONE
+				&& bond.getStereo() != (IBond.Stereo)CDKConstants.UNSET;
 	}
 
 	public boolean bindsHydrogen(IBond bond) {
@@ -335,5 +333,10 @@ public class BasicBondGenerator implements IGenerator {
 			return generateBondElement(bond, model);
 		}
 	}
+
+    public List<IGeneratorParameter> getParameters() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

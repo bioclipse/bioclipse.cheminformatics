@@ -2,6 +2,7 @@
  *
  * Copyright (C) 2007  Niels Out <nielsout@users.sf.net>
  * Copyright (C) 2008  Stefan Kuhn (undo redo)
+ * Copyright (C) 2009 Arvid Berg <goglepox@users.sf.net>
  *
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -29,6 +30,8 @@ import javax.vecmath.Point2d;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.renderer.RendererModel;
+import static org.openscience.cdk.controller.edit.AddAtom.createAtom;
+import static org.openscience.cdk.controller.edit.SetSymbol.setSymbol;
 
 /**
  * Adds an atom on the given location on mouseclick
@@ -54,15 +57,10 @@ public class AddAtomModule extends ControllerModuleAdapter {
 		
 		if (closestAtom == null || 
 		        closestAtom.getPoint2d().distance(worldCoord) > dH) {
-		    chemModelRelay.addAtom(atomType, worldCoord);
+		    chemModelRelay.execute(createAtom(atomType, worldCoord));
 		} else {
-			chemModelRelay.setSymbol(closestAtom, atomType);
+			chemModelRelay.execute(setSymbol(closestAtom, atomType));
 		}
-		chemModelRelay.updateView();
-	}
-
-	public void setChemModelRelay(IChemModelRelay relay) {
-		this.chemModelRelay = relay;
 	}
 
 	public String getDrawModeString() {

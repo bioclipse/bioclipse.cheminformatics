@@ -8,6 +8,7 @@ org/openscience/cdk/renderer/elements/IRenderingVisitor.java
 org/openscience/cdk/renderer/elements/TextElement.java
 org/openscience/cdk/renderer/elements/IRenderingElement.java
 org/openscience/cdk/renderer/visitor/IDrawVisitor.java
+org/openscience/cdk/renderer/generators/IGeneratorParameter.java
 org/openscience/cdk/renderer/generators/IGenerator.java
 org/openscience/cdk/renderer/RendererModel.java
 org/openscience/cdk/renderer/selection/IChemObjectSelection.java

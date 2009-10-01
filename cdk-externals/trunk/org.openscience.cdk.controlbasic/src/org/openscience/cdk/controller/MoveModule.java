@@ -1,9 +1,9 @@
-/* $Revision: 7636 $ $Author: nielsout $ $Date: 2007-01-04 18:46:10 +0100 (Thu, 04 Jan 2007) $
- *
+/* 
  * Copyright (C) 2007  Niels Out <nielsout@users.sf.net>
  * Copyright (C) 2008-2009  Arvid Berg <goglepox@users.sf.net>
  * Copyright (C) 2008  Stefan Kuhn (undo redo)
- *
+ * Copyright (C) 2009  Mark Rijnbeek (markr@ebi.ac.uk)
+  *
  * Contact: cdk-devel@lists.sourceforge.net
  *
  * This program is free software; you can redistribute it and/or
@@ -26,15 +26,24 @@
  */
 package org.openscience.cdk.controller;
 
+import static org.openscience.cdk.controller.edit.CompositEdit.compose;
+import static org.openscience.cdk.controller.edit.Merge.merge;
+import static org.openscience.cdk.controller.edit.MoveOptionalUndo.move;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
-import org.openscience.cdk.controller.undoredo.IUndoRedoFactory;
-import org.openscience.cdk.controller.undoredo.IUndoRedoable;
-import org.openscience.cdk.controller.undoredo.UndoRedoHandler;
+import org.openscience.cdk.controller.edit.IEdit;
+import org.openscience.cdk.controller.edit.MoveOptionalUndo;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -43,8 +52,7 @@ import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.tools.LoggingTool;
 
 /**
- * Demo IController2DModule. -write picture to file on doubleclick -show atom
- * name on hove-over -drags atoms around (click near atom and move mouse)
+ * Module to move around a selection of atoms and bonds
  *
  * @author Niels Out
  * @cdk.svnrev $Revision: 9162 $
@@ -56,9 +64,9 @@ public class MoveModule extends ControllerModuleAdapter {
     
     private Vector2d offset;
     
-    private IAtomContainer undoRedoContainer;
+    private Set<IAtom> atomsToMove;
     
-    private Point2d start;
+    private Point2d start2DCenter;
 
     public MoveModule(IChemModelRelay chemObjectRelay) {
         super(chemObjectRelay);
@@ -66,85 +74,97 @@ public class MoveModule extends ControllerModuleAdapter {
 
     public void mouseClickedDown(Point2d worldCoord) {
 
-        undoRedoContainer = 
-            chemModelRelay.getIChemModel().getBuilder().newAtomContainer();
-        
         IAtomContainer selectedAC = getSelectedAtomContainer(worldCoord );
         if (selectedAC != null) {
-            Point2d current = GeometryTools.get2DCenter(selectedAC);
-            undoRedoContainer.add(selectedAC);
 
-            start = current;
+            // It could be that only a  selected bond is going to be moved. 
+            // So make sure that the attached atoms are included, otherwise
+            // the undo will fail to place the atoms back where they were
+           atomsToMove = new HashSet<IAtom>();
+
+            for (IAtom atom : selectedAC.atoms()) {
+                atomsToMove.add(atom);
+            }
+            for (IBond bond : selectedAC.bonds()) {
+                for (IAtom atom : bond.atoms())
+                    atomsToMove.add(atom);
+            }
+
+            Point2d current = GeometryTools.get2DCenter(selectedAC);
+            start2DCenter = current;
             offset = new Vector2d();
             offset.sub(current, worldCoord);
+
         } else {
             endMove();
         }
     }
 
     public void mouseClickedUp(Point2d worldCoord) {
-    	if (start != null) {
+    	if (start2DCenter != null) {
             Vector2d end = new Vector2d();
-            end.sub(worldCoord, start);
+
+            // take 2d center of end point to ensure correct positional undo
+            Point2d end2DCenter = GeometryTools.get2DCenter(atomsToMove);
+            end.sub(end2DCenter, start2DCenter);
+
+            Map<IAtom, IAtom> mergeMap = chemModelRelay.getRenderer()
+                                          .getRenderer2DModel().getMerge();
             // Do the merge of atoms
-            if (!chemModelRelay.getRenderer().getRenderer2DModel().getMerge()
-                    .isEmpty()) {
-                chemModelRelay.mergeMolecules(end);
-            } else {
-                for(IAtom atom:selection.getConnectedAtomContainer().atoms()) {
-                   chemModelRelay.moveTo( atom, atom.getPoint2d());
-                }
-                IUndoRedoFactory factory = chemModelRelay.getUndoRedoFactory();
-                UndoRedoHandler handler = chemModelRelay.getUndoRedoHandler();
-                if (factory != null && handler != null) {
-                    IUndoRedoable undoredo = factory.getMoveAtomEdit(
-                            undoRedoContainer, end, this.getDrawModeString());
-                    handler.postEdit(undoredo);
-                }
+            if (!mergeMap.isEmpty()) {
+
+                // First try to shift the selection to be exactly on top of
+                // the target of the merge. This makes the end results visually
+                // more attractive and avoid tilted rings
+                //
+
+                Iterator<IAtom> it = mergeMap.keySet().iterator();
+                IAtom atomA = (IAtom) it.next();
+                IAtom atomB = mergeMap.get( atomA );
+                Vector2d shift = new Vector2d();
+                shift.sub( atomB.getPoint2d(), atomA.getPoint2d() );
+                IEdit smallMove = move( shift, false, atomsToMove );
+                shift.add( end );
+                IEdit shiftEdit = move( shift, true, atomsToMove);
+
+                IEdit mergeEdit = merge(mergeMap);
+                mergeMap.clear();
+                chemModelRelay.execute( compose(smallMove, shiftEdit, mergeEdit) );
+//                chemModelRelay.execute(smallMove);
+//                chemModelRelay.execute(shiftEdit);
+//                chemModelRelay.execute(mergeEdit);
+            }else {
+                IEdit edit = MoveOptionalUndo.move( end, true, atomsToMove );
+                chemModelRelay.execute(edit);
             }
     	}
     	endMove();
     }
 
     private void endMove() {
-        start = null;
+        start2DCenter = null;
         selection = null;
         offset = null;
     }
-    
+
     public void mouseDrag(Point2d worldCoordFrom, Point2d worldCoordTo) {
         if (chemModelRelay != null && offset != null) {
 
             Point2d atomCoord = new Point2d();
             atomCoord.add(worldCoordTo, offset);
 
-            Point2d d = new Point2d();
+            Vector2d d = new Vector2d();
             d.sub(worldCoordTo, worldCoordFrom);
-            IAtomContainer selectedAC = selection.getConnectedAtomContainer();
-            Set<IAtom> moveAtoms = new HashSet<IAtom>();
-            for (IAtom atom : selectedAC.atoms()) {
-                moveAtoms.add(atom);
-            }
-            for (IBond bond : selectedAC.bonds()) {
-                for (IAtom atom : bond.atoms())
-                    moveAtoms.add(atom);
-            }
-            
-            for (IAtom atom : moveAtoms)
-                atom.getPoint2d().add(d);
-            
+
+            IEdit edit  = MoveOptionalUndo.move( d, false, atomsToMove );
             // check for possible merges
             RendererModel model = 
-                chemModelRelay.getRenderer().getRenderer2DModel(); 
+                chemModelRelay.getRenderer().getRenderer2DModel();
             model.getMerge().clear();
-            
-            for (IAtom moveAtom : moveAtoms) {
-                IAtom inRange = chemModelRelay.getAtomInRange(moveAtoms, moveAtom);
-                if (inRange != null) {
-                    model.getMerge().put( moveAtom, inRange );
-                }
-            }
-            chemModelRelay.updateView();
+
+            model.getMerge().putAll( calculateMerge(atomsToMove) );
+
+            chemModelRelay.execute( edit );
 
         } else {
             if (chemModelRelay == null) {
@@ -153,11 +173,52 @@ public class MoveModule extends ControllerModuleAdapter {
         }
     }
 
-    public void setChemModelRelay(IChemModelRelay relay) {
-        this.chemModelRelay = relay;
+    public static class DistAtom implements Comparable<DistAtom>{
+        IAtom atom;
+        double distSquared;
+
+        public DistAtom(IAtom atom, double distSquared) {
+            this.atom = atom;
+            this.distSquared = distSquared;
+        }
+
+        public int compareTo( DistAtom o ) {
+            if(this.distSquared < o.distSquared) return -1;
+            if(this.distSquared > o.distSquared) return 1;
+            return 0;
+        }
     }
 
-	public String getDrawModeString() {
+    private Map<IAtom, IAtom> calculateMerge( Set<IAtom> mergeAtoms ) {
+        RendererModel rModel = chemModelRelay.getRenderer().getRenderer2DModel();
+        double maxDistance = rModel.getHighlightDistance()/ rModel.getScale();
+        maxDistance *= maxDistance; // maxDistance squared
+        Map<IAtom,IAtom> mergers = new HashMap<IAtom, IAtom>();
+        IAtomContainer ac = chemModelRelay.getIChemModel().getMoleculeSet().getAtomContainer( 0 );
+        for(IAtom atom:mergeAtoms) {
+            List<DistAtom> candidates = findMergeCandidates(ac,atom);
+            Collections.sort( candidates);
+            for(DistAtom candiate:candidates) {
+                if(candiate.distSquared>maxDistance)
+                    break;
+                if(mergeAtoms.contains( candiate.atom ))
+                    continue;
+                mergers.put( atom, candiate.atom );
+            }
+        }
+        return mergers;
+    }
+
+    private List<DistAtom> findMergeCandidates(IAtomContainer set, IAtom atom ) {
+        List<DistAtom> candidates = new ArrayList<DistAtom>();
+        for(IAtom candidate:set.atoms()) {
+            double disSquare = candidate.getPoint2d().distanceSquared( atom.getPoint2d() );
+            candidates.add(new DistAtom(candidate,disSquare));
+        }
+        return candidates;
+    }
+
+    public String getDrawModeString() {
 		return "Move";
 	}
 

@@ -26,8 +26,12 @@
 
 package org.openscience.cdk.controller;
 
+import static org.openscience.cdk.controller.edit.AppendAtom.addNewBond;
+import static org.openscience.cdk.controller.edit.SetBondOrder.cycleBondValence;
+
 import javax.vecmath.Point2d;
 
+import org.openscience.cdk.controller.edit.AppendAtom;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
@@ -53,17 +57,16 @@ public class AddBondModule extends ControllerModuleAdapter {
             getHighlighted(worldCoordinate, closestAtom, closestBond);
 
         if (singleSelection == null) {
-            chemModelRelay.addNewBond(worldCoordinate);
+            chemModelRelay.execute(addNewBond(worldCoordinate));
             setSelection(AbstractSelection.EMPTY_SELECTION);
         } else if (singleSelection instanceof IAtom) {
             String atomType =
                 chemModelRelay.getController2DModel().getDrawElement();
 
-            IAtom otherAtom = chemModelRelay.addAtom(
-                    atomType, (IAtom) singleSelection);
-            setSelection(new SingleSelection<IChemObject>(otherAtom));
+            chemModelRelay.execute(AppendAtom.appendAtom(
+                    atomType, (IAtom) singleSelection));
         } else if (singleSelection instanceof IBond) {
-            chemModelRelay.cycleBondValence((IBond) singleSelection);
+            chemModelRelay.execute(cycleBondValence((IBond) singleSelection));
             setSelection(new SingleSelection<IChemObject>(singleSelection));
         }
         chemModelRelay.updateView();

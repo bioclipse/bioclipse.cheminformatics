@@ -26,6 +26,8 @@
  */
 package org.openscience.cdk.controller;
 
+import static org.openscience.cdk.controller.edit.SetCharge.setCharge;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -61,14 +63,10 @@ public class ChangeFormalChargeModule extends ControllerModuleAdapter {
 	        int newCharge = change;
 	        if( atom.getFormalCharge() != null)
 	            newCharge += atom.getFormalCharge();
-	        chemModelRelay.setCharge( atom, newCharge );
+	        chemModelRelay.execute( setCharge( atom, newCharge ));
 	    }
 	    setSelection( new MultiSelection<IAtom>(newSelection) );
 	    chemModelRelay.updateView();// FIXME do you really need to call it here?
-	}
-
-	public void setChemModelRelay(IChemModelRelay relay) {
-		this.chemModelRelay = relay;
 	}
 
 	public String getDrawModeString() {

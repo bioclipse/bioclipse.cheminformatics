@@ -26,8 +26,15 @@
  */
 package org.openscience.cdk.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.vecmath.Point2d;
 
+import org.openscience.cdk.controller.edit.CompositEdit;
+import org.openscience.cdk.controller.edit.IEdit;
+import org.openscience.cdk.controller.edit.RemoveAtom;
+import org.openscience.cdk.controller.edit.RemoveBond;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -53,12 +60,16 @@ public class RemoveModule extends ControllerModuleAdapter {
 	    if(selectedAC == null)
 	        return;
 	    // FIXME do a bulk remove
+	    List<IEdit> edits = new ArrayList<IEdit>();
 	    for(IAtom atom:selectedAC.atoms()) {
-	        chemModelRelay.removeAtom( atom );
+	        edits.add(RemoveAtom.edit( atom ));
 	    }
 	    for(IBond bond:selectedAC.bonds()) {
-          chemModelRelay.removeBond( bond );
-      }
+	        edits.add( RemoveBond.remove( bond ) );
+	    }
+	    if(!edits.isEmpty()) {
+	        chemModelRelay.execute( CompositEdit.compose( edits )  );
+	    }
 			setSelection( AbstractSelection.EMPTY_SELECTION );
 	}
 	

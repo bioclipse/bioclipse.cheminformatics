@@ -2,6 +2,7 @@
  *
  * Copyright (C) 2008  Gilleain Torrance <gilleain.torrance@gmail.com>
  * Copyright (C) 2008  Stefan Kuhn (undo redo)
+ * Copyright (C) 2009  Arvid Berg <goglepox@users.sf.net>
  *
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -29,11 +30,12 @@ package org.openscience.cdk.controller;
 import javax.vecmath.Point2d;
 
 import org.openscience.cdk.controller.IChemModelRelay.Direction;
+import org.openscience.cdk.controller.edit.AppendAtom;
+import org.openscience.cdk.controller.edit.SetStereo;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.renderer.selection.AbstractSelection;
-import org.openscience.cdk.renderer.selection.SingleSelection;
 
 
 /**
@@ -45,12 +47,13 @@ import org.openscience.cdk.renderer.selection.SingleSelection;
  */
 public class AlterBondStereoModule extends ControllerModuleAdapter {
 
-    private Direction desiredDirection;
+    private IBond.Stereo desiredDirection;
 
 	public AlterBondStereoModule(
 			IChemModelRelay chemModelRelay, Direction desiredDirection) {
 		super(chemModelRelay);
-		this.desiredDirection = desiredDirection;
+		this.desiredDirection = desiredDirection==Direction.UP
+		                ?IBond.Stereo.UP:IBond.Stereo.DOWN;
 	}
 
 	public void mouseClickedDown(Point2d worldCoord) {
@@ -62,28 +65,18 @@ public class AlterBondStereoModule extends ControllerModuleAdapter {
 		if (singleSelection == null) {
 			setSelection(AbstractSelection.EMPTY_SELECTION);
 		} else if (singleSelection instanceof IAtom) {
-			IBond newBond =
-				super.chemModelRelay.makeNewStereoBond(atom, desiredDirection);
-			IAtom otherAtom = newBond.getConnectedAtom(atom);
-			super.setSelection(new SingleSelection<IChemObject>(otherAtom));
+		    chemModelRelay.execute( AppendAtom.appendAtom( "C", atom, desiredDirection ) );
 		} else if (singleSelection instanceof IBond) {
-			super.chemModelRelay.makeBondStereo(bond, desiredDirection);
-			setSelection(new SingleSelection<IChemObject>(bond));
+			super.chemModelRelay.execute( SetStereo.setStereo( bond, desiredDirection ) );
 		} else {
 			// by default, change the bond
-			super.chemModelRelay.makeBondStereo(bond, desiredDirection);
-			setSelection(new SingleSelection<IChemObject>(bond));
+		    super.chemModelRelay.execute( SetStereo.setStereo( bond, desiredDirection ) );
 		}
 
-		super.chemModelRelay.updateView();
-	}
-
-	public void setChemModelRelay(IChemModelRelay relay) {
-		this.chemModelRelay = relay;
 	}
 
 	public String getDrawModeString() {
-		if (desiredDirection == Direction.UP) {
+		if (desiredDirection == IBond.Stereo.UP) {
 			return "Add or convert to bond up";
 		} else {
 			return "Add or convert to bond down";

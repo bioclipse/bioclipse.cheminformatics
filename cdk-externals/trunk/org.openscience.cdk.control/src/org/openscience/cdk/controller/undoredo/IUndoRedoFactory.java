@@ -56,7 +56,11 @@ import org.openscience.cdk.interfaces.IReactionSet;
 public interface IUndoRedoFactory {
     public IUndoRedoable getEditOperation(IEdit edit);
 	public IUndoRedoable getAddAtomsAndBondsEdit(IChemModel chemModel, IAtomContainer undoRedoContainer, String type, IChemModelRelay c2dm);
-	public IUndoRedoable getAdjustBondOrdersEdit(Map<IBond, IBond.Order[]> changedBonds, Map<IBond, Integer[]> changedBondsStereo, String type, IChemModelRelay chemModelRelay);
+	public IUndoRedoable getAdjustBondOrdersEdit(Map<IBond,
+		IBond.Order[]> changedBonds,
+		Map<IBond, IBond.Stereo[]> changedBondsStereo, String type,
+		IChemModelRelay chemModelRelay
+	);
 	public IUndoRedoable getChangeAtomSymbolEdit(IAtom atom, String formerSymbol, String symbol, String type, IChemModelRelay chemModelRelay);
 	public IUndoRedoable getChangeChargeEdit(IAtom atomInRange, int formerCharge, int newCharge, String type, IChemModelRelay chemModelRelay);
 	public IUndoRedoable getMoveAtomEdit(IAtomContainer undoRedoContainer, Vector2d offset, String type);

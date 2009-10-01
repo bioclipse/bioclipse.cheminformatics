@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2009  Arvid Berg <goglepox@users.sourceforge.net>
  *
  * Contact: cdk-devel@lists.sourceforge.net
@@ -32,21 +32,29 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
 
 /**
- *
+ * Edit representing the removal of an atom.
  * @author Arvid
  * @cdk.module controlbasic
  */
 public class RemoveAtom extends AbstractEdit implements IEdit{
 
     IAtom atomToRemove;
-    
+
     Collection<IAtom> connectedAtoms;
     
-    public static IEdit edit(IAtom atom) {
-        RemoveAtom edit = new RemoveAtom(atom);
-        return edit;
+    /**
+     * Creates an edit representing the removing of given atom.
+     * @param atom to be removed.
+     * @return edit representing the removal.
+     */
+    public static RemoveAtom remove(IAtom atom) {
+        return new RemoveAtom( atom );
     }
-    
+
+    public static IEdit edit(IAtom atom) {
+        return new RemoveAtom(atom);
+    }
+
     private RemoveAtom(IAtom atom) {
         atomToRemove = atom;
     }
@@ -56,13 +64,12 @@ public class RemoveAtom extends AbstractEdit implements IEdit{
 
         Collection<IAtom> atomsToUpdate = model.getConnectedAtomsList( atom );
         connectedAtoms = atomsToUpdate;
-        
+
         model.removeAtomAndConnectedElectronContainers( atom );
 
-        //TODO aggregate atoms to update=
         updateHydrogenCount(atomsToUpdate);
     }
-    
+
     public void undo() {
         for(IAtom atom:connectedAtoms) {
             IBond newBond = model.getBuilder().newBond(atom ,atomToRemove);
@@ -70,7 +77,7 @@ public class RemoveAtom extends AbstractEdit implements IEdit{
         }
         Collection<IAtom> atomsToUpdate = new ArrayList<IAtom>(connectedAtoms);
         atomsToUpdate.add( atomToRemove );
-        
+
         updateHydrogenCount( atomsToUpdate );
     }
 

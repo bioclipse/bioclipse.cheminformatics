@@ -44,7 +44,7 @@ public class AdjustBondOrdersEdit implements IUndoRedoable {
     private static final long serialVersionUID = 1513012471000333600L;
     
     private Map<IBond, IBond.Order[]> changedBondOrders;
-    private Map<IBond, Integer[]> changedBondsStereo;
+    private Map<IBond, IBond.Stereo[]> changedBondsStereo;
     
     private String type;
     
@@ -55,7 +55,9 @@ public class AdjustBondOrdersEdit implements IUndoRedoable {
 	 *            A HashMap containing the changed atoms as key and an Array
 	 *            with the former and the changed bondOrder
 	 */
-	public AdjustBondOrdersEdit(Map<IBond, IBond.Order[]> changedBondsOrder, Map<IBond, Integer[]> changedBondsStereo, String type, IChemModelRelay chemModelRelay) {
+	public AdjustBondOrdersEdit(Map<IBond, IBond.Order[]> changedBondsOrder,
+			Map<IBond, IBond.Stereo[]> changedBondsStereo, String type,
+			IChemModelRelay chemModelRelay) {
 		this.changedBondOrders = changedBondsOrder;
 		this.changedBondsStereo = changedBondsStereo;
 		this.type=type;
@@ -76,7 +78,7 @@ public class AdjustBondOrdersEdit implements IUndoRedoable {
 		Iterator<IBond> itint = keysstereo.iterator();
 		while (itint.hasNext()) {
 			IBond bond = (IBond) itint.next();
-			Integer[] bondStereos = changedBondsStereo.get(bond);
+			IBond.Stereo[] bondStereos = changedBondsStereo.get(bond);
 			bond.setStereo(bondStereos[0]);
 		}
 	}
@@ -95,7 +97,7 @@ public class AdjustBondOrdersEdit implements IUndoRedoable {
 		Iterator<IBond> itint = keysstereo.iterator();
 		while (itint.hasNext()) {
 			IBond bond = (IBond) itint.next();
-			Integer[] bondOrders = changedBondsStereo.get(bond);
+			IBond.Stereo[] bondOrders = changedBondsStereo.get(bond);
 			bond.setStereo(bondOrders[1]);
 		}
 	}

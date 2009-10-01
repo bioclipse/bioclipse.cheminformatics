@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.Collection;
 
 import javax.vecmath.Point2d;
-import javax.vecmath.Vector2d;
 
 import org.openscience.cdk.controller.edit.IEdit;
 import org.openscience.cdk.controller.undoredo.IUndoRedoFactory;
@@ -45,9 +44,9 @@ import org.openscience.cdk.renderer.selection.IncrementalSelection;
 /**
  * @cdk.module control
  */
-public interface IChemModelRelay {
+public interface IChemModelRelay extends IAtomBondEdits {
 
-	public enum Direction { UP, DOWN };
+	public enum Direction { UP, DOWN, UNDEFINED, EZ_UNDEFINED };
 
     /* Interaction*/
     public IControllerModel getController2DModel();
@@ -150,38 +149,6 @@ public interface IChemModelRelay {
     public void makeAllImplicitExplicit();
     public void makeAllExplicitImplicit();
 //    public  void cleanupSelection(Selector sectionIdentifier);
-
-    /* Editing actions for atoms */
-    public IAtomContainer removeAtom(IAtom atom);
-    public IAtomContainer removeAtomWithoutUndo(IAtom atom);
-    public IAtom addAtom(String element, Point2d worldcoord);
-    public IAtom addAtomWithoutUndo(String element, Point2d worldcoord);
-    public IAtom addAtom(String element, IAtom atom);
-    public IAtom addAtomWithoutUndo(String element, IAtom atom);
-    public void moveToWithoutUndo(IAtom atom, Point2d point);
-    public void moveTo(IAtom atom, Point2d point);
-    public void setSymbol(IAtom atom, String symbol);
-    public void setCharge(IAtom atom, int charge);
-    public void setMassNumber(IAtom atom, int charge);
-    public void setHydrogenCount(IAtom atom, int intValue);
-    public void replaceAtom(IAtom atomnew, IAtom atomold);
-    public void addSingleElectron(IAtom atom);
-    public void updateAtoms(IAtomContainer container, Iterable<IAtom> atoms);
-    public void updateAtom(IAtom atom);
-    public void mergeMolecules(Vector2d movedDistance);
-
-    /* Editing actions for bonds */
-    public IBond addBond(IAtom fromAtom, IAtom toAtom);
-    public void removeBondWithoutUndo(IBond bond);
-    public void removeBond(IBond bond);
-    public void moveToWithoutUndo(IBond bond, Point2d point);
-    public void moveTo(IBond bond, Point2d point);
-    public void setOrder(IBond bond, IBond.Order order);
-    public void setWedgeType(IBond bond, int type);
-    public void addNewBond(Point2d worldCoordinate);
-    public void cycleBondValence(IBond bond);
-    public void makeBondStereo(IBond bond, Direction desiredDirection);
-    public IBond makeNewStereoBond(IAtom atom, Direction desiredDirection);
 
     public IUndoRedoFactory getUndoRedoFactory();
     public UndoRedoHandler getUndoRedoHandler();

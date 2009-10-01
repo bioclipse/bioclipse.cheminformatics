@@ -25,12 +25,6 @@
  */
 package org.openscience.cdk.controller;
 
-import static org.openscience.cdk.CDKConstants.STEREO_BOND_DOWN;
-import static org.openscience.cdk.CDKConstants.STEREO_BOND_DOWN_INV;
-import static org.openscience.cdk.CDKConstants.STEREO_BOND_NONE;
-import static org.openscience.cdk.CDKConstants.STEREO_BOND_UP;
-import static org.openscience.cdk.CDKConstants.STEREO_BOND_UP_INV;
-
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,7 +34,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.Renderer;
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
@@ -48,6 +41,7 @@ import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.config.IsotopeFactory;
 import org.openscience.cdk.controller.edit.IEdit;
+import org.openscience.cdk.controller.edit.MoveOptionalUndo;
 import org.openscience.cdk.controller.undoredo.IUndoRedoFactory;
 import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.controller.undoredo.UndoRedoHandler;
@@ -161,10 +155,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
   public void setChemModel(IChemModel model) {
       this.chemModel = model;
       //updateAtoms(ring, ring.atoms());
-      //FIXME setChemModel can't fire structureChanged
-      // event if there is interest in knowing this
-      // a model changed event should be introduced
-      //structureChanged();
+      structureChanged();
     }
 
 	/**
@@ -562,12 +553,12 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
 	public void cycleBondValence(IBond bond) {
 		IBond.Order[] orders=new IBond.Order[2];
-		Integer[] stereos=new Integer[2];
+		IBond.Stereo[] stereos=new IBond.Stereo[2];
 		orders[1]=bond.getOrder();
 		stereos[1]=bond.getStereo();
 	    // special case : reset stereo bonds
-	    if (bond.getStereo() != STEREO_BOND_NONE) {
-	        bond.setStereo(STEREO_BOND_NONE);
+	    if (bond.getStereo() != IBond.Stereo.NONE) {
+	        bond.setStereo(IBond.Stereo.NONE);
 	    }else{
 	        // cycle the bond order up to maxOrder
 		    IBond.Order maxOrder = getController2DModel().getMaxOrder();
@@ -580,14 +571,17 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         orders[0]=bond.getOrder();
         stereos[0]=bond.getStereo();
 		Map<IBond, IBond.Order[]> changedBonds = new HashMap<IBond, IBond.Order[]>();
-		Map<IBond, Integer[]> changedBondsStereo = new HashMap<IBond, Integer[]>();
+		Map<IBond, IBond.Stereo[]> changedBondsStereo =
+			new HashMap<IBond, IBond.Stereo[]>();
 		changedBonds.put(bond,orders);
 		changedBondsStereo.put(bond, stereos);
         updateAtom(bond.getAtom(0));
         updateAtom(bond.getAtom(1));
 		structureChanged();
 	    if(undoredofactory!=null && undoredohandler!=null){
-	    	IUndoRedoable undoredo = undoredofactory.getAdjustBondOrdersEdit(changedBonds, changedBondsStereo, "Adjust Bond Order",this);
+	    	IUndoRedoable undoredo = undoredofactory.getAdjustBondOrdersEdit(
+	    		changedBonds, changedBondsStereo, "Adjust Bond Order",this
+	        );
 		    undoredohandler.postEdit(undoredo);
 	    }
 	}
@@ -604,9 +598,9 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         IBond newBond = atomContainer.getBond(atom, newAtom);
 
         if (desiredDirection == Direction.UP) {
-            newBond.setStereo(STEREO_BOND_UP);
+            newBond.setStereo(IBond.Stereo.UP);
         } else {
-            newBond.setStereo(STEREO_BOND_DOWN);
+            newBond.setStereo(IBond.Stereo.DOWN);
         }
         undoRedoContainer.addAtom(newAtom);
         undoRedoContainer.addBond(newBond);
@@ -705,7 +699,12 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         updateAtom(bond.getAtom(1));
         structurePropertiesChanged();
 	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
-		    IUndoRedoable undoredo = getUndoRedoFactory().getAdjustBondOrdersEdit(changedBonds, new HashMap<IBond, Integer[]>(), "Changed Bond Order to "+order, this);
+		    IUndoRedoable undoredo =
+		    	getUndoRedoFactory().getAdjustBondOrdersEdit(changedBonds, 
+		        new HashMap<IBond, IBond.Stereo[]>(),
+		        "Changed Bond Order to "+order,
+		        this
+		    );
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
     }
@@ -727,7 +726,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         structurePropertiesChanged();
     }
 
-    public void setWedgeType(IBond bond, int type) {
+    public void setWedgeType(IBond bond, IBond.Stereo type) {
         bond.setStereo(type);
         structurePropertiesChanged();
     }
@@ -783,7 +782,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
     }
 
     public void makeBondStereo(IBond bond, Direction desiredDirection) {
-        int stereo = bond.getStereo();
+        IBond.Stereo stereo = bond.getStereo();
         boolean isUp = isUp(stereo);
         boolean isDown = isDown(stereo);
         boolean noStereo = noStereo(stereo);
@@ -796,21 +795,28 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         } else if (isDown && desiredDirection == Direction.DOWN) {
             flipDirection(bond, stereo);
         } else if (noStereo && desiredDirection == Direction.UP) {
-            bond.setStereo(STEREO_BOND_UP);
+            bond.setStereo(IBond.Stereo.UP);
         } else if (noStereo && desiredDirection == Direction.DOWN) {
-            bond.setStereo(STEREO_BOND_DOWN);
+            bond.setStereo(IBond.Stereo.DOWN);
         }
-        Integer[] stereos=new Integer[2];
+        IBond.Stereo[] stereos = new IBond.Stereo[2];
         stereos[1]=stereo;
         stereos[0]=bond.getStereo();
 		Map<IBond, IBond.Order[]> changedBonds = new HashMap<IBond, IBond.Order[]>();
-		Map<IBond, Integer[]> changedBondsStereo = new HashMap<IBond, Integer[]>();
+		Map<IBond, IBond.Stereo[]> changedBondsStereo =
+			new HashMap<IBond, IBond.Stereo[]>();
 		changedBondsStereo.put(bond, stereos);
 		updateAtom(bond.getAtom(0));
 		updateAtom(bond.getAtom(1));
 		structureChanged();
 	    if(getUndoRedoFactory()!=null && getUndoRedoHandler()!=null){
-	    	IUndoRedoable undoredo = getUndoRedoFactory().getAdjustBondOrdersEdit(changedBonds, changedBondsStereo, "Adjust Bond Stereo",this);
+	    	IUndoRedoable undoredo =
+	    		getUndoRedoFactory().getAdjustBondOrdersEdit(
+	    			changedBonds,
+	    			changedBondsStereo,
+	    			"Adjust Bond Stereo",
+	    			this
+	    	    );
 		    getUndoRedoHandler().postEdit(undoredo);
 	    }
     }
@@ -821,11 +827,15 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	 * @param bond the bond to change
 	 * @param stereo the current stereo of that bond
 	 */
-	private void flipDirection(IBond bond, int stereo) {
-	    if (stereo == STEREO_BOND_UP) bond.setStereo(STEREO_BOND_UP_INV);
-	    else if (stereo == STEREO_BOND_UP_INV) bond.setStereo(STEREO_BOND_UP);
-	    else if (stereo == STEREO_BOND_DOWN_INV) bond.setStereo(STEREO_BOND_DOWN);
-	    else if (stereo == STEREO_BOND_DOWN) bond.setStereo(STEREO_BOND_DOWN_INV);
+	private void flipDirection(IBond bond, IBond.Stereo stereo) {
+	    if (stereo == IBond.Stereo.UP)
+	    	bond.setStereo(IBond.Stereo.UP_INVERTED);
+	    else if (stereo == IBond.Stereo.UP_INVERTED)
+	    	bond.setStereo(IBond.Stereo.UP);
+	    else if (stereo == IBond.Stereo.DOWN_INVERTED)
+	    	bond.setStereo(IBond.Stereo.DOWN);
+	    else if (stereo == IBond.Stereo.DOWN)
+	    	bond.setStereo(IBond.Stereo.DOWN_INVERTED);
 	}
 
 
@@ -834,23 +844,29 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	 * @param bond the bond to change
 	 * @param stereo the current stereo of the bond
 	 */
-	private void flipOrientation(IBond bond, int stereo) {
-	    if (stereo == STEREO_BOND_UP) bond.setStereo(STEREO_BOND_DOWN_INV);
-        else if (stereo == STEREO_BOND_UP_INV) bond.setStereo(STEREO_BOND_DOWN);
-        else if (stereo == STEREO_BOND_DOWN_INV) bond.setStereo(STEREO_BOND_UP);
-        else if (stereo == STEREO_BOND_DOWN) bond.setStereo(STEREO_BOND_UP_INV);
+	private void flipOrientation(IBond bond, IBond.Stereo stereo) {
+	    if (stereo == IBond.Stereo.UP)
+	    	bond.setStereo(IBond.Stereo.DOWN_INVERTED);
+        else if (stereo == IBond.Stereo.UP_INVERTED)
+        	bond.setStereo(IBond.Stereo.DOWN);
+        else if (stereo == IBond.Stereo.DOWN_INVERTED) 
+        	bond.setStereo(IBond.Stereo.UP);
+        else if (stereo == IBond.Stereo.DOWN) 
+        	bond.setStereo(IBond.Stereo.UP_INVERTED);
 	}
 
-	private boolean isUp(int stereo) {
-	    return stereo == STEREO_BOND_UP || stereo == STEREO_BOND_UP_INV;
+	private boolean isUp(IBond.Stereo stereo) {
+	    return stereo == IBond.Stereo.UP || stereo == IBond.Stereo.UP_INVERTED;
 	}
 
-    private boolean isDown(int stereo) {
-        return stereo == STEREO_BOND_DOWN || stereo == STEREO_BOND_DOWN_INV;
+    private boolean isDown(IBond.Stereo stereo) {
+        return stereo == IBond.Stereo.DOWN ||
+               stereo == IBond.Stereo.DOWN_INVERTED;
     }
 
-    private boolean noStereo(int stereo) {
-        return stereo == STEREO_BOND_NONE || stereo == CDKConstants.STEREO_BOND_UNDEFINED;
+    private boolean noStereo(IBond.Stereo stereo) {
+        return stereo == IBond.Stereo.NONE ||
+               stereo == CDKConstants.UNSET;
     }
     
     public static void avoidOverlap(IChemModel chemModel){
@@ -1456,7 +1472,11 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		if(this.getController2DModel().getAutoUpdateImplicitHydrogens())
 			updateImplicitHydrogenCounts();
 	    if(undoredofactory!=null && undoredohandler!=null){
-	    	IUndoRedoable undoredo = undoredofactory.getAdjustBondOrdersEdit(changedBonds, new HashMap<IBond, Integer[]>(), "Adjust Bond Order of Molecules",this);
+	    	IUndoRedoable undoredo = undoredofactory.
+	    	    getAdjustBondOrdersEdit(
+	    	    	changedBonds, new HashMap<IBond, IBond.Stereo[]>(),
+	    	    	"Adjust Bond Order of Molecules",this
+	    	    );
 		    undoredohandler.postEdit(undoredo);
 	    }
 	}
@@ -1480,7 +1500,12 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		if(this.getController2DModel().getAutoUpdateImplicitHydrogens())
 			updateImplicitHydrogenCounts();
 	    if(undoredofactory!=null && undoredohandler!=null){
-	    	IUndoRedoable undoredo = undoredofactory.getAdjustBondOrdersEdit(changedBonds, new HashMap<IBond, Integer[]>(), "Reset Bond Order of Molecules",this);
+	    	IUndoRedoable undoredo = undoredofactory.
+	    		getAdjustBondOrdersEdit(
+	    			changedBonds,
+	    			new HashMap<IBond, IBond.Stereo[]>(),
+	    			"Reset Bond Order of Molecules",this
+	    		);
 		    undoredohandler.postEdit(undoredo);
 	    }
 	}
@@ -1824,61 +1849,120 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		structureChanged();
 	}
 	
-	public void mergeMolecules(Vector2d movedDistance) {
-	    RendererModel model = getRenderer().getRenderer2DModel(); 
-		Iterator<IAtom> it = model.getMerge().keySet().iterator();
-		IBond[] bondson2 = null;
-		IAtom atom2 = null;
-		IAtom atom1 = null;
-		while (it.hasNext()) {
-			List<IBond> removedBonds = new ArrayList<IBond>();
-			Map<IBond, Integer> bondsWithReplacedAtoms = new HashMap<IBond, Integer>();
-			atom1 = (IAtom) it.next();
-			atom2 = (IAtom) model.getMerge().get(atom1);
-			IMoleculeSet som = getIChemModel().getMoleculeSet();
-			IChemModel chemModel = getIChemModel();
-			IAtomContainer container1 = 
-			    ChemModelManipulator.getRelevantAtomContainer(chemModel, atom1);
-			IAtomContainer container2 = 
-			    ChemModelManipulator.getRelevantAtomContainer(chemModel, atom2);
-			if (container1 != container2) {
-				container1.add(container2);
-				som.removeAtomContainer(container2);
-			}
-			bondson2 = AtomContainerManipulator.getBondArray(
-			        container1.getConnectedBondsList(atom2));
-			for (int i = 0; i < bondson2.length; i++) {
-				if (bondson2[i].getAtom(0) == atom2) {
-                    bondson2[i].setAtom(atom1, 0);
-                    bondsWithReplacedAtoms.put(bondson2[i], 0);
+   /**
+     * Merge molecules when a selection is moved onto another part 
+     * of the molecule set
+     *  
+     * TODO: move this function into class MoveModule.java
+     * 
+     */
+    public void mergeMolecules(Vector2d movedDistance) {
+        RendererModel model = getRenderer().getRenderer2DModel();
+
+        // First try to shift the selection to be exactly on top of
+        // the target of the merge. This makes the end results visually
+        // more attractive and avoid tilted rings
+        //
+        Map<IAtom, IAtom> mergeMap = model.getMerge();
+        Iterator<IAtom> it = model.getMerge().keySet().iterator();
+        if (it.hasNext()) {
+            IAtomContainer movedAtomContainer = renderer.getRenderer2DModel()
+                    .getSelection().getConnectedAtomContainer();
+            if (movedAtomContainer != null) {
+                IAtom atomA = (IAtom) it.next();
+                IAtom atomB = mergeMap.get(atomA);
+                Vector2d shift = new Vector2d();
+                shift.sub(atomB.getPoint2d(), atomA.getPoint2d());
+                
+                for (IAtom shiftAtom : movedAtomContainer.atoms()) {
+                    shiftAtom.getPoint2d().add( shift );
                 }
-                if (bondson2[i].getAtom(1) == atom2) {
-                    bondson2[i].setAtom(atom1, 1);
-                    bondsWithReplacedAtoms.put(bondson2[i], 1);
+            }
+        }
+        
+        //Done shifting, now the actual merging.
+        it = model.getMerge().keySet().iterator();
+        while (it.hasNext()) {
+            List<IBond> removedBonds = new ArrayList<IBond>();
+            Map<IBond, Integer> bondsWithReplacedAtoms = new HashMap<IBond, Integer>();
+            IAtom mergedAtom = (IAtom) it.next();
+            IAtom mergedPartnerAtom = model.getMerge().get(mergedAtom);
+
+            IAtomContainer container = ChemModelManipulator
+                    .getRelevantAtomContainer(chemModel, mergedAtom);
+            IAtomContainer container2 = ChemModelManipulator
+                    .getRelevantAtomContainer(chemModel, mergedPartnerAtom);
+
+            // In the next loop we remove bonds that are redundant, that is
+            // to say bonds that exist on both sides of the parts to be merged
+            // and would cause duplicate bonding in the end result.
+            for (IAtom atom : container.atoms()) {
+
+                if (!atom.equals(mergedAtom)) {
+                    if (container.getBond(mergedAtom, atom) != null) {
+                        if (model.getMerge().containsKey(atom)) {
+                            for (IAtom atom2 : container2.atoms()) {
+                                if (!atom2.equals(mergedPartnerAtom)) {
+                                    if (container.getBond(mergedPartnerAtom,
+                                            atom2) != null) {
+                                        if (model.getMerge().get(atom).equals(
+                                                atom2)) {
+                                            System.out.println("removing ");
+                                            IBond redundantBond = container
+                                                    .getBond(atom, mergedAtom);
+                                            container.removeBond(redundantBond);
+                                            removedBonds.add(redundantBond);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-                if (bondson2[i].getAtom(0) == bondson2[i].getAtom(1)) {
-                    container1.removeBond(bondson2[i]);
-                    removedBonds.add(bondson2[i]);
+            }
+
+            //After the removal of redundant bonds, the actual merge is done.
+            //One half of atoms in the merge map are removed and their bonds
+            //are mapped to their replacement atoms.
+            for (IBond bond : container.bonds()) {
+                if (bond.contains(mergedAtom)) {
+                    if (bond.getAtom(0).equals(mergedAtom)) {
+                        bond.setAtom(mergedPartnerAtom, 0);
+                        bondsWithReplacedAtoms.put(bond, 0);
+                    } else {
+                        bond.setAtom(mergedPartnerAtom, 1);
+                        bondsWithReplacedAtoms.put(bond, 1);
+                    }
                 }
-			}
-			container1.removeAtom(atom2);
-			updateAtom(atom1);
-			IUndoRedoFactory factory = getUndoRedoFactory();
+            }
+            container.removeAtom(mergedAtom);
+            updateAtom(mergedPartnerAtom);
+
+            // Undo section to undo/redo the merge
+            IUndoRedoFactory factory = getUndoRedoFactory();
             UndoRedoHandler handler = getUndoRedoHandler();
-			if (factory != null && handler != null) {
-				IUndoRedoable undoredo = factory.getMergeMoleculesEdit(atom2, container1, removedBonds, bondsWithReplacedAtoms, movedDistance, atom1, "Merge atom", this);
-				handler.postEdit(undoredo);
-			}
-		}
-		model.getMerge().clear();
-		structureChanged();
-	}
+            if (factory != null && handler != null) {
+                IUndoRedoable undoredo = factory.getMergeMoleculesEdit(
+                        mergedAtom, container, removedBonds,
+                        bondsWithReplacedAtoms, movedDistance,
+                        mergedPartnerAtom, "Merge atom", this);
+                handler.postEdit(undoredo);
+            }
+        }
+        model.getMerge().clear();
+        structureChanged();
+    }
+
+
 
     public void execute( IEdit edit ) {
 
         IAtomContainer ac = chemModel.getMoleculeSet().getAtomContainer( 0 );
         edit.execute(ac);
-        postEdit( edit );
+        if(edit instanceof MoveOptionalUndo && !((MoveOptionalUndo)edit).isFinal())
+            ;
+        else
+            postEdit( edit );
         //TODO add implicit hydrogen calculation and aromacity
         fireEvents( edit.getTypeOfChanges() );
     }

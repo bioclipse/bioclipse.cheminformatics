@@ -92,6 +92,7 @@ public abstract class ControllerModuleAdapter implements IControllerModule {
 	}
 
 	public void setChemModelRelay(IChemModelRelay relay) {
+	    this.chemModelRelay = relay;
 	}
 
     protected IChemObject getHighlighted( Point2d worldCoord, IChemObject... objects ) {
@@ -135,15 +136,13 @@ public abstract class ControllerModuleAdapter implements IControllerModule {
 		IChemObjectSelection localSelection = rModel.getSelection();
 		IChemObject chemObject = getHighlighted(worldCoord, atom, bond);
 
-		// FIXME added null check for if rModel.getSelection() return null
-		if (localSelection!=null && !localSelection.contains(chemObject)) {
+		if (!localSelection.contains(chemObject)) {
 			if (chemObject != null) {
 				localSelection = new SingleSelection<IChemObject>(chemObject);
 			} else {
 				localSelection = AbstractSelection.EMPTY_SELECTION;
 			}
 		}
-		if(localSelection==null) localSelection = AbstractSelection.EMPTY_SELECTION;
 		setSelection(localSelection);
 		return selection.getConnectedAtomContainer();
 	}

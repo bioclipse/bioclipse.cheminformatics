@@ -31,25 +31,31 @@ import org.openscience.cdk.controller.Changed;
 import org.openscience.cdk.interfaces.IAtom;
 
 /**
- *
+ * Edit representing the creating of an atom.
  * @author Arvid
  * @cdk.module controlbasic
  */
 public class AddAtom extends AbstractEdit implements IEdit {
 
     Point2d position;
-    IAtom addedTo;
     String symbol;
 
     IAtom addedAtom;
 
-    public static IEdit edit( String symbol, Point2d position) {
-        AddAtom edit = new AddAtom();
-        edit.symbol = symbol;
-        edit.position = position;
-        return edit;
+    /**
+     * Creates an edit representing the creation of an atom.
+     * @param symbol of the new atom.
+     * @param position of the new atom.
+     * @return edit representing the creation.
+     */
+    public static AddAtom createAtom(String symbol, Point2d position) {
+        return new AddAtom(symbol,position);
     }
 
+    private AddAtom(String symbol, Point2d position) {
+        this.symbol =symbol;
+        this.position = position;
+    }
     public void redo() {
 
         addedAtom = model.getBuilder().newAtom( symbol, position );

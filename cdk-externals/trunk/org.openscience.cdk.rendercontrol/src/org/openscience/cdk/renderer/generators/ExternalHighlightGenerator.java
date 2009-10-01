@@ -24,6 +24,8 @@
  */
 package org.openscience.cdk.renderer.generators;
 
+import java.util.List;
+
 import javax.vecmath.Point2d;
 
 import org.openscience.cdk.interfaces.IAtom;
@@ -68,6 +70,11 @@ public class ExternalHighlightGenerator implements IGenerator {
         double w = model.getBondWidth() / model.getScale();
         return new LineElement(
                 p1.x, p1.y, p2.x, p2.y, w, model.getExternalHighlightColor());
+    }
+
+    public List<IGeneratorParameter> getParameters() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

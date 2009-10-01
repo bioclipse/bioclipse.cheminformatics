@@ -32,7 +32,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 
 /**
- * An edit operation that can be executed undone and redone.
+ * Represents an edit operation that can be undone.
  * @author Arvid
  * @cdk.module control
  */

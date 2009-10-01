@@ -23,15 +23,17 @@
  */
 package org.openscience.cdk.controller;
 
+import static org.openscience.cdk.controller.edit.AddAtom.createAtom;
+import static org.openscience.cdk.controller.edit.AddBond.addBond;
+import static org.openscience.cdk.controller.edit.AppendAtom.appendAtom;
+import static org.openscience.cdk.controller.edit.SetBondOrder.cycleBondValence;
+
 import java.util.Iterator;
 import java.util.List;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
-import org.openscience.cdk.controller.edit.AddAtom;
-import org.openscience.cdk.controller.edit.AddBond;
-import org.openscience.cdk.controller.edit.AppendAtom;
 import org.openscience.cdk.controller.edit.CreateBond;
 import org.openscience.cdk.controller.edit.IEdit;
 import org.openscience.cdk.geometry.GeometryTools;
@@ -101,7 +103,7 @@ public class AddBondDragModule extends ControllerModuleAdapter {
         }
         }
         else if (singleSelection instanceof IBond) {
-            chemModelRelay.cycleBondValence((IBond) singleSelection);
+            chemModelRelay.execute(cycleBondValence((IBond) singleSelection));
             setSelection(new SingleSelection<IChemObject>(singleSelection));
             isBond = true;
         }
@@ -180,21 +182,21 @@ public class AddBondDragModule extends ControllerModuleAdapter {
 
         if(start.distance( worldCoord )< getHighlightDistance()) {
             if(newSource)
-                edit = AddAtom.edit( "C", start );
+                edit = createAtom( "C", start );
             else
-                edit = AppendAtom.edit( "C", source );
+                edit = appendAtom( "C", source );
         }
         else
             if(merge != null) {
                 if(newSource)
-                    edit = AppendAtom.edit("C",merge,start);
+                    edit = appendAtom("C",merge,start);
                 else
-                    edit = AddBond.edit( source, merge );
+                    edit = addBond( source, merge );
             }else {
                 if(newSource)
                     edit = CreateBond.edit( start,dest);
                 else
-                    edit = AppendAtom.edit("C",source,dest);
+                    edit = appendAtom("C",source,dest);
             }
         chemModelRelay.execute(edit);
 

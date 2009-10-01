@@ -40,10 +40,9 @@ import org.openscience.cdk.renderer.RendererModel;
  */
 public class HighlightModule extends ControllerModuleAdapter {
 
-	private IChemModelRelay chemObjectRelay;
-
 	public HighlightModule(IChemModelRelay chemObjectRelay) {
-		super(chemObjectRelay);
+	    super(chemObjectRelay);
+	    assert(chemObjectRelay!=null);
 	}
 
 	private IAtom prevHighlightAtom;
@@ -62,7 +61,7 @@ public class HighlightModule extends ControllerModuleAdapter {
             prevHighlightAtom = atom;
             prevHighlightBond = null;
             model.setHighlightedBond(null);
-            chemObjectRelay.updateView();
+            chemModelRelay.updateView();
         }
 	}
 	
@@ -72,7 +71,7 @@ public class HighlightModule extends ControllerModuleAdapter {
             prevHighlightBond = bond;
             prevHighlightAtom = null;
             model.setHighlightedAtom(null);
-            chemObjectRelay.updateView();
+            chemModelRelay.updateView();
         }
 	}
 	
@@ -82,25 +81,21 @@ public class HighlightModule extends ControllerModuleAdapter {
 	        model.setHighlightedBond(null);
 	        prevHighlightAtom = null;
 	        prevHighlightBond = null;
-	        chemObjectRelay.updateView();
+	        chemModelRelay.updateView();
 	    }
 	}
 
 	public void mouseMove(Point2d worldCoord) {
-		IAtom atom = chemObjectRelay.getClosestAtom(worldCoord);
-		IBond bond = chemObjectRelay.getClosestBond(worldCoord);
+		IAtom atom = chemModelRelay.getClosestAtom(worldCoord);
+		IBond bond = chemModelRelay.getClosestBond(worldCoord);
 		RendererModel model = 
-		    chemObjectRelay.getRenderer().getRenderer2DModel();
+		    chemModelRelay.getRenderer().getRenderer2DModel();
 		
 		IChemObject obj = getHighlighted( worldCoord, atom,bond );
 		if(obj == null)
 		    unsetHighlights( model );
 		else
 		    update(obj,model);
-	}
-
-	public void setChemModelRelay(IChemModelRelay relay) {
-		this.chemObjectRelay = relay;
 	}
 
 	public String getDrawModeString() {

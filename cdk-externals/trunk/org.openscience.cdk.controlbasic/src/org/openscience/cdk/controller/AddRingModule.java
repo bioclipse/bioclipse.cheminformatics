@@ -105,10 +105,6 @@ public class AddRingModule extends ControllerModuleAdapter {
 		chemModelRelay.updateView();
 	}
 
-    public void setChemModelRelay(IChemModelRelay relay) {
-        this.chemModelRelay = relay;
-    }
-
     public String getDrawModeString() {
     	if (addingBenzene) {
 			return "Benzene";

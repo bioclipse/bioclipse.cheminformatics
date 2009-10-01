@@ -22,34 +22,74 @@ package org.openscience.cdk.renderer.generators;
 import java.awt.Color;
 
 import javax.vecmath.Point2d;
+import javax.vecmath.Vector2d;
 
+import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
-import org.openscience.cdk.renderer.elements.OvalElement;
+import org.openscience.cdk.renderer.elements.path.PathBuilder;
 
 /**
  * @cdk.module rendercontrol
  */
-public class MergeAtomsGenerator extends BasicAtomGenerator 
+public class MergeAtomsGenerator extends BasicAtomGenerator
                                 implements IGenerator {
 
     public MergeAtomsGenerator() {}
-    
+
     public IRenderingElement generate(IAtomContainer ac, RendererModel model) {
     	ElementGroup selectionElements = new ElementGroup();
+    	double radius = model.getHighlightDistance() / model.getScale();
+    	radius /= 2.0;
     	for(IAtom atom : model.getMerge().keySet()){
-    		Point2d p = atom.getPoint2d();
-            
-            // the element size has to be scaled to model space 
+    		Point2d p1 = atom.getPoint2d();
+    		Point2d p2 = model.getMerge().get( atom ).getPoint2d();
+
+            // the element size has to be scaled to model space
             // so that it can be scaled back to screen space...
-            double radius = model.getHighlightDistance() / model.getScale();
-            Color highlightColor = model.getHoverOverColor(); 
-            selectionElements.add(new OvalElement(p.x, p.y, radius*2, false, highlightColor));
+    		PathBuilder pb = new PathBuilder();
+    		pb.color( Color.RED );
+
+    		Vector2d vec = new Vector2d();
+    		vec.sub( p2, p1 );
+
+    		Vector2d per = GeometryTools.calculatePerpendicularUnitVector( p1, p2 );
+    		per.scale( radius );
+    		Vector2d per2 = new Vector2d();
+    		per2.scale( -1 ,per);
+
+    		Vector2d v1= new Vector2d(vec);
+    		Vector2d v2= new Vector2d();
+
+    		v1.normalize();
+    		v1.scale( radius );
+    		v2.scale( -1, v1 );
+
+    		Point2d f1 = new Point2d();
+    		Point2d f2 = new Point2d();
+    		Point2d f3 = new Point2d();
+    		Point2d s1 = new Point2d();
+    		Point2d s2 = new Point2d();
+    		Point2d s3 = new Point2d();
+
+    		f1.add( p1, per );
+    		f2.add( p1 , v2 );
+    		f3.add( p1, per2 );
+
+    		s1.add(p2, per2);
+    		s2.add(p2, v1);
+    		s3.add( p2, per );
+
+
+    		pb.moveTo(f1).quadTo( f2,f3 ).lineTo( s1 ).quadTo( s2, s3 ).close();
+
+    		selectionElements.add(pb.createPath());
+
         }
-        
+
         return selectionElements;
     }
 }

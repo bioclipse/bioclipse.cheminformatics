@@ -33,9 +33,10 @@ import java.util.Set;
 import org.openscience.cdk.controller.Changed;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IBond;
 
 /**
- *
+ * Abstract superclass of all edits.
  * @author Arvid
  * @cdk.module controlbasic
  */
@@ -71,6 +72,9 @@ public abstract class AbstractEdit implements IEdit{
         this.atomsToUpdate = atomsToUpdate;
     }
 
+     void updateHydrogenCount(IBond bond) {
+         updateHydrogenCount( bond.getAtom( 0 ), bond.getAtom( 1 ) );
+     }
      void updateHydrogenCount( IAtom... atoms ) {
          updateHydrogenCount( Arrays.asList( atoms ) );
      }

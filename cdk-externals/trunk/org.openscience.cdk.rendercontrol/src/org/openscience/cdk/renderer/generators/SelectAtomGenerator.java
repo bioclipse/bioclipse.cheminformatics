@@ -21,6 +21,7 @@
 package org.openscience.cdk.renderer.generators;
 
 import java.awt.Color;
+import java.util.List;
 
 import javax.vecmath.Point2d;
 
@@ -84,5 +85,10 @@ public class SelectAtomGenerator implements IGenerator {
 				selectionElements.add(sel.generate(selectionColor));
 		}
         return selectionElements;
+    }
+
+    public List<IGeneratorParameter> getParameters() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

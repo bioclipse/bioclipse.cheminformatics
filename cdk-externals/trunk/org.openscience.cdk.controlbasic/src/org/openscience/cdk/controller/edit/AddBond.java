@@ -30,7 +30,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
 
 /**
- *
+ * Edit representing the connection of two atoms with a bond.
  * @author Arvid
  * @cdk.module controlbasic
  */
@@ -41,13 +41,21 @@ public class AddBond extends AbstractEdit implements IEdit{
 
     IBond newBond;
 
-    public static IEdit edit(IAtom atom1, IAtom atom2) {
-        AddBond edit = new AddBond();
-        edit.atom1 = atom1;
-        edit.atom2 = atom2;
-        return edit;
+    /**
+     * Creates an edit representing the creation of a bond between the given
+     * atoms.
+     * @param atom1 first atom of the bond.
+     * @param atom2 second atom of the bond.
+     * @return edit representing creation of the bond.
+     */
+    public static AddBond addBond(IAtom atom1, IAtom atom2) {
+        return new AddBond(atom1,atom2);
     }
 
+    private AddBond(IAtom atom1, IAtom atom2) {
+        this.atom1 = atom1;
+        this.atom2 = atom2;
+    }
     public void redo() {
 
         newBond = model.getBuilder().newBond(atom1,atom2);

@@ -63,7 +63,7 @@ import org.openscience.cdk.tools.LoggingTool;
  *
  * @author      Dazhi Jiao
  * @cdk.created 2007-04-23
- * @cdk.svnrev $Revision: $
+ * @cdk.githash
  *
  * @cdk.require ant1.6
  * @cdk.module  smarts
