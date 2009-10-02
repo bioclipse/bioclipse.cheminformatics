@@ -570,6 +570,27 @@ public class CdkJmolAdapter extends JmolAdapter {
             // FIXME: do something good here!!!
             return 1;
         }
+
+        @Override
+        public int getSerialID() {
+
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public int getStrandCount() {
+
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public String getStructureID() {
+
+            // TODO Auto-generated method stub
+            return null;
+        }
     }
 
 	@Override
