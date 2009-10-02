@@ -33,7 +33,7 @@ public class SWTAdjustBondOrdersEdit extends AdjustBondOrdersEdit implements
     private IUndoContext context;
 
     public SWTAdjustBondOrdersEdit(Map<IBond, IBond.Order[]> changedBonds,
-            Map<IBond, Integer[]> changedBondsStereo, String type,
+            Map<IBond, IBond.Stereo[]> changedBondsStereo, String type,
             IUndoContext context, IChemModelRelay relay) {
 
         super( changedBonds, changedBondsStereo, type, relay );

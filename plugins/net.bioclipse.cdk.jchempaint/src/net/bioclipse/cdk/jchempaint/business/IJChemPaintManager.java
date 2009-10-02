@@ -324,7 +324,7 @@ public interface IJChemPaintManager extends IBioclipseManager {
          params = "IBond bond, int type",
          methodSummary = "Changes the wedge type of the bond."
     )
-    public void setWedgeType(IBond bond, int type);
+    public void setWedgeType(IBond bond, IBond.Stereo type);
     
     @Recorded
     @PublishedMethod(

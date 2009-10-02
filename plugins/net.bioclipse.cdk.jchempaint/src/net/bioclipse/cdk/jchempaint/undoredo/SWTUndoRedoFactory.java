@@ -47,7 +47,7 @@ public class SWTUndoRedoFactory implements IUndoRedoFactory {
 
     public IUndoRedoable getAdjustBondOrdersEdit(
             Map<IBond, Order[]> changedBonds,
-            Map<IBond, Integer[]> changedBondsStereo, String type, IChemModelRelay relay) {
+            Map<IBond, IBond.Stereo[]> changedBondsStereo, String type, IChemModelRelay relay) {
         return new SWTAdjustBondOrdersEdit(changedBonds, changedBondsStereo, type, this.context,relay);
     }
 

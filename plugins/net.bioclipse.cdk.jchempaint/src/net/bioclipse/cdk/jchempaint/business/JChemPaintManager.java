@@ -278,7 +278,7 @@ public class JChemPaintManager implements IJChemPaintManager {
         updateView();
     }
 
-    public void setWedgeType( IBond bond, int type ) {
+    public void setWedgeType( IBond bond, IBond.Stereo type ) {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
             IChemModelRelay relay = editor.getControllerHub();
