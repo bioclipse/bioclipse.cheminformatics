@@ -2,7 +2,7 @@
 <feature
       id="net.bioclipse.cdk_feature"
       label="Bioclipse CDK Feature"
-      version="2.1.0.v20090807"
+      version="2.1.1.v20091002"
       provider-name="The Bioclipse Team"
       plugin="net.bioclipse.cdk.debug">
 
@@ -28,7 +28,7 @@ The Eclipse Public License accompanies this distribution, and is available at ht
    </url>
 
    <requires>
-      <import feature="net.bioclipse.chemoinformatics_feature" version="2.1.0.v20090807" match="greaterOrEqual"/>
+      <import feature="net.bioclipse.chemoinformatics_feature" version="2.1.1.v20091002" match="greaterOrEqual"/>
    </requires>
 
    <plugin
