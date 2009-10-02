@@ -13,6 +13,7 @@
 package net.bioclipse.cdk.jchempaint.view;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.bioclipse.core.util.LogUtils;
@@ -30,6 +31,7 @@ import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.IRenderingVisitor;
 import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 
 public class ChoiceGenerator implements IGenerator {
 
@@ -108,4 +110,8 @@ public class ChoiceGenerator implements IGenerator {
 
         }
     };
+
+    public List<IGeneratorParameter> getParameters() {
+        return Collections.emptyList();
+    }
 }

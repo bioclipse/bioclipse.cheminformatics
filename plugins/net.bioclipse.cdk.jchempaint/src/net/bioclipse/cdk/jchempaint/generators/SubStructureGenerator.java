@@ -11,7 +11,9 @@
 package net.bioclipse.cdk.jchempaint.generators;
 
 import java.awt.Color;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.vecmath.Point2d;
@@ -25,6 +27,7 @@ import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
 import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 
 
 /**
@@ -66,5 +69,9 @@ public class SubStructureGenerator implements IGenerator {
     
     public void add(ISubStructure subStructure) {
         subStructures.add( subStructure );
+    }
+
+    public List<IGeneratorParameter> getParameters() {
+        return Collections.emptyList();
     }
 }

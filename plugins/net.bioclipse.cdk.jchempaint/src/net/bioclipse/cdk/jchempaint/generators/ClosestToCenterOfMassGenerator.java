@@ -13,6 +13,8 @@ package net.bioclipse.cdk.jchempaint.generators;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.vecmath.Matrix3d;
 import javax.vecmath.Point2d;
@@ -31,6 +33,7 @@ import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.LineElement;
 import org.openscience.cdk.renderer.elements.PathElement;
 import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 
 
 /**
@@ -125,5 +128,9 @@ public class ClosestToCenterOfMassGenerator implements IGenerator {
 
     private LineElement createLine(Point2d p1,Point2d p2,double width) {
         return new LineElement(p1.x,p1.y,p2.x,p2.y,width,STAR_COLOR);
+    }
+
+    public List<IGeneratorParameter> getParameters() {
+        return Collections.emptyList();
     }
 }
