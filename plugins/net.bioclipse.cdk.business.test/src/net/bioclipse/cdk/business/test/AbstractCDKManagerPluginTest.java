@@ -144,6 +144,23 @@ public abstract class AbstractCDKManagerPluginTest {
     }
 
     @Test
+    public void testLoadMolecules_Properties() throws IOException,
+        BioclipseException, CoreException, URISyntaxException {
+        URI uri = getClass().getResource("/testFiles/molopt-9634.sdf").toURI();
+        URL url = FileLocator.toFileURL(uri.toURL());
+        String path = url.getFile();
+        List<ICDKMolecule> mols = cdk.loadMolecules(path);
+
+        assertNotNull(mols);
+        Assert.assertNotSame(0, mols.size());
+        ICDKMolecule mol = mols.get(0);
+        Assert.assertEquals(
+            "NEG",
+            mol.getAtomContainer().getProperty("Predicted_Activity")
+        );
+    }
+
+    @Test
     public void testLoadCMLFromFile2() throws IOException, 
                                           BioclipseException, 
                                           CoreException, URISyntaxException {
