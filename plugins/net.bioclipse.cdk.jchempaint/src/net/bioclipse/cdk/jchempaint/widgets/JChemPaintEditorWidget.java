@@ -466,9 +466,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     @Override
     public void setModel( IChemModel model ) {
         this.applyGlobalProperties();
+        hub.setChemModel(model);
         reset();
         super.setModel( model );
-        hub.setChemModel(model);
     }
 
     public void setAtomContainer(IAtomContainer atomContainer) {
