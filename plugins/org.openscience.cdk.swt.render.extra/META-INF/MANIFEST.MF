@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CDK plugin
+Bundle-SymbolicName: org.openscience.cdk.swt.render.extra;singleton:=true
+Bundle-Version: 1.3.0.0bioclipse4
+Bundle-Vendor: The Chemistry Development Kit Project
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Require-Bundle: org.openscience.cdk.core,
+ org.openscience.cdk.standard,
+ org.openscience.cdk.render,
+ org.openscience.cdk.renderbasic,
+ javax.vecmath,
+ org.eclipse.core.runtime
+Export-Package: org.openscience.cdk.renderswtbasic
