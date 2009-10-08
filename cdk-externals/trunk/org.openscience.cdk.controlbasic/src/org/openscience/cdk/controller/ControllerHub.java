@@ -940,34 +940,49 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
     public void cleanup() {
         Map<IAtom, Point2d[]> coords = new HashMap<IAtom, Point2d[]>();
-        for (IAtomContainer container :
-            ChemModelManipulator.getAllAtomContainers(chemModel)) {
-
-            for (IAtom atom : container.atoms()){
-            	Point2d[] coordsforatom = new Point2d[2];
-                coordsforatom[1] = atom.getPoint2d();
-                coords.put(atom, coordsforatom);
-                atom.setPoint2d(null);
-            }
-
-            if (ConnectivityChecker.isConnected(container)) {
-                generateNewCoordinates(container);
-            } else {
-                // deal with disconnected atom containers
-                IMoleculeSet molecules =
-                    ConnectivityChecker.partitionIntoMolecules(container);
-                for (IAtomContainer subContainer : molecules.molecules()) {
-                    generateNewCoordinates(subContainer);
-                }
-
-            }
-
-            for (IAtom atom : container.atoms()) {
-                Point2d[] coordsforatom = coords.get(atom);
-                coordsforatom[0] = atom.getPoint2d();
-            }
+        if(chemModel.getMoleculeSet()==null || chemModel.getMoleculeSet().getAtomContainerCount()==0)
+            return;
+        //THIS CODE ASSUMES THERE IS ONLY ONE ATOMCONTAINER IN CHEMMODEL. This was
+        //the policy agreed on, so I stick to it.
+        IAtomContainer container = chemModel.getMoleculeSet().getAtomContainer(0);
+        for (IAtom atom : container.atoms()){
+        	Point2d[] coordsforatom = new Point2d[2];
+            coordsforatom[1] = atom.getPoint2d();
+            coords.put(atom, coordsforatom);
+            atom.setPoint2d(null);
         }
-        avoidOverlap(chemModel);
+
+        if (ConnectivityChecker.isConnected(container)) {
+            generateNewCoordinates(container);
+        } else {
+            // deal with disconnected atom containers
+            IMoleculeSet molecules =
+                ConnectivityChecker.partitionIntoMolecules(container);
+            for (IAtomContainer subContainer : molecules.molecules()) {
+                generateNewCoordinates(subContainer);
+            }
+            Rectangle2D usedBounds = null;
+            for (IAtomContainer subContainer : molecules.molecules()) {
+                // now move it so that they don't overlap
+                Rectangle2D bounds = BoundsCalculator.calculateBounds(subContainer);
+                if (usedBounds != null) {
+                    double bondLength = GeometryTools.getBondLengthAverage(subContainer);
+                    Rectangle2D shiftedBounds =
+                        GeometryTools.shiftContainer(
+                                subContainer, bounds, usedBounds, bondLength);
+                    usedBounds = usedBounds.createUnion(shiftedBounds);
+                } else {
+                    usedBounds = bounds;
+                }
+            } 
+
+
+        }
+
+        for (IAtom atom : container.atoms()) {
+            Point2d[] coordsforatom = coords.get(atom);
+            coordsforatom[0] = atom.getPoint2d();
+        }
         coordinatesChanged();
 	    if (getUndoRedoFactory() != null && getUndoRedoHandler() != null) {
             IUndoRedoable undoredo =
