@@ -209,12 +209,11 @@ public class JChemPaintWidget extends Canvas {
         fontManager.dispose();
     }
 
+    @Override
     public Point computeSize(int wHint, int hHint, boolean changed) {
 
-        int width = 0, height = 0;
-        height = Math.max(100, wHint);
-        width = height;
-        return new Point(width + 2, height + 2);
+        int size = Math.max(100, wHint) +2;
+        return new Point(size, size);
      }
 
     public void setUseExtensionGenerators( boolean useExtensionGenerators ) {

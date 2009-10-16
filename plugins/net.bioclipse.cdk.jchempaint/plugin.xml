@@ -368,6 +368,27 @@
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
+                icon="icons/atom_unknown.png"
+                label="Select"
+                style="radio"
+                tooltip="Select in Free Form">
+             <visibleWhen
+                   checkEnabled="true">
+                <reference
+                      definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+                </reference>
+             </visibleWhen>
+             <parameter
+                   name="jcp.controller.module"
+                   value="RotateModule">
+             </parameter>
+             <parameter
+                   name="net.bioclipse.cdk.jchempaint.DrawModeString"
+                   value="Rotate selection">
+             </parameter>
+          </command>
+          <command
+                commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
                 icon="icons/jcp/eraser.png"
                 label="Delete"
                 style="radio"
