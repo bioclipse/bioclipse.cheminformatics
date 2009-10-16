@@ -141,8 +141,7 @@ public class Renderer extends AtomContainerRenderer implements IRenderer {
 	public void setup(IChemModel chemModel, Rectangle screen) {
 	    this.setScale(chemModel);
 	    Rectangle2D bounds = Renderer.calculateBounds(chemModel);
-	    if(bounds != null)
-	        this.modelCenter = new Point2d(bounds.getCenterX(), bounds.getCenterY());
+	    this.modelCenter = new Point2d(bounds.getCenterX(), bounds.getCenterY());
 	    this.drawCenter = new Point2d(screen.getCenterX(), screen.getCenterY());
 	    this.setup();
 	}
@@ -909,6 +908,7 @@ public class Renderer extends AtomContainerRenderer implements IRenderer {
         try {
             this.transform = new AffineTransform();
             this.transform.translate(this.drawCenter.x, this.drawCenter.y);
+            this.transform.scale(1,-1); // Converts between CDK Y-up & Java2D Y-down coordinate-systems
             this.transform.scale(this.scale, this.scale);
             this.transform.scale(this.zoom, this.zoom);
             this.transform.translate(-this.modelCenter.x, -this.modelCenter.y);

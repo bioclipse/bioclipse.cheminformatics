@@ -41,7 +41,7 @@ import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.config.IsotopeFactory;
 import org.openscience.cdk.controller.edit.IEdit;
-import org.openscience.cdk.controller.edit.MoveOptionalUndo;
+import org.openscience.cdk.controller.edit.OptionalUndoEdit;
 import org.openscience.cdk.controller.undoredo.IUndoRedoFactory;
 import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.controller.undoredo.UndoRedoHandler;
@@ -144,12 +144,20 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 		return controllerModel;
 	}
 
+	public IControllerModel getControlModel() {
+	     return controllerModel;
+	}
+
 	public IRenderer getRenderer() {
 		return renderer;
 	}
 
+	public RendererModel getRenderModel() {
+	    return renderer.getRenderer2DModel();
+	}
+
 	public IChemModel getIChemModel() {
-		return chemModel;
+	    return chemModel;
 	}
 
   public void setChemModel(IChemModel model) {
@@ -586,7 +594,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 	    }
 	}
 
-    public IBond makeNewStereoBond(IAtom atom, Direction desiredDirection) {
+    public IBond makeNewStereoBond(IAtom atom, IBond.Stereo desiredDirection) {
         String atomType = getController2DModel().getDrawElement();
         IAtom newAtom = addAtomWithoutUndo(atomType, atom);
         IAtomContainer undoRedoContainer=getIChemModel().getBuilder().newAtomContainer();
@@ -597,7 +605,7 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
                     getIChemModel(), newAtom);
         IBond newBond = atomContainer.getBond(atom, newAtom);
 
-        if (desiredDirection == Direction.UP) {
+        if (desiredDirection == IBond.Stereo.UP) {
             newBond.setStereo(IBond.Stereo.UP);
         } else {
             newBond.setStereo(IBond.Stereo.DOWN);
@@ -781,22 +789,22 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
         structureChanged();
     }
 
-    public void makeBondStereo(IBond bond, Direction desiredDirection) {
+    public void makeBondStereo(IBond bond, IBond.Stereo desiredDirection) {
         IBond.Stereo stereo = bond.getStereo();
         boolean isUp = isUp(stereo);
         boolean isDown = isDown(stereo);
         boolean noStereo = noStereo(stereo);
-        if (isUp && desiredDirection == Direction.UP) {
+        if (isUp && desiredDirection == IBond.Stereo.UP) {
             flipDirection(bond, stereo);
-        } else if (isDown && desiredDirection == Direction.UP) {
+        } else if (isDown && desiredDirection == IBond.Stereo.UP) {
             flipOrientation(bond, stereo);
-        } else if (isUp && desiredDirection == Direction.DOWN) {
+        } else if (isUp && desiredDirection == IBond.Stereo.DOWN) {
             flipOrientation(bond, stereo);
-        } else if (isDown && desiredDirection == Direction.DOWN) {
+        } else if (isDown && desiredDirection == IBond.Stereo.DOWN) {
             flipDirection(bond, stereo);
-        } else if (noStereo && desiredDirection == Direction.UP) {
+        } else if (noStereo && desiredDirection == IBond.Stereo.UP) {
             bond.setStereo(IBond.Stereo.UP);
-        } else if (noStereo && desiredDirection == Direction.DOWN) {
+        } else if (noStereo && desiredDirection == IBond.Stereo.DOWN) {
             bond.setStereo(IBond.Stereo.DOWN);
         }
         IBond.Stereo[] stereos = new IBond.Stereo[2];
@@ -1959,8 +1967,9 @@ public class ControllerHub implements IMouseEventRelay, IChemModelRelay {
 
         IAtomContainer ac = chemModel.getMoleculeSet().getAtomContainer( 0 );
         edit.execute(ac);
-        if(edit instanceof MoveOptionalUndo && !((MoveOptionalUndo)edit).isFinal())
-            ;
+        if( edit instanceof OptionalUndoEdit
+            && !((OptionalUndoEdit)edit).isFinal())
+            ;//The optional edit is not final so do not put in on the undo stack
         else
             postEdit( edit );
         //TODO add implicit hydrogen calculation and aromacity

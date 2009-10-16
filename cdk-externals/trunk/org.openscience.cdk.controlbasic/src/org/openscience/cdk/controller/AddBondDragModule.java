@@ -29,7 +29,7 @@ import static org.openscience.cdk.controller.edit.AppendAtom.appendAtom;
 import static org.openscience.cdk.controller.edit.SetBondOrder.cycleBondValence;
 
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
@@ -40,11 +40,9 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.renderer.selection.SingleSelection;
-import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 /**
  * Adds a bond at direction that is draged.
@@ -73,7 +71,10 @@ public class AddBondDragModule extends ControllerModuleAdapter {
     }
 
     private IChemObjectBuilder getBuilder() {
-        return chemModelRelay.getIChemModel().getBuilder();
+        IAtomContainer ac = getModel();
+        if(ac!=null)
+            return ac.getBuilder();
+        throw new IllegalStateException("Could not get IAtomContainer model");
     }
 
     @Override
@@ -84,7 +85,7 @@ public class AddBondDragModule extends ControllerModuleAdapter {
         merge = null;
         isBond = false;
         newSource = false;
-        bondLenght = calculateAverageBondLength( chemModelRelay.getIChemModel() );
+        bondLenght = calculateAverageBondLength( getModel() );
         start = new Point2d(worldCoord);
         IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoord);
         IBond closestBond = chemModelRelay.getClosestBond( worldCoord );
@@ -109,26 +110,22 @@ public class AddBondDragModule extends ControllerModuleAdapter {
         }
     }
 
-    private double calculateAverageBondLength(IChemModel chemModel) {
-    	List<IAtomContainer> containers =
-    		ChemModelManipulator.getAllAtomContainers(chemModel);
-    	double bondLengthSum = 0.0;
-		int bondCount = 0;
-    	for (IAtomContainer container : containers) {
-    		Iterator<IBond> bonds = container.bonds().iterator();
-    		while (bonds.hasNext()) {
-    			IBond bond = bonds.next();
-    			IAtom atom1 = bond.getAtom(0);
-    			IAtom atom2 = bond.getAtom(1);
-    			if (atom1.getPoint2d() != null && atom2.getPoint2d() != null) {
-    				bondCount++;
-    				bondLengthSum += GeometryTools.getLength2D(bond);
-    			}
-    		}
-    	}
-    	if (bondCount == 0) return 0.0;
-		return bondLengthSum / bondCount;
-	}
+    private double calculateAverageBondLength(IAtomContainer ac) {
+        int bondCount = 0;
+        double bondLengthSum = 0;
+        Iterator<IBond> bonds = ac.bonds().iterator();
+        while (bonds.hasNext()) {
+            IBond bond = bonds.next();
+            IAtom atom1 = bond.getAtom(0);
+            IAtom atom2 = bond.getAtom(1);
+            if (atom1.getPoint2d() != null && atom2.getPoint2d() != null) {
+                bondCount++;
+                bondLengthSum += GeometryTools.getLength2D(bond);
+            }
+        }
+        if(bondCount == 0) return 1.4;
+        return bondLengthSum/bondCount;
+    }
 
 	@Override
     public void mouseDrag( Point2d worldCoordFrom, Point2d worldCoordTo ) {
@@ -137,7 +134,8 @@ public class AddBondDragModule extends ControllerModuleAdapter {
 
         merge =  (IAtom) getHighlighted(worldCoordTo, closestAtom);
 
-
+        Map<IAtom,IAtom> mergeM= chemModelRelay.getRenderModel().getMerge();
+        mergeM.clear();
         chemModelRelay.clearPhantoms();
         if(start.distance( worldCoordTo )<getHighlightDistance()) {
             // clear phantom
@@ -177,6 +175,7 @@ public class AddBondDragModule extends ControllerModuleAdapter {
     public void mouseClickedUp( Point2d worldCoord ) {
         final IEdit edit;
         chemModelRelay.clearPhantoms();
+        chemModelRelay.getRenderModel().getMerge().clear();
         if(isBond) return;
 
 

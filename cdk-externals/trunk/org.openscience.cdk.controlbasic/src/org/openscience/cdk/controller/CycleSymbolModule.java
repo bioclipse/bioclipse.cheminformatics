@@ -29,10 +29,10 @@ import static org.openscience.cdk.controller.edit.SetSymbol.setSymbol;
 
 import javax.vecmath.Point2d;
 
+import org.openscience.cdk.controller.edit.IEdit;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.renderer.selection.AbstractSelection;
-import org.openscience.cdk.renderer.selection.SingleSelection;
 
 /**
  * Adds an atom on the given location on mouseclick
@@ -61,24 +61,22 @@ public class CycleSymbolModule extends ControllerModuleAdapter {
 
 
         String symbol = closestAtom.getSymbol();
-        boolean changed = false;
-        String[] elements = 
-            chemModelRelay.getController2DModel().getCommonElements(); 
+        String[] elements = chemModelRelay.getControlModel().getCommonElements();
+        IEdit edit = null;
         for (int i = 0; i < elements.length; i++) {
             if (elements[i].equals(symbol)) {
-                if (i < elements.length - 2) {
-                    chemModelRelay.execute(setSymbol( closestAtom,elements[i + 1]));
+                if (i < elements.length - 1) {
+                    edit = setSymbol( closestAtom,elements[i + 1]);
                 } else {
-                    chemModelRelay.execute(setSymbol( closestAtom, elements[0]));
+                    edit = setSymbol( closestAtom, elements[0]);
                 }
-                changed = true;
                 break;
             }
         }
-        if (!changed)
-            closestAtom.setSymbol("C");
-        setSelection( new SingleSelection<IAtom>(closestAtom) );
-        chemModelRelay.updateView();
+        if(edit!=null)
+            chemModelRelay.execute( edit );
+        else
+            chemModelRelay.execute( setSymbol( closestAtom, "C" ) );
     }
 
 	public String getDrawModeString() {

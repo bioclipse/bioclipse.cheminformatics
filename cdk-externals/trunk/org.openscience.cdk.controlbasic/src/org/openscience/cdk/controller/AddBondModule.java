@@ -61,7 +61,7 @@ public class AddBondModule extends ControllerModuleAdapter {
             setSelection(AbstractSelection.EMPTY_SELECTION);
         } else if (singleSelection instanceof IAtom) {
             String atomType =
-                chemModelRelay.getController2DModel().getDrawElement();
+                chemModelRelay.getControlModel().getDrawElement();
 
             chemModelRelay.execute(AppendAtom.appendAtom(
                     atomType, (IAtom) singleSelection));

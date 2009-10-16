@@ -1,5 +1,4 @@
-/* $Revision: $ $Author:  $ $Date$
- *
+/*
  * Copyright (C) 2009  Arvid Berg <goglepox@users.sourceforge.net>
  *
  * Contact: cdk-devel@lists.sourceforge.net
@@ -22,40 +21,63 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package org.openscience.cdk.controller;
+package org.openscience.cdk.controller.edit;
 
-import java.awt.Color;
+import java.util.Set;
 
+import org.openscience.cdk.controller.Changed;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.renderer.RendererModel;
-import org.openscience.cdk.renderer.elements.ElementGroup;
-import org.openscience.cdk.renderer.elements.IRenderingElement;
-import org.openscience.cdk.renderer.generators.BasicBondGenerator;
-import org.openscience.cdk.renderer.generators.IGenerator;
 
 /**
- * Draws the phantoms in ControllerHub
- *
+ * @author Arvid
  * @cdk.module controlbasic
- */
-public class PhantomBondGenerator extends BasicBondGenerator implements IGenerator{
+*/
+public class OptionalUndoEdit extends AbstractEdit {
+    
+    public static  OptionalUndoEdit wrap(IEdit edit, boolean isFinal) {
+        return new OptionalUndoEdit( edit, isFinal );
+    }
+    
+    public static OptionalUndoEdit wrapFinal(IEdit edit) {
+        return new OptionalUndoEdit( edit, true );
+    }
+    
+    public static OptionalUndoEdit wrapNonFinal(IEdit edit) {
+        return new OptionalUndoEdit( edit, false );
+    }
+    
+    private IEdit wrappedEdit;
+    private boolean isFinal;
 
-    ControllerHub hub;
-
-
-    public PhantomBondGenerator() {
+    private OptionalUndoEdit(IEdit edit, boolean isFinal) {
+        this.isFinal = isFinal;
+        this.wrappedEdit = edit;
+    }
+    
+    public void redo() {
+        if(isFinal)
+            wrappedEdit.redo();
     }
 
-    public void setControllerHub(ControllerHub hub) {
-        this.hub = hub;
+    public void undo() {
+        if(isFinal)
+            wrappedEdit.undo();
     }
 
-    @Override
-    public IRenderingElement generate( IAtomContainer ac, RendererModel model ) {
-        if(hub == null || hub.getPhantoms()==null)
-            return new ElementGroup();
+    public void execute( IAtomContainer ac ) {
 
-        this.setOverrideColor( Color.GRAY );
-        return super.generate( hub.getPhantoms(), model );
+        model = ac;
+        if(!isFinal){
+            wrappedEdit.redo();
+        }
     }
+
+    public boolean isFinal() {
+        return isFinal;
+    }
+
+    public Set<Changed> getTypeOfChanges() {
+        return wrappedEdit.getTypeOfChanges();
+    }
+
 }

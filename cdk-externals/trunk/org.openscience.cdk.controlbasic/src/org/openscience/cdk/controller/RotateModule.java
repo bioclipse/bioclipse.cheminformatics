@@ -26,11 +26,13 @@ package org.openscience.cdk.controller;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.vecmath.Point2d;
 
-import org.openscience.cdk.controller.undoredo.IUndoRedoFactory;
-import org.openscience.cdk.controller.undoredo.IUndoRedoable;
-import org.openscience.cdk.controller.undoredo.UndoRedoHandler;
+import javax.vecmath.Point2d;
+import javax.vecmath.Vector2d;
+
+import org.openscience.cdk.controller.edit.IEdit;
+import org.openscience.cdk.controller.edit.OptionalUndoEdit;
+import org.openscience.cdk.controller.edit.Rotate;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
@@ -49,7 +51,7 @@ public class RotateModule extends ControllerModuleAdapter {
     private boolean selectionMade = false;
     private IChemObjectSelection selection;
     private Point2d rotationCenter;
-    private Point2d[] startCoordsRelativeToRotationCenter;
+    private Vector2d[] startCoordsRelativeToRotationCenter;
     private Map<IAtom, Point2d[]> atomCoordsMap;
     private boolean rotationPerformed;
 
@@ -139,14 +141,11 @@ public class RotateModule extends ControllerModuleAdapter {
             /* Store the original coordinates relative to the rotation center.
              * These are necessary to rotate around the center of the
              * selection rather than the draw center. */
-            startCoordsRelativeToRotationCenter = new Point2d[selectedAtoms
+            startCoordsRelativeToRotationCenter = new Vector2d[selectedAtoms
                     .getAtomCount()];
             for (int i = 0; i < selectedAtoms.getAtomCount(); i++) {
-                Point2d relativeAtomPosition = new Point2d();
-                relativeAtomPosition.x = selectedAtoms.getAtom(i).getPoint2d().x
-                        - rotationCenter.x;
-                relativeAtomPosition.y = selectedAtoms.getAtom(i).getPoint2d().y
-                        - rotationCenter.y;
+                Vector2d relativeAtomPosition = new Vector2d();
+                relativeAtomPosition.sub( selectedAtoms.getAtom( i ).getPoint2d(), rotationCenter );
                 startCoordsRelativeToRotationCenter[i] = relativeAtomPosition;
             }
         }
@@ -158,6 +157,7 @@ public class RotateModule extends ControllerModuleAdapter {
     public void mouseDrag(Point2d worldCoordFrom, Point2d worldCoordTo) {
 
         if (selectionMade) {
+            double partAngle = 0;
             rotationPerformed=true;
             /*
              * Determine the quadrant the user is currently in, relative to the
@@ -181,42 +181,28 @@ public class RotateModule extends ControllerModuleAdapter {
              */
             switch (quadrant) {
             case 1:
-                rotationAngle += (worldCoordTo.x - worldCoordFrom.x)
+                partAngle += (worldCoordTo.x - worldCoordFrom.x)
                         + (worldCoordTo.y - worldCoordFrom.y);
                 break;
             case 2:
-                rotationAngle += (worldCoordFrom.x - worldCoordTo.x)
+                partAngle += (worldCoordFrom.x - worldCoordTo.x)
                         + (worldCoordTo.y - worldCoordFrom.y);
                 break;
             case 3:
-                rotationAngle += (worldCoordFrom.x - worldCoordTo.x)
+                partAngle += (worldCoordFrom.x - worldCoordTo.x)
                         + (worldCoordFrom.y - worldCoordTo.y);
                 break;
             case 4:
-                rotationAngle += (worldCoordTo.x - worldCoordFrom.x)
+                partAngle += (worldCoordTo.x - worldCoordFrom.x)
                         + (worldCoordFrom.y - worldCoordTo.y);
                 break;
             }
-
-            /* For more info on the mathematics, see Wiki at 
-             * http://en.wikipedia.org/wiki/Coordinate_rotation
-             */
-            double cosine = java.lang.Math.cos(rotationAngle);
-            double sine = java.lang.Math.sin(rotationAngle);
-            for (int i = 0; i < startCoordsRelativeToRotationCenter.length; i++) {
-                double newX = (startCoordsRelativeToRotationCenter[i].x * cosine)
-                        - (startCoordsRelativeToRotationCenter[i].y * sine);
-                double newY = (startCoordsRelativeToRotationCenter[i].x * sine)
-                        + (startCoordsRelativeToRotationCenter[i].y * cosine);
-
-                Point2d newCoords = new Point2d(newX + rotationCenter.x, newY
-                        + rotationCenter.y);
-
-                selection.getConnectedAtomContainer().getAtom(i).setPoint2d(
-                        newCoords);
-            }
+            rotationAngle+=partAngle;
+            IEdit edit = Rotate.rotate( atomCoordsMap.keySet(),
+                                        partAngle,
+                                        rotationCenter );
+            chemModelRelay.execute( OptionalUndoEdit.wrap( edit, false ) );
         }
-        chemModelRelay.updateView();
     }
     
     /**
@@ -225,22 +211,10 @@ public class RotateModule extends ControllerModuleAdapter {
      */
     public void mouseClickedUp(Point2d worldCoord) {
         if(rotationPerformed && atomCoordsMap!=null) {
-            logger.debug("posting undo/redo for rotation");
-
-            /* Keep new coordinates for the sake of possible undo/redo */
-            for (IAtom atom : selection.getConnectedAtomContainer().atoms()) {
-                Point2d[] coords = atomCoordsMap.get(atom);
-                coords[0] = atom.getPoint2d();
-            }
-
-            /* Post the rotation */
-            IUndoRedoFactory factory = chemModelRelay.getUndoRedoFactory();
-            UndoRedoHandler handler = chemModelRelay.getUndoRedoHandler();
-            if (factory != null && handler != null) {
-                IUndoRedoable undoredo = factory.getChangeCoordsEdit(
-                        atomCoordsMap, "Rotation");
-                handler.postEdit(undoredo);
-            }
+            IEdit edit = Rotate.rotate( atomCoordsMap.keySet(),
+                                                   rotationAngle,
+                                                   rotationCenter );
+            chemModelRelay.execute( OptionalUndoEdit.wrap( edit, true ) );
         }
     }
 

@@ -29,7 +29,6 @@ package org.openscience.cdk.controller;
 
 import javax.vecmath.Point2d;
 
-import org.openscience.cdk.controller.IChemModelRelay.Direction;
 import org.openscience.cdk.controller.edit.AppendAtom;
 import org.openscience.cdk.controller.edit.SetStereo;
 import org.openscience.cdk.interfaces.IAtom;
@@ -49,11 +48,10 @@ public class AlterBondStereoModule extends ControllerModuleAdapter {
 
     private IBond.Stereo desiredDirection;
 
-	public AlterBondStereoModule(
-			IChemModelRelay chemModelRelay, Direction desiredDirection) {
+    public AlterBondStereoModule(IChemModelRelay chemModelRelay,
+                                 IBond.Stereo desiredDirection) {
 		super(chemModelRelay);
-		this.desiredDirection = desiredDirection==Direction.UP
-		                ?IBond.Stereo.UP:IBond.Stereo.DOWN;
+        this.desiredDirection = desiredDirection;
 	}
 
 	public void mouseClickedDown(Point2d worldCoord) {

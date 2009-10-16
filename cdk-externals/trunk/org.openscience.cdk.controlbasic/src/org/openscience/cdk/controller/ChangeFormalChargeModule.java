@@ -66,7 +66,6 @@ public class ChangeFormalChargeModule extends ControllerModuleAdapter {
 	        chemModelRelay.execute( setCharge( atom, newCharge ));
 	    }
 	    setSelection( new MultiSelection<IAtom>(newSelection) );
-	    chemModelRelay.updateView();// FIXME do you really need to call it here?
 	}
 
 	public String getDrawModeString() {

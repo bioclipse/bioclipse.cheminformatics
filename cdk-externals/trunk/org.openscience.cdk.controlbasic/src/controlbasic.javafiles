@@ -22,12 +22,15 @@ org/openscience/cdk/controller/undoredo/ClearAllEdit.java
 org/openscience/cdk/controller/undoredo/ChangeCoordsEdit.java
 org/openscience/cdk/controller/undoredo/AdjustBondOrdersEdit.java
 org/openscience/cdk/controller/PhantomBondGenerator.java
+org/openscience/cdk/controller/edit/Rotate.java
 org/openscience/cdk/controller/edit/CreateBond.java
 org/openscience/cdk/controller/edit/AddBond.java
 org/openscience/cdk/controller/edit/AddAtom.java
 org/openscience/cdk/controller/edit/AppendAtom.java
+org/openscience/cdk/controller/edit/CreateRing.java
 org/openscience/cdk/controller/edit/SetCharge.java
 org/openscience/cdk/controller/edit/AbstractEdit.java
+org/openscience/cdk/controller/edit/OptionalUndoEdit.java
 org/openscience/cdk/controller/edit/Move.java
 org/openscience/cdk/controller/edit/SetStereo.java
 org/openscience/cdk/controller/edit/RemoveAtom.java
@@ -35,7 +38,6 @@ org/openscience/cdk/controller/edit/Merge.java
 org/openscience/cdk/controller/edit/CompositEdit.java
 org/openscience/cdk/controller/edit/SetBondOrder.java
 org/openscience/cdk/controller/edit/RemoveBond.java
-org/openscience/cdk/controller/edit/MoveOptionalUndo.java
 org/openscience/cdk/controller/edit/SetSymbol.java
 org/openscience/cdk/controller/ControllerModel.java
 org/openscience/cdk/controller/ControllerHub.java

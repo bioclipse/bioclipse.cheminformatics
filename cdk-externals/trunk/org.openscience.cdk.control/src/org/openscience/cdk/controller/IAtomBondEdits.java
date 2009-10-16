@@ -26,10 +26,10 @@ package org.openscience.cdk.controller;
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
-import org.openscience.cdk.controller.IChemModelRelay.Direction;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IRing;
 
 /**
  *  Interface for edit methods currently used by edit modules but should
@@ -69,6 +69,14 @@ public interface IAtomBondEdits {
     public void setWedgeType(IBond bond, IBond.Stereo type);
     public void addNewBond(Point2d worldCoordinate);
     public void cycleBondValence(IBond bond);
-    public void makeBondStereo(IBond bond, Direction desiredDirection);
-    public IBond makeNewStereoBond(IAtom atom, Direction desiredDirection);
+    public void makeBondStereo(IBond bond, IBond.Stereo desiredDirection);
+    public IBond makeNewStereoBond(IAtom atom, IBond.Stereo desiredDirection);
+
+    /* Editing actions for rings*/
+    public IRing addRing(int size, Point2d worldcoord);
+    public IRing addRing(IAtom atom, int size);
+    public IRing addPhenyl(IAtom atom);
+    public IRing addPhenyl(Point2d worldcoord);
+    public IRing addRing(IBond bond, int size);
+    public IRing addPhenyl(IBond bond);
 }

@@ -34,6 +34,7 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.interfaces.IRingSet;
+import org.openscience.cdk.interfaces.IBond.Stereo;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
@@ -284,14 +285,14 @@ public class BasicBondGenerator implements IGenerator {
 	private IRenderingElement generateStereoElement(
 	        IBond bond, RendererModel model) {
 
-		IBond.Stereo stereo = bond.getStereo();
+		Stereo stereo = bond.getStereo();
 		boolean dashed = false;
 		Direction dir = Direction.toSecond;
-		if (stereo == IBond.Stereo.DOWN ||
-		    stereo == IBond.Stereo.DOWN_INVERTED)
+		if (stereo == Stereo.DOWN ||
+		    stereo == Stereo.DOWN_INVERTED)
 			dashed = true;
-		if (stereo == IBond.Stereo.DOWN_INVERTED ||
-		    stereo == IBond.Stereo.UP_INVERTED)
+		if (stereo == Stereo.DOWN_INVERTED ||
+		    stereo == Stereo.UP_INVERTED)
 			dir = Direction.toFirst;
 
 		IRenderingElement base = generateBondElement(
@@ -309,8 +310,8 @@ public class BasicBondGenerator implements IGenerator {
 	}
 
 	public boolean isStereoBond(IBond bond) {
-		return bond.getStereo() != IBond.Stereo.NONE
-				&& bond.getStereo() != (IBond.Stereo)CDKConstants.UNSET;
+		return bond.getStereo() != Stereo.NONE
+				&& bond.getStereo() != (Stereo)CDKConstants.UNSET;
 	}
 
 	public boolean bindsHydrogen(IBond bond) {

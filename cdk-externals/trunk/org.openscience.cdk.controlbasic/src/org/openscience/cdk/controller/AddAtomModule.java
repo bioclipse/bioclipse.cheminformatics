@@ -53,7 +53,7 @@ public class AddAtomModule extends ControllerModuleAdapter {
 		
 		double dH = model.getHighlightDistance() / model.getScale();
 		String atomType = 
-			chemModelRelay.getController2DModel().getDrawElement();
+			chemModelRelay.getControlModel().getDrawElement();
 		
 		if (closestAtom == null || 
 		        closestAtom.getPoint2d().distance(worldCoord) > dH) {

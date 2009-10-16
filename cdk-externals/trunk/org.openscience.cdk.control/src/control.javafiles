@@ -8,6 +8,7 @@ org/openscience/cdk/controller/undoredo/IUndoRedoFactory.java
 org/openscience/cdk/controller/undoredo/IUndoRedoable.java
 org/openscience/cdk/controller/undoredo/IUndoListener.java
 org/openscience/cdk/controller/IControllerModule.java
+org/openscience/cdk/controller/IOldChemModelRelay.java
 org/openscience/cdk/controller/IAtomBondEdits.java
 org/openscience/cdk/controller/IChemModelRelay.java
 org/openscience/cdk/controller/edit/IEdit.java
