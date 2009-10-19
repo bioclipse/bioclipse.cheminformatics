@@ -61,6 +61,33 @@ public class SWTRenderer implements IDrawVisitor{
         this.gc = graphics;
     }
 
+    private enum Type {
+        Forground,Background
+    }
+
+    private void setForeground(java.awt.Color color) {
+        setColor(Type.Forground,color);
+    }
+
+    private void setBackground(java.awt.Color color) {
+        setColor(Type.Background,color);
+    }
+
+    private void setColor(Type type,java.awt.Color color) {
+        Color c = toSWTColor( gc, color );
+        int alpha = color.getAlpha();
+        switch ( type ) {
+            case Forground:
+                gc.setForeground( c );
+                gc.setAlpha( alpha );
+                break;
+            case Background:
+                gc.setBackground( c );
+                gc.setAlpha( alpha );
+                break;
+        }
+    }
+
     public RendererModel getModel() {
         return model;
     }
@@ -106,14 +133,14 @@ public class SWTRenderer implements IDrawVisitor{
         int diameter = scaleX(element.radius * 2);
 
         if (element.fill) {
-            gc.setBackground(toSWTColor(gc, element.color));
+            setBackground(element.color);
 
             gc.fillOval(transformX(element.x) - radius,
                         transformY(element.y) - radius,
                         diameter,
                         diameter );
         } else {
-            gc.setForeground(toSWTColor(gc, element.color));
+            setForeground(element.color);
 
             gc.drawOval(transformX(element.x) - radius,
                         transformY(element.y) - radius,
@@ -128,7 +155,7 @@ public class SWTRenderer implements IDrawVisitor{
         Color fColorOld = gc.getForeground();
         int oldLineWidth = gc.getLineWidth();
         // init recursion with background to get the first draw with foreground
-        gc.setForeground( toSWTColor( gc, element.color ));
+        setForeground( element.color );
         gc.setLineWidth( (element.width<1?1:(int)element.width) );
         drawLine( element );
 
@@ -139,8 +166,8 @@ public class SWTRenderer implements IDrawVisitor{
 
     public void visit( WedgeLineElement element) {
         Color colorOld = gc.getBackground();
-        gc.setForeground( getForgroundColor() );
-        gc.setBackground( getForgroundColor() );
+        setForeground( getForgroundColor() );
+        setBackground( getForgroundColor() );
         //drawWedge( element);
         drawWedge( element );
         gc.setBackground( colorOld );
@@ -212,12 +239,12 @@ public class SWTRenderer implements IDrawVisitor{
         path.dispose();
     }
 
-    private Color getForgroundColor() {
-        return toSWTColor( gc, getModel().getForeColor() );
+    private java.awt.Color getForgroundColor() {
+        return getModel().getForeColor();
     }
 
-    private Color getBackgroundColor() {
-        return toSWTColor( gc, getModel().getBackColor() );
+    private java.awt.Color getBackgroundColor() {
+        return getModel().getBackColor();
     }
 
 
@@ -278,8 +305,8 @@ public class SWTRenderer implements IDrawVisitor{
         Point textSize = gc.textExtent( text );
         x = x - textSize.x/2;
         y = y - textSize.y/2;
-        gc.setForeground( toSWTColor( gc, element.color ) );
-        gc.setBackground(  getBackgroundColor() );
+        setForeground( element.color );
+        setBackground(  getBackgroundColor() );
         gc.setAdvanced( true );
         gc.drawText( text, x, y, true );
     }
@@ -295,8 +322,8 @@ public class SWTRenderer implements IDrawVisitor{
         Point textSize = gc.textExtent( text );
         x = x - textSize.x/2;
         y = y - textSize.y/2;
-        gc.setForeground( toSWTColor( gc, element.color ) );
-        gc.setBackground(  getBackgroundColor() );
+        setForeground( element.color );
+        setBackground(  getBackgroundColor() );
         gc.setAdvanced( true );
         gc.drawText( text, x, y, false );
 
@@ -383,12 +410,12 @@ public class SWTRenderer implements IDrawVisitor{
     public void visit(RectangleElement element) {
 
         if (element.filled) {
-            gc.setBackground(toSWTColor(gc, element.color));
+            setBackground(element.color);
             gc.fillRectangle(
                     transformX(element.x), transformY(element.y),
                     scaleX(element.width), scaleY(element.height));
         } else {
-            gc.setForeground(toSWTColor(gc, element.color));
+            setForeground( element.color );
             gc.drawRectangle(
                     transformX(element.x), transformY(element.y),
                     scaleX(element.width), scaleY(element.height));
@@ -396,7 +423,7 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void visit(PathElement element) {
-        gc.setForeground(toSWTColor(gc, element.color));
+        setForeground(element.color);
         Path path = new Path(gc.getDevice());
         boolean first = true;
         for(Point2d p: element.points) {
@@ -414,7 +441,7 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void visit(GeneralPath element) {
-        gc.setForeground( toSWTColor( gc, element.color ) );
+        setForeground( element.color );
         int oldStyle = gc.getLineStyle();
         gc.setLineStyle( SWT.LINE_DOT );
         Path path = new Path(gc.getDevice());

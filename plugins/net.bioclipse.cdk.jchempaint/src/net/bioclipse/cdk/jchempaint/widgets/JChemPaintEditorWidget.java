@@ -15,6 +15,7 @@ package net.bioclipse.cdk.jchempaint.widgets;
 import static net.bioclipse.cdk.jchempaint.outline.StructureContentProvider.createCDKChemObject;
 import static org.openscience.cdk.geometry.GeometryTools.has2DCoordinatesNew;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -149,8 +150,13 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         // Commented becaus of bug 1100 selectioncolor not good on windows
         //java.awt.Color color = createFromSWT( SWT.COLOR_LIST_SELECTION );
-        java.awt.Color color = new java.awt.Color(0xc2deff);
+        java.awt.Color color = Color.BLUE;//new java.awt.Color(0xc2deff);
+        color = new java.awt.Color( color.getRed(),
+                                    color.getGreen(),
+                                    color.getBlue(),
+                                    128);
         getRenderer().getRenderer2DModel().setSelectedPartColor(color);
+        getRenderer().getRenderer2DModel().setSelectionRadius( 8 );
 
         setupControllerHub();
 
