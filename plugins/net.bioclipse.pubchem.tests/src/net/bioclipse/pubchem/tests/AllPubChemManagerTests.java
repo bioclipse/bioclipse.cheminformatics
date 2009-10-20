@@ -16,9 +16,9 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	JavaPubChemManagerPluginTest.class,
-	JavaScriptPubChemManagerPluginTest.class
+	APITest.class,
+	CoverageTest.class
 })
-public class AllInChIManagerPluginTests {
+public class AllPubChemManagerTests {
 
 }
