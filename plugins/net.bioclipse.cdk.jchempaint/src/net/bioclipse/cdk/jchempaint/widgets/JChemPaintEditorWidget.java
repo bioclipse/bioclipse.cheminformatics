@@ -148,6 +148,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         setupScrollbars();
 
+        RendererModel rModel = getRenderer().getRenderer2DModel();
         // Commented becaus of bug 1100 selectioncolor not good on windows
         //java.awt.Color color = createFromSWT( SWT.COLOR_LIST_SELECTION );
         java.awt.Color color = Color.BLUE;//new java.awt.Color(0xc2deff);
@@ -155,8 +156,14 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                                     color.getGreen(),
                                     color.getBlue(),
                                     128);
-        getRenderer().getRenderer2DModel().setSelectedPartColor(color);
-        getRenderer().getRenderer2DModel().setSelectionRadius( 8 );
+        rModel.setSelectedPartColor(color);
+        rModel.setSelectionRadius( 8 );
+
+        rModel.setHighlightShapeFilled( true );
+        rModel.setHoverOverColor( new Color( Color.GRAY.getRed(),
+                                             Color.GRAY.getGreen(),
+                                             Color.GRAY.getBlue(),
+                                             128) );
 
         setupControllerHub();
 
