@@ -15,11 +15,16 @@ import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.IElementComparer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.openscience.cdk.interfaces.IChemModel;
@@ -50,6 +55,15 @@ public class JCPOutlinePage extends ContentOutlinePage
         treeViewer.setLabelProvider(new StructureLabelProvider());
         //viewer.setSorter(new NameSorter());
         treeViewer.addSelectionChangedListener(this);
+
+        Tree tree = treeViewer.getTree();
+        MenuManager menuMgr = new MenuManager();
+        menuMgr.add( new GroupMarker( IWorkbenchActionConstants.MB_ADDITIONS ) );
+        getSite().registerContextMenu("net.bioclipse.cdk.ui.editors.jchempaint",
+                                      menuMgr, treeViewer );
+
+        Menu menu = menuMgr.createContextMenu( tree );
+        tree.setMenu( menu );
 
         if (editor.getControllerHub()==null) return;
 
