@@ -11,6 +11,7 @@
 package net.bioclipse.chemoinformatics.test.feature;
 
 import net.bioclipse.cdk.AllCDKBusinessPluginTestSuite;
+import net.bioclipse.pubchem.tests.AllPubChemManagerPluginTests;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -23,6 +24,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(value=Suite.class)
 @SuiteClasses(value={
-    AllCDKBusinessPluginTestSuite.class
+    AllCDKBusinessPluginTestSuite.class,
+    AllPubChemManagerPluginTests.class
 })
 public class AllFeaturePluginTest {}
