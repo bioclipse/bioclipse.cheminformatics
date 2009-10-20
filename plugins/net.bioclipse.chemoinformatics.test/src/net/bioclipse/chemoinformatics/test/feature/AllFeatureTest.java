@@ -11,6 +11,8 @@
 package net.bioclipse.chemoinformatics.test.feature;
 
 import net.bioclipse.cdk.AllCDKBusinessTestsSuite;
+import net.bioclipse.cml.tests.AllValidateCMLManagerTest;
+import net.bioclipse.inchi.business.test.AllInChIManagerTests;
 import net.bioclipse.pubchem.tests.AllPubChemManagerTests;
 
 import org.junit.runner.RunWith;
@@ -26,7 +28,9 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses(value={
     FeatureTest.class,
     AllCDKBusinessTestsSuite.class,
-    AllPubChemManagerTests.class
+    AllPubChemManagerTests.class,
+    AllInChIManagerTests.class,
+    AllValidateCMLManagerTest.class
 })
 public class AllFeatureTest {
 
