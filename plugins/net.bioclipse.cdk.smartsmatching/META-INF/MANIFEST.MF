@@ -7,21 +7,21 @@ Bundle-Activator: net.bioclipse.cdk.smartsmatching.Activator
 Bundle-Vendor: The Bioclipse Team
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- net.bioclipse.cdk.business;bundle-version="2.0.0",
- net.bioclipse.core;bundle-version="2.0.0",
- net.bioclipse.cdk.jchempaint;bundle-version="2.0.0",
- org.openscience.cdk.core;bundle-version="1.1.5",
- org.openscience.cdk.data;bundle-version="1.1.5",
- org.openscience.cdk.interfaces;bundle-version="1.1.5",
- org.openscience.cdk.standard;bundle-version="1.1.5",
- org.openscience.cdk.render;bundle-version="1.1.5",
- net.bioclipse.cdk.jchempaint.view;bundle-version="2.0.0",
+ net.bioclipse.cdk.business,
+ net.bioclipse.core,
+ net.bioclipse.cdk.jchempaint,
+ org.openscience.cdk.core,
+ org.openscience.cdk.data,
+ org.openscience.cdk.interfaces,
+ org.openscience.cdk.standard,
+ org.openscience.cdk.render,
+ net.bioclipse.cdk.jchempaint.view,
  org.eclipse.core.resources,
  org.eclipse.ui.views,
- net.bioclipse.chemoinformatics;bundle-version="2.0.0",
+ net.bioclipse.chemoinformatics,
  org.eclipse.help,
- org.openscience.cdk.renderbasic;bundle-version="1.3.0",
- net.bioclipse.cdk.ui.sdfeditor;bundle-version="2.1.1"
+ org.openscience.cdk.renderbasic,
+ net.bioclipse.cdk.ui.sdfeditor
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.vecmath,
- org.apache.log4j;version="1.2.15"
+ org.apache.log4j
