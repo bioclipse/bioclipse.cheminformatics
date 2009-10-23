@@ -1071,4 +1071,14 @@ public interface ICDKManager extends IBioclipseManager {
          methodSummary = "Clones the CDK data model." )
     public ICDKMolecule clone(ICDKMolecule molecule) throws BioclipseException;
 
+    
+    @Recorded
+    @PublishedMethod(
+         params="molecules List of molecules",
+         methodSummary="Determines the Maximal Common SubStructure (MCSS) for" +
+             " the list of molecules."
+    )
+    @TestMethods("testMCSS")
+    public ICDKMolecule mcss(List<IMolecule> molecules)
+    throws BioclipseException;
 }

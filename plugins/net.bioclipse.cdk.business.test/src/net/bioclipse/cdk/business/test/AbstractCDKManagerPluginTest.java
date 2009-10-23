@@ -1928,5 +1928,18 @@ public abstract class AbstractCDKManagerPluginTest {
             net.bioclipse.core.domain.IMolecule.Property.USE_CALCULATED);
         Assert.assertEquals(1.0, cdk.calculateTanimoto(mol, b3), 0.0);
     }
+    
+    @Test public void testMCSS() throws Exception {
+        List<IMolecule> list = new ArrayList<IMolecule>();
+        list.add(cdk.fromSMILES("CCC"));
+        list.add(cdk.fromSMILES("CCO"));
+        list.add(cdk.fromSMILES("NCC"));
+        ICDKMolecule mcssCDKMol = cdk.mcss(list);
+        IAtomContainer mcss = mcssCDKMol.getAtomContainer();
+        Assert.assertNotNull(mcss);
+        Assert.assertEquals(2, mcss.getAtomCount());
+        Assert.assertEquals(1, mcss.getBondCount());
+        Assert.assertEquals("CC", cdk.calculateSMILES(mcssCDKMol));
+    }
 
 }

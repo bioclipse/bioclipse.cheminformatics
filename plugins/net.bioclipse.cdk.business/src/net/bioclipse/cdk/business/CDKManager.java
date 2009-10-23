@@ -2405,4 +2405,31 @@ public class CDKManager implements IBioclipseManager {
             );
         }
     }
+
+    public ICDKMolecule mcss(List<IMolecule> molecules)
+        throws BioclipseException {
+        if (molecules.size() < 2)
+            throw new BioclipseException("List must contain at least two " +
+                "molecules.");
+        
+        ICDKMolecule firstMolecule = asCDKMolecule(molecules.get(0));
+        IAtomContainer mcss = firstMolecule.getAtomContainer();
+        int counter = 1;
+        for (IMolecule mol : molecules) {
+            ICDKMolecule followupMolecule = asCDKMolecule(mol);
+            counter++;
+            try {
+                mcss = UniversalIsomorphismTester.getOverlaps(
+                    mcss, followupMolecule.getAtomContainer()
+                ).get(0);
+            } catch (CDKException exception) {
+                throw new BioclipseException("Could not determine MCSS, " +
+                    "because of molecule " + counter + ": " +
+                    exception.getMessage());
+            }
+        }
+        ICDKMolecule newMolecule = newMolecule();
+        newMolecule.getAtomContainer().add(mcss);
+        return newMolecule;
+    }
 }
