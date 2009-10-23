@@ -472,16 +472,20 @@ public class CDKManager implements IBioclipseManager {
         }
         String result;
         try {
-        org.openscience.cdk.interfaces.IMolecule cdkMol =
-            (org.openscience.cdk.interfaces.IMolecule) mol.getAtomContainer();
+            IAtomContainer cdkMol = mol.getAtomContainer();
 
         // Create the SMILES
         SmilesGenerator generator = new SmilesGenerator();
 
         // Operate on a clone with removed hydrogens
+        cdkMol = AtomContainerManipulator.removeHydrogens(cdkMol);
         org.openscience.cdk.interfaces.IMolecule newMol;
-        newMol = (org.openscience.cdk.interfaces.IMolecule)
-                AtomContainerManipulator.removeHydrogens( cdkMol );
+        if (org.openscience.cdk.interfaces.IMolecule.class.isAssignableFrom(
+            cdkMol.getClass())) {
+            newMol = (org.openscience.cdk.interfaces.IMolecule)cdkMol;
+        } else {
+            newMol = cdkMol.getBuilder().newMolecule(cdkMol);
+        }
         result = generator.createSMILES( newMol );
         }catch (Exception e) {
             logger.warn( "Failed to generate SMILES",e);
