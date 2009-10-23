@@ -11,6 +11,7 @@
 package net.bioclipse.cdk.smartsmatching.views;
 
 import net.bioclipse.cdk.smartsmatching.Activator;
+import net.bioclipse.cdk.smartsmatching.model.SmartsFile;
 import net.bioclipse.cdk.smartsmatching.model.SmartsHit;
 import net.bioclipse.cdk.smartsmatching.model.SmartsWrapper;
 
@@ -21,14 +22,22 @@ import org.eclipse.swt.graphics.Image;
 
 public class SmartsMatchingLabelProvider implements ILabelProvider {
 
+    Image fileImg=Activator.getImageDecriptor( "icons/tsuite.gif" ).createImage();
+    Image wrapperWithErrors=Activator.getImageDecriptor( "icons/fatalerror.gif" ).createImage();
     Image wrapperWithHits=Activator.getImageDecriptor( "icons/testerr.gif" ).createImage();
     Image wrapperWithoutHits=Activator.getImageDecriptor( "icons/test.gif" ).createImage();
     Image chemObjectImage=Activator.getImageDecriptor( "icons/hit.gif" ).createImage();
     
     public Image getImage( Object element ) {
 
+        if ( element instanceof SmartsFile ) {
+            return fileImg;
+        }
         if ( element instanceof SmartsWrapper ) {
             SmartsWrapper sw = (SmartsWrapper) element;
+            if (!(sw.isValid()))
+                return wrapperWithErrors;
+                
             if (sw.getHits()!=null && sw.getHits().size()>0){
                 return wrapperWithHits;
             }
@@ -44,12 +53,19 @@ public class SmartsMatchingLabelProvider implements ILabelProvider {
     }
 
     public String getText( Object element ) {
+        if ( element instanceof SmartsFile ) {
+            SmartsFile sf = (SmartsFile) element;
+            if (sf.getSmarts()!=null && sf.getSmarts().size()>0){
+                return sf.getName() + " ["+ sf.getSmarts().size()+ " SMARTS]";
+            }
+            return sf.getName();
+        }
         if ( element instanceof SmartsWrapper ) {
             SmartsWrapper sw = (SmartsWrapper) element;
             if (sw.getHits()!=null){
-                return sw.getName() + " ["+ sw.getHits().size()+ " matches]";
+                return sw.getName() + " [" + sw.getSmartsString() + "] {"+ sw.getHits().size()+ " matches}";
             }
-            return sw.getName();
+            return sw.getName() + " [" + sw.getSmartsString() + "]";
         }
         else if ( element instanceof SmartsHit ) {
             

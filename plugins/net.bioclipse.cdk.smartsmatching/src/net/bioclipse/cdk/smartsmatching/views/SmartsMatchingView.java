@@ -11,26 +11,41 @@
 package net.bioclipse.cdk.smartsmatching.views;
 
 
+ import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import net.bioclipse.cdk.smartsmatching.Activator;
 import net.bioclipse.cdk.smartsmatching.AddEditSmartsDialog;
+import net.bioclipse.cdk.smartsmatching.SmartsMatchingRendererConfigurator;
+import net.bioclipse.cdk.smartsmatching.model.SmartsFile;
 import net.bioclipse.cdk.smartsmatching.model.SmartsHit;
 import net.bioclipse.cdk.smartsmatching.model.SmartsWrapper;
 import net.bioclipse.cdk.smartsmatching.prefs.SmartsMatchingPrefsHelper;
+import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor;
+import net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart;
 import net.bioclipse.core.business.BioclipseException;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.*;
+import org.eclipse.core.commands.contexts.ContextManagerEvent;
+import org.eclipse.core.commands.contexts.IContextManagerListener;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -49,18 +64,20 @@ import org.openscience.cdk.interfaces.IAtomContainer;
  * @author ola
  *
  */
-public class SmartsMatchingView extends ViewPart implements IPartListener{
+public class SmartsMatchingView extends ViewPart implements IPartListener,
+                                                        IContextManagerListener{
 
-    private static final Logger logger = Logger.getLogger(CDKManager.class);
+    private static final Logger logger = Logger.getLogger(
+                                                      SmartsMatchingView.class);
 
-    private static TreeViewer viewer;
+    private static CheckboxTreeViewer viewer;
     private Action addSmartsAction;
-    private Action removeSmartsAction;
+    private Action removeAction;
 
     private Action runAction;
 
-    private static Map<IWorkbenchPart,List<SmartsWrapper>> editorSmartsMap;
-    private static List<SmartsWrapper> smartsInView;
+    private static Map<IWorkbenchPart,List<SmartsFile>> editorSmartsMap;
+    private static List<SmartsFile> smartsInView;
 
     private Action clearAction;
     ICDKManager cdk;
@@ -75,7 +92,7 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         }
         @Override
         public void init( IEditorSite site, IEditorInput input )
-                                                                throws PartInitException {
+                                                      throws PartInitException {
         }
         @Override
         public boolean isDirty() {
@@ -97,11 +114,15 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
 
     private static IWorkbenchPart currentPart;
 
+    private static SmartsMatchingView smartsView;
+
     private Action expandAllAction;
 
     private Action collapseAllAction;
 
     private Action showPropertiesViewAction;
+
+    private Action addFileAction;
 
 
     /**
@@ -115,28 +136,68 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
      * to create the viewer and initialize it.
      */
     public void createPartControl(Composite parent) {
-        viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+        
+        smartsView=this;
+
+        final Tree tree = new Tree(parent,SWT.BORDER|SWT.V_SCROLL|SWT.H_SCROLL|SWT.CHECK);
+        viewer = new CheckboxTreeViewer(tree);
+//        viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL| SWT.V_SCROLL | SWT.CHECK);
         viewer.setContentProvider(new SmartsMatchingContentProvider());
         viewer.setLabelProvider(new SmartsMatchingLabelProvider());
         viewer.setSorter(new ViewerSorter());
         
-        cdk=net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
+        viewer.addCheckStateListener( new ICheckStateListener() {
+            
+            public void checkStateChanged( CheckStateChangedEvent event ) {
+        
+                Object element = event.getElement();
+
+                if ( element instanceof SmartsFile ) {
+                    SmartsFile sf = (SmartsFile) element;
+                    
+                    for (SmartsWrapper sw : sf.getSmarts()){
+                        sw.setActive( event.getChecked() );
+                        for (TreeItem item : viewer.getTree().getItems()){
+                            for (TreeItem childItem : item.getItems()){
+                                if (childItem.getData()==sw){
+                                    childItem.setChecked( sw.isActive() );
+                                }
+                            }
+                        }
+                    }
+                }
+                else if ( element instanceof SmartsWrapper ) {
+                    SmartsWrapper sw = (SmartsWrapper) element;
+                    sw.setActive( event.getChecked() );
+                }                
+            }
+        });
+        
+        
+        cdk=net.bioclipse.cdk.business.Activator.getDefault().
+        getJavaCDKManager();
         
         //Read prefs for stored smarts
         smartsInView = SmartsMatchingPrefsHelper.getPreferences();
         viewer.setInput(smartsInView);
-        editorSmartsMap=new HashMap<IWorkbenchPart, List<SmartsWrapper>>();
+        editorSmartsMap=new HashMap<IWorkbenchPart, List<SmartsFile>>();
         editorSmartsMap.put( bogusWBPart, smartsInView);
         
 
         // Create the help context id for the viewer's control
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "net.bioclipse.cdk.smartsmatching.viewer");
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), 
+                                     "net.bioclipse.cdk.smartsmatching.viewer");
         makeActions();
         hookContextMenu();
         contributeToActionBars();
 
         //Listen for part lifecycle events to react on editors
         getSite().getWorkbenchWindow().getPartService().addPartListener(this);
+
+        //Hook us up to react on JCP context changes
+        IContextService contextService = (IContextService)PlatformUI
+                              .getWorkbench().getService(IContextService.class);
+        contextService.addContextManagerListener( this );
 
         //Post selections to Eclipse
         getSite().setSelectionProvider(viewer); 
@@ -166,7 +227,8 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         manager.add(clearAction);
         manager.add(new Separator());
         manager.add(addSmartsAction);
-        manager.add(removeSmartsAction);
+        manager.add(removeAction);
+        manager.add(addFileAction);
         manager.add(new Separator());
         manager.add(showPropertiesViewAction);
 
@@ -182,7 +244,8 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         manager.add(collapseAllAction);
         manager.add(new Separator());
         manager.add(addSmartsAction);
-        manager.add(removeSmartsAction);
+        manager.add(removeAction);
+        manager.add(addFileAction);
     }
 
     private void makeActions() {
@@ -194,7 +257,8 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         };
         collapseAllAction.setText("Collapse all");
         collapseAllAction.setToolTipText("Collapse all SMARTS");
-        collapseAllAction.setImageDescriptor(Activator.getImageDecriptor( "icons/collapseall.gif" ));
+        collapseAllAction.setImageDescriptor(Activator.getImageDecriptor( 
+                                                     "icons/collapseall.gif" ));
 
         expandAllAction = new Action() {
             public void run() {
@@ -203,7 +267,8 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         };
         expandAllAction.setText("Expand all");
         expandAllAction.setToolTipText("Expand all SMARTS to reveal hits");
-        expandAllAction.setImageDescriptor(Activator.getImageDecriptor( "icons/expandall.gif" ));
+        expandAllAction.setImageDescriptor(Activator.getImageDecriptor( 
+                                                       "icons/expandall.gif" ));
 
         
         runAction = new Action() {
@@ -213,61 +278,101 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         };
         runAction.setText("Run matching");
         runAction.setToolTipText("Run SMARTS matching for the active aditor");
-        runAction.setImageDescriptor(Activator.getImageDecriptor( "icons/smallRun.gif" ));
+        runAction.setImageDescriptor(Activator.getImageDecriptor( 
+                                                        "icons/smallRun.gif" ));
 
         clearAction = new Action() {
             public void run() {
-                //Re-read from prefs, creates new objects
-                smartsInView = SmartsMatchingPrefsHelper.getPreferences();
-                viewer.setInput(smartsInView);
+                clearHits( );
             }
         };
         clearAction.setText("Clear matches");
         clearAction.setToolTipText("Clear all SMARTS matches");
-        clearAction.setImageDescriptor(Activator.getImageDecriptor( "icons/clear_co.gif" ));
+        clearAction.setImageDescriptor(Activator.getImageDecriptor( 
+                                                       "icons/clear_co.gif" ));
 
         addSmartsAction = new Action() {
             public void run() {
                 
+                //Get selected SmartsFile
+                IStructuredSelection ssel=(IStructuredSelection)viewer.
+                getSelection();
+                if (ssel.getFirstElement()==null){
+                    showMessage( "Please select a SmartsFile to add to first.");
+                    return;
+                }
+
+                //Locate smartsfile. Can be selected or a parent
+                SmartsFile sfile=null;
+
+                if ( ssel.getFirstElement() instanceof SmartsFile ) {
+                    sfile=(SmartsFile)ssel.getFirstElement();
+                }
+                else if ( ssel.getFirstElement() instanceof SmartsWrapper ) {
+                    SmartsWrapper sw = (SmartsWrapper)ssel.getFirstElement();
+                    //Look up parent
+                    for (SmartsFile sf : smartsInView){
+                        if (sf.getSmarts().contains( sw )){
+                            sfile=sf;
+                        }
+                    }
+                }
                 
-                AddEditSmartsDialog dlg=new AddEditSmartsDialog(getSite().getShell());
+                if (sfile==null){
+                    showMessage( "Please select a SmartsFile first.");
+                    return;
+                }
+                
+                AddEditSmartsDialog dlg=new AddEditSmartsDialog(getSite()
+                                                                .getShell());
                 int ret=dlg.open();
                 if (ret==Window.CANCEL)
                     return;
 
                 SmartsWrapper wrapper = dlg.getSmartsWrapper();
-
-                //Add to current list
-                smartsInView.add( wrapper );
                 
+                sfile.getSmarts().add( wrapper );
+
                 savePrefsAndUpdate();
                 
             }
         };
         addSmartsAction.setText("Add SMARTS");
         addSmartsAction.setToolTipText("Add a SMARTS entry");
-        addSmartsAction.setImageDescriptor(Activator.getImageDecriptor( "icons/add_obj.gif" ));
+        addSmartsAction.setImageDescriptor(Activator.getImageDecriptor( 
+                                                         "icons/add_obj.gif" ));
 
-        removeSmartsAction = new Action() {
+        removeAction = new Action() {
             public void run() {
                 
-                if (!( viewer.getSelection() instanceof IStructuredSelection )) {
+                if (!( viewer.getSelection() instanceof IStructuredSelection )){
                     showError("Please select one or more SMARTS to remove");
                     return;
                 }
-                IStructuredSelection ssel = (IStructuredSelection) viewer.getSelection();
+                IStructuredSelection ssel = (IStructuredSelection) viewer.
+                getSelection();
 
                 boolean prefsChanged=false;
                 for (Object obj : ssel.toList()){
                     if ( obj instanceof SmartsWrapper ) {
-                        prefsChanged=true;
-                        SmartsWrapper swToRemove = (SmartsWrapper) obj;
-                        //For all lists, remove this smart
-                        for (Iterator<IWorkbenchPart> it=editorSmartsMap.keySet().iterator(); it.hasNext();){
-                            IWorkbenchPart part=it.next();
-                            editorSmartsMap.get( part ).remove( swToRemove );
+                        SmartsWrapper sw = (SmartsWrapper)obj;
+                        //Look up parent
+                        for (SmartsFile sf : smartsInView){
+                            if (sf.getSmarts().contains( sw )){
+                                sf.getSmarts().remove( sw );
+                            }
                         }
-                        smartsInView.remove( swToRemove );
+                    }
+                    else if ( obj instanceof SmartsFile ) {
+                        prefsChanged=true;
+                        SmartsFile sFileToRemove = (SmartsFile) obj;
+                        //For all lists, remove this smart
+                        for (Iterator<IWorkbenchPart> it=editorSmartsMap.
+                                keySet().iterator(); it.hasNext();){
+                            IWorkbenchPart part=it.next();
+                            editorSmartsMap.get( part ).remove( sFileToRemove );
+                        }
+                        smartsInView.remove( sFileToRemove );
                     }
                 }
                 
@@ -279,52 +384,140 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
                 
             }
         };
-        removeSmartsAction.setText("Remove SMARTS");
-        removeSmartsAction.setToolTipText("Remove the selected SMARTS");
-        removeSmartsAction.setImageDescriptor(Activator.getImageDecriptor( "icons/delete_obj.gif" ));
+        removeAction.setText("Remove SMARTS");
+        removeAction.setToolTipText("Remove the selected SMARTS");
+        removeAction.setImageDescriptor(Activator.getImageDecriptor( 
+                                                      "icons/delete_obj.gif" ));
         
         showPropertiesViewAction = new Action() {
             public void run() {
-                IWorkbenchPage page=getSite().getWorkbenchWindow().getActivePage();
+                IWorkbenchPage page=getSite().getWorkbenchWindow().
+                getActivePage();
                 try {
                     page.showView( IPageLayout.ID_PROP_SHEET);
                 } catch ( PartInitException e ) {
-                    showError( "Could not show Properties View: " + e.getMessage() );
+                  showError( "Could not show Properties View: "+e.getMessage());
                 }
             }
         };
         showPropertiesViewAction.setText("Show Properties");
         showPropertiesViewAction.setToolTipText("Show the Properties View");
-        showPropertiesViewAction.setImageDescriptor(Activator.getImageDecriptor( "icons/table_row_props.gif" ));
+        showPropertiesViewAction.setImageDescriptor(Activator.getImageDecriptor(
+                                                 "icons/table_row_props.gif" ));
+
+        addFileAction = new Action() {
+            public void run() {
+                
+                //Open dialog to input file
+                FileDialog dlg=new FileDialog( viewer.getControl().getShell(), 
+                                               SWT.OPEN );
+                
+                String file=dlg.open();
+                
+                logger.debug("Parsing possible SMARTS file: " + file);
+
+                try {
+                    parseSmartsFile(file);
+                } catch ( IOException e ) {
+                    showError( "Error parsing smarts file: " + e.getMessage() );
+                }
+                
+            }
+        };
+        addFileAction.setText("Add SMARTS file");
+        addFileAction.setToolTipText("Add smarts from file with structure: " +
+        		"Name\tSMARTS on each line");
+        addFileAction.setImageDescriptor(Activator.getImageDecriptor(
+                                                 "icons/add_obj.gif" ));
 
         
     }
 
     protected void runSmartsMatching() {
 
-        IEditorPart part=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        if (!( part instanceof JChemPaintEditor )) {
-            showMessage( "You must have an open 2D editor to run SmartsMatching on." );
-            return;
+        IEditorPart part=PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+            .getActivePage().getActiveEditor();
+        
+        IEditorPart editor = getSupportedEditor( part );
+        if (editor==null){
+            if (!( part instanceof JChemPaintEditor )) {
+
+                //Check if MolTable is active
+                if (part instanceof net.bioclipse.cdk.ui.sdfeditor.editor
+                        .MultiPageMoleculesEditorPart) {
+
+                    executeInMolTableEditor(part);
+                    return;
+                }
+
+
+                showMessage( "SmartsMatching is only supported for JCP " +
+                "and MolTable editors." );
+                return;
+            }
         }
 
-        JChemPaintEditor jcp=(JChemPaintEditor)part;
+        JChemPaintEditor jcp=(JChemPaintEditor)editor;
+        executeInJCP(jcp);
+
+    }
+
+    private void executeInMolTableEditor( IEditorPart part ) {
+
+        MultiPageMoleculesEditorPart moltableTditor = 
+                                             (MultiPageMoleculesEditorPart)part;
+        
+//        IContextService contextService = (IContextService) PlatformUI.
+//                                         getWorkbench().
+//                                         getService(IContextService.class);
+//        if (contextService==null) return;
+//        
+//        for (Object cs : contextService.getActiveContextIds()){
+//            if (MultiPageMoleculesEditorPart.JCP_CONTEXT.equals( cs )){
+//                //JCP is active
+//               Object obj = moltableTditor.getAdapter(JChemPaintEditor.class);
+//                if (obj!= null){
+//                    JChemPaintEditor jcp=(JChemPaintEditor)obj;
+//                    executeInJCP( jcp );
+//                }
+//            }
+//            
+//        }
+        
+        //Moltable is active
+        MoleculesEditor molEditor=moltableTditor.getMoleculesPage();
+        
+        molEditor.setUseExtensionGenerators( true );
+
+        //Add configurator that calculates property and customizes rendering
+        molEditor.setRenderer2DConfigurator( 
+                                     new SmartsMatchingRendererConfigurator() );
+
+        //Manually update the moltable
+        molEditor.refresh();
+        
+      }
+
+    private void executeInJCP( JChemPaintEditor jcp ) {
 
         ICDKMolecule mol = jcp.getCDKMolecule();
         
         //For each smarts...
-        for (SmartsWrapper sw : smartsInView){
-            if (sw.getHits()!=null){
-                sw.getHits().clear();
+        for (SmartsFile sfile : smartsInView){
+            for (SmartsWrapper sw : sfile.getSmarts()){
+                if (sw.getHits()!=null){
+                    sw.getHits().clear();
+                }
+                if (sw.isActive() && sw.isValid())
+                    processSmarts(sw, mol);
             }
-            processSmarts2(sw, mol);
         }
         
         viewer.refresh();
-
+        
     }
 
-    private void processSmarts2( SmartsWrapper sw, ICDKMolecule mol ) {
+    private void processSmarts( SmartsWrapper sw, ICDKMolecule mol ) {
 
         //Clear old matches
         sw.setHits( new ArrayList<SmartsHit>() );
@@ -387,7 +580,7 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
      */
     public void partClosed( IWorkbenchPart part ) {
         System.out.println("Part:" + part.getTitle() + " closed");
-        if (!(isSupportedEditor(part))) return;
+        if (!(getSupportedEditor(part)!=null)) return;
 
         if (editorSmartsMap.keySet().contains( part )){
             //Remove entry
@@ -396,7 +589,8 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         if (getSite()!=null){
             if (getSite().getWorkbenchWindow()!=null){
                 if (getSite().getWorkbenchWindow().getActivePage()!=null){
-                    IEditorReference[] editors=getSite().getWorkbenchWindow().getActivePage().getEditorReferences();
+                    IEditorReference[] editors=getSite().getWorkbenchWindow().
+                    getActivePage().getEditorReferences();
                     if (editors.length<=0){
                         partActivated( bogusWBPart );
                     }
@@ -410,11 +604,12 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
 
     public void partOpened( IWorkbenchPart part ) {
         updateViewContent(part);
+        setAllChecked();
     }
 
-    private static void updateViewContent( IWorkbenchPart part ) {
+    private void updateViewContent( IWorkbenchPart part ) {
         
-        if (!(isSupportedEditor(part))) return;
+//        if (getSupportedEditor(part)==null) return;
         if (part==currentPart) return;
         
         if ( part instanceof JChemPaintEditor ) {
@@ -425,22 +620,24 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
                 smartsInView=editorSmartsMap.get( part );
             }else {
                 //Create new
-                List<SmartsWrapper> newSmartsInView = SmartsMatchingPrefsHelper.getPreferences();
+                List<SmartsFile> newSmartsInView = SmartsMatchingPrefsHelper.
+                getPreferences();
                 
                 // Register interest in changes from JCP editor
                 jcp.addPropertyChangedListener( new IPropertyChangeListener() {
                     public void propertyChange( PropertyChangeEvent event ) {
 
                         if(event.getProperty().equals( JChemPaintEditor.
-                                                       STRUCUTRE_CHANGED_EVENT )) {
+                                                    STRUCUTRE_CHANGED_EVENT )) {
 
-                            // editor model has changed, clear everything for now
+                            // editor model has changed, clear everything fornow
                             //TODO: start new match in background thread
                             logger.debug(
                                ((JChemPaintEditor)event.getSource()).getTitle()
                                +" editor has changed");
                             
-                            smartsInView = SmartsMatchingPrefsHelper.getPreferences();
+                            smartsInView = SmartsMatchingPrefsHelper.
+                            getPreferences();
                             viewer.setInput(smartsInView);
                         }
                     }
@@ -455,36 +652,25 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
         currentPart=part;
         
         viewer.setInput(smartsInView);
+        viewer.expandAll();
+        setViewerCheckedFromModel();
         
     }
 
-    private static boolean isSupportedEditor( IWorkbenchPart part ) {
-        if ( part instanceof JChemPaintEditor ) {
-            return true;
-        }
-        if ( part==bogusWBPart ) {
-            return true;
-        }
-
-        
-        //TODO: update here to support MolTable as well
-
-        //Not supported
-        return false;
-    }
-
-    private static void savePrefsAndUpdate() {
+    private void savePrefsAndUpdate() {
 
         //Write list to preferences
         SmartsMatchingPrefsHelper.setPreferences( smartsInView );
 
         //Clear all editors matches, they are now invalid
         editorSmartsMap.clear();
-        editorSmartsMap.put( bogusWBPart, SmartsMatchingPrefsHelper.getPreferences());
+        editorSmartsMap.put( bogusWBPart, SmartsMatchingPrefsHelper.
+                             getPreferences());
 
         //Update current editor, if open
-        IEditorPart part=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        if ((isSupportedEditor( part ))){
+        IEditorPart part=PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                                             .getActivePage().getActiveEditor();
+        if ((getSupportedEditor( part )!=null)){
             updateViewContent(part);
         }
         
@@ -493,25 +679,200 @@ public class SmartsMatchingView extends ViewPart implements IPartListener{
 
     
     public static void firePropertyChanged() {
-        savePrefsAndUpdate();
+        SmartsMatchingView view = getInstance();
+        view.savePrefsAndUpdate();
         
     }
 
-//    @Override
-//    public Object getAdapter( Class adapter ) {
-//        
-//        if (adapter.equals(IContextProvider.class)) {
-//            return new SmartsContextProvider();
-//          }
-//        return super.getAdapter( adapter );
-//    }
+    
+    private static SmartsMatchingView getInstance() {
+
+        return smartsView;
+    }
 
     @Override
     public void dispose() {
 
-        //Unregister listening on parts
-        getSite().getWorkbenchWindow().getPartService().removePartListener(this);
-        super.dispose();
+       //Unregister listening on parts
+       getSite().getWorkbenchWindow().getPartService().removePartListener(this);
+       super.dispose();
     }
+
+    /**
+     * Return the smarts for MolTable hits
+     * @return
+     */
+    public static List<String> getActiveSmarts() {
+        
+        List<String> smarts=new ArrayList<String>();
+        for (SmartsFile sf : smartsInView){
+            for (SmartsWrapper sw : sf.getSmarts()){
+                if (sw.isActive() && sw.isValid())
+                    smarts.add(sw.getSmartsString());
+            }
+        }
+        
+        return smarts;
+    }
+
+    public void contextManagerChanged( ContextManagerEvent contextManagerEvent){
+
+        IContextService contextService = (IContextService)PlatformUI
+        .getWorkbench().getService(IContextService.class);
+        
+        if (getSite()==null) return;
+        if (getSite().getWorkbenchWindow()==null) return;
+        if (getSite().getWorkbenchWindow().getActivePage()==null) return;
+
+        if (contextService.getActiveContextIds().contains( 
+                                MultiPageMoleculesEditorPart.JCP_CONTEXT )){
+            
+            //MolTableEditor switched to tab JCP
+            System.out.println("JCP context activated");
+            IEditorPart editor = getSite().getWorkbenchWindow()
+                                             .getActivePage().getActiveEditor();
+            if (editor!=null){
+                if ( editor instanceof MultiPageMoleculesEditorPart ) {
+                    //Special case when SDF editor JCP is visible since same 
+                    //editor, but different molecule.
+                    IWorkbenchPart suped = getSupportedEditor( editor );
+
+                    if (suped!=null){
+                      //Handle new JCP
+                      clearHits();
+                    
+                      updateView();
+                    }                    
+                }
+                partActivated( editor );
+            }
+        }else{
+            //MolTableEditor switched to tab other than JCP
+            System.out.println("JCP context deactivated");
+            IEditorPart editor = getSite().getWorkbenchWindow()
+                                             .getActivePage().getActiveEditor();
+            if (editor!=null)
+                partActivated( editor );
+        }
+        
+    }
+
+
+    private void clearHits() {
+
+        //Re-read from prefs, creates new objects
+        smartsInView = SmartsMatchingPrefsHelper.getPreferences();
+        viewer.setInput(smartsInView);
+        
+    }
+
+    private void updateView() {
+
+        System.out.println("Update SmartsView NOT IMPLEMENTED");
+
+    }
+
+    private IEditorPart getSupportedEditor( IWorkbenchPart part ) {
+        if ( part instanceof JChemPaintEditor ) {
+            logger.debug("We have a JCP editor for SmartsView!");
+            return (IEditorPart)part;
+        }
+        else if ( part instanceof MoleculesEditor ) {
+            //TODO: when does this happen?
+            return (IEditorPart)part;
+        }
+        else if ( part instanceof MultiPageMoleculesEditorPart ) {
+            logger.debug("We have a MPE editor for SmartsView");
+            MultiPageMoleculesEditorPart editor = 
+                    (MultiPageMoleculesEditorPart)part;
+
+            if (editor.isJCPVisible()){
+                //JCP is active
+                Object obj = editor.getAdapter(JChemPaintEditor.class);
+                if (obj!= null){
+                    JChemPaintEditor jcp=(JChemPaintEditor)obj;
+                    return jcp;
+                }
+            }
+        }
+
+        //Not supported editor
+        return null;
+    }
+    
+    protected void parseSmartsFile( String filename ) throws IOException {
+        
+        File file=new File(filename);
+        BufferedReader reader = new BufferedReader( new FileReader( 
+                                                           file ) );
+        String name=file.getName();
+        SmartsFile sfile=new SmartsFile();
+        sfile.setName( name );
+
+        String line=reader.readLine();
+        while(line!=null){
+            //Parse line
+            String[] parts = line.split( "\t" );
+            
+            if (parts.length==2){
+                SmartsWrapper sw=new SmartsWrapper(parts[0],parts[1]);
+                sfile.addSmartsWrapper(sw);
+
+            }else{
+                logger.error("Error parsing line: " + line);
+            }
+
+            //get next line
+            line=reader.readLine();            
+        }
+
+        smartsInView.add( sfile );
+        savePrefsAndUpdate();
+        
+    }
+
+
+    private void setViewerCheckedFromModel() {
+
+        for (TreeItem item : viewer.getTree().getItems()){
+            if ( item.getData() instanceof SmartsWrapper ) {
+                SmartsWrapper sw = (SmartsWrapper) item.getData();
+                item.setChecked( sw.isActive() );
+            }
+
+            for (TreeItem childitem : item.getItems()){
+                if ( childitem.getData() instanceof SmartsWrapper ) {
+                    SmartsWrapper sw = (SmartsWrapper) childitem.getData();
+                    childitem.setChecked( sw.isActive() );
+                }
+            }
+            
+        }
+        
+    }
+
+    private void setAllChecked() {
+
+        for (TreeItem item : viewer.getTree().getItems()){
+            item.setChecked( true );
+            if ( item.getData() instanceof SmartsWrapper ) {
+                SmartsWrapper sw = (SmartsWrapper) item.getData();
+                sw.setActive( true );
+            }
+
+            for (TreeItem childitem : item.getItems()){
+                if ( childitem.getData() instanceof SmartsWrapper ) {
+                    SmartsWrapper sw = (SmartsWrapper) childitem.getData();
+                    childitem.setChecked( true );
+                    sw.setActive( true );
+                }
+            }
+            
+        }
+        
+    }
+
+
+
 
 }

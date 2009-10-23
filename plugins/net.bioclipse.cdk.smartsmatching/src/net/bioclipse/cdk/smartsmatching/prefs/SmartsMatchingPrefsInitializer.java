@@ -32,7 +32,9 @@ public class SmartsMatchingPrefsInitializer extends AbstractPreferenceInitialize
 //                       + SmartsMatchingPrefsHelper.PREFS_DELIMITER + "Fragment 2" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "[N](*(*(O)))"
 //                       );
 
-      store.setDefault(SmartsMatchingPrefsHelper.SMARTSMATCHING_PREFS_SMARTS, 
+      store.setDefault(
+                       SmartsMatchingPrefsHelper.SMARTSMATCHING_PREFS_SMARTS, 
+                       "Samples" +SmartsMatchingPrefsHelper.PREFS_DELIMITER +
                        "t-Butyl" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "*[C]([CH3])([CH3])[CH3]" 
                        + SmartsMatchingPrefsHelper.PREFS_DELIMITER 
                        + "Epoxide" + SmartsMatchingPrefsHelper.PREFS_PART_DELIMITER + "*[C](O1)[C]1*" 

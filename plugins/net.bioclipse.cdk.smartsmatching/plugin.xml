@@ -37,4 +37,11 @@
       </toc>
    </extension>
    
+   <extension
+       point="net.bioclipse.cdk.jchempaint.generator">
+    <generator
+          class="net.bioclipse.cdk.smartsmatching.SmartsMatchGenerator">
+    </generator>
+ </extension>
+   
 </plugin>

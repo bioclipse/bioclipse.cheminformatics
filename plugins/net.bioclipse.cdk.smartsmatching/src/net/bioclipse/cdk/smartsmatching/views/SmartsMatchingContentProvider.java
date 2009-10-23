@@ -12,6 +12,7 @@ package net.bioclipse.cdk.smartsmatching.views;
 
 import java.util.List;
 
+import net.bioclipse.cdk.smartsmatching.model.SmartsFile;
 import net.bioclipse.cdk.smartsmatching.model.SmartsHit;
 import net.bioclipse.cdk.smartsmatching.model.SmartsWrapper;
 
@@ -22,6 +23,10 @@ import org.eclipse.jface.viewers.Viewer;
 public class SmartsMatchingContentProvider implements ITreeContentProvider {
 
     public Object[] getChildren( Object parentElement ) {
+        if ( parentElement instanceof SmartsFile ) {
+            SmartsFile sfile=(SmartsFile)parentElement;
+            return sfile.getSmarts().toArray();
+        }
         if ( parentElement instanceof SmartsWrapper ) {
             SmartsWrapper sw = (SmartsWrapper) parentElement;
             if (sw.getHits()!=null && sw.getHits().size()>0){
