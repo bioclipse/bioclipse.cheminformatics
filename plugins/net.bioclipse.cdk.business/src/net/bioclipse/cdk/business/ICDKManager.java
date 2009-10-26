@@ -1006,6 +1006,15 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
+         params = "List<IMolecule> molecules, String filename",
+         methodSummary = "Calculate tanimoto similarities between all " +
+         		"molecule in the list using CDK fingerprints." )
+    public String calculateTanimoto(List<IMolecule> calculateFor,
+                                    String filename)
+    throws BioclipseException;
+
+    @Recorded
+    @PublishedMethod(
          params = "BioList<IMolecule> calculateFor, IMolecule reference, "+
                   "BioclipseUIJob<List<Float>> uiJob",
          methodSummary = "Calculate tanimoto similarity of a list of " +

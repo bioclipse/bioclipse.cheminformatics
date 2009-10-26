@@ -48,6 +48,7 @@ import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.domain.RecordableList;
+import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
@@ -58,6 +59,7 @@ import nu.xom.Element;
 import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -2320,6 +2322,49 @@ public class CDKManager implements IBioclipseManager {
             );
         }
         returner.completeReturn( result ); 
+    }
+
+    public IFile calculateTanimoto(List<IMolecule> molecules,
+            IFile file, IProgressMonitor monitor)
+    throws BioclipseException {
+        StringBuilder matrix = new StringBuilder();
+        int molCount = molecules.size();
+        for (int row=0; row<molCount; row++) {
+            ICDKMolecule rowMol = asCDKMolecule(molecules.get(row));
+            BitSet reference = rowMol.getFingerprint(Property.USE_CALCULATED);
+            for (int col=0; col<row; col++) {
+                matrix.append(String.format("%.3f", 0.0));
+                if (col<(molCount-1)) matrix.append(',');
+            }
+            matrix.append(String.format("%.3f", 1.0));
+            if (row<(molCount-1)) matrix.append(',');
+            for (int col=(row+1); col<molCount; col++) {
+                ICDKMolecule colMol = asCDKMolecule(molecules.get(col));
+                BitSet compare = colMol.getFingerprint(Property.USE_CALCULATED);
+                matrix.append(String.format("%.3f",
+                    calculateTanimoto(reference, compare)
+                ));
+                if (col<(molCount-1)) matrix.append(',');
+            }
+            matrix.append('\n');
+        }
+        try {
+            if (file.exists()) {
+                file.setContents(
+                    new ByteArrayInputStream(matrix.toString().getBytes()),
+                    IResource.FORCE, monitor
+                );
+            } else {
+                file.create(
+                    new ByteArrayInputStream(matrix.toString().getBytes()),
+                    IResource.FORCE, monitor
+                );
+            }
+        } catch (CoreException exception) {
+            throw new BioclipseException("Exception while creating resource.",
+                exception);
+        }
+        return file; 
     }
 
     public String getMDLMolfileString(IMolecule molecule_in) throws BioclipseException {
