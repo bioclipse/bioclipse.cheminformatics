@@ -14,7 +14,6 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,11 +47,13 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorInput;
@@ -65,7 +66,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorInputTransfer;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.EditorInputTransfer.EditorInputData;
-import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 
 public class MoleculesEditor extends EditorPart implements
         //ISelectionProvider,
@@ -333,50 +334,43 @@ public class MoleculesEditor extends EditorPart implements
 
 
     protected void setupDragSource() {
-        int operations = DND.DROP_COPY | DND.DROP_MOVE;
-        CompositeTable viewer=null;
-        DragSource dragSource = new DragSource(viewer,operations);
-        Transfer[] transferTypes = new Transfer[]
-                                        {
-                                          LocalSelectionTransfer.getTransfer()};
-        dragSource.setTransfer( transferTypes );
 
-        dragSource.addDragListener(  new DragSourceListener() {
-
+        MoleculeTableViewer viewer = molTableViewer;
+        int ops = DND.DROP_COPY | DND.DROP_MOVE;
+        Transfer[] transfers = new Transfer[] { LocalSelectionTransfer.getTransfer()};
+        DragSource source = new DragSource( viewer.getControl(), ops );
+        source.setTransfer( transfers );
+        source.addDragListener( new DragSourceAdapter() {
 
             public void dragStart( DragSourceEvent event ) {
-               if(!getSelectedRows().isEmpty()) {
-                   LocalSelectionTransfer.getTransfer()
-                           .setSelection( getSelectedRows() );
-                   event.doit = true;
-               } else
-                   event.doit = false;
+                ISelection sel = getSelectedRows();
+                if(sel != null && !sel.isEmpty()) {
+                    LocalSelectionTransfer.getTransfer().setSelection( sel );
+                    event.doit = true;
+                } else
+                    event.doit = false;
             }
+
             public void dragSetData( DragSourceEvent event ) {
-                ISelection selection = LocalSelectionTransfer
-                                            .getTransfer()
-                                            .getSelection();
+                LocalSelectionTransfer selTransfer = LocalSelectionTransfer
+                                                         .getTransfer();
+                ISelection selection = selTransfer.getSelection();
 
-                if ( LocalSelectionTransfer
-                                        .getTransfer()
-                                        .isSupportedType( event.dataType )) {
-
+                if ( selTransfer.isSupportedType( event.dataType )) {
                     event.data = selection;
-
-
                 } else {
-                IStructuredSelection selection1 =
-                                  (IStructuredSelection) getSelectedRows();
-                List<EditorInputData> data = new ArrayList<EditorInputData>();
-                for(Object o : selection1.toList()) {
-                    MoleculesIndexEditorInput input =
-                                  new MoleculesIndexEditorInput((SDFElement)o);
-                    data.add( EditorInputTransfer
-                              .createEditorInputData(
-                                      "net.bioclipse.cdk.ui.editors.jchempaint",
+                    IStructuredSelection selection1 =
+                        (IStructuredSelection) getSelectedRows();
+                    List<EditorInputData> data = new ArrayList<EditorInputData>();
+                    for(Object o : selection1.toList()) {
+                        MoleculesIndexEditorInput input =
+                            new MoleculesIndexEditorInput((SDFElement)o);
+                        data.add( EditorInputTransfer
+                                  .createEditorInputData(
+                                    "net.bioclipse.cdk.ui.editors.jchempaint",
                                       input ));
-                }
-                event.data = data.toArray( new EditorInputData[0] );
+                    }
+                    event.data = data.toArray( new EditorInputData[0] );
                 }
 
             }
