@@ -874,11 +874,12 @@ public class JmolEditor extends MultiPageEditorPart
         Scanner     s = null;
         try {
             f = File.createTempFile( UUID.randomUUID().toString(), 
-                                     file.getFileExtension() );
+                                     "." + file.getFileExtension() );
             fw = new FileWriter( f );
             s = new Scanner( file.getContents() );
             while ( s.hasNext() ) {
                 fw.append( s.nextLine() );
+                fw.append( "\n" );
             }
         }
         catch ( Exception e ) {
