@@ -15,6 +15,7 @@ import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.jmol.Activator;
 import net.bioclipse.jmol.editors.JmolEditor;
 import net.bioclipse.jmol.views.JmolConsoleView;
+import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -25,7 +26,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-public class JmolManager implements IJmolManager {
+public class JmolManager implements IBioclipseManager {
 
     private JmolEditor jmolEditor;
 
@@ -46,11 +47,6 @@ public class JmolManager implements IJmolManager {
                 "Could not find any Jmol editor to run the script in" );
         }
         editor.runScript(script, reportErrorToJSConsole);
-    }
-    
-    public void load(String path) throws CoreException {
-        throw new IllegalStateException( "This manager method should " +
-        		                             "not have been called" );
     }
     
     public void load(IFile file) throws CoreException {
@@ -133,5 +129,9 @@ public class JmolManager implements IJmolManager {
 
     public void run( String script ) {
         run( script, false );
+    }
+
+    public void append( IFile file ) {
+       findActiveJmolEditor().append(file);
     }
 }

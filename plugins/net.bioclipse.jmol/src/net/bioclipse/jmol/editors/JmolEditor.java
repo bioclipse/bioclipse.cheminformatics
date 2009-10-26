@@ -20,6 +20,8 @@ import java.awt.image.RenderedImage;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,7 +30,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.imageio.ImageIO;
 import javax.swing.JScrollPane;
@@ -859,5 +863,51 @@ public class JmolEditor extends MultiPageEditorPart
             jmolPanel.getJmolListener().toggleReportErrorToJSConsole();
         }
         runScript(script);
+    }
+
+    /**
+     * @param file
+     */
+    public void append( IFile file ) {
+        File        f = null;
+        FileWriter fw = null;
+        Scanner     s = null;
+        try {
+            f = File.createTempFile( UUID.randomUUID().toString(), 
+                                     file.getFileExtension() );
+            fw = new FileWriter( f );
+            s = new Scanner( file.getContents() );
+            while ( s.hasNext() ) {
+                fw.append( s.nextLine() );
+            }
+        }
+        catch ( Exception e ) {
+            throw new RuntimeException("Exception when creating temp file", e);
+        }
+        finally { 
+            try {
+                fw.close();
+                s.close();
+            }
+            catch (Exception e2) {
+                throw new RuntimeException( "Exception when creating temp file",
+                                            e2 );
+            }
+        }
+        runScript( "load append " + f.getAbsolutePath() );
+        runScript( "frame all" );
+        
+        // TODO: Here I am dutifully updating the editors model but 
+        //       I am not sure why. The content String should probably not 
+        //       exist at all...
+        //       //jonalv 2009-10-26
+        try {
+            content += "\n" + readFile( file.getContents() );
+        }
+        catch ( Exception e ) {
+            throw new RuntimeException( "Exception while reading from file: " 
+                                        + file, 
+                                        e );
+        }
     }
 }

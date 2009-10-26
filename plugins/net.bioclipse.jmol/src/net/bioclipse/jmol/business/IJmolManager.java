@@ -90,4 +90,25 @@ public interface IJmolManager extends IBioclipseManager{
     public void print(String s);
     
     public boolean selectionIsEmpty();
+    
+    /**
+     * Append a file to the open editor, effectively opening multiple files 
+     * on top of eachother.
+     * 
+     * @param file to be appended
+     */
+    @PublishedMethod( methodSummary = "Append a file to the open editor, " +
+                                      "effectively opening multiple files on " +
+                                      "top of eachother",
+                      params = "Path to file" )
+    @Recorded
+    public void append(String file);
+    
+    /**
+     * Append a file to the open editor, effectively opening multiple files 
+     * on top of eachother.
+     * 
+     * @param file to be appended
+     */
+    public void append(IFile file);
 }
