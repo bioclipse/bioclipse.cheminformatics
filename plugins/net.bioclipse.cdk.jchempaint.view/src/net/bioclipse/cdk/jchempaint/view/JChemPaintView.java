@@ -42,9 +42,17 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceAdapter;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener2;
@@ -54,6 +62,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.part.PluginTransfer;
+import org.eclipse.ui.part.PluginTransferData;
 import org.eclipse.ui.part.ViewPart;
 import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.geometry.GeometryTools;
@@ -112,6 +122,8 @@ public class JChemPaintView extends ViewPart
         ISelection selection=PlatformUI.getWorkbench()
             .getActiveWorkbenchWindow().getSelectionService().getSelection();
         reactOnSelection(selection);
+
+        initilizeDrag();
 
         partListener = new IPartListener2() {
 
@@ -417,5 +429,55 @@ public class JChemPaintView extends ViewPart
 
     public void refresh() {
         canvasView.redraw();
+    }
+
+    void initilizeDrag() {
+        int operations = DND.DROP_COPY|DND.DROP_MOVE;
+        Transfer[] transferTypes = new Transfer[] { AtomContainerTransfer.getInstance(),
+                                                    PluginTransfer.getInstance()};
+        DragSource source = new DragSource( canvasView, operations );
+        source.setTransfer( transferTypes );
+        source.addDragListener( new DragSourceAdapter() {
+            @Override
+            public void dragStart( DragSourceEvent event ) {
+                if(ac!=null) {
+                    Control control = canvasView;
+                    GC gc = new GC(control);
+                    int controlWidth = control.getSize().x;
+                    int controlHeight = control.getSize().y;
+                    int dragImageSize = 128;
+                    Image image = new Image(control.getDisplay(), controlWidth, controlHeight);
+                    gc.setAlpha( 128 );
+                    gc.copyArea(image, 0,0);
+
+                    Image imageX = new Image(control.getDisplay(), dragImageSize,dragImageSize);
+
+                    GC gcX = new GC(imageX);
+                    gcX.setAlpha( 128 );
+                    gcX.setInterpolation( SWT.HIGH );
+                    gcX.drawImage( image, 0, 0, controlWidth,controlHeight,
+                                   0,0, dragImageSize,dragImageSize);
+//                    ImageData ideaData = image.getImageData();
+//                    int whitePixel = ideaData.palette.getPixel(new RGB(255,255,255));
+//                    ideaData.transparentPixel = whitePixel;
+//                    Image transparentIdeaImage = new Image(control.getDisplay(),ideaData);
+                    gc.dispose();
+                    gcX.dispose();
+                    event.image = imageX;
+                    event.offsetX = dragImageSize/2;
+                    event.offsetY = dragImageSize/2;
+                    event.doit = true;
+                }
+            }
+            @Override
+            public void dragSetData( DragSourceEvent event ) {
+                if(AtomContainerTransfer.getInstance().isSupportedType( event.dataType ))
+                    event.data = ac;
+                else if (PluginTransfer.getInstance().isSupportedType(event.dataType)) {
+                    byte[] data = AtomContainerTransfer.getInstance().toByteArray(ac);
+                    event.data = new PluginTransferData("net.bioclipse.cdk.jchempaint.atomContainerDrop", data);
+                 }
+            }
+        });
     }
 }

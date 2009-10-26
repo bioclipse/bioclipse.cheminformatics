@@ -42,6 +42,13 @@
                 relationship="bottom" 
                 ratio="0.70"/> 
         </perspectiveExtension> 
+    </extension>
+    <extension
+          point="org.eclipse.ui.dropActions">
+       <action
+             class="net.bioclipse.cdk.jchempaint.view.AtomContainerDropActionDelegate"
+             id="net.bioclipse.cdk.jchempaint.atomContainerDrop">
+       </action>
     </extension> 
 
 </plugin>
