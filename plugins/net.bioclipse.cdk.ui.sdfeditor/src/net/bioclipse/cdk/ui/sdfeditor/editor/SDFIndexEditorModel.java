@@ -12,7 +12,6 @@
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -134,7 +133,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
             }
             else {
                 try {
-                    StringReader reader = new StringReader(getRecord( index ));
+                    StringReader reader = new StringReader(input.getRecord( index ));
                     chemReader.setReader( reader );
                     IChemObject chemObj = processContent();
                     mol = new CDKMolecule((IAtomContainer)chemObj);
@@ -196,21 +195,6 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
 
-    }
-
-    private String getRecord(int index) throws CoreException, IOException {
-        InputStream in = input.file().getContents();
-        long start = input.start( index );
-        int length = (int) (input.start( index +1 )-start);
-        in.skip( start );
-        byte[] bytes= new byte[length];
-        in.read( bytes , 0  , length );
-        in.close();
-        String result = new String( bytes );
-        int i= -1;
-        if((i=result.indexOf( "$$$$" ))!= -1)
-            return result.substring( 0,i);
-        return result;
     }
 
     protected IChemObject processContent() throws CDKException {

@@ -11,12 +11,15 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 
 public class SDFileIndex {
     private static SDFileIndex EMPTY_INDEX = new SDFileIndex( null,
@@ -72,5 +75,20 @@ public class SDFileIndex {
       public int getPropertyCount(int index) {
           List<Long> propPos = propertiesPos.get(index);
           return propPos!=null?propPos.size():0;
+      }
+
+      public String getRecord(int index) throws CoreException, IOException {
+          InputStream in = file.getContents();
+          long start = start( index );
+          int length = (int) (start( index +1 )-start);
+          in.skip( start );
+          byte[] bytes= new byte[length];
+          in.read( bytes , 0  , length );
+          in.close();
+          String result = new String( bytes );
+          int i= -1;
+          if((i=result.indexOf( "$$$$" ))!= -1)
+              return result.substring( 0,i);
+          return result;
       }
   }
