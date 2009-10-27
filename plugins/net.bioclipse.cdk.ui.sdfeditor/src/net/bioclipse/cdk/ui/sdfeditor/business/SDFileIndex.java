@@ -57,7 +57,7 @@ public class SDFileIndex {
           return filePos.size()-1;
       }
 
-      public long start(int index) {
+      private long start(int index) {
           return filePos.get(index);
       }
 

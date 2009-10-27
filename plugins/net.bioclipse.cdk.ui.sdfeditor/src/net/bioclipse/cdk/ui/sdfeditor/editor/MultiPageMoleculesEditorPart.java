@@ -199,7 +199,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
 
             syncJCP();
             if(model instanceof SDFIndexEditorModel)
-            	save(model,((SDFIndexEditorModel)model).getSaveFile());
+            	save(model,((SDFIndexEditorModel)model).getResource());
             else {
             	model.save();
             	jcpPage.getWidget().setDirty( false );
@@ -226,9 +226,6 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         moleculesPage.getMolTableViewer().setInput( null );
         IPath path = saveAsDialog.getResult();
         IFile file= ResourcesPlugin.getWorkspace().getRoot().getFile( path );
-        if(model instanceof SDFIndexEditorModel) {
-            ((SDFIndexEditorModel)model).setSaveFile(file);
-        }
         save(model,file);
     }
 

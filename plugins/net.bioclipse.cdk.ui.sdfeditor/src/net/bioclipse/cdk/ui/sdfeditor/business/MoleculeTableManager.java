@@ -436,7 +436,7 @@ public class MoleculeTableManager implements IBioclipseManager {
             }
 
             List<String> rawProperties = getProperties(
-                                     ((IFile)model.getResource()).getContents(),
+                                     model.getResource().getContents(),
                                      model.getPropertyPositionFor( i ),
                                      model.getPropertyCountFor( i ) );
             for(String rawProperty:rawProperties) {

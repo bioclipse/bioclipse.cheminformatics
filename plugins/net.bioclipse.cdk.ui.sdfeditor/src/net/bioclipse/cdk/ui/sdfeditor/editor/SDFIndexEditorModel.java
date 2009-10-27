@@ -106,11 +106,11 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
         this.saveAs = input.file();
     }
 
-    public IResource getResource() {
+    public IFile getResource() {
         return input.file();
     }
 
-    public boolean isDirt() {
+    public boolean isDirty() {
         return dirty || edited.size()!=0;
     }
 
@@ -118,8 +118,8 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
         this.dirty = dirty;
     }
 
-    public  IFile getSaveFile() { return saveAs;}
-    public void setSaveFile(IFile file) { saveAs = file;}
+    private  IFile getSaveFile() { return saveAs;}
+    private void setSaveFile(IFile file) { saveAs = file;}
 
     /* (non-Javadoc)
      * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#getMoleculeAt(int)

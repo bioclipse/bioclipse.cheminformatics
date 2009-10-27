@@ -127,7 +127,7 @@ public class MoleculesEditor extends EditorPart implements
     @Override
     public boolean isDirty() {
         if(getModel() instanceof SDFIndexEditorModel)
-            return ((SDFIndexEditorModel)getModel()).isDirt();
+            return ((SDFIndexEditorModel)getModel()).isDirty();
         return false;
     }
 
