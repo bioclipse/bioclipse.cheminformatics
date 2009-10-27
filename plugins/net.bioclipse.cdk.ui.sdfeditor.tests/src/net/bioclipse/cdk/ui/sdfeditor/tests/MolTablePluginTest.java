@@ -16,6 +16,7 @@ import java.util.List;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.sdfeditor.business.IMoleculeTableManager;
 import net.bioclipse.cdk.ui.sdfeditor.business.SDFIndexEditorModel;
+import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
 
@@ -101,7 +102,8 @@ public class MolTablePluginTest {
             assertNotNull("Could not get ICDKMolecule at index " + i, mol);
 
             //Verify FP property
-            BitSet fp = moleculesmodel.getPropertyFor( i, FP_PROPERTY_KEY );
+            BitSet fp = (BitSet) mol.getProperty( FP_PROPERTY_KEY, 
+                                                  Property.USE_CACHED );
             assertNotNull("FP property is null for index " + i, fp );
 
             //Recalculate for mol to test that impl has not changed

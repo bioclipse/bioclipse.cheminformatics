@@ -240,25 +240,14 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
         setDirty( true );
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T getPropertyFor(int moleculeIndex,String property) {
+    private Object getPropertyFor(int moleculeIndex,String property) {
         Map<String,Object> props = molProps.get(moleculeIndex);
         Class<?> c = propertyList.get( property );
         if(props!=null && c != null) {
             Object val = props.get( property );
 
-            if(val != null && c != null && c.isAssignableFrom( val.getClass() ))
-                return (T) val;
-            else
-                return (T) val;
+            return val;
         }
-
-//        else {
-//            ICDKMolecule mol = getMoleculeAt( moleculeIndex );
-//            assert(mol != null);
-//            Object val = mol.getAtomContainer().getProperty( property );
-//            return (T) val;
-//        }
         return null;
     }
 
