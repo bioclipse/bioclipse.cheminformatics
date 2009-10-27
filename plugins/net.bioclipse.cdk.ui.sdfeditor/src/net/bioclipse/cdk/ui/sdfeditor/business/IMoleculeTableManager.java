@@ -13,7 +13,6 @@ package net.bioclipse.cdk.ui.sdfeditor.business;
 import java.util.Collection;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.ui.sdfeditor.editor.SDFIndexEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.business.BioclipseException;

@@ -9,7 +9,7 @@
  *     Arvid Berg <goglepox@users.sourceforge.net>
  *
  ******************************************************************************/
-package net.bioclipse.cdk.ui.sdfeditor.editor;
+package net.bioclipse.cdk.ui.sdfeditor.business;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -27,16 +27,12 @@ import java.util.TreeMap;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculeUtils;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator;
-import net.bioclipse.cdk.ui.sdfeditor.business.SDFileIndex;
-import net.bioclipse.cdk.ui.sdfeditor.handlers.CalculatePropertyHandler;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -70,8 +66,6 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
     protected ISimpleChemObjectReader chemReader;
     protected IChemObjectBuilder builder;
 
-    private IFile saveAs;
-
     int lastIndex = -1;
     ICDKMolecule lastRead = null;
 
@@ -103,7 +97,6 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
     public SDFIndexEditorModel(SDFileIndex input) {
         this();
         this.input = input;
-        this.saveAs = input.file();
     }
 
     public IFile getResource() {
@@ -117,9 +110,6 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
-
-    private  IFile getSaveFile() { return saveAs;}
-    private void setSaveFile(IFile file) { saveAs = file;}
 
     /* (non-Javadoc)
      * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#getMoleculeAt(int)
@@ -178,9 +168,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
     public void markDirty( int index, ICDKMolecule moleculeToSave ) {
         assert(moleculeToSave!=null);
         edited.put( index, moleculeToSave );
-        Collection<IPropertyCalculator<?>> propCalcs = CalculatePropertyHandler
-                    .gatherCalculators(
-                     CalculatePropertyHandler.getConfigurationElements(), null );
+        Collection<IPropertyCalculator<?>> propCalcs = retriveCalculatorContributions();
 
         for(IPropertyCalculator<?> calc : propCalcs) {
             String key = calc.getPropertyName();

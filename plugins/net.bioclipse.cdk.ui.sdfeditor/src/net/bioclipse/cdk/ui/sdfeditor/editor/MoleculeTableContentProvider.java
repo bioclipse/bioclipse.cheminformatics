@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.ui.sdfeditor.business.SDFIndexEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.cdk.ui.views.ISortable;
 import net.bioclipse.cdk.ui.views.ISortable.SortProperty;
