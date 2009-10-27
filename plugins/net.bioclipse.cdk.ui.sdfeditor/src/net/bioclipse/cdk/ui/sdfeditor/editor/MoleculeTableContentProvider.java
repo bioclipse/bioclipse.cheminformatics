@@ -72,9 +72,9 @@ public class MoleculeTableContentProvider implements
 
     public void removeColumn(Object key) {
         if(model instanceof SDFIndexEditorModel) {
-            ((SDFIndexEditorModel)model).removePropertyKey( key );
-            properties.retainAll( getAvailableProperties() );
-            ((SDFIndexEditorModel) model).setDirty( true );
+            SDFIndexEditorModel sdModel = (SDFIndexEditorModel)model;
+            sdModel.removePropertyKey( key );
+            properties.retainAll( sdModel.getAvailableProperties() );
             updateHeaders();
         }
     }

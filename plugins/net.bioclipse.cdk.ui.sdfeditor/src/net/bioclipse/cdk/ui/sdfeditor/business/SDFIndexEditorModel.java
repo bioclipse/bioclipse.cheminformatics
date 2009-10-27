@@ -107,7 +107,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
         return dirty || edited.size()!=0;
     }
 
-    public void setDirty(boolean dirty) {
+    private void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
 
@@ -237,6 +237,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
         if(availableProperties == null) return;
         availableProperties.remove( key );
         propertyList.remove( key );
+        setDirty( true );
     }
 
     @SuppressWarnings("unchecked")
@@ -294,11 +295,11 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
         };
     }
 
-    public long getPropertyPositionFor(int index) {
+    long getPropertyPositionFor(int index) {
         return input.getPropertyStart( index );
     }
 
-    public int getPropertyCountFor(int index) {
+    int getPropertyCountFor(int index) {
         return input.getPropertyCount( index );
     }
 

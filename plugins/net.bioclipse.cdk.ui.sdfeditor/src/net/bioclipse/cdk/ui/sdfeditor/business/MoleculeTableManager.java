@@ -385,6 +385,7 @@ public class MoleculeTableManager implements IBioclipseManager {
         return sdfModel;
     }
 
+    //TODO take a SDFileIndex and index instead of start and numberOfProperties
     private List<String> getProperties( InputStream is,
                                         long start,
                                         int numberOfProperties)
