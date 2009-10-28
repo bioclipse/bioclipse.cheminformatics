@@ -12,4 +12,3 @@ Require-Bundle: org.openscience.cdk.core,
  org.openscience.cdk.renderbasic,
  javax.vecmath,
  org.eclipse.core.runtime
-Export-Package: org.openscience.cdk.renderswtbasic
