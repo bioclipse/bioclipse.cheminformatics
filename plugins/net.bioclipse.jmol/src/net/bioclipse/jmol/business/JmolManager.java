@@ -14,6 +14,8 @@ package net.bioclipse.jmol.business;
 import java.util.List;
 
 import net.bioclipse.core.ResourcePathTransformer;
+import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.jmol.Activator;
 import net.bioclipse.jmol.editors.JmolEditor;
 import net.bioclipse.jmol.model.IJmolMolecule;
@@ -59,7 +61,13 @@ public class JmolManager implements IBioclipseManager {
         }
         jmolEditor.load(file);
     }
-    
+
+    public void load(IMolecule molecule) throws BioclipseException {
+        net.bioclipse.ui.business.Activator.getDefault().getUIManager().open(
+            molecule, "net.bioclipse.jmol.editors.JmolEditor"
+        );
+    }
+
     /**
      * @return Active editor or null if not instance of JmolEditor
      */

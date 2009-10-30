@@ -13,15 +13,17 @@ package net.bioclipse.jmol.business;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
-
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.TestClasses;
 import net.bioclipse.jmol.model.IJmolMolecule;
+import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.managers.business.IBioclipseManager;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 
 @TestClasses("net.bioclipse.jmol.test.JmolManagerTest")
 @PublishedClass(
@@ -60,6 +62,12 @@ public interface IJmolManager extends IBioclipseManager{
      */
     public void load(IFile file) throws CoreException;
     
+    @Recorded
+    @PublishedMethod(
+        methodSummary = "Loads an IMolecule into a new Jmol editor.",
+        params = "IMolecule file"
+    )
+    public void load(IMolecule file) throws BioclipseException;
     
     @Recorded
     @PublishedMethod( methodSummary = "Export as image to path",
