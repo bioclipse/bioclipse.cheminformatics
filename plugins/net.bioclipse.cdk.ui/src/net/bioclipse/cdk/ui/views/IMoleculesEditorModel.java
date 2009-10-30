@@ -32,4 +32,8 @@ public interface IMoleculesEditorModel {
     public Collection<Object> getAvailableProperties();
 
     public <T> void setPropertyFor( int index, String property,  T value);
+
+    public void instert(ICDKMolecule... molecules);
+
+    public void delete(int index);
 }

@@ -27,7 +27,7 @@ import java.util.TreeMap;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculeUtils;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+import net.bioclipse.cdk.ui.views.IFileMoleculesEditorModel;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.util.LogUtils;
 
@@ -47,7 +47,6 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IChemSequence;
-import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.MDLV2000Reader;
 
@@ -56,7 +55,7 @@ import org.openscience.cdk.io.MDLV2000Reader;
  * @author arvid
  *
  */
-public class SDFIndexEditorModel implements IMoleculesEditorModel,
+public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
                                             Iterable<ICDKMolecule> {
 
     Logger logger = Logger.getLogger( SDFIndexEditorModel.class );
@@ -192,7 +191,7 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
             for(IChemSequence chemSeq:((IChemFile) co).chemSequences()) {
                 for(IChemModel chemModel:chemSeq.chemModels()) {
                   for(IAtomContainer ac:chemModel.getMoleculeSet().molecules()) {
-                      co = (IMolecule) ac;
+                      co = ac;
                       break;
                     }
                   break;
@@ -324,5 +323,21 @@ public class SDFIndexEditorModel implements IMoleculesEditorModel,
             }
         }
         return calculators;
+    }
+
+    public void insert( int index, ICDKMolecule... molecules ) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void move( int indexFrom, int indexTo ) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void instert( ICDKMolecule... molecules ) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void delete( int index ) {
+        throw new UnsupportedOperationException();
     }
 }

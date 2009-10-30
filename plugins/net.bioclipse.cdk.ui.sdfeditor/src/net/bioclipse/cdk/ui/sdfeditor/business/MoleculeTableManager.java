@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 
 import net.bioclipse.cdk.domain.CDKMoleculeUtils;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.ui.views.IFileMoleculesEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule.Property;
@@ -261,11 +262,18 @@ public class MoleculeTableManager implements IBioclipseManager {
     }
 
     public void saveSDF( IMoleculesEditorModel model, IFile file,
-                         IReturner<IMoleculesEditorModel> returner,
+                         IReturner<IFileMoleculesEditorModel> returner,
                          IProgressMonitor monitor)
                                             throws BioclipseException {
-    		SDFIndexEditorModel index = saveSDF( model, file, monitor );
-    		returner.completeReturn( index);
+            SDFIndexEditorModel index = saveSDF( model, file, monitor );
+            returner.completeReturn( index);
+    }
+
+    public void saveSDF( IFileMoleculesEditorModel model,
+                         IReturner<IFileMoleculesEditorModel> returner,
+                         IProgressMonitor monitor) throws BioclipseException {
+        SDFIndexEditorModel index = saveSDF(model,model.getResource(),monitor);
+        returner.completeReturn( index );
     }
 
     private SDFIndexEditorModel saveSDF(IMoleculesEditorModel model, IFile file,

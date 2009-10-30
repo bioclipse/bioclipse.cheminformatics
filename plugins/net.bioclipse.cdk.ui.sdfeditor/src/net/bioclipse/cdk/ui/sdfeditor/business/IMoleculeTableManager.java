@@ -13,12 +13,14 @@ package net.bioclipse.cdk.ui.sdfeditor.business;
 import java.util.Collection;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.ui.views.IFileMoleculesEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.jobs.BioclipseUIJob;
+import net.bioclipse.jobs.IReturner;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.eclipse.core.resources.IFile;
@@ -58,7 +60,11 @@ public interface IMoleculeTableManager extends IBioclipseManager {
     public void saveSDF(IMoleculesEditorModel model, IFile file)
                                                       throws BioclipseException;
     public void saveSDF( IMoleculesEditorModel model, IFile file,
-                         BioclipseUIJob<IMoleculesEditorModel> uiJob)
+                         BioclipseUIJob<IFileMoleculesEditorModel> uiJob)
+                                                      throws BioclipseException;
+
+    public void saveSDF( IFileMoleculesEditorModel model,
+                         IReturner<IFileMoleculesEditorModel> returner)
                                                       throws BioclipseException;
 
     @Recorded

@@ -14,6 +14,7 @@
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,6 +31,8 @@ public class ListMoleculesEditorModel implements IMoleculesEditorModel,
 
     List<ICDKMolecule> molecules;
     List<ICDKMolecule> source;
+
+    Comparator<ICDKMolecule> comparator= null;
     boolean dirty = false;
 
     public ListMoleculesEditorModel(List<ICDKMolecule> molecuels) {
@@ -59,10 +62,10 @@ public class ListMoleculesEditorModel implements IMoleculesEditorModel,
     public void setSortingProperties(final List<SortProperty<?>> properties ) {
         if(properties.isEmpty()) {
             molecules = source;
+            comparator = null;
             return;
         }
-        molecules = new ArrayList<ICDKMolecule>( source );
-        Collections.sort( molecules, new Comparator<ICDKMolecule>() {
+        comparator = new Comparator<ICDKMolecule>() {
             private <T> Object getProperty(ICDKMolecule mol,SortProperty<T> prop) {
                 T key = prop.getKey();
                 Object value = null;
@@ -86,7 +89,15 @@ public class ListMoleculesEditorModel implements IMoleculesEditorModel,
                 }
                 return prop.toString().compareTo( prop2.toString() ) * dir;
             }
-        });
+        };
+        sort();
+    }
+
+    private void sort() {
+        if(comparator!=null) {
+            molecules = new ArrayList<ICDKMolecule>(source);
+            Collections.sort( molecules, comparator );
+        }
     }
 
     public Collection<Object> getAvailableProperties() {
@@ -101,4 +112,13 @@ public class ListMoleculesEditorModel implements IMoleculesEditorModel,
 
     }
 
+    public void instert( ICDKMolecule... molecules ) {
+        source.addAll( Arrays.asList( molecules ));
+        sort();
+    }
+
+    public void delete( int index ) {
+        ICDKMolecule mol = molecules.remove( index );
+        source.remove( mol );
+    }
 }

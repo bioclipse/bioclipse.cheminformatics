@@ -134,4 +134,12 @@ public class MoleculesFromSMI implements IMoleculesFromFile {
     public <T> void setPropertyFor( int moleculeIndex, String property, T value ) {
         logger.error( "SMI model dose not support changing properties." );
     }
+
+    public void instert( ICDKMolecule... molecules ) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void delete( int index ) {
+        throw new UnsupportedOperationException();
+    }
 }
