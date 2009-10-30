@@ -11,9 +11,12 @@
  ******************************************************************************/
 package net.bioclipse.jmol.business;
 
+import java.util.List;
+
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.jmol.Activator;
 import net.bioclipse.jmol.editors.JmolEditor;
+import net.bioclipse.jmol.model.IJmolMolecule;
 import net.bioclipse.jmol.views.JmolConsoleView;
 import net.bioclipse.managers.business.IBioclipseManager;
 
@@ -134,4 +137,9 @@ public class JmolManager implements IBioclipseManager {
     public void append( IFile file ) {
        findActiveJmolEditor().append(file);
     }
+
+    public List<IJmolMolecule> getMolecules() {
+        return findActiveJmolEditor().getJmolMolecules();
+    }
+
 }

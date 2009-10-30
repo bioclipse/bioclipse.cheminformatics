@@ -11,6 +11,8 @@
  ******************************************************************************/
 package net.bioclipse.jmol.business;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 
@@ -18,6 +20,7 @@ import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.TestClasses;
+import net.bioclipse.jmol.model.IJmolMolecule;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 @TestClasses("net.bioclipse.jmol.test.JmolManagerTest")
@@ -62,7 +65,7 @@ public interface IJmolManager extends IBioclipseManager{
     @PublishedMethod( methodSummary = "Export as image to path",
                       params = "String filepath" )
     public void snapshot(String filepath);
-    
+
     /**
      * Runs "spin on" in jmol
      */
@@ -84,6 +87,11 @@ public interface IJmolManager extends IBioclipseManager{
     		"in the active JmolEditor (but not back to file)" )
     public void minimize();
  
+    @PublishedMethod(
+        methodSummary="Returns a List<IMolecule> from the current Jmol editor."
+    )
+    public List<IJmolMolecule> getMolecules();
+
     @PublishedMethod( params = "String s", 
                       methodSummary = "Prints the given string to the Jmol " +
                       		            "console" )

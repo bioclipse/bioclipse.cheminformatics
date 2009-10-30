@@ -27,19 +27,27 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
 import javax.swing.JScrollPane;
+import javax.vecmath.Point3f;
 
+import net.bioclipse.core.IResourcePathTransformer;
+import net.bioclipse.core.ResourcePathTransformer;
+import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jmol.Activator;
-import net.bioclipse.jmol.views.JmolPanel;
+import net.bioclipse.jmol.model.IJmolMolecule;
+import net.bioclipse.jmol.model.JmolMolecule;
 import net.bioclipse.jmol.views.JmolCompMouseListener;
+import net.bioclipse.jmol.views.JmolPanel;
 import net.bioclipse.jmol.views.JmolSelection;
 import net.bioclipse.jmol.views.outline.JmolContentOutlinePage;
 import net.bioclipse.jmol.views.outline.JmolModel;
@@ -47,13 +55,8 @@ import net.bioclipse.jmol.views.outline.JmolModelString;
 import net.bioclipse.jmol.views.outline.JmolObject;
 
 import org.apache.log4j.Logger;
-
-import net.bioclipse.core.IResourcePathTransformer;
-import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
-import net.bioclipse.core.util.LogUtils;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -65,7 +68,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -77,15 +79,27 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.*;
-import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IPathEditorInput;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IURIEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.eclipse.ui.ide.IDE;
 import org.jmol.modelset.Model;
+import org.jmol.modelset.ModelSet;
+import org.xmlcml.cml.element.CMLAtom;
+import org.xmlcml.cml.element.CMLBond;
+import org.xmlcml.cml.element.CMLMolecule;
 
 /**
  * A Multi Page Editor with Jmol embedded on foremost page.
@@ -588,6 +602,55 @@ public class JmolEditor extends MultiPageEditorPart
     public void runScriptSilently(String script){
         logger.debug("Running jmol script: '" + script + "'");
         jmolPanel.getViewer().evalString(script);
+    }
+
+    public List<IJmolMolecule> getJmolMolecules() {
+        List<IJmolMolecule> mols = new ArrayList<IJmolMolecule>();
+        ModelSet set = jmolPanel.getViewer().getModelSet();
+        System.out.println("model count: " + set.getModelCount());
+        Map<Integer,CMLMolecule> models = new HashMap<Integer,CMLMolecule>();
+        for (int atomIndex=0; atomIndex<set.getAtomCount(); atomIndex++) {
+            int modelIndex = set.getAtomModelIndex(atomIndex);
+            System.out.println("modelindex: " + modelIndex);
+            CMLMolecule model = models.get(modelIndex);
+            if (model == null) {
+                model = new CMLMolecule();
+                models.put(modelIndex, model);
+            }
+            CMLAtom atom = new CMLAtom(set.getAtomName(atomIndex));
+            atom.setElementType(set.getAtomLabel(atomIndex));
+            Point3f coord = set.getAtomPoint3f(atomIndex);
+            atom.setX3(coord.x);
+            atom.setY3(coord.y);
+            atom.setZ3(coord.z);
+            model.addAtom(atom);
+            System.out.println("Atom: " + atom.toXML());
+        }
+        for (int bondIndex=0; bondIndex<set.getBondCount(); bondIndex++) {
+            int modelIndex = set.getBondModelIndex(bondIndex);
+            System.out.println("modelindex: " + modelIndex);
+            CMLMolecule model = models.get(modelIndex);
+            if (model == null) {
+                model = new CMLMolecule();
+                models.put(modelIndex, model);
+            }
+            System.out.println("model: " + model.toXML());
+            System.out.println("bond: " + bondIndex);
+            System.out.println(" atom1: " + set.getBondAtom1(bondIndex).getAtomName());
+            System.out.println(" atom2: " + set.getBondAtom2(bondIndex).getAtomName());
+            CMLBond bond = new CMLBond(
+                model.getAtomById(set.getBondAtom1(bondIndex).getAtomName()),
+                model.getAtomById(set.getBondAtom2(bondIndex).getAtomName())
+            );
+            short order = set.getBondOrder(bondIndex);
+            if (order == 1) bond.setOrder("s");
+            if (order == 2) bond.setOrder("d");
+            if (order == 3) bond.setOrder("t");
+            model.addBond(bond);
+        }
+        for (CMLMolecule model : models.values())
+            mols.add(new JmolMolecule(model));
+        return mols;
     }
 
     public JmolPanel getJmolPanel() {
