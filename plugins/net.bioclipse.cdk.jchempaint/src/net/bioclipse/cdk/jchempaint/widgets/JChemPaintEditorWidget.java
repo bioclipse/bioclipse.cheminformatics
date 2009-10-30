@@ -721,7 +721,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                         remove( Message.DIRTY );
                         remove( Message.GENERATED);
                     }
-                    redraw();
+                    if(!JChemPaintEditorWidget.this.isDisposed())
+                        redraw();
                 }
             });
         }

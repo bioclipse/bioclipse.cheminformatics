@@ -230,14 +230,21 @@ public class JChemPaintView extends ViewPart
 
     }
 
+    private ICDKMolecule getMoleculeFromPart(IWorkbenchPart part) {
+        return (ICDKMolecule) part.getAdapter( ICDKMolecule.class );
+    }
+
     public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
 
         if ( part instanceof IEditorPart ) {
-            IAtomContainer ac = getAtomContainerFromPart( part );
-            if(ac != null) {
-                canvasView.remove( Message.GENERATED );
-                setAtomContainer( ac );
-                return;
+            ICDKMolecule mc = getMoleculeFromPart( part );
+            if(mc != null) {
+                IAtomContainer ac = mc.getAtomContainer();
+                if(ac!=null) {
+                    canvasView.remove( Message.GENERATED );
+                    setAtomContainer( ac );
+                    return;
+                }
             }
         }
         reactOnSelection( selection );
