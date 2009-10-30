@@ -13,22 +13,21 @@
 package net.bioclipse.jmol.test;
 
 import net.bioclipse.core.tests.AbstractManagerTest;
-import net.bioclipse.jmol.business.IJmolManager;
 import net.bioclipse.jmol.business.JmolManager;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 public class JmolManagerTest extends AbstractManagerTest {
 
-    IJmolManager cdk;
+    JmolManager jmol;
 
     //Do not use SPRING OSGI for this manager
     //since we are only testing the implementations of the manager methods
     public JmolManagerTest() {
-        cdk = new JmolManager();
+        jmol = new JmolManager();
     }
 
     public IBioclipseManager getManager() {
-        return cdk;
+        return jmol;
     }
 
 }
