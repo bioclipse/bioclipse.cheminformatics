@@ -150,4 +150,8 @@ public class JmolManager implements IBioclipseManager {
         return findActiveJmolEditor().getJmolMolecules();
     }
 
+    public void append(IMolecule molecule) {
+        findActiveJmolEditor().append(molecule);
+    }
+
 }

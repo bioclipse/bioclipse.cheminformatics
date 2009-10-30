@@ -42,6 +42,7 @@ import javax.vecmath.Point3f;
 
 import net.bioclipse.core.IResourcePathTransformer;
 import net.bioclipse.core.ResourcePathTransformer;
+import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jmol.Activator;
 import net.bioclipse.jmol.model.IJmolMolecule;
@@ -966,6 +967,54 @@ public class JmolEditor extends MultiPageEditorPart
             throw new RuntimeException( "Exception while reading from file: " 
                                         + file, 
                                         e );
+        }
+    }
+
+    /**
+     * @param mol {@link IMolecule} to append
+     */
+    public void append(IMolecule mol) {
+        File tmpFile = null;
+        FileWriter fileWriter = null;
+        Scanner scanner = null;
+        try {
+            tmpFile = File.createTempFile(UUID.randomUUID().toString(), ".cml");
+            fileWriter = new FileWriter(tmpFile);
+            scanner = new Scanner(mol.toCML());
+            while (scanner.hasNext()) {
+                fileWriter.append(scanner.nextLine()).append('\n');
+            }
+        } catch (Exception exc) {
+            throw new RuntimeException(
+                "Exception when creating temp file.", exc
+            );
+        }
+        finally { 
+            try {
+                fileWriter.close();
+                scanner.close();
+            } catch (Exception exc2) {
+                throw new RuntimeException(
+                    "Exception when creating temp file.", exc2
+                );
+            }
+        }
+        runScript("load append " + tmpFile.getAbsolutePath());
+        runScript("frame all");
+
+        // TODO: Here I am dutifully updating the editors model but 
+        //       I am not sure why. The content String should probably not 
+        //       exist at all...
+        //       //jonalv 2009-10-26
+        try {
+            content += "\n" + readFile(
+                new ByteArrayInputStream(mol.toCML().getBytes())
+            );
+        }
+        catch (Exception exc) {
+            throw new RuntimeException(
+                "Exception while reading from file: " + mol.toString(), exc
+            );
         }
     }
 }

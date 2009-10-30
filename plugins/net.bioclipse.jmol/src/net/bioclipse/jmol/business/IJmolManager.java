@@ -127,4 +127,13 @@ public interface IJmolManager extends IBioclipseManager{
      * @param file to be appended
      */
     public void append(IFile file);
+
+    @Recorded
+    @PublishedMethod(
+        methodSummary = "Append an IMolecule to the open editor, " +
+            "effectively opening multiple files on " +
+            "top of each other",
+        params = "IMolecule molecule"
+    )
+    public void append(IMolecule molecule);
 }
