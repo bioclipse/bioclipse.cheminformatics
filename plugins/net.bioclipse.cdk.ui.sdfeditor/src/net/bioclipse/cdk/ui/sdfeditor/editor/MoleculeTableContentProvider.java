@@ -17,7 +17,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.ui.sdfeditor.business.MappingEditorModel;
 import net.bioclipse.cdk.ui.sdfeditor.business.SDFIndexEditorModel;
+import net.bioclipse.cdk.ui.views.IFileMoleculesEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.cdk.ui.views.ISortable;
 import net.bioclipse.cdk.ui.views.ISortable.SortProperty;
@@ -108,8 +110,9 @@ public class MoleculeTableContentProvider implements
         if(viewer != this.viewer) {
             this.viewer = (MoleculeTableViewer)viewer;
         }
-
-
+        if(newInput instanceof SDFIndexEditorModel) {
+            setModel(new MappingEditorModel( (IFileMoleculesEditorModel )newInput));
+        }else
         if(newInput instanceof IMoleculesEditorModel)
             setModel((IMoleculesEditorModel) newInput);
         else if(newInput instanceof IAdaptable){

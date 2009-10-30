@@ -23,6 +23,7 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.ui.sdfeditor.business.IMoleculeTableManager;
+import net.bioclipse.cdk.ui.sdfeditor.business.MappingEditorModel;
 import net.bioclipse.cdk.ui.sdfeditor.business.SDFIndexEditorModel;
 import net.bioclipse.cdk.ui.sdfeditor.business.SDFileIndex;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
@@ -41,6 +42,7 @@ import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -50,11 +52,8 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.nebula.widgets.compositetable.CompositeTable;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorInput;
@@ -67,7 +66,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorInputTransfer;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.EditorInputTransfer.EditorInputData;
-import org.eclipse.jface.util.LocalSelectionTransfer;
 
 public class MoleculesEditor extends EditorPart implements
         //ISelectionProvider,
@@ -224,18 +222,17 @@ public class MoleculesEditor extends EditorPart implements
                     indexJob = molTable.createSDFIndex( file,
                          new BioclipseJobUpdateHook<SDFIndexEditorModel>(
                                                   "Create Index fro SDFile") {
-                        public void completeReturn(final SDFIndexEditorModel object) {
+                        public void completeReturn(final SDFIndexEditorModel sdfModel) {
                             indexJob = null;
                             Display.getDefault().asyncExec( new Runnable() {
                                public void run() {
-                                   SDFIndexEditorModel m = object;
                                    molTableViewer.setContentProvider(
                                        new MoleculeTableContentProvider() );
-                                   molTableViewer.setInput( m );
+                                   molTableViewer.setInput( new MappingEditorModel( sdfModel ) );
                                    molTableViewer.refresh();
                                };
                             });
-                            parseJob = molTable.parseProperties( object ,
+                            parseJob = molTable.parseProperties( sdfModel ,
                                   Collections.<String>emptySet(),
                              new BioclipseJobUpdateHook<Void>("Parse SDFile") {
                                 @Override
