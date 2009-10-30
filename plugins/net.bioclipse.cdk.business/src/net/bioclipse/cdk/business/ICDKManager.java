@@ -1079,7 +1079,6 @@ public interface ICDKManager extends IBioclipseManager {
          params = "ICDKMolecule molecule",
          methodSummary = "Clones the CDK data model." )
     public ICDKMolecule clone(ICDKMolecule molecule) throws BioclipseException;
-
     
     @Recorded
     @PublishedMethod(
@@ -1089,5 +1088,13 @@ public interface ICDKManager extends IBioclipseManager {
     )
     @TestMethods("testMCSS")
     public ICDKMolecule mcss(List<IMolecule> molecules)
+    throws BioclipseException;
+
+    @Recorded
+    @PublishedMethod(
+         params="molecules List of molecules",
+         methodSummary="Aligns the molecular geometries to the first molecule."
+    )
+    public List<ICDKMolecule> kabsch(List<IMolecule> molecules)
     throws BioclipseException;
 }

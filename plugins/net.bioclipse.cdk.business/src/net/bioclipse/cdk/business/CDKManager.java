@@ -84,6 +84,7 @@ import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.exception.NoSuchAtomTypeException;
 import org.openscience.cdk.fingerprint.FingerprinterTool;
 import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.geometry.alignment.KabschAlignment;
 import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -2476,5 +2477,42 @@ public class CDKManager implements IBioclipseManager {
         ICDKMolecule newMolecule = newMolecule();
         newMolecule.getAtomContainer().add(mcss);
         return newMolecule;
+    }
+
+    public List<ICDKMolecule> kabsch(List<IMolecule> molecules)
+    throws BioclipseException {
+        if (molecules.size() < 2)
+            throw new BioclipseException("List must contain at least two " +
+            "molecules.");
+
+        List<ICDKMolecule> results = new RecordableList<ICDKMolecule>();
+        ICDKMolecule mcss = mcss(molecules);
+        ICDKMolecule firstMolecule = asCDKMolecule(molecules.get(0));
+        ICDKMolecule firstSubstructure =
+            getSubstructures(firstMolecule, mcss).get(0);
+        for (IMolecule mol : molecules) {
+            ICDKMolecule secondMolecule = asCDKMolecule(mol);
+            ICDKMolecule substructure = getSubstructures(
+                secondMolecule, mcss
+            ).get(0);
+            try {
+                KabschAlignment ka = new KabschAlignment(
+                    firstSubstructure.getAtomContainer(),
+                    substructure.getAtomContainer()
+                );
+                ka.align();
+                IAtomContainer clone =
+                    (IAtomContainer)secondMolecule.getAtomContainer().clone();
+                ka.rotateAtomContainer(clone);
+                results.add(new CDKMolecule(clone));
+            } catch (CloneNotSupportedException exc) {
+                throw new BioclipseException("Failed to clone the input", exc);
+            } catch (CDKException exception) {
+                // TODO Auto-generated catch block
+                exception.printStackTrace();
+            }
+        }
+
+        return results;
     }
 }
