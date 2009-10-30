@@ -50,6 +50,8 @@ import org.apache.log4j.Logger;
 
 import net.bioclipse.core.IResourcePathTransformer;
 import net.bioclipse.core.ResourcePathTransformer;
+import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 
 import org.eclipse.core.resources.IFile;
@@ -494,6 +496,9 @@ public class JmolEditor extends MultiPageEditorPart
             String val = (String) input.getAdapter( String.class );
             if(val != null) return val;
             
+            IMolecule mol = (IMolecule) input.getAdapter( IMolecule.class );
+            if(mol!=null) return mol.toCML();
+
             if ((input instanceof IFileEditorInput) && 
                     ((IFileEditorInput)input).getFile().exists()) {
                 return readFile( ((IFileEditorInput)input)
@@ -519,6 +524,9 @@ public class JmolEditor extends MultiPageEditorPart
             // TODO Auto-generated catch block
             LogUtils.debugTrace(logger, e);
         } catch (IOException e) {
+            // TODO Auto-generated catch block
+            LogUtils.debugTrace(logger, e);
+        } catch ( BioclipseException e ) {
             // TODO Auto-generated catch block
             LogUtils.debugTrace(logger, e);
         }
