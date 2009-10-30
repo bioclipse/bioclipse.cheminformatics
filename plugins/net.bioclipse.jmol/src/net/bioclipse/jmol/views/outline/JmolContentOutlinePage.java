@@ -62,10 +62,12 @@ import org.jmol.modelsetbio.Monomer;
  *
  */
 public class JmolContentOutlinePage
-       extends ContentOutlinePage
-       implements ISelectionListener,
-                  IAdaptable,
-                  ITabbedPropertySheetPageContributor {
+
+    extends ContentOutlinePage
+    
+    implements ISelectionListener,
+               IAdaptable,
+               ITabbedPropertySheetPageContributor {
 
     private final String CONTRIBUTOR_ID
         = "net.bioclipse.jmol.views.outline.JmolContentOutlinePage";
@@ -77,9 +79,8 @@ public class JmolContentOutlinePage
     private IEditorPart part;
     private TreeViewer treeViewer;
 
-    class JmolOutlineContentProvider 
-        implements IStructuredContentProvider, 
-                   ITreeContentProvider {
+    class JmolOutlineContentProvider implements IStructuredContentProvider, 
+    ITreeContentProvider {
 
         ModelSet modelset;    //The root object
         boolean isInitialized;
@@ -87,10 +88,8 @@ public class JmolContentOutlinePage
 
         public void inputChanged(Viewer v, Object oldInput, Object newInput) {
         }
-        
         public void dispose() {
         }
-        
         public Object[] getElements(Object parent) {
             return getChildren(parent);
         }
@@ -104,7 +103,6 @@ public class JmolContentOutlinePage
 
             return null;
         }
-        
         public Object [] getChildren(Object parent) {
 
             if (parent instanceof JmolObject) {
@@ -118,7 +116,6 @@ public class JmolContentOutlinePage
             }
             return new Object[0];
         }
-
         public boolean hasChildren(Object parent) {
             return getChildren(parent).length>0;
         }
@@ -173,12 +170,11 @@ public class JmolContentOutlinePage
      * @param editorInput
      * @param jmolEditor
      */
-    public JmolContentOutlinePage( IEditorInput editorInput,
-                                   JmolEditor jmolEditor ) {
+    public JmolContentOutlinePage(IEditorInput editorInput, JmolEditor jmolEditor) {
         super();
 
-        this.part  = jmolEditor;
-        jmolViewer = jmolEditor.getJmolPanel().getViewer();
+        this.part=jmolEditor;
+        jmolViewer=jmolEditor.getJmolPanel().getViewer();
     }
 
 
@@ -188,17 +184,26 @@ public class JmolContentOutlinePage
     public void createControl(Composite parent) {
 
         super.createControl(parent);
-        
-        treeViewer = getTreeViewer();
-        treeViewer.setContentProvider( new JmolOutlineContentProvider() );
-        treeViewer.setLabelProvider(   new JmolOutlineLabelProvider()   );
+
+        if (jmolViewer.getModelSet()==null)
+            return;
+        if (jmolViewer.getModelSet().getModels()==null)
+            return;
+        if (jmolViewer.getModelSet().getModels().length<1)
+            return;
+
+        treeViewer= getTreeViewer();
+        treeViewer.setContentProvider(new JmolOutlineContentProvider());
+        treeViewer.setLabelProvider(new JmolOutlineLabelProvider());
+        //        viewer.setSorter(new NameSorter());
         treeViewer.addSelectionChangedListener(this);
-        
-        updateTreeViewerModel();
-        getSite().getPage().addSelectionListener(this);
-        
-        // This is needed to set focus to outline when clicked on an element in 
-        // the treeviewer. Else no selection posted.
+
+        JmolModelSet ms=new JmolModelSet(jmolViewer.getModelSet());
+        treeViewer.setInput(ms);
+        treeViewer.expandToLevel(2);
+
+        //This is needed to set focus to outline when clicked on an element in 
+        //the treeviewer. Else no selection posted.
         treeViewer.getTree().addFocusListener(new FocusListener(){
 
             public void focusGained(FocusEvent e) {
@@ -213,20 +218,10 @@ public class JmolContentOutlinePage
                 // Not interested in this
             }
         });
+
+        getSite().getPage().addSelectionListener(this);
     }
 
-    public void updateTreeViewerModel() {
-        
-        ModelSet modelSet = jmolViewer.getModelSet();
-        if ( modelSet == null 
-          || modelSet.getModels() == null
-          || modelSet.getModels().length < 1 )
-            return;
-
-        JmolModelSet ms = new JmolModelSet(modelSet);
-        treeViewer.setInput(ms);
-        treeViewer.expandToLevel(2);
-    }
 
     /**
      * Update selected items if selected in Jmol

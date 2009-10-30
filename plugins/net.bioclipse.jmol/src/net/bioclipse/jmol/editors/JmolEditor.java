@@ -583,25 +583,11 @@ public class JmolEditor extends MultiPageEditorPart
         String res = jmolPanel.getViewer().evalString(script);
         if (res!=null)
             logger.debug("Jmol said: '" + res + "'");
-        if ( fOutlinePage != null ) {
-            Display.getDefault().asyncExec( new Runnable() {
-                public void run() {
-                    fOutlinePage.updateTreeViewerModel();                    
-                }
-            });
-        }
     }
     
     public void runScriptSilently(String script){
         logger.debug("Running jmol script: '" + script + "'");
         jmolPanel.getViewer().evalString(script);
-        if ( fOutlinePage != null ) {
-            Display.getDefault().asyncExec( new Runnable() {
-                public void run() {
-                    fOutlinePage.updateTreeViewerModel();                    
-                }
-            });
-        }
     }
 
     public JmolPanel getJmolPanel() {
