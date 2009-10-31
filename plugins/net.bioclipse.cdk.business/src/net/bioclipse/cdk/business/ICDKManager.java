@@ -1093,7 +1093,8 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(
          params="molecules List of molecules",
-         methodSummary="Aligns the molecular geometries to the first molecule."
+         methodSummary="Aligns the molecular geometries to the first molecule " +
+             "based on their MCSS."
     )
     public List<ICDKMolecule> kabsch(List<IMolecule> molecules)
     throws BioclipseException;
