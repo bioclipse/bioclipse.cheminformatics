@@ -2375,7 +2375,7 @@ public class CDKManager implements IBioclipseManager {
         int molCount = molecules.size();
         for (int row=0; row<molCount; row++) {
             ICDKMolecule rowMol = asCDKMolecule(molecules.get(row));
-            List<ICDKMolecule> alignedMols = kabsch(molecules, rowMol);
+            List<ICDKMolecule> alignedMols = kabsch(molecules, rowMol, monitor);
             for (int col=0; col<molCount; col++) {
                 ICDKMolecule colMol = asCDKMolecule(alignedMols.get(col));
                 matrix.append(String.format("%.3f",
@@ -2488,12 +2488,15 @@ public class CDKManager implements IBioclipseManager {
         }
     }
 
-    public ICDKMolecule mcss(List<IMolecule> molecules)
+    public ICDKMolecule mcss(List<IMolecule> molecules,
+            IProgressMonitor monitor)
         throws BioclipseException {
         if (molecules.size() < 2)
             throw new BioclipseException("List must contain at least two " +
                 "molecules.");
+        if (monitor == null) monitor = new NullProgressMonitor();
         
+        monitor.beginTask("Calculating MCSS...", molecules.size());
         ICDKMolecule firstMolecule = asCDKMolecule(molecules.get(0));
         IAtomContainer mcss = firstMolecule.getAtomContainer();
         int counter = 1;
@@ -2504,6 +2507,7 @@ public class CDKManager implements IBioclipseManager {
                 mcss = UniversalIsomorphismTester.getOverlaps(
                     mcss, followupMolecule.getAtomContainer()
                 ).get(0);
+                monitor.worked(1);
             } catch (CDKException exception) {
                 throw new BioclipseException("Could not determine MCSS, " +
                     "because of molecule " + counter + ": " +
@@ -2515,20 +2519,25 @@ public class CDKManager implements IBioclipseManager {
         return newMolecule;
     }
 
-    public List<ICDKMolecule> kabsch(List<IMolecule> molecules)
+    public List<ICDKMolecule> kabsch(List<IMolecule> molecules,
+                                     IProgressMonitor monitor)
     throws BioclipseException {
-        return kabsch(molecules, molecules.get(0));
+        return kabsch(molecules, molecules.get(0), monitor);
     }
 
     public List<ICDKMolecule> kabsch(List<IMolecule> molecules,
-                                     IMolecule molecule)
+                                     IMolecule molecule,
+                                     IProgressMonitor monitor)
     throws BioclipseException {
         if (molecules.size() < 2)
             throw new BioclipseException("List must contain at least two " +
             "molecules.");
+        if (monitor == null) monitor = new NullProgressMonitor();
+        monitor.beginTask("Aligning Molecules...", molecules.size());
 
         List<ICDKMolecule> results = new RecordableList<ICDKMolecule>();
-        ICDKMolecule mcss = mcss(molecules);
+        monitor.subTask("Calculating MCSS...");
+        ICDKMolecule mcss = mcss(molecules, monitor);
         if (mcss.getAtomContainer().getAtomCount() < 3)
             throw new BioclipseException(
                 "The MCSS must have at least 3 atoms."
@@ -2550,6 +2559,7 @@ public class CDKManager implements IBioclipseManager {
                 IAtomContainer clone =
                     (IAtomContainer)secondMolecule.getAtomContainer().clone();
                 ka.rotateAtomContainer(clone);
+                monitor.worked(1);
                 CDKMolecule result = new CDKMolecule(clone);
                 result.setProperty("MCSS-RMSD", ka.getRMSD());
                 results.add(result);
@@ -2560,6 +2570,7 @@ public class CDKManager implements IBioclipseManager {
                 exception.printStackTrace();
             }
         }
+        monitor.done();
 
         return results;
     }
