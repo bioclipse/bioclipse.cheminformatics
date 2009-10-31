@@ -2368,6 +2368,42 @@ public class CDKManager implements IBioclipseManager {
         return file; 
     }
 
+    public IFile calculateRMSD(List<IMolecule> molecules,
+            IFile file, IProgressMonitor monitor)
+    throws BioclipseException {
+        StringBuilder matrix = new StringBuilder();
+        int molCount = molecules.size();
+        for (int row=0; row<molCount; row++) {
+            ICDKMolecule rowMol = asCDKMolecule(molecules.get(row));
+            List<ICDKMolecule> alignedMols = kabsch(molecules, rowMol);
+            for (int col=0; col<molCount; col++) {
+                ICDKMolecule colMol = asCDKMolecule(alignedMols.get(col));
+                matrix.append(String.format("%.3f",
+                    colMol.getProperty("MCSS-RMSD", Property.USE_CACHED)
+                ));
+                if (col<(molCount-1)) matrix.append(',');
+            }
+            matrix.append('\n');
+        }
+        try {
+            if (file.exists()) {
+                file.setContents(
+                    new ByteArrayInputStream(matrix.toString().getBytes()),
+                    IResource.FORCE, monitor
+                );
+            } else {
+                file.create(
+                    new ByteArrayInputStream(matrix.toString().getBytes()),
+                    IResource.FORCE, monitor
+                );
+            }
+        } catch (CoreException exception) {
+            throw new BioclipseException("Exception while creating resource.",
+                exception);
+        }
+        return file; 
+    }
+
     public String getMDLMolfileString(IMolecule molecule_in) throws BioclipseException {
         
         ICDKMolecule molecule = asCDKMolecule(molecule_in);
