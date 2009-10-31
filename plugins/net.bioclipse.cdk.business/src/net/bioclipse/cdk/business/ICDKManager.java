@@ -1015,6 +1015,16 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
+         params = "List<IMolecule> molecules, String filename",
+         methodSummary = "Calculate similarities between all " +
+                "molecules in the list based on the RMSD between the " +
+                "the Kabsch-aligned MCSSs." )
+    public String calculateRMSD(List<IMolecule> calculateFor,
+                                String filename)
+    throws BioclipseException;
+
+    @Recorded
+    @PublishedMethod(
          params = "BioList<IMolecule> calculateFor, IMolecule reference, "+
                   "BioclipseUIJob<List<Float>> uiJob",
          methodSummary = "Calculate tanimoto similarity of a list of " +
