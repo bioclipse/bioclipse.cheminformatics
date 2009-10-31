@@ -2504,7 +2504,9 @@ public class CDKManager implements IBioclipseManager {
                 IAtomContainer clone =
                     (IAtomContainer)secondMolecule.getAtomContainer().clone();
                 ka.rotateAtomContainer(clone);
-                results.add(new CDKMolecule(clone));
+                CDKMolecule result = new CDKMolecule(clone);
+                result.setProperty("MCSS-RMSD", ka.getRMSD());
+                results.add(result);
             } catch (CloneNotSupportedException exc) {
                 throw new BioclipseException("Failed to clone the input", exc);
             } catch (CDKException exception) {
