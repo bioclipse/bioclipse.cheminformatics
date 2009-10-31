@@ -2493,6 +2493,10 @@ public class CDKManager implements IBioclipseManager {
 
         List<ICDKMolecule> results = new RecordableList<ICDKMolecule>();
         ICDKMolecule mcss = mcss(molecules);
+        if (mcss.getAtomContainer().getAtomCount() < 3)
+            throw new BioclipseException(
+                "The MCSS must have at least 3 atoms."
+            );
         ICDKMolecule firstMolecule = asCDKMolecule(molecule);
         ICDKMolecule firstSubstructure =
             getSubstructures(firstMolecule, mcss).get(0);
