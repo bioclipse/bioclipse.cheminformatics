@@ -2481,13 +2481,19 @@ public class CDKManager implements IBioclipseManager {
 
     public List<ICDKMolecule> kabsch(List<IMolecule> molecules)
     throws BioclipseException {
+        return kabsch(molecules, molecules.get(0));
+    }
+
+    public List<ICDKMolecule> kabsch(List<IMolecule> molecules,
+                                     IMolecule molecule)
+    throws BioclipseException {
         if (molecules.size() < 2)
             throw new BioclipseException("List must contain at least two " +
             "molecules.");
 
         List<ICDKMolecule> results = new RecordableList<ICDKMolecule>();
         ICDKMolecule mcss = mcss(molecules);
-        ICDKMolecule firstMolecule = asCDKMolecule(molecules.get(0));
+        ICDKMolecule firstMolecule = asCDKMolecule(molecule);
         ICDKMolecule firstSubstructure =
             getSubstructures(firstMolecule, mcss).get(0);
         for (IMolecule mol : molecules) {
