@@ -37,6 +37,7 @@ import org.eclipse.ui.menus.UIElement;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.controller.IControllerModule;
+import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.renderer.elements.WedgeLineElement.Direction;
 
 
@@ -116,7 +117,7 @@ public class ChangeModuleHandler extends AbstractJChemPaintHandler
 
                     } catch(NoSuchMethodException z) {
                         ct = cls.getConstructor(new Class<?>[]{ IChemModelRelay.class
-                                ,Direction.class});
+                                ,IBond.Stereo.class});
                         hub.setActiveDrawModule( newInstance( ct,
                                  params.getArray( hub,
                                                   Params.DIRECTION_PARAM )) );
@@ -214,7 +215,7 @@ public class ChangeModuleHandler extends AbstractJChemPaintHandler
                     case INT_PARAM: result = Integer.valueOf( par );break;
                     case BOOLEAN_PARAM: result = Boolean.valueOf( par );break;
                     case DIRECTION_PARAM:
-                           result = Direction.valueOf( par.toUpperCase());break;
+                           result = IBond.Stereo.valueOf( par.toUpperCase());break;
                 }
                  if(result !=null)
                      parameters.put( p, result );
