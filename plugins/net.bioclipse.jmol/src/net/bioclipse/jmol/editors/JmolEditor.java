@@ -598,11 +598,29 @@ public class JmolEditor extends MultiPageEditorPart
         String res = jmolPanel.getViewer().evalString(script);
         if (res!=null)
             logger.debug("Jmol said: '" + res + "'");
+        
+        if ( fOutlinePage != null &&
+             //UGLY HACK to make the outline model only update on load appends
+             script.toLowerCase().contains( "append" ) ) {
+            
+            Display.getDefault().asyncExec( new Runnable() {
+                public void run() {
+                    fOutlinePage.updateTreeViewerModel();                    
+                }
+            });
+        }
     }
     
     public void runScriptSilently(String script){
         logger.debug("Running jmol script: '" + script + "'");
         jmolPanel.getViewer().evalString(script);
+        if ( fOutlinePage != null ) {
+            Display.getDefault().asyncExec( new Runnable() {
+                public void run() {
+                    fOutlinePage.updateTreeViewerModel();                    
+                }
+            });
+        }
     }
 
     public List<IJmolMolecule> getJmolMolecules() {
@@ -969,7 +987,7 @@ public class JmolEditor extends MultiPageEditorPart
                                         e );
         }
     }
-
+    
     /**
      * @param mol {@link IMolecule} to append
      */
