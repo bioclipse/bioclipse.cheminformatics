@@ -23,6 +23,7 @@
 package org.openscience.cdk.renderer.generators;
 
 import java.awt.Color;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,12 +35,21 @@ import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.TextElement;
+import org.openscience.cdk.renderer.generators.parameter.AbstractGeneratorParameter;
 
 /**
  * @author maclean
  * @cdk.module renderextra
  */
 public class AtomNumberGenerator implements IGenerator {
+
+    public static class AtomNumberTextColor extends AbstractGeneratorParameter<Color> {
+        public Color getDefault() {
+            return Color.BLACK;
+        }
+    }
+
+    private IGeneratorParameter<Color> textColor = new AtomNumberTextColor();
 
 	public AtomNumberGenerator() {}
 
@@ -51,15 +61,17 @@ public class AtomNumberGenerator implements IGenerator {
 		for (IAtom atom : ac.atoms()) {
 			Point2d p = atom.getPoint2d();
 			numbers.add(
-					new TextElement(
-							p.x, p.y, String.valueOf(number), Color.BLACK));
+					new TextElement( p.x, p.y,
+					                 String.valueOf(number),
+					                 textColor.getValue()
+					                ));
 			number++;
 		}
 		return numbers;
 	}
 
     public List<IGeneratorParameter<?>> getParameters() {
-        return Collections.emptyList();
+        return Arrays.asList( new IGeneratorParameter<?>[] {textColor} );
     }
 
 
