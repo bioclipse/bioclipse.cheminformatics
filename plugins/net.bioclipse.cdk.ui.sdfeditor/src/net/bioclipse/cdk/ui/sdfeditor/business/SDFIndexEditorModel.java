@@ -239,13 +239,13 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
         setDirty( true );
     }
 
-    public  Object getPropertyFor(int moleculeIndex,String property) {
+    public <T> T getPropertyFor(int moleculeIndex,String property) {
         Map<String,Object> props = molProps.get(moleculeIndex);
         Class<?> c = propertyList.get( property );
         if(props!=null && c != null) {
             Object val = props.get( property );
 
-            return val;
+            return (T)val;
         }
         return null;
     }
