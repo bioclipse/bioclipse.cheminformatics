@@ -13,6 +13,7 @@ package net.bioclipse.cdk.jchempaint.view;
 
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.EventObject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,14 +35,19 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.openscience.cdk.event.ICDKChangeListener;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.renderer.IRenderer;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.generators.AtomNumberGenerator;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 import org.openscience.cdk.renderer.generators.RingGenerator;
+import org.openscience.cdk.renderer.generators.AtomNumberGenerator.AtomNumberTextColor;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 
 /**
@@ -93,6 +99,7 @@ public class JChemPaintWidget extends Canvas {
     protected RendererModel rendererModel = new RendererModel();
 
     protected ChoiceGenerator extensionGenerator;
+    protected ChoiceGenerator drawNumbers;
 
     private Renderer renderer;
 
@@ -109,9 +116,37 @@ public class JChemPaintWidget extends Canvas {
         });
 
         fontManager = new SWTFontManager(this.getDisplay());
-        renderer = new Renderer(createGenerators(), fontManager);
+
+        List<IGenerator> generators =  createGenerators();
+        generators.add( drawNumbers = new ChoiceGenerator(
+                                   new AtomNumberGenerator()
+        ) );
+
+        renderer = new Renderer(generators, fontManager);
         rendererModel = renderer.getRenderer2DModel();
         setupPaintListener();
+        setupPreferenceListener( renderer );
+        setAtomNumberColors( drawNumbers );
+    }
+
+    private void setAtomNumberColors(IGenerator generator) {
+        for(IGeneratorParameter<?> p:generator.getParameters()) {
+            if(p instanceof AtomNumberTextColor) {
+                ((AtomNumberTextColor)p).setValue( java.awt.Color.MAGENTA );
+            }
+        }
+    }
+
+    private void setupPreferenceListener(IRenderer renderer) {
+      renderer.getRenderer2DModel().addCDKChangeListener( new ICDKChangeListener() {
+
+        public void stateChanged( EventObject event ) {
+            if(event.getSource() instanceof RendererModel) {
+                drawNumbers.setUse( JChemPaintWidget.this.renderer
+                                       .getRenderer2DModel().drawNumbers());
+            }
+        }
+    });
     }
 
     protected void setupPaintListener() {
