@@ -66,7 +66,7 @@ public class SmartsMatchGenerator implements IGenerator {
         return group;
     }
 
-    public List<IGeneratorParameter> getParameters() {
+    public List<IGeneratorParameter<?>> getParameters() {
         return Collections.emptyList();
     }
 }

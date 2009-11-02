@@ -13,7 +13,6 @@
 package net.bioclipse.cdk.jchempaint.view;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import net.bioclipse.core.util.LogUtils;
@@ -111,7 +110,11 @@ public class ChoiceGenerator implements IGenerator {
         }
     };
 
-    public List<IGeneratorParameter> getParameters() {
-        return Collections.emptyList();
+    public List<IGeneratorParameter<?>> getParameters() {
+        List<IGeneratorParameter<?>> params = new ArrayList<IGeneratorParameter<?>>();
+        for(IGenerator gen:generators) {
+            params.addAll( gen.getParameters() );
+        }
+        return params;
     }
 }

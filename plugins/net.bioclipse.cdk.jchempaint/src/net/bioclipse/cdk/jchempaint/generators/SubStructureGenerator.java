@@ -71,7 +71,7 @@ public class SubStructureGenerator implements IGenerator {
         subStructures.add( subStructure );
     }
 
-    public List<IGeneratorParameter> getParameters() {
+    public List<IGeneratorParameter<?>> getParameters() {
         return Collections.emptyList();
     }
 }

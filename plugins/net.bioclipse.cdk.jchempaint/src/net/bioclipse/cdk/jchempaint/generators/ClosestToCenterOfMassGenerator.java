@@ -130,7 +130,7 @@ public class ClosestToCenterOfMassGenerator implements IGenerator {
         return new LineElement(p1.x,p1.y,p2.x,p2.y,width,STAR_COLOR);
     }
 
-    public List<IGeneratorParameter> getParameters() {
+    public List<IGeneratorParameter<?>> getParameters() {
         return Collections.emptyList();
     }
 }
