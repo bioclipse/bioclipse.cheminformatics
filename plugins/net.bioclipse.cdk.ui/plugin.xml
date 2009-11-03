@@ -90,6 +90,10 @@
            defaultHandler="net.bioclipse.cdk.ui.handlers.CalculateTanimotoHandler"
            name="calculateTanimoto"/>
         <command
+           id="net.bioclipse.cdk.ui.handlers.calculateTanimotoMatrix"
+           defaultHandler="net.bioclipse.cdk.ui.handlers.CalculateTanimotoMatrixHandler"
+           name="calculateTanimotoMatrix"/>
+        <command
            id="net.bioclipse.cdk.ui.handlers.create3dwithreset"
            defaultHandler="net.bioclipse.cdk.ui.handlers.Create3dHandlerWithReset"
            name="create3D"/>
@@ -307,6 +311,39 @@
 			   		</iterate>
 		        </visibleWhen>
 	       </command>
+        </menuContribution>
+        <menuContribution
+          locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+          <command
+            commandId="net.bioclipse.cdk.ui.handlers.calculateTanimotoMatrix"
+            label="Calculate Tanimoto Matrix"
+            icon="icons/molecule2D.png">
+            <visibleWhen>
+              <with variable="selection">
+                <count value="(2-"/>
+                <iterate operator="and" ifEmpty="false">
+                  <adapt type="org.eclipse.core.resources.IResource">
+                     <or>
+                       <test property="org.eclipse.core.resources.contentTypeId"
+                             value="net.bioclipse.contenttypes.cml.singleMolecule3d"/>
+                       <test property="org.eclipse.core.resources.contentTypeId"
+                             value="net.bioclipse.contenttypes.cml.singleMolecule5d"/>
+                       <test property="org.eclipse.core.resources.contentTypeId"
+                             value="net.bioclipse.contenttypes.cml.singleMolecule2d"/>
+                       <test property="org.eclipse.core.resources.contentTypeId"
+                             value="net.bioclipse.contenttypes.cml.singleMolecule0d"/>
+                       <test property="org.eclipse.core.resources.contentTypeId"
+                             value="net.bioclipse.contenttypes.mdlMolFile2D"/>
+                       <test property="org.eclipse.core.resources.contentTypeId"
+                             value="net.bioclipse.contenttypes.mdlMolFile3D"/>
+                       <test property="org.eclipse.core.resources.contentTypeId"
+                             value="net.bioclipse.contenttypes.mdlMolFile0D"/>
+                     </or>
+                   </adapt>
+                 </iterate>
+               </with>
+             </visibleWhen>
+           </command>
 		</menuContribution>
 
 	</extension>
