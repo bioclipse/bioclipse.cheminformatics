@@ -167,6 +167,26 @@
              id="org.eclipse.ui.commands.toggleState">
        </state>
     </command>
+    <command
+          defaultHandler="net.bioclipse.cdk.jchempaint.handlers.TogglePrefHandler"
+          id="net.bioclipse.cdk.jchempaint.preference.atomNumbers"
+          name="Atom Numbers">
+       <state
+             class="org.eclipse.ui.handlers.RegistryToggleState"
+             id="org.eclipse.ui.commands.toggleState">
+          <class
+                class="org.eclipse.ui.handlers.RegistryToggleState">
+             <parameter
+                   name="persisted"
+                   value="false">
+             </parameter>
+             <parameter
+                   name="default"
+                   value="false">
+             </parameter>
+          </class>
+       </state>
+    </command>
  </extension>
  <extension
        point="org.eclipse.core.expressions.propertyTesters">
@@ -878,6 +898,11 @@
           <command
                 commandId="net.bioclipse.cdk.jchempaint.implicitHydrogens"
                 label="Show Implicit Hydrogens"
+                style="toggle">
+          </command>
+          <command
+                commandId="net.bioclipse.cdk.jchempaint.preference.atomNumbers"
+                label="Draw Numbers"
                 style="toggle">
           </command>
        </menu>
