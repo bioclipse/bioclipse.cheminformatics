@@ -98,6 +98,10 @@
            defaultHandler="net.bioclipse.cdk.ui.handlers.CalculateRMSDMatrixHandler"
            name="calculateRMSDMatrix"/>
         <command
+           id="net.bioclipse.cdk.ui.handlers.kabschAlignment"
+           defaultHandler="net.bioclipse.cdk.ui.handlers.KabschAlignHandler"
+           name="kabschAlignment"/>
+        <command
            id="net.bioclipse.cdk.ui.handlers.create3dwithreset"
            defaultHandler="net.bioclipse.cdk.ui.handlers.Create3dHandlerWithReset"
            name="create3D"/>
@@ -293,7 +297,7 @@
 		      	<visibleWhen>
 			   		<iterate operator="and" ifEmpty="false">
 		      			<adapt type="org.eclipse.core.resources.IResource">
-			      			<or>
+			      			<or>Calculate RMSD Matrix
 				                <test property="org.eclipse.core.resources.contentTypeId" 
 				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule3d"/>
 				                <test property="org.eclipse.core.resources.contentTypeId" 
@@ -374,7 +378,31 @@
              </visibleWhen>
            </command>
         </menuContribution>
-
+        <menuContribution
+          locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+          <command
+            commandId="net.bioclipse.cdk.ui.handlers.kabschAlignment"
+            label="Perform Kabsch Alignment"
+            icon="icons/molecule2D.png">
+            <visibleWhen>
+              <with variable="selection">
+                <count value="(2-"/>
+                <iterate operator="and" ifEmpty="false">
+                  <adapt type="org.eclipse.core.resources.IResource">
+                     <or>
+                       <test property="org.eclipse.core.resources.contentTypeId"
+                             value="net.bioclipse.contenttypes.cml.singleMolecule3d"/>
+                       <test property="org.eclipse.core.resources.contentTypeId"
+                             value="net.bioclipse.contenttypes.cml.singleMolecule5d"/>
+                       <test property="org.eclipse.core.resources.contentTypeId"
+                             value="net.bioclipse.contenttypes.mdlMolFile3D"/>
+                     </or>
+                   </adapt>
+                 </iterate>
+               </with>
+             </visibleWhen>
+           </command>
+        </menuContribution>
 	</extension>
 
 	<extension
