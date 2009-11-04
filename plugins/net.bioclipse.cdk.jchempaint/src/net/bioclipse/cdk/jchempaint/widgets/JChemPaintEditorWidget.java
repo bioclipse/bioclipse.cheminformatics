@@ -493,7 +493,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     public void setModel( IChemModel model ) {
         this.applyGlobalProperties();
         hub.setChemModel(model);
-        reset();
+       // if(!this.isDisposed())
+            reset();
         super.setModel( model );
     }
 
