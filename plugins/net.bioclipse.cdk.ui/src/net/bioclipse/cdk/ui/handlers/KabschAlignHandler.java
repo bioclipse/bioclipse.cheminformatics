@@ -53,7 +53,7 @@ public class KabschAlignHandler extends AbstractHandler {
                 List<IMolecule> alignedMols = new ArrayList<IMolecule>();
                 for (IMolecule mol : aligned) alignedMols.add(mol);
                 cdk.saveSDFile(path, alignedMols);
-                ui.open(path);
+                ui.open(path, "net.bioclipse.jmol.editors.JmolEditor");
             } catch (BioclipseException cause) {
                 throw new ExecutionException(
                     "Error while calculating RMSD matrix...",
