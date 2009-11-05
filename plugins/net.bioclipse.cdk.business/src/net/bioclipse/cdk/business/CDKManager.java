@@ -2329,7 +2329,14 @@ public class CDKManager implements IBioclipseManager {
         StringBuilder matrix = new StringBuilder();
         int molCount = molecules.size();
         for (int row=0; row<molCount; row++) {
+            matrix.append(',')
+                  .append(molecules.get(row).getResource().getName());
+        }
+        matrix.append('\n');
+        for (int row=0; row<molCount; row++) {
             ICDKMolecule rowMol = asCDKMolecule(molecules.get(row));
+            matrix.append(molecules.get(row).getResource().getName())
+                  .append(',');
             BitSet reference = rowMol.getFingerprint(Property.USE_CALCULATED);
             for (int col=0; col<row; col++) {
                 matrix.append(String.format("%.3f", 0.0));

@@ -48,7 +48,7 @@ public class CalculateTanimotoMatrixHandler extends AbstractHandler {
                 path = "/Virtual/matrix" + UUID.randomUUID() + ".csv";
             try {
                 String matrix = cdk.calculateTanimoto(molecules, path);
-                ui.open(matrix);
+                ui.open(matrix, "net.bioclipse.editors.MatrixGridEditor");
             } catch (BioclipseException cause) {
                 throw new ExecutionException(
                     "Error while calculating Tanimoto matrix...",
