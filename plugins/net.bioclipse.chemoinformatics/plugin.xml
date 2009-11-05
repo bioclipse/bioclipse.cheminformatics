@@ -192,6 +192,9 @@
 		<menu label="Generate Conformers"
 			  id="net.bioclipse.chemoinformatics.popup.genConformers">
 		</menu>
+		<menu label="Compare"
+			  id="net.bioclipse.chemoinformatics.popup.compare">
+		</menu>
       </menuContribution>
  </extension>
 
