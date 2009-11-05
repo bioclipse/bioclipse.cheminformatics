@@ -14,7 +14,6 @@ import java.text.DecimalFormat;
 
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.ui.wizards.TanimotoWizard;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
@@ -24,7 +23,6 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -79,10 +77,6 @@ public class CalculateTanimotoHandler extends AbstractHandler {
                                        + formatter.format( similarity * 100 )
                                        + "%" );
                         mb.open();
-                    } else {
-                        TanimotoWizard wiz=new TanimotoWizard(ssel);
-                        WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wiz);
-                        dialog.open();
                     }
                 } catch ( Exception ex ) {
                     LogUtils.handleException( ex, logger );

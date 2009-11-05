@@ -295,6 +295,7 @@
 		    	label="Calculate Tanimoto similarity"
 		        icon="icons/molecule2D.png">
 		      	<visibleWhen>
+                    <count value="2"/>
 			   		<iterate operator="and" ifEmpty="false">
 		      			<adapt type="org.eclipse.core.resources.IResource">
 			      			<or>Calculate RMSD Matrix
