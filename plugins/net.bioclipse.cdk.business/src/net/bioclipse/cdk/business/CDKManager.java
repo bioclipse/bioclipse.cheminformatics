@@ -2309,7 +2309,7 @@ public class CDKManager implements IBioclipseManager {
 
     public void calculateTanimoto( List<IMolecule> calculateFor,
                                    IMolecule reference,
-                                   IReturner returner,
+                                   IReturner<List<Float>> returner,
                                    IProgressMonitor monitor)
                 throws BioclipseException {
         List<Float> result = new ArrayList<Float>();
