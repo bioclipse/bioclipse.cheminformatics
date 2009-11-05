@@ -1065,14 +1065,12 @@ public class CDKManager implements IBioclipseManager {
                                substructure.getAtomContainer());
               int i = 1;
               for (List<RMap> substruct : substructures) {
-                  System.out.println("Substructure " + (i++));
                   // convert the RMap into an IAtomContainer
                   IAtomContainer match = new NNAtomContainer();
                   for (RMap mapping : substruct) {
                       IBond bond = originalContainer.getBond(mapping.getId1());
                       for (IAtom atom : bond.atoms()) match.addAtom(atom);
                       match.addBond(bond);
-                      System.out.println("id1: " + mapping.getId1() + ", id2: " + mapping.getId2());
                   }
                   // OK, see if we already have an equivalent match
                   boolean foundEquivalentSubstructure = false;
