@@ -2308,11 +2308,11 @@ public class CDKManager implements IBioclipseManager {
     }
 
     public void calculateTanimoto( List<IMolecule> calculateFor,
-                                  IMolecule reference,
-                                  IReturner returner,
-                                  IProgressMonitor monitor)
-                                  throws BioclipseException {
-        List<Float> result=new ArrayList<Float>();
+                                   IMolecule reference,
+                                   IReturner returner,
+                                   IProgressMonitor monitor)
+                throws BioclipseException {
+        List<Float> result = new ArrayList<Float>();
         BitSet refensetBitSet = asCDKMolecule(reference).getFingerprint(
                 net.bioclipse.core.domain.IMolecule.Property.USE_CALCULATED);
         for(int i=0;i<calculateFor.size();i++ ){
