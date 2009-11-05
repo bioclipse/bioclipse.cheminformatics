@@ -2379,8 +2379,15 @@ public class CDKManager implements IBioclipseManager {
         StringBuilder matrix = new StringBuilder();
         int molCount = molecules.size();
         for (int row=0; row<molCount; row++) {
+            matrix.append(',')
+                  .append(molecules.get(row).getResource().getName());
+        }
+        matrix.append( "\n" );
+        for (int row=0; row<molCount; row++) {
             ICDKMolecule rowMol = asCDKMolecule(molecules.get(row));
             List<ICDKMolecule> alignedMols = kabsch(molecules, rowMol, monitor);
+            matrix.append(molecules.get(row).getResource().getName())
+                  .append(',');
             for (int col=0; col<molCount; col++) {
                 ICDKMolecule colMol = asCDKMolecule(alignedMols.get(col));
                 matrix.append(String.format("%.3f",
