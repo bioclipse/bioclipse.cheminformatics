@@ -6,7 +6,7 @@
 
 	<!-- declare a content type to eliminate duplicated file extensions -->
    <extension
-         point="org.eclipse.core.runtime.contentTypes">
+         point="org.eclipse.core.contenttype.contentTypes">
       <content-type
             id="net.bioclipse.cdk.ui.moleculeType"
             name="molecule"
@@ -288,17 +288,21 @@
 		        </visibleWhen>
 	       </command>
 		</menuContribution>
+		
+		<!-- -->
+		
 		<menuContribution
-           locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+           locationURI="popup:net.bioclipse.chemoinformatics.popup.compare?after=additions">
 		    <command
 		    	commandId="net.bioclipse.cdk.ui.handlers.calculatetanimoto"
-		    	label="Calculate Tanimoto similarity"
+		    	label="Tanimoto (CDK FP)"
 		        icon="icons/molecule2D.png">
 		      	<visibleWhen>
+              <with variable="selection">
                     <count value="2"/>
 			   		<iterate operator="and" ifEmpty="false">
 		      			<adapt type="org.eclipse.core.resources.IResource">
-			      			<or>Calculate RMSD Matrix
+			      			<or>
 				                <test property="org.eclipse.core.resources.contentTypeId" 
 				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule3d"/>
 				                <test property="org.eclipse.core.resources.contentTypeId" 
@@ -316,14 +320,15 @@
 				            </or>
 			      		</adapt>
 			   		</iterate>
+					</with>
 		        </visibleWhen>
 	       </command>
         </menuContribution>
         <menuContribution
-          locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+          locationURI="popup:net.bioclipse.chemoinformatics.popup.compare?after=additions">
           <command
             commandId="net.bioclipse.cdk.ui.handlers.calculateTanimotoMatrix"
-            label="Calculate Tanimoto Matrix"
+            label="Tanimoto (CDK FP)"
             icon="icons/molecule2D.png">
             <visibleWhen>
               <with variable="selection">
@@ -353,14 +358,14 @@
            </command>
 		</menuContribution>
         <menuContribution
-          locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+          locationURI="popup:net.bioclipse.chemoinformatics.popup.compare?after=additions">
           <command
             commandId="net.bioclipse.cdk.ui.handlers.calculateRMSDMatrix"
-            label="Calculate RMSD Matrix"
+            label="RMSD"
             icon="icons/molecule2D.png">
             <visibleWhen>
               <with variable="selection">
-                <count value="(2-"/>
+                <count value="(1-"/>
                 <iterate operator="and" ifEmpty="false">
                   <adapt type="org.eclipse.core.resources.IResource">
                      <or>
@@ -381,11 +386,11 @@
           locationURI="popup:org.eclipse.ui.popup.any?after=additions">
           <command
             commandId="net.bioclipse.cdk.ui.handlers.kabschAlignment"
-            label="Perform Kabsch Alignment"
+            label="Superimpose"
             icon="icons/molecule2D.png">
             <visibleWhen>
               <with variable="selection">
-                <count value="(2-"/>
+                <count value="(1-"/>
                 <iterate operator="and" ifEmpty="false">
                   <adapt type="org.eclipse.core.resources.IResource">
                      <or>
