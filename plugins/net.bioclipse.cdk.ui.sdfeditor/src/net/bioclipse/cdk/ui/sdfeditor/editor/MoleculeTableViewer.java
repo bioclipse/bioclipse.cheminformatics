@@ -384,6 +384,7 @@ public class MoleculeTableViewer extends ContentViewer {
             ((IFileMoleculesEditorModel)input).insert( first, molecules );
         else
             ((IMoleculesEditorModel)input).instert( molecules );
+        refresh();
     }
 
     @Override
