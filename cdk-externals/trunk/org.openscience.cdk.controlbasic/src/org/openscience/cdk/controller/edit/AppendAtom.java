@@ -106,7 +106,8 @@ public class AppendAtom extends AbstractEdit implements IEdit {
         this.pos = pos;
         this.newStereo = stereo;
     }
-    public void redo() {
+
+    private void init() {
         IAtom start;
         if(source==null) {
             start = model.getBuilder().newAtom(symbol,pos);
@@ -136,11 +137,17 @@ public class AppendAtom extends AbstractEdit implements IEdit {
             }
             placeNewAtom(model,start,newAtom,bondLength);
         }
-
+    }
+    public void redo() {
+        if(newAtom == null && newBond == null) {
+           init();
+        }
+        if(newSource != null)
+            model.addAtom( newSource );
         model.addAtom( newAtom );
         model.addBond( newBond );
 
-        updateHydrogenCount( start,newAtom );
+        updateHydrogenCount( newSource!=null?newSource:source,newAtom );
     }
     static void placeNewAtom( IAtomContainer model, IAtom sourceAtom,
                               IAtom atomToPlace, double bondLength) {

@@ -58,7 +58,8 @@ public class AddBond extends AbstractEdit implements IEdit{
     }
     public void redo() {
 
-        newBond = model.getBuilder().newBond(atom1,atom2);
+        if(newBond==null)
+            newBond = model.getBuilder().newBond(atom1,atom2);
         model.addBond( newBond );
 
         updateHydrogenCount( atom1,atom2 );
