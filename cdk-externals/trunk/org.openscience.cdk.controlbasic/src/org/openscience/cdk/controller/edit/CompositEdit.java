@@ -25,12 +25,14 @@ package org.openscience.cdk.controller.edit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.openscience.cdk.controller.Changed;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 
 /**
@@ -96,6 +98,14 @@ public class CompositEdit extends AbstractEdit {
         for(IEdit edit:reverse)
             edit.undo();
         // reverse list
+    }
+
+    @Override
+    public Collection<IAtom> getAtomsToUpdate() {
+        Collection<IAtom> atoms = new ArrayList<IAtom>();
+        for(IEdit edit:edits)
+            atoms.addAll( edit.getAtomsToUpdate() );
+        return atoms;
     }
 
 }
