@@ -91,4 +91,6 @@ public class MappingEditorModel implements IFileMoleculesEditorModel {
     public void delete( int index ) {
         mappingIndex.remove( index );
     }
+
+    public IFileMoleculesEditorModel getModel() { return model;}
 }

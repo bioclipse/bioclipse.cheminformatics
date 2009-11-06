@@ -73,6 +73,9 @@ public class MoleculeTableContentProvider implements
     }
 
     public void removeColumn(Object key) {
+        if(model instanceof MappingEditorModel) {
+            model = ((MappingEditorModel)model).getModel();
+        }
         if(model instanceof SDFIndexEditorModel) {
             SDFIndexEditorModel sdModel = (SDFIndexEditorModel)model;
             sdModel.removePropertyKey( key );

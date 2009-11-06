@@ -18,19 +18,26 @@ import java.util.Collections;
 import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.cdk.business.CDKMoleculeTransfer;
 import net.bioclipse.cdk.business.ICDKManager;
+import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
+import net.bioclipse.cdk.jchempaint.view.AtomContainerTransfer;
 import net.bioclipse.cdk.ui.sdfeditor.business.IMoleculeTableManager;
 import net.bioclipse.cdk.ui.sdfeditor.business.MappingEditorModel;
 import net.bioclipse.cdk.ui.sdfeditor.business.SDFIndexEditorModel;
 import net.bioclipse.cdk.ui.sdfeditor.business.SDFileIndex;
+import net.bioclipse.cdk.ui.views.IFileMoleculesEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+import net.bioclipse.core.ResourcePathTransformer;
+import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.jobs.BioclipseUIJob;
+import net.sourceforge.nattable.NatTable;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -52,7 +59,13 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
@@ -66,6 +79,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorInputTransfer;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.EditorInputTransfer.EditorInputData;
+import org.openscience.cdk.interfaces.IAtomContainer;
 
 public class MoleculesEditor extends EditorPart implements
         //ISelectionProvider,
@@ -82,6 +96,8 @@ public class MoleculesEditor extends EditorPart implements
     private BioclipseJob<Void> parseJob;
 
     private BioclipseJob<SDFIndexEditorModel> indexJob;
+
+    private boolean dirty;
 
     public MoleculesEditor() {
     }
@@ -127,7 +143,8 @@ public class MoleculesEditor extends EditorPart implements
     public boolean isDirty() {
         if(getModel() instanceof SDFIndexEditorModel)
             return ((SDFIndexEditorModel)getModel()).isDirty();
-        return false;
+        else
+            return dirty;
     }
 
     @Override
@@ -154,8 +171,134 @@ public class MoleculesEditor extends EditorPart implements
         logger.debug( "Menu id for SDFEditor " +menuMgr.getId());
 
         getSite().setSelectionProvider( molTableViewer );
+        enableDrop();
 
     }
+
+    private void enableDrop() {
+        int operations = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT;
+
+        final FileTransfer fileTransfer = FileTransfer.getInstance();
+        final AtomContainerTransfer acTransfer = AtomContainerTransfer.getInstance();
+        final CDKMoleculeTransfer molTranfer = CDKMoleculeTransfer.getInstance();
+        final LocalSelectionTransfer localSelTransfer =
+                                           LocalSelectionTransfer.getTransfer();
+        Transfer[] transfers = new Transfer[] { molTranfer,
+                                                acTransfer,
+                                                fileTransfer,
+                                                localSelTransfer};
+        molTableViewer.addDropSupport( operations, transfers,
+                                       new DropTargetAdapter() {
+
+            public void drop( DropTargetEvent event ) {
+
+                if(localSelTransfer.isSupportedType( event.currentDataType )) {
+                    IStructuredSelection sel = (IStructuredSelection)
+                                    localSelTransfer.getSelection();
+                    for(Object o: sel.toArray()){
+                        if(o instanceof IFile) {
+                            insert((IFile)o);
+                        }
+                    }
+                } else if(acTransfer.isSupportedType( event.currentDataType )) {
+                    insert((IAtomContainer)event.data);
+
+                } else if(molTranfer.isSupportedType( event.currentDataType )) {
+                    ICDKMolecule[] mols = (ICDKMolecule[])event.data;
+                    List<ICDKMolecule> molsToInsert;
+                    molsToInsert = new ArrayList<ICDKMolecule>(mols.length);
+                    for(ICDKMolecule mol:mols) {
+                        try {
+                            molsToInsert.add(new CDKMolecule( (IAtomContainer)
+                                              mol.getAtomContainer().clone()));
+                        } catch ( CloneNotSupportedException e ) {
+                            logger.warn( "Failed to clone molecule on drop" , e);
+                        }
+                    }
+                    insert(molsToInsert.toArray( new ICDKMolecule[0] ));
+
+                } else if(fileTransfer.isSupportedType( event.currentDataType )) {
+                    String[] files =  (String[])event.data;
+                    for(String file:files) {
+                        IFile resource = ResourcePathTransformer.getInstance()
+                        .transform( file );
+                        insert( resource );
+                    }
+
+                } else
+                    System.out.println("Other: "+event.data);
+
+                molTableViewer.refresh();
+            }
+
+            public void dragOver( DropTargetEvent event ) {
+                event.feedback = DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL;
+            }
+
+            public void dragOperationChanged( DropTargetEvent event ) {
+                translateDefault( event );
+            }
+
+            public void dropAccept( DropTargetEvent event ) {}
+            public void dragLeave( DropTargetEvent event ) {}
+
+            public void dragEnter( DropTargetEvent event ) {
+                translateDefault( event );
+                for(TransferData tfData:event.dataTypes) {
+                    if(molTranfer.isSupportedType( tfData )) {
+                        event.currentDataType = tfData;
+                        break;
+                    }else
+                        if(fileTransfer.isSupportedType( tfData )){
+                            if (event.detail != DND.DROP_COPY) {
+                                event.detail = DND.DROP_NONE;
+                            }
+                            break;
+                        }
+                }
+            }
+
+            private void translateDefault(DropTargetEvent event) {
+                if( event.detail == DND.DROP_DEFAULT){
+                    if((event.operations & DND.DROP_COPY) !=0)
+                        event.detail = DND.DROP_COPY;
+                    else
+                        event.detail = DND.DROP_NONE;
+                }
+            }
+        });
+    }
+
+    private void insert(IAtomContainer atomContainer) {
+        ICDKMolecule molecule = new CDKMolecule( atomContainer );
+        insert( molecule );
+    }
+    private void insert(IFile file) {
+        List<ICDKMolecule> mols;
+        try {
+            mols = Activator.getDefault().getJavaCDKManager().loadMolecules( file );
+            insert(mols.toArray( new ICDKMolecule[mols.size()] ));
+        } catch ( IOException e ) {
+            logger.warn( "Could not inster file from drop",e );
+        } catch ( BioclipseException e ) {
+            logger.warn( "Could not inster file from drop",e );
+        } catch ( CoreException e ) {
+            logger.warn( "Could not inster file from drop",e );
+        }
+    }
+
+    private void insert(ICDKMolecule... molecules) {
+        int[] selection =((NatTable)molTableViewer.getControl()).getSelectionModel().getSelectedRows();
+        int first = selection.length!=0?selection[0]:-1;
+        Object input = molTableViewer.getInput();
+        if(input instanceof IFileMoleculesEditorModel && first!=-1)
+            ((IFileMoleculesEditorModel)input).insert( first, molecules );
+        else
+            ((IMoleculesEditorModel)input).instert( molecules );
+        setDirty( true );
+        refresh();
+    }
+
 
     @SuppressWarnings("unchecked")
     private static <T> T adapt(IAdaptable adaptable, Class<T> clazz) {
@@ -258,6 +401,10 @@ public class MoleculesEditor extends EditorPart implements
                 IMoleculesEditorModel molEditorModel = (IMoleculesEditorModel)
                     editorInput.getAdapter( IMoleculesEditorModel.class );
                 if(molEditorModel!=null) {
+                    if(molEditorModel instanceof SDFIndexEditorModel) {
+                        molEditorModel = new MappingEditorModel( 
+                                         (SDFIndexEditorModel)molEditorModel );
+                    }
                     molTableViewer.setContentProvider(
                                            new MoleculeTableContentProvider() );
                                          molTableViewer.setInput( molEditorModel );
@@ -390,9 +537,10 @@ public class MoleculesEditor extends EditorPart implements
     }
 
     public void setDirty( boolean b ) {
-
-        firePropertyChange( IEditorPart.PROP_DIRTY );
-
+        if(dirty!=b) {
+            dirty = b;
+            firePropertyChange( IEditorPart.PROP_DIRTY );
+        }
     }
     @Override
     public void dispose() {

@@ -23,6 +23,8 @@ import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import net.bioclipse.cdk.ui.sdfeditor.Activator;
 import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator;
+import net.bioclipse.cdk.ui.sdfeditor.business.MappingEditorModel;
+import net.bioclipse.cdk.ui.sdfeditor.business.SDFIndexEditorModel;
 import net.bioclipse.cdk.ui.sdfeditor.handlers.CalculatePropertyHandler;
 import net.bioclipse.cdk.ui.views.IFileMoleculesEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
@@ -61,6 +63,7 @@ import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.openscience.cdk.Mapping;
 
 public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                                                     ISelectionListener,
@@ -250,6 +253,9 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         @Override
         public void runInUI() {
             IFileMoleculesEditorModel model =getReturnValue();
+            if(model instanceof SDFIndexEditorModel) {
+                model = new MappingEditorModel( model );
+            }
             mpmep.moleculesPage.getMolTableViewer().setInput( model );
             mpmep.moleculesPage.getMolTableViewer().refresh();
 
@@ -260,6 +266,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
             mpmep.firePropertyChange( IWorkbenchPartConstants.PROP_INPUT);
 
             mpmep.jcpPage.getWidget().setDirty( false );
+            mpmep.moleculesPage.setDirty( false );
             mpmep.setDirty( false );
         }
     }
@@ -351,6 +358,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
            moleculesPage.getModel().markDirty(
                        moleculesPage.getMolTableViewer().getFirstSelected(),
                        newMol );
+           moleculesPage.setDirty( true );
        }
    }
 
