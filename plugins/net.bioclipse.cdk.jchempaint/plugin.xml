@@ -111,7 +111,8 @@
        <commandParameter
              id="jcp.manager.method"
              name="managerMethod"
-             optional="false">
+             optional="false"
+             values="net.bioclipse.cdk.jchempaint.editor.ManagerMethodParameterValues">
        </commandParameter>
     </command>
     <command
