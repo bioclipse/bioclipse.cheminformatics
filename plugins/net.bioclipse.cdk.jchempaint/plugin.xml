@@ -188,6 +188,11 @@
           </class>
        </state>
     </command>
+    <command
+          defaultHandler="net.bioclipse.cdk.jchempaint.handlers.SelectPartHandler"
+          id="net.bioclipse.cdk.jchempaint.selectPart"
+          name="Select Part">
+    </command>
  </extension>
  <extension
        point="org.eclipse.core.expressions.propertyTesters">
@@ -865,6 +870,38 @@
                 value="cleanup">
           </parameter>
        </command>
+       <menu
+             label="Select">
+          <command
+                commandId="net.bioclipse.cdk.jchempaint.manager.action"
+                label="Select All"
+                style="push">
+             <parameter
+                   name="jcp.manager.method"
+                   value="selectAll">
+             </parameter>
+          </command>
+          <command
+                commandId="net.bioclipse.cdk.jchempaint.selectPart"
+                label="Selecte Part"
+                style="push">
+             <visibleWhen
+                   checkEnabled="false">
+                <iterate
+                      ifEmpty="false"
+                      operator="or">
+                   <or>
+                      <instanceof
+                            value="net.bioclipse.cdk.jchempaint.outline.StructureContentProvider$CDKAtomChemObject">
+                      </instanceof>
+                      <instanceof
+                            value="net.bioclipse.cdk.jchempaint.outline.StructureContentProvider$CDKBondChemObject">
+                      </instanceof>
+                   </or>
+                </iterate>
+             </visibleWhen>
+          </command>
+       </menu>
        <separator
              name="additions"
              visible="true">
@@ -1101,6 +1138,16 @@
          <parameter
                id="atomType"
                value="H">
+         </parameter>
+      </key>
+      <key
+            commandId="net.bioclipse.cdk.jchempaint.manager.action"
+            contextId="net.bioclipse.ui.contexts.JChemPaint"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+A">
+         <parameter
+               id="jcp.manager.method"
+               value="selectAll">
          </parameter>
       </key>
    </extension>
