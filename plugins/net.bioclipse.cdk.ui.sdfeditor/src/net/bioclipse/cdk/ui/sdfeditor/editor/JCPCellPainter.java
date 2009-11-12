@@ -48,7 +48,6 @@ import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.RenderingParameters.AtomShape;
 import org.openscience.cdk.renderer.font.IFontManager;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
-import org.openscience.cdk.renderer.generators.BasicBondGenerator;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
@@ -101,7 +100,7 @@ public class JCPCellPainter implements ICellPainter {
         List<IGenerator> generators = new ArrayList<IGenerator>();
 
         generators.add(extensionGenerator = ChoiceGenerator.getGeneratorsFromExtensionPoint());
-        generators.add(new BasicBondGenerator());
+       // generators.add(new BasicBondGenerator());
         generators.add(new BasicAtomGenerator());
         generators.add(new RingGenerator());
         generators.add(new HighlightAtomGenerator());
