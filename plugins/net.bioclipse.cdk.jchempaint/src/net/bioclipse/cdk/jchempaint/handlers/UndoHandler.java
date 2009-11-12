@@ -1,5 +1,6 @@
 package net.bioclipse.cdk.jchempaint.handlers;
 
+import net.bioclipse.cdk.jchempaint.Activator;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import net.bioclipse.core.util.LogUtils;
 
@@ -12,6 +13,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 
 public class UndoHandler extends AbstractJChemPaintHandler implements IAction {
@@ -120,10 +122,20 @@ public class UndoHandler extends AbstractJChemPaintHandler implements IAction {
 
     public void runWithEvent( Event event ) {
             try {
-                ((JChemPaintEditor)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).undo();
-                ((JChemPaintEditor)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).update();
+                IEditorPart editor = PlatformUI.getWorkbench()
+                                             .getActiveWorkbenchWindow()
+                                             .getActivePage().getActiveEditor();
+                JChemPaintEditor jcpEditor = (JChemPaintEditor) editor
+                                          .getAdapter( JChemPaintEditor.class );
+                if(jcpEditor!=null) {
+                    jcpEditor.undo();
+                    jcpEditor.update();
+                }else {
+                    Logger.getLogger( UndoHandler.class )
+                          .error( "Failed to undo edit" );
+                }
             } catch ( Exception e ) {
-                LogUtils.handleException( e, logger );
+                LogUtils.handleException( e, logger, Activator.PLUGIN_ID );
             }
     }
 
