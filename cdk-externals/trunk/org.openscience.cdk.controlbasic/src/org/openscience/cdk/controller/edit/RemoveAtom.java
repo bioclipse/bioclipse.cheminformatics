@@ -25,6 +25,7 @@ package org.openscience.cdk.controller.edit;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.openscience.cdk.controller.Changed;
@@ -41,6 +42,7 @@ public class RemoveAtom extends AbstractEdit implements IEdit{
     IAtom atomToRemove;
 
     Collection<IAtom> connectedAtoms;
+    Set<IBond> removedBonds;
     
     /**
      * Creates an edit representing the removing of given atom.
@@ -63,17 +65,19 @@ public class RemoveAtom extends AbstractEdit implements IEdit{
         IAtom atom = atomToRemove;
 
         Collection<IAtom> atomsToUpdate = model.getConnectedAtomsList( atom );
+        removedBonds = new HashSet<IBond>();
         connectedAtoms = atomsToUpdate;
 
+        removedBonds.addAll( model.getConnectedBondsList( atom ));
         model.removeAtomAndConnectedElectronContainers( atom );
 
         updateHydrogenCount(atomsToUpdate);
     }
 
     public void undo() {
-        for(IAtom atom:connectedAtoms) {
-            IBond newBond = model.getBuilder().newBond(atom ,atomToRemove);
-            model.addBond( newBond );
+        model.addAtom( atomToRemove );
+        for(IBond bond:removedBonds) {
+            model.addBond( bond );
         }
         Collection<IAtom> atomsToUpdate = new ArrayList<IAtom>(connectedAtoms);
         atomsToUpdate.add( atomToRemove );

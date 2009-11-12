@@ -13,6 +13,7 @@
 package net.bioclipse.cdk.jchempaint.business;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.vecmath.Point2d;
@@ -29,6 +30,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.openscience.cdk.controller.IChemModelRelay;
+import org.openscience.cdk.controller.edit.AppendAtom;
+import org.openscience.cdk.controller.edit.CompositEdit;
+import org.openscience.cdk.controller.edit.RemoveAtom;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -692,18 +696,15 @@ public class JChemPaintManager implements IJChemPaintManager {
         if(editor != null) {
             IChemModelRelay relay = editor.getControllerHub();
             IChemModel model = relay.getIChemModel();
-            List<IAtom> atomsToRemove = new ArrayList<IAtom>();
+            List<RemoveAtom> atomsToRemove = new ArrayList<RemoveAtom>();
             for (IAtomContainer container : ChemModelManipulator
                                             .getAllAtomContainers( model)) {
                 for(IAtom atom: container.atoms()) {
                     if(atom.getSymbol().equals( "H" ))
-                        atomsToRemove.add( atom );
+                        atomsToRemove.add( RemoveAtom.remove( atom) );
                 }
-                for(IAtom atom: atomsToRemove) {
-                    container.removeAtomAndConnectedElectronContainers( atom );
-                }
-                atomsToRemove.clear();
             }
+            relay.execute( CompositEdit.compose( atomsToRemove ) );
             updateView();
         } else {
             Activator.getDefault().getJsConsoleManager()
@@ -718,16 +719,18 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModel model = relay.getIChemModel();
             List<IAtomContainer> containers =
                 ChemModelManipulator.getAllAtomContainers(model);
+            List<AppendAtom> edits = new LinkedList<AppendAtom>();
             for (IAtomContainer container : containers) {
                 for (IAtom atom : container.atoms()) {
                     int hCount = atom.getHydrogenCount() == null ? 0 :
                         atom.getHydrogenCount();
                     for (int i=0; i<hCount; i++) {
-                        addAtom("H", atom);
+                        edits.add( AppendAtom.appendAtom( "H", atom));
                     }
                     atom.setHydrogenCount(0);
                 }
             }
+            relay.execute( CompositEdit.compose( edits ) );
         } else {
             Activator.getDefault().getJsConsoleManager()
                 .say("No opened JChemPaint editor");

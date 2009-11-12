@@ -71,7 +71,7 @@ public class CompositEdit extends AbstractEdit {
      * @param edits list of edits to be compounded.
      * @return edit representing the the compunded edits.
      */
-    public static CompositEdit compose(List<IEdit> edits) {
+    public static CompositEdit compose(List<? extends IEdit> edits) {
         CompositEdit cEdit = new CompositEdit();
         cEdit.edits = new ArrayList<IEdit>( edits );
         return cEdit;
