@@ -21,8 +21,6 @@ package org.openscience.cdk.renderer.selection;
 
 import java.awt.Color;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
