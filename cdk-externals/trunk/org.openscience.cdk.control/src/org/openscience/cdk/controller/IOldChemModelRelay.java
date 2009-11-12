@@ -32,6 +32,7 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.selection.IncrementalSelection;
 
 /**
@@ -61,7 +62,7 @@ public interface IOldChemModelRelay {
      */
     public IAtom getClosestAtom(IAtom atom);
     
-    public void select(IncrementalSelection selection);
+    public void select(IChemObjectSelection selection);
 
     /* Event model */
     public void updateView();
