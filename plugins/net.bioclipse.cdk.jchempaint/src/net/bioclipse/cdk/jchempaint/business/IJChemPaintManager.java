@@ -22,6 +22,7 @@ import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemObject;
 
 /**
  * Manager for the JChemPaintEditor scripting language.
@@ -373,5 +374,14 @@ public interface IJChemPaintManager extends IBioclipseManager {
          methodSummary = "Adds a phenyl ring fused with the given bond."
     )
     public void addPhenyl(IBond bond);
+
+    @Recorded
+    @PublishedMethod ( methodSummary = "Selectes all atoms and bonds" )
+    public void selectAll();
+
+    @Recorded
+    @PublishedMethod ( methodSummary = "Selectes all atoms and bonds tht is connected to the selected element",
+                       params = "IChemObject element")
+    public void selectPart(IChemObject element);
 
 }

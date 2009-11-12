@@ -33,8 +33,13 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IBond.Order;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.selection.IChemObjectSelection;
+import org.openscience.cdk.renderer.selection.LinkedSelection;
+import org.openscience.cdk.renderer.selection.LogicalSelection;
+import org.openscience.cdk.renderer.selection.LogicalSelection.Type;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 /**
@@ -727,5 +732,28 @@ public class JChemPaintManager implements IJChemPaintManager {
             Activator.getDefault().getJsConsoleManager()
                 .say("No opened JChemPaint editor");
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void select(IChemObjectSelection selection) {
+        JChemPaintEditor editor = findActiveEditor();
+        if (editor != null) {
+            IChemModelRelay relay = editor.getControllerHub();
+            relay.select( selection );
+            relay.getRenderModel().setSelection( selection );
+        } else {
+            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+        }
+        updateView();
+    }
+
+    public void selectAll() {
+            LogicalSelection selection = new LogicalSelection(Type.ALL);
+            select( selection );
+    }
+
+    public void selectPart(IChemObject element) {
+        LinkedSelection selection = new LinkedSelection( element );
+        select(selection);
     }
 }
