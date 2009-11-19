@@ -86,6 +86,8 @@ public class AddBondDragModule extends ControllerModuleAdapter {
         isBond = false;
         newSource = false;
         bondLenght = calculateAverageBondLength( getModel() );
+        if(bondLenght == 0 || Double.isNaN( bondLenght ))
+            bondLenght = 1.5;
         IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoord);
         IBond closestBond = chemModelRelay.getClosestBond( worldCoord );
 
