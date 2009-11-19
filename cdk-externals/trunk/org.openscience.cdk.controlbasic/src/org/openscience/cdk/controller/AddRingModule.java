@@ -27,6 +27,7 @@ package org.openscience.cdk.controller;
 import static org.openscience.cdk.controller.MoveModule.calculateMerge;
 import static org.openscience.cdk.geometry.GeometryTools.getBondLengthAverage;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.vecmath.Point2d;
@@ -37,7 +38,6 @@ import org.openscience.cdk.controller.edit.CompositEdit;
 import org.openscience.cdk.controller.edit.CreateRing;
 import org.openscience.cdk.controller.edit.IEdit;
 import org.openscience.cdk.controller.edit.Merge;
-import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IRing;
@@ -69,7 +69,8 @@ public class AddRingModule extends ControllerModuleAdapter {
 
     public void mouseClickedDown(Point2d worldCoord) {
 
-        Map<IAtom,IAtom> mergeMap = chemModelRelay.getRenderer().getRenderer2DModel().getMerge();
+        Map<IAtom,IAtom> mergeMap = new HashMap<IAtom, IAtom>(
+                        chemModelRelay.getRenderModel().getMerge());
 
         // Shift the ring to minimize distortion
         Vector2d shift = MoveModule.calcualteShift( mergeMap );
@@ -82,10 +83,8 @@ public class AddRingModule extends ControllerModuleAdapter {
 
         ring  = null;
         chemModelRelay.clearPhantoms();
+        chemModelRelay.getRenderModel().getMerge().clear();
         chemModelRelay.execute( CompositEdit.compose( ringEdit,mergeEdit ) );
-        chemModelRelay.getRenderer().getRenderer2DModel().getMerge().clear();
-
-		chemModelRelay.updateView();
 	}
 
     private void makeRingAromatic(IRing ring) {
