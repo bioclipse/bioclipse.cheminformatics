@@ -86,28 +86,23 @@ public class AddBondDragModule extends ControllerModuleAdapter {
         isBond = false;
         newSource = false;
         bondLenght = calculateAverageBondLength( getModel() );
-        start = new Point2d(worldCoord);
         IAtom closestAtom = chemModelRelay.getClosestAtom(worldCoord);
         IBond closestBond = chemModelRelay.getClosestBond( worldCoord );
 
         IChemObject singleSelection = getHighlighted( worldCoord,
                                                       closestAtom,
                                                       closestBond );
-
-        if(singleSelection == null || singleSelection instanceof IAtom ) {
-            isBond = false;
-        source =  (IAtom) getHighlighted(worldCoord, closestAtom);
-
-        if(source == null) {
-            source = getBuilder().newAtom( "C", start );
-            newSource = true;
-        }
-        }
-        else if (singleSelection instanceof IBond) {
+        if(singleSelection == null) {
+                source = getBuilder().newAtom( "C", new Point2d(worldCoord) );
+                newSource = true;
+        } else if(singleSelection instanceof IAtom ) {
+            source =  (IAtom) singleSelection;
+        }else  if (singleSelection instanceof IBond) {
+            isBond = true;
             chemModelRelay.execute(cycleBondValence((IBond) singleSelection));
             setSelection(new SingleSelection<IChemObject>(singleSelection));
-            isBond = true;
         }
+        start = new Point2d(source.getPoint2d());
     }
 
     private double calculateAverageBondLength(IAtomContainer ac) {
@@ -162,7 +157,7 @@ public class AddBondDragModule extends ControllerModuleAdapter {
         v.sub( d, s );
         double rad = Math.atan2(v.y,v.x);
         double deg = Math.toDegrees( rad );
-        deg = Math.round( deg/30)*30;
+        deg = Math.round( deg/15)*15;
         rad = Math.toRadians( deg );
         v.x = bondLenght*Math.cos( rad );
         v.y = bondLenght*Math.sin( rad );
