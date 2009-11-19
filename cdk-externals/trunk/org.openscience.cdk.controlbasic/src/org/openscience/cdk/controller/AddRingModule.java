@@ -104,6 +104,7 @@ public class AddRingModule extends ControllerModuleAdapter {
 
         if(ring==null) {
             bondLength = getBondLengthAverage( getModel() );
+            if(Double.isNaN( bondLength ) || bondLength == 0) bondLength = 1.4;
             ring = getModel().getBuilder().newRing(ringSize, "C");
             if(addingBenzene)
                 makeRingAromatic( ring );
