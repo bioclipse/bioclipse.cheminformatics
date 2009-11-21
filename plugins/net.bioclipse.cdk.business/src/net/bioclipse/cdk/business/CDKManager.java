@@ -681,10 +681,19 @@ public class CDKManager implements IBioclipseManager {
             (mol.getResource() instanceof IFile)) {
             IFile oldFile = (IFile)mol.getResource();
             if (oldFile.getContentDescription() == null) {
-                logger.error("Hej, you are running OS/X! You just encountered " +
-                        "a known bug: contentDesc == null for who-knows-what" +
-                        "reason... it works on Linux... So, I am guessing" +
-                        "from the file name. Blah, yuck...");
+                logger.warn(
+                    "Unexpected null value for content description, " +
+                    "when saving to an existing file. Why did Eclipse loose " +
+                    "the content type??"
+                );
+                try {
+                    format = determineIChemFormatOfStream(oldFile.getContents());
+                } catch (IOException exception) {
+                    logger.error(
+                        "Error while determining content type from the " +
+                        "InputStream of an existing IFile", exception
+                    );
+                }
             } else {
                 format = determineFormat(
                     oldFile.getContentDescription().getContentType()
@@ -1864,6 +1873,11 @@ public class CDKManager implements IBioclipseManager {
                          BioclipseException,
                          CoreException {
           saveMolecule(mol, filename, (IChemFormat)MDLV2000Format.getInstance());
+      }
+
+      private IChemFormat determineIChemFormatOfStream(InputStream fileContent)
+      throws IOException {
+          return formatsFactory.guessFormat(fileContent);
       }
 
       public IChemFormat determineIChemFormatOfString(String fileContent)
