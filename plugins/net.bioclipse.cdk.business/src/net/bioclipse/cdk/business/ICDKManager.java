@@ -235,7 +235,8 @@ public interface ICDKManager extends IBioclipseManager {
     	          throws BioclipseException, CoreException;
 
     /**
-     * Save a molecule in same format as loaded
+     * Save a molecule in same format as loaded.
+     *
      * @param mol The molecule to save
      * @param filename Where to save, relative to workspace root
      * @param overwrite If set to true, overwrite if file exists
