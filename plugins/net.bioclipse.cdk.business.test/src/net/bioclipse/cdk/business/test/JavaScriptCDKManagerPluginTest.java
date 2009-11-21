@@ -12,5 +12,6 @@ public class JavaScriptCDKManagerPluginTest
             cdk = Activator.getDefault().getJavaScriptCDKManager();
     	debug = net.bioclipse.cdkdebug.Activator.getDefault()
     	    .getJavaScriptManager();
+        ui = net.bioclipse.ui.business.Activator.getDefault().getJSUIManager();
     }
 }

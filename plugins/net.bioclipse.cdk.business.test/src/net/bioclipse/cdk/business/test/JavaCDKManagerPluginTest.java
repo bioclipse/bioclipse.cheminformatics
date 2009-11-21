@@ -21,6 +21,7 @@ public class JavaCDKManagerPluginTest extends AbstractCDKManagerPluginTest {
     public static void setupCDKManagerPluginTest() throws Exception {
             cdk = Activator.getDefault().getJavaCDKManager();
     	debug = net.bioclipse.cdkdebug.Activator.getDefault().getJavaManager();
+    	ui = net.bioclipse.ui.business.Activator.getDefault().getUIManager();
     }
 
 }

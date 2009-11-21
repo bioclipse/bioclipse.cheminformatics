@@ -50,6 +50,7 @@ import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.jobs.BioclipseUIJob;
+import net.bioclipse.ui.business.IUIManager;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -104,6 +105,7 @@ public abstract class AbstractCDKManagerPluginTest {
     
     protected static ICDKManager      cdk;
     protected static ICDKDebugManager debug;
+    protected static IUIManager       ui;
     
     @Test
     public void testLoadMoleculeFromCMLFile() throws IOException, 
@@ -1399,13 +1401,10 @@ public abstract class AbstractCDKManagerPluginTest {
         mols.add(mol);
         String path = "/Virtual/testPropateProps" + mol.hashCode() + ".sdf";
         cdk.saveSDFile(path, mols);
-        byte[] bytes=new byte[1000];
-        IFile file= ResourcePathTransformer.getInstance()
-           .transform(path);
-        file.getContents().read(bytes);
-        StringBuffer sb=new StringBuffer();
-        for(int i=0;i<bytes.length;i++){
-            sb.append((char)bytes[i]);
+        String[] content = ui.readFileIntoArray(path);
+        StringBuffer sb = new StringBuffer();
+        for(int i=0;i<content.length;i++){
+            sb.append(content[i]);
         }
         assertTrue(sb.toString().contains("whoopsie"));
         assertTrue(sb.toString().contains("daisy"));
