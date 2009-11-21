@@ -212,7 +212,7 @@ public abstract class AbstractCDKManagerPluginTest {
         	if (mol.getName().equals("1")){
                 ICDKMolecule smilesMol1 = cdk.fromSMILES("C(=O)N(Cc1ccco1)C(c1cc2ccccc2cc1)C(=O)NCc1ccccc1");
                 double expm=cdk.calculateMass(smilesMol1);
-                assertEquals(expm, cdk.calculateMass(mol));
+                assertEquals(expm, cdk.calculateMass(mol), 0.001);
                 assertTrue(cdk.fingerPrintMatches(smilesMol1, mol));
         	}
 
