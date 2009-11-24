@@ -40,6 +40,14 @@ public class MergeAtomsGenerator extends BasicAtomGenerator
 
     public MergeAtomsGenerator() {}
 
+    private boolean isNAN(Point2d... point) {
+        for(Point2d p: point) {
+            if(Double.isNaN( p.x ) || Double.isNaN( p.y ))
+                return true;
+        }
+        return false;
+    }
+
     public IRenderingElement generate(IAtomContainer ac, RendererModel model) {
     	ElementGroup selectionElements = new ElementGroup();
     	double radius = model.getHighlightDistance() / model.getScale();
@@ -47,6 +55,7 @@ public class MergeAtomsGenerator extends BasicAtomGenerator
     	for(IAtom atom : model.getMerge().keySet()){
     		Point2d p1 = atom.getPoint2d();
     		Point2d p2 = model.getMerge().get( atom ).getPoint2d();
+    		if(isNAN( p1,p2 )) break;
 
             // the element size has to be scaled to model space
             // so that it can be scaled back to screen space...
