@@ -70,7 +70,7 @@ public class LinkedSelection implements IChemObjectSelection {
     }
 
     public IAtomContainer getConnectedAtomContainer() {
-        return selected;
+        return selected.getBuilder().newAtomContainer( selected );
     }
 
     public boolean isFilled() {
