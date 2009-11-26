@@ -59,7 +59,7 @@ public class JmolListener implements JmolStatusListener,
     }
 
     public void showUrl(String url) {
-        Activator.getDefault().getJsConsoleManager().print("Show URL: " + url);
+        Activator.getDefault().getJavaJsConsoleManager().print("Show URL: " + url);
     }
 
     public void showConsole(boolean showConsole) {
@@ -117,7 +117,7 @@ public class JmolListener implements JmolStatusListener,
                      o instanceof String && 
                      ( (String)o ).contains( "ERROR:" ) ) {
                        Activator.getDefault()
-                                .getJsConsoleManager().say( (String)o );
+                                .getJavaJsConsoleManager().say( (String)o );
                        repportErrorToJS = false;
                    }
             }
