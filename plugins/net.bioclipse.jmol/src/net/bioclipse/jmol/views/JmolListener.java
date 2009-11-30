@@ -59,7 +59,8 @@ public class JmolListener implements JmolStatusListener,
     }
 
     public void showUrl(String url) {
-        Activator.getDefault().getJavaJsConsoleManager().print("Show URL: " + url);
+        Activator.getDefault().getJavaJsConsoleManager()
+                              .print("Show URL: " + url);
     }
 
     public void showConsole(boolean showConsole) {

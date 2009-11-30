@@ -159,6 +159,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             relay.removeAtom(atom);
         } else {
             say("No opened JChemPaint editor");
+                                  .say("No opened JChemPaint editor");
         }
         updateView();
     }
