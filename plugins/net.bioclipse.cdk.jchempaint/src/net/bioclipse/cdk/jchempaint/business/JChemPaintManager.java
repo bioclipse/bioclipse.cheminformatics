@@ -74,7 +74,7 @@ public class JChemPaintManager implements IJChemPaintManager {
     }
 
     private void say(String message) {
-        Activator.getDefault().getJavaJsConsoleManager();
+        Activator.getDefault().getJavaJsConsoleManager().say(message);
     }
     
     private JChemPaintEditor findActiveEditor() {
@@ -159,7 +159,6 @@ public class JChemPaintManager implements IJChemPaintManager {
             relay.removeAtom(atom);
         } else {
             say("No opened JChemPaint editor");
-                                  .say("No opened JChemPaint editor");
         }
         updateView();
     }
