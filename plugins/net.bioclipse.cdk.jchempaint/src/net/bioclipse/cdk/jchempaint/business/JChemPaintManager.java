@@ -22,10 +22,13 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.managers.business.IBioclipseManager;
 import net.bioclipse.scripting.ui.Activator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
@@ -49,7 +52,7 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 /**
  * @author egonw
  */
-public class JChemPaintManager implements IJChemPaintManager {
+public class JChemPaintManager implements IBioclipseManager {
 
     /** Not to be used by manager method directly, but is just needed for the syncRun() call. */
     private JChemPaintEditor jcpEditor;
@@ -327,16 +330,26 @@ public class JChemPaintManager implements IJChemPaintManager {
         updateView();
     }
 
-    public void cleanup() {
+    public void cleanup(IProgressMonitor monitor) throws BioclipseException{
         final JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
+            monitor.beginTask( "Cleaning up of structure", IProgressMonitor.UNKNOWN );
             IChemModelRelay relay = editor.getControllerHub();
-            relay.cleanup();
+            try{
+                relay.cleanup();
+            } catch (NullPointerException e) {
+                throw new BioclipseException(
+                    "You seem to have run into bug 950 we are aware of this "+
+                    "problem and are working on a solution. One cause of this "+
+                    "exception could be free hydrogen molecules in the model",
+                    e );
+            }
             PlatformUI.getWorkbench().getDisplay().syncExec( new Runnable() {
                 public void run() {
                     editor.getWidget().reset();
                 }
             });
+            monitor.done();
         } else {
             say("No opened JChemPaint editor");
         }
