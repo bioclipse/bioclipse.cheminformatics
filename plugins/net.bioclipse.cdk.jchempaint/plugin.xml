@@ -1006,7 +1006,8 @@
         <with
               variable="activeMenuSelection">
            <iterate
-                 ifEmpty="false">
+                 ifEmpty="false"
+                 operator="or">
               <instanceof
                     value="net.bioclipse.cdk.jchempaint.outline.StructureContentProvider$CDKAtomChemObject">
               </instanceof>
@@ -1018,7 +1019,8 @@
         <with
               variable="activeMenuSelection">
            <iterate
-                 ifEmpty="false">
+                 ifEmpty="false"
+                 operator="or">
               <instanceof
                     value="net.bioclipse.cdk.jchempaint.outline.StructureContentProvider$CDKBondChemObject">
               </instanceof>
