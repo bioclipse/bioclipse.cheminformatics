@@ -66,7 +66,12 @@ public class MergeAtomsGenerator extends BasicAtomGenerator
     		vec.sub( p2, p1 );
 
     		Vector2d per = GeometryTools.calculatePerpendicularUnitVector( p1, p2 );
-    		per.scale( radius );
+    		if(vec.lengthSquared()<1E-6) {
+    		    vec= new Vector2d(radius,0);
+    		    per = new Vector2d(0,radius);
+    		}else
+    		    per.scale( radius );
+
     		Vector2d per2 = new Vector2d();
     		per2.scale( -1 ,per);
 
