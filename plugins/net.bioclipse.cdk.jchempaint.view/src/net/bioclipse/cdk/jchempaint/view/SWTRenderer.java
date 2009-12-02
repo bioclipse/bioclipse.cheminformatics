@@ -448,7 +448,7 @@ public class SWTRenderer implements IDrawVisitor{
 
         for(org.openscience.cdk.renderer.elements.path.PathElement e:element.elements) {
             float[] v = transform( e.points());
-
+            for(float f:v) assert(!Float.isNaN( f ));
             switch ( e.type() ) {
                 case MoveTo: path.moveTo( v[0],v[1] );break;
                 case LineTo: path.lineTo( v[0], v[1] );break;
