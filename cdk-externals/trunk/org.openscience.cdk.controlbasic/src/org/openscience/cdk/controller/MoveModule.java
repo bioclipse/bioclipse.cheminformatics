@@ -51,7 +51,8 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.renderer.RendererModel;
-import org.openscience.cdk.tools.LoggingTool;
+import org.openscience.cdk.tools.ILoggingTool;
+import org.openscience.cdk.tools.LoggingToolFactory;
 
 /**
  * Module to move around a selection of atoms and bonds
@@ -62,7 +63,8 @@ import org.openscience.cdk.tools.LoggingTool;
  */
 public class MoveModule extends ControllerModuleAdapter {
 
-    private LoggingTool logger = new LoggingTool(MoveModule.class);
+    private ILoggingTool logger =
+        LoggingToolFactory.createLoggingTool(MoveModule.class);
 
     private Vector2d offset;
 

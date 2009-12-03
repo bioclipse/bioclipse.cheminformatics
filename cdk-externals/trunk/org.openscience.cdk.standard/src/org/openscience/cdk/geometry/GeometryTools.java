@@ -47,9 +47,10 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.interfaces.IRingSet;
-import org.openscience.cdk.tools.LoggingTool;
+import org.openscience.cdk.tools.ILoggingTool;
+import org.openscience.cdk.tools.LoggingToolFactory;
+import org.openscience.cdk.tools.manipulator.ReactionManipulator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
-
 /**
  * A set of static utility classes for geometric calculations and operations.
  * This class is extensively used, for example, by JChemPaint to edit molecule.
@@ -67,7 +68,8 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
  */
 public class GeometryTools {
 
-	private static LoggingTool logger = new LoggingTool(GeometryTools.class);
+	private static ILoggingTool logger =
+        LoggingToolFactory.createLoggingTool(GeometryTools.class);
 
 	/**
 	 *  Adds an automatically calculated offset to the coordinates of all atoms
@@ -288,6 +290,19 @@ public class GeometryTools {
 		return new Dimension((int) (maxX - minX + 1), (int) (maxY - minY + 1));
 	}
 
+	/**
+	 * Returns the 2D rectangle spanning the space occupied by the atom
+	 * container.
+	 *
+	 * @param  container {@link IAtomContainer} to calculate the rectangle for
+	 * @return           a {@link Rectangle2D} describing the space occupied
+	 */
+	public static Rectangle2D getRectangle2D(IAtomContainer container) {
+	    double[] minmax = getMinMax(container);
+	    return new Rectangle2D.Double(
+	        minmax[0], minmax[1], minmax[2] - minmax[0], minmax[3] - minmax[1]
+	    );
+	}
 
 	/**
 	 *  Returns the minimum and maximum X and Y coordinates of the atoms in the
@@ -682,23 +697,54 @@ public class GeometryTools {
     /**
      * Returns the atom of the given molecule that is closest to the given atom
      * (excluding itself).
-     * 
-     *@param atomCon
-     *            The molecule that is searched for the closest atom
-     *@param atom
-     *            The atom to search around
-     *@return The atom that is closest to the given coordinates
+     *
+     * @param atomCon The molecule that is searched for the closest atom
+     * @param atom    The atom to search around
+     * @return        The atom that is closest to the given coordinates
      */
 	public static IAtom getClosestAtom(IAtomContainer atomCon, IAtom atom) {
 		IAtom closestAtom = null;
-		double min = -1;
+		double min = Double.MAX_VALUE;
 		Point2d atomPosition = atom.getPoint2d();
 		for (int i = 0; i < atomCon.getAtomCount(); i++) {
 			IAtom currentAtom = atomCon.getAtom(i);
 			if (currentAtom != atom) {
 				double d = atomPosition.distance(currentAtom.getPoint2d());
-				if (d < min || min == -1) {
+				if (d < min) {
 					min = d;
+					closestAtom = currentAtom;
+				}
+			}
+		}
+		return closestAtom;
+	}
+
+	/**
+	 *  Returns the atom of the given molecule that is closest to the given
+	 *  coordinates and is not the atom.
+	 *  See comment for center(IAtomContainer atomCon, Dimension areaDim, HashMap renderingCoordinates) for details on coordinate sets
+	 *
+	 *@param  xPosition  The x coordinate
+	 *@param  yPosition  The y coordinate
+	 *@param  atomCon    The molecule that is searched for the closest atom
+	 *@param toignore    This molecule will not be returned.
+	 *@return            The atom that is closest to the given coordinates
+	 */
+	public static IAtom getClosestAtom(double xPosition, double yPosition, IAtomContainer atomCon, IAtom toignore) {
+		IAtom closestAtom = null;
+		IAtom currentAtom;
+		double smallestMouseDistance = -1;
+		double mouseDistance;
+		double atomX;
+		double atomY;
+		for (int i = 0; i < atomCon.getAtomCount(); i++) {
+			currentAtom = atomCon.getAtom(i);
+			if(currentAtom!=toignore){
+				atomX = currentAtom.getPoint2d().x;
+				atomY = currentAtom.getPoint2d().y;
+				mouseDistance = Math.sqrt(Math.pow(atomX - xPosition, 2) + Math.pow(atomY - yPosition, 2));
+				if (mouseDistance < smallestMouseDistance || smallestMouseDistance == -1) {
+					smallestMouseDistance = mouseDistance;
 					closestAtom = currentAtom;
 				}
 			}
@@ -1456,53 +1502,56 @@ public class GeometryTools {
         }
 		return bondLengthSum / bondCounter;
 	}
-	
-	
+
     /**
-     * Shift the container so that it does not overlap with the previous.
-     * XXX this is a very crude layout technique!
-     * @param container the atom container to shift
-     * @param bounds the bounds of the atom container to shift
-     * @param last the bounds of the last atom container
+     * Shift the container horizontally to the right to make its bounds not
+     * overlap with the other bounds.
+     *
+     * @param container the {@link IAtomContainer} to shift to the right
+     * @param bounds    the {@link Rectangle2D} of the {@link IAtomContainer}
+     *                  to shift
+     * @param last      the bounds that is used as reference
+     * @param gap       the gap between the two {@link Rectangle2D}s
+     * @return          the {@link Rectangle2D} of the {@link IAtomContainer}
+     *                  after the shift
      */
     public static Rectangle2D shiftContainer(
-            IAtomContainer container, Rectangle2D bounds, Rectangle2D last, double gap) {
-
-        if (bounds.intersects(last)) {
-
-            // XXX always displace across width - could be improved
-            double d = bounds.getWidth() + last.getWidth() + gap;
-
-            Point2d p = new Point2d(last.getCenterX() + d, last.getCenterY());
-            GeometryTools.translate2DCenterTo(container, p);
-            return new Rectangle2D.Double(bounds.getX() + d,
+        IAtomContainer container, Rectangle2D bounds, Rectangle2D last,
+        double gap) {
+        // determine if the containers are overlapping
+        if (last.getMaxX() + gap >= bounds.getMinX()) {
+            double xShift = bounds.getWidth() + last.getWidth() + gap;
+            Vector2d shift = new Vector2d(xShift, 0.0);
+            GeometryTools.translate2D(container, shift);
+            return new Rectangle2D.Double(bounds.getX() + xShift,
                                           bounds.getY(),
                                           bounds.getWidth(),
                                           bounds.getHeight());
         } else {
+            // the containers are not overlapping
             return bounds;
         }
     }
 
     /*
-     *  An average of all 2D bond length values of all products and reactants is produced. Bonds wh$
-     *  Atom's with no coordinates are disregarded.
-     *  See comment for center(IAtomContainer atomCon, Dimension areaDim, HashMap renderingCoordina$
+     * Returns the average 2D bond length values of all products and reactants
+     * of the given reaction. The method uses
+     * {@link #getBondLengthAverage(IAtomContainer)} internally.
      *
-     *@param  reaction  The Reaction for which the average bond length is to be
-     *      calculated
-     *@return     the average bond length
+     * @param  reaction  The IReaction for which the average 2D bond length is
+     *                   calculated
+     * @return           the average 2D bond length
+     *
+     * @see #getBondLengthAverage(IAtomContainer)
      */
     public static double getBondLengthAverage(IReaction reaction) {
-    	double bondlenghtsum=0;
-    	int containercount=0;
-    	for(IAtomContainer container : reaction.getReactants().atomContainers()){
+    	double bondlenghtsum = 0.0;
+    	int containercount = 0;
+    	List<IAtomContainer> containers = ReactionManipulator.
+    	    getAllAtomContainers(reaction);
+    	for (IAtomContainer container : containers) {
     		containercount++;
-    		bondlenghtsum+=getBondLengthAverage(container);
-    	}
-    	for(IAtomContainer container : reaction.getProducts().atomContainers()){
-    		containercount++;
-    		bondlenghtsum+=getBondLengthAverage(container);
+    		bondlenghtsum += getBondLengthAverage(container);
     	}
     	return bondlenghtsum/containercount;
     }
@@ -1526,30 +1575,33 @@ public class GeometryTools {
 
 
     /**
-     * Shift the containers in a rection vertically so that the reaction does not overlap with the pre$
+     * Shift the containers in a reaction vertically upwards to not overlap
+     * with the reference Rectangle2D. The shift is such that the given
+     * gap is realized, but only if the reactions are actually overlapping.
+     *
      * @param reaction the reaction to shift
-     * @param bounds the bounds of the reaction to shift
-     * @param last the bounds of the last reaction
+     * @param bounds   the bounds of the reaction to shift
+     * @param last     the bounds of the last reaction
+     * @return         the Rectangle2D of the shifted reaction
      */
     public static Rectangle2D shiftReactionVertical(
-    		IReaction reaction, Rectangle2D bounds, Rectangle2D last, double gap) {
-    	if (bounds.intersects(last)) {
-    		double d = bounds.getHeight() + last.getHeight() + gap;
-    		for(IAtomContainer container : reaction.getReactants().atomContainers()){
-    			for(IAtom atom: container.atoms()){
-    				atom.setPoint2d(new Point2d(atom.getPoint2d().x,atom.getPoint2d().y+d));
-    			}
-    		}
-    		for(IAtomContainer container : reaction.getProducts().atomContainers()){
-    			for(IAtom atom: container.atoms()){
-    				atom.setPoint2d(new Point2d(atom.getPoint2d().x,atom.getPoint2d().y+d));
-    			}
+    		IReaction reaction, Rectangle2D bounds, Rectangle2D last,
+    		double gap) {
+        // determine if the reactions are overlapping
+    	if (last.getMaxY() + gap >= bounds.getMinY()) {
+    		double yShift = bounds.getHeight() + last.getHeight() + gap;
+            Vector2d shift = new Vector2d(0, yShift);
+    		List<IAtomContainer> containers = ReactionManipulator.
+    		    getAllAtomContainers(reaction);
+    		for (IAtomContainer container : containers) {
+    		    translate2D(container, shift);
     		}
     		return new Rectangle2D.Double(bounds.getX(),
-    				bounds.getY() + d,
+    				bounds.getY() + yShift,
     				bounds.getWidth(),
     				bounds.getHeight());
     	} else {
+    	    // the reactions were not overlapping
     		return bounds;
     	}
     }

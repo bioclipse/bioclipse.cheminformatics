@@ -46,6 +46,7 @@ org.openscience.cdk.qsar.descriptors.molecular.LongestAliphaticChainDescriptor
 org.openscience.cdk.qsar.descriptors.molecular.AromaticAtomsCountDescriptor
 org.openscience.cdk.qsar.descriptors.molecular.XLogPDescriptor
 org.openscience.cdk.qsar.descriptors.molecular.APolDescriptor
+org.openscience.cdk.qsar.descriptors.molecular.MannholdLogPDescriptor
 org.openscience.cdk.qsar.descriptors.molecular.AtomCountDescriptor
 org.openscience.cdk.qsar.descriptors.molecular.AutocorrelationDescriptorCharge
 org.openscience.cdk.qsar.descriptors.molecular.HBondDonorCountDescriptor

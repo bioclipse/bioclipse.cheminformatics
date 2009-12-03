@@ -1,4 +1,5 @@
 /*  Copyright (C) 2009  Gilleain Torrance <gilleain@users.sf.net>
+ *                2009  Arvid Berg <goglepox@users.sourceforge.net>
  *
  *  Contact: cdk-devel@lists.sourceforge.net
  *
@@ -27,7 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.vecmath.Point2d;
-import javax.vecmath.Vector2d;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -43,7 +43,8 @@ import org.openscience.cdk.renderer.generators.parameter.AbstractGeneratorParame
  */
 public class AtomNumberGenerator implements IGenerator {
 
-    public static class AtomNumberTextColor extends AbstractGeneratorParameter<Color> {
+    public static class AtomNumberTextColor extends
+        AbstractGeneratorParameter<Color> {
         public Color getDefault() {
             return Color.BLACK;
         }
@@ -51,36 +52,21 @@ public class AtomNumberGenerator implements IGenerator {
 
     private IGeneratorParameter<Color> textColor = new AtomNumberTextColor();
 
-    Vector2d offset;
-
-	public AtomNumberGenerator() {
-	    offset = new Vector2d();
-	}
-
-	/**
-	 * Allows for drawing the atom number offset from the atom position.
-	 * @param offset vector in screen space.
-	 */
-	public AtomNumberGenerator(Vector2d offset) {
-	    this.offset = new Vector2d(offset);
-	}
+        public AtomNumberGenerator() {}
 
 	public IRenderingElement generate(IAtomContainer ac, RendererModel model) {
 		ElementGroup numbers = new ElementGroup();
 		if (!model.drawNumbers()) return numbers;
 
-		Vector2d offset = new Vector2d(this.offset.x,-this.offset.y);
-		offset.scale( 1/model.getScale() );
-
 		int number = 1;
 		for (IAtom atom : ac.atoms()) {
-			Point2d p = new Point2d(atom.getPoint2d());
-			p.add( offset );
+			Point2d p = atom.getPoint2d();
 			numbers.add(
-					new TextElement( p.x, p.y,
-					                 String.valueOf(number),
-					                 textColor.getValue()
-					                ));
+					new TextElement(
+						p.x, p.y, String.valueOf(number),
+						textColor.getValue()
+				    )
+			);
 			number++;
 		}
 		return numbers;
@@ -89,6 +75,5 @@ public class AtomNumberGenerator implements IGenerator {
     public List<IGeneratorParameter<?>> getParameters() {
         return Arrays.asList( new IGeneratorParameter<?>[] {textColor} );
     }
-
 
 }

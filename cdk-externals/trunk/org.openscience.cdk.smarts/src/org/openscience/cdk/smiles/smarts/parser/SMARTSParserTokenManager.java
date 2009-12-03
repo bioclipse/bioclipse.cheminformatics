@@ -21,7 +21,6 @@
  * Foundation, 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  * (or see http://www.gnu.org/copyleft/lesser.html)
  */
-
 package org.openscience.cdk.smiles.smarts.parser;
 
 /** 
@@ -32,7 +31,6 @@ import java.io.StringReader;
 import java.util.Stack;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.isomorphism.matchers.QueryAtomContainer;
-import org.openscience.cdk.tools.LoggingTool;
 
 public class SMARTSParserTokenManager implements SMARTSParserConstants
 {
