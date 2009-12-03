@@ -48,6 +48,7 @@ import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.IGeneratorParameter;
+import org.openscience.cdk.renderer.generators.RadicalGenerator;
 import org.openscience.cdk.renderer.generators.RingGenerator;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator.AtomNumberTextColor;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
@@ -171,6 +172,7 @@ public class JChemPaintWidget extends Canvas {
         //generatorList.add( new AtomContainerBoundsGenerator() );
         generatorList.add( new RingGenerator() );
         generatorList.add( new BasicAtomGenerator());
+        generatorList.add( new RadicalGenerator());
         generatorList.add( new HighlightAtomGenerator() );
         generatorList.add( new HighlightBondGenerator() );
 
