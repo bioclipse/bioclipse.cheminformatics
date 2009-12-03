@@ -44,7 +44,8 @@ import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.interfaces.IRingSet;
 import org.openscience.cdk.ringsearch.RingPartitioner;
 import org.openscience.cdk.ringsearch.SSSRFinder;
-import org.openscience.cdk.tools.LoggingTool;
+import org.openscience.cdk.tools.ILoggingTool;
+import org.openscience.cdk.tools.LoggingToolFactory;
 import org.openscience.cdk.tools.manipulator.AtomContainerSetManipulator;
 import org.openscience.cdk.tools.manipulator.RingSetManipulator;
 
@@ -79,7 +80,8 @@ import org.openscience.cdk.tools.manipulator.RingSetManipulator;
 public class StructureDiagramGenerator
 {
 
-	private LoggingTool logger = new LoggingTool(StructureDiagramGenerator.class);
+	private ILoggingTool logger =
+        LoggingToolFactory.createLoggingTool(StructureDiagramGenerator.class);
 
 	private static TemplateHandler DEFAULT_TEMPLATE_HANDLER = null;
 
@@ -493,10 +495,10 @@ public class StructureDiagramGenerator
 			/*
 			 * Find mapped substructures
 			 */
-			for (Iterator substructureIterator = mappedSubstructures.atomContainers().iterator(); substructureIterator.hasNext(); ) {
+			for (Iterator<IAtomContainer> substructureIterator = mappedSubstructures.atomContainers().iterator(); substructureIterator.hasNext(); ) {
 				IAtomContainer substructure = (IAtomContainer) substructureIterator.next();
 				boolean substructureMapped = false;
-				for (Iterator ringSetIterator = rs.atomContainers().iterator(); ringSetIterator.hasNext() && !substructureMapped; ) {
+				for (Iterator<IAtomContainer> ringSetIterator = rs.atomContainers().iterator(); ringSetIterator.hasNext() && !substructureMapped; ) {
 					IRing ring = (IRing) ringSetIterator.next();
 					for (Iterator atomIterator = ring.atoms().iterator(); atomIterator.hasNext() && !substructureMapped; ) {
 						IAtom atom = (IAtom) atomIterator.next();

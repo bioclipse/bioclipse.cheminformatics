@@ -2,7 +2,7 @@
 <feature
       id="net.bioclipse.chemoinformatics_feature"
       label="Bioclipse Chemoinformatics"
-      version="2.2.0.RC1"
+      version="2.2.0.RC2"
       provider-name="The Bioclipse Team"
       plugin="net.bioclipse.chemoinformatics">
 
@@ -27,7 +27,7 @@ The Eclipse Public License accompanies this distribution, and is available at ht
    </url>
 
    <requires>
-      <import feature="net.bioclipse.core_feature" version="2.2.0.RC1" match="greaterOrEqual"/>
+      <import feature="net.bioclipse.core_feature" version="2.2.0.RC2" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -529,6 +529,13 @@ The Eclipse Public License accompanies this distribution, and is available at ht
 
    <plugin
          id="org.openscience.cdk.renderextra"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openscience.cdk.log4j"
          download-size="0"
          install-size="0"
          version="0.0.0"

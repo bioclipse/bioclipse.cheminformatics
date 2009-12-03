@@ -156,7 +156,8 @@ public class SWTRenderer implements IDrawVisitor{
         int oldLineWidth = gc.getLineWidth();
         // init recursion with background to get the first draw with foreground
         setForeground( element.color );
-        gc.setLineWidth( (element.width<1?1:(int)element.width) );
+        double bondWidth = scaleX(element.width);
+        gc.setLineWidth( (int) (bondWidth<1?1:bondWidth) );
         drawLine( element );
 
         gc.setLineWidth( oldLineWidth );

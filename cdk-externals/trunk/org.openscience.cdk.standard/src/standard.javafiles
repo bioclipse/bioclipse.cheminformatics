@@ -30,6 +30,7 @@ org/openscience/cdk/tools/manipulator/RingSizeComparator.java
 org/openscience/cdk/tools/manipulator/AminoAcidManipulator.java
 org/openscience/cdk/tools/manipulator/ChemModelManipulator.java
 org/openscience/cdk/tools/manipulator/AtomContainerManipulator.java
+org/openscience/cdk/tools/manipulator/AtomContainerComparatorBy2DCenter.java
 org/openscience/cdk/tools/manipulator/ReactionSetManipulator.java
 org/openscience/cdk/tools/manipulator/ReactionSchemeManipulator.java
 org/openscience/cdk/tools/manipulator/ChemFileManipulator.java

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDK plugin
 Bundle-SymbolicName: org.openscience.cdk.reaction;singleton:=true
-Bundle-Version: 1.3.0.0bioclipse5
+Bundle-Version: 1.3.1.0bioclipse2
 Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openscience.cdk.reaction.Activator
@@ -20,7 +20,6 @@ Require-Bundle: org.openscience.cdk.annotation,
  javax.vecmath,
  net.bioclipse.xom,
  org.eclipse.core.runtime
-Import-Package: org.apache.log4j
 Export-Package: org.openscience.cdk.graph.invariant,
  org.openscience.cdk.tools,
  org.openscience.cdk.reaction,

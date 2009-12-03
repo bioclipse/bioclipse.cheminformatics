@@ -31,8 +31,9 @@ package org.openscience.cdk.graph;
 
 import java.util.Iterator;
 
-import org.openscience.cdk.AtomContainer;
-import org.openscience.cdk.tools.LoggingTool;
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.tools.ILoggingTool;
+import org.openscience.cdk.tools.LoggingToolFactory;
 
 /**
  * The permutation code here is based on a pseudo code example 
@@ -44,19 +45,21 @@ import org.openscience.cdk.tools.LoggingTool;
  *@cdk.created    2005-05-04
  *@cdk.keyword    permutation
  */
-public abstract class AtomContainerPermutor implements Iterator
-{
+public abstract class AtomContainerPermutor
+    implements Iterator<IAtomContainer> {
+
 	final static boolean debug = true;
 	static int debugCounter = 0;
 	int N, i, j;
 	int[] bookkeeping;
 	Object[] objects;
 	
-	private static LoggingTool logger = new LoggingTool(AtomContainerPermutor.class);
+	private static ILoggingTool logger =
+        LoggingToolFactory.createLoggingTool(AtomContainerPermutor.class);
 
-	AtomContainer atomContainer;
+	IAtomContainer atomContainer;
 	
-	public void setAtomContainer(AtomContainer ac)
+	public void setAtomContainer(IAtomContainer ac)
 	{
 		this.atomContainer = ac;
 	}
@@ -72,7 +75,7 @@ public abstract class AtomContainerPermutor implements Iterator
 		
 	}
 	
-	public Object next()
+	public IAtomContainer next()
 	{
 		bookkeeping[i] = bookkeeping[i] - 1;
 		if (isOdd(i)) j = bookkeeping[i];
@@ -111,7 +114,7 @@ public abstract class AtomContainerPermutor implements Iterator
 		//
 	}
 	
-	AtomContainer makeResult()
+	IAtomContainer makeResult()
 	{
 		return null;
 	}

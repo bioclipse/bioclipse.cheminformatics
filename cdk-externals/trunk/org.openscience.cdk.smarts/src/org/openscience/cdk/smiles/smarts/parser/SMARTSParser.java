@@ -21,7 +21,6 @@
  * Foundation, 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  * (or see http://www.gnu.org/copyleft/lesser.html)
  */
-
 package org.openscience.cdk.smiles.smarts.parser;
 
 /** 
@@ -34,7 +33,6 @@ import java.util.Stack;
 
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.isomorphism.matchers.QueryAtomContainer;
-import org.openscience.cdk.tools.LoggingTool;
 
 /**
  * This parser implements a nearly complete subset of the SMARTS syntax as defined on
@@ -555,7 +553,7 @@ public class SMARTSParser/*@bgen(jjtree)*/implements SMARTSParserTreeConstants, 
           ;
         }
         LowAndExpression();
-                                if (massNode != null) { // insert AtomicMass node into expression
+                                if (massNode != null) { // insert AtomicMass node into expression       
                                         ASTLowAndExpression topNode = (ASTLowAndExpression)jjtree.popNode();
                                         topNode.insertLeafChild(massNode);
                                         jjtree.pushNode(topNode);
@@ -573,7 +571,13 @@ public class SMARTSParser/*@bgen(jjtree)*/implements SMARTSParserTreeConstants, 
                                 if ( (rightBracket.beginColumn - HToken.endColumn) == 1) {
                                         jjtree.popNode();
                                         ASTExplicitAtom explicitAtom = new ASTExplicitAtom(JJTEXPLICITATOM);
-                                                explicitAtom.setSymbol("H");
+                        if (massNode!= null) {
+                                                    if (massNode.getMass() == 2) explicitAtom.setSymbol("D");
+                                                    else if (massNode.getMass() == 3) explicitAtom.setSymbol("T");
+                                                    else if (massNode.getMass() == 1) explicitAtom.setSymbol("H");
+                                                    } else {
+                                                      explicitAtom.setSymbol("H");
+                                                    }
                                                 jjtree.pushNode(explicitAtom);
                                 }
                         }
@@ -2726,21 +2730,6 @@ public class SMARTSParser/*@bgen(jjtree)*/implements SMARTSParserTreeConstants, 
     finally { jj_save(2, xla); }
   }
 
-  final private boolean jj_3R_17() {
-    Token xsp;
-    if (jj_3R_18()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_18()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  final private boolean jj_3_1() {
-    if (jj_scan_token(S_BOND)) return true;
-    return false;
-  }
-
   final private boolean jj_3_2() {
     if (jj_scan_token(149)) return true;
     Token xsp;
@@ -2756,6 +2745,21 @@ public class SMARTSParser/*@bgen(jjtree)*/implements SMARTSParserTreeConstants, 
 
   final private boolean jj_3R_18() {
     if (jj_scan_token(DIGIT)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_17() {
+    Token xsp;
+    if (jj_3R_18()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_18()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  final private boolean jj_3_1() {
+    if (jj_scan_token(S_BOND)) return true;
     return false;
   }
 

@@ -1,8 +1,10 @@
 org/openscience/cdk/graph/matrix/AdjacencyMatrix.java
 org/openscience/cdk/graph/PathTools.java
 org/openscience/cdk/graph/SpanningTree.java
+org/openscience/cdk/tools/SystemOutLoggingTool.java
 org/openscience/cdk/tools/manipulator/BondManipulator.java
-org/openscience/cdk/tools/LoggingTool.java
+org/openscience/cdk/tools/ILoggingTool.java
+org/openscience/cdk/tools/LoggingToolFactory.java
 org/openscience/cdk/fingerprint/IFingerprinter.java
 org/openscience/cdk/CDKConstants.java
 org/openscience/cdk/config/CDKBasedAtomTypeConfigurator.java

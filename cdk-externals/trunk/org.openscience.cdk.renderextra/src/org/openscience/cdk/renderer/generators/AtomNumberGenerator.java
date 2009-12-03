@@ -1,4 +1,5 @@
 /*  Copyright (C) 2009  Gilleain Torrance <gilleain@users.sf.net>
+ *                2009  Arvid Berg <goglepox@users.sourceforge.net>
  *
  *  Contact: cdk-devel@lists.sourceforge.net
  *
@@ -43,7 +44,8 @@ import org.openscience.cdk.renderer.generators.parameter.AbstractGeneratorParame
  */
 public class AtomNumberGenerator implements IGenerator {
 
-    public static class AtomNumberTextColor extends AbstractGeneratorParameter<Color> {
+    public static class AtomNumberTextColor extends
+        AbstractGeneratorParameter<Color> {
         public Color getDefault() {
             return Color.BLACK;
         }
@@ -77,10 +79,11 @@ public class AtomNumberGenerator implements IGenerator {
 			Point2d p = new Point2d(atom.getPoint2d());
 			p.add( offset );
 			numbers.add(
-					new TextElement( p.x, p.y,
-					                 String.valueOf(number),
-					                 textColor.getValue()
-					                ));
+					new TextElement(
+						p.x, p.y, String.valueOf(number),
+						textColor.getValue()
+				    )
+			);
 			number++;
 		}
 		return numbers;
@@ -89,6 +92,5 @@ public class AtomNumberGenerator implements IGenerator {
     public List<IGeneratorParameter<?>> getParameters() {
         return Arrays.asList( new IGeneratorParameter<?>[] {textColor} );
     }
-
 
 }
