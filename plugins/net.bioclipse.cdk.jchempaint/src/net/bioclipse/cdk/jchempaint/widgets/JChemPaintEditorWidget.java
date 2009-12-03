@@ -460,7 +460,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     }
 
     public void reset() {
-        if(hub!=null) {
+        if(hub!=null && !isDisposed()) {
             Rectangle clientRect = getClientArea();
             java.awt.Rectangle rect = new java.awt.Rectangle( clientRect.x,
                                                               clientRect.y,

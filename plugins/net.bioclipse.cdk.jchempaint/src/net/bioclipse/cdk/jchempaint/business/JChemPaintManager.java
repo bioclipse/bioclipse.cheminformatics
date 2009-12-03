@@ -22,10 +22,13 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.managers.business.IBioclipseManager;
 import net.bioclipse.scripting.ui.Activator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
@@ -49,7 +52,7 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 /**
  * @author egonw
  */
-public class JChemPaintManager implements IJChemPaintManager {
+public class JChemPaintManager implements IBioclipseManager {
 
     /** Not to be used by manager method directly, but is just needed for the syncRun() call. */
     private JChemPaintEditor jcpEditor;
@@ -60,7 +63,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             return relay.getClosestAtom(worldCoord);
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
             return null;
         }
     }
@@ -73,6 +76,10 @@ public class JChemPaintManager implements IJChemPaintManager {
         jcpEditor = activeEditor;
     }
 
+    private void say(String message) {
+        Activator.getDefault().getJavaJsConsoleManager().say(message);
+    }
+    
     private JChemPaintEditor findActiveEditor() {
         final Display display = PlatformUI.getWorkbench().getDisplay();
         setActiveEditor(null);
@@ -131,7 +138,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             newAtom = relay.addAtom(atomType, worldcoord);
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
         return newAtom;
@@ -143,7 +150,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             return relay.getClosestBond(worldCoord);
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
             return null;
         }
     }
@@ -154,7 +161,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             relay.removeAtom(atom);
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
     }
@@ -165,7 +172,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             relay.removeBond( bond );
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
     }
@@ -203,7 +210,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             relay.updateImplicitHydrogenCounts();
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
     }
@@ -215,7 +222,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             newBond = relay.addBond(fromAtom, toAtom);
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
         return newBond;
@@ -227,7 +234,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             relay.moveTo(atom, point);
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
     }
@@ -238,7 +245,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             relay.moveTo(bond, point);
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
     }
@@ -249,7 +256,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             relay.setCharge(atom, charge);
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
     }
@@ -260,7 +267,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             relay.setMassNumber(atom, massNumber);
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
     }
@@ -271,7 +278,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             relay.setOrder(bond, order);
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
     }
@@ -282,7 +289,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             relay.setSymbol(atom, symbol);
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
     }
@@ -293,7 +300,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             relay.setWedgeType(bond, type);
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
     }
@@ -305,7 +312,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             newAtom = relay.addAtom(elementSymbol, atom);
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
         return newAtom;
@@ -318,23 +325,33 @@ public class JChemPaintManager implements IJChemPaintManager {
             relay.zap();
             editor.getWidget().reset();
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
     }
 
-    public void cleanup() {
+    public void cleanup(IProgressMonitor monitor) throws BioclipseException{
         final JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
+            monitor.beginTask( "Cleaning up of structure", IProgressMonitor.UNKNOWN );
             IChemModelRelay relay = editor.getControllerHub();
-            relay.cleanup();
+            try{
+                relay.cleanup();
+            } catch (NullPointerException e) {
+                throw new BioclipseException(
+                    "You seem to have run into bug 950 we are aware of this "+
+                    "problem and are working on a solution. One cause of this "+
+                    "exception could be free hydrogen molecules in the model",
+                    e );
+            }
             PlatformUI.getWorkbench().getDisplay().syncExec( new Runnable() {
                 public void run() {
                     editor.getWidget().reset();
                 }
             });
+            monitor.done();
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
     }
@@ -345,7 +362,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             relay.addRing(atom, size);
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
     }
@@ -366,7 +383,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             relay.addPhenyl(atom);
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
     }
@@ -377,7 +394,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             relay.addRing(bond, size);
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
     }
@@ -388,7 +405,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             IChemModelRelay relay = editor.getControllerHub();
             relay.addPhenyl(bond);
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
     }
@@ -707,8 +724,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             relay.execute( CompositEdit.compose( atomsToRemove ) );
             updateView();
         } else {
-            Activator.getDefault().getJsConsoleManager()
-            .say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
     }
 
@@ -732,8 +748,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             }
             relay.execute( CompositEdit.compose( edits ) );
         } else {
-            Activator.getDefault().getJsConsoleManager()
-                .say("No opened JChemPaint editor");
+           say("No opened JChemPaint editor");
         }
     }
 
@@ -745,7 +760,7 @@ public class JChemPaintManager implements IJChemPaintManager {
             relay.select( selection );
             relay.getRenderModel().setSelection( selection );
         } else {
-            Activator.getDefault().getJsConsoleManager().say("No opened JChemPaint editor");
+            say("No opened JChemPaint editor");
         }
         updateView();
     }

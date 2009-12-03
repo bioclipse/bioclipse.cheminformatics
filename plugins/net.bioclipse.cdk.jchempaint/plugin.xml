@@ -979,17 +979,14 @@
                  </equals>
               </or>
            </with>
-           <and>
-              <with
-                    variable="activeEditor">
-                 <instanceof
-                       value="org.eclipse.ui.part.MultiPageEditorPart">
-                 </instanceof>
-                 <adapt
-                       type="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor">
-                 </adapt>
-              </with>
-           </and>
+           <with
+                 variable="activeEditor">
+              <test
+                    forcePluginActivation="false"
+                    property="net.bioclipse.cdk.jchempaint.isPartEditorActive"
+                    value="JCP">
+              </test>
+           </with>
            <with
                  variable="activeContexts">
               <iterate
@@ -1006,7 +1003,8 @@
         <with
               variable="activeMenuSelection">
            <iterate
-                 ifEmpty="false">
+                 ifEmpty="false"
+                 operator="or">
               <instanceof
                     value="net.bioclipse.cdk.jchempaint.outline.StructureContentProvider$CDKAtomChemObject">
               </instanceof>
@@ -1018,7 +1016,8 @@
         <with
               variable="activeMenuSelection">
            <iterate
-                 ifEmpty="false">
+                 ifEmpty="false"
+                 operator="or">
               <instanceof
                     value="net.bioclipse.cdk.jchempaint.outline.StructureContentProvider$CDKBondChemObject">
               </instanceof>

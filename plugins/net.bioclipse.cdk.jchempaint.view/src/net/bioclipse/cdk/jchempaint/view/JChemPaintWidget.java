@@ -18,6 +18,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.vecmath.Vector2d;
+
 import net.bioclipse.cdk.domain.ICDKMolecule;
 
 import org.eclipse.swt.SWT;
@@ -119,7 +121,7 @@ public class JChemPaintWidget extends Canvas {
 
         List<IGenerator> generators =  createGenerators();
         generators.add( drawNumbers = new ChoiceGenerator(
-                                   new AtomNumberGenerator()
+                                   new AtomNumberGenerator(new Vector2d(7,-7))
         ) );
 
         renderer = new Renderer(generators, fontManager);

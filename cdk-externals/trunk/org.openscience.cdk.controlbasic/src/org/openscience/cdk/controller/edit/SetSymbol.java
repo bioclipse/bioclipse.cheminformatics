@@ -23,10 +23,13 @@
  */
 package org.openscience.cdk.controller.edit;
 
+import static org.openscience.cdk.tools.manipulator.AtomContainerManipulator.replaceAtomByAtom;
+
 import java.util.Set;
 
 import org.openscience.cdk.controller.Changed;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IPseudoAtom;
 
 /**
 * Edit for changing symbol of an atom.
@@ -35,12 +38,15 @@ import org.openscience.cdk.interfaces.IAtom;
 */
 public class SetSymbol extends AbstractEdit{
 
-    IAtom atom;
+    IAtom oldAtom;
     String symbol;
     String oldSymbol;
 
+    IAtom newAtom;
+
     /**
      * Creates an edit for changing the given atom's symbol.
+     * If the atom is a pseudo atom it is converted to a real atom.
      *
      * @param atom to change.
      * @param symbol to change to.
@@ -51,20 +57,29 @@ public class SetSymbol extends AbstractEdit{
     }
 
     private SetSymbol(IAtom atom, String symbol) {
-        this.atom = atom;
+        this.oldAtom = atom;
         this.symbol = symbol;
     }
 
     public void redo() {
-        oldSymbol = atom.getSymbol();
-        atom.setSymbol(symbol);
-        updateHydrogenCount(atom);
+        oldSymbol = oldAtom.getSymbol();
+        if(oldAtom instanceof IPseudoAtom) {
+            newAtom = oldAtom.getBuilder().newAtom(symbol, oldAtom.getPoint2d());
+            replaceAtomByAtom( model, oldAtom, newAtom );
+            updateHydrogenCount( newAtom );
+        }
+        else {
+            oldAtom.setSymbol(symbol);
+            updateHydrogenCount(oldAtom);
+        }
     }
 
     public void undo() {
-
-        atom.setSymbol(oldSymbol);
-        updateHydrogenCount(atom);
+        if(newAtom != null)
+            replaceAtomByAtom( model, newAtom, oldAtom );
+        else
+            oldAtom.setSymbol(oldSymbol);
+        updateHydrogenCount(oldAtom);
     }
 
     public Set<Changed> getTypeOfChanges() {
