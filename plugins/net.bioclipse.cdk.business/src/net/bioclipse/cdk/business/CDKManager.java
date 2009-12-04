@@ -2481,12 +2481,6 @@ public class CDKManager implements IBioclipseManager {
         return containers.size() == 1;
     }
     
-    public BioclipseJob<ICDKMolecule> fromSMILES( String SMILES,
-                                                  BioclipseJobUpdateHook hook ) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     public ICDKMolecule clone(ICDKMolecule molecule) throws BioclipseException {
         try {
             return new CDKMolecule(
