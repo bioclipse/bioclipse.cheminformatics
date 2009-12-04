@@ -404,10 +404,10 @@
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
-                icon="icons/atom_unknown.png"
-                label="Select"
+                icon="icons/jcp/rotate.png"
+                label="Rotate"
                 style="radio"
-                tooltip="Select in Free Form">
+                tooltip="Rotate Seleted">
              <visibleWhen
                    checkEnabled="true">
                 <reference
