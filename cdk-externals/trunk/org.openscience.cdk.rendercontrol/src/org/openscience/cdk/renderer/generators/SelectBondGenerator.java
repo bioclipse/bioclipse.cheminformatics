@@ -33,7 +33,7 @@ import org.openscience.cdk.renderer.selection.IncrementalSelection;
 /**
  * @cdk.module rendercontrol
  */
-public class SelectBondGenerator extends BasicBondGenerator {
+public class SelectBondGenerator extends RingGenerator {
 
     private boolean autoUpdateSelection = true;
 
