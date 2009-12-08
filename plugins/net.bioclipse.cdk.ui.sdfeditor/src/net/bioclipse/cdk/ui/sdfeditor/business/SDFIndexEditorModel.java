@@ -19,8 +19,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -65,8 +68,9 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
     protected ISimpleChemObjectReader chemReader;
     protected IChemObjectBuilder builder;
 
-    int lastIndex = -1;
-    ICDKMolecule lastRead = null;
+    Map<Integer,ICDKMolecule> cache 
+        = new HashMap<Integer, ICDKMolecule>();
+    List<Integer> cacheQueue = new LinkedList<Integer>();
 
 //    List<Object> visibleProperties= new ArrayList<Object>(10);
     private Set<Object> availableProperties;
@@ -117,8 +121,8 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
 
         ICDKMolecule mol = edited.get( index );
         if(mol == null) {
-            if(index == lastIndex) {
-                mol = lastRead;
+            if ( cache.containsKey( index ) )  {
+                mol = cache.get( index );
             }
             else {
                 try {
@@ -202,13 +206,15 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
         return co;
     }
 
-    private void setLastRead(int index,ICDKMolecule mol) {
-        if(mol==null) {
-            lastIndex = -1;
-        }else {
-            lastIndex = index;
+    private void setLastRead( int index, ICDKMolecule mol ) {
+        if ( mol != null ) {
+            if ( cache.size() + 1 > 10 ) {
+                Integer i = cacheQueue.remove( cacheQueue.size() - 1 );
+                cache.remove( i );
+            }
+            cacheQueue.add( index );
+            cache.put( index, mol );
         }
-        lastRead = mol;
     }
 
     private void readProperties(ICDKMolecule molecule) {
