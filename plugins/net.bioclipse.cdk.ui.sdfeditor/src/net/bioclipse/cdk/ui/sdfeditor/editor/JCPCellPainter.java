@@ -182,7 +182,7 @@ public class JCPCellPainter implements ICellPainter {
                                     drawVisitor,
                                     rectangle,
                                     true );
-            if(generated) {
+            if(generated && showGeneratedLabel()) {
                 Message message = Message.GENERATED;
                 gc.setBackground( oldBackground );
                 JChemPaintWidget.paintMessage( gc, message, rect );
@@ -190,6 +190,10 @@ public class JCPCellPainter implements ICellPainter {
         }
     }
 
+    public static boolean showGeneratedLabel() {
+        return net.bioclipse.cdk.jchempaint.Activator.getDefault().getPreferenceStore()
+                        .getBoolean( "showGeneratedLabel" );
+    }
 
     public void drawCell( GC gc, Rectangle rectangle, NatTable natTable,
                           ICellRenderer cellRenderer, int row, int col,

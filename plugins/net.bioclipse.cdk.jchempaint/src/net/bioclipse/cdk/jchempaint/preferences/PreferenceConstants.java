@@ -28,4 +28,6 @@ public class PreferenceConstants {
     public static final String MARGIN_DOUBLE = "margin";
     public static final String WEDGE_WIDTH_DOUBLE = "wedgeWidth";
 
+    public static final String SHOW_LABEL_GENERATED ="showGeneratedLabel";
+
 }

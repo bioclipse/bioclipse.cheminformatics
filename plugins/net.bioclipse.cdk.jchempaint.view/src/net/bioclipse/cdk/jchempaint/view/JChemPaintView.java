@@ -31,6 +31,7 @@ import net.bioclipse.core.util.LogUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -360,7 +361,15 @@ public class JChemPaintView extends ViewPart
         ICDKMolecule newMol = null;
             try {
                 newMol = getCDKManager().generate2dCoordinates( mol );
-                canvasView.add( Message.GENERATED );
+
+                boolean showGenerate =
+                    Platform.getPreferencesService().getBoolean(
+                                                 "net.bioclipse.cdk.jchempaint",
+                                                 "showGeneratedLabel",
+                                                 true, null );
+                // Don't show 'Generated' message when preference is not set
+                if(showGenerate )
+                    canvasView.add( Message.GENERATED );
                 return newMol.getAtomContainer();
             } catch ( Exception e ) {
                 setAtomContainer( null );
