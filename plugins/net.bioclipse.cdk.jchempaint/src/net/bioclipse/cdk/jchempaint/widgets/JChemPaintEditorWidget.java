@@ -47,7 +47,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -103,6 +102,7 @@ import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.MergeAtomsGenerator;
 import org.openscience.cdk.renderer.generators.SelectAtomGenerator;
 import org.openscience.cdk.renderer.generators.SelectBondGenerator;
+import org.openscience.cdk.renderer.selection.AbstractSelection;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
@@ -782,6 +782,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             if(!this.operationHistory.canUndo( this.undoContext )) {
                 setDirty( false );
             }
+            hub.getRenderModel().setSelection( AbstractSelection.EMPTY_SELECTION );
+            hub.select( AbstractSelection.EMPTY_SELECTION );
             structureChanged();
         }
     }
@@ -793,6 +795,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             if(!getDirty()) {
                 setDirty( true );
             }
+            hub.getRenderModel().setSelection( AbstractSelection.EMPTY_SELECTION );
+            hub.select( AbstractSelection.EMPTY_SELECTION );
             structureChanged();
         }
     }
