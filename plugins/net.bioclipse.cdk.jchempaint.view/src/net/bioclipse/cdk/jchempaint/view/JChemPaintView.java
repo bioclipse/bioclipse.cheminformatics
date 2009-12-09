@@ -54,6 +54,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener2;
@@ -235,7 +236,7 @@ public class JChemPaintView extends ViewPart
         return (ICDKMolecule) part.getAdapter( ICDKMolecule.class );
     }
 
-    public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
+    public void selectionChanged( IWorkbenchPart part, final ISelection selection ) {
 
         if ( part instanceof IEditorPart ) {
             ICDKMolecule mc = getMoleculeFromPart( part );
@@ -248,7 +249,12 @@ public class JChemPaintView extends ViewPart
                 }
             }
         }
-        reactOnSelection( selection );
+        Display.getDefault().syncExec( new Runnable() {
+            
+            public void run() {
+                reactOnSelection( selection );
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
