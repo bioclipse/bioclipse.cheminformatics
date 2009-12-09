@@ -490,10 +490,10 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         generatorList.add(new ExternalHighlightGenerator());
         generatorList.addAll( super.createGenerators() );
-        generatorList.add( new MergeAtomsGenerator());
         generatorList.add( phantomGenerator = new PhantomBondGenerator());
         generatorList.add(new SelectAtomGenerator());
         generatorList.add(new SelectBondGenerator());
+        generatorList.add( new MergeAtomsGenerator());
 
         return generatorList;
     }
