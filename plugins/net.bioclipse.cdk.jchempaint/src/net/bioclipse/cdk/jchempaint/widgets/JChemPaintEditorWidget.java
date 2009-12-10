@@ -657,7 +657,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         for (int i = 0; i < listenersArray.length; i++) {
             final ISelectionChangedListener l = (ISelectionChangedListener)
                                                               listenersArray[i];
-            SafeRunner.run(new SafeRunnable() {
+            Display.getDefault().asyncExec( new Runnable() {
                 public void run() {
                     l.selectionChanged(e);
                 }
