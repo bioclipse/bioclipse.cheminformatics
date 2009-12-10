@@ -147,8 +147,15 @@ public class JChemPaintView extends ViewPart
                     IAtomContainer ac;
                     ac = (IAtomContainer) editorPart
                                             .getAdapter( IAtomContainer.class );
+                    if(ac==null) {
+                        //See what's currently selected
+                        ISelection selection=PlatformUI.getWorkbench()
+                            .getActiveWorkbenchWindow().getSelectionService().getSelection();
+                        reactOnSelection(selection);
+
+                    }else
+                        setAtomContainer( ac );
                     //TODO set atom colorer from editor part
-                    setAtomContainer( ac );
                 }
             }
 
