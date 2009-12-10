@@ -28,8 +28,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
-import java.util.WeakHashMap;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.sdfeditor.business.MappingEditorModel;
@@ -49,9 +47,6 @@ import net.sourceforge.nattable.sorting.SortingDirection.DirectionEnum;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
@@ -111,8 +106,6 @@ public class MoleculeTableContentProvider implements
 
             return MoleculeTableContentProvider.this;
         }
-        
-        
     }
     
     class Worker implements Runnable {
@@ -122,7 +115,7 @@ public class MoleculeTableContentProvider implements
         public Worker(IMoleculesEditorModel tModel) {
             this.tModel = tModel;
         }
-        
+
         public void run() {
             
             while ( true ) {
@@ -205,14 +198,14 @@ public class MoleculeTableContentProvider implements
             propertyOrders.remove( order );
         }
     }
-    
+
     private final List<PropertyOrder> propertyOrders 
         = Collections.synchronizedList( new LinkedList<PropertyOrder>() );
     private final Map<Object, Object> moleculeProperties 
         = Collections.synchronizedMap( new HashMap<Object, Object>() );
     private final List<Object> moleculePropertiesQueue
         = Collections.synchronizedList( new LinkedList<Object>() );
-    
+
     Logger logger = Logger.getLogger( MoleculeTableContentProvider.class );
 
     public static int READ_AHEAD = 100;
@@ -275,7 +268,9 @@ public class MoleculeTableContentProvider implements
         return molecule;
     }
 
-    public void inputChanged( final Viewer viewer, Object oldInput, Object newInput ) {
+    public void inputChanged( final Viewer viewer,
+                              Object oldInput,
+                              Object newInput ) {
 
         if(newInput == null) {
             return;
@@ -285,7 +280,8 @@ public class MoleculeTableContentProvider implements
             this.viewer = (MoleculeTableViewer)viewer;
         }
         if(newInput instanceof SDFIndexEditorModel) {
-            setModel(new MappingEditorModel( (IFileMoleculesEditorModel )newInput));
+            setModel( new MappingEditorModel( 
+                          (IFileMoleculesEditorModel )newInput) );
         }else
         if(newInput instanceof IMoleculesEditorModel)
             setModel((IMoleculesEditorModel) newInput);
@@ -412,20 +408,20 @@ public class MoleculeTableContentProvider implements
                 propertyKey = row + "|" + col + "|" 
                               + properties.get( i-1 );
             }
-            
+
             logger.debug( "Looking for: " + propertyKey );
             Object p = moleculeProperties.get( propertyKey ); 
             if ( p != null ) {
                 logger.debug( "Found " + propertyKey );
                 return p;
             }
-                
+
             if ( thread == null ) {
                 logger.debug( "Creating thread" );
                 thread = new Thread( new Worker(tModel) );
                 thread.start();
             }
-            
+
             PropertyOrder order 
                 = new PropertyOrder( col == 0,
                                      propertyKey,
@@ -439,7 +435,7 @@ public class MoleculeTableContentProvider implements
                 logger.debug("Created order for " + order.propertyKey );
             }
              
-                
+
             }
             synchronized ( propertyOrders ) {
                 propertyOrders.notifyAll();
