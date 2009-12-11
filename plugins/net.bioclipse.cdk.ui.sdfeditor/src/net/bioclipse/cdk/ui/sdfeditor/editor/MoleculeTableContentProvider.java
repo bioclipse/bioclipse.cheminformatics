@@ -173,6 +173,13 @@ public class MoleculeTableContentProvider implements
                 }
 
                 cache( order, p != null ? p : "?" );
+                Display.getDefault().asyncExec(
+                    new Runnable() {
+                        public void run() {
+                            viewer.refresh();
+                        }
+                    }
+                );
             }
         }
 
