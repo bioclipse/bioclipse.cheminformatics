@@ -120,16 +120,9 @@ public class MoleculeTableContentProvider implements
             
             while ( true ) {
                 try {
-                    while ( propertyOrders.isEmpty() ) {
-                        Display.getDefault().asyncExec( 
-                            new Runnable() {
-                                public void run() {
-                                    viewer.refresh();
-                                }
-                            }
-                        );
-                        synchronized (propertyOrders) {
-                            propertyOrders.wait();
+                    synchronized (propertyOrders) {
+                        while ( propertyOrders.isEmpty() ) {
+                                propertyOrders.wait();
                         }
                     }
                 } catch (InterruptedException e) {
