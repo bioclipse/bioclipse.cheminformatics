@@ -132,11 +132,9 @@ public class MoleculeTableContentProvider implements
                 }
                 
                 //only process 5 latest asked for rows
-                while ( propertyOrders.size() 
-                        > (properties.size()) + 1 * 5) {
-                    propertyOrders.remove( 0 );
-                }
-                
+                int toRemove = propertyOrders.size() - (properties.size()+1)* 5;
+                if(toRemove > 0) propertyOrders.subList( 0, toRemove ).clear();
+
                 PropertyOrder order = propertyOrders.get( 0 );
                 
                 logger.debug( "Handling order for: " + order.propertyKey );
