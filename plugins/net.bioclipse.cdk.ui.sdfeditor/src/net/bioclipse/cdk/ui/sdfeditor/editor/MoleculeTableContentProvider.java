@@ -64,7 +64,7 @@ public class MoleculeTableContentProvider implements
         String propertyName;
         int row;
         int col;
-        
+
         public PropertyOrder( boolean isTheMolecule,
                               Object propertyKey,
                               String propertyName,
@@ -81,7 +81,7 @@ public class MoleculeTableContentProvider implements
             final int prime = 31;
             int result = 1;
             result = prime * result + getOuterType().hashCode();
-            result = prime * result 
+            result = prime * result
                            + ((propertyKey == null) ? 0
                                                     : propertyKey.hashCode());
             return result;
@@ -107,17 +107,17 @@ public class MoleculeTableContentProvider implements
             return MoleculeTableContentProvider.this;
         }
     }
-    
+
     class Worker implements Runnable {
-        
+
         private IMoleculesEditorModel tModel;
-        
+
         public Worker(IMoleculesEditorModel tModel) {
             this.tModel = tModel;
         }
 
         public void run() {
-            
+
             while ( true ) {
                 try {
                     synchronized (propertyOrders) {
@@ -130,22 +130,22 @@ public class MoleculeTableContentProvider implements
                     		      "and will run out now." );
                     return;
                 }
-                
+
                 //only process 5 latest asked for rows
                 int toRemove = propertyOrders.size() - (properties.size()+1)* 5;
                 if(toRemove > 0) propertyOrders.subList( 0, toRemove ).clear();
 
                 PropertyOrder order = propertyOrders.get( 0 );
-                
+
                 logger.debug( "Handling order for: " + order.propertyKey );
-                
-                ICDKMolecule molecule = (ICDKMolecule) 
+
+                ICDKMolecule molecule = (ICDKMolecule)
                                         tModel.getMoleculeAt( order.row );
-                
+
                 if (order.col == 0) {
                     cache(order, molecule);
-                    
-                    Display.getDefault().asyncExec( 
+
+                    Display.getDefault().asyncExec(
                         new Runnable() {
                             public void run() {
                                 viewer.refresh();
@@ -154,13 +154,13 @@ public class MoleculeTableContentProvider implements
                     );
                     continue;
                 }
-                
+
                 Object p = molecule.getProperty( order.propertyName,
                                                  Property.USE_CACHED );
-                
+
                 if (p == null) {
                     if ( model instanceof SDFIndexEditorModel) {
-                        // FIXME a general interface to access 
+                        // FIXME a general interface to access
                         // properties
                         p = ( (SDFIndexEditorModel) model)
                                 .getPropertyFor( order.row,
@@ -171,7 +171,7 @@ public class MoleculeTableContentProvider implements
                                     .getProperty( order.propertyName );
                     }
                 }
-                
+
                 cache( order, p != null ? p : "?" );
             }
         }
@@ -185,14 +185,14 @@ public class MoleculeTableContentProvider implements
             moleculeProperties.put( order.propertyKey, o );
             moleculePropertiesQueue.add( order.propertyKey );
             logger.debug( "Put: " + order.propertyKey );
-            
+
             propertyOrders.remove( order );
         }
     }
 
-    private final List<PropertyOrder> propertyOrders 
+    private final List<PropertyOrder> propertyOrders
         = Collections.synchronizedList( new LinkedList<PropertyOrder>() );
-    private final Map<Object, Object> moleculeProperties 
+    private final Map<Object, Object> moleculeProperties
         = Collections.synchronizedMap( new HashMap<Object, Object>() );
     private final List<Object> moleculePropertiesQueue
         = Collections.synchronizedList( new LinkedList<Object>() );
@@ -271,7 +271,7 @@ public class MoleculeTableContentProvider implements
             this.viewer = (MoleculeTableViewer)viewer;
         }
         if(newInput instanceof SDFIndexEditorModel) {
-            setModel( new MappingEditorModel( 
+            setModel( new MappingEditorModel(
                           (IFileMoleculesEditorModel )newInput) );
         }else
         if(newInput instanceof IMoleculesEditorModel)
@@ -387,55 +387,56 @@ public class MoleculeTableContentProvider implements
 
     public Object getValue( final int row, final int col ) {
         if ( row >= getNumberOfMolecules() ) return "";
-        
+
         final IMoleculesEditorModel tModel = model;
         final int i = col - 1;
-        if ( properties == null || i>=properties.size() ) {
+        if ( properties == null || i >= properties.size() ) {
             return null;
         }
-            final Object propertyKey;
-            String propertyName = null;
-            if ( col == 0 ) {
-                propertyKey = "the-molecule" + "|" + row + "|" + col;
-            }
-            else {
-                propertyName = (String) properties.get( i );
-                propertyKey = row + "|" + col + "|" + propertyName;
-            }
 
-            //logger.debug( "Looking for: " + propertyKey );
-            Object p = moleculeProperties.get( propertyKey ); 
-            if ( p != null ) {
-                //logger.debug( "Found " + propertyKey );
-                return p;
-            }
+        final Object propertyKey;
+        String propertyName = null;
+        if ( col == 0 ) {
+            propertyKey = "the-molecule" + "|" + row + "|" + col;
+        }
+        else {
+            propertyName = (String) properties.get( i );
+            propertyKey = row + "|" + col + "|" + propertyName;
+        }
 
-            if ( thread == null ) {
-                logger.debug( "Creating thread" );
-                thread = new Thread( new Worker(tModel) );
-                thread.start();
-            }
+        //logger.debug( "Looking for: " + propertyKey );
+        Object p = moleculeProperties.get( propertyKey );
+        if ( p != null ) {
+            //logger.debug( "Found " + propertyKey );
+            return p;
+        }
 
-            PropertyOrder order = new PropertyOrder( col == 0,
-                                                     propertyKey,
-                                                     propertyName,
-                                                     row,
-                                                     col );
-            if ( !propertyOrders.contains( order ) ) {
-                propertyOrders.add( order );
-                logger.debug("Created order for " + order.propertyKey );
-            }
-             
+        if ( thread == null ) {
+            logger.debug( "Creating thread" );
+            thread = new Thread( new Worker(tModel) );
+            thread.start();
+        }
 
-            synchronized ( propertyOrders ) {
-                propertyOrders.notifyAll();
-            }
-            if ( col == 0 ) {
-                // TODO: Make sure that if null (or something else) is returned
-                // here "loading" is written in the molecule column.
-                return null;
-            }
-            return "[ Loading... ]";
+        PropertyOrder order = new PropertyOrder( col == 0,
+                                                 propertyKey,
+                                                 propertyName,
+                                                 row,
+                                                 col );
+        if ( !propertyOrders.contains( order ) ) {
+            propertyOrders.add( order );
+            logger.debug("Created order for " + order.propertyKey );
+        }
+
+
+        synchronized ( propertyOrders ) {
+            propertyOrders.notifyAll();
+        }
+        if ( col == 0 ) {
+            // TODO: Make sure that if null (or something else) is returned
+            // here "loading" is written in the molecule column.
+            return null;
+        }
+        return "[ Loading... ]";
     }
 
     public int getNumberOfMolecules() {
