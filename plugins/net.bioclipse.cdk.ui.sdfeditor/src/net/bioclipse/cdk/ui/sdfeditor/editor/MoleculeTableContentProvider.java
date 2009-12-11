@@ -390,7 +390,9 @@ public class MoleculeTableContentProvider implements
         
         final IMoleculesEditorModel tModel = model;
         final int i = col - 1;
-        if ( properties != null && i<properties.size()) {
+        if ( properties == null || i>=properties.size() ) {
+            return null;
+        }
             final Object propertyKey;
             String propertyName = null;
             if ( col == 0 ) {
@@ -425,7 +427,6 @@ public class MoleculeTableContentProvider implements
             }
              
 
-            }
             synchronized ( propertyOrders ) {
                 propertyOrders.notifyAll();
             }
