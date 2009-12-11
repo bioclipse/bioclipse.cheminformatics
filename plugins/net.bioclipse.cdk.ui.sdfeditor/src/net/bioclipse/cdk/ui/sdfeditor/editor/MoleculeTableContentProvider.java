@@ -65,12 +65,10 @@ public class MoleculeTableContentProvider implements
         int row;
         int col;
 
-        public PropertyOrder( boolean isTheMolecule,
-                              Object propertyKey,
+        public PropertyOrder( Object propertyKey,
                               String propertyName,
                               int row,
                               int col ) {
-            this.isTheMolecule = isTheMolecule;
             this.propertyKey = propertyKey;
             this.propertyName = propertyName;
             this.row = row;
@@ -424,8 +422,7 @@ public class MoleculeTableContentProvider implements
             thread.start();
         }
 
-        PropertyOrder order = new PropertyOrder( col == 0,
-                                                 propertyKey,
+        PropertyOrder order = new PropertyOrder( propertyKey,
                                                  propertyName,
                                                  row,
                                                  col );
