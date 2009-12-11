@@ -389,15 +389,16 @@ public class MoleculeTableContentProvider implements
         if ( row >= getNumberOfMolecules() ) return "";
         
         final IMoleculesEditorModel tModel = model;
-        final int i = col;
-        if ( properties != null && i<properties.size()+1) {
+        final int i = col - 1;
+        if ( properties != null && i<properties.size()) {
             final Object propertyKey;
+            String propertyName = null;
             if ( col == 0 ) {
                 propertyKey = "the-molecule" + "|" + row + "|" + col;
             }
             else {
-                propertyKey = row + "|" + col + "|" 
-                              + properties.get( i-1 );
+                propertyName = (String) properties.get( i );
+                propertyKey = row + "|" + col + "|" + propertyName;
             }
 
             logger.debug( "Looking for: " + propertyKey );
@@ -413,14 +414,11 @@ public class MoleculeTableContentProvider implements
                 thread.start();
             }
 
-            PropertyOrder order 
-                = new PropertyOrder( col == 0,
-                                     propertyKey,
-                                     col == 0 ? null 
-                                              : (String) 
-                                                properties.get( i - 1 ),
-                                     row,
-                                     col );
+            PropertyOrder order = new PropertyOrder( col == 0,
+                                                     propertyKey,
+                                                     propertyName,
+                                                     row,
+                                                     col );
             if ( !propertyOrders.contains( order ) ) {
                 propertyOrders.add( order );
                 logger.debug("Created order for " + order.propertyKey );
