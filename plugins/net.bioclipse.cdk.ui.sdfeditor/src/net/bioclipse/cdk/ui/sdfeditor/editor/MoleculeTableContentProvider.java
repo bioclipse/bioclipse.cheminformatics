@@ -167,8 +167,8 @@ public class MoleculeTableContentProvider implements
                                                  order.propertyName );
                     }
                     else {
-                        p = molecule.getAtomContainer().getProperty( 
-                                                          order.propertyName );
+                        p = molecule.getAtomContainer()
+                                    .getProperty( order.propertyName );
                     }
                 }
                 
@@ -401,10 +401,10 @@ public class MoleculeTableContentProvider implements
                 propertyKey = row + "|" + col + "|" + propertyName;
             }
 
-            logger.debug( "Looking for: " + propertyKey );
+            //logger.debug( "Looking for: " + propertyKey );
             Object p = moleculeProperties.get( propertyKey ); 
             if ( p != null ) {
-                logger.debug( "Found " + propertyKey );
+                //logger.debug( "Found " + propertyKey );
                 return p;
             }
 
