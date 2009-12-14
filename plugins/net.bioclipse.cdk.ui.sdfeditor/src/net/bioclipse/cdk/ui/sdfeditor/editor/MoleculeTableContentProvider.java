@@ -170,7 +170,7 @@ public class MoleculeTableContentProvider implements
                     }
                 }
 
-                cache( order, p != null ? p : "?" );
+                cache( order, p != null ? p : "[ N/A ]" );
                 Display.getDefault().asyncExec(
                     new Runnable() {
                         public void run() {
