@@ -1957,7 +1957,7 @@ public class CDKManager implements IBioclipseManager {
                         monitor );
                     }
                 },
-                file, 
+                file.getProject(), 
                 IResource.NONE, 
                 new NullProgressMonitor() );
             
