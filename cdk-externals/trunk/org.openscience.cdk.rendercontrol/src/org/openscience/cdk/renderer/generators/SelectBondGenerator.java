@@ -20,10 +20,14 @@
  */
 package org.openscience.cdk.renderer.generators;
 
+import static org.openscience.cdk.CDKConstants.ISAROMATIC;
+
 import java.awt.Color;
 
 
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IBond.Order;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
@@ -33,7 +37,7 @@ import org.openscience.cdk.renderer.selection.IncrementalSelection;
 /**
  * @cdk.module rendercontrol
  */
-public class SelectBondGenerator extends BasicBondGenerator {
+public class SelectBondGenerator extends RingGenerator {
 
     private boolean autoUpdateSelection = true;
 
@@ -61,5 +65,14 @@ public class SelectBondGenerator extends BasicBondGenerator {
 				selectionElements.add(sel.generate(selectionColor));
 		}
         return selectionElements;
+    }
+
+    @Override
+    public IRenderingElement generateBondElement( IBond bond,
+                                                  RendererModel model ) {
+        if(bond.getFlag(ISAROMATIC))
+            return this.generateBondElement(bond, Order.SINGLE, model);
+        else
+            return this.generateBondElement(bond, bond.getOrder(), model);
     }
 }

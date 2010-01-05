@@ -244,7 +244,7 @@ public class JChemPaintWidget extends Canvas {
         return renderer;
     }
 
-    private void disposeView() {
+    protected void disposeView() {
         fontManager.dispose();
     }
 

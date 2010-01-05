@@ -1110,4 +1110,17 @@ public interface ICDKManager extends IBioclipseManager {
     )
     public List<ICDKMolecule> kabsch(List<IMolecule> molecules)
     throws BioclipseException;
+
+    /**
+     * This method can be used to call the saveSDFile with an already 
+     * constructed monitor. For example a SubProgressMonitor or a 
+     * NullProgressMonitor to force running in the same thread...
+     * 
+     * @param sdfile
+     * @param molecules
+     * @param nullProgressMonitor
+     */
+    public void saveSDFile( String sdfile,
+                            List<IMolecule> molecules,
+                            IProgressMonitor monitor );
 }

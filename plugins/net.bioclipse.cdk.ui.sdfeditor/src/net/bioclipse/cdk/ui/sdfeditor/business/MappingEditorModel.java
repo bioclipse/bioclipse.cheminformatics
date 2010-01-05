@@ -49,6 +49,7 @@ public class MappingEditorModel implements IFileMoleculesEditorModel {
     }
 
     public ICDKMolecule getMoleculeAt( int index ) {
+        if(index<0 || index >= mappingIndex.size()) return null;
         return model.getMoleculeAt( mappingIndex.get( index ) );
     }
 

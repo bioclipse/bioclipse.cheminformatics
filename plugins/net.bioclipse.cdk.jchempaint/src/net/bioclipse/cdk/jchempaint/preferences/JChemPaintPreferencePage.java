@@ -129,7 +129,13 @@ public class JChemPaintPreferencePage
                 getFieldEditorParent()
         );
         addField(wedgeWidth);
-       
+
+        BooleanFieldEditor showGenerated =
+            new BooleanFieldEditor( PreferenceConstants.SHOW_LABEL_GENERATED,
+                                    "Show Generated Label",
+                                    getFieldEditorParent() );
+        addField( showGenerated );
+
 	}
 
 	/* (non-Javadoc)

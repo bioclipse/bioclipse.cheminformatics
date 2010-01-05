@@ -31,6 +31,7 @@ import net.bioclipse.core.util.LogUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -53,6 +54,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener2;
@@ -145,8 +147,15 @@ public class JChemPaintView extends ViewPart
                     IAtomContainer ac;
                     ac = (IAtomContainer) editorPart
                                             .getAdapter( IAtomContainer.class );
+                    if(ac==null) {
+                        //See what's currently selected
+                        ISelection selection=PlatformUI.getWorkbench()
+                            .getActiveWorkbenchWindow().getSelectionService().getSelection();
+                        reactOnSelection(selection);
+
+                    }else
+                        setAtomContainer( ac );
                     //TODO set atom colorer from editor part
-                    setAtomContainer( ac );
                 }
             }
 
@@ -234,7 +243,7 @@ public class JChemPaintView extends ViewPart
         return (ICDKMolecule) part.getAdapter( ICDKMolecule.class );
     }
 
-    public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
+    public void selectionChanged( IWorkbenchPart part, final ISelection selection ) {
 
         if ( part instanceof IEditorPart ) {
             ICDKMolecule mc = getMoleculeFromPart( part );
@@ -247,7 +256,12 @@ public class JChemPaintView extends ViewPart
                 }
             }
         }
-        reactOnSelection( selection );
+        Display.getDefault().syncExec( new Runnable() {
+            
+            public void run() {
+                reactOnSelection( selection );
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -360,7 +374,15 @@ public class JChemPaintView extends ViewPart
         ICDKMolecule newMol = null;
             try {
                 newMol = getCDKManager().generate2dCoordinates( mol );
-                canvasView.add( Message.GENERATED );
+
+                boolean showGenerate =
+                    Platform.getPreferencesService().getBoolean(
+                                                 "net.bioclipse.cdk.jchempaint",
+                                                 "showGeneratedLabel",
+                                                 true, null );
+                // Don't show 'Generated' message when preference is not set
+                if(showGenerate )
+                    canvasView.add( Message.GENERATED );
                 return newMol.getAtomContainer();
             } catch ( Exception e ) {
                 setAtomContainer( null );

@@ -323,7 +323,8 @@ public class BasicBondGenerator implements IGenerator {
 
 	public boolean isStereoBond(IBond bond) {
 		return bond.getStereo() != Stereo.NONE
-				&& bond.getStereo() != (Stereo)CDKConstants.UNSET;
+				&& bond.getStereo() != (Stereo)CDKConstants.UNSET
+				&& bond.getStereo() != IBond.Stereo.E_Z_BY_COORDINATES;
 	}
 
 	public boolean bindsHydrogen(IBond bond) {

@@ -27,7 +27,8 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.ui,
  org.openscience.cdk.ioformats,
  org.eclipse.jdt.junit.runtime,
- net.bioclipse.ui.business
+ net.bioclipse.ui.business,
+ org.openscience.cdk.log4j
 Eclipse-LazyStart: true
 Export-Package: net.bioclipse.cdk,
  net.bioclipse.cdk.business.test

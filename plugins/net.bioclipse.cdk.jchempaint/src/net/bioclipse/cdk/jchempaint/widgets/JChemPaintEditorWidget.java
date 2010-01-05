@@ -30,6 +30,8 @@ import net.bioclipse.cdk.jchempaint.Activator;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintManager;
 import net.bioclipse.cdk.jchempaint.editor.SWTMouseEventRelay;
+import net.bioclipse.cdk.jchempaint.preferences.GenerateLabelPrefChangedLisener;
+import net.bioclipse.cdk.jchempaint.preferences.PreferenceConstants;
 import net.bioclipse.cdk.jchempaint.undoredo.SWTUndoRedoFactory;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.core.business.BioclipseException;
@@ -43,6 +45,7 @@ import org.eclipse.core.commands.operations.IUndoableOperation;
 import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ISelection;
@@ -99,6 +102,7 @@ import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.MergeAtomsGenerator;
 import org.openscience.cdk.renderer.generators.SelectAtomGenerator;
 import org.openscience.cdk.renderer.generators.SelectBondGenerator;
+import org.openscience.cdk.renderer.selection.AbstractSelection;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
@@ -139,6 +143,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     };
 
     private PhantomBondGenerator phantomGenerator;
+
+    private GenerateLabelPrefChangedLisener prefListener;
 
     public JChemPaintEditorWidget(Composite parent, int style) {
         super( parent,  style
@@ -288,6 +294,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         tooltip.setShift( new Point(10,0) );
         tooltip.setPopupDelay(200);
 
+
+        prefListener = new GenerateLabelPrefChangedLisener( this );
+        Activator.getDefault().getPreferenceStore().addPropertyChangeListener( prefListener );
     }
 
     private void setupControllerHub( ) {
@@ -481,10 +490,10 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         generatorList.add(new ExternalHighlightGenerator());
         generatorList.addAll( super.createGenerators() );
-        generatorList.add( new MergeAtomsGenerator());
         generatorList.add( phantomGenerator = new PhantomBondGenerator());
         generatorList.add(new SelectAtomGenerator());
         generatorList.add(new SelectBondGenerator());
+        generatorList.add( new MergeAtomsGenerator());
 
         return generatorList;
     }
@@ -552,7 +561,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                     new2Dcoordinates = true;
                  // Editor not dirty when generated coordinates see bug 1372
                     //setDirty( true );
-                    add( Message.GENERATED );
+                    if(GenerateLabelPrefChangedLisener.showGeneratedLabel())
+                        add( Message.GENERATED );
                 }else {
                     IAtomContainer oldAC = atomContainer;
                     atomContainer = atomContainer.getBuilder()
@@ -647,7 +657,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         for (int i = 0; i < listenersArray.length; i++) {
             final ISelectionChangedListener l = (ISelectionChangedListener)
                                                               listenersArray[i];
-            SafeRunner.run(new SafeRunnable() {
+            Display.getDefault().asyncExec( new Runnable() {
                 public void run() {
                     l.selectionChanged(e);
                 }
@@ -737,6 +747,25 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         return isdirty;
     }
 
+   @Override
+   protected void disposeView() {
+       Activator.getDefault().getPreferenceStore()
+                                  .removePropertyChangeListener( prefListener );
+       super.disposeView();
+   }
+
+    @Override
+    public void add( Message message ) {
+        boolean showGenerate = Platform.getPreferencesService().getBoolean(
+                                 Activator.PLUGIN_ID,
+                                 PreferenceConstants.SHOW_LABEL_GENERATED,
+                                 true, null );
+        // Don't show 'Generated' message when preference is not set
+        if(!showGenerate && message.equals( Message.GENERATED ))
+            return;
+        super.add( message );
+    }
+
     private java.awt.Color createFromSWT(org.eclipse.swt.graphics.Color color) {
         return new java.awt.Color( color.getRed(),
                                    color.getGreen(),
@@ -753,6 +782,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             if(!this.operationHistory.canUndo( this.undoContext )) {
                 setDirty( false );
             }
+            hub.getRenderModel().setSelection( AbstractSelection.EMPTY_SELECTION );
+            hub.select( AbstractSelection.EMPTY_SELECTION );
             structureChanged();
         }
     }
@@ -764,6 +795,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             if(!getDirty()) {
                 setDirty( true );
             }
+            hub.getRenderModel().setSelection( AbstractSelection.EMPTY_SELECTION );
+            hub.select( AbstractSelection.EMPTY_SELECTION );
             structureChanged();
         }
     }

@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.IElementComparer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.ISelectionListener;
@@ -101,10 +102,16 @@ public class JCPOutlinePage extends ContentOutlinePage
      * Update selected items if selected in editor
      */
     public void selectionChanged(IWorkbenchPart selectedPart,
-                                 ISelection selection) {
+                                 final ISelection selection) {
       if(selectedPart.equals( this.getSite().getPage().getActiveEditor() )) {
 
-          treeViewer.setSelection( selection );
+          Display.getDefault().asyncExec( new Runnable() {
+            
+            public void run() {
+                treeViewer.setSelection( selection );
+                
+            }
+        });
       }
     }
 

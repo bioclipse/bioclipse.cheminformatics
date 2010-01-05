@@ -203,6 +203,11 @@
              optional="false">
        </commandParameter>
     </command>
+    <command
+          defaultHandler="net.bioclipse.cdk.jchempaint.handlers.SnapshotHandler"
+          id="net.bioclipse.cdk.jchempaint.snapshot"
+          name="Snapshot">
+    </command>
  </extension>
  <extension
        point="org.eclipse.core.expressions.propertyTesters">
@@ -404,10 +409,10 @@
           </command>
           <command
                 commandId="net.bioclipse.cdk.ui.editors.jchempaint.command.module"
-                icon="icons/atom_unknown.png"
-                label="Select"
+                icon="icons/jcp/rotate.png"
+                label="Rotate"
                 style="radio"
-                tooltip="Select in Free Form">
+                tooltip="Rotate Seleted">
              <visibleWhen
                    checkEnabled="true">
                 <reference
@@ -984,6 +989,18 @@
                 style="toggle">
           </command>
        </menu>
+       <command
+             commandId="net.bioclipse.cdk.jchempaint.snapshot"
+             label="Snapshot"
+             style="push"
+             tooltip="Take a snapshot of drawing area.">
+          <visibleWhen
+                checkEnabled="false">
+             <reference
+                   definitionId="net.bioclipse.cdk.jchempaint.editor.type">
+             </reference>
+          </visibleWhen>
+       </command>
     </menuContribution>
  </extension>
 

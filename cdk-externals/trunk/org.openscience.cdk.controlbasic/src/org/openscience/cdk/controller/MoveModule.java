@@ -112,6 +112,9 @@ public class MoveModule extends ControllerModuleAdapter {
             Point2d end2DCenter = GeometryTools.get2DCenter(atomsToMove);
             end.sub(end2DCenter, start2DCenter);
 
+            // don't record a move if we are back where we started
+            if(end2DCenter.distanceSquared( start2DCenter )<1E-7 ) return;
+
             Map<IAtom, IAtom> mergeMap = chemModelRelay.getRenderer()
                                           .getRenderer2DModel().getMerge();
             // Do the merge of atoms
