@@ -60,11 +60,16 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.content.IContentDescription;
@@ -1904,7 +1909,7 @@ public class CDKManager implements IBioclipseManager {
         return format == null ? "Unknown" : format.getFormatName();
     }
 
-      public void saveSDFile(IFile file, List<IMolecule> entries,
+      public void saveSDFile(final IFile file, List<IMolecule> entries,
               IProgressMonitor monitor)
                   throws BioclipseException, InvocationTargetException {
 
@@ -1920,7 +1925,7 @@ public class CDKManager implements IBioclipseManager {
 
               monitor.beginTask( "Writing file", ticks );
 
-            StringWriter writer = new StringWriter();
+            final StringWriter writer = new StringWriter();
             SDFWriter mdlwriter = new SDFWriter(writer);
             for (IMolecule molecule : entries) {
 
@@ -1942,9 +1947,20 @@ public class CDKManager implements IBioclipseManager {
               }
             mdlwriter.close();
 
-            file.create( new ByteArrayInputStream(writer.toString().getBytes()),
-                           false,
-                           monitor );
+            ResourcesPlugin.getWorkspace().run(
+                new IWorkspaceRunnable() {
+                    public void run(IProgressMonitor monitor) 
+                                throws CoreException {
+                        file.create( new ByteArrayInputStream( 
+                                             writer.toString().getBytes() ),
+                        false,
+                        monitor );
+                    }
+                },
+                file, 
+                IResource.NONE, 
+                new NullProgressMonitor() );
+            
               monitor.worked(ticks);
           }
           catch (Exception e) {
