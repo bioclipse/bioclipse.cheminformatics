@@ -22,11 +22,4 @@ public class JmolConsoleView extends ScriptingConsoleView {
         return null;
     }
 
-    @Override
-    protected void waitUntilCommandFinished() {
-
-        // TODO Auto-generated method stub
-        
-    }
-
 }
