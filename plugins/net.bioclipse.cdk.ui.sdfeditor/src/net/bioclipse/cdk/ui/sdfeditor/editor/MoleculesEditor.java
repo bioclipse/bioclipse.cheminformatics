@@ -65,7 +65,6 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -152,7 +151,15 @@ public class MoleculesEditor extends EditorPart implements
     @Override
     public void createPartControl( Composite parent ) {
 
-        molTableViewer = new MoleculeTableViewer(parent,SWT.NONE);
+        MenuManager headerMgr = new MenuManager("Molecuels table","net.bioclipse.cdk.ui.sdfeditor.column.menu");
+        headerMgr.add( new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+        MenuManager bodyMgr = new MenuManager("Molecuels table","net.bioclipse.cdk.ui.sdfeditor.menu");
+        bodyMgr.add( new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+
+        molTableViewer = new MoleculeTableViewer(parent,SWT.NONE, headerMgr,bodyMgr);
+
+        getSite().registerContextMenu( "net.bioclipse.cdk.ui.sdfeditor.column.menu",headerMgr, molTableViewer);
+        getSite().registerContextMenu( "net.bioclipse.cdk.ui.sdfeditor.menu",bodyMgr, molTableViewer);
 //        molTableViewer.setContentProvider( contentProvider =
 //                                        new MoleculeViewerContentProvider() );
 
@@ -160,12 +167,9 @@ public class MoleculesEditor extends EditorPart implements
         getIndexFromInput( getEditorInput() );
 
 
-        MenuManager menuMgr = new MenuManager("Molecuels table","net.bioclipse.cdk.ui.sdfeditor.menu");
-        menuMgr.add( new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-        getSite().registerContextMenu( "net.bioclipse.cdk.ui.sdfeditor.menu",menuMgr, molTableViewer);
-        Menu menu = menuMgr.createContextMenu(molTableViewer.getControl());
-        molTableViewer.getControl().setMenu(menu);
-        logger.debug( "Menu id for SDFEditor " +menuMgr.getId());
+//        Menu menu = menuMgr.createContextMenu(molTableViewer.getControl());
+//        molTableViewer.getControl().setMenu(menu);
+//        logger.debug( "Menu id for SDFEditor " +menuMgr.getId());
 
         getSite().setSelectionProvider( molTableViewer );
         enableDrop();

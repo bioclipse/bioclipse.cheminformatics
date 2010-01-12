@@ -189,7 +189,12 @@
 	       </command>
 		</menuContribution>
   <menuContribution
-        locationURI="popup:net.bioclipse.cdk.ui.sdfeditor.menu?after=additions">
+        locationURI="popup:net.bioclipse.cdk.ui.sdfeditor.column.menu?after=additions">
+         <command
+               commandId="net.bioclipse.cdk.molTable.column.remove"
+               label="Remove Property"
+               style="push">
+         </command>
   </menuContribution>
   <menuContribution
         locationURI="popup:net.bioclipse.cdk.ui.sdfeditor.menu?before=additions">
@@ -198,18 +203,22 @@
            label="Open"
            style="push"
            tooltip="Open 2D-strcuture edtior">
-        <visibleWhen
-              checkEnabled="true">
-           <iterate>
-              <or>
-                 <instanceof
-                       value="net.bioclipse.cdk.domain.ICDKMolecule">
-                 </instanceof>
-                 <instanceof
-                       value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
-                 </instanceof>
-              </or>
-           </iterate>
+        <visibleWhen checkEnabled="true">
+            <and>
+                <iterate>
+                  <or>
+                     <instanceof
+                           value="net.bioclipse.cdk.domain.ICDKMolecule">
+                     </instanceof>
+                     <instanceof
+                           value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
+                     </instanceof>
+                     <instanceof
+                           value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableSelection">
+                     </instanceof>
+                   </or>
+                </iterate>
+            </and>
         </visibleWhen>
      </command>
      <command
@@ -218,7 +227,6 @@
            style="push">
         <visibleWhen
               checkEnabled="true">
-           <or>
               <iterate>
                  <or>
                     <instanceof
@@ -232,13 +240,7 @@
                     </instanceof>
                  </or>
               </iterate>
-           </or>
         </visibleWhen>
-     </command>
-     <command
-           commandId="net.bioclipse.cdk.molTable.column.remove"
-           label="Remove Property"
-           style="push">
      </command>
   </menuContribution>
 	</extension>

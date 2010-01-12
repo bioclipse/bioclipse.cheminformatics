@@ -34,21 +34,13 @@ Require-Bundle: org.eclipse.ui,
  org.apache.commons.codec;bundle-version="1.3.0",
  org.openscience.cdk.renderbasic;bundle-version="1.3.0",
  org.openscience.cdk.renderextra;bundle-version="1.3.0",
- org.openscience.cdk.rendercontrol;bundle-version="1.3.0"
+ org.openscience.cdk.rendercontrol;bundle-version="1.3.0",
+ net.sourceforge.nattable.core;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Import-Package: net.bioclipse.inchi.business,
  org.apache.log4j;version="1.2.15"
 Export-Package: net.bioclipse.cdk.ui.sdfeditor,
  net.bioclipse.cdk.ui.sdfeditor.business,
- net.bioclipse.cdk.ui.sdfeditor.editor,
- org.eclipse.swt.nebula.widgets.compositetable,
- org.eclipse.swt.nebula.widgets.compositetable.day,
- org.eclipse.swt.nebula.widgets.compositetable.day.internal,
- org.eclipse.swt.nebula.widgets.compositetable.internal,
- org.eclipse.swt.nebula.widgets.compositetable.month,
- org.eclipse.swt.nebula.widgets.compositetable.month.internal,
- org.eclipse.swt.nebula.widgets.compositetable.timeeditor
-Bundle-ClassPath: nebula_compositetable.jar,
- nattable-core-1.6.5.jar,
- .
+ net.bioclipse.cdk.ui.sdfeditor.editor
+Bundle-ClassPath: .
 Bundle-Vendor: The Bioclipse Team

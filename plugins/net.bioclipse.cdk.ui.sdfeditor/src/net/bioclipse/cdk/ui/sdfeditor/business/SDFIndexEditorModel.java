@@ -261,7 +261,8 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
                                                   String property,
                                                   T value) {
         Map<String,Object> props = molProps.get( moleculeIndex );
-        propertyList.put( property, value.getClass() );
+        if(value!=null)
+            propertyList.put( property, value.getClass() );
         if(props==null)
             molProps.put( moleculeIndex, props = new HashMap<String, Object>() );
         props.put( property, value );

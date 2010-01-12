@@ -26,12 +26,12 @@ import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
-import net.sourceforge.nattable.NatTable;
-import net.sourceforge.nattable.model.INatTableModel;
-import net.sourceforge.nattable.painter.cell.ICellPainter;
-import net.sourceforge.nattable.renderer.ICellRenderer;
-import net.sourceforge.nattable.typeconfig.style.DisplayModeEnum;
-import net.sourceforge.nattable.typeconfig.style.IStyleConfig;
+import net.sourceforge.nattable.config.IConfigRegistry;
+import net.sourceforge.nattable.layer.cell.LayerCell;
+import net.sourceforge.nattable.painter.cell.BackgroundPainter;
+import net.sourceforge.nattable.style.CellStyleAttributes;
+import net.sourceforge.nattable.style.CellStyleUtil;
+import net.sourceforge.nattable.style.IStyle;
 import net.sourceforge.nattable.util.GUIHelper;
 
 import org.apache.log4j.Logger;
@@ -62,7 +62,7 @@ import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
  * @author arvid
  *
  */
-public class JCPCellPainter implements ICellPainter {
+public class JCPCellPainter extends BackgroundPainter {
     public Logger logger = Logger.getLogger(JCPCellPainter.class );
 
     private Renderer renderer;
@@ -172,12 +172,9 @@ public class JCPCellPainter implements ICellPainter {
         if ( element instanceof IAdaptable ) {
 
             IAtomContainer[] acArray= new IAtomContainer[1];
-            generated = retriveAtomContainer( (IAdaptable ) element,
-                                              acArray);
+            generated = retriveAtomContainer( (IAdaptable ) element, acArray);
             if(acArray[0] == null) return;
 
-
-            gc.setClipping( rect );
             Color oldBackground = gc.getBackground();
             Rectangle2D rectangle = new Rectangle2D.Double( rect.x, rect.y,
                                                             rect.width,
@@ -200,32 +197,15 @@ public class JCPCellPainter implements ICellPainter {
                         .getBoolean( "showGeneratedLabel" );
     }
 
-    public void drawCell( GC gc, Rectangle rectangle, NatTable natTable,
-                          ICellRenderer cellRenderer, int row, int col,
-                          boolean selected ) {
-
-     // Selection Color
-        IStyleConfig normalStyleConfig = cellRenderer.getStyleConfig(DisplayModeEnum.NORMAL.toString(), row, col);
-        IStyleConfig selectionStyleConfig = cellRenderer.getStyleConfig(DisplayModeEnum.SELECT.toString(), row, col);
-
-        Color fg = selected ? selectionStyleConfig.getForegroundColor(row, col)
-            : normalStyleConfig.getForegroundColor(row, col);
-        Color bg = selected ? selectionStyleConfig.getBackgroundColor(row, col)
-            : normalStyleConfig.getBackgroundColor(row, col);
-
-        gc.setForeground(fg != null ? fg : GUIHelper.COLOR_LIST_FOREGROUND);
-        gc.setBackground(bg != null ? bg : GUIHelper.COLOR_LIST_BACKGROUND);
-
-        INatTableModel tableModel = natTable.getNatTableModel();
-        // Allow display grid
-        if (tableModel.isGridLineEnabled()) {
-          rectangle.x = rectangle.x + 1;
-          rectangle.width = rectangle.width - 1;
-          rectangle.y = rectangle.y + 1;
-          rectangle.height = rectangle.height - 1;
-        }
-        gc.fillRectangle( rectangle );
-        getColumnImage( gc, rectangle, cellRenderer.getValue( row, col ) );
+    public void paintCell( LayerCell cell, GC gc, Rectangle bounds,
+                           IConfigRegistry configRegistry ) {
+        super.paintCell( cell, gc, bounds, configRegistry );
+        Rectangle originalClipping = gc.getClipping();
+        gc.setClipping( bounds.intersection( originalClipping ) );
+        IStyle cellStyle = CellStyleUtil.getCellStyle( cell, configRegistry );
+        setupGCFromConfig( gc, cellStyle );
+        getColumnImage( gc, bounds, cell.getDataValue() );
+        gc.setClipping( originalClipping );
     }
 
     public boolean isUseExtensionGenerators() {
@@ -236,5 +216,24 @@ public class JCPCellPainter implements ICellPainter {
     public void setUseExtensionGenerators( boolean useExtensionGenerators ) {
 
         extensionGenerator.setUse( useExtensionGenerators );
+    }
+
+    public int getPreferredHeight( LayerCell cell, GC gc,
+                                   IConfigRegistry configRegistry ) {
+        return MoleculeTableViewer.STRUCTURE_COLUMN_WIDTH;
+    }
+
+    public int getPreferredWidth( LayerCell cell, GC gc,
+                                  IConfigRegistry configRegistry ) {
+        return MoleculeTableViewer.STRUCTURE_COLUMN_WIDTH;
+    }
+
+    private void setupGCFromConfig(GC gc, IStyle cellStyle) {
+        Color fg = cellStyle.getAttributeValue(CellStyleAttributes.FOREGROUND_COLOR);
+        Color bg = cellStyle.getAttributeValue(CellStyleAttributes.BACKGROUND_COLOR);
+
+        gc.setAntialias(GUIHelper.DEFAULT_ANTIALIAS);
+        gc.setForeground(fg != null ? fg : GUIHelper.COLOR_LIST_FOREGROUND);
+        gc.setBackground(bg != null ? bg : GUIHelper.COLOR_LIST_BACKGROUND);
     }
 }

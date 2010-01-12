@@ -10,34 +10,60 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import net.bioclipse.cdk.domain.CDKMoleculePropertySource;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.BodyLayerStack;
+import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.ColorProviderPainter;
+import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.ColumnHeaderLayerStack;
+import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.MolTableBodyMenuConfigurator;
+import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.MolTableHeaderMenuConfigurator;
+import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.MultiColumnStructuralChangeEventExtension;
+import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.MultiRowStructuralChangeEvent;
+import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.RowHeaderLayerStack;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
-import net.sourceforge.nattable.GridRegionEnum;
 import net.sourceforge.nattable.NatTable;
-import net.sourceforge.nattable.action.SelectCellAction;
-import net.sourceforge.nattable.config.DefaultBodyConfig;
-import net.sourceforge.nattable.config.DefaultColumnHeaderConfig;
-import net.sourceforge.nattable.config.DefaultRowHeaderConfig;
-import net.sourceforge.nattable.config.SizeConfig;
-import net.sourceforge.nattable.data.IColumnHeaderLabelProvider;
+import net.sourceforge.nattable.config.AbstractUiBindingConfiguration;
+import net.sourceforge.nattable.config.CellConfigAttributes;
+import net.sourceforge.nattable.config.ConfigRegistry;
+import net.sourceforge.nattable.config.DefaultNatTableStyleConfiguration;
+import net.sourceforge.nattable.config.IConfigRegistry;
+import net.sourceforge.nattable.config.IEditableRule;
 import net.sourceforge.nattable.data.IDataProvider;
-import net.sourceforge.nattable.event.matcher.MouseEventMatcher;
-import net.sourceforge.nattable.model.DefaultNatTableModel;
-import net.sourceforge.nattable.painter.cell.ICellPainter;
-import net.sourceforge.nattable.renderer.AbstractCellRenderer;
-import net.sourceforge.nattable.support.EventBindingSupport;
-import net.sourceforge.nattable.typeconfig.style.DefaultStyleConfig;
-import net.sourceforge.nattable.typeconfig.style.DisplayModeEnum;
-import net.sourceforge.nattable.typeconfig.style.IStyleConfig;
-import net.sourceforge.nattable.util.GUIHelper;
+import net.sourceforge.nattable.edit.EditConfigAttributes;
+import net.sourceforge.nattable.grid.GridRegion;
+import net.sourceforge.nattable.grid.data.DefaultCornerDataProvider;
+import net.sourceforge.nattable.grid.data.DefaultRowHeaderDataProvider;
+import net.sourceforge.nattable.grid.layer.CornerLayer;
+import net.sourceforge.nattable.grid.layer.GridLayer;
+import net.sourceforge.nattable.layer.AbstractLayer;
+import net.sourceforge.nattable.layer.DataLayer;
+import net.sourceforge.nattable.layer.ILayerListener;
+import net.sourceforge.nattable.layer.cell.AggregrateConfigLabelAccumulator;
+import net.sourceforge.nattable.layer.cell.BodyOverrideConfigLabelAccumulator;
+import net.sourceforge.nattable.layer.cell.ColumnOverrideLabelAccumulator;
+import net.sourceforge.nattable.layer.event.ILayerEvent;
+import net.sourceforge.nattable.layer.event.StructuralRefreshEvent;
+import net.sourceforge.nattable.painter.cell.TextPainter;
+import net.sourceforge.nattable.selection.Range;
+import net.sourceforge.nattable.selection.config.DefaultSelectionStyleConfiguration;
+import net.sourceforge.nattable.selection.event.CellSelectionEvent;
+import net.sourceforge.nattable.selection.event.RowSelectionEvent;
+import net.sourceforge.nattable.style.DisplayMode;
+import net.sourceforge.nattable.ui.action.IMouseAction;
+import net.sourceforge.nattable.ui.binding.UiBindingRegistry;
+import net.sourceforge.nattable.ui.matcher.MouseEventMatcher;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -48,171 +74,178 @@ import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.ui.views.properties.IPropertySource;
 
 
 public class MoleculeTableViewer extends ContentViewer {
 
     public final static int STRUCTURE_COLUMN_WIDTH = 200;
+    public final static String STRUCTURE_LABEL = "StructureLable";
+    public final static String COLOR_PROVIDER_LABEL = "ColorProived";
     Logger logger = Logger.getLogger( MoleculeTableViewer.class );
 
     NatTable table;
     JCPCellPainter cellPainter;
+    private BodyLayerStack bodyLayer;
 
     private int currentSelected;
 
     private Runnable dblClickHook;
+    private ColumnHeaderLayerStack columnHeaderLayer;
 
     public MoleculeTableViewer(Composite parent, int style) {
+       this( parent, style, null, null );
+    }
 
-        cellPainter = new JCPCellPainter();
+    public MoleculeTableViewer( Composite parent, int style,
+                                MenuManager headerMenuManager,
+                                MenuManager bodyMenuManager) {
+        // Data providers
+        IDataProvider columnHeaderDataProvider = new IDataProvider() {
 
-        DefaultNatTableModel model = new DefaultNatTableModel();
+            public void setDataValue( int columnIndex, int rowIndex, Object newValue ) {
+                throw new UnsupportedOperationException();
+            }
 
-        IColumnHeaderLabelProvider columnHeaderLabelProvider = new IColumnHeaderLabelProvider() {
+            public int getRowCount() {
+                return 1;
+            }
 
-            public String getColumnHeaderLabel( int col ) {
+            public Object getDataValue( int columnIndex, int rowIndex ) {
+                return getColumnHeaderLabel(columnIndex);
+            }
+
+            public int getColumnCount() {
+                //if(true) return 2;
+                IMoleculeTableColumnHandler handler = getColumnHandler();
+                if(handler!=null)
+                    return getColumnHandler().getProperties().size()+1;
+                else return 0;
+            }
+
+            private String getColumnHeaderLabel( int col ) {
                 List<Object> prop = getColumnHandler().getProperties();
                 if(col == 0)
                     return "2D-structure";
                 if(col<prop.size()+1 )
                     return prop.get(col-1).toString();
-                return "";
+                return "xxx";
             }
         };
 
-        DefaultRowHeaderConfig rowHeaderConfig = new DefaultRowHeaderConfig();
-        rowHeaderConfig.setRowHeaderColumnCount(1);
-        SizeConfig rowHeaderColumnWidthConfig = new SizeConfig();
-        rowHeaderColumnWidthConfig.setDefaultSize(STRUCTURE_COLUMN_WIDTH/3);
-        //              columnWidthConfig.setDefaultSize(150);
-        rowHeaderColumnWidthConfig.setDefaultResizable(true);
-        rowHeaderColumnWidthConfig.setIndexResizable( 1, true );
-        rowHeaderConfig.setRowHeaderColumnWidthConfig( rowHeaderColumnWidthConfig );
-
-        DefaultBodyConfig bodyConfig = new DefaultBodyConfig(new IDataProvider() {
-
-
+        IDataProvider bodyDataProvider = new IDataProvider() {
 
             public int getColumnCount() {
                 if(getDataProvider()==null) return 0;
-                return getDataProvider().getColumnCount();
+                return getDataProvider().getColumnCount()+1;
             }
 
             public int getRowCount() {
                 if(getDataProvider()==null) return 0;
-                return getDataProvider().getRowCount()+1;
+                return getDataProvider().getRowCount();
             }
 
-            public Object getValue( int row, int col ) {
-                if(getDataProvider()==null) return null;
-                return getDataProvider().getValue( row, col );
+            public Object getDataValue( int columnIndex, int rowIndex ) {
+                if(getDataProvider()==null) return "123";
+                return getDataProvider().getDataValue( columnIndex, rowIndex  );
             }
 
-        });
-
-        bodyConfig.setCellRenderer( new AbstractCellRenderer() {
-
-            ICellPainter textPainter = new TextCellPainter();
-
-            DefaultStyleConfig selectedStyle = new DefaultStyleConfig(ICellPainter.COLOR_LIST_SELECTION, GUIHelper.COLOR_BLACK, null, null);
-            @Override
-            public IStyleConfig getStyleConfig(String displayMode, int row, int col) {
-                if (DisplayModeEnum.SELECT.name().equals(displayMode)) {
-                    return selectedStyle;
-                }
-                return super.getStyleConfig(displayMode, row, col);
+            public void setDataValue( int columnIndex, int rowIndex,
+                                      Object newValue ) {
+                throw new UnsupportedOperationException();
             }
 
-            @Override
-            public ICellPainter getCellPainter( int row, int col ) {
+        };
+        DefaultRowHeaderDataProvider rowHeaderDataProvider = new DefaultRowHeaderDataProvider( bodyDataProvider );
 
-                if(col == 0)
-                    return cellPainter;
-                return textPainter;
-            }
+        // Layers
+        bodyLayer = new BodyLayerStack( bodyDataProvider );
+        columnHeaderLayer = new ColumnHeaderLayerStack(
+                                              columnHeaderDataProvider,
+                                              bodyLayer,
+                                              bodyLayer.getSelectionLayer() );
+        RowHeaderLayerStack rowHeaderLayer = new RowHeaderLayerStack(
+                                              rowHeaderDataProvider,
+                                              bodyLayer,
+                                              bodyLayer.getSelectionLayer() );
+        DefaultCornerDataProvider cornerDataProvider
+                    = new DefaultCornerDataProvider( columnHeaderDataProvider,
+                                                     rowHeaderDataProvider );
+        CornerLayer cornerLayer = new CornerLayer( new DataLayer( cornerDataProvider ),
+                                                   rowHeaderLayer,
+                                                   columnHeaderLayer );
+        GridLayer gridLayer = new GridLayer( bodyLayer, columnHeaderLayer,
+                                             rowHeaderLayer, cornerLayer );
 
-            public String getDisplayText( int row, int col ) {
+     // Cell painting
+        cellPainter = new JCPCellPainter();
+        TextPainter textPainter = new TextPainter();
+        textPainter.setWrappedPainter( new ColorProviderPainter() );
 
-                return getDataProvider().getValue( row, col ).toString();
-            }
+        IConfigRegistry configRegistry = new ConfigRegistry();
+        configRegistry.registerConfigAttribute( EditConfigAttributes.CELL_EDITABLE_RULE,
+                                                IEditableRule.NEVER_EDITABLE );
 
-            public Object getValue( int row, int col ) {
+        configRegistry.registerConfigAttribute( CellConfigAttributes.CELL_PAINTER,
+                                                cellPainter,
+                                                DisplayMode.NORMAL,
+                                                STRUCTURE_LABEL);
+        configRegistry.registerConfigAttribute( CellConfigAttributes.CELL_PAINTER,
+                                                textPainter,
+                                                DisplayMode.NORMAL,
+                                                COLOR_PROVIDER_LABEL);
 
-                return getDataProvider().getValue( row, col );
-            }
+        DataLayer bodyDataLayer = bodyLayer.getDataLayer();
+        ColumnOverrideLabelAccumulator firstColumnLabelAccumulator
+                = new ColumnOverrideLabelAccumulator(bodyDataLayer);
+        firstColumnLabelAccumulator.registerColumnOverrides( 0, STRUCTURE_LABEL );
 
-        });
+        BodyOverrideConfigLabelAccumulator otherColumnAccumulator =
+            new BodyOverrideConfigLabelAccumulator();
+        otherColumnAccumulator.registerOverrides( COLOR_PROVIDER_LABEL );
 
-        model.setBodyConfig(bodyConfig);
-        model.setRowHeaderConfig(rowHeaderConfig);
-        model.setColumnHeaderConfig( new DefaultColumnHeaderConfig(columnHeaderLabelProvider));
-
-        model.setSingleCellSelection( false );
-        model.setMultipleSelection( true );
-//        model.setMultipleSelection( true );
-//        model.
-
-
-        SizeConfig columnWidthConfig = model.getBodyConfig().getColumnWidthConfig();
-        columnWidthConfig.setDefaultSize(STRUCTURE_COLUMN_WIDTH/2);
-        columnWidthConfig.setInitialSize( 0, STRUCTURE_COLUMN_WIDTH );
-        //              columnWidthConfig.setDefaultSize(150);
-        columnWidthConfig.setDefaultResizable(true);
-        columnWidthConfig.setIndexResizable(1, true);
-
-        // Row heights
-        SizeConfig rowHeightConfig = model.getBodyConfig().getRowHeightConfig();
-        rowHeightConfig.setDefaultSize(STRUCTURE_COLUMN_WIDTH);
-        rowHeightConfig.setDefaultResizable(true);
-        //                rowHeightConfig.setIndexResizable(1, false);
+        AggregrateConfigLabelAccumulator configLabelAccumulator =
+            new AggregrateConfigLabelAccumulator();
+        configLabelAccumulator.add( firstColumnLabelAccumulator, otherColumnAccumulator );
+        bodyDataLayer.setConfigLabelAccumulator( configLabelAccumulator );
 
         // NatTable
-        table = new NatTable(parent,
-                     SWT.NO_BACKGROUND | SWT.NO_REDRAW_RESIZE
-                     | SWT.DOUBLE_BUFFERED | SWT.V_SCROLL | SWT.H_SCROLL,
-                     model
-        );
+        table = new NatTable(parent, gridLayer,false);
+        table.setConfigRegistry( configRegistry );
 
-        EventBindingSupport eventBindingSupport =table.getEventBindingSupport();
-        eventBindingSupport.registerSingleClickBinding(
-                 new MouseEventMatcher( SWT.COMMAND,
-                                        GridRegionEnum.BODY.toString(), 1),
-                                      new SelectCellAction(table, false, true));
-        Listener listener = new Listener() {
+        table.addConfiguration( new DefaultNatTableStyleConfiguration() );
+        table.addConfiguration(new DefaultSelectionStyleConfiguration());
 
-            public void handleEvent( Event event ) {
-
-                switch(event.type) {
-                    case SWT.MouseDoubleClick:
-                        doubleClickHook();
-                        break;
-                    case SWT.SELECTED:
-                    case SWT.MouseUp:
-                        updateSelection( getSelection() );
-                        break;
-                    case SWT.MouseDown:
-                        table.dragDetect( event );
-                        break;
+        if(headerMenuManager != null)
+            table.addConfiguration(new MolTableHeaderMenuConfigurator(table,headerMenuManager));
+        if(bodyMenuManager != null)
+            table.addConfiguration( new MolTableBodyMenuConfigurator( table, bodyMenuManager ) );
+        table.addConfiguration( new AbstractUiBindingConfiguration() {
+            public void configureUiBindings( UiBindingRegistry uiBindingRegistry ) {
+                uiBindingRegistry.registerDoubleClickBinding(
+                  new MouseEventMatcher(SWT.NONE, GridRegion.BODY, 1) ,
+                      new IMouseAction() {
+                          public void run( NatTable natTable,
+                                       MouseEvent event ) {
+                          doubleClickHook();
+                      }
+                  });
+            }
+        });
+        table.configure();
+        table.addLayerListener(new ILayerListener(){
+            public void handleLayerEvent(ILayerEvent event) {
+                if(event instanceof RowSelectionEvent
+                                || event instanceof CellSelectionEvent){
+                    updateSelection( getSelection() );
                 }
             }
-        };
-        table.addListener( SWT.SELECTED, listener);
-        table.addListener( SWT.MouseUp, listener );
-        table.addListener( SWT.MouseDoubleClick, listener );
-        table.addListener( SWT.MouseDown, listener );
-
-        table.setDragDetect( true );
-
-        ScrollBar vSb = table.getVerticalBar();
-        vSb.setIncrement( 1 );
-        vSb.setPageIncrement( 1 );
-        table.scrollVBarUpdate( vSb );
+        });
+        // COMMAND click -> select
+        // drag select / drag molecule
     }
 
     public void addDropSupport( int operations, Transfer[] transferTypes,
@@ -334,24 +367,31 @@ public class MoleculeTableViewer extends ContentViewer {
 
         if(getContentProvider() instanceof MoleculeTableContentProvider) {
 
-            int[] selected = table.getSelectionModel().getSelectedRows();
-
-            if(selected.length==0) {
+            Set<Range> selectedSet = bodyLayer.getSelectionLayer().getSelectedRows();
+            if(selectedSet.isEmpty()) {
                 currentSelected = -1;
                 return StructuredSelection.EMPTY;
             }
-            currentSelected = selected[0];
+
+            Range first = selectedSet.iterator().next();
+            currentSelected = first.start;
 
             IMoleculesEditorModel model;
             if(getInput() instanceof IMoleculesEditorModel) {
                 model = (IMoleculesEditorModel) getInput();
-                if(selected.length == 1) {
-                    return new StructuredSelection(
-                               new MolTableElement( selected[0], model));
-                }else {
 
-                    return new  StructuredSelection(
-                             new MolTableSelection(selected,model));
+                if(selectedSet.size()==1 && first.end-first.start == 1) {
+                    return new StructuredSelection(
+                               new MolTableElement( first.start, model));
+                }else {
+                    List<Integer> ints = new ArrayList<Integer>();
+                    for(Range range:selectedSet) {
+                        ints.addAll( range.getMembers() );
+                    }
+                    Collections.sort( ints );
+                    int[] values = new int[ints.size()];
+                    for(int i=0;i<values.length;i++) values[i]=ints.get( i );
+                    return new MolTableSelection( values, model);
                 }
             }
         }
@@ -360,11 +400,21 @@ public class MoleculeTableViewer extends ContentViewer {
     }
 
     public int[] getSelectedColumns() {
-        return table.getSelectionModel().getSelectedColumns();
+        return bodyLayer.getSelectionLayer().getSelectedColumns();
     }
 
     public int[] getSelectedRows() {
-        return table.getSelectionModel().getSelectedRows();
+        Set<Range> ranges = bodyLayer.getSelectionLayer().getSelectedRows();
+        List<Integer> ints = new LinkedList<Integer>();
+        for(Range range:ranges) {
+            ints.addAll( range.getMembers() );
+        }
+        Collections.sort( ints );
+        int[] result = new int[ints.size()];
+        for(int i=0;i<ints.size();i++) {
+            result[i] = ints.get( i );
+        }
+        return result;
     }
 
     private IDataProvider getDataProvider() {
@@ -378,7 +428,8 @@ public class MoleculeTableViewer extends ContentViewer {
     @Override
     public void refresh() {
         if(!table.isDisposed()) {
-            table.reset();
+           // TODO  table.reset();
+            refreshTable();
             table.redraw();
             table.updateResize();
             table.update();
@@ -386,15 +437,25 @@ public class MoleculeTableViewer extends ContentViewer {
     }
 
     void refreshColumns() {
-        refresh();
+        AbstractLayer layer = bodyLayer.getDataLayer();
+        layer.fireLayerEvent(
+                      new MultiColumnStructuralChangeEventExtension( layer ) );
+        layer = columnHeaderLayer.getDataLayer();
+        layer.fireLayerEvent(
+                       new MultiColumnStructuralChangeEventExtension( layer ) );
     }
 
     void refreshRows() {
-        refresh();
+        AbstractLayer layer = bodyLayer.getDataLayer();
+        layer.fireLayerEvent(
+                      new MultiRowStructuralChangeEvent( layer ) );
+
     }
 
     void refreshTable() {
-        refresh();
+        AbstractLayer layer = bodyLayer.getDataLayer();
+        layer.fireLayerEvent(
+                      new StructuralRefreshEvent( layer ) );
     }
 
     @Override

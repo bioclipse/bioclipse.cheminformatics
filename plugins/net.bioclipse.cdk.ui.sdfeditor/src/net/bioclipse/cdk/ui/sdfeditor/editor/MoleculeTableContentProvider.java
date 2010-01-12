@@ -39,11 +39,6 @@ import net.bioclipse.cdk.ui.views.ISortable.SortProperty;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.sourceforge.nattable.NatTable;
 import net.sourceforge.nattable.data.IDataProvider;
-import net.sourceforge.nattable.model.DefaultNatTableModel;
-import net.sourceforge.nattable.model.INatTableModel;
-import net.sourceforge.nattable.sorting.ISortingDirectionChangeListener;
-import net.sourceforge.nattable.sorting.SortingDirection;
-import net.sourceforge.nattable.sorting.SortingDirection.DirectionEnum;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
@@ -137,8 +132,7 @@ public class MoleculeTableContentProvider implements
 
                 logger.debug( "Handling order for: " + order.propertyKey );
 
-                ICDKMolecule molecule = (ICDKMolecule)
-                                        tModel.getMoleculeAt( order.row );
+                ICDKMolecule molecule = tModel.getMoleculeAt( order.row );
 
                 if (order.col == 0) {
                     cache(order, molecule);
@@ -382,7 +376,7 @@ public class MoleculeTableContentProvider implements
     }
 
     public int getColumnCount() {
-        return properties.size()+1;
+        return properties.size();
     }
 
     public int getRowCount() {
@@ -392,7 +386,7 @@ public class MoleculeTableContentProvider implements
         return 0;
     }
 
-    public Object getValue( final int row, final int col ) {
+    public Object getDataValue( final int col, final int row ) {
         if ( row >= getNumberOfMolecules() ) return "";
 
         final IMoleculesEditorModel tModel = model;
@@ -443,6 +437,10 @@ public class MoleculeTableContentProvider implements
             return null;
         }
         return "[ Loading... ]";
+    }
+
+    public void setDataValue( int columnIndex, int rowIndex, Object newValue ) {
+        throw new UnsupportedOperationException();
     }
 
     public int getNumberOfMolecules() {
