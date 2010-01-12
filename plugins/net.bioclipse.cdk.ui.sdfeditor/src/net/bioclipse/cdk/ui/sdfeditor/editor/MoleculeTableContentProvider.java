@@ -348,6 +348,7 @@ public class MoleculeTableContentProvider implements
 
     public void updateHeaders() {
 
+        viewer.refreshColumns();
         viewer.refresh();
     }
 
@@ -361,6 +362,7 @@ public class MoleculeTableContentProvider implements
     }
 
     private void updateSize(int size) {
+        viewer.refreshRows();
         getCompositeTable( viewer ).redraw();
     }
 

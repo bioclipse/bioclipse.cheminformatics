@@ -359,6 +359,14 @@ public class MoleculeTableViewer extends ContentViewer {
         return StructuredSelection.EMPTY;
     }
 
+    public int[] getSelectedColumns() {
+        return table.getSelectionModel().getSelectedColumns();
+    }
+
+    public int[] getSelectedRows() {
+        return table.getSelectionModel().getSelectedRows();
+    }
+
     private IDataProvider getDataProvider() {
         return (IDataProvider)getContentProvider();
     }
@@ -375,6 +383,18 @@ public class MoleculeTableViewer extends ContentViewer {
             table.updateResize();
             table.update();
         }
+    }
+
+    void refreshColumns() {
+        refresh();
+    }
+
+    void refreshRows() {
+        refresh();
+    }
+
+    void refreshTable() {
+        refresh();
     }
 
     @Override

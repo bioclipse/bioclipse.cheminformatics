@@ -37,7 +37,6 @@ import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.jobs.BioclipseUIJob;
-import net.sourceforge.nattable.NatTable;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -59,10 +58,8 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
@@ -288,7 +285,7 @@ public class MoleculesEditor extends EditorPart implements
     }
 
     private void insert(ICDKMolecule... molecules) {
-        int[] selection =((NatTable)molTableViewer.getControl()).getSelectionModel().getSelectedRows();
+        int[] selection = molTableViewer.getSelectedRows();
         int first = selection.length!=0?selection[0]:-1;
         Object input = molTableViewer.getInput();
         if(input instanceof IFileMoleculesEditorModel && first!=-1)

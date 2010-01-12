@@ -30,8 +30,7 @@ public class RemoveColumnHandler extends AbstractHandler implements IHandler {
         MoleculesEditor molEditor = (MoleculesEditor)
                                     part.getAdapter( MoleculesEditor.class );
 
-        int[] vals  = ((NatTable)molEditor.getMolTableViewer().getControl())
-                                .getSelectionModel().getSelectedColumns();
+        int[] vals  = molEditor.getMolTableViewer().getSelectedColumns();
         MoleculeTableContentProvider contentProvider =
                                                 molEditor.getContentProvider();
 
