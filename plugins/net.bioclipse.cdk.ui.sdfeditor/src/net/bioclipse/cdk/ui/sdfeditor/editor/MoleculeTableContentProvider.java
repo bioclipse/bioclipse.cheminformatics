@@ -215,7 +215,7 @@ public class MoleculeTableContentProvider implements
     MoleculesEditorLabelProvider melp = new MoleculesEditorLabelProvider(
                                     MoleculeTableViewer.STRUCTURE_COLUMN_WIDTH);
 
-    private ISortingDirectionChangeListener sortDirListener;
+//    private ISortingDirectionChangeListener sortDirListener;
 
     private Thread thread;
 
@@ -299,52 +299,52 @@ public class MoleculeTableContentProvider implements
         updateHeaders();
 
         NatTable table = this.viewer.table;
-        if ( model instanceof ISortable ) {
-            table.removeSortingDirectionChangeListener( sortDirListener );
-            final ISortable sortModel = (ISortable) model;
-
-            ISortingDirectionChangeListener listener
-                                    = new ISortingDirectionChangeListener() {
-
-          public void sortingDirectionChanged( SortingDirection[] directions ) {
-
-                    List<SortProperty<?>> sortOrder;
-                    if ( directions.length <= 0 ) {
-                        sortOrder = Collections.emptyList();
-                        sortModel.setSortingProperties( sortOrder );
-                        return;
-                    }
-                    sortOrder = new ArrayList<SortProperty<?>>();
-                    for(SortingDirection sDir:directions) {
-                        if(sDir.getColumn() == 0) continue;
-                        sortOrder.add( new SortProperty<Object>(
-                                        properties.get(sDir.getColumn()-1),
-                                        sDir.getDirection()==DirectionEnum.UP
-                                         ?ISortable.SortDirection.Ascending
-                                         :ISortable.SortDirection.Descending) );
-                    }
-                    sortModel.setSortingProperties( sortOrder );
-               }
-            };
-            setSortListener( listener );
-        }else {
-            setSortListener( null );
-        }
+//        if ( model instanceof ISortable ) {
+//            table.removeSortingDirectionChangeListener( sortDirListener );
+//            final ISortable sortModel = (ISortable) model;
+//
+//            ISortingDirectionChangeListener listener
+//                                    = new ISortingDirectionChangeListener() {
+//
+//          public void sortingDirectionChanged( SortingDirection[] directions ) {
+//
+//                    List<SortProperty<?>> sortOrder;
+//                    if ( directions.length <= 0 ) {
+//                        sortOrder = Collections.emptyList();
+//                        sortModel.setSortingProperties( sortOrder );
+//                        return;
+//                    }
+//                    sortOrder = new ArrayList<SortProperty<?>>();
+//                    for(SortingDirection sDir:directions) {
+//                        if(sDir.getColumn() == 0) continue;
+//                        sortOrder.add( new SortProperty<Object>(
+//                                        properties.get(sDir.getColumn()-1),
+//                                        sDir.getDirection()==DirectionEnum.UP
+//                                         ?ISortable.SortDirection.Ascending
+//                                         :ISortable.SortDirection.Descending) );
+//                    }
+//                    sortModel.setSortingProperties( sortOrder );
+//               }
+//            };
+//            setSortListener( listener );
+//        }else {
+//            setSortListener( null );
+//        }
 
     }
 
-    private void setSortListener( ISortingDirectionChangeListener listener) {
-        NatTable table = this.viewer.table;
-        if(listener==null)
-            table.removeSortingDirectionChangeListener( sortDirListener );
-        else
-            table.addSortingDirectionChangeListener( listener );
-        sortDirListener = listener;
-        INatTableModel mod = table.getNatTableModel();
-        if(mod instanceof DefaultNatTableModel)
-            ((DefaultNatTableModel)mod)
-                .setSortingEnabled( listener==null?false:true );
-    }
+//    private void setSortListener( ISortingDirectionChangeListener listener) {
+//        NatTable table = this.viewer.table;
+//        if(listener==null)
+//            table.removeSortingDirectionChangeListener( sortDirListener );
+//        else
+//            table.addSortingDirectionChangeListener( listener );
+//        sortDirListener = listener;
+//        INatTableModel mod = table.getNatTableModel();
+//        if(mod instanceof DefaultNatTableModel)
+//            ((DefaultNatTableModel)mod)
+//                .setSortingEnabled( listener==null?false:true );
+//    }
 
     public void updateHeaders() {
 
