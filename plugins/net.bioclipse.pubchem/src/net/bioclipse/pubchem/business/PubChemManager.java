@@ -216,7 +216,7 @@ public class PubChemManager implements IBioclipseManager {
         return downloadAsString(cid, "DisplayXML", monitor);
     }
 
-    public String download3dAsString3d(Integer cid, IProgressMonitor monitor)
+    public String download3dAsString(Integer cid, IProgressMonitor monitor)
         throws IOException, BioclipseException, CoreException{
         return downloadAsString(cid, "3DDisplaySDF", monitor);
     }
