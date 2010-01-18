@@ -892,6 +892,11 @@ public class CDKManager implements IBioclipseManager {
             throw new BioclipseException("Input cannot be empty.");
 
         IChemFormat format = determineIChemFormatOfString(molstring);
+        if (format == null)
+            throw new BioclipseException(
+                "Could not identify format for the input string."
+            );
+
         System.out.println("Format: " + format);
         return loadMolecule(
             new ByteArrayInputStream(molstring.getBytes()),
