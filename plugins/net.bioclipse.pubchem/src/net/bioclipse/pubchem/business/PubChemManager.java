@@ -169,7 +169,7 @@ public class PubChemManager implements IBioclipseManager {
     public IMolecule download3d(Integer cid, IProgressMonitor monitor)
         throws IOException, BioclipseException, CoreException{
         monitor.beginTask("Downloading Compound 3D from PubChem...", 2);
-        String molstring = downloadAsString(cid, monitor);
+        String molstring = download3dAsString(cid, monitor);
         if (monitor.isCanceled()) return null;
         
         ICDKMolecule molecule = cdk.fromString(molstring);
