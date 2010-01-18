@@ -171,7 +171,11 @@ public class PubChemManager implements IBioclipseManager {
         monitor.beginTask("Downloading Compound 3D from PubChem...", 2);
         String molstring = download3dAsString(cid, monitor);
         if (monitor.isCanceled()) return null;
-        
+
+        // convert the returned SD file into a MDL molfile by stripping the
+        // $$$$ and beyond
+        molstring = molstring.substring(0, molstring.indexOf("$$$$"));
+
         ICDKMolecule molecule = cdk.fromString(molstring);
         monitor.worked(1);
         return molecule;
