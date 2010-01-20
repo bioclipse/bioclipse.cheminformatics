@@ -42,5 +42,8 @@
             class="net.bioclipse.cdk.business.preferences.PreferenceInitializer">
       </initializer>
    </extension>
-
+   <extension point="net.bioclipse.ui.business.BioObjectFromStringBuilder">
+      <BioObjectFromStringBuilder
+         object="net.bioclipse.cdk.business.CDKMoleculeFromStringBuilder" />
+   </extension>
 </plugin>
