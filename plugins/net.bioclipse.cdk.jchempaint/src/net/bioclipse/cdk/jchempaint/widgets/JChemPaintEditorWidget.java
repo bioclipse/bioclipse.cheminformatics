@@ -559,8 +559,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                     else
                         atomContainer = null;
                     new2Dcoordinates = true;
-                 // Editor not dirty when generated coordinates see bug 1372
-                    //setDirty( true );
+                    // Editor not dirty when generated coordinates see bug 1372
+                    setDirty( false );
                     if(GenerateLabelPrefChangedLisener.showGeneratedLabel())
                         add( Message.GENERATED );
                 }else {
