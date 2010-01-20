@@ -569,7 +569,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                     .newAtomContainer( atomContainer );
                     atomContainer.setProperties( new HashMap<Object, Object>(
                             oldAC.getProperties()) );
-                    setDirty( false );
+                    setDirty( oldAC.getFlag( 7 ) );
                 }
                 setAtomContainer(atomContainer);
             }
