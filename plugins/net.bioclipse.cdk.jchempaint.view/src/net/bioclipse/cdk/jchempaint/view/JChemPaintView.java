@@ -289,7 +289,7 @@ public class JChemPaintView extends ViewPart
         //If we have an ICDKMolecule, just get the AC
         else
             if (obj instanceof ICDKMolecule) {
-                CDKMolecule mol = (CDKMolecule) obj;
+                ICDKMolecule mol = (ICDKMolecule) obj;
                 if (mol.getAtomContainer()==null){
                     logger.debug("CDKMolecule but can't get AtomContainer.");
                     return;
