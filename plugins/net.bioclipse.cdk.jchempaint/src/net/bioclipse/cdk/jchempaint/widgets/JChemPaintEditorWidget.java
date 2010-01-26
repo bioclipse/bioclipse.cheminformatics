@@ -559,8 +559,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                     else
                         atomContainer = null;
                     new2Dcoordinates = true;
-                 // Editor not dirty when generated coordinates see bug 1372
-                    //setDirty( true );
+                    // Editor not dirty when generated coordinates see bug 1372
+                    setDirty( false );
                     if(GenerateLabelPrefChangedLisener.showGeneratedLabel())
                         add( Message.GENERATED );
                 }else {
@@ -569,7 +569,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                     .newAtomContainer( atomContainer );
                     atomContainer.setProperties( new HashMap<Object, Object>(
                             oldAC.getProperties()) );
-                    setDirty( false );
+                    setDirty( oldAC.getFlag( 7 ) );
                 }
                 setAtomContainer(atomContainer);
             }

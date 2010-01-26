@@ -13,7 +13,6 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 import java.util.Collection;
 import java.util.List;
 
-import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculePropertySource;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
@@ -257,9 +256,9 @@ public class MoleculeTableViewer extends ContentViewer {
             }
             if (adapter.isAssignableFrom(IPropertySource.class)) {
                 ICDKMolecule mol = model.getMoleculeAt( index );
-                if(mol instanceof CDKMolecule) {
+                if(mol instanceof ICDKMolecule) {
                     if(pSource == null)
-                        pSource=  new CDKMoleculePropertySource((CDKMolecule) mol);
+                        pSource=  new CDKMoleculePropertySource(mol);
                     return pSource;
                 } else
                     return null;

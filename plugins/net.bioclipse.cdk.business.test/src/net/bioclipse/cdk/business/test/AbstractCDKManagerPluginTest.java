@@ -1941,4 +1941,14 @@ public abstract class AbstractCDKManagerPluginTest {
         Assert.assertEquals("CC", cdk.calculateSMILES(mcssCDKMol));
     }
 
+    @Test public void testBug1813() throws IOException {
+        try {
+            cdk.fromString( "OH HAI! I iz no molcule" );
+            fail("Should throw exception");
+        }
+        catch (BioclipseException e) {
+            assertEquals( "Could not identify format for the input string.",
+                          e.getMessage() );
+        } 
+    }
 }
