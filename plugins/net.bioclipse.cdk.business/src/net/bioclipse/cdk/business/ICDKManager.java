@@ -509,7 +509,7 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod (
         params = "ICDKMolecule molecule, ICDKMolecule subStructure",
         methodSummary = "Returns the substructure matches in the molecule for" +
-            "the given substructure"
+            " the given substructure"
     )
     @Recorded
     public List<ICDKMolecule> getSubstructures(ICDKMolecule molecule,
@@ -552,7 +552,8 @@ public interface ICDKManager extends IBioclipseManager {
      */
     @PublishedMethod ( 
         params = "String input file",
-        methodSummary = "Creates a cdk molecule from a String." )
+        methodSummary = "Creates a cdk molecule from a String. " +
+        		        "Guessing the format of the String" )
     @Recorded
     @TestMethods("testFromString")
     public ICDKMolecule fromString( String cml ) 
@@ -641,7 +642,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(
         params = "List<IMolecule> molecule",
-        methodSummary = "Create 2D coordinate for the given molecules")
+        methodSummary = "Create 2D coordinates for the given molecules")
     @TestMethods("testGenerate2DCoordinates")
     public List<ICDKMolecule> 
            generate2dCoordinates( List<? extends IMolecule> molecules ) 
@@ -650,7 +651,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(
         params = "IMolecule molecule",
-        methodSummary = "Create 2D coordinate for the given molecule")
+        methodSummary = "Create 2D coordinates for the given molecule")
     @TestMethods("testGenerate2DCoordinatesSingle")
     public ICDKMolecule generate2dCoordinates(IMolecule molecule) 
                         throws Exception;
@@ -670,7 +671,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(
         params = "List<IMolecule> molecule",
-        methodSummary = "Create 3D coordinate for the given molecules" )
+        methodSummary = "Create 3D coordinates for the given molecules" )
     @TestMethods("testGenerate3DCoordinates")
     public List<IMolecule> generate3dCoordinates(List<IMolecule> molecule) 
                            throws BioclipseException;
@@ -678,7 +679,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(
         params = "IMolecule molecule",
-        methodSummary = "Create 3D coordinate for the given molecule" )
+        methodSummary = "Create 3D coordinates for the given molecule" )
     @TestMethods("testGenerate3DCoordinatesSingle")
     public IMolecule generate3dCoordinates(IMolecule molecule) throws BioclipseException;
 
@@ -723,7 +724,7 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod(
         params = "ICDKMolecule molecule, String filename",
         methodSummary = "Saves a molecule in the Chemical Markup Language " +
-        		            "format (filename must be a relative to workspace " +
+        		            "format (filename must be relative to workspace " +
         		            "root and folder must exist). Example of file " +
         		            "String: \"/Virtual/bla.cml\"" )
     @TestMethods("testSaveCML")
@@ -897,7 +898,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(
          params = "IContentType type",
-         methodSummary = "Determines the IChemFormat equivalent of the given" +
+         methodSummary = "Determines the IChemFormat equivalent of the given " +
                          "content type" )
     public IChemFormat determineFormat(IContentType type);
 
@@ -916,7 +917,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(
          params = "String path",
-         methodSummary = "Makes an educated guess if the file format based" +
+         methodSummary = "Makes an educated guess if the file format based " +
                          "on the file extension alone." )
     @TestMethods("testGuessFormatFromExtension")
     public IChemFormat guessFormatFromExtension(String type);
@@ -924,7 +925,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(
          params = "String SMARTS",
-         methodSummary = "Determines if a SMARTS string cane be interpreted " +
+         methodSummary = "Determines if a SMARTS string can be interpreted " +
          		             "by CDK." )
     @TestMethods("testSMARTSonFile")
     boolean isValidSmarts( String SMARTS );
@@ -933,7 +934,7 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod(
          params = "ICDKMolecule molecule, String SMARTS",
          methodSummary = "Query a molecule for a SMARTS string and return a " +
-             "list of IAtomCOntainers with the matches." )
+             "list of IAtomContainers with the matches." )
     @TestMethods("testSMARTSonFile")
     public List<IAtomContainer> getSmartsMatches( ICDKMolecule molecule, 
                                                   String SMARTS )
@@ -952,7 +953,7 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod(
          params = "IMolecule molecule",
          methodSummary = "Returns true if the given atom container is " +
-         		"fully connected. Use parition directly if that is the " +
+         		"fully connected. Use partition directly if that is the " +
          		"antipicated next action, to no repeat to same computation.")
     public boolean isConnected(IMolecule molecule) throws BioclipseException;
 
