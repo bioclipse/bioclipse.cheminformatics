@@ -32,116 +32,125 @@ public interface IJChemPaintGlobalPropertiesManager extends IBioclipseManager {
     public void applyProperties(RendererModel model) throws BioclipseException;
     
     @Recorded
-    @PublishedMethod ( methodSummary = "applies the global properties to all" +
+    @PublishedMethod ( methodSummary = "applies the global properties to all " +
     "opened JChemPaint editors" )
     public void applyGlobalProperties() throws BioclipseException;
     
     @Recorded
-    @PublishedMethod ( params = "boolean true if aromatic indicators shown", 
-                       methodSummary = "set to true if aromatic indicators on" )
+    @PublishedMethod ( params = "boolean showAromaticity", 
+                       methodSummary = "Sets whether aromatic indicators " +
+                       		           "are on" )
     public void setShowAromaticity(boolean showAromaticity)
     throws BioclipseException;
 
-    @PublishedMethod ( methodSummary = "true if aromatic indicators on" )
+    @PublishedMethod ( methodSummary = "Returns whether aromatic indicators " +
+    		                           "are on" )
     public boolean getShowAromaticity()
     throws BioclipseException;
 
     @Recorded
-    @PublishedMethod ( params = "boolean true if methyl groups shown explicitly", 
-                       methodSummary = "set to show explicit methyl groups" )
+    @PublishedMethod ( params = "boolean showEndCarbons", 
+                       methodSummary = "Sets whether explicit methyl groups " +
+                       		           "are shown" )
     public void setShowEndCarbons(boolean showEndCarbons)
     throws BioclipseException;
     
-    @PublishedMethod ( methodSummary = "true if showing explicit methyl groups")
+    @PublishedMethod ( methodSummary = "Returns whether explicit methyl " +
+    		                           "groups are shown" )
     public boolean getShowEndCarbons()
     throws BioclipseException;
     
     @Recorded
-    @PublishedMethod ( params = "boolean true if hydrogens shown explicitly", 
-                       methodSummary = "set to show explicit hydrogens" )
+    @PublishedMethod ( params = "boolean showExplicitHydrogens", 
+                       methodSummary = "Sets whether explicit hydrogens " +
+                       	 	           "are shown" )
     public void setShowExplicitHydrogens(boolean showExplicitHydrogens)
     throws BioclipseException;
     
-    @PublishedMethod ( methodSummary = "true if showing explicit hydrogens")
+    @PublishedMethod ( methodSummary = "Returns whether explicit hydrogens" +
+                                        " are shown." )
     public boolean getShowExplicitHydrogens()
     throws BioclipseException;
     
     @Recorded
-    @PublishedMethod ( params = "boolean true if implicit hydrogens shown", 
-                       methodSummary = "set to show implicit hydrogens" )
+    @PublishedMethod ( params = "boolean showImplicitHydrogens", 
+                       methodSummary = "Sets whether implicit hydrogens are " +
+                       		           "shown" )
     public void setShowImplicitHydrogens(boolean showImplicitHydrogens)
     throws BioclipseException;
     
-    @PublishedMethod ( methodSummary = "true if showing implicit hydrogens")
+    @PublishedMethod ( methodSummary = "Returns whether implicit hydrogens" +
+    		                           "are shown" )
     public boolean getShowImplicitHydrogens()
     throws BioclipseException;
     
     @Recorded
-    @PublishedMethod ( params = "boolean true if numbers shown on atoms", 
-                       methodSummary = "set to show numbers on atoms" )
+    @PublishedMethod ( params = "boolean showNumbers", 
+                       methodSummary = "Sets whether numbers on atoms are " +
+                       		           "shown." )
     public void setShowNumbers(boolean showNumbers)
     throws BioclipseException;
     
-    @PublishedMethod ( methodSummary = "true if showing numbers on atoms")
+    @PublishedMethod ( methodSummary = "Returns whether numbers on atoms are " +
+    		                           "shown" )
     public boolean getShowNumbers()
     throws BioclipseException;
     
     @Recorded
-    @PublishedMethod ( params = "atomRadius the radius of a compact atom", 
-                       methodSummary = "set the radius of a compact atom")
+    @PublishedMethod ( params = "double atomRadius", 
+                       methodSummary = "Sets the radius of a compact atom")
     public void setAtomRadius(double atomRadius) throws BioclipseException;
     
     
-    @PublishedMethod ( methodSummary = "returns the radius of a compact atom" )
+    @PublishedMethod ( methodSummary = "Returns the radius of a compact atom" )
     public double getAtomRadius() throws BioclipseException;
     
     @Recorded
-    @PublishedMethod ( params = "bondLength the length of a standard bond", 
-                       methodSummary = "set the length of a standard bond")
+    @PublishedMethod ( params = "souble bondLength", 
+                       methodSummary = "Sets the length of a standard bond")
     public void setBondLength(double bondLength) throws BioclipseException;
     
     
-    @PublishedMethod ( methodSummary = "returns the length of a standard bond" )
+    @PublishedMethod ( methodSummary = "Returns the length of a standard bond" )
     public double getBondLength() throws BioclipseException;
     
     @Recorded
-    @PublishedMethod ( params = "bondDistance the distance between bonds", 
-                       methodSummary = "set the distance between double bonds")
+    @PublishedMethod ( params = "double bondDistance", 
+                       methodSummary = "Sets the distance between double bonds")
     public void setBondDistance(double bondDistance) throws BioclipseException;
     
     
-    @PublishedMethod ( methodSummary = "returns the length of a standard bond" )
+    @PublishedMethod ( methodSummary = "Returns the length of a standard bond" )
     public double getBondDistance() throws BioclipseException;
     
     @Recorded
-    @PublishedMethod ( params = "highlightDistance the distance within which " +
-    		"an atom or bond is highlighted", 
-                       methodSummary = "set the highlight distance")
+    @PublishedMethod ( params = " double highlightDistance", 
+                       methodSummary = "Sets the distance withing which a " +
+                       		           "bond or atoms is highlighted" )
     public void setHighlightDistance(double highlightDistance) 
     throws BioclipseException;
     
     
-    @PublishedMethod ( methodSummary = "returns the length of a standard bond" )
+    @PublishedMethod ( methodSummary = "Returns the length of a standard bond" )
     public double getHighlightDistance() throws BioclipseException;
     
     
-    @PublishedMethod ( methodSummary = "returns the margin size" )
+    @PublishedMethod ( methodSummary = "Returns the margin size" )
     public double getMargin() throws BioclipseException;
 
     @Recorded
-    @PublishedMethod ( params = "margin whitespace margin size", 
-                       methodSummary = "set the amount of whitespace around" +
-                       		"the diagram" )
+    @PublishedMethod ( params = "double margin", 
+                       methodSummary = "Sets the amount of whitespace around" +
+                       		           "the diagram" )
     public void setMargin(double margin) throws BioclipseException;
 
     @Recorded
-    @PublishedMethod ( params = "wedge width on screen of the fat end of a" +
-            "stereo wedge", 
-                       methodSummary = "set the width on screen of a wedge")
+    @PublishedMethod ( params = "double wedgeWidth", 
+                       methodSummary = "Sets the width on screen of a wedge")
     public void setWedgeWidth(double wedgeWidth) 
     throws BioclipseException;
     
     
-    @PublishedMethod ( methodSummary = "returns the width of a stereo wedge" )
+    @PublishedMethod ( methodSummary = "Returns the width of a stereo wedge" )
     public double getWedgeWidth() throws BioclipseException;
 }

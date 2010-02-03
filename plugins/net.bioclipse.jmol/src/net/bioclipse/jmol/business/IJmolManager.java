@@ -92,7 +92,7 @@ public interface IJmolManager extends IBioclipseManager{
 
     @Recorded
     @PublishedMethod(methodSummary = "Optimizes the geometry of the structure" +
-    		"in the active JmolEditor (but not back to file)" )
+    		" in the active JmolEditor (but not back to file)" )
     public void minimize();
  
     @PublishedMethod(
