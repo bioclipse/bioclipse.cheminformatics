@@ -177,7 +177,7 @@ public class MoleculeTableContentProvider implements
 
         private void cache(PropertyOrder order, Object o) {
 
-            if ( moleculeProperties.size() > 10 * properties.size() ) {
+            if ( moleculeProperties.size() > 10 * (properties.size()+1) ) {
                 Object k = moleculePropertiesQueue.remove( 0 );
                 moleculeProperties.remove( k );
             }
