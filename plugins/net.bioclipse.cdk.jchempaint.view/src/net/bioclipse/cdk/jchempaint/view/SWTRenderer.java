@@ -39,6 +39,7 @@ import org.openscience.cdk.renderer.elements.RectangleElement;
 import org.openscience.cdk.renderer.elements.TextElement;
 import org.openscience.cdk.renderer.elements.WedgeLineElement;
 import org.openscience.cdk.renderer.font.IFontManager;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BackGroundColor;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 
 public class SWTRenderer implements IDrawVisitor{
@@ -245,7 +246,8 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     private java.awt.Color getBackgroundColor() {
-        return getModel().getBackColor();
+        return ((BackGroundColor)getModel().getRenderingParameter(BackGroundColor.class))
+        	.getValue();
     }
 
 

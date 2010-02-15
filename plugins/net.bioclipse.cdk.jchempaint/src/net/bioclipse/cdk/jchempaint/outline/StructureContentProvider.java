@@ -11,7 +11,6 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.outline;
 
-import java.io.IOException;
 import java.util.Iterator;
 
 import net.bioclipse.cdk.domain.CDKChemObject;
@@ -20,8 +19,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.PeriodicTableElement;
-import org.openscience.cdk.config.ElementPTFactory;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -29,6 +26,7 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.interfaces.IBond.Order;
+import org.openscience.cdk.tools.periodictable.PeriodicTable;
 
 public class StructureContentProvider implements ITreeContentProvider {
 
@@ -99,18 +97,7 @@ public class StructureContentProvider implements ITreeContentProvider {
 
     public static CDKChemObject<IAtom> createCDKChemObject( IAtom atom ) {
         String symbol = atom.getSymbol();
-        ElementPTFactory efac;
-        try {
-            efac = ElementPTFactory.getInstance();
-        } catch ( IOException e) {
-            logger.error("Error while opening element info file", e);
-            return new CDKAtomChemObject("unknown" + " (" + symbol + ")", atom);
-        }
-        PeriodicTableElement elem = efac.getElement(symbol);
-        if (elem == null) {
-            return new CDKAtomChemObject("unknown" + " (" + symbol + ")", atom);
-        }
-        String name = efac.getName(elem);
+        String name = PeriodicTable.getName(symbol);
         if (name == null) name = "unknown";
         CDKChemObject<IAtom> co = new CDKAtomChemObject(
             name + " (" + symbol + ")"

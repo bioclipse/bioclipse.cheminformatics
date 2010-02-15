@@ -11,12 +11,6 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.periodictable;
 
-import static org.openscience.cdk.tools.PeriodicTable.getChemicalSeries;
-import static org.openscience.cdk.tools.PeriodicTable.getGroup;
-import static org.openscience.cdk.tools.PeriodicTable.getPeriod;
-import static org.openscience.cdk.tools.PeriodicTable.getPhase;
-
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,11 +52,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.part.ViewPart;
 import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.PeriodicTableElement;
-import org.openscience.cdk.config.ElementPTFactory;
-import org.openscience.cdk.config.Symbols;
-import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.tools.PeriodicTable;
+import org.openscience.cdk.Element;
+import org.openscience.cdk.tools.periodictable.PeriodicTable;
 
 
 /**
@@ -77,8 +68,7 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
 
     Canvas canvas;
 
-    CDKChemObject<PeriodicTableElement> selection;
-    ElementPTFactory eptf;
+    CDKChemObject<Element> selection;
 
     ListenerList listeners = new ListenerList();
     ISelection theSelection = StructuredSelection.EMPTY;
@@ -117,14 +107,6 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
      */
     @Override
     public void createPartControl( Composite parent ) {
-
-        try {
-            eptf = ElementPTFactory.getInstance();
-        } catch ( IOException e1 ) {
-
-        }
-
-        elements = Symbols.byAtomicNumber;
 
         canvas = new Canvas(parent,SWT.NONE);
         canvas.setBackground( canvas.getDisplay().getSystemColor( SWT.COLOR_WHITE ) ) ;
@@ -206,16 +188,9 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
                String s = checkHit( new Point(e.x,e.y) );
                if(s!=null) {
 
-                   PeriodicTableElement element = new PeriodicTableElement(s);
+                   Element element = new Element(s);
                    element.setProperty( CDKConstants.TITLE, PeriodicTable.getName( s ));
-                   if(eptf != null) {
-                       try {
-                           eptf.configure(element);
-                       } catch ( CDKException e1 ) {
-                           // if we cant configer ignore it
-                       }
-                   }
-                   selection = new CDKChemObject<PeriodicTableElement>(element);
+                   selection = new CDKChemObject<Element>(element);
                    setSelection( new StructuredSelection(selection) );
                }else {
                    selection = null;
@@ -243,8 +218,8 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
     }
 
     private Point getGroupPeriodFor(String symbol) {
-        Integer gTmp =getGroup( symbol );
-        Integer pTmp = getPeriod(symbol);
+        Integer gTmp = PeriodicTable.getGroup( symbol );
+        Integer pTmp = PeriodicTable.getPeriod(symbol);
         double group,period;
 
         if(gTmp != null && pTmp != null) {
@@ -281,8 +256,8 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
             if(gP == null)
                 continue;
 
-            String ser = getChemicalSeries( symbol );
-            String state = getPhase( symbol );
+            String ser = PeriodicTable.getChemicalSeries( symbol );
+            String state = PeriodicTable.getPhase( symbol );
 
             int x = gP.x;
             int y = gP.y;

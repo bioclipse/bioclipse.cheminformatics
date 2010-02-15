@@ -104,7 +104,6 @@ public class SmartsMatchingRendererConfigurator
                 model.setShowAtomTypeNames( false );
                 model.setShowImplicitHydrogens( false );
                 model.setShowExplicitHydrogens(  false );
-                model.setAtomRadius( 0 );
 
                 
                 //Update drawing

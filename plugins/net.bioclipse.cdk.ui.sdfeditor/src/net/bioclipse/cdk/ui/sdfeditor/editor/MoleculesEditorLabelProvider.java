@@ -54,6 +54,7 @@ import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.RingGenerator;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BackGroundColor;
 
 public class MoleculesEditorLabelProvider implements ITableLabelProvider{
 
@@ -109,7 +110,8 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
 //        rModel.setUseAntiAliasing(true );
 
         rModel.setShowExplicitHydrogens( false );
-        rModel.setBackColor( new java.awt.Color(252,253,254));
+        ((BackGroundColor)rModel.getRenderingParameter(BackGroundColor.class))
+    		.setValue( new java.awt.Color(252,253,254));
         rModel.setFitToScreen( true );
 
         greenScreen = new Color(Display.getCurrent(), 252, 253, 254);

@@ -15,6 +15,7 @@ import net.bioclipse.cdk.jchempaint.Activator;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
 
 /**
  * Class used to initialize default preference values.
@@ -56,7 +57,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
         store.setDefault(
                 PreferenceConstants.ATOM_RADIUS_DOUBLE,
-                model.getAtomRadius()
+                (Double)model.getRenderingParameter(AtomRadius.class).getDefault()
         );
         store.setDefault(
                 PreferenceConstants.BOND_LENGTH_DOUBLE,

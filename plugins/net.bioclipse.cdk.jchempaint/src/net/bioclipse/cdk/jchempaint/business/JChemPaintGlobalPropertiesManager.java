@@ -27,6 +27,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
 
 /**
  * Provides scripting for the global JChemPaint preferences.
@@ -74,7 +75,7 @@ public class JChemPaintGlobalPropertiesManager
         model.setShowImplicitHydrogens(getShowImplicitHydrogens());
         model.setDrawNumbers(getShowNumbers());
         model.setMargin(getMargin());
-        model.setAtomRadius(getAtomRadius());
+        ((AtomRadius)model.getRenderingParameter(AtomRadius.class)).setValue(getAtomRadius());
         model.setBondLength(getBondLength());
         model.setBondDistance(getBondDistance());
         model.setHighlightDistance(getHighlightDistance());

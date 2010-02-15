@@ -43,6 +43,8 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IBond.Order;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.selection.LinkedSelection;
 import org.openscience.cdk.renderer.selection.LogicalSelection;
@@ -430,7 +432,8 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setAtomRadius(double atomRadius) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setAtomRadius(atomRadius);
+            ((AtomRadius)model.getRenderingParameter(AtomRadius.class))
+               .setValue(atomRadius);
         }
         updateView();
     }
@@ -558,7 +561,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public double getAtomRadius() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getAtomRadius();
+            return (Double)model.getRenderingParameter(BasicAtomGenerator.AtomRadius.class).getValue();
         } else {
             return 0;
         }
