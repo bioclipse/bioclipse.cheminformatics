@@ -45,14 +45,17 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
-import org.openscience.cdk.renderer.RenderingParameters.AtomShape;
 import org.openscience.cdk.renderer.font.IFontManager;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.RingGenerator;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactAtom;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactShape;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.Shape;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BackGroundColor;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
 
 
 /**
@@ -110,13 +113,13 @@ public class JCPCellPainter implements ICellPainter {
         renderer = new Renderer(generators, fontManager);
 
         RendererModel rModel = renderer.getRenderer2DModel();
-        rModel.setCompactShape( AtomShape.OVAL );
+        rModel.getRenderingParameter(CompactShape.class).setValue(Shape.OVAL);
 
         applyGlobalProperties( rModel );
 
-        rModel.setMargin( 30 );
+        rModel.getRenderingParameter(Margin.class).setValue(30.0);
         rModel.setDrawNumbers( false );
-        rModel.setIsCompact( true );
+        rModel.getRenderingParameter(CompactAtom.class).setValue(true );
 //        rModel.setUseAntiAliasing(true );
 
         rModel.setShowExplicitHydrogens( false );

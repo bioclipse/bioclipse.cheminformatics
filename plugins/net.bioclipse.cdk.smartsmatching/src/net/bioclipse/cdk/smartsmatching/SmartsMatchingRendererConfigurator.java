@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactAtom;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 import net.bioclipse.cdk.business.Activator;
@@ -100,7 +101,7 @@ public class SmartsMatchingRendererConfigurator
                     //Serialize to property
                     SmartsMatchingHelper.serializeToProperty(cdkmol, hitAtoms);
 
-                model.setIsCompact( true );
+                model.getRenderingParameter(CompactAtom.class).setValue(true);
                 model.setShowAtomTypeNames( false );
                 model.setShowImplicitHydrogens( false );
                 model.setShowExplicitHydrogens(  false );

@@ -54,6 +54,7 @@ import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.RingGenerator;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactAtom;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BackGroundColor;
 
 public class MoleculesEditorLabelProvider implements ITableLabelProvider{
@@ -106,7 +107,7 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
 
         RendererModel rModel = renderer.getRenderer2DModel();
         rModel.setDrawNumbers( false );
-        rModel.setIsCompact( true );
+        rModel.getRenderingParameter(CompactAtom.class).setValue(true);
 //        rModel.setUseAntiAliasing(true );
 
         rModel.setShowExplicitHydrogens( false );

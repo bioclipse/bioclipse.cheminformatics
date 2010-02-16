@@ -45,6 +45,13 @@ import org.openscience.cdk.interfaces.IBond.Order;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactAtom;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowEndCarbons;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondWidth;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
+import org.openscience.cdk.renderer.generators.RingGenerator.CDKStyleAromaticity;
+import org.openscience.cdk.renderer.generators.RingGenerator.RingProportion;
+import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.selection.LinkedSelection;
 import org.openscience.cdk.renderer.selection.LogicalSelection;
@@ -441,7 +448,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setIsCompact(boolean isCompact) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setIsCompact(isCompact);
+            model.getRenderingParameter(CompactAtom.class).setValue(true);
         }
         updateView();
     }
@@ -457,7 +464,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setBondWidth(double bondWidth) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setBondWidth(bondWidth);
+            model.getRenderingParameter(BondWidth.class).setValue(bondWidth);
         }
         updateView();
     }
@@ -497,7 +504,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setShowAromaticity(boolean showAromaticity) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setShowAromaticity(showAromaticity);
+            model.getRenderingParameter(ShowAromaticity.class).setValue(showAromaticity);
         }
         updateView();
     }
@@ -505,7 +512,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setShowAromaticityInCDKStyle(boolean showAromaticityCDK) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setShowAromaticityCDKStyle(showAromaticityCDK);
+            model.getRenderingParameter(CDKStyleAromaticity.class).setValue(showAromaticityCDK);
         }
         updateView();
     }
@@ -513,7 +520,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setShowEndCarbons(boolean showEndCarbons) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setShowEndCarbons(showEndCarbons);
+            model.getRenderingParameter(ShowEndCarbons.class).setValue(showEndCarbons);
         }
         updateView();
     }
@@ -545,7 +552,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setMargin(double margin) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setMargin(margin);
+            model.getRenderingParameter(Margin.class).setValue(margin);
         }
         updateView();
     }
@@ -588,7 +595,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public double getBondWidth() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getBondWidth();
+            return model.getRenderingParameter(BondWidth.class).getValue();
         } else {
             return 0;
         }
@@ -624,7 +631,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public boolean getIsCompact() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getIsCompact();
+            return model.getRenderingParameter(CompactAtom.class).getValue();
         } else {
             return false;
         }
@@ -633,7 +640,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public double getRingProportion() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getRingProportion();
+            return model.getRenderingParameter(RingProportion.class).getValue();
         } else {
             return 0;
         }
@@ -642,7 +649,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public boolean getShowAromaticity() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getShowAromaticity();
+            return model.getRenderingParameter(ShowAromaticity.class).getValue();
         } else {
             return false;
         }
@@ -651,7 +658,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public boolean getShowAromaticityInCDKStyle() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getShowAromaticityCDKStyle();
+            return model.getRenderingParameter(CDKStyleAromaticity.class).getValue();
         } else {
             return false;
         }
@@ -660,7 +667,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public boolean getShowEndCarbons() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getShowEndCarbons();
+            return model.getRenderingParameter(ShowEndCarbons.class).getValue();
         } else {
             return false;
         }
@@ -696,7 +703,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public double getMargin() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getMargin();
+            return model.getRenderingParameter(Margin.class).getValue();
         } else {
             return 0;
         }

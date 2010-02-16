@@ -16,6 +16,9 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowEndCarbons;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
+import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
 
 /**
  * Class used to initialize default preference values.
@@ -35,11 +38,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 		store.setDefault(
 		        PreferenceConstants.SHOW_AROMATICITY_BOOL,
-		        model.getShowAromaticity()
+		        model.getRenderingParameter(ShowAromaticity.class).getDefault()
 		);
         store.setDefault(
                 PreferenceConstants.SHOW_END_CARBONS_BOOL,
-                model.getShowEndCarbons()
+                model.getRenderingParameter(ShowEndCarbons.class).getDefault()
         );
         store.setDefault(
                 PreferenceConstants.SHOW_EXPLICIT_HYDROGENS_BOOL,
@@ -73,7 +76,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         );
         store.setDefault(
                 PreferenceConstants.MARGIN_DOUBLE,
-                model.getMargin()
+                model.getRenderingParameter(Margin.class).getDefault()
         );
         store.setDefault(
                 PreferenceConstants.WEDGE_WIDTH_DOUBLE,

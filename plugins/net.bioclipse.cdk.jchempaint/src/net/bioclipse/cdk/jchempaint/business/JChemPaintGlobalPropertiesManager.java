@@ -28,6 +28,9 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowEndCarbons;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
+import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
 
 /**
  * Provides scripting for the global JChemPaint preferences.
@@ -69,13 +72,13 @@ public class JChemPaintGlobalPropertiesManager
     }
     
     public void applyProperties(RendererModel model) throws BioclipseException {
-        model.setShowAromaticity(getShowAromaticity());
-        model.setShowEndCarbons(getShowEndCarbons());
+        model.getRenderingParameter(ShowAromaticity.class).setValue(getShowAromaticity());
+        model.getRenderingParameter(ShowEndCarbons.class).setValue(getShowEndCarbons());
         model.setShowExplicitHydrogens(getShowExplicitHydrogens());
         model.setShowImplicitHydrogens(getShowImplicitHydrogens());
         model.setDrawNumbers(getShowNumbers());
-        model.setMargin(getMargin());
-        ((AtomRadius)model.getRenderingParameter(AtomRadius.class)).setValue(getAtomRadius());
+        model.getRenderingParameter(Margin.class).setValue(getMargin());
+        model.getRenderingParameter(AtomRadius.class).setValue(getAtomRadius());
         model.setBondLength(getBondLength());
         model.setBondDistance(getBondDistance());
         model.setHighlightDistance(getHighlightDistance());
