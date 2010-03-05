@@ -684,18 +684,12 @@ public interface ICDKManager extends IBioclipseManager {
     public IMolecule generate3dCoordinates(IMolecule molecule) throws BioclipseException;
 
     @Recorded
-    @PublishedMethod(
-        params = "List<IMolecule> molecule, BioclipseUIJob<List<IMolecule>> uiJob",
-        methodSummary = "Create 3D coordinate for the given molecules" )
     @TestMethods("testGenerate3DCoordinates")
     public void generate3dCoordinates(List<IMolecule> molecule,
                                       BioclipseUIJob<List<IMolecule>> uiJob) 
                            throws BioclipseException;
 
     @Recorded
-    @PublishedMethod(
-        params = "IMolecule molecule, BioclipseUIJob<IMolecule> uiJob",
-        methodSummary = "Create 3D coordinate for the given molecule" )
     @TestMethods("testGenerate3DCoordinatesSingle")
     public void generate3dCoordinates(IMolecule molecule,
                                       BioclipseUIJob<IMolecule> uiJob) 
