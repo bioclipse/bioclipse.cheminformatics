@@ -943,8 +943,8 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(
          params = "IMolecule molecule: atom container to fragmentate",
-         methodSummary = "Splits up an atom container into fully connected " +
-         		             "molecules")
+         methodSummary = "Splits up an atom container into a List of " +
+         		"IAtomContainer's with fully connected molecules")
     @TestMethods("testSMARTSonFile")
     public List<IAtomContainer> partition( IMolecule molecule ) 
                                 throws BioclipseException;
