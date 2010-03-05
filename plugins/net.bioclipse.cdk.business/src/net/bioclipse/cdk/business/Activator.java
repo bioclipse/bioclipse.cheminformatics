@@ -11,10 +11,12 @@
  ******************************************************************************/
 package net.bioclipse.cdk.business;
 
+import net.bioclipse.cdk.logging.BioclipseLoggingTool;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.openscience.cdk.tools.LoggingToolFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -39,6 +41,8 @@ public class Activator extends AbstractUIPlugin {
      * The constructor
      */
     public Activator() {
+    	logger.info("Registering the BioclipseLoggingTool...");
+    	LoggingToolFactory.setLoggingToolClass(BioclipseLoggingTool.class);
     }
 
     /*
