@@ -39,7 +39,6 @@ import net.bioclipse.managers.business.IBioclipseManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.content.IContentType;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
@@ -1026,13 +1025,6 @@ public interface ICDKManager extends IBioclipseManager {
                                 String filename)
     throws BioclipseException;
 
-    @Recorded
-    @PublishedMethod(
-         params = "BioList<IMolecule> calculateFor, IMolecule reference, "+
-                  "BioclipseUIJob<List<Float>> uiJob",
-         methodSummary = "Calculate tanimoto similarity of a list of " +
-                         "molecules (calculateFor) to another molecule " +
-                         "(reference) via CDK fingerprint." )
     @TestMethods("testMultipleTanimoto")
     public void calculateTanimoto( List<IMolecule> calculateFor, 
                                           IMolecule reference, 
