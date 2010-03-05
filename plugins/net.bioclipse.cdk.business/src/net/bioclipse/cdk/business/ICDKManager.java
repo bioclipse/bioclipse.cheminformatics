@@ -916,9 +916,10 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
-         params = "String path",
+         params = "String type",
          methodSummary = "Makes an educated guess if the file format based " +
-                         "on the file extension alone." )
+                         "on the file extension alone and returns a CDK" +
+                         "IChemFormat object." )
     @TestMethods("testGuessFormatFromExtension")
     public IChemFormat guessFormatFromExtension(String type);
 
