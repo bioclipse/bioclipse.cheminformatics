@@ -100,7 +100,7 @@ public interface ICDKManager extends IBioclipseManager {
         		            "CDKHueckelAromaticityDetector class from CDK.")
     @TestMethods(
        "testPerceiveAromaticity,")
-    public IMolecule perceiveAromaticity(IMolecule mol) 
+    public ICDKMolecule perceiveAromaticity(IMolecule mol) 
                      throws BioclipseException;
 
     /**
@@ -673,7 +673,7 @@ public interface ICDKManager extends IBioclipseManager {
         params = "List<IMolecule> molecule",
         methodSummary = "Create 3D coordinates for the given molecules" )
     @TestMethods("testGenerate3DCoordinates")
-    public List<IMolecule> generate3dCoordinates(List<IMolecule> molecule) 
+    public List<ICDKMolecule> generate3dCoordinates(List<IMolecule> molecule) 
                            throws BioclipseException;
 
     @Recorded
@@ -681,7 +681,7 @@ public interface ICDKManager extends IBioclipseManager {
         params = "IMolecule molecule",
         methodSummary = "Create 3D coordinates for the given molecule" )
     @TestMethods("testGenerate3DCoordinatesSingle")
-    public IMolecule generate3dCoordinates(IMolecule molecule) throws BioclipseException;
+    public ICDKMolecule generate3dCoordinates(IMolecule molecule) throws BioclipseException;
 
     @Recorded
     @TestMethods("testGenerate3DCoordinates")
@@ -808,18 +808,18 @@ public interface ICDKManager extends IBioclipseManager {
         params = "IMolecule mol",
         methodSummary = "Adds explicit hydrogens to this molecule" )
     @TestMethods("testAddExplicitHydrogens")
-    public IMolecule addExplicitHydrogens(IMolecule molecule) throws Exception;
+    public ICDKMolecule addExplicitHydrogens(IMolecule molecule) throws Exception;
 
     @Recorded
     @PublishedMethod(params = "IMolecule mol",
                      methodSummary="Adds implicit hydrogens to this molecule")
     @TestMethods("testAddImplicitHydrogens")
-   	public IMolecule addImplicitHydrogens(IMolecule molecule) 
+   	public ICDKMolecule addImplicitHydrogens(IMolecule molecule) 
                      throws BioclipseException, InvocationTargetException;
 
     @Recorded
     @PublishedMethod(methodSummary="Creates an empty molecule list.")
-    public List<IMolecule> createMoleculeList()
+    public List<ICDKMolecule> createMoleculeList()
                            throws BioclipseException, InvocationTargetException;
 
     @Recorded
@@ -844,7 +844,7 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @TestMethods("testExtractFromSDFile_IFile_int_int")
-    public List<IMolecule> extractFromSDFile( IFile file, 
+    public List<ICDKMolecule> extractFromSDFile( IFile file, 
                                               int startentry, 
                                               int endentry ) 
                            throws BioclipseException, InvocationTargetException;
@@ -855,7 +855,7 @@ public interface ICDKManager extends IBioclipseManager {
         methodSummary = "Extracts a number of entries from an sd file. " +
         		            "Does not read the complete file for this." )
     @TestMethods("testExtractFromSDFile_String_int_int")
-    public List<IMolecule> extractFromSDFile( String file, 
+    public List<ICDKMolecule> extractFromSDFile( String file, 
                                               int startentry, 
                                               int endentry ) 
                            throws BioclipseException, InvocationTargetException;

@@ -1368,7 +1368,7 @@ public abstract class AbstractCDKManagerPluginTest {
         URL url = FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
         
-        List<IMolecule> mol = cdk.extractFromSDFile( path, 0, 1 );
+        List<ICDKMolecule> mol = cdk.extractFromSDFile( path, 0, 1 );
         Assert.assertEquals( 2,mol.size() );
     }
     

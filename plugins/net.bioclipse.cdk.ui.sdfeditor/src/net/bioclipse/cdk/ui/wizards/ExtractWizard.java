@@ -13,9 +13,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
@@ -55,18 +55,31 @@ public class ExtractWizard extends Wizard implements INewWizard {
 	
 	@Override
 	public boolean performFinish() {
+		ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
 		try {
 		    ISelection sel=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
 	      if (sel instanceof IStructuredSelection) {
           IStructuredSelection ssel = (IStructuredSelection) sel;
           IFile toExtract=(IFile) ssel.getFirstElement();
-          List<IMolecule> result=Activator.getDefault().getJavaCDKManager().extractFromSDFile( toExtract, Integer.parseInt( selectFilePage.getFrom() ), selectFilePage.getTo().equals( "" ) ? Integer.parseInt( selectFilePage.getFrom() ) : Integer.parseInt( selectFilePage.getTo() ) );
+          List<ICDKMolecule> result= cdk.extractFromSDFile(
+              toExtract, Integer.parseInt( selectFilePage.getFrom() ),
+              selectFilePage.getTo().equals( "" ) ?
+            	  Integer.parseInt( selectFilePage.getFrom() ) :
+                  Integer.parseInt( selectFilePage.getTo() )
+          );
           if(result.size()==1){
-              String filename=selectFilePage.getPathStr()+Path.SEPARATOR+selectFilePage.getFileName()+"."+MDLFormat.getInstance().getPreferredNameExtension();
-              Activator.getDefault().getJavaCDKManager().saveMDLMolfile( (ICDKMolecule)result.get( 0 ), filename );
+              String filename=selectFilePage.getPathStr()+
+                  Path.SEPARATOR+selectFilePage.getFileName()+"."+
+                  MDLFormat.getInstance().getPreferredNameExtension();
+              cdk.saveMDLMolfile( (ICDKMolecule)result.get( 0 ), filename );
           }else{
-              String filename=selectFilePage.getPathStr()+Path.SEPARATOR+selectFilePage.getFileName()+"."+SDFFormat.getInstance().getPreferredNameExtension();
-              Activator.getDefault().getJavaCDKManager().saveMolecules( result, filename, (IChemFormat)SDFFormat.getInstance());
+              String filename=selectFilePage.getPathStr()+
+                  Path.SEPARATOR+selectFilePage.getFileName()+"."+
+                  SDFFormat.getInstance().getPreferredNameExtension();
+              cdk.saveMolecules(
+                  result, filename,
+                  (IChemFormat)SDFFormat.getInstance()
+              );
           }
 	      }
 	      return true;
