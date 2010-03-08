@@ -7,6 +7,9 @@
  */
 package net.bioclipse.cdk.logging;
 
+import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.cdk.business.preferences.PreferenceConstants;
+
 import org.apache.log4j.Logger;
 import org.openscience.cdk.tools.ILoggingTool;
 
@@ -14,6 +17,11 @@ public class BioclipseLoggingTool implements ILoggingTool {
 
 	private final Logger logger = Logger.getLogger(BioclipseLoggingTool.class);
 	private String className;
+	
+	public static boolean useBioclipseLogging = Activator.getDefault()
+		.getPluginPreferences().getBoolean(
+			PreferenceConstants.BIOCLIPSE_LOGGING
+		);
 	
     /**
      * Constructs a LoggingTool which produces log lines without any special
@@ -28,11 +36,12 @@ public class BioclipseLoggingTool implements ILoggingTool {
     }
 
 	public void debug(Object object) {
-		if (isDebugEnabled())
-			logger.debug(className + ": " + object);
+		if (!isDebugEnabled()) return;
+		logger.debug(className + ": " + object);
 	}
 
 	public void debug(Object object, Object... objects) {
+		if (!isDebugEnabled()) return;
 		StringBuilder result = new StringBuilder();
 		result.append(className).append(": ");
 		result.append(object.toString());
@@ -47,10 +56,12 @@ public class BioclipseLoggingTool implements ILoggingTool {
 	public void dumpSystemProperties() {}
 
 	public void error(Object object) {
+		if (!isDebugEnabled()) return;
 		logger.error(className + ": " + object);
 	}
 
 	public void error(Object object, Object... objects) {
+		if (!isDebugEnabled()) return;
 		StringBuilder result = new StringBuilder();
 		result.append(className).append(": ");
 		result.append(object.toString());
@@ -61,14 +72,17 @@ public class BioclipseLoggingTool implements ILoggingTool {
 	}
 
 	public void fatal(Object object) {
+		if (!isDebugEnabled()) return;
 		logger.fatal(className + ": " + object.toString());
 	}
 
 	public void info(Object object) {
+		if (!isDebugEnabled()) return;
 		logger.info(className + ": " + object);
 	}
 
 	public void info(Object object, Object... objects) {
+		if (!isDebugEnabled()) return;
 		StringBuilder result = new StringBuilder();
 		result.append(className).append(": ");
 		result.append(object.toString());
@@ -79,7 +93,7 @@ public class BioclipseLoggingTool implements ILoggingTool {
 	}
 
 	public boolean isDebugEnabled() {
-		return true;
+		return useBioclipseLogging;
 	}
 
 	public void setStackLength(int length) {
@@ -87,10 +101,12 @@ public class BioclipseLoggingTool implements ILoggingTool {
 	}
 
 	public void warn(Object object) {
+		if (!isDebugEnabled()) return;
 		logger.warn(className + ": " + object);
 	}
 
 	public void warn(Object object, Object... objects) {
+		if (!isDebugEnabled()) return;
 		StringBuilder result = new StringBuilder();
 		result.append(className).append(": ");
 		result.append(object.toString());

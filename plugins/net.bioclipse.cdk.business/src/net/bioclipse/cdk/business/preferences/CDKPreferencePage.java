@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009  Egon Willighagen <egonw@user.sf.net>
+ * Copyright (c) 2009-2010  Egon Willighagen <egonw@user.sf.net>
  * 
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,10 +10,14 @@
  ******************************************************************************/
 package net.bioclipse.cdk.business.preferences;
 
-import org.eclipse.jface.preference.*;
-import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.IWorkbench;
 import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.cdk.logging.BioclipseLoggingTool;
+
+import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.openscience.cdk.tools.LoggingToolFactory;
 
 /**
  * Preference page for the CDK cheminformatics functionality.
@@ -21,6 +25,8 @@ import net.bioclipse.cdk.business.Activator;
 public class CDKPreferencePage
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
+
+	private BooleanFieldEditor bioclipseLogging;
 
 	public CDKPreferencePage() {
 		super(GRID);
@@ -37,15 +43,46 @@ public class CDKPreferencePage
 	public void createFieldEditors() {
 		addField(
 			new BooleanFieldEditor(
-				PreferenceConstants.P_BOOLEAN,
+				PreferenceConstants.PRETTY_CML,
 				"&Pretty print CML",
 				getFieldEditorParent()));
+		bioclipseLogging = new BooleanFieldEditor(
+			PreferenceConstants.BIOCLIPSE_LOGGING,
+			"&Use Bioclipse Logging",
+			getFieldEditorParent());
+		addField(bioclipseLogging);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
+	}
+
+	private void setBioclipseLogging(boolean use) {
+		if (use) {
+			LoggingToolFactory.setLoggingToolClass(BioclipseLoggingTool.class);
+		} else {
+			LoggingToolFactory.setLoggingToolClass(null);
+		}
+	}
+	
+	public boolean performOk() {
+		BioclipseLoggingTool.useBioclipseLogging =
+			bioclipseLogging.getBooleanValue();
+		return super.performOk();
+	}
+	
+	protected void performApply() {
+		super.performApply();
+		BioclipseLoggingTool.useBioclipseLogging =
+			bioclipseLogging.getBooleanValue();
+	}
+	
+	protected void performDefaults() {
+		super.performDefaults();
+		BioclipseLoggingTool.useBioclipseLogging =
+			bioclipseLogging.getBooleanValue();
 	}
 	
 }

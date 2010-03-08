@@ -147,7 +147,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         if (getAtomContainer()==null) 
             throw new BioclipseException("No molecule to get CML from!");
 
-        if (prefs != null && prefs.getBoolean(PreferenceConstants.P_BOOLEAN)) {
+        if (prefs != null && prefs.getBoolean(PreferenceConstants.PRETTY_CML)) {
             ByteArrayOutputStream bo=new ByteArrayOutputStream();
 
             CMLWriter writer=new CMLWriter(bo);

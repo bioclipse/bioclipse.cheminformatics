@@ -11,10 +11,12 @@
  ******************************************************************************/
 package net.bioclipse.cdk.business;
 
+import net.bioclipse.cdk.business.preferences.PreferenceConstants;
 import net.bioclipse.cdk.logging.BioclipseLoggingTool;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.openscience.cdk.tools.LoggingToolFactory;
 import org.osgi.framework.BundleContext;
@@ -42,7 +44,6 @@ public class Activator extends AbstractUIPlugin {
      */
     public Activator() {
     	logger.info("Registering the BioclipseLoggingTool...");
-    	LoggingToolFactory.setLoggingToolClass(BioclipseLoggingTool.class);
     }
 
     /*
@@ -52,6 +53,8 @@ public class Activator extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
+        LoggingToolFactory.setLoggingToolClass(BioclipseLoggingTool.class);
+
         finderTracker = new ServiceTracker( context, 
                                             IJavaCDKManager.class.getName(), 
                                             null );
