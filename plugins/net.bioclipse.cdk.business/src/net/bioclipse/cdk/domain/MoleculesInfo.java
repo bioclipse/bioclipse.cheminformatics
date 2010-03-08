@@ -41,5 +41,11 @@ public class MoleculesInfo {
 		this.noMols3d = noMols3d;
 	}
 	
+	@Override
+    public String toString() {
 
+        return "Total: " + noMols + ". With 2d: " + noMols2d + ". With 3d: " 
+        + noMols3d;
+    }
+	
 }

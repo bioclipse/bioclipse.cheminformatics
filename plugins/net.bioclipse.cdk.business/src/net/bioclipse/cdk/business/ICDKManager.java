@@ -607,8 +607,8 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod ( 
         params = "String path",
         methodSummary = "Loads the molecules at the path into a list, " +
-        		            "and take conformers into account. Currently only " +
-        		            "reads SDFiles." )
+        		            "and store conformers in a single molecule. " +
+        		            "Currently only reads SDFiles." )
     @TestMethods("testLoadConformers")
     public List<ICDKMolecule> loadConformers( String path );
 
@@ -771,7 +771,7 @@ public interface ICDKManager extends IBioclipseManager {
 	   */
     @Recorded
     @PublishedMethod( params = "String path",
-                      methodSummary = "Returns number of molecules in file.")
+                      methodSummary = "Returns information about molecules in file.")
 	  @TestMethods("testGetInfo")
     public MoleculesInfo getInfo(String path);
 
