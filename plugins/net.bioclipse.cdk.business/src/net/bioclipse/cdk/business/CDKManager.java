@@ -137,6 +137,7 @@ import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
 import org.openscience.cdk.nonotify.NNAtomContainer;
 import org.openscience.cdk.nonotify.NNChemFile;
 import org.openscience.cdk.nonotify.NNMolecule;
+import org.openscience.cdk.nonotify.NNMoleculeSet;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.similarity.Tanimoto;
 import org.openscience.cdk.smiles.SmilesGenerator;
@@ -181,6 +182,25 @@ public class CDKManager implements IBioclipseManager {
 
     public ICDKMolecule newMolecule() {
         return new CDKMolecule(new NNAtomContainer());
+    }
+
+    public ICDKMolecule newMolecule(IAtomContainer atomContainer) {
+    	return new CDKMolecule(atomContainer);
+    }
+
+    public List<ICDKMolecule> asList(IMoleculeSet set) {
+    	List<ICDKMolecule> result = new RecordableList<ICDKMolecule>();
+    	for (IAtomContainer mol : set.molecules()) {
+    		result.add(newMolecule(mol));
+    	}
+    	return result;
+    }
+
+    public IMoleculeSet asSet(List<ICDKMolecule> list) {
+    	IMoleculeSet set = new NNMoleculeSet();
+    	for (ICDKMolecule mol : list)
+    		set.addAtomContainer(mol.getAtomContainer());
+    	return set;
     }
 
     public ICDKMolecule loadMolecule(IFile file, IProgressMonitor monitor)
