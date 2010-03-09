@@ -11,12 +11,10 @@
  ******************************************************************************/
 package net.bioclipse.cdk.business;
 
-import net.bioclipse.cdk.business.preferences.PreferenceConstants;
 import net.bioclipse.cdk.logging.BioclipseLoggingTool;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.Preferences;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.openscience.cdk.tools.LoggingToolFactory;
 import org.osgi.framework.BundleContext;
@@ -65,6 +63,9 @@ public class Activator extends AbstractUIPlugin {
                                             null );
                                     
         jsFinderTracker.open();
+
+        // do some CDK initialization
+        new Thread(new CDKInitializer()).start();
     }
 
     /*
