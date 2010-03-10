@@ -49,11 +49,11 @@ import org.openscience.cdk.interfaces.IChemObject;
 
 public class CDKMoleculePropertySource extends BioObjectPropertySource {
 
-    protected static Map<ICDKMolecule, BioclipseJob> inchiJobs 
+    protected static Map<ICDKMolecule, BioclipseJob> inchiJobs
         = new HashMap<ICDKMolecule, BioclipseJob>();
     protected static Map<ICDKMolecule, BioclipseJob> smilesJobs
         = new HashMap<ICDKMolecule, BioclipseJob>();
-    
+
     protected static final String PROPERTY_HAS2D = "Has 2D Coords";
     protected static final String PROPERTY_HAS3D = "Has 3D Coords";
     protected static final String PROPERTY_FORMAT = "Molecular Format";
@@ -62,8 +62,8 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
     protected static final String PROPERTY_SMILES = "SMILES";
     protected static final String PROPERTY_INCHI = "InChI";
     protected static final String PROPERTY_INCHIKEY = "InChIKey";
-    
-    private static final Logger logger 
+
+    private static final Logger logger
         = Logger.getLogger( CDKMoleculePropertySource.class );
 
     private final Object cdkPropertiesTable[][] =
@@ -94,10 +94,10 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
     public CDKMoleculePropertySource(ICDKMolecule item) {
         super(item);
         cdkMol = item;
-        
+
         cdkProperties = setupProperties(item.getAtomContainer());
         cdkValueMap   = getPropertyValues(item);
-        
+
         if ( item.getAtomContainer().getAtomCount() > 0 ) {
             createPropertiesJobs(item);
         }
@@ -109,7 +109,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
     }
 
     /**
-     * 
+     *
      */
     private void createPropertiesJobs(final ICDKMolecule item) {
 
@@ -127,7 +127,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         }
         BioclipseJob inchiJobToBeCancelled  = inchiJobs.remove(  item );
         BioclipseJob smilesJobToBeCancelled = smilesJobs.remove( item );
-        
+
         if ( inchiJobToBeCancelled != null ) {
             inchiJobToBeCancelled.cancel();
         }
@@ -135,30 +135,30 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
             smilesJobToBeCancelled.cancel();
         }
         if (item.getProperty( PROPERTY_INCHI, Property.USE_CACHED ) == null) {
-            
+
             Job j = new Job("Calculating inchi for properties view") {
                 @Override
                 protected IStatus run( IProgressMonitor monitor ) {
                     try {
-                        item.setProperty( MolProperty.InChI.name(), 
+                        item.setProperty( MolProperty.InChI.name(),
                                           inchi.generate( inchiClone ) );
                     }
                     catch ( Exception e ) {
                         LogUtils.debugTrace( logger, e );
-                        item.setProperty( MolProperty.InChI.name(), 
+                        item.setProperty( MolProperty.InChI.name(),
                                           InChI.FAILED_TO_CALCULATE );
                     }
                     return Status.OK_STATUS;
                 }
-            };   
+            };
             j.addJobChangeListener( new JobChangeAdapter() {
                 @Override
                 public void done( IJobChangeEvent event ) {
                     Display.getDefault().asyncExec( new Runnable() {
-    
+
                         public void run() {
-                            PropertySheet p 
-                                = (PropertySheet) 
+                            PropertySheet p
+                                = (PropertySheet)
                                   PlatformUI.getWorkbench()
                                             .getActiveWorkbenchWindow()
                                             .getActivePage()
@@ -167,8 +167,8 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
                             if(p != null) {
                                 //The page might be a TabbedPropertySheetPage
                                 //in the future but we ignore it for now
-                                if ( p.getCurrentPage() 
-                                        instanceof 
+                                if ( p.getCurrentPage()
+                                        instanceof
                                         PropertySheetPage ) {
                                     PropertySheetPage pp
                                     = (PropertySheetPage) p.getCurrentPage();
@@ -182,33 +182,33 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
             });
             j.schedule();
         }
-        
+
         if (item.getProperty( PROPERTY_SMILES, Property.USE_CACHED ) == null ) {
-            
+
             Job j = new Job("Calculating smiles for properties view") {
                 @Override
                 protected IStatus run( IProgressMonitor monitor ) {
                     try {
                         String s = cdk.calculateSMILES( smilesClone );
-                        item.setProperty( MolProperty.SMILES.name(), 
+                        item.setProperty( MolProperty.SMILES.name(),
                                           s );
                     }
                     catch ( Exception e ) {
                         LogUtils.debugTrace( logger, e );
-                        item.setProperty( MolProperty.SMILES.name(), 
+                        item.setProperty( MolProperty.SMILES.name(),
                                           "Failed to calculate" );
                     }
                     return Status.OK_STATUS;
                 }
-            };   
+            };
             j.addJobChangeListener( new JobChangeAdapter() {
                 @Override
                 public void done( IJobChangeEvent event ) {
                     Display.getDefault().asyncExec( new Runnable() {
-    
+
                         public void run() {
-                            PropertySheet p 
-                                = (PropertySheet) 
+                            PropertySheet p
+                                = (PropertySheet)
                                   PlatformUI.getWorkbench()
                                             .getActiveWorkbenchWindow()
                                             .getActivePage()
@@ -217,10 +217,10 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
                             if(p != null) {
                                 //The page might be a TabbedPropertySheetPage
                                 //in the future but we ignore it for now
-                                if ( p.getCurrentPage() 
-                                        instanceof 
+                                if ( p.getCurrentPage()
+                                        instanceof
                                      PropertySheetPage ) {
-                                    
+
                                     PropertySheetPage pp
                                     = (PropertySheetPage) p.getCurrentPage();
 
@@ -304,7 +304,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         }
         valueMap.put(
             PROPERTY_INCHIKEY,
-            (inchikey == null || inchikey.length() == 0) ? "Calculating..." 
+            (inchikey == null || inchikey.length() == 0) ? "Calculating..."
                                                          : inchikey
         );
 
@@ -353,7 +353,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
     }
 
     public Object getPropertyValue(Object id) {
-        
+
         if (id.equals( PROPERTY_INCHI ) || id.equals( PROPERTY_INCHIKEY )){
             Object property
                 = cdkMol.getProperty( CDKMoleculeUtils.MolProperty.InChI.name(),
@@ -394,7 +394,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         else if (id.equals( PROPERTY_SMILES))
             return cdkMol.getProperty(CDKMoleculeUtils.MolProperty.SMILES.name() ,
                                       Property.USE_CACHED );
-        
+
         if (cdkValueMap.containsKey(id))
             return cdkValueMap.get(id);
 
