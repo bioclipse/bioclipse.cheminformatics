@@ -1929,7 +1929,7 @@ public class CDKManager implements IBioclipseManager {
         return format == null ? "Unknown" : format.getFormatName();
     }
 
-      public void saveSDFile(final IFile file, List<IMolecule> entries,
+      public void saveSDFile(final IFile file, List<? extends IMolecule> entries,
               IProgressMonitor monitor)
                   throws BioclipseException, InvocationTargetException {
 
@@ -1950,8 +1950,8 @@ public class CDKManager implements IBioclipseManager {
             for (IMolecule molecule : entries) {
 
                 IAtomContainer ac = null;
-                if (molecule.getClass().isAssignableFrom(CDKMolecule.class)) {
-                    ac = ((CDKMolecule)molecule).getAtomContainer();
+                if (molecule instanceof ICDKMolecule) {
+                    ac = ((ICDKMolecule)molecule).getAtomContainer();
                 } else {
                     CMLReader reader = new CMLReader(
                         new ByteArrayInputStream(molecule.toCML().getBytes())

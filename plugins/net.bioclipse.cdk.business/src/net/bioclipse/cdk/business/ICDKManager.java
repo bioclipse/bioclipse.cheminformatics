@@ -39,6 +39,7 @@ import net.bioclipse.managers.business.IBioclipseManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.content.IContentType;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
@@ -851,12 +852,12 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @TestMethods("testCreateSDFile_IFile_IMoleculeArray")
    	public void saveSDFile( IFile file, 
-   	                        List<IMolecule> entries ) 
+   	                       List<? extends IMolecule> entries ) 
                 throws BioclipseException, InvocationTargetException;
 
     @Recorded
     public void saveSDFile( IFile file, 
-                            List<IMolecule> entries,
+                            List<? extends IMolecule> entries ,
                             BioclipseUIJob<Void> uiJob) 
                 throws BioclipseException, InvocationTargetException;
     
@@ -865,7 +866,7 @@ public interface ICDKManager extends IBioclipseManager {
         params = "String file, List<IMolecule> entries",
         methodSummary = "Creates an sd file from a number of molecules" )
     @TestMethods("testCreateSDFile_String_IMoleculeArray")
-    public void saveSDFile(String file, List<IMolecule> entries) 
+    public void saveSDFile(String file, List<? extends IMolecule> entries ) 
                 throws BioclipseException, InvocationTargetException;
 
     @Recorded
@@ -1136,5 +1137,8 @@ public interface ICDKManager extends IBioclipseManager {
      */
     public void saveSDFile( String sdfile,
                             List<IMolecule> molecules,
+                            IProgressMonitor monitor );
+
+    public void saveSDFile( IFile molFile, List<IMolecule> mols,
                             IProgressMonitor monitor );
 }
