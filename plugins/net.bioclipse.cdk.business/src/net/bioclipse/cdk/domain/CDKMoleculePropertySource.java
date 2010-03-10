@@ -355,15 +355,41 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
     public Object getPropertyValue(Object id) {
         
         if (id.equals( PROPERTY_INCHI ) || id.equals( PROPERTY_INCHIKEY )){
-            InChI inchi = (InChI) cdkMol.getProperty(CDKMoleculeUtils.MolProperty.InChI.name() ,
-                                       Property.USE_CACHED );
-            if (inchi==null)
+            Object property
+                = cdkMol.getProperty( CDKMoleculeUtils.MolProperty.InChI.name(),
+                                      Property.USE_CACHED );
+            if ( property == null ) {
                 return null;
-
-            if (id.equals( PROPERTY_INCHI ))
-                return inchi.getValue();
-            else
-                return inchi.getKey();
+            }
+            if ( property instanceof InChI ) {
+                InChI inchi = (InChI)property;
+                if ( id.equals( PROPERTY_INCHI ) )
+                    return inchi.getValue();
+                else
+                    return inchi.getKey();
+            }
+            if ( id.equals( PROPERTY_INCHI ) ) {
+                if ( property instanceof String ) {
+                    return property;
+                }
+                /* Okey we have an object claiming to keep an InChi value but it
+                 * is not an InChi and it is not a String. All I can think of
+                 * doing is hoping it at least has a good toString method.
+                 */
+                return property.toString();
+            }
+            if ( id.equals( PROPERTY_INCHIKEY ) ) {
+                if ( property instanceof String ) {
+                    return property;
+                }
+                /* Okey we have an object claiming to keep an InChiKey but it
+                 * is not an InChi and it is not a String. All I can think of
+                 * doing is hoping it at least has a good toString method.
+                 */
+                return property.toString();
+            }
+            //Give up, we can't provide that property.
+            return null;
         }
         else if (id.equals( PROPERTY_SMILES))
             return cdkMol.getProperty(CDKMoleculeUtils.MolProperty.SMILES.name() ,
