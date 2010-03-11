@@ -51,7 +51,7 @@ public class SmartsWrapperPropertySource extends BioObjectPropertySource {
             // Add each property supported.
             PropertyDescriptor descriptor;
             descriptor = (PropertyDescriptor)PropertiesTable[i][1];
-            descriptor.setCategory("Smarts");
+            descriptor.setCategory("SMARTS");
             properties.add(descriptor);
         }
 

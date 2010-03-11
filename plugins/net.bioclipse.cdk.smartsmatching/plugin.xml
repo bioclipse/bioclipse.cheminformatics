@@ -8,7 +8,7 @@
             class="net.bioclipse.cdk.smartsmatching.views.SmartsMatchingView"
             icon="icons/tsuite.gif"
             id="net.bioclipse.cdk.smartsmatching.views.SmartsMatchingView"
-            name="Smarts Matching">
+            name="SMARTS Matching">
       </view>
    </extension>
    <extension

@@ -1272,7 +1272,7 @@ public class CDKManager implements IBioclipseManager {
               if (querytool.matches(ac)){
                   List<IAtomContainer> retac=new ArrayList<IAtomContainer>();
                 int nmatch = querytool.countMatches();
-                logger.debug("Found " + nmatch + " smarts matches");
+                logger.debug("Found " + nmatch + " SMARTS matches");
 
                 List<List<Integer>> mappings = querytool.getMatchingAtoms();
                 for (int i = 0; i < nmatch; i++) {

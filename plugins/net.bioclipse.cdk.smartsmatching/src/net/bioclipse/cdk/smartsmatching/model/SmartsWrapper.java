@@ -65,7 +65,7 @@ public class SmartsWrapper extends BioObject{
             setValid( true );
         }else{
             setValid( false );
-            logger.debug("The SMARTS: name=" + name +" ; smarts=" + smartsString
+            logger.debug("The SMARTS: name=" + name +" ; SMARTS=" + smartsString
                          + " is not valid.");
         }
 
