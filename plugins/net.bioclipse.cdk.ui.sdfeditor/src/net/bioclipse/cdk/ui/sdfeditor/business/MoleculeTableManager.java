@@ -434,7 +434,10 @@ public class MoleculeTableManager implements IBioclipseManager {
                                  Collection<String> propertyKeys,
                                  IReturner<Void> returner,
                                  IProgressMonitor monitor) {
-
+        if(model.getResource() == null || !model.getResource().exists()) {
+            throw new IllegalArgumentException("Model must have a resource. "+
+                        model.getResource().getLocationURI()+" does not exist ");
+        }
         Pattern pNamePattern = Pattern.compile( "^>.*<([^>]+)>.*\n" );
         try {
             monitor.beginTask( "Parsing properties", model.getNumberOfMolecules() );
