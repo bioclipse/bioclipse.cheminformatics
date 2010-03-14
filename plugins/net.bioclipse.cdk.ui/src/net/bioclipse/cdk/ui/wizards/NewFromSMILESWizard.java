@@ -73,9 +73,11 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
             	mol.getAtomContainer()
             );
             for (int i=0; i<types.length; i++) {
-            	mol.getAtomContainer().getAtom(i).setAtomTypeName(
-            		types[i].getAtomTypeName()
-            	);
+                if (types[i] != null) {
+                    mol.getAtomContainer().getAtom(i).setAtomTypeName(
+                        types[i].getAtomTypeName()
+                    );
+                }
             }
             net.bioclipse.ui.business.Activator.getDefault().getUIManager()
                 .open(mol, "net.bioclipse.cdk.ui.editors.jchempaint.cml");
