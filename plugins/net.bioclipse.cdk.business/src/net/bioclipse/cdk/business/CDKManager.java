@@ -1590,7 +1590,8 @@ public class CDKManager implements IBioclipseManager {
   
             StructureDiagramGenerator sdg = new StructureDiagramGenerator();
   
-            org.openscience.cdk.interfaces.IMolecule newmolecule = DefaultChemObjectBuilder.getInstance().newMolecule();
+            org.openscience.cdk.interfaces.IMolecule newmolecule =
+            	mols.getBuilder().newMolecule();
             for ( IAtomContainer mol : mols.molecules() ) {
                 sdg.setMolecule( cdkmol.getAtomContainer()
                                        .getBuilder().newMolecule(mol) );
@@ -1598,6 +1599,11 @@ public class CDKManager implements IBioclipseManager {
                 IAtomContainer ac = sdg.getMolecule();
                 newmolecule.add(ac);
             }
+            // copy IAtomContainer properties
+            newmolecule.setProperties(
+            	cdkmol.getAtomContainer().getProperties()
+            );
+
             newMolecules.add(  new CDKMolecule(newmolecule) );
           }
           if(monitor.isCanceled())

@@ -1749,6 +1749,20 @@ public abstract class AbstractCDKManagerPluginTest {
         assertNotNull(((ICDKMolecule)cdkMolecule.get(1)).getAtomContainer().getAtom(0).getPoint3d());
     }
 
+    @Test public void testGenerate2DCoordinates_SaveProperties() throws Exception {
+        List<ICDKMolecule> molecule = new ArrayList<ICDKMolecule>();
+        molecule.add(cdk.fromSMILES("CCCBr"));
+        molecule.add( cdk.fromSMILES("C1CCCCC1"));
+        // properties should be kept
+        molecule.get(0).getAtomContainer().setProperty("foo", "bar");
+        List<ICDKMolecule> cdkMolecules = cdk.generate2dCoordinates(molecule);
+        Assert.assertTrue(cdkMolecules.get(0) instanceof ICDKMolecule);
+        Assert.assertEquals(
+        	"bar",
+        	cdkMolecules.get(0).getAtomContainer().getProperty("foo")
+        );
+    }
+
     @Test 
     public void testPerceiveAromaticity() throws Exception{
         URI uri = getClass().getResource("/testFiles/aromatic.mol").toURI();
