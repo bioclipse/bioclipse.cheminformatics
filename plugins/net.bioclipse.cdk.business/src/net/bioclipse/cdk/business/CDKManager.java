@@ -1912,6 +1912,8 @@ public class CDKManager implements IBioclipseManager {
 
       private IChemFormat determineIChemFormatOfStream(InputStream fileContent)
       throws IOException {
+    	  if (!fileContent.markSupported())
+    		  fileContent = new BufferedInputStream(fileContent);
           return formatsFactory.guessFormat(fileContent);
       }
 
