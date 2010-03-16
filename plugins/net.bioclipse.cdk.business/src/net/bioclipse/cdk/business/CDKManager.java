@@ -694,6 +694,10 @@ public class CDKManager implements IBioclipseManager {
     public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
                 throws BioclipseException, CoreException {
 
+    	if ( file.exists() && overwrite == false ) {
+            throw new BioclipseException("File already exists!");
+        }
+
         IChemFormat format = null;
 
         // are we really overwriting an old file?
