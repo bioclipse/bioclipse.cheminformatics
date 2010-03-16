@@ -1922,7 +1922,8 @@ public abstract class AbstractCDKManagerPluginTest {
         mf=new MockIFile(path);
         ICDKMolecule mol2 = cdk.loadMolecule(mf);
         actuals.add(cdk.calculateTanimoto( mol,mol2 ));
-        Assert.assertEquals( expected, actuals );
+        for (int i=0; i<actuals.size(); i++)
+        	Assert.assertEquals(expected.get(i), actuals.get(i), 0.0001);
     }
 
     @Test public void testGetMDLMolfileString() throws Exception {
