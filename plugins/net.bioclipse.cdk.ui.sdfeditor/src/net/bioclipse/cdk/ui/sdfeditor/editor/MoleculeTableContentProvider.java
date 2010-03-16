@@ -300,7 +300,7 @@ public class MoleculeTableContentProvider implements
     }
     
     private void cacheFuture(String propertyKey, Future<Object> future) {
-        if( moleculeProperties.size() > 10 *(properties.size()+1)){
+        if( moleculeProperties.size() > 50 *(properties.size()+1)){
             Object k = moleculePropertiesQueue.remove( 0 );
             moleculeProperties.remove( k );
         }
