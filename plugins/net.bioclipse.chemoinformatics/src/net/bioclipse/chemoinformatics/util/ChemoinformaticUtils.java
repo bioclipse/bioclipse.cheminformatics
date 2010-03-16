@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.content.IContentTypeManager;
  * 
  * @author shk3
  * @author egonw
+ * @author olas
  */
 @SuppressWarnings("serial")
 @TestClasses("net.bioclipse.chemoinformatics.util.ChemoinformaticUtilsTest")
@@ -44,14 +45,16 @@ public class ChemoinformaticUtils {
            add("net.bioclipse.contenttypes.cml.singleMolecule3d");
            add("net.bioclipse.contenttypes.cml.singleMolecule5d");
            add("net.bioclipse.contenttypes.cml.singleMolecule0d");
+           add("net.bioclipse.contenttypes.smiles.singlemol");
         }};
-        
+
         public final static List<String> SUPPORTED_MULTIPLE_CONTENT_TYPES =
             new ArrayList<String>() {{
                 add("net.bioclipse.contenttypes.sdf");
                 add("net.bioclipse.contenttypes.sdf0d");
                 add("net.bioclipse.contenttypes.sdf2d");
                 add("net.bioclipse.contenttypes.sdf3d");
+                add("net.bioclipse.contenttypes.smi");
             }};
 
     
