@@ -69,6 +69,8 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentType;
+import org.openscience.cdk.AtomContainer;
+import org.openscience.cdk.AtomContainerSet;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.ChemModel;
@@ -88,6 +90,7 @@ import org.openscience.cdk.geometry.alignment.KabschAlignment;
 import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemFile;
@@ -529,13 +532,37 @@ public class CDKManager implements IBioclipseManager {
                 writerProperties);
       }
 
+      public void save( IAtomContainer model,
+              IFile target,
+              IChemFormat filetype,
+              IProgressMonitor monitor,
+              Properties writerProperties )
+      throws BioclipseException, CoreException {
+    	  saveChemObject(model, target, filetype, monitor, writerProperties);
+      }
+
       public void save( IChemModel model,
                         IFile target,
                         IChemFormat filetype,
                         IProgressMonitor monitor,
                         Properties writerProperties )
                   throws BioclipseException, CoreException {
-
+    	  saveChemObject(model, target, filetype, monitor, writerProperties);
+      }
+      
+      
+      private void saveChemObject( IChemObject model,
+              IFile target,
+              IChemFormat filetype,
+              IProgressMonitor monitor,
+              Properties writerProperties )
+        throws BioclipseException, CoreException {
+    	  if (!(model instanceof IAtomContainer ||
+    			model instanceof IChemModel))
+    		  throw new BioclipseException(
+    		      "The model must be an IChemModel or an IAtomContainer."
+    		  );
+    	  
           if (monitor == null)
               monitor = new NullProgressMonitor();
 
@@ -593,27 +620,54 @@ public class CDKManager implements IBioclipseManager {
             }
 
             // write the model
-            if (chemWriter.accepts(ChemModel.class)) {
-                chemWriter.write(model);
-            } else if (chemWriter.accepts(MoleculeSet.class)){
-                IMoleculeSet list =
-                    model.getBuilder().newMoleculeSet();
-                for (IAtomContainer container :
-                     ChemModelManipulator.getAllAtomContainers(model)) {
-                    list.addAtomContainer(container);
-                }
-                chemWriter.write(list);
-            } else if (chemWriter.accepts(Molecule.class)){
-                org.openscience.cdk.interfaces.IMolecule smashedContainer =
-                    model.getBuilder().newMolecule();
-                for (IAtomContainer container :
-                     ChemModelManipulator.getAllAtomContainers(model)) {
-                    smashedContainer.add(container);
-                }
-                chemWriter.write(smashedContainer);
-            } else {
-                throw new BioclipseException("Writer does not support writing" +
-                        "IChemModel or IMolecule.");
+            if (model instanceof IAtomContainer) {
+            	if (chemWriter.accepts(AtomContainer.class)) {
+            		chemWriter.write(model);
+            	} else if (chemWriter.accepts(AtomContainerSet.class)) {
+            		IAtomContainerSet set =
+            			model.getBuilder().newAtomContainerSet();
+            		set.addAtomContainer((IAtomContainer)model);
+            		chemWriter.write(set);
+            	} else if (chemWriter.accepts(ChemModel.class)) {
+            		IMoleculeSet set =
+            			model.getBuilder().newMoleculeSet();
+            		set.addAtomContainer((IAtomContainer)model);
+            		IChemModel chemModel = model.getBuilder().newChemModel();
+            		chemModel.setMoleculeSet(set);
+            		chemWriter.write(chemModel);
+            	} else {
+                    throw new BioclipseException(
+                        "Writer does not support writing of " +
+                        "IAtomContainer, IMoleculeSet, and IChemModel."
+                    );
+            	}
+            } else if (model instanceof IChemModel) {
+            	if (chemWriter.accepts(ChemModel.class)) {
+            		chemWriter.write(model);
+            	} else if (chemWriter.accepts(MoleculeSet.class)){
+            		IMoleculeSet list =
+            			model.getBuilder().newMoleculeSet();
+            		for (IAtomContainer container :
+            			ChemModelManipulator.getAllAtomContainers(
+            			    (IChemModel)model)
+            			) {
+            			list.addAtomContainer(container);
+            		}
+            		chemWriter.write(list);
+            	} else if (chemWriter.accepts(Molecule.class)){
+            		org.openscience.cdk.interfaces.IMolecule smashedContainer =
+            			model.getBuilder().newMolecule();
+            		for (IAtomContainer container :
+            			ChemModelManipulator.getAllAtomContainers(
+            				(IChemModel)model)
+            			) {
+            			smashedContainer.add(container);
+            		}
+            		chemWriter.write(smashedContainer);
+            	} else {
+            		throw new BioclipseException("Writer does not support writing" +
+            		"IChemModel or IMolecule.");
+            	}
             }
               chemWriter.close();
 
@@ -787,12 +841,9 @@ public class CDKManager implements IBioclipseManager {
           }
 
           ICDKMolecule mol = asCDKMolecule(mol_in);
-          IChemModel chemModel = mol.getAtomContainer()
-                                    .getBuilder().newChemModel();
-          chemModel.setMoleculeSet( chemModel.getBuilder().newMoleculeSet() );
-          chemModel.getMoleculeSet().addAtomContainer( mol.getAtomContainer() );
-
-          this.save(chemModel, target, filetype, null, writerProperties);
+          this.save(
+            mol.getAtomContainer(), target, filetype, null, writerProperties
+          );
 
         mol.setResource(target);
       }
