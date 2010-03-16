@@ -169,18 +169,23 @@ public class JCPCellPainter extends BackgroundPainter {
                                  Object element ) {
         boolean generated = false;
 
-        if ( element instanceof IAdaptable ) {
+        IAtomContainer atomContainer = null;
 
+        if ( element instanceof IAtomContainer ) {
+            atomContainer = (IAtomContainer) element;
+        } else  if ( element instanceof IAdaptable ) {
             IAtomContainer[] acArray= new IAtomContainer[1];
             generated = retriveAtomContainer( (IAdaptable ) element, acArray);
             if(acArray[0] == null) return;
+            atomContainer = acArray[0];
+        } else return;
 
             Color oldBackground = gc.getBackground();
             Rectangle2D rectangle = new Rectangle2D.Double( rect.x, rect.y,
                                                             rect.width,
                                                             rect.height);
             SWTRenderer drawVisitor= new SWTRenderer(gc);
-            renderer.paintMolecule( acArray[0],
+            renderer.paintMolecule( atomContainer,
                                     drawVisitor,
                                     rectangle,
                                     true );
@@ -189,7 +194,6 @@ public class JCPCellPainter extends BackgroundPainter {
                 gc.setBackground( oldBackground );
                 JChemPaintWidget.paintMessage( gc, message, rect );
             }
-        }
     }
 
     public static boolean showGeneratedLabel() {

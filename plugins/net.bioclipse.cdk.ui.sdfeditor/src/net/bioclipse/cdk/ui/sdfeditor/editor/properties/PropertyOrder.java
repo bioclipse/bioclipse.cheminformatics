@@ -11,8 +11,13 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor.properties;
 
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 
+import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.interfaces.IAtomContainer;
+
+import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.domain.IMolecule.Property;
@@ -46,12 +51,33 @@ public class PropertyOrder implements Callable<Object> {
 
         ICDKMolecule molecule = model.getMoleculeAt( row );
 
-        if(col == 0) return molecule;
+        if(col == 0) return calculateCoordinates( molecule );
 
         Object property =  molecule.getProperty( propertyName, Property.USE_CACHED );
         if(property == null) {
             property = molecule.getAtomContainer().getProperty( propertyName );
         }
         return property;
+    }
+
+    private ICDKMolecule calculateCoordinates(ICDKMolecule mol) {
+     // If no 2D coordinates
+        if ( GeometryTools.has2DCoordinatesNew( mol.getAtomContainer() )<2 ) {
+            // Test if 3D coordinates
+            try {
+
+                ICDKMolecule molecule = Activator.getDefault()
+                        .getJavaCDKManager()
+                        .generate2dCoordinates( mol );
+                IAtomContainer ac = molecule.getAtomContainer();
+                //FIXME work-around for bug 613 see bug 1926
+                ac.setProperties( new HashMap<Object, Object>(
+                                    mol.getAtomContainer().getProperties()) );
+                return molecule;
+            } catch ( Exception e ) {
+                return null;
+            }
+        }
+        return mol;
     }
 }
