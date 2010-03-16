@@ -2011,23 +2011,9 @@ public class CDKManager implements IBioclipseManager {
             final StringWriter writer = new StringWriter();
             SDFWriter mdlwriter = new SDFWriter(writer);
             for (IMolecule molecule : entries) {
-
-                IAtomContainer ac = null;
-                if (molecule instanceof ICDKMolecule) {
-                    ac = ((ICDKMolecule)molecule).getAtomContainer();
-                } else {
-                    CMLReader reader = new CMLReader(
-                        new ByteArrayInputStream(molecule.toCML().getBytes())
-                    );
-                    ac = ((IChemFile)reader.read(
-                            DefaultChemObjectBuilder.getInstance()
-                            .newChemFile() ))
-                            .getChemSequence(0).getChemModel(0)
-                            .getMoleculeSet().getAtomContainer(0);
-                }
-
-                  mdlwriter.write(ac);
-              }
+            	ICDKMolecule cdkMol = asCDKMolecule(molecule);
+            	mdlwriter.write(cdkMol.getAtomContainer());
+            }
             mdlwriter.close();
 
             ResourcesPlugin.getWorkspace().run(
