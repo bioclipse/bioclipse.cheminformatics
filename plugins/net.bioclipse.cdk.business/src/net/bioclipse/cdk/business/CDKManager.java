@@ -2240,17 +2240,19 @@ public class CDKManager implements IBioclipseManager {
         if (type == null) return null;
 
         // first try a quick exact match ...
+        IChemFormat format = null;
         if (contentTypeMap.containsKey(type.getId()))
-            return contentTypeMap.get(type.getId());
-        // ... then as prefix
-        for (String prefix : contentTypeMap.keySet()) {
-            if (type.getId().startsWith(prefix)) {
-                return contentTypeMap.get(prefix);
-            }
+        	format = contentTypeMap.get(type.getId());
+        if (format == null) {
+        	// ... then as prefix
+        	for (String prefix : contentTypeMap.keySet()) {
+        		if (type.getId().startsWith(prefix)) {
+        			format = contentTypeMap.get(prefix);
+        			return format;
+        		}
+        	}
         }
-
-        // OK, no clue...
-        return null;
+        return format;
     }
 
     public IChemFormat getFormat(String type) {
