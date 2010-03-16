@@ -2003,7 +2003,7 @@ public class CDKManager implements IBioclipseManager {
           if (monitor == null) {
               monitor = new NullProgressMonitor();
           }
-          int ticks = 10000;
+          int ticks = entries.size();
           try {
 
               monitor.beginTask( "Writing file", ticks );
@@ -2013,6 +2013,7 @@ public class CDKManager implements IBioclipseManager {
             for (IMolecule molecule : entries) {
             	ICDKMolecule cdkMol = asCDKMolecule(molecule);
             	mdlwriter.write(cdkMol.getAtomContainer());
+            	monitor.worked(1);
             }
             mdlwriter.close();
 
