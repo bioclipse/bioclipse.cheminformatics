@@ -20,6 +20,7 @@ import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.Console;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -1541,7 +1542,17 @@ public abstract class AbstractCDKManagerPluginTest {
         Assert.assertNotNull(ifile.getContentDescription());
     }
     
-    
+    @Test public void testReadsTitle() throws Exception{
+        URI uri = getClass().getResource("/testFiles/polycarpol.mdl").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+        ICDKMolecule mol = cdk.loadMolecule( path);
+        Assert.assertEquals(
+        	"polycarpol.mdl",
+        	mol.getAtomContainer().getProperty(CDKConstants.TITLE)
+        );
+    }
+        
     @Test public void testBug826() throws Exception{
         URI uri = getClass().getResource("/testFiles/polycarpol.mdl").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());
