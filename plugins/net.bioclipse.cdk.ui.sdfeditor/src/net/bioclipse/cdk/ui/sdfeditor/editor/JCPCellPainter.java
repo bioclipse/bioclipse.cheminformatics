@@ -13,7 +13,6 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
@@ -146,9 +145,6 @@ public class JCPCellPainter extends BackgroundPainter {
                         .getJavaCDKManager()
                         .generate2dCoordinates( mol ))
                         .getAtomContainer();
-                //FIXME work-around for bug 613
-                generatedAC.setProperties( new HashMap<Object, Object>(
-                                    mol.getAtomContainer().getProperties()) );
                 result[0] = generatedAC;
             } catch ( Exception e ) {
                 logger.info( "Failed to generate 2D-coordinates" );

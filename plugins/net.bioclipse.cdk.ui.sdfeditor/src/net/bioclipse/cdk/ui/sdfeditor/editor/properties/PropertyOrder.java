@@ -11,16 +11,14 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor.properties;
 
-import java.util.HashMap;
 import java.util.concurrent.Callable;
-
-import org.openscience.cdk.geometry.GeometryTools;
-import org.openscience.cdk.interfaces.IAtomContainer;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.domain.IMolecule.Property;
+
+import org.openscience.cdk.geometry.GeometryTools;
 
 public class PropertyOrder implements Callable<Object> {
 
@@ -69,10 +67,6 @@ public class PropertyOrder implements Callable<Object> {
                 ICDKMolecule molecule = Activator.getDefault()
                         .getJavaCDKManager()
                         .generate2dCoordinates( mol );
-                IAtomContainer ac = molecule.getAtomContainer();
-                //FIXME work-around for bug 613 see bug 1926
-                ac.setProperties( new HashMap<Object, Object>(
-                                    mol.getAtomContainer().getProperties()) );
                 return molecule;
             } catch ( Exception e ) {
                 return null;
