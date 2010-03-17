@@ -300,7 +300,8 @@ public class MoleculeTableContentProvider implements
     }
     
     private void cacheFuture(String propertyKey, Future<Object> future) {
-        if( moleculeProperties.size() > 50 *(properties.size()+1)){
+        int visibleRows = ((NatTable)viewer.getControl()).getRowCount();
+        if( moleculeProperties.size() > visibleRows *(properties.size()+1)){
             Object key = moleculePropertiesQueue.remove( 0 );
             Future<Object> value = moleculeProperties.remove( key );
             value.cancel( false );
