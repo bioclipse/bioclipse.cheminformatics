@@ -1381,6 +1381,7 @@ public abstract class AbstractCDKManagerPluginTest {
         byte[] bytes=new byte[1000];
         IFile file= ResourcePathTransformer.getInstance()
            .transform(path);
+        assertTrue("File "+path+" does not exist.",file.exists());
         file.getContents().read(bytes);
         StringBuffer sb=new StringBuffer();
           for(int i=0;i<bytes.length;i++){
@@ -1400,6 +1401,8 @@ public abstract class AbstractCDKManagerPluginTest {
         mols.add(mol);
         String path = "/Virtual/testPropateProps" + mol.hashCode() + ".sdf";
         cdk.saveSDFile(path, mols);
+        IFile file = ResourcePathTransformer.getInstance().transform( path );
+        assertTrue("Test file "+path+" was not saved.", file.exists());
         String[] content = ui.readFileIntoArray(path);
         StringBuffer sb = new StringBuffer();
         for(int i=0;i<content.length;i++){
