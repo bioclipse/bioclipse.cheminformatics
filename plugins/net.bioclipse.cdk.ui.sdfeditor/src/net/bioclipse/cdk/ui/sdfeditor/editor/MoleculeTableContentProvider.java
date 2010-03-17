@@ -20,6 +20,8 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
+import static net.bioclipse.cdk.ui.sdfeditor.editor.properties.PropertyOrder.createPropertyKey;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -241,6 +243,24 @@ public class MoleculeTableContentProvider implements
         return 0;
     }
 
+    private void initExecutorService() {
+        logger.debug( "Creating ExecutorService" );
+        executorService = new ThreadPoolExecutor(1, 1,
+                                                 0L, TimeUnit.MILLISECONDS,
+                                                 new LinkedBlockingQueue<Runnable>()) {
+            @Override
+            protected void afterExecute( Runnable r,
+                                         Throwable t ) {
+                super.afterExecute( r, t );
+                Display.getDefault().asyncExec( new Runnable() {
+                    public void run() {
+                        viewer.refresh();
+                    }
+                });
+            }
+        };
+    }
+
     public Object getDataValue( final int col, final int row ) {
         if ( row >= getNumberOfMolecules() ) return "";
         
@@ -248,42 +268,38 @@ public class MoleculeTableContentProvider implements
         if ( properties == null || i >= properties.size() ) {
             return null;
         }
-        if ( executorService == null ) {
-            logger.debug( "Creating ExecutorService" );
-            executorService = new ThreadPoolExecutor(1, 1,
-                                                     0L, TimeUnit.MILLISECONDS,
-                                                     new LinkedBlockingQueue<Runnable>()) {
-                @Override
-                protected void afterExecute( Runnable r,
-                                             Throwable t ) {
-                    super.afterExecute( r, t );
-                    Display.getDefault().asyncExec( new Runnable() {
-                        public void run() {
-                            viewer.refresh();
-                        }
-                    });
-                }
-            };
-        }
+        if ( executorService == null ) initExecutorService();
 
         String propertyName = col==0?null:(String) properties.get( i );
         String propertyKey = PropertyOrder.createPropertyKey( propertyName, 
-                                                              row, col );
+                                                              row);
         Future<Object> p = moleculeProperties.get( propertyKey );
         if ( p == null ) {
-            
-            PropertyOrder order = new PropertyOrder( model, propertyName, row, col );
-            Future<Object> future = executorService.submit( order );
-            // cache property future.
-            cacheFuture( propertyKey, future );
-            
-        }else {
+            if(col == 0) {
+                PropertyOrder order = new PropertyOrder(model,null,row);
+                Future<Object> future = executorService.submit( order );
+                cacheFuture( propertyKey, future );
+            }
+            for ( Object propertyObject : properties ) {
+                if ( propertyObject instanceof String ) {
+                    propertyName = (String)propertyObject;
+                    propertyKey = createPropertyKey( propertyName ,row);
+                    if ( !moleculeProperties.containsKey( propertyKey ) ) {
+                        PropertyOrder order = new PropertyOrder( model,
+                                                                 propertyName,
+                                                                 row);
+                        Future<Object> future = executorService.submit( order );
+                        cacheFuture( propertyKey, future );
+                    }
+                }
+            }
+        } else {
             if(p.isDone() ) {
                 try{
                     return p.get();
                 } catch( Exception ex) {
                     moleculeProperties.remove( propertyKey );
-                    return "[ Faild ]";
+                    return "[ Failed ]";
                 }
             }
         }
@@ -292,7 +308,7 @@ public class MoleculeTableContentProvider implements
     
     private void cacheFuture(String propertyKey, Future<Object> future) {
         int visibleRows = ((NatTable)viewer.getControl()).getRowCount();
-        if( moleculeProperties.size() > visibleRows *(properties.size()+1)){
+        if( moleculeProperties.size() > 3 *visibleRows *(properties.size()+1)){
             Object key = moleculePropertiesQueue.remove( 0 );
             Future<Object> value = moleculeProperties.remove( key );
             value.cancel( false );

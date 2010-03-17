@@ -25,23 +25,21 @@ public class PropertyOrder implements Callable<Object> {
     IMoleculesEditorModel model;
     String                propertyName;
     int                   row;
-    int                   col;
 
     public PropertyOrder( IMoleculesEditorModel model,
-                         String propertyName, int row, int col) {
+                         String propertyName, int row) {
 
         this.model = model;
         this.propertyName = propertyName;
         this.row = row;
-        this.col = col;
     }
     
-    public static String createPropertyKey(String propertyName, int row, int col) {
-        if ( col == 0 ) {
-            return "the-molecule" + "|" + row + "|" + col;
+    public static String createPropertyKey(String propertyName, int row) {
+        if ( propertyName == null ) {
+            return "the-molecule" + "|" + row;
         }
         else {
-            return row + "|" + col + "|" + propertyName;
+            return row + "|" + propertyName;
         }
     }
 
@@ -49,7 +47,7 @@ public class PropertyOrder implements Callable<Object> {
 
         ICDKMolecule molecule = model.getMoleculeAt( row );
 
-        if(col == 0) return calculateCoordinates( molecule );
+        if(propertyName == null) return calculateCoordinates( molecule );
 
         Object property =  molecule.getProperty( propertyName, Property.USE_CACHED );
         if(property == null) {
