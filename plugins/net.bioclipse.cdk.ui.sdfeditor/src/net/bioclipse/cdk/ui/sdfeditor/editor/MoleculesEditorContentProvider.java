@@ -12,10 +12,12 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
+import java.io.IOException;
 import java.util.Iterator;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
@@ -74,7 +76,13 @@ public class MoleculesEditorContentProvider  implements
         } catch ( CoreException e ) {
             // TODO Auto-generated catch block
             LogUtils.debugTrace( logger, e );
-        }
+        } catch (IOException e) {
+			// TODO Auto-generated catch block
+            LogUtils.debugTrace( logger, e );
+		} catch (BioclipseException e) {
+			// TODO Auto-generated catch block
+            LogUtils.debugTrace( logger, e );
+		}
         
           if( element != null) 
               viewer.replace( parent, index, element );

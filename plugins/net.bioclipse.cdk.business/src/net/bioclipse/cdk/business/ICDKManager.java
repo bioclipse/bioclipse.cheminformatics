@@ -465,10 +465,10 @@ public interface ICDKManager extends IBioclipseManager {
         		            "at the path" )
     @TestMethods("testCreatingMoleculeIterator")
     public Iterator<ICDKMolecule> createMoleculeIterator(String path)
-                                  throws CoreException;
+                                  throws CoreException, IOException, BioclipseException;
 
     public Iterator<ICDKMolecule> createMoleculeIterator(IFile file)
-                                  throws CoreException;
+                                  throws CoreException, IOException, BioclipseException;
 
     /**
      * True if the fingerprint of the subStructure is a subset of the
