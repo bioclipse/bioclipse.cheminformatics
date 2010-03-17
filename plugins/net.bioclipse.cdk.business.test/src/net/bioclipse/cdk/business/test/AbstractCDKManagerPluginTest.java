@@ -1447,7 +1447,7 @@ public abstract class AbstractCDKManagerPluginTest {
         cdk.saveMolecule(mol,"/Virtual/bug583." + mol.hashCode() + ".cml", true);
     }
 
-    @Test @Ignore("See bug #613")
+    @Test //("See bug #613")
     public  void testGenerate2D() throws Exception {
         ICDKMolecule mol = cdk.fromSMILES("CC");
         Assert.assertFalse( cdk.has2d( mol ));
