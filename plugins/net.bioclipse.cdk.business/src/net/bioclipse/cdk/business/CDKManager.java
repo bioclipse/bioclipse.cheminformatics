@@ -907,12 +907,21 @@ public class CDKManager implements IBioclipseManager {
 
     public Iterator<ICDKMolecule>
           createMoleculeIterator( IFile file, IProgressMonitor monitor)
-              throws CoreException {
+              throws CoreException, IOException, BioclipseException {
+    	
+    	IChemFormat format = determineIChemFormat(file);
+    	if (format == SMILESFormat.getInstance()) {
+    		return null;
+    		//TODO: Implement IteratingBioclipseSMILESReader
+    	}
+    	else if (format == null) {
+    		throw new BioclipseException("Unsupported format for file: " + file.getName());
+    	}
 
-          return new IteratingBioclipseMDLReader(
-                         file.getContents(),
-                         NoNotificationChemObjectBuilder.getInstance(),
-                         monitor );
+    	return new IteratingBioclipseMDLReader(
+    			file.getContents(),
+    			NoNotificationChemObjectBuilder.getInstance(),
+    			monitor );
       }
 
       static class IteratingBioclipseMDLReader
