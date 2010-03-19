@@ -11,6 +11,8 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
+import static net.bioclipse.cdk.ui.sdfeditor.Activator.STRUCTURE_COLUMN_WIDTH;
+
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -220,12 +222,14 @@ public class JCPCellPainter extends BackgroundPainter {
 
     public int getPreferredHeight( LayerCell cell, GC gc,
                                    IConfigRegistry configRegistry ) {
-        return MoleculeTableViewer.STRUCTURE_COLUMN_WIDTH;
+        return net.bioclipse.cdk.ui.sdfeditor.Activator.getDefault()
+        .getPreferenceStore().getInt( STRUCTURE_COLUMN_WIDTH );
     }
 
     public int getPreferredWidth( LayerCell cell, GC gc,
                                   IConfigRegistry configRegistry ) {
-        return MoleculeTableViewer.STRUCTURE_COLUMN_WIDTH;
+        return net.bioclipse.cdk.ui.sdfeditor.Activator.getDefault()
+        .getPreferenceStore().getInt( STRUCTURE_COLUMN_WIDTH );
     }
 
     private void setupGCFromConfig(GC gc, IStyle cellStyle) {

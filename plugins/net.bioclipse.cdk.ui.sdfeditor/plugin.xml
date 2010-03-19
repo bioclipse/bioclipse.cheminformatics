@@ -335,4 +335,19 @@
        </or>
     </definition>
  </extension>
+ <extension
+       point="org.eclipse.core.runtime.preferences">
+    <initializer
+          class="net.bioclipse.cdk.ui.sdfeditor.MolTablePreferenceInitializer">
+    </initializer>
+ </extension>
+ <extension
+       point="org.eclipse.ui.preferencePages">
+    <page
+          category="net.bioclipse.cdk.business.preferences.CDKPreferencePage"
+          class="net.bioclipse.cdk.ui.sdfeditor.MolTablePreferencePage"
+          id="net.bioclipse.cdk.ui.sdfeditor.preferencePage"
+          name="Mol Table Preferences">
+    </page>
+ </extension>
 </plugin>

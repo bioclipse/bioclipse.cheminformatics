@@ -12,6 +12,8 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
+import static net.bioclipse.cdk.ui.sdfeditor.Activator.STRUCTURE_COLUMN_WIDTH;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,7 +50,9 @@ import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.LocalSelectionTransfer;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -81,7 +85,6 @@ public class MoleculesEditor extends EditorPart implements
         //ISelectionProvider,
         ISelectionListener {
 
-    public final static int STRUCTURE_COLUMN_WIDTH = 200;
 
     Logger logger = Logger.getLogger( MoleculesEditor.class );
 
@@ -94,6 +97,14 @@ public class MoleculesEditor extends EditorPart implements
     private BioclipseJob<SDFIndexEditorModel> indexJob;
 
     private boolean dirty;
+
+    private IPropertyChangeListener propertyListener = new IPropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent event) {
+            if (event.getProperty().equals(STRUCTURE_COLUMN_WIDTH)) {
+                molTableViewer.resizeStructureColumn();
+            }
+        }
+    };
 
     public MoleculesEditor() {
     }
@@ -131,6 +142,8 @@ public class MoleculesEditor extends EditorPart implements
         super.setSite( site );
         super.setInput( input );
         setPartName(input.getName() );
+        net.bioclipse.cdk.ui.sdfeditor.Activator.getDefault()
+            .getPreferenceStore().addPropertyChangeListener( propertyListener );
         // TODO listen to selections check and focus on selected element from
         // common navigator, load it and get columns
     }
@@ -547,6 +560,8 @@ public class MoleculesEditor extends EditorPart implements
     public void dispose() {
         if(parseJob!=null) parseJob.cancel();
         if(indexJob!=null) indexJob.cancel();
+        net.bioclipse.cdk.ui.sdfeditor.Activator.getDefault()
+        .getPreferenceStore().removePropertyChangeListener( propertyListener );
         super.dispose();
     }
 }

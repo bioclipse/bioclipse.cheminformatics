@@ -25,6 +25,7 @@ public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "net.bioclipse.cdk.ui.sdfeditor";
+	public static final String STRUCTURE_COLUMN_WIDTH="STRUCTURE_COLUMN_WIDTH";
 
 	// The shared instance
 	private static Activator plugin;

@@ -68,18 +68,11 @@ public class MoleculeTableContentProvider implements
     private MoleculeTableViewer viewer;
     IMoleculesEditorModel   model       = null;
     List<Object> properties = new ArrayList<Object>(NUMBER_OF_PROPERTIES);
-//    Collection<Object> availableProperties = new HashSet<Object>();
-
-    MoleculesEditorLabelProvider melp = new MoleculesEditorLabelProvider(
-                                    MoleculeTableViewer.STRUCTURE_COLUMN_WIDTH);
 
 //    private ISortingDirectionChangeListener sortDirListener;
 
     private ExecutorService executorService;
 
-    public MoleculesEditorLabelProvider getLabelProvider() {
-        return melp;
-    }
 
     public List<Object> getProperties() {
 
@@ -205,8 +198,7 @@ public class MoleculeTableContentProvider implements
 //    }
 
     public void updateHeaders() {
-
-        viewer.refreshColumns();
+        viewer.resizeStructureColumn();
         viewer.refresh();
     }
 
@@ -220,7 +212,6 @@ public class MoleculeTableContentProvider implements
     }
 
     private void updateSize(int size) {
-        viewer.refreshRows();
         getCompositeTable( viewer ).redraw();
     }
 

@@ -10,6 +10,7 @@
 ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.editor.nattable;
 
+import net.bioclipse.cdk.ui.sdfeditor.Activator;
 import net.sourceforge.nattable.data.IDataProvider;
 import net.sourceforge.nattable.hideshow.ColumnHideShowLayer;
 import net.sourceforge.nattable.layer.AbstractLayerTransform;
@@ -31,7 +32,10 @@ public class BodyLayerStack extends AbstractLayerTransform {
 
     public BodyLayerStack(IDataProvider dataProvider) {
 
-        bodyDataLayer = new DataLayer(dataProvider,50,50);
+        bodyDataLayer = new DataLayer(dataProvider);
+        int width = Activator.getDefault().getPreferenceStore()
+                            .getInt( Activator.STRUCTURE_COLUMN_WIDTH );
+        bodyDataLayer.setColumnWidthByPosition( 0, width );
         ColumnReorderLayer columnReorderLayer = new ColumnReorderLayer( bodyDataLayer );
         ColumnHideShowLayer columnHideShowLayer = new ColumnHideShowLayer( columnReorderLayer );
         selectionLayer = new SelectionLayer(columnHideShowLayer);

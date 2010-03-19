@@ -19,13 +19,12 @@ import java.util.Set;
 
 import net.bioclipse.cdk.domain.CDKMoleculePropertySource;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.ui.sdfeditor.Activator;
 import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.BodyLayerStack;
 import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.ColorProviderPainter;
 import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.ColumnHeaderLayerStack;
 import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.MolTableBodyMenuConfigurator;
 import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.MolTableHeaderMenuConfigurator;
-import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.MultiColumnStructuralChangeEventExtension;
-import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.MultiRowStructuralChangeEvent;
 import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.RowHeaderLayerStack;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.sourceforge.nattable.NatTable;
@@ -82,7 +81,6 @@ import org.eclipse.ui.views.properties.IPropertySource;
 
 public class MoleculeTableViewer extends ContentViewer {
 
-    public final static int STRUCTURE_COLUMN_WIDTH = 200;
     public final static String STRUCTURE_LABEL = "StructureLable";
     public final static String COLOR_PROVIDER_LABEL = "ColorProived";
     Logger logger = Logger.getLogger( MoleculeTableViewer.class );
@@ -95,6 +93,7 @@ public class MoleculeTableViewer extends ContentViewer {
 
     private Runnable dblClickHook;
     private ColumnHeaderLayerStack columnHeaderLayer;
+    private GridLayer gridLayer;
 
     public MoleculeTableViewer(Composite parent, int style) {
        this( parent, style, null, null );
@@ -177,7 +176,7 @@ public class MoleculeTableViewer extends ContentViewer {
         CornerLayer cornerLayer = new CornerLayer( new DataLayer( cornerDataProvider ),
                                                    rowHeaderLayer,
                                                    columnHeaderLayer );
-        GridLayer gridLayer = new GridLayer( bodyLayer, columnHeaderLayer,
+        gridLayer = new GridLayer( bodyLayer, columnHeaderLayer,
                                              rowHeaderLayer, cornerLayer );
 
      // Cell painting
@@ -425,37 +424,25 @@ public class MoleculeTableViewer extends ContentViewer {
         return (IMoleculeTableColumnHandler) getContentProvider();
     }
 
+    public void resizeStructureColumn() {
+        int value = Activator.getDefault().getPreferenceStore().getInt(
+                                             Activator.STRUCTURE_COLUMN_WIDTH );
+        bodyLayer.getDataLayer().setDefaultRowHeight( value );
+        bodyLayer.getDataLayer().setColumnWidthByPosition( 0, value );
+        logger.debug( "Resize column" );
+        table.updateResize();
+    }
+
     @Override
     public void refresh() {
         if(!table.isDisposed()) {
-           // TODO  table.reset();
             refreshTable();
-            table.redraw();
-            table.updateResize();
-            table.update();
         }
-    }
-
-    void refreshColumns() {
-        AbstractLayer layer = bodyLayer.getDataLayer();
-        layer.fireLayerEvent(
-                      new MultiColumnStructuralChangeEventExtension( layer ) );
-        layer = columnHeaderLayer.getDataLayer();
-        layer.fireLayerEvent(
-                       new MultiColumnStructuralChangeEventExtension( layer ) );
-    }
-
-    void refreshRows() {
-        AbstractLayer layer = bodyLayer.getDataLayer();
-        layer.fireLayerEvent(
-                      new MultiRowStructuralChangeEvent( layer ) );
-
     }
 
     void refreshTable() {
         AbstractLayer layer = bodyLayer.getDataLayer();
-        layer.fireLayerEvent(
-                      new StructuralRefreshEvent( layer ) );
+        layer.fireLayerEvent( new StructuralRefreshEvent( layer ) );
     }
 
     @Override
