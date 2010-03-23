@@ -488,7 +488,8 @@ public abstract class AbstractCDKManagerPluginTest {
     @Test
     public void testCreatingMoleculeIterator() 
                 throws CoreException, 
-                       URISyntaxException, MalformedURLException, IOException {
+                       URISyntaxException, MalformedURLException, IOException,
+                       BioclipseException{
 
         URI uri = getClass().getResource("/testFiles/test.sdf").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());
