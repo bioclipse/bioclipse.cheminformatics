@@ -214,13 +214,12 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
     @Override
     public void doSaveAs() {
         IMoleculesEditorModel model = moleculesPage.getModel();
-        IResource original = null;
+        IFile original = null;
         if(model instanceof IFileMoleculesEditorModel) {
             original = ((IFileMoleculesEditorModel)model).getResource();
         }
         SaveAsDialog saveAsDialog = new SaveAsDialog( this.getSite().getShell() );
-        if (original instanceof IFile )
-            saveAsDialog.setOriginalFile( (IFile) original );
+        saveAsDialog.setOriginalFile( (IFile) original );
         int result = saveAsDialog.open();
         if ( result == 1 ) {
             logger.debug( "SaveAs canceled." );
