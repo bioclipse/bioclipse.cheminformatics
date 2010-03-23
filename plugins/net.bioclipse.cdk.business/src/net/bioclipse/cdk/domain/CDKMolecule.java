@@ -15,15 +15,11 @@ package net.bioclipse.cdk.domain;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.BitSet;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.preferences.PreferenceConstants;
-import net.bioclipse.cdk.domain.CDKMoleculeUtils.MolProperty;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.BioObject;
 import net.bioclipse.core.domain.IMolecule;
@@ -60,10 +56,9 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     private IAtomContainer atomContainer;
 
     // cached properties
-    private BitSet cachedFingerprint;
-    private InChI cachedInchi;
-
-    private volatile Map<String,Object> cachedProperties;
+    private static final String FINGERPRINT_KEY = "net.bioclipse.fingerprint";
+    private static final String INCHI_KEY = "net.bioclipse.InChI";
+    private static final String INCHIKEY_KEY = "net.bioclipse.InChI_Key";
 
     private static Preferences prefs;
 
@@ -95,7 +90,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
                         BitSet fingerprint ) {
         this(atomContainer);
         this.name = name;
-        this.cachedFingerprint = fingerprint;
+        setProperty( FINGERPRINT_KEY, fingerprint );
     }
 
 
@@ -200,23 +195,18 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
      */
     public BitSet getFingerprint(IMolecule.Property urgency) 
                   throws BioclipseException {
-        if (urgency == IMolecule.Property.USE_CACHED) return cachedFingerprint;
+        Object val = getProperty( FINGERPRINT_KEY, urgency );
+        if(val instanceof BitSet) return (BitSet) val;
         
-        if (urgency != IMolecule.Property.USE_CALCULATED) {
-            if (cachedFingerprint != null) {
-                return cachedFingerprint;
-            }
-        }
         Fingerprinter fp=new Fingerprinter();
         try {
             BitSet fingerprint=fp.getFingerprint(getAtomContainer());
-            cachedFingerprint=fingerprint;
+            setProperty( FINGERPRINT_KEY, fingerprint );
             return fingerprint;
         } catch (Exception e) {
             throw new BioclipseException("Could not create fingerprint: "
                     + e.getMessage());
         }
-
     }
 
     public boolean has3dCoords() throws BioclipseException {
@@ -265,19 +255,15 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
 
     public String getInChI(IMolecule.Property urgency) 
                   throws BioclipseException {
-        if (urgency == IMolecule.Property.USE_CACHED) {
-            return cachedInchi == null ? "" : cachedInchi.getValue();
-        }
+        Object val = getProperty( INCHI_KEY, urgency );
+        if(val instanceof InChI) return ((InChI)val).getValue();
+        if(urgency==Property.USE_CACHED) return "";
         
-        if (urgency != IMolecule.Property.USE_CALCULATED) {
-            if (cachedInchi != null) {
-                return cachedInchi.getValue();
-            }
-        }
         IInChIManager inchi = net.bioclipse.inchi.business.Activator.
             getDefault().getJavaInChIManager();
         try {
-            cachedInchi = inchi.generate(this);
+            InChI cachedInchi = inchi.generate(this);
+            setProperty( INCHI_KEY, cachedInchi );
             return cachedInchi.getValue();
         } catch (Exception e) {
             throw new BioclipseException("Could not create InChI: "
@@ -287,18 +273,15 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
 
     public String getInChIKey(IMolecule.Property urgency) 
                   throws BioclipseException {
-        if (urgency == IMolecule.Property.USE_CACHED)
-            return cachedInchi == null ? "" : cachedInchi.getKey();
+        Object value = getProperty( INCHI_KEY, urgency );
+        if(value instanceof InChI) return ((InChI)value).getKey();
+        if( urgency == Property.USE_CACHED) return "";
         
-        if (urgency != IMolecule.Property.USE_CALCULATED) {
-            if (cachedInchi != null) {
-                return cachedInchi.getKey();
-            }
-        }
         IInChIManager inchi = net.bioclipse.inchi.business.Activator.
             getDefault().getJavaInChIManager();
         try {
-            cachedInchi = inchi.generate(this);
+            InChI cachedInchi = inchi.generate(this);
+            setProperty( INCHI_KEY, cachedInchi );
             return cachedInchi.getKey();
         } catch (Exception e) {
             throw new BioclipseException("Could not create InChIKey: "
@@ -307,43 +290,14 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     }
 
     public Object getProperty(String propertyKey, Property urgency) {
-        switch (urgency) {
-            case USE_CALCULATED:
-                // TODO get calculator for property
-            case USE_CACHED_OR_CALCULATED:
-                // TODO if cached use it otherwise calculate
-            case USE_CACHED:
-                if(MolProperty.InChI.name().equals( propertyKey ))
-                    return cachedInchi;
-                if(cachedProperties !=null)
-                    return cachedProperties.get( propertyKey );
-        }
-        return null;
+        return atomContainer.getProperty( propertyKey );
     }
 
     public void setProperty(String propertyKey, Object value) {
-        if(MolProperty.InChI.name().equals( propertyKey ))
-            cachedInchi = (InChI) value;
-        else if(MolProperty.Fingerprint.name().equals( propertyKey ))
-            cachedFingerprint = (BitSet) value;
-        else {
-
-            if(cachedProperties == null)
-                cachedProperties = Collections.synchronizedMap( 
-                                       new HashMap<String, Object>() );
-            
-            cachedProperties.put( propertyKey, value );
-        }
+        atomContainer.setProperty( propertyKey, value );
     }
 
     void clearProperty( String key ) {
-        if(MolProperty.InChI.name().equals( key ))
-            cachedInchi = null;
-        else if(MolProperty.Fingerprint.name().equals( key ))
-            cachedFingerprint = null;
-        else {
-            if(cachedProperties!= null)
-                cachedProperties.remove( key );
-        }
+        atomContainer.getProperties().remove( key );
     }
 }
