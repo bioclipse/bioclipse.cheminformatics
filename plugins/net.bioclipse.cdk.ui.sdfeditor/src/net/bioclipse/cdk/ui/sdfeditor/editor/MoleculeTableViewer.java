@@ -11,7 +11,6 @@
 package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -296,68 +295,6 @@ public class MoleculeTableViewer extends ContentViewer {
                     return null;
             }
             return Platform.getAdapterManager().getAdapter(this, adapter);
-        }
-    }
-
-    public static class MolTableSelection implements ISelection, IAdaptable{
-
-        IMoleculesEditorModel model;
-        int[] selection;
-
-        public MolTableSelection(int[] selection,IMoleculesEditorModel model) {
-            this.selection = selection;
-            this.model = model;
-        }
-
-        public boolean isEmpty() {
-            return selection.length==0;
-        }
-
-        @SuppressWarnings("unchecked")
-        public Object getAdapter( Class adapter ) {
-
-            if(adapter.isAssignableFrom( IMoleculesEditorModel.class ) ) {
-                final IMoleculesEditorModel editorModel = new IMoleculesEditorModel() {
-
-                    public ICDKMolecule getMoleculeAt( int index ) {
-                        return model.getMoleculeAt( selection[index] );
-                    }
-
-                    public int getNumberOfMolecules() {
-                        return selection.length;
-                    }
-
-                    public void markDirty( int index,
-                                           ICDKMolecule moleculeToSave ) {
-
-                        throw new UnsupportedOperationException();
-
-                    }
-
-                    public void save() {
-                        throw new UnsupportedOperationException();
-                    }
-                    public Collection<Object> getAvailableProperties() {
-
-                        return model.getAvailableProperties();
-                    }
-
-                    public <T> void setPropertyFor( int moleculeIndex,
-                                                    String property, T value ) {
-
-                        model.setPropertyFor( moleculeIndex, property, value );
-
-                    }
-                    public void instert( ICDKMolecule... molecules ) {
-                        throw new UnsupportedOperationException();
-                    }
-                    public void delete( int index ) {
-                        throw new UnsupportedOperationException();
-                    }
-                };
-                return editorModel;
-            }
-            return null;
         }
     }
 
