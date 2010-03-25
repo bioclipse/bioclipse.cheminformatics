@@ -261,6 +261,11 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
                                                   String property,
                                                   T value) {
         Map<String,Object> props = molProps.get( moleculeIndex );
+        if(value == null) {
+            if(props!=null) 
+                setDirty( props.remove( property )!=null );
+            return;
+        }
         if(value!=null)
             propertyList.put( property, value.getClass() );
         if(props==null)

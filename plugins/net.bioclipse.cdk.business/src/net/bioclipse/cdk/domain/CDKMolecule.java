@@ -263,7 +263,8 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
             getDefault().getJavaInChIManager();
         try {
             InChI cachedInchi = inchi.generate(this);
-            setProperty( INCHI_KEY, cachedInchi );
+            if(cachedInchi != null)
+                setProperty( INCHI_KEY, cachedInchi );
             return cachedInchi.getValue();
         } catch (Exception e) {
             throw new BioclipseException("Could not create InChI: "
@@ -281,7 +282,8 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
             getDefault().getJavaInChIManager();
         try {
             InChI cachedInchi = inchi.generate(this);
-            setProperty( INCHI_KEY, cachedInchi );
+            if(cachedInchi != null)
+                setProperty( INCHI_KEY, cachedInchi );
             return cachedInchi.getKey();
         } catch (Exception e) {
             throw new BioclipseException("Could not create InChIKey: "
@@ -294,7 +296,10 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     }
 
     public void setProperty(String propertyKey, Object value) {
-        atomContainer.setProperty( propertyKey, value );
+        if(value == null)
+            atomContainer.getProperties().remove( propertyKey );
+        else
+            atomContainer.setProperty( propertyKey, value );
     }
 
     void clearProperty( String key ) {
