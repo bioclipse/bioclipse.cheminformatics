@@ -79,6 +79,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorInputTransfer;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.EditorInputTransfer.EditorInputData;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.interfaces.IAtomContainer;
 
 public class MoleculesEditor extends EditorPart implements
@@ -97,6 +98,8 @@ public class MoleculesEditor extends EditorPart implements
     private BioclipseJob<SDFIndexEditorModel> indexJob;
 
     private boolean dirty;
+
+    private MolTableOutline outlinePage;
 
     private IPropertyChangeListener propertyListener = new IPropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent event) {
@@ -355,13 +358,7 @@ public class MoleculesEditor extends EditorPart implements
                                 final List<ICDKMolecule> list = getReturnValue();
 
                                 // FIXME there should be a IMoleculesEditorModel content provider
-                                Object input = new ListMoleculesEditorModel( list );
-
-
-                              molTableViewer.setContentProvider(
-                                           new MoleculeTableContentProvider() );
-                              molTableViewer.setInput( input );
-                              molTableViewer.refresh();
+                                setInput( new ListMoleculesEditorModel( list ));
                           }
 
                       } );
@@ -383,10 +380,7 @@ public class MoleculesEditor extends EditorPart implements
                             indexJob = null;
                             Display.getDefault().asyncExec( new Runnable() {
                                public void run() {
-                                   molTableViewer.setContentProvider(
-                                       new MoleculeTableContentProvider() );
-                                   molTableViewer.setInput( new MappingEditorModel( sdfModel ) );
-                                   molTableViewer.refresh();
+                                   setInput( new MappingEditorModel( sdfModel ) );
                                };
                             });
                             parseJob = molTable.parseProperties( sdfModel ,
@@ -404,13 +398,7 @@ public class MoleculesEditor extends EditorPart implements
             }else {
             final List<ICDKMolecule> list = adapt(editorInput,List.class);
             if(list!=null) {
-
-                Object inp =  new ListMoleculesEditorModel( list );
-
-                  molTableViewer.setContentProvider(
-                               new MoleculeTableContentProvider() );
-                  molTableViewer.setInput( inp );
-                  molTableViewer.refresh();
+                  setInput( new ListMoleculesEditorModel( list ) );
             }else {
                 IMoleculesEditorModel molEditorModel = (IMoleculesEditorModel)
                     editorInput.getAdapter( IMoleculesEditorModel.class );
@@ -419,15 +407,19 @@ public class MoleculesEditor extends EditorPart implements
                         molEditorModel = new MappingEditorModel( 
                                          (SDFIndexEditorModel)molEditorModel );
                     }
-                    molTableViewer.setContentProvider(
-                                           new MoleculeTableContentProvider() );
-                                         molTableViewer.setInput( molEditorModel );
-                                         molTableViewer.refresh();
+                    setInput( molEditorModel );
                 }
             }
         }
         }
 //        molTableViewer.setInput( input );
+    }
+
+    private void setInput(IMoleculesEditorModel model) {
+        molTableViewer.setContentProvider( new MoleculeTableContentProvider() );
+        molTableViewer.setInput( model );
+        if(outlinePage!=null) outlinePage.setInput(model);
+        molTableViewer.refresh();
     }
 
     void reactOnSelection( ISelection selection ) {
@@ -556,6 +548,7 @@ public class MoleculesEditor extends EditorPart implements
             firePropertyChange( IEditorPart.PROP_DIRTY );
         }
     }
+
     @Override
     public void dispose() {
         if(parseJob!=null) parseJob.cancel();
@@ -563,5 +556,17 @@ public class MoleculesEditor extends EditorPart implements
         net.bioclipse.cdk.ui.sdfeditor.Activator.getDefault()
         .getPreferenceStore().removePropertyChangeListener( propertyListener );
         super.dispose();
+    }
+
+    @Override
+    public Object getAdapter( Class adapter ) {
+
+        if ( IContentOutlinePage.class.equals( adapter ) ) {
+            if ( outlinePage == null ) {
+                outlinePage = new MolTableOutline();
+            }
+            return outlinePage;
+        }
+        return super.getAdapter( adapter );
     }
 }
