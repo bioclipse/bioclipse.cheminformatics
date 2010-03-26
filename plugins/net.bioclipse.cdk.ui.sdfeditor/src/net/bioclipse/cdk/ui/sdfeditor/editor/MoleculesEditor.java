@@ -564,6 +564,9 @@ public class MoleculesEditor extends EditorPart implements
         if ( IContentOutlinePage.class.equals( adapter ) ) {
             if ( outlinePage == null ) {
                 outlinePage = new MolTableOutline();
+                Object model = getMolTableViewer().getInput();
+                if(model instanceof IMoleculesEditorModel)
+                    outlinePage.setInput( (IMoleculesEditorModel) model );
             }
             return outlinePage;
         }
