@@ -39,6 +39,7 @@ import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.jobs.BioclipseUIJob;
+import net.sourceforge.nattable.NatTable;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -65,8 +66,10 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -78,6 +81,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorInputTransfer;
 import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.part.PluginTransfer;
+import org.eclipse.ui.part.PluginTransferData;
 import org.eclipse.ui.part.EditorInputTransfer.EditorInputData;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -189,7 +194,61 @@ public class MoleculesEditor extends EditorPart implements
 
         getSite().setSelectionProvider( molTableViewer );
         enableDrop();
+        initDrag();
 
+    }
+
+    private void initDrag() {
+        MoleculeTableViewer viewer = getMolTableViewer();
+        int ops = DND.DROP_COPY | DND.DROP_MOVE;
+        final FileTransfer fileTransfer = FileTransfer.getInstance();
+        final AtomContainerTransfer acTransfer = AtomContainerTransfer.getInstance();
+        final CDKMoleculeTransfer molTranfer = CDKMoleculeTransfer.getInstance();
+        final PluginTransfer plugTransfer = PluginTransfer.getInstance();
+        final LocalSelectionTransfer localSelTransfer =
+                                           LocalSelectionTransfer.getTransfer();
+        Transfer[] transfers = new Transfer[] { //molTranfer,
+                                                acTransfer,
+                                                plugTransfer,
+                                                //fileTransfer,
+                                                //localSelTransfer,
+                                                };
+        viewer.addDragSupport(ops, transfers, new DragSourceAdapter() {
+            Point start;
+
+            @Override
+            public void dragStart( DragSourceEvent event ) {
+                start = new Point(event.x,event.y);
+            }
+            @Override
+            public void dragSetData( DragSourceEvent event ) {
+                if(start==null) return;
+                MoleculeTableViewer viewer = getMolTableViewer();
+                NatTable table = (NatTable) viewer.getControl();
+                int col = table.getColumnPositionByX( start.x );
+                int row = table.getRowPositionByY( start.y );
+                col = table.getRowIndexByPosition( col );
+                row = table.getRowIndexByPosition( row );
+                MoleculeTableContentProvider mtcp = (MoleculeTableContentProvider)
+                                                    viewer.getContentProvider();
+                Object data = mtcp.getDataValue( col, row );
+                logger.debug( "Draging from MolTable: ("+row+", "+col+")= "+(data==null?"null":data.toString()) );
+                if(data instanceof ICDKMolecule) {
+                    ICDKMolecule mol = (ICDKMolecule) data;
+//                    if( CDKMoleculeTransfer.getInstance().isSupportedType( event.dataType ) )
+//                        event.data = new ICDKMolecule[] { mol };
+//                    else
+                        if( AtomContainerTransfer.getInstance().isSupportedType( event.dataType ) )
+                            event.data = mol.getAtomContainer();
+                        else if (PluginTransfer.getInstance().isSupportedType(event.dataType)) {
+                            byte[] bData = AtomContainerTransfer.getInstance().toByteArray(mol.getAtomContainer());
+                            event.data = new PluginTransferData("net.bioclipse.cdk.jchempaint.atomContainerDrop", bData);
+                        }
+                } else if ( TextTransfer.getInstance().isSupportedType( event.dataType )) {
+                    event.data = data.toString();
+                }
+            }
+        });
     }
 
     private void enableDrop() {
@@ -208,7 +267,7 @@ public class MoleculesEditor extends EditorPart implements
                                        new DropTargetAdapter() {
 
             public void drop( DropTargetEvent event ) {
-
+                if(event.data == null) return;
                 if(localSelTransfer.isSupportedType( event.currentDataType )) {
                     IStructuredSelection sel = (IStructuredSelection)
                                     localSelTransfer.getSelection();
