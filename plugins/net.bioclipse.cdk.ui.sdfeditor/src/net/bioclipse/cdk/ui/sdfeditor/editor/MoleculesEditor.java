@@ -463,7 +463,7 @@ public class MoleculesEditor extends EditorPart implements
                     editorInput.getAdapter( IMoleculesEditorModel.class );
                 if(molEditorModel!=null) {
                     if(molEditorModel instanceof SDFIndexEditorModel) {
-                        molEditorModel = new MappingEditorModel( 
+                        molEditorModel = new MappingEditorModel(
                                          (SDFIndexEditorModel)molEditorModel );
                     }
                     setInput( molEditorModel );
