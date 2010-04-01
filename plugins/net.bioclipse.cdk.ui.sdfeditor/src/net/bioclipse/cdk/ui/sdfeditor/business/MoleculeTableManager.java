@@ -89,21 +89,19 @@ public class MoleculeTableManager implements IBioclipseManager {
     //TODO refactor out file.getContent()
     private SDFileIndex createIndex( IFile file,
                                      IProgressMonitor monitor) {
-
+        if(file == null || !file.exists()) {
+            throw new IllegalArgumentException("File does not exist ");
+        }
         SubMonitor progress = SubMonitor.convert( monitor );
         long size = -1;
-        if(file != null) {
-            try {
-                size = EFS.getStore( file.getLocationURI() )
-                .fetchInfo().getLength();
-                progress.beginTask( "Parsing SDFile",
-                             (int) (size/1048576));
+        try {
+            size = EFS.getStore( file.getLocationURI() )
+            .fetchInfo().getLength();
+            progress.beginTask( "Parsing SDFile",
+                                (int) (size/1048576));
 
-            }catch (CoreException e) {
-                logger.debug( "Failed to get size of file" );
-                progress.beginTask("Parsing SDFile", IProgressMonitor.UNKNOWN );
-            }
-        }else {
+        }catch (CoreException e) {
+            logger.debug( "Failed to get size of file" );
             progress.beginTask("Parsing SDFile", IProgressMonitor.UNKNOWN );
         }
 
@@ -611,5 +609,63 @@ public class MoleculeTableManager implements IBioclipseManager {
                 return calculator;
         }
         throw new IllegalArgumentException("Id "+id+" dose not exist");
+    }
+
+    public void saveAsCSV( IMoleculesEditorModel model,IFile file, IProgressMonitor monitor) throws BioclipseException, IOException, CoreException {
+        SubMonitor submon = SubMonitor.convert( monitor );
+        submon.beginTask( "Writing CSV-file", model.getNumberOfMolecules()*100+200 );
+        String del = ", ";
+        List<Object> avaiableProperties;
+        avaiableProperties = new ArrayList<Object>(model.getAvailableProperties());
+
+        StringBuilder header = new StringBuilder();
+        header.append( "SMILES" ).append( del );
+        for(Object o: avaiableProperties) {
+            header.append( o.toString() ).append( del );
+        }
+        header.append( "\n" );
+        if(submon.isCanceled()) throw new OperationCanceledException();
+        ByteArrayInputStream input = new ByteArrayInputStream( header.toString().getBytes() );
+        file.create(input, true, submon.newChild( 200 ));
+
+        submon.setWorkRemaining( model.getNumberOfMolecules()*100 );
+        for(int i=0;i<model.getNumberOfMolecules();i++) {
+            SubMonitor childMon = submon.newChild( 100 );
+            StringBuilder sb = new StringBuilder();
+            ICDKMolecule molecule = model.getMoleculeAt( i );
+            sb.append( "\"" ).append( molecule.toSMILES() ).append( "\"" );
+            sb.append( del );
+            SubMonitor childeMon2 = childMon.newChild( 70);
+            childeMon2.setWorkRemaining( avaiableProperties.size() );
+            for(Object key: avaiableProperties) {
+                Object o = molecule.getProperty( key.toString(), Property.USE_CACHED );
+                if(o != null) {
+                    String value = o instanceof String?(String)o:o.toString();
+                    value = encodeCSV( value );
+                    sb.append( value );
+                }
+                sb.append( del );
+                if(childeMon2.isCanceled()) throw new OperationCanceledException();
+                childeMon2.worked( 1 );
+            }
+            sb.append( "\n" );
+            ByteArrayInputStream bais = new ByteArrayInputStream( sb.toString().getBytes() );
+            file.appendContents( bais, IFile.FORCE, childMon );
+        }
+    }
+
+    String encodeCSV(String value) {
+        if(value.isEmpty()) return "\"\"";
+        if(!value.matches( "[^,^\n]*" )) {
+            return "\""+value+"\"";
+        }
+        if(value.contains( "\"" )) {
+            if(value.matches( "\".+\"" )) value = value.substring( 1, value.length()-1 );
+            return "\""+value.replaceAll( "\"", "\"\"" )+"\"";
+        }
+        if(value.startsWith( " " ) || value.endsWith( " " ) ) {
+            return "\"" +value+"\"";
+        }
+        return value;
     }
 }

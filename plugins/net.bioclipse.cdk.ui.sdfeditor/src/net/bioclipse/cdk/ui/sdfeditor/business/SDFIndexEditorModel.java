@@ -19,11 +19,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -100,6 +98,7 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
     public SDFIndexEditorModel(SDFileIndex input) {
         this();
         this.input = input;
+        if(getNumberOfMolecules()>0) getMoleculeAt( 0 );
     }
 
     public IFile getResource() {
@@ -221,10 +220,10 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
     private void readProperties(ICDKMolecule molecule) {
         if(availableProperties==null) {
             availableProperties = new HashSet<Object>();
+        }
             availableProperties.addAll(
                         molecule.getAtomContainer()
                         .getProperties().keySet());
-        }
     }
 
     public Collection<Object> getAvailableProperties() {
@@ -246,6 +245,7 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
         setDirty( true );
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T getPropertyFor(int moleculeIndex,String property) {
         Map<String,Object> props = molProps.get(moleculeIndex);
         Class<?> c = propertyList.get( property );

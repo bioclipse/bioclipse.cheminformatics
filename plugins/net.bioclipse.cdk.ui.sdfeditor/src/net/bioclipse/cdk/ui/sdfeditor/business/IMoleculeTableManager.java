@@ -15,6 +15,7 @@ import java.util.Collection;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IFileMoleculesEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.jobs.BioclipseJob;
@@ -37,6 +38,8 @@ public interface IMoleculeTableManager extends IBioclipseManager {
     public BioclipseJob<SDFIndexEditorModel> createSDFIndex(IFile file,
                              BioclipseJobUpdateHook<SDFIndexEditorModel> hook);
     @Recorded
+    @PublishedMethod( params ="String file",
+                      methodSummary = "Creates a list model of molecules from file")
     public SDFIndexEditorModel createSDFIndex( String file );
 
     @Recorded
@@ -83,4 +86,8 @@ public interface IMoleculeTableManager extends IBioclipseManager {
     public void calculatePropertiesFor( IFile file,
                                         IPropertyCalculator<?>[] calculator)
                                            throws BioclipseException;
+
+    @PublishedMethod( params="IMoleculesEditorModel mol, String filename",
+                      methodSummary="Saves the molecule list as a file as CSV")
+    public void saveAsCSV(IMoleculesEditorModel model, String file) throws Exception;
 }
