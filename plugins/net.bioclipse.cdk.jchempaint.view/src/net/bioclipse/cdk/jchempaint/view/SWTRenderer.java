@@ -39,6 +39,7 @@ import org.openscience.cdk.renderer.elements.RectangleElement;
 import org.openscience.cdk.renderer.elements.TextElement;
 import org.openscience.cdk.renderer.elements.WedgeLineElement;
 import org.openscience.cdk.renderer.font.IFontManager;
+import org.openscience.cdk.renderer.font.SWTFontManager;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BackGroundColor;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 

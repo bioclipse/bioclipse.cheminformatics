@@ -42,6 +42,7 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.renderer.IRenderer;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.font.SWTFontManager;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
