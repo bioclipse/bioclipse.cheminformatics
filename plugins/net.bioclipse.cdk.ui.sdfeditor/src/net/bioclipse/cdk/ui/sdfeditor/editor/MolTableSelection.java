@@ -93,7 +93,7 @@ public class MolTableSelection implements IStructuredSelection, IAdaptable{
             int index = 0;
             
             public boolean hasNext() {
-                return index < selection.length;
+                return index + 1 < selection.length;
             }
 
             public ICDKMolecule next() {
