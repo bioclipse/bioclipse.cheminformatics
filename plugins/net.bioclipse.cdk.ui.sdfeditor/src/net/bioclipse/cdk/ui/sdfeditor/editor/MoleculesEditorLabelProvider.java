@@ -25,7 +25,6 @@ import javax.vecmath.Point3d;
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.SDFElement;
-import net.bioclipse.cdk.jchempaint.view.SWTFontManager;
 import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
 
 import org.apache.log4j.Logger;
@@ -48,6 +47,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.font.IFontManager;
+import org.openscience.cdk.renderer.font.SWTFontManager;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
