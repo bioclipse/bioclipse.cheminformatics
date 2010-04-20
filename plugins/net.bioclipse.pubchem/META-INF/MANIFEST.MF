@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.ui.business,
  net.bioclipse.scripting.ui,
  net.bioclipse.chemoinformatics,
- net.bioclipse.cdk.business;bundle-version="2.0.0"
+ net.bioclipse.cdk.business,
+ net.bioclipse.browser.business
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Import-Package: org.apache.log4j
