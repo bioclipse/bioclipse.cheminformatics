@@ -655,7 +655,7 @@ public class MoleculeTableManager implements IBioclipseManager {
     }
 
     String encodeCSV(String value) {
-        if(value.isEmpty()) return "\"\"";
+        if(value.length()==0) return "\"\"";
         if(!value.matches( "[^,^\n]*" )) {
             return "\""+value+"\"";
         }
