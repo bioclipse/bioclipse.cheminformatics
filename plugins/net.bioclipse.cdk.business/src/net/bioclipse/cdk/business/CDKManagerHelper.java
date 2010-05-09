@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.io.FormatFactory;
@@ -40,10 +41,13 @@ import org.openscience.cdk.io.listener.PropertiesListener;
 
 public class CDKManagerHelper {
 
+	private static final Logger logger =
+		Logger.getLogger(CDKManagerHelper.class);
+	
     /**
      * Register all formats that we support for reading in Bioclipse.
      * 
-     * @param fac
+     * @param fac CDK {@link ReaderFactory} to help reading.
      */
     public static void registerSupportedFormats(ReaderFactory fac) {
         IResourceFormat[] supportedFormats = {
@@ -75,21 +79,29 @@ public class CDKManagerHelper {
                     Method getinstanceMethod = formatClass.getMethod("getInstance", new Class[0]);
                     IChemFormatMatcher format = (IChemFormatMatcher)getinstanceMethod.invoke(null, new Object[0]);
                     fac.registerFormat(format);
-//                    System.out.println("Loaded IO format: " + format.getClass().getName());
+                    logger.debug(
+                        "Loaded IO format: " + format.getClass().getName()
+                    );
                 } catch (ClassNotFoundException exception) {
-//                    System.out.println("Could not find this ChemObjectReader: "+ formatName);
+                	logger.warn(
+                		"Could not find this ChemObjectReader: " + formatName,
+                		exception
+                	);
                 } catch (Exception exception) {
-//                    System.out.println("Could not load this ChemObjectReader: "+ formatName);
+                	logger.warn(
+                		"Could not find this ChemObjectReader: " + formatName,
+                		exception
+                	);
                 }
             }
         } catch ( IOException e ) {
-            System.out.println("Error loading all formats");
+            logger.warn("Error loading all formats", e);
         }
     }
 
     public static void customizeReading(ISimpleChemObjectReader reader) {
-        System.out.println("customingIO, reader found: " + reader.getClass().getName());
-        System.out.println("Found # IO settings: " + reader.getIOSettings().length);
+        logger.debug("customingIO, reader found: " + reader.getClass().getName());
+        logger.debug("Found # IO settings: " + reader.getIOSettings().length);
         if (reader instanceof PDBReader) {
             Properties customSettings = new Properties();
             customSettings.setProperty("DeduceBonding", "false");
@@ -103,7 +115,7 @@ public class CDKManagerHelper {
                 "md:mdMolecule",
                 new MDMoleculeConvention((IChemFile)null)
             );
-            System.out.println("****** CmlReader, registered MDMoleculeConvention");
+            logger.debug("****** CmlReader, registered MDMoleculeConvention");
             
             ((CMLReader)reader).registerConvention(
                 "bioclipse:atomType",
