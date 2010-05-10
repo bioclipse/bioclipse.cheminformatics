@@ -10,6 +10,8 @@
  ******************************************************************************/
 package net.bioclipse.cdk.domain;
 
+import static net.bioclipse.core.Activator.getVirtualProject;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,8 +19,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
 import net.bioclipse.cdk.business.Activator;
-import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.cdk.business.ICDKManager;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -57,31 +59,29 @@ public class SDFAdapterFactory implements IAdapterFactory {
      */
     private ICDKMolecule loadSDFPart(SDFElement element){
         int index=element.getNumber();
-        
-        
+
         IFile file=null;
         IFolder folder = null;
         IFile sourceFile=(IFile)element.getResource();
-        
+
         try{
             logger.debug( "Loading " + sourceFile.getName() + "#"
-                          + element.getNumber() + ", " + element.getPosition() );
+                         + element.getNumber() + ", " + element.getPosition() );
             String data = getSDFPart( element );
 
-            folder =
-                    net.bioclipse.core.Activator.getVirtualProject()
-                            .getFolder( "SDFTemp" );
+            folder = getVirtualProject().getFolder( "SDFTemp" );
             if ( !folder.exists() )
                 folder.create( true, false, null );
-            file =
-                    folder.getFile( sourceFile.getName() + "_"
-                                    + Integer.toString( index ) + ".sdf" );
+
+            StringBuilder sb = new StringBuilder(sourceFile.getName());
+            sb.append( "_" ).append( index ).append( ".sdf" );
+            file = folder.getFile( sb.toString() );
 
             file.create( new ByteArrayInputStream( data.getBytes() ), true,
                          new NullProgressMonitor() );
-            ICDKMolecule result =
-                    Activator.getDefault().getJavaCDKManager().loadMolecule( file );
- 
+            ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
+            ICDKMolecule result = cdk.loadMolecule( file );
+
             return result;
         }catch(CoreException e){
             LogUtils.debugTrace( logger,e);
@@ -101,7 +101,7 @@ public class SDFAdapterFactory implements IAdapterFactory {
                 LogUtils.debugTrace( logger,e);
             } 
         }
-        
+
         return null;
     }  
     
