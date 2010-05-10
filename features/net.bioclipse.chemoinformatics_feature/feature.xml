@@ -371,14 +371,7 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          id="org.xmlpull.xpp3"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="net.bioclipse.xom"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.4.0"/>
 
    <plugin
          id="net.bioclipse.cml"
@@ -409,10 +402,10 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          unpack="false"/>
 
    <plugin
-         id="org.xmlcml.cmlxom"
+         id="net.bioclipse.org.cmlxom"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.5.0.b1"
          unpack="false"/>
 
    <plugin
