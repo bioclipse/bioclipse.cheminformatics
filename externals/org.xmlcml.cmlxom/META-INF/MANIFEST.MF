@@ -8,7 +8,7 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ClassPath: .,
  jars/cmlxom-2.5-b1.jar
 Bundle-Activator: org.xmlcml.cmlxom.managers.Activator
-Eclipse-AutoStart: true
+Bundle-ActivationPolicy: lazy
 Bundle-Vendor: The Bioclipse Team
 Import-Package: org.apache.log4j
 Export-Package: org.xmlcml.cmlxom.managers,
