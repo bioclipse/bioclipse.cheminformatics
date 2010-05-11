@@ -77,11 +77,14 @@ public class CDKManagerHelper {
                 try {
                     Class formatClass = org.openscience.cdk.io.Activator.class.getClassLoader().loadClass(formatName);
                     Method getinstanceMethod = formatClass.getMethod("getInstance", new Class[0]);
-                    IChemFormatMatcher format = (IChemFormatMatcher)getinstanceMethod.invoke(null, new Object[0]);
-                    fac.registerFormat(format);
-                    logger.debug(
-                        "Loaded IO format: " + format.getClass().getName()
-                    );
+                    Object format = getinstanceMethod.invoke( null,
+                                                              new Object[0]);
+                    if(format instanceof IChemFormatMatcher) {
+                        IChemFormatMatcher matcher = (IChemFormatMatcher)format;
+                        fac.registerFormat(matcher);
+                        logger.debug( "Loaded IO format: "
+                                      + format.getClass().getName());
+                    }
                 } catch (ClassNotFoundException exception) {
                 	logger.warn(
                 		"Could not find this ChemObjectReader: " + formatName,
