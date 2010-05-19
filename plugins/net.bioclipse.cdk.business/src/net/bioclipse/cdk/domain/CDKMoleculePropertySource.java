@@ -332,9 +332,15 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         for (Object propKey : objectProps.keySet()) {
             PropertyDescriptor descriptor;
             String label = ""+propKey;
-            descriptor = new TextPropertyDescriptor(label,label);
-            descriptor.setCategory("Molecular Properties");
-            cdkProperties.add(descriptor);
+            
+            //We do not add inchi, inchikey, or SMILES as mol props for now
+            if (!(label.equals( PROPERTY_INCHI) 
+                    || label.equals( PROPERTY_INCHIKEY ) 
+                    || label.equals( PROPERTY_SMILES ))){
+                descriptor = new TextPropertyDescriptor(label,label);
+                descriptor.setCategory("Molecular Properties");
+                cdkProperties.add(descriptor);
+            }
         }
         return cdkProperties;
     }
