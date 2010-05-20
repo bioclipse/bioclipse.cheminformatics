@@ -38,4 +38,13 @@ public interface IInChIManager extends IBioclipseManager {
     public BioclipseJob<InChI> generate(IMolecule molecule,
             BioclipseJobUpdateHook<InChI> h );
 
+    @Recorded
+    @PublishedMethod(
+        methodSummary = "Loads the InChI library.")
+    public String load() throws Exception;
+
+    @Recorded
+    @PublishedMethod(
+        methodSummary = "Returns true if the InChI library could be loaded.")
+    public boolean isLoaded() throws Exception;
 }
