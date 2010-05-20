@@ -17,7 +17,6 @@ import java.util.Map;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
-import net.bioclipse.cdk.domain.CDKMoleculeUtils.MolProperty;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.domain.props.BioObjectPropertySource;
@@ -54,14 +53,15 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
     protected static Map<ICDKMolecule, BioclipseJob> smilesJobs
         = new HashMap<ICDKMolecule, BioclipseJob>();
 
-    protected static final String PROPERTY_HAS2D = "Has 2D Coords";
-    protected static final String PROPERTY_HAS3D = "Has 3D Coords";
-    protected static final String PROPERTY_FORMAT = "Molecular Format";
-    protected static final String PROPERTY_FORMULA = "Molecular Formula";
-    protected static final String PROPERTY_MASS = "Molecular Mass";
-    protected static final String PROPERTY_SMILES = "SMILES";
-    protected static final String PROPERTY_INCHI = "InChI";
-    protected static final String PROPERTY_INCHIKEY = "InChIKey";
+    private static final String PREFIX = "net.bioclipse.cdk.domain.property.";
+    protected static final String PROPERTY_HAS2D = PREFIX + "Has 2D Coords";
+    protected static final String PROPERTY_HAS3D = PREFIX + "Has 3D Coords";
+    protected static final String PROPERTY_FORMAT = PREFIX + "Molecular Format";
+    protected static final String PROPERTY_FORMULA = PREFIX + "Molecular Formula";
+    protected static final String PROPERTY_MASS = PREFIX + "Molecular Mass";
+    protected static final String PROPERTY_SMILES = PREFIX + "SMILES";
+    protected static final String PROPERTY_INCHI = PREFIX + "InChI";
+    protected static final String PROPERTY_INCHIKEY = PREFIX + "InChIKey";
 
     private static final Logger logger
         = Logger.getLogger( CDKMoleculePropertySource.class );
@@ -69,21 +69,21 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
     private final Object cdkPropertiesTable[][] =
     {
         { PROPERTY_HAS2D,
-            new TextPropertyDescriptor(PROPERTY_HAS2D,PROPERTY_HAS2D)},
+            new TextPropertyDescriptor(PROPERTY_HAS2D,PROPERTY_HAS2D.substring(PREFIX.length()))},
         { PROPERTY_HAS3D,
-            new TextPropertyDescriptor(PROPERTY_HAS3D,PROPERTY_HAS3D)},
+            new TextPropertyDescriptor(PROPERTY_HAS3D,PROPERTY_HAS3D.substring(PREFIX.length()))},
         { PROPERTY_FORMAT,
-            new TextPropertyDescriptor(PROPERTY_FORMAT,PROPERTY_FORMAT)},
+            new TextPropertyDescriptor(PROPERTY_FORMAT,PROPERTY_FORMAT.substring(PREFIX.length()))},
         { PROPERTY_FORMULA,
-            new TextPropertyDescriptor(PROPERTY_FORMULA,PROPERTY_FORMULA)},
+            new TextPropertyDescriptor(PROPERTY_FORMULA,PROPERTY_FORMULA.substring(PREFIX.length()))},
         { PROPERTY_MASS,
-            new TextPropertyDescriptor(PROPERTY_MASS,PROPERTY_MASS)},
+            new TextPropertyDescriptor(PROPERTY_MASS,PROPERTY_MASS.substring(PREFIX.length()))},
         { PROPERTY_SMILES,
-            new TextPropertyDescriptor(PROPERTY_SMILES,PROPERTY_SMILES)},
+            new TextPropertyDescriptor(PROPERTY_SMILES,PROPERTY_SMILES.substring(PREFIX.length()))},
         { PROPERTY_INCHI,
-            new TextPropertyDescriptor(PROPERTY_INCHI,PROPERTY_INCHI)},
+            new TextPropertyDescriptor(PROPERTY_INCHI,PROPERTY_INCHI.substring(PREFIX.length()))},
         { PROPERTY_INCHIKEY,
-            new TextPropertyDescriptor(PROPERTY_INCHIKEY,PROPERTY_INCHIKEY)}
+            new TextPropertyDescriptor(PROPERTY_INCHIKEY,PROPERTY_INCHIKEY.substring(PREFIX.length()))}
     };
 
     private ICDKMolecule cdkMol;
@@ -140,12 +140,12 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
                 @Override
                 protected IStatus run( IProgressMonitor monitor ) {
                     try {
-                        item.setProperty( MolProperty.InChI.name(),
+                        item.setProperty( CDKMolecule.INCHI_OBJECT,
                                           inchi.generate( inchiClone ) );
                     }
                     catch ( Exception e ) {
                         LogUtils.debugTrace( logger, e );
-                        item.setProperty( MolProperty.InChI.name(),
+                        item.setProperty( CDKMolecule.INCHI_OBJECT,
                                           InChI.FAILED_TO_CALCULATE );
                     }
                     return Status.OK_STATUS;
@@ -190,12 +190,12 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
                 protected IStatus run( IProgressMonitor monitor ) {
                     try {
                         String s = cdk.calculateSMILES( smilesClone );
-                        item.setProperty( MolProperty.SMILES.name(),
+                        item.setProperty( PROPERTY_SMILES,
                                           s );
                     }
                     catch ( Exception e ) {
                         LogUtils.debugTrace( logger, e );
-                        item.setProperty( MolProperty.SMILES.name(),
+                        item.setProperty( PROPERTY_SMILES,
                                           "Failed to calculate" );
                     }
                     return Status.OK_STATUS;
@@ -333,10 +333,8 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
             PropertyDescriptor descriptor;
             String label = ""+propKey;
             
-            //We do not add inchi, inchikey, or SMILES as mol props for now
-            if (!(label.equals( PROPERTY_INCHI) 
-                    || label.equals( PROPERTY_INCHIKEY ) 
-                    || label.equals( PROPERTY_SMILES ))){
+            // We do not add calculated properties for now
+            if (!label.startsWith(PREFIX)){
                 descriptor = new TextPropertyDescriptor(label,label);
                 descriptor.setCategory("Molecular Properties");
                 cdkProperties.add(descriptor);
