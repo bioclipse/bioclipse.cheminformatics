@@ -49,7 +49,10 @@ public class InChIManager implements IBioclipseManager {
                 throws Exception {
     	monitor.beginTask("Calculating InChI", IProgressMonitor.UNKNOWN);
     	// return early if InChI library could not be loaded
-    	if (!isAvailable()) returner.completeReturn(InChI.FAILED_TO_CALCULATE);
+    	if (!isAvailable()) {
+    		returner.completeReturn(InChI.FAILED_TO_CALCULATE);
+    		return;
+    	}
     	
     	Object adapted = molecule.getAdapter(IAtomContainer.class);
         if (adapted != null) {
@@ -60,10 +63,6 @@ public class InChIManager implements IBioclipseManager {
                 atom.setFlag(CDKConstants.ISAROMATIC, false);
             for (IBond bond : clone.bonds())
                 bond.setFlag(CDKConstants.ISAROMATIC, false);
-            // FIXME: this should already have been covered by the earlier
-            //   isAvailable() call, but wasn't... weird...
-            if (factory == null)
-            	returner.completeReturn(InChI.FAILED_TO_CALCULATE);
             InChIGenerator gen = factory.getInChIGenerator(clone);
             INCHI_RET status = gen.getReturnStatus();
             if(monitor.isCanceled())
