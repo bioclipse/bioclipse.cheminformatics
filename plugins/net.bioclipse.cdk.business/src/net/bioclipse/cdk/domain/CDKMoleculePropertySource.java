@@ -334,7 +334,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
             String label = ""+propKey;
             
             // We do not add calculated properties for now
-            if (!label.startsWith(PREFIX)){
+            if (!label.startsWith("net.bioclipse.")){
                 descriptor = new TextPropertyDescriptor(label,label);
                 descriptor.setCategory("Molecular Properties");
                 cdkProperties.add(descriptor);
