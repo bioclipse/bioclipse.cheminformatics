@@ -360,7 +360,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
 
         if (id.equals( PROPERTY_INCHI ) || id.equals( PROPERTY_INCHIKEY )){
             Object property
-                = cdkMol.getProperty( CDKMoleculeUtils.MolProperty.InChI.name(),
+                = cdkMol.getProperty( CDKMolecule.INCHI_OBJECT,
                                       Property.USE_CACHED );
             if ( property == null ) {
                 return null;
@@ -396,7 +396,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
             return null;
         }
         else if (id.equals( PROPERTY_SMILES))
-            return cdkMol.getProperty(CDKMoleculeUtils.MolProperty.SMILES.name() ,
+            return cdkMol.getProperty(PROPERTY_SMILES ,
                                       Property.USE_CACHED );
 
         if (cdkValueMap.containsKey(id))
