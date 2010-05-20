@@ -111,6 +111,6 @@ public class InChIManager implements IBioclipseManager {
     	if (!isLoaded && loadingFailed) return false;
     	if (!loadingFailed && isLoaded) return true;
     	load();
-    	return isLoaded;
+    	return (factory != null);
     }
 }
