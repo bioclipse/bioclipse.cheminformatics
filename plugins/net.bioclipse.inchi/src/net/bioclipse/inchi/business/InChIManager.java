@@ -49,15 +49,10 @@ public class InChIManager implements IBioclipseManager {
                 throws Exception {
     	monitor.beginTask("Calculating InChI", IProgressMonitor.UNKNOWN);
     	// return early if InChI library could not be loaded
-    	if (loadingFailed) returner.completeReturn(InChI.FAILED_TO_CALCULATE);
+    	if (!isAvailable()) returner.completeReturn(InChI.FAILED_TO_CALCULATE);
     	
     	Object adapted = molecule.getAdapter(IAtomContainer.class);
         if (adapted != null) {
-        	// ensure we can actually generate an InChI
-            if (!isLoaded && !LOADING_SUCCESS.equals(load())) {
-            	returner.completeReturn(InChI.FAILED_TO_CALCULATE);
-            }
-
             IAtomContainer container = (IAtomContainer)adapted;
             IAtomContainer clone = (IAtomContainer)container.clone();
             // remove aromaticity flags
