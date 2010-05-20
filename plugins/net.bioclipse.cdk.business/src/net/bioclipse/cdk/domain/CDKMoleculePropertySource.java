@@ -134,7 +134,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         if ( smilesJobToBeCancelled != null ) {
             smilesJobToBeCancelled.cancel();
         }
-        if (item.getProperty( PROPERTY_INCHI, Property.USE_CACHED ) == null) {
+        if (item.getProperty( CDKMolecule.INCHI_OBJECT, Property.USE_CACHED ) == null) {
 
             Job j = new Job("Calculating inchi for properties view") {
                 @Override
