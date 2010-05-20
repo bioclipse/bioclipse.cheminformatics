@@ -120,6 +120,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
     private Logger logger = Logger.getLogger(JChemPaintEditor.class);
 
     public static final String STRUCUTRE_CHANGED_EVENT="structure_changed";
+    public static final String MODEL_LOADED = "net.bioclipse.jchempaint.load.model";
 
     private JCPOutlinePage fOutlinePage;
 
@@ -307,7 +308,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
         ICDKMolecule cdkModel = (ICDKMolecule) input
                                 .getAdapter( ICDKMolecule.class );
         if(cdkModel!=null) {
-            widget.setInput( cdkModel );
+            widget.setInput( cdkModel );fireModelLoaded();
             if(cdkModel.getResource()==null)
                 widget.setDirty( true );
         }else {
@@ -330,7 +331,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
                             model = null;
                             return;
                         }
-                        widget.setInput( model );
+                        widget.setInput( model );fireModelLoaded();
                         if(fOutlinePage!=null) {
                             fOutlinePage.setInput(
                                       getControllerHub().getIChemModel() );
@@ -534,7 +535,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
 
     public void setInput( Object element ) {
         if(element instanceof IAdaptable) {
-            widget.setInput( (IAdaptable)element );
+            widget.setInput( (IAdaptable)element );fireModelLoaded();
             widget.redraw();
         }
     }
@@ -553,6 +554,9 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
         return model;
     }
 
+    public void setMoleculeProperty(Object key,Object value) {
+
+    }
     @SuppressWarnings("unchecked")
     public Object getAdapter( Class adapter ) {
 
@@ -784,11 +788,19 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
     }
 
     protected final void fireStructureChanged() {
+        fireEvent(STRUCUTRE_CHANGED_EVENT);
+    }
+
+    private final void fireEvent(String event) {
         invalidateProperties();
         firePropertyChangedEvent(
                    new PropertyChangeEvent( this,
-                                            STRUCUTRE_CHANGED_EVENT,
+                                            event,
                                             null, null) );
+    }
+
+    protected final void fireModelLoaded() {
+        fireEvent(MODEL_LOADED);
     }
 
     public void resourceChanged( IResourceChangeEvent event ) {
