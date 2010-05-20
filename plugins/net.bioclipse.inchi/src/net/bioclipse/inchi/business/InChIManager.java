@@ -60,6 +60,10 @@ public class InChIManager implements IBioclipseManager {
                 atom.setFlag(CDKConstants.ISAROMATIC, false);
             for (IBond bond : clone.bonds())
                 bond.setFlag(CDKConstants.ISAROMATIC, false);
+            // FIXME: this should already have been covered by the earlier
+            //   isAvailable() call, but wasn't... weird...
+            if (factory == null)
+            	returner.completeReturn(InChI.FAILED_TO_CALCULATE);
             InChIGenerator gen = factory.getInChIGenerator(clone);
             INCHI_RET status = gen.getReturnStatus();
             if(monitor.isCanceled())
