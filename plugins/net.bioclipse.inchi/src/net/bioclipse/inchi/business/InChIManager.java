@@ -94,7 +94,7 @@ public class InChIManager implements IBioclipseManager {
         if (factory == null) {
             try {
 				factory = InChIGeneratorFactory.getInstance();
-			} catch (CDKException exception) {
+			} catch (Exception exception) {
 				loadingFailed = true;
 				isLoaded = false;
 				return "Loading of the InChI library failed: " +
