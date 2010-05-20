@@ -20,15 +20,12 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.smiles,
  org.openscience.cdk.extra,
  org.openscience.cdk.io,
- org.xmlcml.cmlxom,
- net.bioclipse.xom,
  org.openscience.cdk.libiocml,
  javax.vecmath,
  net.bioclipse.ui,
  org.openscience.cdk.ioformats,
  org.eclipse.jdt.junit.runtime,
- net.bioclipse.ui.business,
- org.openscience.cdk.log4j
-Eclipse-LazyStart: true
+ net.bioclipse.ui.business
+Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.cdk,
  net.bioclipse.cdk.business.test

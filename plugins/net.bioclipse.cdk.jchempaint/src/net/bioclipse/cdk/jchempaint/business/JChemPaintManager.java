@@ -47,6 +47,7 @@ import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactAtom;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowEndCarbons;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondDistance;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondWidth;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
 import org.openscience.cdk.renderer.generators.RingGenerator.CDKStyleAromaticity;
@@ -456,7 +457,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setBondDistance(double bondDistance) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setBondDistance(bondDistance);
+            model.getRenderingParameter( BondDistance.class ).setValue( bondDistance);
         }
         updateView();
     }
@@ -496,7 +497,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setRingProportion(double ringProportion) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setBondDistance(ringProportion);
+            model.getRenderingParameter( BondDistance.class ).setValue( ringProportion );
         }
         updateView();
     }
@@ -577,7 +578,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public double getBondDistance() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getBondDistance();
+            return model.getRenderingParameter( BondDistance.class ).getValue();
         } else {
             return 0;
         }

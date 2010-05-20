@@ -15,25 +15,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
-import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.renderer.RendererModel;
-import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactAtom;
-import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
-
 import net.bioclipse.cdk.business.Activator;
-import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.smartsmatching.views.SmartsMatchingView;
 import net.bioclipse.cdk.ui.sdfeditor.editor.IRenderer2DConfigurator;
 import net.bioclipse.core.business.BioclipseException;
+
+import org.apache.log4j.Logger;
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactAtom;
 
 public class SmartsMatchingRendererConfigurator 
   implements IRenderer2DConfigurator{

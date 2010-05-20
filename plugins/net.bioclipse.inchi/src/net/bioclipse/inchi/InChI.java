@@ -26,11 +26,14 @@ public class InChI {
     private String value;
     private String key;
 
-    public InChI() {
-    }
+    public InChI() {}
     
     public static final InChI FAILED_TO_CALCULATE 
-        = new InChI("Failed to calculate", "Failed to calculate");
+        = new InChI("Failed to calculate", "Failed to calculate") {
+    	// do not allow overwriting the empty fields
+    	public void setValue(String value) {}
+        public void setKey(String key) {}    	
+    };
     
     /**
      * @param key a InChi key

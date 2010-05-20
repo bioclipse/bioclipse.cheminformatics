@@ -242,6 +242,47 @@ public class MoleculeTableViewer extends ContentViewer {
                 }
             }
         });
+
+//        table.addConfiguration( new AbstractUiBindingConfiguration() {
+//
+//            public void configureUiBindings( UiBindingRegistry uiBindingRegistry ) {
+//
+//                uiBindingRegistry.registerFirstMouseDragMode(
+//                    new MouseEventMatcher( SWT.NONE, GridRegion.DATAGRID, 1 ),
+//                    new IDragMode() {
+//
+//                        Point start;
+//
+//                        public void mouseUp( NatTable natTable, MouseEvent event ) {
+//
+//                           start = null;
+//                           logger.debug( "Drag stoped");
+//
+//                        }
+//
+//                        public void mouseMove( NatTable natTable, MouseEvent event ) {
+//
+//                            Point now = new Point(event.x,event.y);
+//                            int x = now.x-start.x;
+//                            int y = now.y-start.y;
+//                            int diff2 = x*x+y*y;
+//                            if(diff2 >100) {
+//                                logger.debug( "Drag started" );
+//                            }
+//
+//                        }
+//
+//                        public void mouseDown( NatTable natTable, MouseEvent event ) {
+//
+//                            start = new Point(event.x,event.y);
+//
+//                        }
+//                    });
+//
+//            }
+//        });
+
+        table.setDragDetect( true );
         // COMMAND click -> select
         // drag select / drag molecule
     }

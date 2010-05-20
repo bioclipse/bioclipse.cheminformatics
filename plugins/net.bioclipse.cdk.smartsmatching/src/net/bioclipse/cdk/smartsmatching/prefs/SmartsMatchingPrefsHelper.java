@@ -18,9 +18,7 @@ import net.bioclipse.cdk.smartsmatching.model.SmartsFile;
 import net.bioclipse.cdk.smartsmatching.model.SmartsWrapper;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceStore;
 
 
 public class SmartsMatchingPrefsHelper {

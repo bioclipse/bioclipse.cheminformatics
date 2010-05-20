@@ -12,7 +12,6 @@ package net.bioclipse.cdk.smartsmatching.model;
 
 import java.util.ArrayList;
 
-import net.bioclipse.cdk.smartsmatching.views.SmartsMatchingView;
 import net.bioclipse.core.domain.props.BioObjectPropertySource;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;

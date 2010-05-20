@@ -105,11 +105,14 @@ public class MolTableOutline extends ContentOutlinePage {
             }
         });
         tree.setInput( model );
+        tree.expandAll();
     }
     
     public void setInput(IMoleculesEditorModel model) {
         this.model = model;
-        getTreeViewer().setInput( model );
-        getTreeViewer().expandAll();
+        if ( getTreeViewer() != null ) {
+            getTreeViewer().setInput( model );
+            getTreeViewer().expandAll();
+        }
     }
 }

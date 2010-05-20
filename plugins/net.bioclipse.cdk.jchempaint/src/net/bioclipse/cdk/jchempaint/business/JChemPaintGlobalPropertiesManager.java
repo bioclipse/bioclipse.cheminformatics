@@ -29,6 +29,7 @@ import org.eclipse.ui.PlatformUI;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowEndCarbons;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondDistance;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
 import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
 
@@ -80,7 +81,7 @@ public class JChemPaintGlobalPropertiesManager
         model.getRenderingParameter(Margin.class).setValue(getMargin());
         model.getRenderingParameter(AtomRadius.class).setValue(getAtomRadius());
         model.setBondLength(getBondLength());
-        model.setBondDistance(getBondDistance());
+        model.getRenderingParameter( BondDistance.class ).setValue( getBondDistance());
         model.setHighlightDistance(getHighlightDistance());
         model.setWedgeWidth(getWedgeWidth());
     }

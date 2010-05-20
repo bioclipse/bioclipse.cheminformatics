@@ -56,9 +56,8 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     private IAtomContainer atomContainer;
 
     // cached properties
-    private static final String FINGERPRINT_KEY = "net.bioclipse.fingerprint";
-    private static final String INCHI_KEY = "net.bioclipse.InChI";
-    private static final String INCHIKEY_KEY = "net.bioclipse.InChI_Key";
+    public static final String FINGERPRINT_KEY = "net.bioclipse.fingerprint";
+    public static final String INCHI_OBJECT = "net.bioclipse.InChI";
 
     private static Preferences prefs;
 
@@ -255,7 +254,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
 
     public String getInChI(IMolecule.Property urgency) 
                   throws BioclipseException {
-        Object val = getProperty( INCHI_KEY, urgency );
+        Object val = getProperty( INCHI_OBJECT, urgency );
         if(val instanceof InChI) return ((InChI)val).getValue();
         if(urgency==Property.USE_CACHED) return "";
         
@@ -264,7 +263,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         try {
             InChI cachedInchi = inchi.generate(this);
             if(cachedInchi != null)
-                setProperty( INCHI_KEY, cachedInchi );
+                setProperty( INCHI_OBJECT, cachedInchi );
             return cachedInchi.getValue();
         } catch (Exception e) {
             throw new BioclipseException("Could not create InChI: "
@@ -274,7 +273,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
 
     public String getInChIKey(IMolecule.Property urgency) 
                   throws BioclipseException {
-        Object value = getProperty( INCHI_KEY, urgency );
+        Object value = getProperty( INCHI_OBJECT, urgency );
         if(value instanceof InChI) return ((InChI)value).getKey();
         if( urgency == Property.USE_CACHED) return "";
         
@@ -283,7 +282,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         try {
             InChI cachedInchi = inchi.generate(this);
             if(cachedInchi != null)
-                setProperty( INCHI_KEY, cachedInchi );
+                setProperty( INCHI_OBJECT, cachedInchi );
             return cachedInchi.getKey();
         } catch (Exception e) {
             throw new BioclipseException("Could not create InChIKey: "

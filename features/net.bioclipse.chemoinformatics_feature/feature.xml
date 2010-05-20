@@ -2,7 +2,7 @@
 <feature
       id="net.bioclipse.chemoinformatics_feature"
       label="Bioclipse Chemoinformatics"
-      version="2.2.0.v20100127"
+      version="2.4.0.RC1"
       provider-name="The Bioclipse Team"
       plugin="net.bioclipse.chemoinformatics">
 
@@ -27,7 +27,7 @@ The Eclipse Public License accompanies this distribution, and is available at ht
    </url>
 
    <requires>
-      <import feature="net.bioclipse.core_feature" version="2.2.0.v20100127" match="greaterOrEqual"/>
+      <import feature="net.bioclipse.core_feature" version="2.4.0.RC1" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -371,14 +371,7 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          id="org.xmlpull.xpp3"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="net.bioclipse.xom"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.4.0"/>
 
    <plugin
          id="net.bioclipse.cml"
@@ -409,10 +402,10 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          unpack="false"/>
 
    <plugin
-         id="org.xmlcml.cmlxom"
+         id="net.bioclipse.org.cmlxom"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.5.0.b1"
          unpack="false"/>
 
    <plugin
@@ -550,6 +543,20 @@ The Eclipse Public License accompanies this distribution, and is available at ht
 
    <plugin
          id="org.apache.commons.lang"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openscience.cdk.renderswt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.springsource.nu.xom"
          download-size="0"
          install-size="0"
          version="0.0.0"

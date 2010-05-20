@@ -2,24 +2,22 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PubChem Plug-in
 Bundle-SymbolicName: net.bioclipse.pubchem;singleton:=true
-Bundle-Version: 2.2.0.v20100127
+Bundle-Version: 2.4.0.RC1
 Bundle-Activator: net.bioclipse.pubchem.Activator
 Bundle-Vendor: Bioclipse Team
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.ui.ide,
- net.bioclipse.xom,
  net.bioclipse.core,
  net.bioclipse.ui,
  net.bioclipse.ui.business,
- net.bioclipse.scripting.ui,
- net.bioclipse.chemoinformatics,
- net.bioclipse.cdk.business,
+ net.bioclipse.cdk.business
  net.bioclipse.browser.business
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
-Import-Package: org.apache.log4j
 Export-Package: net.bioclipse.pubchem,
  net.bioclipse.pubchem.business,
  net.bioclipse.pubchem.wizards
+Import-Package: nu.xom;version="1.1.0",
+ org.apache.log4j

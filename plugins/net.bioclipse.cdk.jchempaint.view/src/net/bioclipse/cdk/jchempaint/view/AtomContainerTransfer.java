@@ -46,7 +46,7 @@ public class AtomContainerTransfer extends ByteArrayTransfer{
         return new String[] {TYPE_NAME};
     }
 
-    protected byte[] toByteArray(IAtomContainer acs) {
+    public byte[] toByteArray(IAtomContainer acs) {
         ByteArrayOutputStream bo=new ByteArrayOutputStream();
 
         CMLWriter writer=new CMLWriter(bo);

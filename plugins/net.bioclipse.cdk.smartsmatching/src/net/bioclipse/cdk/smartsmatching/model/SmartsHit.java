@@ -10,17 +10,13 @@
  ******************************************************************************/
 package net.bioclipse.cdk.smartsmatching.model;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.views.properties.IPropertySource;
-import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IAtomContainer;
-
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.ISubStructure;
 import net.bioclipse.core.domain.BioObject;
+
+import org.eclipse.ui.views.properties.IPropertySource;
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 
 /**
  * Model object for a SMARTS hit

@@ -17,6 +17,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowEndCarbons;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondDistance;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
 import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
 
@@ -68,7 +69,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         );
         store.setDefault(
                 PreferenceConstants.BOND_DISTANCE_DOUBLE,
-                model.getBondDistance()
+                model.getRenderingParameter( BondDistance.class ).getValue()
         );
         store.setDefault(
                 PreferenceConstants.HIGHLIGHT_DISTANCE_DOUBLE,
