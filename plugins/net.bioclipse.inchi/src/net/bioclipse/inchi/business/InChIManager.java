@@ -24,7 +24,6 @@ import net.sf.jniinchi.INCHI_RET;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.inchi.InChIGenerator;
 import org.openscience.cdk.inchi.InChIGeneratorFactory;
 import org.openscience.cdk.interfaces.IAtom;
@@ -113,4 +112,10 @@ public class InChIManager implements IBioclipseManager {
     	return isLoaded;
     }
 
+    public boolean isAvailable() {
+    	if (!isLoaded && loadingFailed) return false;
+    	if (!loadingFailed && isLoaded) return true;
+    	load();
+    	return isLoaded;
+    }
 }

@@ -41,10 +41,16 @@ public interface IInChIManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod(
         methodSummary = "Loads the InChI library.")
-    public String load() throws Exception;
+    public String load();
 
     @Recorded
     @PublishedMethod(
         methodSummary = "Returns true if the InChI library could be loaded.")
-    public boolean isLoaded() throws Exception;
+    public boolean isLoaded();
+
+    @Recorded
+    @PublishedMethod(
+        methodSummary = "Returns true if the InChI library is available for your" +
+        		"platform.")
+    public boolean isAvailable();
 }

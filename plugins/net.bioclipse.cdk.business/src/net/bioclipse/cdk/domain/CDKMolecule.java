@@ -260,6 +260,10 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         
         IInChIManager inchi = net.bioclipse.inchi.business.Activator.
             getDefault().getJavaInChIManager();
+        if (!inchi.isAvailable())
+        	throw new BioclipseException(
+        		"InChI generation is not available on your platform."
+        	);
         try {
             InChI cachedInchi = inchi.generate(this);
             if(cachedInchi != null)
@@ -279,6 +283,10 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         
         IInChIManager inchi = net.bioclipse.inchi.business.Activator.
             getDefault().getJavaInChIManager();
+        if (!inchi.isAvailable())
+        	throw new BioclipseException(
+        		"InChI generation is not available on your platform."
+        	);
         try {
             InChI cachedInchi = inchi.generate(this);
             if(cachedInchi != null)
