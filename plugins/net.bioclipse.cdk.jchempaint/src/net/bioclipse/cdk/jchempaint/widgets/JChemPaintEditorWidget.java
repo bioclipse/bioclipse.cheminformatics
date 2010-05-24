@@ -747,6 +747,14 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         return isdirty;
     }
 
+    public void setProperty(Object key,Object value) {
+        IAtomContainer ac = model.getMoleculeSet().getAtomContainer(0);
+        if(value == null)
+            ac.removeProperty(key);
+        else
+            ac.setProperty(key, value);
+    }
+
    @Override
    protected void disposeView() {
        Activator.getDefault().getPreferenceStore()

@@ -555,7 +555,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
     }
 
     public void setMoleculeProperty(Object key,Object value) {
-
+        widget.setProperty(key, value);
     }
     @SuppressWarnings("unchecked")
     public Object getAdapter( Class adapter ) {
