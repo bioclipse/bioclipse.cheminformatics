@@ -167,9 +167,7 @@ public class JChemPaintWidget extends Canvas {
     protected List<IGenerator> createGenerators() {
         List<IGenerator> generatorList = new ArrayList<IGenerator>();
 
-        generatorList.add( extensionGenerator
-                           = ChoiceGenerator.getGeneratorsFromExtensionPoint());
-        extensionGenerator.setUse( true );
+        generatorList.addAll(ChoiceGenerator.getGeneratorsFromExtension());
         // This generator can be used for debugging partitioning problems
         //generatorList.add( new AtomContainerBoundsGenerator() );
         generatorList.add( new RingGenerator() );
@@ -258,8 +256,10 @@ public class JChemPaintWidget extends Canvas {
      }
 
     public void setUseExtensionGenerators( boolean useExtensionGenerators ) {
-        extensionGenerator.setUse( useExtensionGenerators);
-        this.redraw();
+        if(extensionGenerator!=null) {
+            extensionGenerator.setUse( useExtensionGenerators);
+            this.redraw();
+        }
     }
 
     public static void paintMessage( GC gc, Message message , Rectangle rect) {

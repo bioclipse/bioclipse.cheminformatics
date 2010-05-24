@@ -77,7 +77,15 @@ public class ChoiceGenerator implements IGenerator {
     public static final String EP_GENERATOR = "net.bioclipse.cdk.jchempaint.generator";
 
     public static ChoiceGenerator getGeneratorsFromExtensionPoint() {
-        ChoiceGenerator choiseGenerator = new ChoiceGenerator();
+        ChoiceGenerator choiceGenerator = new ChoiceGenerator();
+        for(IGenerator generator:getGeneratorsFromExtension()) {
+            choiceGenerator.add(generator);
+        }
+        return choiceGenerator;
+    }
+
+    public static List<IGenerator> getGeneratorsFromExtension() {
+        List<IGenerator> choiseGenerator = new ArrayList<IGenerator>();
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IExtensionPoint generatorExtensionPoint = registry
         .getExtensionPoint(EP_GENERATOR);
