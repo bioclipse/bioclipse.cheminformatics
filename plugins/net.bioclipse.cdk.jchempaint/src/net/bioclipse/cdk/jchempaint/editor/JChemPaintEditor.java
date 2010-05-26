@@ -90,6 +90,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.contexts.IContextService;
+import org.eclipse.ui.operations.UndoActionHandler;
+import org.eclipse.ui.operations.UndoRedoActionGroup;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -358,7 +360,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
 
         contextService.activateContext( "net.bioclipse.ui.contexts.JChemPaint" );
 
-        createUndoRedoHangler();
+        createUndoRedoHandler();
     }
 
     private void createPartListener() {
@@ -408,13 +410,12 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
 
     }
 
-    private void createUndoRedoHangler() {
-     // set up action handlers
-        UndoHandler undoAction = new UndoHandler();
-        RedoHandler redoAction = new RedoHandler();
-        IActionBars actionBars = this.getEditorSite().getActionBars();
-        actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(),undoAction);
-        actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), redoAction);
+    private void createUndoRedoHandler() {
+        IEditorSite site = getEditorSite();
+        UndoRedoActionGroup actionGroup = new UndoRedoActionGroup( site,
+                                                        widget.getUndoContext(),
+                                                        true );
+        actionGroup.fillActionBars( site.getActionBars() );
     }
 
     private void createMenu() {

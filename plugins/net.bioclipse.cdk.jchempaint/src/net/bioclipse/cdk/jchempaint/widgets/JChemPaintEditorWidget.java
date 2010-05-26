@@ -40,8 +40,10 @@ import net.bioclipse.core.util.LogUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IOperationHistory;
+import org.eclipse.core.commands.operations.IOperationHistoryListener;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.core.commands.operations.IUndoableOperation;
+import org.eclipse.core.commands.operations.OperationHistoryEvent;
 import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.ListenerList;
@@ -297,6 +299,29 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         prefListener = new GenerateLabelPrefChangedLisener( this );
         Activator.getDefault().getPreferenceStore().addPropertyChangeListener( prefListener );
+        addUndoRedoListener();
+    }
+
+    private void addUndoRedoListener() {
+        operationHistory.addOperationHistoryListener(new IOperationHistoryListener() {
+
+            public void historyNotification(OperationHistoryEvent event) {
+                if(operationHistory.canUndo(undoContext)) {
+                    setDirty(true);
+                }else setDirty(false);
+
+                if(!isDisposed()) {
+                    Display.getDefault().asyncExec(new Runnable() {
+                        public void run() {
+                            hub.getRenderModel().setSelection( AbstractSelection.EMPTY_SELECTION );
+                            hub.select( AbstractSelection.EMPTY_SELECTION );
+                            structureChanged();
+                            redraw();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void setupControllerHub( ) {
@@ -796,6 +821,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         }
     }
 
+    public IUndoContext getUndoContext() {
+        return undoContext;
+    }
 
     public void redo() throws ExecutionException {
         if (this.operationHistory.canRedo(this.undoContext)) {
