@@ -377,7 +377,9 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
                         service.refreshElements( ModuleState.COMMAND_ID,
                                                  null);
                     }
-
+                    IWorkbenchPart activatedPart = partRef.getPart(false);
+                    if(JChemPaintEditor.this.equals(activatedPart))
+                        widget.reset();
             }
 
             public void partBroughtToTop( IWorkbenchPartReference partRef ) {
