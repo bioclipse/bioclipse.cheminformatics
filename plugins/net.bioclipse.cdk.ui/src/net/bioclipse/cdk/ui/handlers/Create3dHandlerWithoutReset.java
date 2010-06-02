@@ -10,16 +10,24 @@ package net.bioclipse.cdk.ui.handlers;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * A handler class for a Generate 3D Coordinates menu item
  */
 public class Create3dHandlerWithoutReset extends AbstractHandler {
 
-    public int                  answer;
-
     public Object execute( ExecutionEvent event ) throws ExecutionException {
-        Create2dHandlerWithReset.doCreation(false,true);
+        ISelection sel = HandlerUtil.getCurrentSelection(event);
+        if(sel instanceof IStructuredSelection && !((IStructuredSelection)sel).isEmpty()) {
+            
+            Create2dHandlerWithReset.doCreation( HandlerUtil.getActiveShell(event),
+                        (IStructuredSelection)sel,
+                        false,
+                        Coordiantes.Coord_3D);
+        }
         return null;
     }
 
