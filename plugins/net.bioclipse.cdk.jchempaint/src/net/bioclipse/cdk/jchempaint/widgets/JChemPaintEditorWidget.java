@@ -306,19 +306,24 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         operationHistory.addOperationHistoryListener(new IOperationHistoryListener() {
 
             public void historyNotification(OperationHistoryEvent event) {
-                if(operationHistory.canUndo(undoContext)) {
-                    setDirty(true);
-                }else setDirty(false);
+                int type = event.getEventType();
+                if( type == OperationHistoryEvent.ABOUT_TO_REDO ||
+                    type == OperationHistoryEvent.ABOUT_TO_UNDO) {
+                    if(operationHistory.canUndo(undoContext)) {
+                        setDirty(true);
+                    }else setDirty(false);
 
-                if(!isDisposed()) {
-                    Display.getDefault().asyncExec(new Runnable() {
-                        public void run() {
-                            hub.getRenderModel().setSelection( AbstractSelection.EMPTY_SELECTION );
-                            hub.select( AbstractSelection.EMPTY_SELECTION );
-                            structureChanged();
-                            redraw();
-                        }
-                    });
+                    if(!isDisposed()) {
+                        Display.getDefault().asyncExec(new Runnable() {
+                            public void run() {
+                                hub.getRenderModel().setSelection(
+                                            AbstractSelection.EMPTY_SELECTION );
+                                hub.select( AbstractSelection.EMPTY_SELECTION );
+                                structureChanged();
+                                redraw();
+                            }
+                        });
+                    }
                 }
             }
         });
