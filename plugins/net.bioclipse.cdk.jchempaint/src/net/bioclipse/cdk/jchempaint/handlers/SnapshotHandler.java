@@ -55,7 +55,7 @@ public class SnapshotHandler extends AbstractHandler {
     private void showDialog(JChemPaintEditor editor) {
         
         IFile file = (IFile) editor.getEditorInput().getAdapter( IFile.class );
-        String destFile = "image.jpg";
+        String destFile = "image.png";
         if(file!=null) {
             URI uri = file.getLocationURI();
             String path = uri.getPath();
@@ -65,7 +65,7 @@ public class SnapshotHandler extends AbstractHandler {
                 path = path+".";
             else
                 path = path.substring( 0, dot+1 );
-            path = path +"jpg";
+            path = path +"png";
             destFile = path;
         }
         
@@ -84,16 +84,11 @@ public class SnapshotHandler extends AbstractHandler {
 
         int dot = selectedDirectoryName.lastIndexOf( "." );
         if(dot==-1)
-            selectedDirectoryName = selectedDirectoryName+".jpg";
+            selectedDirectoryName = selectedDirectoryName+".png";
         
-        Control control = editor.getWidget();
-        GC gc = new GC(control);
-        Image image = new Image(control.getDisplay(), control.getSize().x, control.getSize().y);
-        gc.copyArea(image, 0, 0);
+        Image image = editor.getWidget().snapshot();
         final ImageLoader loader = new ImageLoader();
         loader.data = new ImageData[] { image.getImageData() };
-        loader.save(selectedDirectoryName, SWT.IMAGE_JPEG);
-        
-        gc.dispose();
+        loader.save(selectedDirectoryName, SWT.IMAGE_PNG);
     }
 }
