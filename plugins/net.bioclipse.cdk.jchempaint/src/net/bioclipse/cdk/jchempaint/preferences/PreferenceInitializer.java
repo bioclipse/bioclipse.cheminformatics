@@ -17,8 +17,11 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowEndCarbons;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHydrogens;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondDistance;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondLength;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
+import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;
 import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
 
 /**
@@ -47,11 +50,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         );
         store.setDefault(
                 PreferenceConstants.SHOW_EXPLICIT_HYDROGENS_BOOL,
-                model.getShowExplicitHydrogens()
+                model.getRenderingParameter(ShowExplicitHydrogens.class).getValue()
         );
         store.setDefault(
                 PreferenceConstants.SHOW_IMPLICIT_HYDROGENS_BOOL,
-                model.getShowImplicitHydrogens()
+                model.getRenderingParameter(ShowImplicitHydrogens.class).getValue()
         );
         store.setDefault(
                 PreferenceConstants.SHOW_NUMBERS_BOOL,
@@ -65,7 +68,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         );
         store.setDefault(
                 PreferenceConstants.BOND_LENGTH_DOUBLE,
-                model.getBondLength()
+                model.getRenderingParameter(BondLength.class).getValue()
         );
         store.setDefault(
                 PreferenceConstants.BOND_DISTANCE_DOUBLE,

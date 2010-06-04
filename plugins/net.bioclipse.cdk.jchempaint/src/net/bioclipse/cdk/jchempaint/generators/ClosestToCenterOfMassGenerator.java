@@ -35,6 +35,7 @@ import org.openscience.cdk.renderer.elements.PathElement;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondWidth;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Scale;
 
 
 /**
@@ -59,10 +60,11 @@ public class ClosestToCenterOfMassGenerator implements IGenerator {
         if(p2== null) return new ElementGroup();
         IAtom atom = jcp.getClosestAtom(p2);
         if(atom==null || atom.getPoint2d()==null) return new ElementGroup();
+        double scale = model.getRenderingParameter(Scale.class).getValue();
         return generateStar(
         	atom.getPoint2d(),
-            model.getHighlightDistance()*3/model.getScale(),
-            model.getRenderingParameter(BondWidth.class).getValue()/model.getScale());
+            model.getHighlightDistance()*3/scale,
+            model.getRenderingParameter(BondWidth.class).getValue()/scale);
     }
 
     protected IRenderingElement generateStar( Point2d center,

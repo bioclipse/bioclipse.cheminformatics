@@ -104,6 +104,7 @@ import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.MergeAtomsGenerator;
 import org.openscience.cdk.renderer.generators.SelectAtomGenerator;
 import org.openscience.cdk.renderer.generators.SelectBondGenerator;
+import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HoverOverColor;
 import org.openscience.cdk.renderer.selection.AbstractSelection;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
@@ -168,7 +169,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         rModel.setSelectionRadius( 8 );
 
         rModel.setHighlightShapeFilled( true );
-        rModel.setHoverOverColor( new Color( Color.GRAY.getRed(),
+        rModel.getRenderingParameter(HoverOverColor.class).
+        	setValue( new Color( Color.GRAY.getRed(),
                                              Color.GRAY.getGreen(),
                                              Color.GRAY.getBlue(),
                                              128) );

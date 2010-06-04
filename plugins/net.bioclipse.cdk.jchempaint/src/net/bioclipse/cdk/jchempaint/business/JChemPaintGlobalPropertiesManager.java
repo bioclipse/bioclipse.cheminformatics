@@ -29,8 +29,11 @@ import org.eclipse.ui.PlatformUI;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowEndCarbons;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHydrogens;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondDistance;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondLength;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
+import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;
 import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
 
 /**
@@ -75,12 +78,12 @@ public class JChemPaintGlobalPropertiesManager
     public void applyProperties(RendererModel model) throws BioclipseException {
         model.getRenderingParameter(ShowAromaticity.class).setValue(getShowAromaticity());
         model.getRenderingParameter(ShowEndCarbons.class).setValue(getShowEndCarbons());
-        model.setShowExplicitHydrogens(getShowExplicitHydrogens());
-        model.setShowImplicitHydrogens(getShowImplicitHydrogens());
+        model.getRenderingParameter(ShowExplicitHydrogens.class).setValue(getShowExplicitHydrogens());
+        model.getRenderingParameter(ShowImplicitHydrogens.class).setValue(getShowImplicitHydrogens());
         model.setDrawNumbers(getShowNumbers());
         model.getRenderingParameter(Margin.class).setValue(getMargin());
         model.getRenderingParameter(AtomRadius.class).setValue(getAtomRadius());
-        model.setBondLength(getBondLength());
+        model.getRenderingParameter(BondLength.class).setValue(getBondLength());
         model.getRenderingParameter( BondDistance.class ).setValue( getBondDistance());
         model.setHighlightDistance(getHighlightDistance());
         model.setWedgeWidth(getWedgeWidth());

@@ -28,6 +28,7 @@ import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.IGeneratorParameter;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Scale;
 
 
 /**
@@ -42,7 +43,8 @@ public class SubStructureGenerator implements IGenerator {
      * @see org.openscience.cdk.renderer.generators.IGenerator#generate(org.openscience.cdk.interfaces.IAtomContainer, org.openscience.cdk.renderer.RendererModel)
      */
     public IRenderingElement generate( IAtomContainer ac, RendererModel model ) {
-        double r = model.getHighlightDistance() / model.getScale();
+        double r = model.getHighlightDistance() /
+                   model.getRenderingParameter(Scale.class).getValue();
         ElementGroup group = new ElementGroup();
         
         for(ISubStructure subStructure:subStructures) {

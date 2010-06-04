@@ -41,6 +41,10 @@ import org.openscience.cdk.renderer.elements.WedgeLineElement;
 import org.openscience.cdk.renderer.font.IFontManager;
 import org.openscience.cdk.renderer.font.SWTFontManager;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BackGroundColor;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.ForegroundColor;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Scale;
+import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;
+import org.openscience.cdk.renderer.generators.ReactionSceneGenerator.ArrowHeadWidth;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 
 public class SWTRenderer implements IDrawVisitor{
@@ -181,7 +185,8 @@ public class SWTRenderer implements IDrawVisitor{
         Vector2d normal =
             new Vector2d(wedge.y1 - wedge.y2, wedge.x2 - wedge.x1);
         normal.normalize();
-        normal.scale(model.getWedgeWidth() / model.getScale());
+        normal.scale(model.getWedgeWidth() /
+        		     model.getRenderingParameter(Scale.class).getValue());
 
         // make the triangle corners
         Point2d vertexA = new Point2d(wedge.x1, wedge.y1);
@@ -243,7 +248,7 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     private java.awt.Color getForgroundColor() {
-        return getModel().getForeColor();
+        return getModel().getRenderingParameter(ForegroundColor.class).getValue();
     }
 
     private java.awt.Color getBackgroundColor() {
@@ -278,7 +283,8 @@ public class SWTRenderer implements IDrawVisitor{
         double[] b=transform( element.x2, element.y2 );
         path.moveTo((float)a[0], (float)a[1]);
         path.lineTo((float)b[0], (float)b[1]);
-        double aW = model.getArrowHeadWidth() / model.getScale();
+        double aW = model.getRenderingParameter(ArrowHeadWidth.class).getValue()
+            / model.getRenderingParameter(Scale.class).getValue();
         if (element.direction) {
             double[] c = transform( element.x1 - aW, element.y1 - aW );
             double[] d = transform( element.x1 - aW, element.y1 + aW );
@@ -345,7 +351,8 @@ public class SWTRenderer implements IDrawVisitor{
             gc.drawText( fc, fcX, fcY, true );
         }
 
-        if(element.hydrogenCount >0 && model.getShowImplicitHydrogens()) {
+        if(element.hydrogenCount >0 && model.getRenderingParameter(
+        	ShowImplicitHydrogens.class).getValue()) {
 
             Point hc = new Point(0,0);
             if(element.hydrogenCount >1) {

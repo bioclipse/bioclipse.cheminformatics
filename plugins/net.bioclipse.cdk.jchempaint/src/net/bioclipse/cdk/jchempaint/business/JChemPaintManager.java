@@ -47,9 +47,13 @@ import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactAtom;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowEndCarbons;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHydrogens;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondDistance;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondLength;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondWidth;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.ZoomFactor;
+import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;
 import org.openscience.cdk.renderer.generators.RingGenerator.CDKStyleAromaticity;
 import org.openscience.cdk.renderer.generators.RingGenerator.RingProportion;
 import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
@@ -432,7 +436,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setBondLength(double bondLength) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setBondLength(bondLength);
+            model.getRenderingParameter(BondLength.class).setValue(bondLength);
         }
         updateView();
     }
@@ -529,7 +533,8 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setShowExplicitHydrogens(boolean explicitHydrogens) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setShowExplicitHydrogens(explicitHydrogens);
+            model.getRenderingParameter(ShowExplicitHydrogens.class)
+            	.setValue(explicitHydrogens);
         }
         updateView();
     }
@@ -537,7 +542,8 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setShowImplicitHydrogens(boolean implicitHydrogens) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setShowImplicitHydrogens(implicitHydrogens);
+            model.getRenderingParameter(ShowImplicitHydrogens.class)
+            	.setValue(implicitHydrogens);
         }
         updateView();
     }
@@ -561,7 +567,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setZoom(double zoom) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setZoomFactor(zoom);
+            model.getRenderingParameter(ZoomFactor.class).setValue(zoom);
         }
         updateView();
     }
@@ -587,7 +593,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public double getBondLength() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getBondLength();
+            return model.getRenderingParameter(BondLength.class).getValue();
         } else {
             return 0;
         }
@@ -677,7 +683,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public boolean getShowExplicitHydrogens() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getShowExplicitHydrogens();
+            return model.getRenderingParameter(ShowExplicitHydrogens.class).getValue();
         } else {
             return false;
         }
@@ -686,7 +692,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public boolean getShowImplicitHydrogens() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getShowImplicitHydrogens();
+            return model.getRenderingParameter(ShowImplicitHydrogens.class).getValue();
         } else {
             return false;
         }
@@ -713,7 +719,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public double getZoom() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getZoomFactor();
+            return model.getRenderingParameter(ZoomFactor.class).getValue();
         } else {
             return 0;
         }

@@ -55,6 +55,7 @@ import org.openscience.cdk.renderer.generators.RingGenerator;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactAtom;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactShape;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.Shape;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHydrogens;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BackGroundColor;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
 
@@ -123,7 +124,7 @@ public class JCPCellPainter extends BackgroundPainter {
         rModel.getRenderingParameter(CompactAtom.class).setValue(true );
 //        rModel.setUseAntiAliasing(true );
 
-        rModel.setShowExplicitHydrogens( false );
+        rModel.getRenderingParameter(ShowExplicitHydrogens.class).setValue( false );
         ((BackGroundColor)rModel.getRenderingParameter(BackGroundColor.class))
         	.setValue( new java.awt.Color(252,253,254));
         rModel.setFitToScreen( true );
