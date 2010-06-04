@@ -20,6 +20,7 @@ import net.bioclipse.cdk.jchempaint.Activator;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import net.bioclipse.cdk.jchempaint.preferences.PreferenceConstants;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.swt.widgets.Display;
@@ -32,6 +33,7 @@ import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowEndCarbons
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHydrogens;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondDistance;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondLength;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondWidth;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
 import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;
 import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
@@ -41,8 +43,7 @@ import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
  * 
  * @author egonw
  */
-public class JChemPaintGlobalPropertiesManager
-    implements IJChemPaintGlobalPropertiesManager {
+public class JChemPaintGlobalPropertiesManager implements IBioclipseManager {
 
     public String getManagerName() {
         return "jcpglobal";
@@ -83,6 +84,7 @@ public class JChemPaintGlobalPropertiesManager
         model.setDrawNumbers(getShowNumbers());
         model.getRenderingParameter(Margin.class).setValue(getMargin());
         model.getRenderingParameter(AtomRadius.class).setValue(getAtomRadius());
+        model.getRenderingParameter(BondWidth.class).setValue(getBondWidth());
         model.getRenderingParameter(BondLength.class).setValue(getBondLength());
         model.getRenderingParameter( BondDistance.class ).setValue( getBondDistance());
         model.setHighlightDistance(getHighlightDistance());
@@ -216,6 +218,14 @@ public class JChemPaintGlobalPropertiesManager
 
     public void setBondLength(double bondLength) throws BioclipseException {
         setDouble(PreferenceConstants.BOND_LENGTH_DOUBLE, bondLength);
+    }
+
+    public double getBondWidth() throws BioclipseException {
+        return getDouble(PreferenceConstants.BOND_WIDTH_DOUBLE);
+    }
+
+    public void setBondWidth(double bondWidth) throws BioclipseException {
+        setDouble(PreferenceConstants.BOND_WIDTH_DOUBLE, bondWidth);
     }
 
     public double getBondDistance() throws BioclipseException {

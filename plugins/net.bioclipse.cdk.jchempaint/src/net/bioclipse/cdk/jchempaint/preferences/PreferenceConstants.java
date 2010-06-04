@@ -22,6 +22,7 @@ public class PreferenceConstants {
     public static final String SHOW_NUMBERS_BOOL = "showNumbers";
     
     public static final String ATOM_RADIUS_DOUBLE = "atomRadius";
+    public static final String BOND_WIDTH_DOUBLE = "bondWidth";
     public static final String BOND_LENGTH_DOUBLE = "bondLength";
     public static final String BOND_DISTANCE_DOUBLE = "bondDistance";
     public static final String HIGHLIGHT_DISTANCE_DOUBLE = "highlightDistance";

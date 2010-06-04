@@ -153,4 +153,14 @@ public interface IJChemPaintGlobalPropertiesManager extends IBioclipseManager {
     
     @PublishedMethod ( methodSummary = "Returns the width of a stereo wedge" )
     public double getWedgeWidth() throws BioclipseException;
+
+    @Recorded
+    @PublishedMethod ( params = "double bondWidth",
+                       methodSummary = "Sets the width of bonds." )
+    public void setBondWidth(double bondWidth);
+
+    @Recorded
+    @PublishedMethod ( methodSummary = "Returns the width of bonds." )
+    public double getBondWidth();
+
 }
