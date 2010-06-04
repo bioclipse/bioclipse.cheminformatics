@@ -190,7 +190,7 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
 
     protected IChemObject processContent() throws CDKException {
 
-        IChemObject co = chemReader.read(builder.newChemFile());
+        IChemObject co = chemReader.read(builder.newInstance(IChemFile.class));
         if (co instanceof IChemFile) {
             for(IChemSequence chemSeq:((IChemFile) co).chemSequences()) {
                 for(IChemModel chemModel:chemSeq.chemModels()) {

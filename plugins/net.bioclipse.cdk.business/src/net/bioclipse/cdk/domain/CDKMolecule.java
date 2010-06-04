@@ -99,7 +99,8 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
 
         //Operate on a clone with removed hydrogens
         org.openscience.cdk.interfaces.IMolecule hydrogenlessClone =
-            container.getBuilder().newMolecule(
+            container.getBuilder().newInstance(
+            	org.openscience.cdk.interfaces.IMolecule.class,
                 AtomContainerManipulator.removeHydrogens(container)
             );
 

@@ -331,7 +331,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     private void setupControllerHub( ) {
         IChemModel chemModel =
-            NoNotificationChemObjectBuilder.getInstance().newChemModel();
+            NoNotificationChemObjectBuilder.getInstance()
+            	.newInstance(IChemModel.class);
 
         c2dm = new ControllerModel();
         UndoRedoHandler undoRedoHandler = new UndoRedoHandler();
@@ -548,8 +549,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     public void setReaction(IReaction reaction) {
         if( reaction != null) {
 
-            IChemModel model = reaction.getBuilder().newChemModel();
-            IReactionSet reactionSet = reaction.getBuilder().newReactionSet();
+            IChemModel model = reaction.getBuilder().newInstance(IChemModel.class);
+            IReactionSet reactionSet = reaction.getBuilder()
+            	.newInstance(IReactionSet.class);
             reactionSet.addReaction( reaction );
             model.setReactionSet( reactionSet );
             setModel( model );
@@ -562,7 +564,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     public void setReactionSet(IReactionSet reactionSet) {
         if( reactionSet != null) {
 
-            IChemModel model = reactionSet.getBuilder().newChemModel();
+            IChemModel model = reactionSet.getBuilder().newInstance(IChemModel.class);
             model.setReactionSet( reactionSet );
             setModel( model );
         }else {
@@ -596,7 +598,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 }else {
                     IAtomContainer oldAC = atomContainer;
                     atomContainer = atomContainer.getBuilder()
-                    .newAtomContainer( atomContainer );
+                    .newInstance(IAtomContainer.class, atomContainer );
                     atomContainer.setProperties( new HashMap<Object, Object>(
                             oldAC.getProperties()) );
                     setDirty( oldAC.getFlag( 7 ) );
@@ -605,7 +607,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             }
             else {
                 IChemModel model = NoNotificationChemObjectBuilder.getInstance()
-                .newChemModel();
+                .newInstance(IChemModel.class);
                 source = null;
                 setModel( model );
                 setDirty( false );

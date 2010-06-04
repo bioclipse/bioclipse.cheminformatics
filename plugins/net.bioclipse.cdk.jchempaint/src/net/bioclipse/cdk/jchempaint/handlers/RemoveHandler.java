@@ -35,7 +35,8 @@ public class RemoveHandler extends AbstractJChemPaintHandler {
 
             Collection<?> selection = getSelection( event );
 
-            IAtomContainer removedStuff=relay.getIChemModel().getBuilder().newAtomContainer();
+            IAtomContainer removedStuff=relay.getIChemModel().getBuilder()
+            	.newInstance(IAtomContainer.class);
 
             for(Object o:selection) {
                 if( o instanceof IAdaptable) {

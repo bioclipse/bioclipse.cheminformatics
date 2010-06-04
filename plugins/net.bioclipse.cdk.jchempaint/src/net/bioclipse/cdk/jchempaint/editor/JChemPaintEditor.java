@@ -633,7 +633,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
             if(selection.isEmpty()) {
                 widget.getRenderer2DModel().setExternalSelectedPart(
                       widget.getControllerHub().getIChemModel().getBuilder().
-                          newAtomContainer() );
+                          newInstance(IAtomContainer.class));
             }
             subStructureGenerator.clear();
             Set<IChemObject> chemSelection = new HashSet<IChemObject>();
