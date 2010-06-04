@@ -35,7 +35,7 @@ import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Scale;
  * @author arvid
  *
  */
-public class SubStructureGenerator implements IGenerator {
+public class SubStructureGenerator implements IGenerator<IAtomContainer> {
     static final Color DEFAULT_COLOR = Color.MAGENTA;
 
     Set<ISubStructure> subStructures = new HashSet<ISubStructure>();

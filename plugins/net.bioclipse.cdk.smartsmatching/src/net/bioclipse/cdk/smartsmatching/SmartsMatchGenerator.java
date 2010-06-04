@@ -24,7 +24,7 @@ import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 
 
-public class SmartsMatchGenerator implements IGenerator {
+public class SmartsMatchGenerator implements IGenerator<IAtomContainer> {
 
     public SmartsMatchGenerator() {
 

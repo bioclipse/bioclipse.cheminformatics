@@ -42,7 +42,7 @@ import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Scale;
  * @author arvid
  *
  */
-public class ClosestToCenterOfMassGenerator implements IGenerator {
+public class ClosestToCenterOfMassGenerator implements IGenerator<IAtomContainer> {
 
     private static final Color STAR_COLOR = Color.ORANGE;
     /**

@@ -38,6 +38,7 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.openscience.cdk.event.ICDKChangeListener;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.renderer.IRenderer;
 import org.openscience.cdk.renderer.Renderer;
@@ -121,7 +122,7 @@ public class JChemPaintWidget extends Canvas {
 
         fontManager = new SWTFontManager(this.getDisplay());
 
-        List<IGenerator> generators =  createGenerators();
+        List<IGenerator<IAtomContainer>> generators =  createGenerators();
         generators.add( drawNumbers = new ChoiceGenerator(
 
           new AtomNumberGenerator(new Vector2d(7,-7))
@@ -134,7 +135,7 @@ public class JChemPaintWidget extends Canvas {
         setAtomNumberColors( drawNumbers );
     }
 
-    private void setAtomNumberColors(IGenerator generator) {
+    private void setAtomNumberColors(IGenerator<IAtomContainer> generator) {
         for(IGeneratorParameter<?> p:generator.getParameters()) {
             if(p instanceof AtomNumberTextColor) {
                 ((AtomNumberTextColor)p).setValue( java.awt.Color.MAGENTA );
@@ -164,8 +165,9 @@ public class JChemPaintWidget extends Canvas {
         } );
     }
 
-    protected List<IGenerator> createGenerators() {
-        List<IGenerator> generatorList = new ArrayList<IGenerator>();
+    protected List<IGenerator<IAtomContainer>> createGenerators() {
+        List<IGenerator<IAtomContainer>> generatorList =
+        	new ArrayList<IGenerator<IAtomContainer>>();
 
         generatorList.addAll(ChoiceGenerator.getGeneratorsFromExtension());
         // This generator can be used for debugging partitioning problems

@@ -107,8 +107,9 @@ public class JChemPaintView extends ViewPart
     public void createPartControl(Composite parent) {
         canvasView = new JChemPaintWidget(parent, SWT.NONE ) {
             @Override
-            protected List<IGenerator> createGenerators() {
-                List<IGenerator> genList = new ArrayList<IGenerator>();
+            protected List<IGenerator<IAtomContainer>> createGenerators() {
+                List<IGenerator<IAtomContainer>> genList =
+                	new ArrayList<IGenerator<IAtomContainer>>();
                 genList.add(extensionGenerator
                             =ChoiceGenerator.getGeneratorsFromExtensionPoint());
                 genList.addAll( super.createGenerators() );

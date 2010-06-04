@@ -518,8 +518,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     }
 
     @Override
-    protected List<IGenerator> createGenerators() {
-        List<IGenerator> generatorList = new ArrayList<IGenerator>();
+    protected List<IGenerator<IAtomContainer>> createGenerators() {
+        List<IGenerator<IAtomContainer>> generatorList =
+        	new ArrayList<IGenerator<IAtomContainer>>();
 
         generatorList.add(new ExternalHighlightGenerator());
         generatorList.addAll( super.createGenerators() );

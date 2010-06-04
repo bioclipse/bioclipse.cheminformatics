@@ -32,7 +32,7 @@ import org.openscience.cdk.renderer.elements.IRenderingVisitor;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 
-public class ChoiceGenerator implements IGenerator {
+public class ChoiceGenerator implements IGenerator<IAtomContainer> {
 
     boolean use = false;
     List<IGenerator> generators;
@@ -84,8 +84,9 @@ public class ChoiceGenerator implements IGenerator {
         return choiceGenerator;
     }
 
-    public static List<IGenerator> getGeneratorsFromExtension() {
-        List<IGenerator> choiseGenerator = new ArrayList<IGenerator>();
+    public static List<IGenerator<IAtomContainer>> getGeneratorsFromExtension() {
+        List<IGenerator<IAtomContainer>> choiseGenerator =
+        	new ArrayList<IGenerator<IAtomContainer>>();
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IExtensionPoint generatorExtensionPoint = registry
         .getExtensionPoint(EP_GENERATOR);

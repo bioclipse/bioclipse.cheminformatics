@@ -103,7 +103,8 @@ public class JCPCellPainter extends BackgroundPainter {
 
         IFontManager fontManager = new SWTFontManager(Display.getCurrent());
 
-        List<IGenerator> generators = new ArrayList<IGenerator>();
+        List<IGenerator<IAtomContainer>> generators =
+        	new ArrayList<IGenerator<IAtomContainer>>();
 
         generators.add(extensionGenerator = ChoiceGenerator.getGeneratorsFromExtensionPoint());
        // generators.add(new BasicBondGenerator());

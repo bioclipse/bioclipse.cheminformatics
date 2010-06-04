@@ -461,8 +461,9 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
         widget = new JChemPaintEditorWidget( parent, SWT.NONE ) {
 
             @Override
-            protected List<IGenerator> createGenerators() {
-                List<IGenerator> generators = new ArrayList<IGenerator>();
+            protected List<IGenerator<IAtomContainer>> createGenerators() {
+                List<IGenerator<IAtomContainer>> generators =
+                	new ArrayList<IGenerator<IAtomContainer>>();
                 generators.add( subStructureGenerator = new SubStructureGenerator() );
                 generators.addAll( super.createGenerators() );
                 return generators;

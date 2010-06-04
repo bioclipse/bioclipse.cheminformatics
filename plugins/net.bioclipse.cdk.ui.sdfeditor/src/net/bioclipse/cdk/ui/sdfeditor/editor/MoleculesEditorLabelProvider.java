@@ -97,7 +97,8 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
 
         IFontManager fontManager = new SWTFontManager(Display.getCurrent());
 
-        List<IGenerator> generators = new ArrayList<IGenerator>();
+        List<IGenerator<IAtomContainer>> generators =
+        	new ArrayList<IGenerator<IAtomContainer>>();
         generators.add(new BasicBondGenerator());
         generators.add(new BasicAtomGenerator());
         generators.add(new RingGenerator());
