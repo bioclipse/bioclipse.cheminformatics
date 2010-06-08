@@ -97,6 +97,7 @@ import org.openscience.cdk.interfaces.IReactionSet;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
 import org.openscience.cdk.renderer.generators.ExternalHighlightGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.MergeAtomsGenerator;
@@ -487,7 +488,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     @Override
     protected List<IGenerator> createGenerators() {
         List<IGenerator> generatorList = new ArrayList<IGenerator>();
-
+        generatorList.add(new BasicSceneGenerator());
         generatorList.add(new ExternalHighlightGenerator());
         generatorList.addAll( super.createGenerators() );
         generatorList.add( phantomGenerator = new PhantomBondGenerator());

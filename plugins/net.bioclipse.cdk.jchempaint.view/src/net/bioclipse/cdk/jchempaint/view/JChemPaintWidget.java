@@ -45,6 +45,7 @@ import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.font.SWTFontManager;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
@@ -172,6 +173,7 @@ public class JChemPaintWidget extends Canvas {
         extensionGenerator.setUse( true );
         // This generator can be used for debugging partitioning problems
         //generatorList.add( new AtomContainerBoundsGenerator() );
+        generatorList.add(new BasicSceneGenerator());
         generatorList.add( new RingGenerator() );
         generatorList.add( new BasicAtomGenerator());
         generatorList.add( new RadicalGenerator());
