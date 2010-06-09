@@ -84,7 +84,7 @@ public class JChemPaintGlobalPropertiesManager implements IBioclipseManager {
         model.getRenderingParameter(ShowAromaticity.class).setValue(getShowAromaticity());
         model.getRenderingParameter(ShowEndCarbons.class).setValue(getShowEndCarbons());
         model.getRenderingParameter(ShowExplicitHydrogens.class).setValue(getShowExplicitHydrogens());
-        model.getRenderingParameter(ShowImplicitHydrogens.class).setValue(getShowImplicitHydrogens());
+//        model.getRenderingParameter(ShowImplicitHydrogens.class).setValue(getShowImplicitHydrogens());
         model.setRenderingParameter(WillDrawAtomNumbers.class, getShowNumbers());
         model.getRenderingParameter(Margin.class).setValue(getMargin());
         model.getRenderingParameter(AtomRadius.class).setValue(getAtomRadius());
