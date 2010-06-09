@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2007      Jonathan Alvarsson
  *               2007-2008 Ola Spjuth
- *               2008-2009 Egon Willighagen
+ *               2008-2010 Egon Willighagen
  *                    2009 Gilleain Torrance               
  *
  * All rights reserved. This program and the accompanying materials
@@ -28,14 +28,18 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowEndCarbons;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHydrogens;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondDistance;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondLength;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondWidth;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator.WedgeWidth;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
 import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;
+import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HighlightAtomDistance;
+import org.openscience.cdk.renderer.generators.HighlightBondGenerator.HighlightBondDistance;
 import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
 
 /**
@@ -81,14 +85,15 @@ public class JChemPaintGlobalPropertiesManager implements IBioclipseManager {
         model.getRenderingParameter(ShowEndCarbons.class).setValue(getShowEndCarbons());
         model.getRenderingParameter(ShowExplicitHydrogens.class).setValue(getShowExplicitHydrogens());
         model.getRenderingParameter(ShowImplicitHydrogens.class).setValue(getShowImplicitHydrogens());
-        model.setDrawNumbers(getShowNumbers());
+        model.setRenderingParameter(WillDrawAtomNumbers.class, getShowNumbers());
         model.getRenderingParameter(Margin.class).setValue(getMargin());
         model.getRenderingParameter(AtomRadius.class).setValue(getAtomRadius());
         model.getRenderingParameter(BondWidth.class).setValue(getBondWidth());
         model.getRenderingParameter(BondLength.class).setValue(getBondLength());
-        model.getRenderingParameter( BondDistance.class ).setValue( getBondDistance());
-        model.setHighlightDistance(getHighlightDistance());
-        model.setWedgeWidth(getWedgeWidth());
+        model.getRenderingParameter(BondDistance.class ).setValue( getBondDistance());
+        model.setRenderingParameter(HighlightAtomDistance.class, getHighlightAtomDistance());
+        model.setRenderingParameter(HighlightBondDistance.class, getHighlightBondDistance());
+        model.setRenderingParameter(WedgeWidth.class, getWedgeWidth());
     }
 
     public void applyGlobalProperties() throws BioclipseException {
@@ -236,12 +241,20 @@ public class JChemPaintGlobalPropertiesManager implements IBioclipseManager {
         setDouble(PreferenceConstants.BOND_DISTANCE_DOUBLE, bondDistance);
     }
 
-    public double getHighlightDistance() throws BioclipseException {
-        return getDouble(PreferenceConstants.HIGHLIGHT_DISTANCE_DOUBLE);
+    public double getHighlightAtomDistance() throws BioclipseException {
+        return getDouble(PreferenceConstants.HIGHLIGHT_ATOM_DISTANCE_DOUBLE);
     }
 
-    public void setHighlightDistance(double dist) throws BioclipseException {
-        setDouble(PreferenceConstants.HIGHLIGHT_DISTANCE_DOUBLE, dist);
+    public void setHighlightAtomDistance(double dist) throws BioclipseException {
+        setDouble(PreferenceConstants.HIGHLIGHT_ATOM_DISTANCE_DOUBLE, dist);
+    }
+
+    public double getHighlightBondDistance() throws BioclipseException {
+        return getDouble(PreferenceConstants.HIGHLIGHT_BOND_DISTANCE_DOUBLE);
+    }
+
+    public void setHighlightBondDistance(double dist) throws BioclipseException {
+        setDouble(PreferenceConstants.HIGHLIGHT_BOND_DISTANCE_DOUBLE, dist);
     }
 
     public double getMargin() throws BioclipseException {

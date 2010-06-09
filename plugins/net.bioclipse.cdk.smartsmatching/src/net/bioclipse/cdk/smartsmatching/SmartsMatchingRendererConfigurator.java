@@ -29,6 +29,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactAtom;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHydrogens;
+import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowAtomTypeNames;
 import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;
 
 public class SmartsMatchingRendererConfigurator 
@@ -98,7 +99,7 @@ public class SmartsMatchingRendererConfigurator
                     SmartsMatchingHelper.serializeToProperty(cdkmol, hitAtoms);
 
                 model.getRenderingParameter(CompactAtom.class).setValue(true);
-                model.setShowAtomTypeNames( false );
+                model.setRenderingParameter(ShowAtomTypeNames.class, false);
                 model.getRenderingParameter(ShowImplicitHydrogens.class).setValue( false );
                 model.getRenderingParameter(ShowExplicitHydrogens.class).setValue( false );
 

@@ -40,7 +40,8 @@ import org.openscience.cdk.renderer.elements.TextElement;
 import org.openscience.cdk.renderer.elements.WedgeLineElement;
 import org.openscience.cdk.renderer.font.IFontManager;
 import org.openscience.cdk.renderer.font.SWTFontManager;
-import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BackGroundColor;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator.WedgeWidth;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BackgroundColor;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.ForegroundColor;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Scale;
 import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;
@@ -185,7 +186,7 @@ public class SWTRenderer implements IDrawVisitor{
         Vector2d normal =
             new Vector2d(wedge.y1 - wedge.y2, wedge.x2 - wedge.x1);
         normal.normalize();
-        normal.scale(model.getWedgeWidth() /
+        normal.scale(model.getRenderingParameter(WedgeWidth.class).getValue() /
         		     model.getRenderingParameter(Scale.class).getValue());
 
         // make the triangle corners
@@ -252,7 +253,7 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     private java.awt.Color getBackgroundColor() {
-        return ((BackGroundColor)getModel().getRenderingParameter(BackGroundColor.class))
+        return getModel().getRenderingParameter(BackgroundColor.class)
         	.getValue();
     }
 

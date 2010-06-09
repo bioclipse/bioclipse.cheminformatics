@@ -1,5 +1,6 @@
-/*******************************************************************************
- * Copyright (c) 2008 The Bioclipse Project and others.
+/* Copyright (c) 2008 The Bioclipse Project and others.
+ *               2010  Egon Willighagen <egonw@users.sf.net>
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +8,7 @@
  * 
  * Contributors:
  *     Egon Willighagen
- ******************************************************************************/
+ */
 package net.bioclipse.cdk.jchempaint.business;
 
 import javax.vecmath.Point2d;
@@ -96,8 +97,14 @@ public interface IJChemPaintManager extends IBioclipseManager {
     @Recorded
     @PublishedMethod ( params = "double highlightDistance",
                        methodSummary = "Sets the distance within which " +
-                       		           "highlighting occurs." )
-    public void setHighlightDistance(double highlightDistance);
+                       		           "highlighting occurs for atoms." )
+    public void setHighlightAtomDistance(double highlightDistance);
+    
+    @Recorded
+    @PublishedMethod ( params = "double highlightDistance",
+                       methodSummary = "Sets the distance within which " +
+                       		           "highlighting occurs for bonds." )
+    public void setHighlightBondDistance(double highlightDistance);
     
     @Recorded
     @PublishedMethod ( params = "boolean fitToScreen",
@@ -182,8 +189,13 @@ public interface IJChemPaintManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod ( methodSummary = "Returns the distance to within which " +
-    		                           "highlighting occurs." )
-    public double getHighlightDistance();
+    		                           "highlighting occurs for atoms." )
+    public double getHighlightAtomDistance();
+    
+    @Recorded
+    @PublishedMethod ( methodSummary = "Returns the distance to within which " +
+    		                           "highlighting occurs for bonds." )
+    public double getHighlightBondDistance();
     
     @Recorded
     @PublishedMethod ( methodSummary = "Returns whether the diagram fits the " +

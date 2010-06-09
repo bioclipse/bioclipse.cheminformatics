@@ -44,6 +44,7 @@ import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IBond.Order;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
+import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactAtom;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowEndCarbons;
@@ -51,9 +52,13 @@ import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHy
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondDistance;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondLength;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondWidth;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator.WedgeWidth;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.FitToScreen;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.ZoomFactor;
 import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;
+import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HighlightAtomDistance;
+import org.openscience.cdk.renderer.generators.HighlightBondGenerator.HighlightBondDistance;
 import org.openscience.cdk.renderer.generators.RingGenerator.CDKStyleAromaticity;
 import org.openscience.cdk.renderer.generators.RingGenerator.RingProportion;
 import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
@@ -477,7 +482,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setDrawNumbers(boolean setDrawNumbers) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setDrawNumbers(setDrawNumbers);
+            model.setRenderingParameter(WillDrawAtomNumbers.class, setDrawNumbers);
         }
         updateView();
     }
@@ -485,15 +490,23 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setFitToScreen(boolean fitToScreen) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setFitToScreen(fitToScreen);
+            model.setRenderingParameter(FitToScreen.class, fitToScreen);
         }
         updateView();
     }
 
-    public void setHighlightDistance(double highlightDistance) {
+    public void setHighlightAtomDistance(double highlightDistance) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setHighlightDistance(highlightDistance);
+            model.setRenderingParameter(HighlightAtomDistance.class, highlightDistance);
+        }
+        updateView();
+    }
+
+    public void setHighlightBondDistance(double highlightDistance) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.setRenderingParameter(HighlightBondDistance.class, highlightDistance);
         }
         updateView();
     }
@@ -551,7 +564,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setWedgeWidth(double wedgeWidth) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setWedgeWidth(wedgeWidth);
+            model.setRenderingParameter(WedgeWidth.class, wedgeWidth);
         }
         updateView();
     }
@@ -611,7 +624,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public boolean getDrawNumbers() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getDrawNumbers();
+            return model.getRenderingParameter(WillDrawAtomNumbers.class).getValue();
         } else {
             return false;
         }
@@ -620,16 +633,25 @@ public class JChemPaintManager implements IBioclipseManager {
     public boolean getFitToScreen() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.isFitToScreen();
+            return model.getRenderingParameter(FitToScreen.class).getValue();
         } else {
             return false;
         }
     }
 
-    public double getHighlightDistance() {
+    public double getHighlightAtomDistance() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getHighlightDistance();
+            return model.getRenderingParameter(HighlightAtomDistance.class).getValue();
+        } else {
+            return 0;
+        }
+    }
+
+    public double getHighlightBondDistance() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            return model.getRenderingParameter(HighlightBondDistance.class).getValue();
         } else {
             return 0;
         }
@@ -701,7 +723,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public double getWedgeWidth() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getWedgeWidth();
+            return model.getRenderingParameter(WedgeWidth.class).getValue();
         } else {
             return 0;
         }

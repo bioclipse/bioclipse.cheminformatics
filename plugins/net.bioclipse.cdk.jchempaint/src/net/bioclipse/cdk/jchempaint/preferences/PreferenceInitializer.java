@@ -15,13 +15,17 @@ import net.bioclipse.cdk.jchempaint.Activator;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowEndCarbons;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHydrogens;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondDistance;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondLength;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator.WedgeWidth;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
 import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;
+import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HighlightAtomDistance;
+import org.openscience.cdk.renderer.generators.HighlightBondGenerator.HighlightBondDistance;
 import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
 
 /**
@@ -58,7 +62,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         );
         store.setDefault(
                 PreferenceConstants.SHOW_NUMBERS_BOOL,
-                model.drawNumbers()
+                model.getDefaultRenderingParameter(WillDrawAtomNumbers.class)
         );
 
 
@@ -75,8 +79,12 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
                 model.getRenderingParameter( BondDistance.class ).getValue()
         );
         store.setDefault(
-                PreferenceConstants.HIGHLIGHT_DISTANCE_DOUBLE,
-                14
+                PreferenceConstants.HIGHLIGHT_ATOM_DISTANCE_DOUBLE,
+                model.getDefaultRenderingParameter(HighlightAtomDistance.class)
+        );
+        store.setDefault(
+                PreferenceConstants.HIGHLIGHT_BOND_DISTANCE_DOUBLE,
+                model.getDefaultRenderingParameter(HighlightBondDistance.class)
         );
         store.setDefault(
                 PreferenceConstants.MARGIN_DOUBLE,
@@ -84,7 +92,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         );
         store.setDefault(
                 PreferenceConstants.WEDGE_WIDTH_DOUBLE,
-                model.getWedgeWidth()
+                model.getDefaultRenderingParameter(WedgeWidth.class)
         );
             
 	}

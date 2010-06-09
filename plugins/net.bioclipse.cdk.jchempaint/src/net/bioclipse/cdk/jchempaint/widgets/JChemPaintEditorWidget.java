@@ -105,7 +105,12 @@ import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.MergeAtomsGenerator;
 import org.openscience.cdk.renderer.generators.SelectAtomGenerator;
 import org.openscience.cdk.renderer.generators.SelectBondGenerator;
+import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HighlightAtomShapeFilled;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HoverOverColor;
+import org.openscience.cdk.renderer.generators.HighlightBondGenerator.HighlightBondShapeFilled;
+import org.openscience.cdk.renderer.generators.SelectAtomGenerator.SelectionAtomColor;
+import org.openscience.cdk.renderer.generators.SelectAtomGenerator.SelectionRadius;
+import org.openscience.cdk.renderer.generators.SelectBondGenerator.SelectionBondColor;
 import org.openscience.cdk.renderer.selection.AbstractSelection;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
@@ -166,10 +171,12 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                                     color.getGreen(),
                                     color.getBlue(),
                                     128);
-        rModel.setSelectedPartColor(color);
-        rModel.setSelectionRadius( 8 );
+        rModel.setRenderingParameter(SelectionAtomColor.class, color);
+        rModel.setRenderingParameter(SelectionBondColor.class, color);
+        rModel.setRenderingParameter(SelectionRadius.class, 8.0 );
 
-        rModel.setHighlightShapeFilled( true );
+        rModel.setRenderingParameter(HighlightAtomShapeFilled.class, true);
+        rModel.setRenderingParameter(HighlightBondShapeFilled.class, true);
         rModel.getRenderingParameter(HoverOverColor.class).
         	setValue( new Color( Color.GRAY.getRed(),
                                              Color.GRAY.getGreen(),

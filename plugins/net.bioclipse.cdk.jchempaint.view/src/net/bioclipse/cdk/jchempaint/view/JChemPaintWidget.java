@@ -54,6 +54,7 @@ import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 import org.openscience.cdk.renderer.generators.RadicalGenerator;
 import org.openscience.cdk.renderer.generators.RingGenerator;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator.AtomNumberTextColor;
+import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 
 /**
@@ -149,8 +150,9 @@ public class JChemPaintWidget extends Canvas {
 
         public void stateChanged( EventObject event ) {
             if(event.getSource() instanceof RendererModel) {
-                drawNumbers.setUse( JChemPaintWidget.this.renderer
-                                       .getRenderer2DModel().drawNumbers());
+                drawNumbers.setUse(
+                	JChemPaintWidget.this.renderer.getRenderer2DModel().
+                		getRenderingParameter(WillDrawAtomNumbers.class).getValue());
             }
         }
     });
