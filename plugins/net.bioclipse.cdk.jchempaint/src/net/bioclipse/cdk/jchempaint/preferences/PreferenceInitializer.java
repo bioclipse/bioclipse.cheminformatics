@@ -46,19 +46,19 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 		store.setDefault(
 		        PreferenceConstants.SHOW_AROMATICITY_BOOL,
-		        model.getRenderingParameter(ShowAromaticity.class).getDefault()
+		        model.getDefaultRenderingParameter(ShowAromaticity.class)
 		);
         store.setDefault(
                 PreferenceConstants.SHOW_END_CARBONS_BOOL,
-                model.getRenderingParameter(ShowEndCarbons.class).getDefault()
+                model.getDefaultRenderingParameter(ShowEndCarbons.class)
         );
         store.setDefault(
                 PreferenceConstants.SHOW_EXPLICIT_HYDROGENS_BOOL,
-                model.getRenderingParameter(ShowExplicitHydrogens.class).getValue()
+                model.getDefaultRenderingParameter(ShowExplicitHydrogens.class)
         );
         store.setDefault(
                 PreferenceConstants.SHOW_IMPLICIT_HYDROGENS_BOOL,
-                model.getRenderingParameter(ShowImplicitHydrogens.class).getValue()
+                model.getDefaultRenderingParameter(ShowImplicitHydrogens.class)
         );
         store.setDefault(
                 PreferenceConstants.SHOW_NUMBERS_BOOL,
@@ -68,15 +68,15 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
         store.setDefault(
                 PreferenceConstants.ATOM_RADIUS_DOUBLE,
-                (Double)model.getRenderingParameter(AtomRadius.class).getDefault()
+                model.getDefaultRenderingParameter(AtomRadius.class)
         );
         store.setDefault(
                 PreferenceConstants.BOND_LENGTH_DOUBLE,
-                model.getRenderingParameter(BondLength.class).getValue()
+                model.getDefaultRenderingParameter(BondLength.class)
         );
         store.setDefault(
                 PreferenceConstants.BOND_DISTANCE_DOUBLE,
-                model.getRenderingParameter( BondDistance.class ).getValue()
+                model.getDefaultRenderingParameter(BondDistance.class)
         );
         store.setDefault(
                 PreferenceConstants.HIGHLIGHT_ATOM_DISTANCE_DOUBLE,
@@ -88,7 +88,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         );
         store.setDefault(
                 PreferenceConstants.MARGIN_DOUBLE,
-                model.getRenderingParameter(Margin.class).getDefault()
+                model.getDefaultRenderingParameter(Margin.class)
         );
         store.setDefault(
                 PreferenceConstants.WEDGE_WIDTH_DOUBLE,
