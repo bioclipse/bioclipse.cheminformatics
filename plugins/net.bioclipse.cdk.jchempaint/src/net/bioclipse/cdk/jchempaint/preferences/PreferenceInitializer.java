@@ -62,9 +62,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         );
         store.setDefault(
                 PreferenceConstants.SHOW_NUMBERS_BOOL,
-                model.getDefault(WillDrawAtomNumbers.class)
+                Boolean.FALSE
         );
-
 
         store.setDefault(
                 PreferenceConstants.ATOM_RADIUS_DOUBLE,
