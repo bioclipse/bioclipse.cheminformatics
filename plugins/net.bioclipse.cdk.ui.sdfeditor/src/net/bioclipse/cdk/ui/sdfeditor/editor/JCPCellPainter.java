@@ -125,7 +125,7 @@ public class JCPCellPainter extends BackgroundPainter {
         applyGlobalProperties( rModel );
 
         rModel.getParameter(Margin.class).setValue(30.0);
-        rModel.set(WillDrawAtomNumbers.class, false);
+//        rModel.set(WillDrawAtomNumbers.class, false);
         rModel.getParameter(CompactAtom.class).setValue(true );
 //        rModel.setUseAntiAliasing(true );
 
