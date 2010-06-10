@@ -22,19 +22,21 @@ import net.bioclipse.cdk.jchempaint.preferences.PreferenceConstants;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.managers.business.IBioclipseManager;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowEndCarbons;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHydrogens;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondDistance;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondLength;
-import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondWidth;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.WedgeWidth;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
 import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;
@@ -48,6 +50,10 @@ import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
  * @author egonw
  */
 public class JChemPaintGlobalPropertiesManager implements IBioclipseManager {
+
+	private static final Logger logger = Logger.getLogger(
+		JChemPaintGlobalPropertiesManager.class
+	);
 
     public String getManagerName() {
         return "jcpglobal";
@@ -80,20 +86,36 @@ public class JChemPaintGlobalPropertiesManager implements IBioclipseManager {
         return jcpEditors;
     }
     
+    /**
+     * Tries to apply a parameter value, but since it matching {@link IGenerator}
+     * may not be registered, we silently eat the exception.
+     */
+    private <T extends IGeneratorParameter<S>,S> void applyProperty(
+    		RendererModel model, Class<T> paramType, S value) {
+    	try {
+    		model.set(paramType, value);
+    	} catch (Error error) {
+    		logger.warn(
+    			"Error while applying a rendering property preference: " +
+    			error.getMessage()
+    		);
+    	};
+    }
+    
     public void applyProperties(RendererModel model) throws BioclipseException {
-        model.getParameter(ShowAromaticity.class).setValue(getShowAromaticity());
-        model.getParameter(ShowEndCarbons.class).setValue(getShowEndCarbons());
-        model.getParameter(ShowExplicitHydrogens.class).setValue(getShowExplicitHydrogens());
-//        model.getRenderingParameter(ShowImplicitHydrogens.class).setValue(getShowImplicitHydrogens());
-        model.set(WillDrawAtomNumbers.class, getShowNumbers());
-        model.getParameter(Margin.class).setValue(getMargin());
-        model.getParameter(AtomRadius.class).setValue(getAtomRadius());
-        model.getParameter(BondWidth.class).setValue(getBondWidth());
-        model.getParameter(BondLength.class).setValue(getBondLength());
-        model.getParameter(BondDistance.class ).setValue( getBondDistance());
-        model.set(HighlightAtomDistance.class, getHighlightAtomDistance());
-        model.set(HighlightBondDistance.class, getHighlightBondDistance());
-        model.set(WedgeWidth.class, getWedgeWidth());
+    	applyProperty(model, ShowAromaticity.class, getShowAromaticity());
+    	applyProperty(model, ShowAromaticity.class, getShowAromaticity());
+    	applyProperty(model, ShowEndCarbons.class, getShowEndCarbons());
+    	applyProperty(model, ShowExplicitHydrogens.class, getShowExplicitHydrogens());
+    	applyProperty(model, Margin.class, getMargin());
+    	applyProperty(model, AtomRadius.class, getAtomRadius());
+    	applyProperty(model, BondLength.class, getBondLength());
+    	applyProperty(model, BondDistance.class, getBondDistance());
+    	applyProperty(model, HighlightAtomDistance.class, getHighlightAtomDistance());
+    	applyProperty(model, HighlightBondDistance.class, getHighlightBondDistance());
+    	applyProperty(model, WedgeWidth.class, getWedgeWidth());
+    	applyProperty(model, ShowImplicitHydrogens.class, getShowImplicitHydrogens());
+    	applyProperty(model, WillDrawAtomNumbers.class, getShowNumbers());
     }
 
     public void applyGlobalProperties() throws BioclipseException {
