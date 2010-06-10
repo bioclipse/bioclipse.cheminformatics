@@ -81,19 +81,19 @@ public class JChemPaintGlobalPropertiesManager implements IBioclipseManager {
     }
     
     public void applyProperties(RendererModel model) throws BioclipseException {
-        model.getRenderingParameter(ShowAromaticity.class).setValue(getShowAromaticity());
-        model.getRenderingParameter(ShowEndCarbons.class).setValue(getShowEndCarbons());
-        model.getRenderingParameter(ShowExplicitHydrogens.class).setValue(getShowExplicitHydrogens());
+        model.getParameter(ShowAromaticity.class).setValue(getShowAromaticity());
+        model.getParameter(ShowEndCarbons.class).setValue(getShowEndCarbons());
+        model.getParameter(ShowExplicitHydrogens.class).setValue(getShowExplicitHydrogens());
 //        model.getRenderingParameter(ShowImplicitHydrogens.class).setValue(getShowImplicitHydrogens());
-        model.setRenderingParameter(WillDrawAtomNumbers.class, getShowNumbers());
-        model.getRenderingParameter(Margin.class).setValue(getMargin());
-        model.getRenderingParameter(AtomRadius.class).setValue(getAtomRadius());
-        model.getRenderingParameter(BondWidth.class).setValue(getBondWidth());
-        model.getRenderingParameter(BondLength.class).setValue(getBondLength());
-        model.getRenderingParameter(BondDistance.class ).setValue( getBondDistance());
-        model.setRenderingParameter(HighlightAtomDistance.class, getHighlightAtomDistance());
-        model.setRenderingParameter(HighlightBondDistance.class, getHighlightBondDistance());
-        model.setRenderingParameter(WedgeWidth.class, getWedgeWidth());
+        model.set(WillDrawAtomNumbers.class, getShowNumbers());
+        model.getParameter(Margin.class).setValue(getMargin());
+        model.getParameter(AtomRadius.class).setValue(getAtomRadius());
+        model.getParameter(BondWidth.class).setValue(getBondWidth());
+        model.getParameter(BondLength.class).setValue(getBondLength());
+        model.getParameter(BondDistance.class ).setValue( getBondDistance());
+        model.set(HighlightAtomDistance.class, getHighlightAtomDistance());
+        model.set(HighlightBondDistance.class, getHighlightBondDistance());
+        model.set(WedgeWidth.class, getWedgeWidth());
     }
 
     public void applyGlobalProperties() throws BioclipseException {

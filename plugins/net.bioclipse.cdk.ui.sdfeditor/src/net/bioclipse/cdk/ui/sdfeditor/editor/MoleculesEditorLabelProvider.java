@@ -110,14 +110,14 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
         renderer = new Renderer(generators, fontManager);
 
         RendererModel rModel = renderer.getRenderer2DModel();
-        rModel.setRenderingParameter(WillDrawAtomNumbers.class, false);
-        rModel.getRenderingParameter(CompactAtom.class).setValue(true);
+        rModel.set(WillDrawAtomNumbers.class, false);
+        rModel.getParameter(CompactAtom.class).setValue(true);
 //        rModel.setUseAntiAliasing(true );
 
-        rModel.getRenderingParameter(ShowExplicitHydrogens.class).setValue( false );
-        rModel.setRenderingParameter(BackgroundColor.class,
+        rModel.getParameter(ShowExplicitHydrogens.class).setValue( false );
+        rModel.set(BackgroundColor.class,
         	new java.awt.Color(252,253,254));
-        rModel.setRenderingParameter(FitToScreen.class, true);
+        rModel.set(FitToScreen.class, true);
 
         greenScreen = new Color(Display.getCurrent(), 252, 253, 254);
         generatedColor = new Color(Display.getCurrent(),200,100,100);

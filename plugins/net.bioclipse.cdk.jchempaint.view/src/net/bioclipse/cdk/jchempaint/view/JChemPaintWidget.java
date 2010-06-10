@@ -152,7 +152,7 @@ public class JChemPaintWidget extends Canvas {
             if(event.getSource() instanceof RendererModel) {
                 drawNumbers.setUse(
                 	JChemPaintWidget.this.renderer.getRenderer2DModel().
-                		getRenderingParameter(WillDrawAtomNumbers.class).getValue());
+                		getParameter(WillDrawAtomNumbers.class).getValue());
             }
         }
     });

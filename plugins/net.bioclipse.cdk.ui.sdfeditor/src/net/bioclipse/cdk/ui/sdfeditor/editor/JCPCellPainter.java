@@ -120,19 +120,19 @@ public class JCPCellPainter extends BackgroundPainter {
         renderer = new Renderer(generators, fontManager);
 
         RendererModel rModel = renderer.getRenderer2DModel();
-        rModel.getRenderingParameter(CompactShape.class).setValue(Shape.OVAL);
+        rModel.getParameter(CompactShape.class).setValue(Shape.OVAL);
 
         applyGlobalProperties( rModel );
 
-        rModel.getRenderingParameter(Margin.class).setValue(30.0);
-        rModel.setRenderingParameter(WillDrawAtomNumbers.class, false);
-        rModel.getRenderingParameter(CompactAtom.class).setValue(true );
+        rModel.getParameter(Margin.class).setValue(30.0);
+        rModel.set(WillDrawAtomNumbers.class, false);
+        rModel.getParameter(CompactAtom.class).setValue(true );
 //        rModel.setUseAntiAliasing(true );
 
-        rModel.getRenderingParameter(ShowExplicitHydrogens.class).setValue( false );
-        rModel.setRenderingParameter(BackgroundColor.class,
+        rModel.getParameter(ShowExplicitHydrogens.class).setValue( false );
+        rModel.set(BackgroundColor.class,
         	new java.awt.Color(252,253,254));
-        rModel.setRenderingParameter(FitToScreen.class, true);
+        rModel.set(FitToScreen.class, true);
 
     }
 

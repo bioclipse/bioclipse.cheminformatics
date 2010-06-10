@@ -61,11 +61,11 @@ public class ClosestToCenterOfMassGenerator implements IGenerator<IAtomContainer
         if(p2== null) return new ElementGroup();
         IAtom atom = jcp.getClosestAtom(p2);
         if(atom==null || atom.getPoint2d()==null) return new ElementGroup();
-        double scale = model.getRenderingParameter(Scale.class).getValue();
+        double scale = model.getParameter(Scale.class).getValue();
         return generateStar(
         	atom.getPoint2d(),
-            model.getRenderingParameter(HighlightAtomDistance.class).getValue()*3/scale,
-            model.getRenderingParameter(BondWidth.class).getValue()/scale);
+            model.getParameter(HighlightAtomDistance.class).getValue()*3/scale,
+            model.getParameter(BondWidth.class).getValue()/scale);
     }
 
     protected IRenderingElement generateStar( Point2d center,

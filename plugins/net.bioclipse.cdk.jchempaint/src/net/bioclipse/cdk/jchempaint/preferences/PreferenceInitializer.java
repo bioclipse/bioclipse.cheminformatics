@@ -46,53 +46,53 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 		store.setDefault(
 		        PreferenceConstants.SHOW_AROMATICITY_BOOL,
-		        model.getDefaultRenderingParameter(ShowAromaticity.class)
+		        model.getDefault(ShowAromaticity.class)
 		);
         store.setDefault(
                 PreferenceConstants.SHOW_END_CARBONS_BOOL,
-                model.getDefaultRenderingParameter(ShowEndCarbons.class)
+                model.getDefault(ShowEndCarbons.class)
         );
         store.setDefault(
                 PreferenceConstants.SHOW_EXPLICIT_HYDROGENS_BOOL,
-                model.getDefaultRenderingParameter(ShowExplicitHydrogens.class)
+                model.getDefault(ShowExplicitHydrogens.class)
         );
         store.setDefault(
                 PreferenceConstants.SHOW_IMPLICIT_HYDROGENS_BOOL,
-                model.getDefaultRenderingParameter(ShowImplicitHydrogens.class)
+                model.getDefault(ShowImplicitHydrogens.class)
         );
         store.setDefault(
                 PreferenceConstants.SHOW_NUMBERS_BOOL,
-                model.getDefaultRenderingParameter(WillDrawAtomNumbers.class)
+                model.getDefault(WillDrawAtomNumbers.class)
         );
 
 
         store.setDefault(
                 PreferenceConstants.ATOM_RADIUS_DOUBLE,
-                model.getDefaultRenderingParameter(AtomRadius.class)
+                model.getDefault(AtomRadius.class)
         );
         store.setDefault(
                 PreferenceConstants.BOND_LENGTH_DOUBLE,
-                model.getDefaultRenderingParameter(BondLength.class)
+                model.getDefault(BondLength.class)
         );
         store.setDefault(
                 PreferenceConstants.BOND_DISTANCE_DOUBLE,
-                model.getDefaultRenderingParameter(BondDistance.class)
+                model.getDefault(BondDistance.class)
         );
         store.setDefault(
                 PreferenceConstants.HIGHLIGHT_ATOM_DISTANCE_DOUBLE,
-                model.getDefaultRenderingParameter(HighlightAtomDistance.class)
+                model.getDefault(HighlightAtomDistance.class)
         );
         store.setDefault(
                 PreferenceConstants.HIGHLIGHT_BOND_DISTANCE_DOUBLE,
-                model.getDefaultRenderingParameter(HighlightBondDistance.class)
+                model.getDefault(HighlightBondDistance.class)
         );
         store.setDefault(
                 PreferenceConstants.MARGIN_DOUBLE,
-                model.getDefaultRenderingParameter(Margin.class)
+                model.getDefault(Margin.class)
         );
         store.setDefault(
                 PreferenceConstants.WEDGE_WIDTH_DOUBLE,
-                model.getDefaultRenderingParameter(WedgeWidth.class)
+                model.getDefault(WedgeWidth.class)
         );
             
 	}

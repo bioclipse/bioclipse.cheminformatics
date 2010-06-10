@@ -171,13 +171,13 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                                     color.getGreen(),
                                     color.getBlue(),
                                     128);
-        rModel.setRenderingParameter(SelectionAtomColor.class, color);
-        rModel.setRenderingParameter(SelectionBondColor.class, color);
-        rModel.setRenderingParameter(SelectionRadius.class, 8.0 );
+        rModel.set(SelectionAtomColor.class, color);
+        rModel.set(SelectionBondColor.class, color);
+        rModel.set(SelectionRadius.class, 8.0 );
 
-        rModel.setRenderingParameter(HighlightAtomShapeFilled.class, true);
-        rModel.setRenderingParameter(HighlightBondShapeFilled.class, true);
-        rModel.getRenderingParameter(HoverOverColor.class).
+        rModel.set(HighlightAtomShapeFilled.class, true);
+        rModel.set(HighlightBondShapeFilled.class, true);
+        rModel.getParameter(HoverOverColor.class).
         	setValue( new Color( Color.GRAY.getRed(),
                                              Color.GRAY.getGreen(),
                                              Color.GRAY.getBlue(),

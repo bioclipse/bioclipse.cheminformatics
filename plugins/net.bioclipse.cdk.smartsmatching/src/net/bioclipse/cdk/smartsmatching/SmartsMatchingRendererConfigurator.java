@@ -98,10 +98,10 @@ public class SmartsMatchingRendererConfigurator
                     //Serialize to property
                     SmartsMatchingHelper.serializeToProperty(cdkmol, hitAtoms);
 
-                model.getRenderingParameter(CompactAtom.class).setValue(true);
-                model.setRenderingParameter(ShowAtomTypeNames.class, false);
-                model.getRenderingParameter(ShowImplicitHydrogens.class).setValue( false );
-                model.getRenderingParameter(ShowExplicitHydrogens.class).setValue( false );
+                model.getParameter(CompactAtom.class).setValue(true);
+                model.set(ShowAtomTypeNames.class, false);
+                model.getParameter(ShowImplicitHydrogens.class).setValue( false );
+                model.getParameter(ShowExplicitHydrogens.class).setValue( false );
 
                 
                 //Update drawing

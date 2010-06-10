@@ -186,8 +186,8 @@ public class SWTRenderer implements IDrawVisitor{
         Vector2d normal =
             new Vector2d(wedge.y1 - wedge.y2, wedge.x2 - wedge.x1);
         normal.normalize();
-        normal.scale(model.getRenderingParameter(WedgeWidth.class).getValue() /
-        		     model.getRenderingParameter(Scale.class).getValue());
+        normal.scale(model.getParameter(WedgeWidth.class).getValue() /
+        		     model.getParameter(Scale.class).getValue());
 
         // make the triangle corners
         Point2d vertexA = new Point2d(wedge.x1, wedge.y1);
@@ -249,11 +249,11 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     private java.awt.Color getForgroundColor() {
-        return getModel().getRenderingParameter(ForegroundColor.class).getValue();
+        return getModel().getParameter(ForegroundColor.class).getValue();
     }
 
     private java.awt.Color getBackgroundColor() {
-        return getModel().getRenderingParameter(BackgroundColor.class)
+        return getModel().getParameter(BackgroundColor.class)
         	.getValue();
     }
 
@@ -284,8 +284,8 @@ public class SWTRenderer implements IDrawVisitor{
         double[] b=transform( element.x2, element.y2 );
         path.moveTo((float)a[0], (float)a[1]);
         path.lineTo((float)b[0], (float)b[1]);
-        double aW = model.getRenderingParameter(ArrowHeadWidth.class).getValue()
-            / model.getRenderingParameter(Scale.class).getValue();
+        double aW = model.getParameter(ArrowHeadWidth.class).getValue()
+            / model.getParameter(Scale.class).getValue();
         if (element.direction) {
             double[] c = transform( element.x1 - aW, element.y1 - aW );
             double[] d = transform( element.x1 - aW, element.y1 + aW );
@@ -352,7 +352,7 @@ public class SWTRenderer implements IDrawVisitor{
             gc.drawText( fc, fcX, fcY, true );
         }
 
-        if(element.hydrogenCount >0 && model.getRenderingParameter(
+        if(element.hydrogenCount >0 && model.getParameter(
         	ShowImplicitHydrogens.class).getValue()) {
 
             Point hc = new Point(0,0);

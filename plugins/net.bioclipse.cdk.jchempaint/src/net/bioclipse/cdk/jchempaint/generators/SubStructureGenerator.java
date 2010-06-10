@@ -44,8 +44,8 @@ public class SubStructureGenerator implements IGenerator<IAtomContainer> {
      * @see org.openscience.cdk.renderer.generators.IGenerator#generate(org.openscience.cdk.interfaces.IAtomContainer, org.openscience.cdk.renderer.RendererModel)
      */
     public IRenderingElement generate( IAtomContainer ac, RendererModel model ) {
-        double r = model.getRenderingParameter(HighlightAtomDistance.class).getValue() /
-                   model.getRenderingParameter(Scale.class).getValue();
+        double r = model.getParameter(HighlightAtomDistance.class).getValue() /
+                   model.getParameter(Scale.class).getValue();
         ElementGroup group = new ElementGroup();
         
         for(ISubStructure subStructure:subStructures) {
