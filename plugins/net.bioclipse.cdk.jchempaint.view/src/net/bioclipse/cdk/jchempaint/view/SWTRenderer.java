@@ -37,6 +37,7 @@ import org.openscience.cdk.renderer.elements.OvalElement;
 import org.openscience.cdk.renderer.elements.PathElement;
 import org.openscience.cdk.renderer.elements.RectangleElement;
 import org.openscience.cdk.renderer.elements.TextElement;
+import org.openscience.cdk.renderer.elements.TextGroupElement;
 import org.openscience.cdk.renderer.elements.WedgeLineElement;
 import org.openscience.cdk.renderer.font.IFontManager;
 import org.openscience.cdk.renderer.font.SWTFontManager;
@@ -306,7 +307,6 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void visit( TextElement element ) {
-
         int x = transformX(element.x);
         int y = transformY(element.y);
         String text = element.text;
@@ -320,6 +320,22 @@ public class SWTRenderer implements IDrawVisitor{
         setBackground(  getBackgroundColor() );
         gc.setAdvanced( true );
         gc.drawText( text, x, y, true );
+    }
+
+    public void visit( TextGroupElement element ) {
+        int x = transformX(element.x);
+        int y = transformY(element.y);
+        String text = element.text;
+
+        gc.setFont(getFont());
+
+        Point textSize = gc.textExtent( text );
+        x = x - textSize.x/2;
+        y = y - textSize.y/2;
+        setForeground( element.color );
+        setBackground(  getBackgroundColor() );
+        gc.setAdvanced( true );
+        gc.drawText( text, x, y, false );
     }
 
     public void visit(AtomSymbolElement element) {
