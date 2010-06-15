@@ -22,4 +22,6 @@ Import-Package: net.bioclipse.core.business,
  net.bioclipse.core.domain,
  net.bioclipse.core.domain.props,
  org.apache.log4j,
- org.eclipse.core.resources
+ org.eclipse.core.resources,
+ org.openscience.cdk.exception,
+ org.openscience.cdk.smiles.smarts
