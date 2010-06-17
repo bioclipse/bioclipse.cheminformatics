@@ -373,6 +373,7 @@ public class MoleculeTableManager implements IBioclipseManager {
          try {
              if(renamePath != null) {
                  subMonitor.subTask( "Renaming file" );
+                 file.setHidden(true);
                  file.delete( true, subMonitor.newChild( 1000 ) );
                  target.move( renamePath, true, subMonitor.newChild( 1000 ) );
              }
