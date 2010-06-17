@@ -34,6 +34,8 @@ public class SmartsWrapper extends BioObject{
     private List<SmartsHit> hits;
     private IPropertySource propertySource;
     private boolean active;
+    private boolean valid;
+    
     
     
     public boolean isActive() {
@@ -52,23 +54,13 @@ public class SmartsWrapper extends BioObject{
         this.valid = valid;
     }
 
-    private boolean valid;
-    
     public SmartsWrapper(String name, String smartsString) {
 
         super();
         this.name = name;
         this.smartsString = smartsString;
+        validate();
         
-        ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
-        if(cdk.isValidSmarts( smartsString )){
-            setValid( true );
-        }else{
-            setValid( false );
-            logger.debug("The SMARTS: name=" + name +" ; SMARTS=" + smartsString
-                         + " is not valid.");
-        }
-
     }
 
     public SmartsWrapper() {
@@ -110,5 +102,17 @@ public class SmartsWrapper extends BioObject{
 
         return hits;
     }
+
+	public void validate() {
+        ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
+        if(cdk.isValidSmarts( smartsString )){
+            setValid( true );
+        }else{
+            setValid( false );
+            logger.debug("The SMARTS: name=" + name +" ; SMARTS=" + smartsString
+                         + " is not valid.");
+        }
+		
+	}
     
 }
