@@ -47,6 +47,7 @@ import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.font.IFontManager;
 import org.openscience.cdk.renderer.font.SWTFontManager;
+import org.openscience.cdk.renderer.generators.AtomNumberGenerator;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
@@ -116,6 +117,7 @@ public class JCPCellPainter extends BackgroundPainter {
         generators.add(new RingGenerator());
         generators.add(new HighlightAtomGenerator());
         generators.add(new HighlightBondGenerator());
+        generators.add(new AtomNumberGenerator());
 
         renderer = new Renderer(generators, fontManager);
 
@@ -125,7 +127,7 @@ public class JCPCellPainter extends BackgroundPainter {
         applyGlobalProperties( rModel );
 
         rModel.getParameter(Margin.class).setValue(30.0);
-//        rModel.set(WillDrawAtomNumbers.class, false);
+        rModel.set(WillDrawAtomNumbers.class, false);
         rModel.getParameter(CompactAtom.class).setValue(true );
 //        rModel.setUseAntiAliasing(true );
 
