@@ -432,6 +432,7 @@ public class SmartsMatchingView extends ViewPart implements IPartListener,
                                                SWT.OPEN );
                 
                 String file=dlg.open();
+                if (file==null) return;
                 
                 logger.debug("Parsing possible SMARTS file: " + file);
 
