@@ -354,8 +354,10 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
        if(jcpPage.isDirty()) {
            setDirty(true);
            calculateProperties( newMol );
+           int selection = moleculesPage.getMolTableViewer().getFirstSelected();
+           selection = selection < 0 ? 0:selection;// see updateJCPPage()
            moleculesPage.getModel().markDirty(
-                       moleculesPage.getMolTableViewer().getFirstSelected(),
+                       selection,
                        newMol );
            moleculesPage.setDirty( true );
        }
@@ -397,6 +399,10 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         }
     }
 
+    /**
+     * Updates the input for the JChemPaint editor from selection.
+     * If there is no selection the molecule at index 0 is used.
+     */
     private void updateJCPPage() {
         int index = moleculesPage.getMolTableViewer().getFirstSelected();
         if(index < 0 ) index = 0;
