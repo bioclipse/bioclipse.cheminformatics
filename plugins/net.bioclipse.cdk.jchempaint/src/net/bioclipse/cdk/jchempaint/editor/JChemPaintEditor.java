@@ -580,7 +580,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
                 return mol.getAtomContainer();
             return null;
         }
-        if( ICDKMolecule.class.equals( adapter )) {
+        if( adapter.isAssignableFrom(ICDKMolecule.class)) {
             return getCDKMolecule();
         }
         return super.getAdapter( adapter );
