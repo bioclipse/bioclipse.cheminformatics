@@ -27,6 +27,7 @@ import net.bioclipse.core.domain.AtomIndexSelection;
 import net.bioclipse.core.domain.IChemicalSelection;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.jobs.BioclipseUIJob;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
@@ -272,44 +273,66 @@ public class JChemPaintView extends ViewPart
     }
 
     private void reactOnSelection(ISelection selection) {
+        if(selection instanceof IStructuredSelection)
+            reactOnSelection((IStructuredSelection)selection);
+    }
 
-        if (!(selection instanceof IStructuredSelection))
+    private void reactOn(ICDKMolecule mol, final IChemicalSelection chemSelection) {
+        IAtomContainer atomContainer = mol.getAtomContainer();
+        if (atomContainer==null){
+            logger.debug("Unable to get atomcontainer from ICDKMolecule");
             return;
+        }
 
-        IStructuredSelection ssel = (IStructuredSelection) selection;
+        if( GeometryTools.has2DCoordinatesNew( atomContainer )<2) {
+            BioclipseUIJob<List<IMolecule>> uiJob = new BioclipseUIJob<List<IMolecule>>() {
+                @Override
+                public void runInUI() {
+                    List<IMolecule> returnValue = getReturnValue();
+                    if( !returnValue.isEmpty()
+                        && returnValue.get(0) instanceof ICDKMolecule) {
+                    ICDKMolecule newMol = (ICDKMolecule) returnValue.get(0);
+                    // Don't show 'Generated' message when preference is not set
+                    if(showGeneratedLabel() )
+                        canvasView.add( Message.GENERATED );
+                    setAtomContainer(newMol.getAtomContainer());
+                    if(chemSelection != null)
+                        updateHighlight(newMol.getAtomContainer(), chemSelection);
+                    canvasView.redraw();
+                    }
+                }
+            };
+            generate2DFrom(mol, uiJob);
+        }else {
+            setAtomContainer(atomContainer);
+            if(chemSelection != null)
+                updateHighlight(atomContainer, chemSelection);
+            canvasView.redraw();
+        }
+    }
+
+    private void reactOn(IAtomContainer atomContainer) {
+        setAtomContainer(atomContainer);
+    }
+
+    private void reactOnSelection(IStructuredSelection ssel) {
 
         Object obj = ssel.getFirstElement();
+        if(obj instanceof CDKChemObject<?>) return; //CDKChemObjects are not structures
+
         canvasView.remove( Message.GENERATED );
 
-        if(obj instanceof CDKChemObject)
-            return;
-
         if( obj instanceof IAtomContainer) {
-            setAtomContainer( (IAtomContainer) obj );
+            reactOn( (IAtomContainer) obj );
         }
-        //If we have an ICDKMolecule, just get the AC
-        else
-            if (obj instanceof ICDKMolecule) {
-                ICDKMolecule mol = (ICDKMolecule) obj;
-                if (mol.getAtomContainer()==null){
-                    logger.debug("CDKMolecule but can't get AtomContainer.");
-                    return;
-                }
-
-                if( GeometryTools.has2DCoordinatesNew( mol.getAtomContainer() )<2) {
-                    setAtomContainer( generate2DFrom( mol ) );
-                }else
-                    setAtomContainer(mol.getAtomContainer());
-            }
-
+        else if (obj instanceof ICDKMolecule) {
+             reactOn((ICDKMolecule)obj, null);
+        }
         //Try to get an IMolecule via the adapter
         else if (obj instanceof IAdaptable) {
             IAdaptable ada=(IAdaptable)obj;
+            IChemicalSelection atomSelection=adapt(ada,IChemicalSelection.class);
 
-            if(ada instanceof EditorPart) {
-                setAtomContainer( adapt(ada,IAtomContainer.class) );
-                return;
-            }
             //Start by requesting molecule
             IMolecule bcmol = adapt( ada, IMolecule.class);
             if(bcmol == null) {
@@ -322,21 +345,7 @@ public class JChemPaintView extends ViewPart
                 //Create cdkmol from IMol, via CML or SMILES if that fails
                 ICDKMolecule cdkMol=cdk.asCDKMolecule( bcmol );
 
-                //Create molecule
-                ac=cdkMol.getAtomContainer();
-
-                //Create 2D-coordinates if not available
-                if (GeometryTools.has2DCoordinatesNew( ac )<2){
-                    ac = generate2DFrom( cdkMol );
-
-                }
-
-                //Set AtomColorer based on active editor
-                //RFE: AtomColorer p� JCPWidget
-                //TODO
-
-                //Update widget
-                setAtomContainer(ac);
+               reactOn(cdkMol,atomSelection);
             } catch ( BioclipseException e ) {
                 clearView();
                 logger.debug( "Unable to generate structure in 2Dview: "
@@ -346,51 +355,45 @@ public class JChemPaintView extends ViewPart
                 logger.debug( "Unable to generate structure in 2Dview: "
                               + e.getMessage() );
             }
+        }
+    }
 
+    private void updateHighlight(IAtomContainer ac,
+            IChemicalSelection atomSelection) {
+        if (atomSelection!=null && ac!=null){
 
-
-            //Handle case where Iadaptable can return atoms to be highlighted
-            IChemicalSelection atomSelection=adapt(ada,IChemicalSelection.class);
-            //                ArrayList<Integer> atomSelectionIndices=new ArrayList<Integer>();
-
-            if (atomSelection!=null && ac!=null){
-
-                if ( atomSelection instanceof AtomIndexSelection ) {
-                    AtomIndexSelection isel = (AtomIndexSelection) atomSelection;
-                    int[] selindices = isel.getSelection();
-                    //                        System.out.println("\n** Should highlight these JCP atoms:\n");
-                    IAtomContainer selectedMols=new AtomContainer();
-                    for (int i=0; i<selindices.length;i++){
-                        selectedMols.addAtom( ac.getAtom( selindices[i] ));
-                        //                            System.out.println(i);
-                    }
-                    canvasView.getRenderer2DModel().setExternalSelectedPart( selectedMols );
-                    canvasView.redraw();
+            if ( atomSelection instanceof AtomIndexSelection ) {
+                AtomIndexSelection isel = (AtomIndexSelection) atomSelection;
+                int[] selindices = isel.getSelection();
+                //                        System.out.println("\n** Should highlight these JCP atoms:\n");
+                IAtomContainer selectedMols=new AtomContainer();
+                for (int i=0; i<selindices.length;i++){
+                    selectedMols.addAtom( ac.getAtom( selindices[i] ));
+                    //                            System.out.println(i);
                 }
+                canvasView.getRenderer2DModel().setExternalSelectedPart( selectedMols );
             }
         }
     }
 
-    private IAtomContainer generate2DFrom(IMolecule mol)  {
-        ICDKMolecule newMol = null;
-            try {
-                newMol = getCDKManager().generate2dCoordinates( mol );
+    private void generate2DFrom( IMolecule mol,
+            BioclipseUIJob<List<IMolecule>> uiJob)  {
+        try {
+            ICDKManager cdk = getCDKManager();
+            cdk.generate2dCoordinates(mol, uiJob);
 
-                boolean showGenerate =
-                    Platform.getPreferencesService().getBoolean(
-                                                 "net.bioclipse.cdk.jchempaint",
-                                                 "showGeneratedLabel",
-                                                 true, null );
-                // Don't show 'Generated' message when preference is not set
-                if(showGenerate )
-                    canvasView.add( Message.GENERATED );
-                return newMol.getAtomContainer();
-            } catch ( Exception e ) {
-                setAtomContainer( null );
-                logger.debug( "Error generating 2d coordinates: " +e.getMessage()  );
-                LogUtils.debugTrace( logger, e );
-                return null;
-            }
+        } catch ( Exception e ) {
+            setAtomContainer( null );
+            logger.debug( "Error generating 2d coordinates: " +e.getMessage()  );
+            LogUtils.debugTrace( logger, e );
+        }
+    }
+
+    private boolean showGeneratedLabel() {
+        return Platform.getPreferencesService().getBoolean(
+                "net.bioclipse.cdk.jchempaint",
+                "showGeneratedLabel",
+                true, null );
     }
 
     /**
