@@ -48,8 +48,6 @@ import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.SafeRunner;
-import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -714,12 +712,29 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     protected void structureChanged() {
         IChemModel model = hub.getIChemModel();
+        removeDanglingHydrogens( model );
         updateAtomTypesAndHCounts( model );
         if(!this.isDisposed())
             resizeControl();
     }
 
-    private void updateAtomTypesAndHCounts( IChemModel model ) {
+    /**
+     * Removed hydrogens that are not involved in any bond.
+     */
+    private void removeDanglingHydrogens(IChemModel model) {
+    	for (IAtomContainer container :
+            ChemModelManipulator.getAllAtomContainers(model)) {
+    		List<IAtom> atomsToRemove = new ArrayList<IAtom>();
+    		for (IAtom atom : container.atoms()) {
+    			if ("H".equals(atom.getSymbol()) &&
+    				container.getConnectedBondsCount(atom) == 0)
+    				atomsToRemove.add(atom);
+    		}
+    		for (IAtom atom : atomsToRemove) container.removeAtom(atom);
+    	}
+	}
+
+	private void updateAtomTypesAndHCounts( IChemModel model ) {
         CDKHydrogenAdder hAdder =
             CDKHydrogenAdder.getInstance(model.getBuilder());
         CDKAtomTypeMatcher matcher =
