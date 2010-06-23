@@ -30,11 +30,13 @@ import nu.xom.Element;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.openscience.cdk.CDKConstants;
+import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.fingerprint.Fingerprinter;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.listener.PropertiesListener;
@@ -93,6 +95,10 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     }
 
 
+    /**
+     * Returns the SMILES for this {@link IAtomContainer}. It will throw
+     * a {@link BioclipseException} when one or more atoms cannot be typed.
+     */
     public String toSMILES() throws BioclipseException {
         if (getAtomContainer() == null) return "";
         IAtomContainer container = getAtomContainer();
@@ -104,8 +110,35 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
                 AtomContainerManipulator.removeHydrogens(container)
             );
 
+        String result = ensureFullAtomTyping(hydrogenlessClone);
+        if (result.length() > 0) return result;
+
         return new SmilesGenerator().createSMILES(hydrogenlessClone);
     }
+
+	private String ensureFullAtomTyping(IAtomContainer hydrogenlessClone) {
+		// Do atom typing, and if atom typing did not work for all atoms,
+        // throw a BioclipseException.
+        // First, reset atom types
+        for (IAtom atom : hydrogenlessClone.atoms())
+        	atom.setAtomTypeName(null);
+        CDKAtomTypeMatcher matcher =
+        	CDKAtomTypeMatcher.getInstance(hydrogenlessClone.getBuilder());
+        IAtomType[] types;
+		try {
+			types = matcher.findMatchingAtomType(hydrogenlessClone);
+		} catch (CDKException exception) {
+			return "Cannot calculate SMILES: " + exception.getMessage();
+		}
+        int i = 0;
+        for (IAtomType type : types) {
+        	i++;
+        	if (type == null) return "Cannot calculate SMILES; Missing " +
+        			"atom type for atom " + i + ": " +
+        			hydrogenlessClone.getAtom(i-1);
+        }
+        return "";
+	}
 
     public IAtomContainer getAtomContainer() {
         return atomContainer;
@@ -258,7 +291,10 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         Object val = getProperty( INCHI_OBJECT, urgency );
         if(val instanceof InChI) return ((InChI)val).getValue();
         if(urgency==Property.USE_CACHED) return "";
-        
+
+        String result = ensureFullAtomTyping(atomContainer);
+        if (result.length() > 0) return result;
+
         IInChIManager inchi = net.bioclipse.inchi.business.Activator.
             getDefault().getJavaInChIManager();
         if (!inchi.isAvailable())
