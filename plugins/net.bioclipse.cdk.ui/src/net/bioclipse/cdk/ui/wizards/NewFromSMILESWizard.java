@@ -50,7 +50,7 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
     }
 
     public boolean canFinish() {
-        return mainPage.canFlipToNextPage();
+        return getSMILES() != null;
     }
     
     public void addPages() {

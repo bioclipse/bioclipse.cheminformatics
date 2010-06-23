@@ -76,7 +76,7 @@ public class SMILESInputWizardPage extends WizardPage {
     }
     
     public boolean canFlipToNextPage() {
-        return wizard.getSMILES() != null;
+        return false; // there is not next window
     }
 }
 
