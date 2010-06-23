@@ -11,6 +11,7 @@
 package net.bioclipse.cdk.ui.wizards;
 
 import net.bioclipse.cdk.business.ICDKManager;
+import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.Activator;
 import net.bioclipse.core.util.LogUtils;
@@ -20,8 +21,13 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
+import org.openscience.cdk.graph.ConnectivityChecker;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
+import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
+import org.openscience.cdk.smiles.DeduceBondSystemTool;
 
 public class NewFromSMILESWizard extends BasicNewResourceWizard {
 
@@ -65,24 +71,35 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
         ICDKManager cdk = net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
         try {
             ICDKMolecule mol = cdk.fromSMILES(getSMILES());
-            mol = cdk.generate2dCoordinates(mol);
-            CDKAtomTypeMatcher matcher = CDKAtomTypeMatcher.getInstance(
-                NoNotificationChemObjectBuilder.getInstance()
+            IMoleculeSet containers =
+            	ConnectivityChecker.partitionIntoMolecules(mol.getAtomContainer()
             );
-            IAtomType[] types = matcher.findMatchingAtomType(
-            	mol.getAtomContainer()
-            );
-            for (int i=0; i<types.length; i++) {
-                if (types[i] != null) {
-                    mol.getAtomContainer().getAtom(i).setAtomTypeName(
-                        types[i].getAtomTypeName()
-                    );
-                }
-            }
-            net.bioclipse.ui.business.Activator.getDefault().getUIManager()
-                .open(mol, "net.bioclipse.cdk.ui.editors.jchempaint.cml");
+            for (IAtomContainer container : containers.molecules()) {
+            	// ok, try to do something smart (tm) with SMILES input:
+            	//   try to resolve bond orders
+            	DeduceBondSystemTool tool = new DeduceBondSystemTool();
+            	org.openscience.cdk.interfaces.IMolecule cdkMol =
+            		asCDKMolecule(container);
+            	cdkMol = tool.fixAromaticBondOrders(cdkMol);
+            	mol = new CDKMolecule(cdkMol);
 
-            
+            	mol = cdk.generate2dCoordinates(mol);
+            	CDKAtomTypeMatcher matcher = CDKAtomTypeMatcher.getInstance(
+            			NoNotificationChemObjectBuilder.getInstance()
+            	);
+            	IAtomType[] types = matcher.findMatchingAtomType(
+            			mol.getAtomContainer()
+            	);
+            	for (int i=0; i<types.length; i++) {
+            		if (types[i] != null) {
+            			mol.getAtomContainer().getAtom(i).setAtomTypeName(
+            					types[i].getAtomTypeName()
+            			);
+            		}
+            	}
+            	net.bioclipse.ui.business.Activator.getDefault().getUIManager()
+            		.open(mol, "net.bioclipse.cdk.ui.editors.jchempaint.cml");
+            }
         } catch (Exception e) {
             LogUtils.handleException(
                 e, logger,
@@ -91,5 +108,19 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
         }
         return true;
     }
+
+    /**
+     * Converts (if needed) a CDK {@link IAtomContainer} into a CDK
+     * {@link IMolecule}.
+     */
+	private org.openscience.cdk.interfaces.IMolecule
+	    asCDKMolecule(IAtomContainer container) {
+		if (container instanceof org.openscience.cdk.interfaces.IMolecule)
+			return (org.openscience.cdk.interfaces.IMolecule)container;
+
+		return container.getBuilder().newInstance(
+			org.openscience.cdk.interfaces.IMolecule.class, container
+		);
+	}
     
 }
