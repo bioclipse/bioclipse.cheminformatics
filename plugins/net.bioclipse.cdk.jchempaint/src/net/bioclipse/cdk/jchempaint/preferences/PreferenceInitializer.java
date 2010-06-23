@@ -91,7 +91,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         );
         store.setDefault(
                 PreferenceConstants.WEDGE_WIDTH_DOUBLE,
-                model.getDefault(WedgeWidth.class)
+                model.getDefault(WedgeWidth.class) * 2.0
         );
             
 	}
