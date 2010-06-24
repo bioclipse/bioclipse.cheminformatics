@@ -35,18 +35,18 @@ import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 public class ChoiceGenerator implements IGenerator<IAtomContainer> {
 
     boolean use = false;
-    List<IGenerator> generators;
+    List<IGenerator<IAtomContainer>> generators;
 
     public ChoiceGenerator() {
-        generators = new ArrayList<IGenerator>();
+        generators = new ArrayList<IGenerator<IAtomContainer>>();
     }
 
-    public ChoiceGenerator(IGenerator generator) {
+    public ChoiceGenerator(IGenerator<IAtomContainer> generator) {
         this();
         generators.add(generator);
     }
 
-    private void add(IGenerator generator) {
+    private void add(IGenerator<IAtomContainer> generator) {
         generators.add(generator);
     }
 
@@ -65,7 +65,7 @@ public class ChoiceGenerator implements IGenerator<IAtomContainer> {
 
         if(use) {
             ElementGroup group = new ElementGroup();
-            for(IGenerator generator:generators) {
+            for(IGenerator<IAtomContainer> generator:generators) {
                 group.add( generator.generate( ac, model ));
             }
             return group;
@@ -78,7 +78,7 @@ public class ChoiceGenerator implements IGenerator<IAtomContainer> {
 
     public static ChoiceGenerator getGeneratorsFromExtensionPoint() {
         ChoiceGenerator choiceGenerator = new ChoiceGenerator();
-        for(IGenerator generator:getGeneratorsFromExtension()) {
+        for(IGenerator<IAtomContainer> generator:getGeneratorsFromExtension()) {
             choiceGenerator.add(generator);
         }
         return choiceGenerator;
@@ -99,7 +99,8 @@ public class ChoiceGenerator implements IGenerator<IAtomContainer> {
                 for( IConfigurationElement element
                         : extension.getConfigurationElements() ) {
                     try {
-                        final IGenerator generator = (IGenerator)
+                        final IGenerator<IAtomContainer> generator =
+                            (IGenerator<IAtomContainer>)
                                      element.createExecutableExtension("class");
                         choiseGenerator.add( generator);
                     } catch (CoreException e) {
@@ -121,7 +122,7 @@ public class ChoiceGenerator implements IGenerator<IAtomContainer> {
 
     public List<IGeneratorParameter<?>> getParameters() {
         List<IGeneratorParameter<?>> params = new ArrayList<IGeneratorParameter<?>>();
-        for(IGenerator gen:generators) {
+        for(IGenerator<IAtomContainer> gen:generators) {
             params.addAll( gen.getParameters() );
         }
         return params;
