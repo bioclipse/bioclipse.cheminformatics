@@ -65,6 +65,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -732,63 +733,12 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
 
     private void invalidateProperties() {
         final ICDKMolecule mol = getCDKMolecule();
-        CDKMoleculeUtils.clearProperty( mol, MolProperty.SMILES.name() );
-        CDKMoleculeUtils.clearProperty( mol, MolProperty.InChI.name() );
-        CDKMoleculeUtils.clearProperty( mol, MolProperty.Fingerprint.name() );
+        mol.setProperty("net.bioclipse.cdk.domain.property.SMILES", null);
+        mol.setProperty("net.bioclipse.InChI", null);
+        mol.setProperty("net.bioclipse.fingerprint", null);
 
+        widget.setSelection(StructuredSelection.EMPTY);
         widget.setSelection( widget.getSelection() );
-
-        if(mol == null || mol.getAtomContainer().getAtomCount() == 0) return;
-//        ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
-//        IInChIManager inchi = net.bioclipse.inchi.business.Activator
-//                        .getDefault().getJavaInChIManager();
-        //calculating smiles in the Propertysource instead.
-//        try {
-//            if(SMILESJob!=null) {
-//                if(SMILESJob.cancel());
-//                SMILESJob.join();
-//            }
-//        } catch ( InterruptedException e ) {
-//            logger.debug( "SMILES job interrupted" );
-//        }
-//        SMILESJob = cdk.calculateSMILES( mol,
-//                                  new BioclipseJobUpdateHook<String>("SMILES") {
-//            public void completeReturn(String object) {
-//                SMILESJob = null;
-//                CDKMoleculeUtils.setProperty( mol,
-//                                              MolProperty.SMILES.name(),
-//                                              object );
-//                Display.getDefault().asyncExec( new Runnable() {
-//                    public void run() {
-//                        widget.setSelection( widget.getSelection());
-//                    }
-//                });
-//            }
-//        });
-        // removed inchi auto generation bug 1257
-//        try {
-//            if(InChIJob!=null) {
-//                if(InChIJob.cancel());
-//                InChIJob.join();
-//            }
-//        } catch ( InterruptedException e ) {
-//            logger.debug( "InChI job interrupted" );
-//        }
-//        InChIJob = inchi.generate( mol, new BioclipseJobUpdateHook<InChI>(
-//                                        "InChI generation") {
-//            @Override
-//            public void completeReturn( InChI object ) {
-//                InChIJob = null;
-//                CDKMoleculeUtils.setProperty( mol,
-//                                              MolProperty.InChI.name(),
-//                                              object );
-//                Display.getDefault().asyncExec( new Runnable() {
-//                    public void run() {
-//                        widget.setSelection( widget.getSelection());
-//                    }
-//                });
-//            }
-//        });
     }
 
     protected final void fireStructureChanged() {
