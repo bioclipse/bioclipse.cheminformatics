@@ -133,7 +133,8 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         int i = 0;
         for (IAtomType type : types) {
         	i++;
-        	if (type == null) return "Cannot calculate SMILES; Missing " +
+        	if (type == null || "X".equals(type.getAtomTypeName()))
+        		return "Cannot calculate SMILES; Missing " +
         			"atom type for atom " + i + ": " +
         			hydrogenlessClone.getAtom(i-1);
         }
