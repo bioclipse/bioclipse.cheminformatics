@@ -368,11 +368,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                     }
 
                     public void structureChanged() {
-                        Display.getDefault().syncExec( new Runnable() {
-                            public void run() {
                                 JChemPaintEditorWidget.this.structureChanged();
-                            }
-                        });
                         setDirty(true);
                     }
 
@@ -655,11 +651,10 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     public ISelection getSelection() {
         RendererModel rendererModel = getRenderer2DModel();
+        ICDKMolecule sourceMol = getMolecule();
         if (rendererModel == null)
-            if(source != null)
-                return new StructuredSelection(source);
-            else
-               return StructuredSelection.EMPTY;
+            return sourceMol != null? new StructuredSelection(sourceMol)
+                                    : StructuredSelection.EMPTY;
 
         List<CDKChemObject<?>> selection = new LinkedList<CDKChemObject<?>>();
 
@@ -678,8 +673,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             }
         }
 
-        if (selection.isEmpty() && source != null) {
-            return new StructuredSelection(source);
+        if (selection.isEmpty() && sourceMol != null) {
+            return new StructuredSelection(sourceMol);
         }
 
         return new StructuredSelection(selection);
@@ -714,8 +709,14 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         IChemModel model = hub.getIChemModel();
         removeDanglingHydrogens( model );
         updateAtomTypesAndHCounts( model );
-        if(!this.isDisposed())
-            resizeControl();
+        if(!this.isDisposed()){
+            Display.getDefault().asyncExec(new Runnable() {
+                @Override
+                public void run() {
+                    resizeControl();
+                }
+            });
+        }
     }
 
     /**
@@ -914,5 +915,19 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         DropTarget dropTarget = new DropTarget(control, operations);
         dropTarget.setTransfer(transferTypes);
         dropTarget.addDropListener(listener);
+    }
+
+    @Override
+    public ICDKMolecule getMolecule() {
+        ICDKMolecule model = super.getMolecule();
+        if(model == null) return null;
+        IAtomContainer modelContainer = model.getAtomContainer();
+        modelContainer.removeAllElements();
+        IChemModel chemModel = getControllerHub().getIChemModel();
+        for(IAtomContainer aContainer:ChemModelManipulator
+                                        .getAllAtomContainers( chemModel )) {
+            modelContainer.add( aContainer );
+        }
+        return model;
     }
 }
