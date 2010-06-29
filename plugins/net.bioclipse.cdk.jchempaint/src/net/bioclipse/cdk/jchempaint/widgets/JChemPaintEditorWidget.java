@@ -289,7 +289,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                                               atomType);
                     }else {
                         String text = rmodel.getToolTipText( atom );
-                        return text.length()!=0?text:null;
+                        return text!=null&&text.length()!=0?text:null;
                     }
                 }
             }
