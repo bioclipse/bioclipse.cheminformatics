@@ -286,7 +286,10 @@ public class MoleculesEditor extends EditorPart implements
                                        new DropTargetAdapter() {
 
             public void drop( DropTargetEvent event ) {
-                if(event.data == null) return;
+                if(event.data == null){
+                    event.detail = DND.DROP_NONE;
+                    return;
+                }
                 if(localSelTransfer.isSupportedType( event.currentDataType )) {
                     IStructuredSelection sel = (IStructuredSelection)
                                     localSelTransfer.getSelection();

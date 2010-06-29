@@ -90,6 +90,7 @@ public class AtomContainerTransfer extends ByteArrayTransfer{
     @Override
     protected Object nativeToJava( TransferData transferData ) {
         byte[] bytes = (byte[]) super.nativeToJava( transferData );
+        if(bytes==null) return null;
         return fromByteArray( bytes );
     }
 }
