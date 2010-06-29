@@ -73,6 +73,7 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 /**
@@ -118,6 +119,7 @@ public class JChemPaintView extends ViewPart
             }
         };
         canvasView.setSize( 200, 200 );
+        canvasView.getRenderer2DModel().set(WillDrawAtomNumbers.class, false);
 
         // Register this page as a listener for selections
         getViewSite().getPage().addSelectionListener(this);
