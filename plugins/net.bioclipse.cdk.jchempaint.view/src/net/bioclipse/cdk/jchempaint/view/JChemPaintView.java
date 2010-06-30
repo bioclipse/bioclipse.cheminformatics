@@ -287,13 +287,13 @@ public class JChemPaintView extends ViewPart
         }
 
         if( GeometryTools.has2DCoordinatesNew( atomContainer )<2) {
-            BioclipseUIJob<List<IMolecule>> uiJob = new BioclipseUIJob<List<IMolecule>>() {
+            BioclipseUIJob<IMolecule> uiJob = new BioclipseUIJob<IMolecule>() {
                 @Override
                 public void runInUI() {
-                    List<IMolecule> returnValue = getReturnValue();
-                    if( !returnValue.isEmpty()
-                        && returnValue.get(0) instanceof ICDKMolecule) {
-                    ICDKMolecule newMol = (ICDKMolecule) returnValue.get(0);
+                    IMolecule returnValue = getReturnValue();
+                    if( returnValue != null 
+                        && returnValue instanceof ICDKMolecule) {
+                    ICDKMolecule newMol = (ICDKMolecule) returnValue;
                     // Don't show 'Generated' message when preference is not set
                     if(showGeneratedLabel() )
                         canvasView.add( Message.GENERATED );
@@ -379,7 +379,7 @@ public class JChemPaintView extends ViewPart
     }
 
     private void generate2DFrom( IMolecule mol,
-            BioclipseUIJob<List<IMolecule>> uiJob)  {
+            BioclipseUIJob<IMolecule> uiJob)  {
         try {
             ICDKManager cdk = getCDKManager();
             cdk.generate2dCoordinates(mol, uiJob);

@@ -692,7 +692,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @TestMethods("testGenerate2DCoordinatesSingle")
     public void generate2dCoordinates(IMolecule molecule,
-                                      BioclipseUIJob<List<IMolecule>> uiJob) 
+                                      BioclipseUIJob<IMolecule> uiJob)
                         throws Exception;
 
     @Recorded

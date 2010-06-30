@@ -1626,7 +1626,7 @@ public class CDKManager implements IBioclipseManager {
     }
 
       public void generate2dCoordinates(IMolecule molecule,
-                                        IReturner returner,
+                                        IReturner<IMolecule> returner,
                                         IProgressMonitor monitor)
                        throws Exception {
           monitor.beginTask( "Creating 2d coordinates", IProgressMonitor.UNKNOWN );
