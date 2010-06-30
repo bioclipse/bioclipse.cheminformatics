@@ -1730,16 +1730,15 @@ public abstract class AbstractCDKManagerPluginTest {
     }
 
     @Test public void testGenerate2DCoordinatesSingle() throws Exception {
-        List<IMolecule> molecule = new ArrayList<IMolecule>();
-        molecule.add(cdk.fromSMILES("CCCBr"));
-        assertEquals(4, ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtomCount());
-        Assert.assertNull(((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom(0).getPoint2d());
+        IMolecule molecule = cdk.fromSMILES("CCCBr");
+        assertEquals(4, ((ICDKMolecule)molecule).getAtomContainer().getAtomCount());
+        Assert.assertNull(((ICDKMolecule)molecule).getAtomContainer().getAtom(0).getPoint2d());
         //3d coords should stay, we test that.
-        ((ICDKMolecule)molecule.get( 0 )).getAtomContainer().getAtom( 0 ).setPoint3d( new Point3d(0,0,0) );
-        List<ICDKMolecule> cdkMolecule = cdk.generate2dCoordinates(molecule);
-        Assert.assertTrue(cdkMolecule.get(0) instanceof ICDKMolecule);
-        assertNotNull(((ICDKMolecule)cdkMolecule.get(0)).getAtomContainer().getAtom(0).getPoint2d());
-        assertNotNull(((ICDKMolecule)cdkMolecule.get(0)).getAtomContainer().getAtom(0).getPoint3d());
+        ((ICDKMolecule)molecule).getAtomContainer().getAtom( 0 ).setPoint3d( new Point3d(0,0,0) );
+        ICDKMolecule cdkMolecule = cdk.generate2dCoordinates(molecule);
+        Assert.assertTrue(cdkMolecule instanceof ICDKMolecule);
+        assertNotNull(((ICDKMolecule)molecule).getAtomContainer().getAtom(0).getPoint2d());
+        assertNotNull(((ICDKMolecule)molecule).getAtomContainer().getAtom(0).getPoint3d());
     }
 
     
