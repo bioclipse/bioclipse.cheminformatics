@@ -760,8 +760,10 @@ public class JChemPaintManager implements IBioclipseManager {
                         atomsToRemove.add( RemoveAtom.remove( atom) );
                 }
             }
-            relay.execute( CompositEdit.compose( atomsToRemove ) );
-            updateView();
+            if(!atomsToRemove.isEmpty()) {
+                relay.execute( CompositEdit.compose( atomsToRemove ) );
+                updateView();
+            }
         } else {
             say("No opened JChemPaint editor");
         }
