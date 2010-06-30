@@ -315,8 +315,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
             public void historyNotification(OperationHistoryEvent event) {
                 int type = event.getEventType();
-                if( type == OperationHistoryEvent.ABOUT_TO_REDO ||
-                    type == OperationHistoryEvent.ABOUT_TO_UNDO) {
+                if( type == OperationHistoryEvent.REDONE ||
+                    type == OperationHistoryEvent.UNDONE) {
                     if(operationHistory.canUndo(undoContext)) {
                         setDirty(true);
                     }else setDirty(false);
