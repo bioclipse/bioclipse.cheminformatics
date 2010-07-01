@@ -133,7 +133,8 @@ public class JChemPaintWidget extends Canvas {
         renderer = new Renderer(generators, fontManager);
         rendererModel = renderer.getRenderer2DModel();
         setupPaintListener();
-        setupPreferenceListener( renderer );
+        //setupPreferenceListener( renderer );
+        drawNumbers.setUse(false);
         setAtomNumberColors( drawNumbers );
     }
 
