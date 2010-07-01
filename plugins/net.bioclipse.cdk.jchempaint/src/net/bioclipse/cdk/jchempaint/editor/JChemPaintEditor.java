@@ -26,14 +26,10 @@ import java.util.Set;
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKChemObject;
-import net.bioclipse.cdk.domain.CDKMoleculeUtils;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.ISubStructure;
-import net.bioclipse.cdk.domain.CDKMoleculeUtils.MolProperty;
 import net.bioclipse.cdk.jchempaint.generators.SubStructureGenerator;
 import net.bioclipse.cdk.jchempaint.handlers.ModuleState;
-import net.bioclipse.cdk.jchempaint.handlers.RedoHandler;
-import net.bioclipse.cdk.jchempaint.handlers.UndoHandler;
 import net.bioclipse.cdk.jchempaint.outline.JCPOutlinePage;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message;
@@ -45,7 +41,9 @@ import net.bioclipse.jobs.BioclipseUIJob;
 import net.bioclipse.ui.dialogs.SaveAsDialog;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.State;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -77,7 +75,6 @@ import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -88,13 +85,13 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartConstants;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.contexts.IContextService;
-import org.eclipse.ui.operations.UndoActionHandler;
 import org.eclipse.ui.operations.UndoRedoActionGroup;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.services.IServiceScopes;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.IChemModelRelay;
@@ -111,6 +108,7 @@ import org.openscience.cdk.io.formats.IResourceFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
 import org.openscience.cdk.renderer.selection.AbstractSelection;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.selection.MultiSelection;
@@ -302,8 +300,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
     public void createPartControl( Composite parent ) {
 
         createWidget(parent);
-
         createMenu();
+        updateMenu(getWidget().getRenderer2DModel());
 
         getSite().getPage().addSelectionListener( this );
 
@@ -362,6 +360,10 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
         contextService.activateContext( "net.bioclipse.ui.contexts.JChemPaint" );
 
         createUndoRedoHandler();
+        Map filter = new HashMap();
+        filter.put(IServiceScopes.WINDOW_SCOPE, getSite().getPage().getWorkbenchWindow());
+        ICommandService service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+        service.refreshElements("net.bioclipse.cdk.jchempaint.preference.atomNumbers", filter);
     }
 
     private void createPartListener() {
@@ -417,6 +419,15 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
                                                         widget.getUndoContext(),
                                                         true );
         actionGroup.fillActionBars( site.getActionBars() );
+    }
+
+    public void updateMenu(RendererModel model) {
+        Boolean value = model.get(WillDrawAtomNumbers.class);
+        ICommandService service =
+            (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+            Command command = service.getCommand("net.bioclipse.cdk.jchempaint.preference.atomNumbers");
+            State state = command.getState("org.eclipse.ui.commands.toggleState");
+            state.setValue(value);
     }
 
     private void createMenu() {

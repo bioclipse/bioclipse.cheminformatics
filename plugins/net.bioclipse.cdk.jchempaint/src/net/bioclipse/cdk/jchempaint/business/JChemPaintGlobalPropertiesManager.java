@@ -14,7 +14,9 @@
 package net.bioclipse.cdk.jchempaint.business;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.bioclipse.cdk.jchempaint.Activator;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
@@ -28,6 +30,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.services.IServiceScopes;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.IGeneratorParameter;
@@ -116,6 +120,11 @@ public class JChemPaintGlobalPropertiesManager implements IBioclipseManager {
     	applyProperty(model, WedgeWidth.class, getWedgeWidth());
     	applyProperty(model, ShowImplicitHydrogens.class, getShowImplicitHydrogens());
     	applyProperty(model, WillDrawAtomNumbers.class, getShowNumbers());
+
+    	ICommandService service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+      Map filter = new HashMap();
+      filter.put(IServiceScopes.WINDOW_SCOPE, PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+      service.refreshElements("net.bioclipse.cdk.jchempaint.preference.atomNumbers", filter);
     }
 
     public void applyGlobalProperties() throws BioclipseException {

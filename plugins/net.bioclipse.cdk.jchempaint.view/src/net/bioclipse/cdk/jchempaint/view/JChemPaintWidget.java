@@ -14,14 +14,17 @@ package net.bioclipse.cdk.jchempaint.view;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.vecmath.Vector2d;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -37,6 +40,10 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.activities.WorkbenchActivityHelper;
+import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.services.IServiceScopes;
 import org.openscience.cdk.event.ICDKChangeListener;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
@@ -133,7 +140,7 @@ public class JChemPaintWidget extends Canvas {
         renderer = new Renderer(generators, fontManager);
         rendererModel = renderer.getRenderer2DModel();
         setupPaintListener();
-        //setupPreferenceListener( renderer );
+        setupPreferenceListener( renderer );
         drawNumbers.setUse(false);
         setAtomNumberColors( drawNumbers );
     }
@@ -151,9 +158,10 @@ public class JChemPaintWidget extends Canvas {
 
         public void stateChanged( EventObject event ) {
             if(event.getSource() instanceof RendererModel) {
-                drawNumbers.setUse(
-                	JChemPaintWidget.this.renderer.getRenderer2DModel().
-                		getParameter(WillDrawAtomNumbers.class).getValue());
+                ICommandService service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+                Map filter = new HashMap();
+                filter.put(IServiceScopes.WINDOW_SCOPE, PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+                service.refreshElements("net.bioclipse.cdk.jchempaint.preference.atomNumbers", filter);
             }
         }
     });
