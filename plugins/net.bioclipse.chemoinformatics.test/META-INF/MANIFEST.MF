@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Chemoinformatics Test Plug-in
 Bundle-SymbolicName: net.bioclipse.chemoinformatics.test
-Bundle-Version: 1.3.1
+Bundle-Version: 2.4.0.RC3
 Bundle-Activator: net.bioclipse.chemoinformatics.test.Activator
 Bundle-Vendor: The Bioclipse Team
 Require-Bundle: org.eclipse.ui,
