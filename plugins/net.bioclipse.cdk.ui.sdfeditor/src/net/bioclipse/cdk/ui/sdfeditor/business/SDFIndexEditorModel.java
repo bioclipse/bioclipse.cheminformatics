@@ -149,8 +149,12 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
                 }
             }
             for(IPropertyCalculator<?> calculator:calculators.values()) {
-                CDKMoleculeUtils.setProperty( mol, calculator.getPropertyName(),
-                         getPropertyFor( index, calculator.getPropertyName() ));
+                Object propertyValue = getPropertyFor( index,
+                                                 calculator.getPropertyName() );
+                if(propertyValue != null)
+                    CDKMoleculeUtils.setProperty( mol,
+                                                  calculator.getPropertyName(),
+                                                  propertyValue);
             }
         }
         return mol;
