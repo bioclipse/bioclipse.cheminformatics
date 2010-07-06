@@ -119,6 +119,11 @@
               name="Extract Molecules">
         </command>
         <command
+              defaultHandler="net.bioclipse.cdk.ui.sdfeditor.handlers.ExportCSV"
+              id="net.bioclipse.cdk.moltable.exportcsv"
+              name="Export to CSV">
+        </command>
+        <command
               defaultHandler="net.bioclipse.cdk.ui.sdfeditor.handlers.RemoveColumnHandler"
               id="net.bioclipse.cdk.molTable.column.remove"
               name="Remove Column">
@@ -242,7 +247,27 @@
               </iterate>
         </visibleWhen>
      </command>
-  </menuContribution>
+     <command
+           commandId="net.bioclipse.cdk.moltable.exportcsv"
+           label="Export to CSV"
+           style="push">
+        <visibleWhen
+              checkEnabled="true">
+              <iterate>
+                 <or>
+                    <instanceof
+                          value="net.bioclipse.cdk.domain.ICDKMolecule">
+                    </instanceof>
+                    <instanceof
+                          value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
+                    </instanceof>
+                    <instanceof
+                          value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableSelection">
+                    </instanceof>
+                 </or>
+              </iterate>
+        </visibleWhen>
+     </command>  </menuContribution>
 	</extension>
  <extension
        point="net.bioclipse.scripting.contribution">
