@@ -124,11 +124,12 @@ public class ExtractMolecules extends AbstractHandler implements IHandler {
                         logger.warn( "Failed to save molecule. " + e.getMessage() );
                     }
                 }
-            }}else {
+            }else {
                 if(sel instanceof MolTableSelection) {
                     handleMolTableSelection( ((MolTableSelection)sel) ,event);
                 }
             }
+    }
         return null;
     }
 
