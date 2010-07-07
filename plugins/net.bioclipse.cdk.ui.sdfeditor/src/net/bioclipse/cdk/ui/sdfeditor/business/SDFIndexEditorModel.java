@@ -41,8 +41,12 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
+import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
@@ -50,6 +54,7 @@ import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IChemSequence;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.MDLV2000Reader;
+import org.openscience.cdk.tools.CDKHydrogenAdder;
 
 
 /**
@@ -148,6 +153,9 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
                     return null;
                 }
             }
+
+            sanatizeMDLV2000MolFileInput(mol);
+
             for(IPropertyCalculator<?> calculator:calculators.values()) {
                 Object propertyValue = getPropertyFor( index,
                                                  calculator.getPropertyName() );
@@ -160,6 +168,34 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
         return mol;
     }
 
+    /* copy form CDKManager to fix bug 2052 */
+    // TODO bug 2053 Remove this code
+    private void sanatizeMDLV2000MolFileInput(ICDKMolecule molecule) {
+        IAtomContainer container = molecule.getAtomContainer();
+        if (container != null && container.getAtomCount() > 0) {
+            CDKHydrogenAdder hAdder =
+                CDKHydrogenAdder.getInstance(container.getBuilder());
+            CDKAtomTypeMatcher matcher =
+                CDKAtomTypeMatcher.getInstance(container.getBuilder());
+            try {
+                // perceive atom types
+                IAtomType[] types = matcher.findMatchingAtomType(container);
+                for (int i=0; i<container.getAtomCount(); i++) {
+                    if (types[i] != null) {
+                        IAtom atom = container.getAtom(i);
+                        // set properties needed for H adding and aromaticity
+                        atom.setAtomTypeName(types[i].getAtomTypeName());
+                        atom.setHybridization(types[i].getHybridization());
+                        hAdder.addImplicitHydrogens(container, atom);
+                    }
+                }
+                // perceive aromaticity
+                CDKHueckelAromaticityDetector.detectAromaticity(container);
+            } catch ( CDKException e ) {
+                e.printStackTrace();
+            }
+        }
+    }
     /* (non-Javadoc)
      * @see net.bioclipse.cdk.ui.views.IMoleculesEditorModel#getNumberOfMolecules()
      */
