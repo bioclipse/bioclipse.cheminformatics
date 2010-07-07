@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-SymbolicName: net.bioclipse.cdk.jchempaint.view;singleton:=true
-Bundle-Version: 2.4.0.RC3
+Bundle-Version: 2.4.0.20100709
 Bundle-Name: JChemPaintView
 Bundle-ManifestVersion: 2
 Export-Package: net.bioclipse.cdk.jchempaint.view
