@@ -219,7 +219,7 @@
                            value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
                      </instanceof>
                      <instanceof
-                           value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableSelection">
+                           value="net.bioclipse.cdk.ui.sdfeditor.editor.MolTableSelection">
                      </instanceof>
                    </or>
                 </iterate>
@@ -241,7 +241,7 @@
                           value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
                     </instanceof>
                     <instanceof
-                          value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableSelection">
+                          value="net.bioclipse.cdk.ui.sdfeditor.editor.MolTableSelection">
                     </instanceof>
                  </or>
               </iterate>
@@ -262,7 +262,7 @@
                           value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
                     </instanceof>
                     <instanceof
-                          value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableSelection">
+                          value="net.bioclipse.cdk.ui.sdfeditor.editor.MolTableSelection">
                     </instanceof>
                  </or>
               </iterate>
