@@ -280,7 +280,7 @@
        point="net.bioclipse.cdk.propertyCalculator">
     <Calculator
           class="net.bioclipse.cdk.ui.sdfeditor.NumberOfAtomCalculator"
-          id="Number Of Atoms">
+          id="Number of Atoms">
     </Calculator>
     <Calculator
           class="net.bioclipse.cdk.ui.sdfeditor.CDKFingerPrintPropertyCalculator"
