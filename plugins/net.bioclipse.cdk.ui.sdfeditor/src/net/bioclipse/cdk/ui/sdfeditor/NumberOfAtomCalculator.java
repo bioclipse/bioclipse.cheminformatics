@@ -50,6 +50,7 @@ public class NumberOfAtomCalculator implements IPropertyCalculator<Integer> {
     }
 
     public String toString( Object value ) {
+        if(value instanceof String) return (String)value;
         Integer tmp = (Integer) value;
         return tmp.toString();
     }
