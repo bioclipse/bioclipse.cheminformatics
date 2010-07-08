@@ -14,7 +14,7 @@
     	point="org.eclipse.help.toc">
 		<toc
         	file="toc.xml"
-         	primary="true"/>
+         	primary="false"/>
 	</extension>
 	
     <extension

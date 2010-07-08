@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
-<toc label="InChI plugin">
-  <topic label="About the InChI plugin"  href="html/main.html"/>
+
+
+<toc link_to="../net.bioclipse.doc/toc-external.xml#ContributedLibraries" label="InChI">
+	<topic label="InChI Library" href="html/main.html" /> 
 </toc>
+
+
+
