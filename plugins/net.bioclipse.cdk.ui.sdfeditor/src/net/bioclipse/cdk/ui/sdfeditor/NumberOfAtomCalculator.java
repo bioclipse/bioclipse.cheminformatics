@@ -20,7 +20,7 @@ import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator;
  */
 public class NumberOfAtomCalculator implements IPropertyCalculator<Integer> {
 
-    public static final String PROPERTY_NAME = "NumberOfAtoms";
+    public static final String PROPERTY_NAME = "Number Of Atoms";
     /**
      *
      */

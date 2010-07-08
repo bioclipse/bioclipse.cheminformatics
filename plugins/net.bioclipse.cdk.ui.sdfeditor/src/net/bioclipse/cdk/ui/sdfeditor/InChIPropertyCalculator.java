@@ -39,7 +39,7 @@ public class InChIPropertyCalculator implements IPropertyCalculator<InChI> {
 
     public String getPropertyName() {
 
-        return "net.bioclipse.cdk.InChI";
+        return "Standard InChI";
     }
 
     public InChI parse( String value ) {
