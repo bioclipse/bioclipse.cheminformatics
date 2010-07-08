@@ -143,25 +143,25 @@
               style="push">
            <parameter
                  name="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
-                 value="net.bioclipse.cdk.calculator.numberOfAtoms">
+                 value="Number of Atoms">
            </parameter>
         </command>
         <command
               commandId="net.bioclipse.cdk.ui.sdfeditor.addProperty"
-              label="InChI"
+              label="Standard InChI"
               style="push">
            <parameter
                  name="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
-                 value="net.bioclipse.cdk.InChI">
+                 value="Standard InChI">
            </parameter>
         </command>
         <command
               commandId="net.bioclipse.cdk.ui.sdfeditor.addProperty"
-              label="Fingerprint"
+              label="CDK Fingerprint"
               style="push">
            <parameter
                  name="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
-                 value="net.bioclipse.cdk.fingerprint">
+                 value="CDK Fingerprint">
            </parameter>
         </command>
         <visibleWhen
@@ -280,15 +280,15 @@
        point="net.bioclipse.cdk.propertyCalculator">
     <Calculator
           class="net.bioclipse.cdk.ui.sdfeditor.NumberOfAtomCalculator"
-          id="net.bioclipse.cdk.calculator.numberOfAtoms">
+          id="Number Of Atoms">
     </Calculator>
     <Calculator
           class="net.bioclipse.cdk.ui.sdfeditor.CDKFingerPrintPropertyCalculator"
-          id="net.bioclipse.cdk.fingerprint">
+          id="CDK Fingerprint">
     </Calculator>
     <Calculator
           class="net.bioclipse.cdk.ui.sdfeditor.InChIPropertyCalculator"
-          id="net.bioclipse.cdk.InChI">
+          id="Standard InChI">
     </Calculator>
  </extension>
  
