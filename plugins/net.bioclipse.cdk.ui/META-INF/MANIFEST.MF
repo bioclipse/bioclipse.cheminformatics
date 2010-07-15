@@ -27,10 +27,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.filesystem,
  javax.vecmath,
  org.eclipse.core.expressions,
- net.bioclipse.chemoinformatics;bundle-version="2.0.0",
- net.bioclipse.ui.business;bundle-version="2.0.0",
- org.openscience.cdk.extra;bundle-version="1.2.2"
+ net.bioclipse.chemoinformatics,
+ net.bioclipse.ui.business,
+ org.openscience.cdk.extra
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.log4j
-Export-Package: net.bioclipse.cdk.ui.model,
+Export-Package: net.bioclipse.cdk.ui.handlers,
+ net.bioclipse.cdk.ui.model,
  net.bioclipse.cdk.ui.views

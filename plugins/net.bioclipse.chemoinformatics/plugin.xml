@@ -195,6 +195,9 @@
 		<menu label="Compare"
 			  id="net.bioclipse.chemoinformatics.popup.compare">
 		</menu>
+		<menu label="Convert"
+			  id="net.bioclipse.chemoinformatics.popup.convert">
+		</menu>
       </menuContribution>
  </extension>
 
