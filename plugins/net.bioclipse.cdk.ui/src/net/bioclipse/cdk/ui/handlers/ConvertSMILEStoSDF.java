@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.openscience.cdk.interfaces.IAtom;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
@@ -209,8 +210,19 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 				for (int i=1; i<headers.length;i++){
 					mol.getAtomContainer().setProperty(headers[i], parts[i]);
 				}
+				
+				//Filter molecules with failing atom types
+				boolean filterout=false;
+				for (IAtom atom : mol.getAtomContainer().atoms()){
+					if (atom.getAtomTypeName().equals("X"))
+						filterout=true;
+				}
 
-				molecules.add(mol);
+				if (filterout)
+					logger.debug("Skipped molecule " + lineno + " due to " +
+							"failed atom typing.");
+				else
+					molecules.add(mol);
 
 				//Read next line
 				line=br.readLine();
