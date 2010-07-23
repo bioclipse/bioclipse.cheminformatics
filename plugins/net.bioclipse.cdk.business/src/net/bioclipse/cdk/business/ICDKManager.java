@@ -212,6 +212,11 @@ public interface ICDKManager extends IBioclipseManager {
                                      BioclipseException, 
                                      CoreException;
 
+    public List<ICDKMolecule> loadMolecules( IFile file, IProgressMonitor monitor )
+    throws IOException, 
+           BioclipseException, 
+           CoreException;
+
     public List<ICDKMolecule> 
         loadMolecules( IFile file,
                        BioclipseUIJob<List<ICDKMolecule>> uiJob );
@@ -1136,9 +1141,9 @@ public interface ICDKManager extends IBioclipseManager {
      * @param nullProgressMonitor
      */
     public void saveSDFile( String sdfile,
-                            List<IMolecule> molecules,
+                            List<? extends IMolecule> molecules,
                             IProgressMonitor monitor );
 
-    public void saveSDFile( IFile molFile, List<IMolecule> mols,
+    public void saveSDFile( IFile molFile, List<? extends IMolecule> mols,
                             IProgressMonitor monitor );
 }

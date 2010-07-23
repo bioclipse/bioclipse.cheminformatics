@@ -32,6 +32,7 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.extra
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.log4j
-Export-Package: net.bioclipse.cdk.ui.handlers,
+Export-Package: net.bioclipse.cdk.ui.filters,
+ net.bioclipse.cdk.ui.handlers,
  net.bioclipse.cdk.ui.model,
  net.bioclipse.cdk.ui.views

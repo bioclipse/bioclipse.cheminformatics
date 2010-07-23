@@ -198,6 +198,9 @@
 		<menu label="Convert"
 			  id="net.bioclipse.chemoinformatics.popup.convert">
 		</menu>
+		<menu label="Filter"
+			  id="net.bioclipse.chemoinformatics.popup.filter">
+		</menu>
       </menuContribution>
  </extension>
 
