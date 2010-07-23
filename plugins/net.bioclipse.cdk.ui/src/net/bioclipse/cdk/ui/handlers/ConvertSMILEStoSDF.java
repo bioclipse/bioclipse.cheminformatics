@@ -214,7 +214,8 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 				//Filter molecules with failing atom types
 				boolean filterout=false;
 				for (IAtom atom : mol.getAtomContainer().atoms()){
-					if (atom.getAtomTypeName().equals("X"))
+					if (atom.getAtomTypeName()==null || 
+							atom.getAtomTypeName().equals("X"))
 						filterout=true;
 				}
 
