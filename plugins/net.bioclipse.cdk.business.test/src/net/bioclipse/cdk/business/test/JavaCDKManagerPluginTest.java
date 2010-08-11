@@ -17,7 +17,7 @@ import org.junit.BeforeClass;
 
 public class JavaCDKManagerPluginTest extends AbstractCDKManagerPluginTest {
 
-    @BeforeClass 
+    @BeforeClass
     public static void setupCDKManagerPluginTest() throws Exception {
             cdk = Activator.getDefault().getJavaCDKManager();
     	debug = net.bioclipse.cdkdebug.Activator.getDefault().getJavaManager();

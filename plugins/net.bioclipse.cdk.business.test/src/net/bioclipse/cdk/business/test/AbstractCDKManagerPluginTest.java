@@ -93,26 +93,26 @@ import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 
 public abstract class AbstractCDKManagerPluginTest {
 
-	//Needed to run these tests on some systems. If it breaks them on 
-    //other systems we need to do some sort of checking before 
+	//Needed to run these tests on some systems. If it breaks them on
+    //other systems we need to do some sort of checking before
     //setting them...
     static {
-        System.setProperty( "javax.xml.parsers.SAXParserFactory", 
-                            "com.sun.org.apache.xerces.internal." 
+        System.setProperty( "javax.xml.parsers.SAXParserFactory",
+                            "com.sun.org.apache.xerces.internal."
                                 + "jaxp.SAXParserFactoryImpl" );
-        System.setProperty( "javax.xml.parsers.DocumentBuilderFactory", 
+        System.setProperty( "javax.xml.parsers.DocumentBuilderFactory",
                             "com.sun.org.apache.xerces.internal."
                                 + "jaxp.DocumentBuilderFactoryImpl" );
     }
-    
+
     protected static ICDKManager      cdk;
     protected static ICDKDebugManager debug;
     protected static IUIManager       ui;
-    
+
     @Test
-    public void testLoadMoleculeFromCMLFile() throws IOException, 
-                                                     BioclipseException, 
-                                                     CoreException, 
+    public void testLoadMoleculeFromCMLFile() throws IOException,
+                                                     BioclipseException,
+                                                     CoreException,
                                                      URISyntaxException {
 
         URI uri = getClass().getResource("/testFiles/0037.cml").toURI();
@@ -129,7 +129,7 @@ public abstract class AbstractCDKManagerPluginTest {
     @Test
     public void testLoadMolecules() throws IOException,
                                            BioclipseException,
-                                           CoreException, 
+                                           CoreException,
                                            URISyntaxException {
 
         URI uri = getClass().getResource("/testFiles/dbsmallconf.sdf").toURI();
@@ -142,7 +142,7 @@ public abstract class AbstractCDKManagerPluginTest {
         for (ICDKMolecule mol : mols) {
             Assert.assertNotNull(mol);
             Assert.assertNotSame(0, mol.getAtomContainer().getAtomCount());
-            Assert.assertEquals( "dbsmallconf.sdf", 
+            Assert.assertEquals( "dbsmallconf.sdf",
                                  mol.getResource().getName() );
         }
     }
@@ -192,8 +192,8 @@ public abstract class AbstractCDKManagerPluginTest {
     }
 
     @Test
-    public void testLoadCMLFromFile2() throws IOException, 
-                                          BioclipseException, 
+    public void testLoadCMLFromFile2() throws IOException,
+                                          BioclipseException,
                                           CoreException, URISyntaxException {
 
         URI uri = getClass().getResource("/testFiles/cs2a.cml").toURI();
@@ -207,10 +207,10 @@ public abstract class AbstractCDKManagerPluginTest {
 
     }
 
-    
+
     @Test
-    public void testLoadMoleculeFromSMILESFileDirectly() throws IOException, 
-                                          BioclipseException, 
+    public void testLoadMoleculeFromSMILESFileDirectly() throws IOException,
+                                          BioclipseException,
                                           CoreException, URISyntaxException {
 
         URI uri = getClass().getResource("/testFiles/nprods.smi").toURI();
@@ -224,18 +224,18 @@ public abstract class AbstractCDKManagerPluginTest {
     }
 
     @Test
-    public void testLoadMoleculeFromSMILESFile() throws IOException, 
-                                          BioclipseException, 
+    public void testLoadMoleculeFromSMILESFile() throws IOException,
+                                          BioclipseException,
                                           CoreException, URISyntaxException {
 
         URI uri = getClass().getResource("/testFiles/nprods.smi").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
         List<ICDKMolecule> mols = cdk.loadSMILESFile( path);
-        
+
         System.out.println("SMILES file size: " + mols.size());
         assertEquals(30, mols.size());
-        
+
         for (ICDKMolecule mol : mols){
         	System.out.println("Mol: " + mol.getName() + " SMILES: " +
         	    mol.toSMILES(
@@ -256,22 +256,22 @@ public abstract class AbstractCDKManagerPluginTest {
         }
 
     }
-    
+
     @Test
     public void testloadMoleculesFromSMILESCheck() throws Exception {
         String[] input = {"CC","CCC(CC)CC","CCC"};
-        
+
         StringBuilder sb = new StringBuilder();
         for(String s: input) {
             sb.append( s );
             sb.append( "\n" );
         }
-        
+
         IFile file = new MockIFile(
                            new ByteArrayInputStream(sb.toString().getBytes()))
                             .extension( "smi" );
-        
-        
+
+
         List<ICDKMolecule> molecules = cdk.loadSMILESFile(file);
         Assert.assertNotNull( molecules );
         List<String> inputList = new ArrayList<String>(Arrays.asList( input ));
@@ -284,7 +284,7 @@ public abstract class AbstractCDKManagerPluginTest {
         }
         Assert.assertEquals( 0, inputList.size() );
     }
-    
+
     @Test
     public void testDetermineChemFormatPubChemFile() throws Exception {
         URI uri = getClass().getResource("/testFiles/cid176.xml").toURI();
@@ -360,8 +360,8 @@ public abstract class AbstractCDKManagerPluginTest {
     }
 
     @Test
-    public void testLoadATP() throws IOException, 
-                                     BioclipseException, 
+    public void testLoadATP() throws IOException,
+                                     BioclipseException,
                                      CoreException, URISyntaxException,
                                      InterruptedException {
 
@@ -372,23 +372,23 @@ public abstract class AbstractCDKManagerPluginTest {
 
         System.out.println("mol: " + mol.toString());
         assertNotNull(mol);
-        
+
         List<ICDKMolecule> lst = cdk.loadMolecules( path);
         assertNotNull(lst);
         assertEquals( 1, lst.size() );
         ICDKMolecule mol2 = lst.get( 0 );
-        
-        assertEquals( mol2.getInChI( IMolecule.Property.USE_CACHED_OR_CALCULATED ), 
+
+        assertEquals( mol2.getInChI( IMolecule.Property.USE_CACHED_OR_CALCULATED ),
                       mol.getInChI( IMolecule.Property.USE_CACHED_OR_CALCULATED ) );
 
         List<ICDKMolecule> lst2 = cdk.loadMolecules( new MockIFile(path));
         assertNotNull(lst2);
         assertEquals( 1, lst2.size() );
         ICDKMolecule mol3 = lst2.get( 0 );
-        
-        assertEquals( mol3.getInChI( IMolecule.Property.USE_CACHED_OR_CALCULATED ), 
+
+        assertEquals( mol3.getInChI( IMolecule.Property.USE_CACHED_OR_CALCULATED ),
                       mol.getInChI( IMolecule.Property.USE_CACHED_OR_CALCULATED ) );
-        
+
 
     }
 
@@ -401,11 +401,11 @@ public abstract class AbstractCDKManagerPluginTest {
         final Exception[] exception = {null};
 
         //Set up the job
-        WorkspaceJob job = 
+        WorkspaceJob job =
             new WorkspaceJob("Testing loadMolecules from Junit plugin test") {
 
             ICDKMolecule jobmol;
-            
+
             @Override
             public IStatus runInWorkspace( IProgressMonitor monitor )
                                                          throws CoreException {
@@ -417,14 +417,14 @@ public abstract class AbstractCDKManagerPluginTest {
                     synchronized ( exception ) {
                         exception[0] = e;
                     }
-                    throw new CoreException(new Status(IStatus.ERROR, "cdk", 
+                    throw new CoreException(new Status(IStatus.ERROR, "cdk",
                                                        e.getMessage()));
                 }
                 assertNotNull(mollist);
                 assertEquals( 1, mollist.size() );
                 jobmol = mollist.get( 0 );
                 assertNotNull( jobmol );
-                
+
                 return Status.OK_STATUS;
             }
 
@@ -439,32 +439,32 @@ public abstract class AbstractCDKManagerPluginTest {
                     return jobmol;
                 return super.getAdapter( adapter );
             }
-            
+
         };
         job.setUser( false );
         job.schedule();
-        
+
         //Wait out the job so we can get the result
         job.join();
-        
+
         synchronized ( exception ) {
             if ( exception[0] != null ) {
                 throw exception[0];
             }
         }
-        
+
         //Get the result with an adapter
         Object obj = job.getAdapter( AbstractCDKManagerPluginTest.class );
         assertTrue( obj instanceof ICDKMolecule );
         ICDKMolecule mol4 = (ICDKMolecule) obj;
         assertNotNull( mol4 );
-        
+
     }
-    
-    
+
+
     @Test
-    public void testLoadPolycarpol() throws IOException, 
-                                            BioclipseException, 
+    public void testLoadPolycarpol() throws IOException,
+                                            BioclipseException,
                                             CoreException, URISyntaxException {
 
         URI uri = getClass().getResource("/testFiles/polycarpol.mol").toURI();
@@ -477,8 +477,8 @@ public abstract class AbstractCDKManagerPluginTest {
     }
 
     @Test @Ignore("Loading PDB with the CDK is not yet supported")
-    public void testLoadPDB() throws IOException, 
-                                            BioclipseException, 
+    public void testLoadPDB() throws IOException,
+                                            BioclipseException,
                                             CoreException, URISyntaxException {
 
         URI uri = getClass().getResource("/testFiles/1D66.pdb").toURI();
@@ -491,14 +491,14 @@ public abstract class AbstractCDKManagerPluginTest {
     }
 
     @Test
-    public void testCreateSMILES() throws BioclipseException, 
-                                          IOException, 
+    public void testCreateSMILES() throws BioclipseException,
+                                          IOException,
                                           CoreException, URISyntaxException {
     	URI uri = getClass().getResource("/testFiles/0037.cml").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
         ICDKMolecule mol = cdk.loadMolecule( path);
-        
+
         String smiles = mol.toSMILES();
 
         assertTrue(smiles.contains("[Si]"));
@@ -514,15 +514,15 @@ public abstract class AbstractCDKManagerPluginTest {
     }
 
     @Test
-    public void testCreatingMoleculeIterator() 
-                throws CoreException, 
+    public void testCreatingMoleculeIterator()
+                throws CoreException,
                        URISyntaxException, MalformedURLException, IOException,
                        BioclipseException{
 
         URI uri = getClass().getResource("/testFiles/test.sdf").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
-        
+
         List<IMolecule> molecules = new ArrayList<IMolecule>();
 
         for ( Iterator<net.bioclipse.cdk.domain.ICDKMolecule> iterator
@@ -535,7 +535,7 @@ public abstract class AbstractCDKManagerPluginTest {
 
         assertEquals( 2, molecules.size() );
     }
-    
+
     @Test
     public void testFingerPrintMatch() throws BioclipseException {
         SmilesGenerator generator = new SmilesGenerator();
@@ -547,10 +547,10 @@ public abstract class AbstractCDKManagerPluginTest {
                                               .makePyrrole() );
         ICDKMolecule indole  = cdk.fromSMILES( indoleSmiles );
         ICDKMolecule pyrrole = cdk.fromSMILES( pyrroleSmiles );
-        
+
         assertTrue( cdk.fingerPrintMatches(indole, pyrrole) );
     }
-    
+
     @Test
     public void testSubStructureMatch() throws BioclipseException {
         SmilesGenerator generator = new SmilesGenerator();
@@ -562,10 +562,10 @@ public abstract class AbstractCDKManagerPluginTest {
                                               makePyrrole() );
         ICDKMolecule indole  = cdk.fromSMILES( indoleSmiles  );
         ICDKMolecule pyrrole = cdk.fromSMILES( pyrroleSmiles );
-        
+
         assertTrue( cdk.subStructureMatches( indole, pyrrole ) );
     }
-    
+
     @Test
     public void testSubStructureMatch_List() throws BioclipseException {
         List<ICDKMolecule> molecules = new ArrayList<ICDKMolecule>();
@@ -573,7 +573,7 @@ public abstract class AbstractCDKManagerPluginTest {
         molecules.add(cdk.fromSMILES("CCNCCC")); // 6 atoms
         molecules.add(cdk.fromSMILES("CCNCCCl")); // 6 atoms
         ICDKMolecule query = cdk.fromSMILES("CNC");
-        
+
         List<ICDKMolecule> matches = cdk.subStructureMatches(molecules, query);
         Assert.assertNotNull(matches);
         Assert.assertEquals(2, matches.size());
@@ -581,7 +581,7 @@ public abstract class AbstractCDKManagerPluginTest {
             Assert.assertEquals(6, molecule.getAtomContainer().getAtomCount());
         }
     }
-    
+
     @Test
     public void testCDKMoleculeFromIMolecule() throws BioclipseException {
         final String indoleSmiles  = new SmilesGenerator().createSMILES(
@@ -593,7 +593,7 @@ public abstract class AbstractCDKManagerPluginTest {
             )
          );
     }
-    
+
     @Test
     public void testStructureMatches() throws BioclipseException {
         ICDKMolecule molecule = cdk.fromSMILES("CCCBr");
@@ -605,16 +605,16 @@ public abstract class AbstractCDKManagerPluginTest {
 
     @Test
     public void testSMARTSMatching() throws BioclipseException {
-        String propaneSmiles = "CCC"; 
-        
+        String propaneSmiles = "CCC";
+
         ICDKMolecule propane  = cdk.fromSMILES( propaneSmiles  );
-        
+
         assertTrue( cdk.smartsMatches(propane, propaneSmiles) );
     }
-    
+
     @Test
-    public void testSMARTSonFile() throws IOException, 
-                                          BioclipseException, 
+    public void testSMARTSonFile() throws IOException,
+                                          BioclipseException,
                                           CoreException, URISyntaxException {
 
         URI uri = getClass().getResource("/testFiles/0037.cml").toURI();
@@ -622,15 +622,15 @@ public abstract class AbstractCDKManagerPluginTest {
         String path=url.getFile();
         ICDKMolecule mol = cdk.loadMolecule( path);
         assertNotNull(mol);
-        
+
         String SMARTS="[N](*(*(O)))";
         assertTrue( cdk.isValidSmarts( SMARTS ) );
         assertTrue( cdk.smartsMatches( mol, SMARTS ) );
-        
+
         List<IAtomContainer> aclist = cdk.getSmartsMatches( mol, SMARTS );
         assertNotNull("Smarts matching returned NULL", aclist );
         assertTrue( aclist.size()==1 );
-        
+
         IAtomContainer ac=aclist.get( 0 );
         assertEquals( 4, ac.getAtomCount() );
 
@@ -640,11 +640,11 @@ public abstract class AbstractCDKManagerPluginTest {
 
     }
 
-    
+
 
     @Test
     public void testLoadConformers() throws BioclipseException, IOException, URISyntaxException {
-        
+
         URI uri = getClass().getResource("/testFiles/dbsmallconf.sdf").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
@@ -652,11 +652,11 @@ public abstract class AbstractCDKManagerPluginTest {
         List<ICDKMolecule> mols = cdk.loadConformers(path);
         assertNotNull( mols );
         assertEquals( 3, mols.size() );
-        
+
         assertEquals( 3, mols.get( 0 ).getConformers().size() );
         assertEquals( 1, mols.get( 1 ).getConformers().size() );
         assertEquals( 2, mols.get( 2 ).getConformers().size() );
-        
+
 //        System.out.println(mols.get( 0 ).getConformers().get( 0 ).getSmiles());
 //        System.out.println(mols.get( 0 ).getConformers().get( 1 ).getSmiles());
 //        System.out.println(mols.get( 0 ).getConformers().get( 2 ).getSmiles());
@@ -667,10 +667,10 @@ public abstract class AbstractCDKManagerPluginTest {
 
     @Test
     public void testSave() throws BioclipseException, CDKException, CoreException, IOException {
-        String propaneSmiles = "CCC"; 
-        
+        String propaneSmiles = "CCC";
+
         ICDKMolecule propane  = cdk.fromSMILES( propaneSmiles  );
-        
+
         IFile target=new MockIFile();
         cdk.saveMolecule(propane, target, (IChemFormat)MDLV2000Format.getInstance());
         byte[] bytes=new byte[6];
@@ -680,10 +680,10 @@ public abstract class AbstractCDKManagerPluginTest {
 
     @Test
     public void testSaveMolecule() throws BioclipseException, CDKException, CoreException, IOException {
-        String propaneSmiles = "CCC"; 
-        
+        String propaneSmiles = "CCC";
+
         ICDKMolecule propane  = cdk.fromSMILES( propaneSmiles  );
-        
+
         IFile target=new MockIFile();
         cdk.saveMolecule(propane, target, (IChemFormat)MDLV2000Format.getInstance());
         byte[] bytes=new byte[6];
@@ -721,7 +721,7 @@ public abstract class AbstractCDKManagerPluginTest {
         URL url=FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
         ICDKMolecule mol = cdk.loadMolecule( path);
-        
+
         //Save to the molecules resource with overwrite =true
         cdk.saveMolecule(mol, true);
     }
@@ -732,7 +732,7 @@ public abstract class AbstractCDKManagerPluginTest {
         URL url=FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
         ICDKMolecule mol = cdk.loadMolecule( path);
-        
+
         //Save mol to same resource read from, should throw exc (file exists)
         cdk.saveMolecule(mol, mol.getResource().getLocation().toOSString());
     }
@@ -902,8 +902,8 @@ public abstract class AbstractCDKManagerPluginTest {
 
     @Test
     public void testSaveMolecule_IMolecule_String_String() throws BioclipseException, CDKException, CoreException, IOException {
-        String propaneSmiles = "CCC"; 
-        
+        String propaneSmiles = "CCC";
+
         ICDKMolecule propane  = cdk.fromSMILES( propaneSmiles  );
         String path = "/Virtual/testSaveMolecule" + propane.hashCode() + ".mol";
         cdk.saveMolecule(propane, path, (IChemFormat)MDLV2000Format.getInstance());
@@ -911,7 +911,7 @@ public abstract class AbstractCDKManagerPluginTest {
         assertEquals("CCC", mol.toSMILES(
         ));
     }
-    
+
     @Test
     public void testSaveMoleculesSDF() throws BioclipseException, CDKException, CoreException, IOException {
 
@@ -920,27 +920,27 @@ public abstract class AbstractCDKManagerPluginTest {
 
         IMolecule mol1 = new MockMolecule("CCC");
         IMolecule mol2 = new MockMolecule("C1CCCCC1CCO");
-        
+
         List<IMolecule> mols=new ArrayList<IMolecule>();
         mols.add(mol1);
         mols.add(mol2);
-        
+
         //FIXME: needs porting to PLUGIN I/O from URL not IMockFile
         IFile target=new MockIFile();
         cdk.saveMolecules(mols, target, (IChemFormat)SDFFormat.getInstance());
 
         List<ICDKMolecule> readmols = cdk.loadMolecules(target);
         assertEquals(2, readmols.size());
-        
+
     	System.out.println("** Reading back created SDFile: ");
         for (ICDKMolecule cdkmol : readmols){
         	System.out.println("  - SMILES: " + cdk.calculateSMILES(cdkmol));
         }
-        
+
         System.out.println("*************************");
-        
+
     }
-    
+
     @Test
     public void testSaveMoleculesSDFwithProps() throws BioclipseException, CDKException, CoreException, IOException {
 
@@ -949,19 +949,19 @@ public abstract class AbstractCDKManagerPluginTest {
 
         ICDKMolecule mol1=cdk.fromSMILES("CCC");
         ICDKMolecule mol2=cdk.fromSMILES("C1CCCCC1CCO");
-        
+
         String longStringValue="[(42/593;0.11804384485666104), (3/5;1.0), (9/560;0.026785714285714284), (0/2;0.0), (0/1;0.0), (0/0;0.0), (0/0;0.0), (0/0;0.0), (0/0;0.0), (0/0;0.0), (0/0;0.0), (0/0;0.0), (2/80;0.04166666666666667), (35/492;0.11856368563685638), (29/466;0.10371959942775394), (49/484;0.16873278236914602), (2/810;0.00411522633744856), (2/810;0.00411522633744856), (39/111;0.5855855855855856), (35/109;0.5351681957186545), (1/260;0.006410256410256411), (1/192;0.008680555555555556), (41/101;0.6765676567656767), (35/95;0.6140350877192983), (1/340;0.004901960784313725), (1/340;0.004901960784313725), (1/175;0.009523809523809525), (0/0;0.0), (2/1066;0.0031269543464665416), (0/0;0.0), (4/261;0.02554278416347382)]        ";
         mol1.getAtomContainer().setProperty("wee", "how");
         mol2.getAtomContainer().setProperty("santa", longStringValue);
-        
-        
+
+
         List<IMolecule> mols=new ArrayList<IMolecule>();
         mols.add(mol1);
         mols.add(mol2);
-        
+
         String virtualPath="/Virtual/testSaveMoleculesSDFtoTEMPwithProps.cml";
         cdk.saveMolecules(mols, virtualPath, (IChemFormat)SDFFormat.getInstance());
-        
+
         //For debug output
         System.out.println("#############################################");
         IFile target=ResourcePathTransformer.getInstance().transform(virtualPath);
@@ -974,7 +974,7 @@ public abstract class AbstractCDKManagerPluginTest {
             line=reader.readLine();
         }
         System.out.println("#############################################");
-        
+
         //So, load back again
         List<ICDKMolecule> readmols = cdk.loadMolecules(virtualPath);
         assertEquals(2, readmols.size());
@@ -988,12 +988,12 @@ public abstract class AbstractCDKManagerPluginTest {
             	assertEquals(longStringValue, cdkmol.getAtomContainer().getProperty("santa"));
         	}
         }
-        
+
         System.out.println("*************************");
-        
+
     }
-    
-    
+
+
     @Test
     public void testSaveMoleculesCML() throws BioclipseException, CDKException, CoreException, IOException {
 
@@ -1002,11 +1002,11 @@ public abstract class AbstractCDKManagerPluginTest {
 
         IMolecule mol1 = new MockMolecule("CCC");
         IMolecule mol2 = new MockMolecule("C1CCCCC1CCO");
-        
+
         List<IMolecule> mols=new ArrayList<IMolecule>();
         mols.add(mol1);
         mols.add(mol2);
-        
+
         //FIXME: needs porting to PLUGIN I/O from URL not IMockFile
         IFile target=new MockIFile();
         cdk.saveMolecules(mols, target, (IChemFormat)CMLFormat.getInstance());
@@ -1021,7 +1021,7 @@ public abstract class AbstractCDKManagerPluginTest {
 //            System.out.println(cdkmol.getCML());
         }
         System.out.println("*************************");
-        
+
     }
 
     @Test
@@ -1032,14 +1032,14 @@ public abstract class AbstractCDKManagerPluginTest {
 
         ICDKMolecule mol1=cdk.fromSMILES("CCC");
         ICDKMolecule mol2=cdk.fromSMILES("C1CCCCC1CCO");
-        
+
         mol1.getAtomContainer().setProperty("wee", "how");
         mol2.getAtomContainer().setProperty("santa", "claus");
-        
+
         List<IMolecule> mols=new ArrayList<IMolecule>();
         mols.add(mol1);
         mols.add(mol2);
-        
+
         IFile target=new MockIFile();
         cdk.saveMolecules(mols, target, (IChemFormat)CMLFormat.getInstance());
 
@@ -1052,7 +1052,7 @@ public abstract class AbstractCDKManagerPluginTest {
             line=reader.readLine();
         }
         System.out.println("#############################################");
-        
+
         List<ICDKMolecule> readmols = cdk.loadMolecules(target);
     	System.out.println("** Reading back created CML File: ");
         for (ICDKMolecule cdkmol : readmols){
@@ -1063,11 +1063,11 @@ public abstract class AbstractCDKManagerPluginTest {
             	assertEquals("claus", cdkmol.getAtomContainer().getProperty("santa"));
         	}
         }
-        
+
         System.out.println("*************************");
-        
+
     }
-    
+
     @Test
     public void testSaveMoleculesCMLtoTEMPwithProps() throws BioclipseException, CDKException, CoreException, IOException {
 
@@ -1076,10 +1076,10 @@ public abstract class AbstractCDKManagerPluginTest {
 
         ICDKMolecule mol1=cdk.fromSMILES("CCC");
         ICDKMolecule mol2=cdk.fromSMILES("C1CCCCC1CCO");
-        
+
         mol1.getAtomContainer().setProperty("wee", "how");
         mol2.getAtomContainer().setProperty("santa", "claus");
-        
+
         List<IMolecule> mols=new ArrayList<IMolecule>();
         mols.add(mol1);
         mols.add(mol2);
@@ -1097,18 +1097,18 @@ public abstract class AbstractCDKManagerPluginTest {
             	assertEquals("claus", cdkmol.getAtomContainer().getProperty("santa"));
         	}
         }
-        
+
         System.out.println("*************************");
-        
+
     }
 
     @Test
     public void testSybylAtomTypePerceptionFromSMILES() throws FileNotFoundException, IOException, BioclipseException, CoreException, InvocationTargetException{
 
     	ICDKMolecule mol = cdk.fromSMILES("C1CCCCC1CCOC");
-    	
+
     	debug.perceiveSybylAtomTypes(mol);
-    	
+
     	for (int i=0; i<mol.getAtomContainer().getAtomCount(); i++){
     		IAtom a=mol.getAtomContainer().getAtom(i);
     		System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
@@ -1125,9 +1125,9 @@ public abstract class AbstractCDKManagerPluginTest {
         ICDKMolecule mol = cdk.loadMolecule( path);
 
     	System.out.println("mol: " + mol.toString());
-    	
+
     	debug.perceiveSybylAtomTypes(mol);
-    	
+
     	for (int i=0; i<mol.getAtomContainer().getAtomCount(); i++){
     		IAtom a=mol.getAtomContainer().getAtom(i);
     		System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
@@ -1144,16 +1144,16 @@ public abstract class AbstractCDKManagerPluginTest {
         ICDKMolecule mol = cdk.loadMolecule( path);
 
     	System.out.println("mol: " + mol.toString());
-    	
+
     	debug.perceiveSybylAtomTypes(mol);
-    	
+
     	for (int i=0; i<mol.getAtomContainer().getAtomCount(); i++){
     		IAtom a=mol.getAtomContainer().getAtom(i);
     		System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
     	}
 
     }
-    
+
     @Test
     public void testSybylAtomTypePerception3() throws FileNotFoundException, IOException, BioclipseException, CoreException, InvocationTargetException, URISyntaxException{
 
@@ -1163,11 +1163,11 @@ public abstract class AbstractCDKManagerPluginTest {
         ICDKMolecule mol = cdk.loadMolecule( path);
 
     	System.out.println("mol: " + mol.toString());
-    	
+
     	debug.perceiveSybylAtomTypes(mol);
-    	
+
     	assertEquals("C.ar", mol.getAtomContainer().getAtom(1).getAtomTypeName());
-    	
+
     	for (int i=0; i<mol.getAtomContainer().getAtomCount(); i++){
     		IAtom a=mol.getAtomContainer().getAtom(i);
     		System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
@@ -1179,15 +1179,15 @@ public abstract class AbstractCDKManagerPluginTest {
     public void testSybylAtomTypePerceptionBenzene() throws CDKException, FileNotFoundException, IOException, BioclipseException, CoreException, InvocationTargetException{
 
         IAtomContainer ac=MoleculeFactory.makeBenzene();
-        
+
         ICDKMolecule mol = new CDKMolecule(ac);
 
     	debug.perceiveSybylAtomTypes(mol);
-    	
+
     	System.out.println("** BENZENE **");
-    	
+
     	System.out.println(AtomContainerDiff.diff( ac, mol.getAtomContainer()));
-    	
+
     	for (int i=0; i<mol.getAtomContainer().getAtomCount(); i++){
     		IAtom a=mol.getAtomContainer().getAtom(i);
     		System.out.println("Atom: " + a.getSymbol() + i + ", type=" + a.getAtomTypeName());
@@ -1199,16 +1199,16 @@ public abstract class AbstractCDKManagerPluginTest {
     	assertEquals("C.ar", mol.getAtomContainer().getAtom(3).getAtomTypeName());
     	assertEquals("C.ar", mol.getAtomContainer().getAtom(4).getAtomTypeName());
     	assertEquals("C.ar", mol.getAtomContainer().getAtom(5).getAtomTypeName());
-    	
+
 
     }
 
-    
+
     @Test @Ignore("See bug #582")
     public void testSaveMol2() throws BioclipseException, CDKException, CoreException, IOException, NoSuchAtomException {
 
-    	String propaneSmiles = "CCC"; 
-        
+    	String propaneSmiles = "CCC";
+
         ICDKMolecule propane  = cdk.fromSMILES( propaneSmiles  );
 
         IFile target=new MockIFile();
@@ -1253,10 +1253,10 @@ public abstract class AbstractCDKManagerPluginTest {
         assertTrue(!GeometryTools.has2DCoordinates(mol));
     }
 
-    
+
     @Test
-    public void testLoadCMLFromFile3() throws IOException, 
-                                          BioclipseException, 
+    public void testLoadCMLFromFile3() throws IOException,
+                                          BioclipseException,
                                           CoreException, URISyntaxException {
 
         URI uri = getClass().getResource("/testFiles/cs2a.cml").toURI();
@@ -1264,12 +1264,12 @@ public abstract class AbstractCDKManagerPluginTest {
         String path=url.getFile();
 
         MockIFile mf=new MockIFile(path);
-        
+
         ReaderFactory readerFactory=new ReaderFactory();
         CDKManagerHelper.registerSupportedFormats(readerFactory);
 
         //Create the reader
-        ISimpleChemObjectReader reader 
+        ISimpleChemObjectReader reader
             = readerFactory.createReader(mf.getContents());
 
         if (reader==null) {
@@ -1345,27 +1345,27 @@ public abstract class AbstractCDKManagerPluginTest {
 
     @Test
     public void testNumberOfEntriesInSDFString() throws Exception {
-        
+
         URI uri = getClass().getResource("/testFiles/test.sdf").toURI();
         URL url = FileLocator.toFileURL(uri.toURL());
         String path = url.getFile();
-        
+
         assertEquals( "There should be two entries in the file",
             2,
             cdk.numberOfEntriesInSDF(path)
         );
     }
-    
+
     @Test
     @Ignore("Have yet to find a good way to test this. " +
     		    "JUnit runs the test in the ui thread so can't see that " +
     		    "something else gets run in it during the test...")
     public void testNumberOfEntriesInSDFIFileUIJob() throws Exception {
-        
+
         URI uri = getClass().getResource("/testFiles/test.sdf").toURI();
         URL url = FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
-        
+
         final BioclipseUIJob<Integer> uiJob = new BioclipseUIJob<Integer>() {
             @Override
             public void runInUI() {
@@ -1373,7 +1373,7 @@ public abstract class AbstractCDKManagerPluginTest {
         };
 
         cdk.numberOfEntriesInSDF( ResourcePathTransformer.getInstance()
-                                                         .transform(path), 
+                                                         .transform(path),
                                   uiJob );
     }
 
@@ -1389,18 +1389,18 @@ public abstract class AbstractCDKManagerPluginTest {
         Assert.assertEquals(0, info.getNoMols3d());
     }
 
-    
+
     @Test
     public void testExtractFromSDFile_String_int_int() throws Exception{
         URI uri = getClass().getResource("/testFiles/test.sdf").toURI();
         URL url = FileLocator.toFileURL(uri.toURL());
         String path=url.getFile();
-        
+
         List<ICDKMolecule> mol = cdk.extractFromSDFile( path, 0, 1 );
         Assert.assertEquals( 2,mol.size() );
     }
-    
-    @Test 
+
+    @Test
     public void testCreateSDFile_String_IMoleculeArray() throws Exception{
         List<IMolecule> mol = new ArrayList<IMolecule>();
         mol.add(cdk.fromSMILES("CCCBr"));
@@ -1499,12 +1499,12 @@ public abstract class AbstractCDKManagerPluginTest {
         Assert.assertTrue( cdk.has2d( mol2 ));
 
         //Make sure Atom properties are copied to new molecule
-        Assert.assertEquals("Atom property lost on generate 2D", 
+        Assert.assertEquals("Atom property lost on generate 2D",
                             "how", mol2.getAtomContainer().getAtom( 0 )
                              .getProperties().get( "wee" ) );
 
         //Make sure AC properties are copied to new molecule
-        Assert.assertEquals("AtomContainer property lost on generate 2D", 
+        Assert.assertEquals("AtomContainer property lost on generate 2D",
                             "how", mol2.getAtomContainer()
                              .getProperties().get( "wee" ) );
 }
@@ -1573,7 +1573,7 @@ public abstract class AbstractCDKManagerPluginTest {
         IFile ifile = (IFile)mol.getResource();
         Assert.assertNotNull(ifile.getContentDescription());
     }
-    
+
     @Test public void testReadsTitle() throws Exception{
         URI uri = getClass().getResource("/testFiles/polycarpol.mdl").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());
@@ -1584,7 +1584,7 @@ public abstract class AbstractCDKManagerPluginTest {
         	mol.getAtomContainer().getProperty(CDKConstants.TITLE)
         );
     }
-        
+
     @Test public void testBug826() throws Exception{
         URI uri = getClass().getResource("/testFiles/polycarpol.mdl").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());
@@ -1694,7 +1694,7 @@ public abstract class AbstractCDKManagerPluginTest {
 
 		public Object getAdapter(Class adapter) { return null; }
 	}
-    
+
     @Test public void testAddExplicitHydrogens() throws Exception {
         ICDKMolecule molecule = cdk.fromSMILES("C");
         assertEquals(1, molecule.getAtomContainer().getAtomCount());
@@ -1769,7 +1769,7 @@ public abstract class AbstractCDKManagerPluginTest {
         assertNotNull(((ICDKMolecule)molecule).getAtomContainer().getAtom(0).getPoint3d());
     }
 
-    
+
     @Test public void testGenerate2DCoordinates() throws Exception {
         List<IMolecule> molecule = new ArrayList<IMolecule>();
         molecule.add(cdk.fromSMILES("CCCBr"));
@@ -1803,7 +1803,7 @@ public abstract class AbstractCDKManagerPluginTest {
         );
     }
 
-    @Test 
+    @Test
     public void testPerceiveAromaticity() throws Exception{
         URI uri = getClass().getResource("/testFiles/aromatic.mol").toURI();
         URL url=FileLocator.toFileURL(uri.toURL());
@@ -1982,7 +1982,7 @@ public abstract class AbstractCDKManagerPluginTest {
             net.bioclipse.core.domain.IMolecule.Property.USE_CALCULATED);
         Assert.assertEquals(1.0, cdk.calculateTanimoto(mol, b3), 0.0);
     }
-    
+
     @Test public void testMCSS() throws Exception {
         List<IMolecule> list = new ArrayList<IMolecule>();
         list.add(cdk.fromSMILES("CCC"));
@@ -2004,6 +2004,6 @@ public abstract class AbstractCDKManagerPluginTest {
         catch (BioclipseException e) {
             assertEquals( "Could not identify format for the input string.",
                           e.getMessage() );
-        } 
+        }
     }
 }
