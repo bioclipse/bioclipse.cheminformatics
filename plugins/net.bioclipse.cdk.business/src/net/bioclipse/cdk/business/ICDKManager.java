@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2008-2009  Ola Spjuth
- *               2008-2009  Jonathan Alvarsson
+ *               2008-2010  Jonathan Alvarsson
  *               2008-2009  Stefan Kuhn
  *               2008-2009  Egon Willighagen <egonw@users.sf.net>
  *
@@ -591,6 +591,22 @@ public interface ICDKManager extends IBioclipseManager {
     public ICDKMolecule fromString( String cml ) 
                         throws BioclipseException, IOException;
 
+    
+    /**
+     * Creates a list of molecules from a given String, guessing the format of 
+     * the String.
+     * 
+     * @param s
+     * @return
+     * @throws BioclipseException
+     */
+    @PublishedMethod (
+        params = "String s",
+        methodSummary = "Creates a list of molecules from a given String, " +
+        		        "guessing the format of the String" )
+    public List<ICDKMolecule> moleculesFromString( String s ) 
+                              throws BioclipseException;
+    
     /**
      * Returns true if the given molecule matches the given SMARTS
      *

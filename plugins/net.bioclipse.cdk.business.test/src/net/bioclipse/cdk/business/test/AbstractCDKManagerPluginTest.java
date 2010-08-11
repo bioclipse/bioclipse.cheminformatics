@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
@@ -142,6 +143,33 @@ public abstract class AbstractCDKManagerPluginTest {
             Assert.assertNotNull(mol);
             Assert.assertNotSame(0, mol.getAtomContainer().getAtomCount());
             Assert.assertEquals( "dbsmallconf.sdf", 
+                                 mol.getResource().getName() );
+        }
+    }
+
+    @Test
+    public void testMoleculesFromString() throws IOException,
+                                                 BioclipseException,
+                                                 CoreException,
+                                                 URISyntaxException {
+
+        URI uri = getClass().getResource("/testFiles/dbsmallconf.sdf").toURI();
+        URL url=FileLocator.toFileURL(uri.toURL());
+        Scanner s = new Scanner( url.openStream() );
+        StringBuffer sb = new StringBuffer();
+        while ( s.hasNext() ) {
+            sb.append( s.nextLine() );
+            sb.append( '\n' );
+        }
+
+        List<ICDKMolecule> mols = cdk.moleculesFromString( sb.toString() );
+
+        assertNotNull(mols);
+        Assert.assertNotSame(0, mols.size());
+        for (ICDKMolecule mol : mols) {
+            Assert.assertNotNull(mol);
+            Assert.assertNotSame(0, mol.getAtomContainer().getAtomCount());
+            Assert.assertEquals( "dbsmallconf.sdf",
                                  mol.getResource().getName() );
         }
     }

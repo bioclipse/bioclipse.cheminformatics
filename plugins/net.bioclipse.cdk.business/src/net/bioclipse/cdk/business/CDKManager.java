@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2008-2009  Ola Spjuth
- *               2008-2009  Jonathan Alvarsson
+ *               2008-2010  Jonathan Alvarsson
  *               2008-2009  Stefan Kuhn
  *               2008-2009  Egon Willighagen <egonw@users.sf.net>
  *
@@ -343,138 +343,146 @@ public class CDKManager implements IBioclipseManager {
                                      BioclipseException,
                                      CoreException {
 
-        return loadMolecules(file, null, monitor);
+        IChemFormat format = determineIChemFormat(file);
+        List<ICDKMolecule> mols = loadMolecules( file.getContents(),
+                                                 format,
+                                                 monitor
+        );
+        for ( ICDKMolecule m : mols ) {
+            m.setResource( file );
+        }
+
+        return mols;
     }
 
-    public List<ICDKMolecule> loadMolecules( IFile file,
+    public List<ICDKMolecule> loadMolecules( InputStream contents,
                                              IChemFormat format,
-                                             IProgressMonitor monitor )
-                              throws IOException,
-                                     BioclipseException,
-                                     CoreException {
-      if (file == null)
-          throw new BioclipseException("Cannot load molecules: file was null");
+                                             IProgressMonitor monitor ) 
+                              throws BioclipseException, 
+                                     CoreException, 
+                                     IOException {
+
+        if (contents == null)
+            throw new BioclipseException(
+                          "Cannot load molecules: content was null" );
 
         if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
 
-        List<ICDKMolecule> moleculesList = new RecordableList<ICDKMolecule>();
+        List<ICDKMolecule> moleculesList = new RecordableList<ICDKMolecule>(); 
 
         int ticks = 10000;
 
         try {
-            monitor.beginTask("Reading file", ticks);
-            System.out.println( "no formats supported: "
-                                + readerFactory.getFormats().size() );
-            ISimpleChemObjectReader reader = null;
+             monitor.beginTask("Reading file", ticks);
+             System.out.println( "no formats supported: "
+                                 + readerFactory.getFormats().size() );
+             ISimpleChemObjectReader reader = null;
+    
+             if (format == null) {
+                 reader = readerFactory.createReader( contents );
+             }
+             else {
+                 reader = readerFactory.createReader(format);
+             }
 
-            if (format == null) {
-                reader = readerFactory.createReader( file.getContents() );
-            }
-            else {
-                reader = readerFactory.createReader(format);
-            }
+             if (reader == null) {
 
-            if (reader == null) {
+                 // Try SMILES
+                 List<ICDKMolecule> moleculesList2 = loadSMILESFile( contents, 
+                                                                     monitor );
+                 if (moleculesList2 != null && moleculesList2.size() > 0)
+                     return moleculesList2;
 
-                // Try SMILES
-                List<ICDKMolecule> moleculesList2 = loadSMILESFile( file, 
-                                                                    monitor );
-                if (moleculesList2 != null && moleculesList2.size() > 0)
-                    return moleculesList2;
+                 // Ok, not even SMILES works
+                 throw new BioclipseException( 
+                               "Could not create reader in CDK." );
+             }
 
-                // Ok, not even SMILES works
-                throw new BioclipseException(
-                    "Could not create reader in CDK." );
-            }
+             try {
+                 reader.setReader( contents );
+             }
+             catch (CDKException e1) {
+                 throw new BioclipseException(
+                "Could not set the reader's input." );
+             }
 
-            try {
-                reader.setReader( file.getContents() );
-            }
-            catch (CDKException e1) {
-                throw new BioclipseException(
-                    "Could not set the reader's input." );
-            }
+             IChemFile chemFile = new org.openscience.cdk.ChemFile();
 
-            IChemFile chemFile = new org.openscience.cdk.ChemFile();
+             // Do some customizations...
+             CDKManagerHelper.customizeReading(reader);
 
-            // Do some customizations...
-            CDKManagerHelper.customizeReading(reader);
+             // Read file
+             try {
+                 chemFile = (IChemFile) reader.read(chemFile);
+             }
+             catch (CDKException e) {
+                 throw new BioclipseException( "Could not read input: " +
+                                               e.getMessage(), e );
+             }
 
-            // Read file
-            try {
-                chemFile = (IChemFile) reader.read(chemFile);
-            }
-            catch (CDKException e) {
-                throw new BioclipseException("Cannot read file: " +
-                    e.getMessage(), e);
-            }
+             // Store the chemFormat used for the reader
+             IChemFormat chemFormat = (IChemFormat)reader.getFormat();
+             System.out.println( "Read CDK chemfile with format: "
+                                 + chemFormat.getFormatName() );
 
-            // Store the chemFormat used for the reader
-            IChemFormat chemFormat = (IChemFormat)reader.getFormat();
-              System.out.println( "Read CDK chemfile with format: "
-                                + chemFormat.getFormatName() );
+             List<IAtomContainer> atomContainersList
+                 = ChemFileManipulator.getAllAtomContainers(chemFile);
 
-            List<IAtomContainer> atomContainersList
-                = ChemFileManipulator.getAllAtomContainers(chemFile);
+             int nuMols = atomContainersList.size();
+             int currentMolecule = 0;
 
-            int nuMols = atomContainersList.size();
-            int currentMolecule = 0;
+             System.out.println( "This file contained: "
+                                 + nuMols + " molecules" );
 
-            System.out.println( "This file contained: "
-                                + nuMols + " molecules" );
-
-            for (int i = 0; i < atomContainersList.size(); i++) {
+             for (int i = 0; i < atomContainersList.size(); i++) {
 
                 IAtomContainer ac = null;
                 Object obj = atomContainersList.get(i);
-
+                
                 if (obj instanceof org.openscience.cdk.interfaces.IMolecule) {
                     ac = (org.openscience.cdk.interfaces.IMolecule) obj;
-                }
+                }   
                 else if (obj instanceof IAtomContainer) {
                     ac = (IAtomContainer) obj;
                 }
-
+                
                 CDKMolecule mol = new CDKMolecule(ac);
 
                 // try to recover certain information for certain content types
                 sanatizeFileInput(chemFormat, mol);
-
-                //Associate molecule with the file it comes from
-                mol.setResource( file );
-
+                
                 String moleculeName = molecularFormula( mol );
-                // If there's a CDK property TITLE (read from file), use that
+                // If there's a CDK property TITLE (read from input), use that
                 // as name
                 if (ac instanceof org.openscience.cdk.interfaces.IMolecule) {
-
+                
                     org.openscience.cdk.interfaces.IMolecule imol
                         = (org.openscience.cdk.interfaces.IMolecule) ac;
-
+                
                     String molName
                         = (String)
                     imol.getProperty("PUBCHEM_IUPAC_TRADITIONAL_NAME");
-
-                  if ( molName == null || ( molName.equals("") ) )
+                
+                    if ( molName == null || ( molName.equals("") ) )
                         molName
                             = (String) imol.getProperty(CDKConstants.TITLE);
-
-                      if ( molName != null && !( molName.equals("") ) ) {
-                          moleculeName  = molName;
-                  }
+                
+                    if ( molName != null && !( molName.equals("") ) ) {
+                        moleculeName  = molName;
+                    }
                 }
-
+                
                 mol.setName(moleculeName);
                 moleculesList.add(mol);
                 monitor.worked( (int) (ticks / nuMols) );
-
+                
                 if ( ++currentMolecule % 100 == 0 ) {
                     monitor.subTask( "Loaded molecule:" +
                                      currentMolecule + "/" + nuMols );
                 }
-
+                
                 if ( monitor.isCanceled() ) {
                     throw new OperationCanceledException();
                 }
@@ -484,6 +492,22 @@ public class CDKManager implements IBioclipseManager {
             monitor.done();
         }
         return moleculesList;
+    }
+
+    public List<ICDKMolecule> loadMolecules( IFile file,
+                                             IChemFormat format,
+                                             IProgressMonitor monitor )
+                              throws IOException,
+                                     BioclipseException,
+                                     CoreException {
+        List<ICDKMolecule> mols = loadMolecules( file.getContents(), 
+                                                 format, 
+                                                 monitor );
+        for ( ICDKMolecule m : mols ) {
+            m.setResource( file );
+        }
+        
+        return mols;
     }
 
       public void calculateSMILES(IMolecule molecule,IReturner<String> returner,
@@ -989,6 +1013,29 @@ public class CDKManager implements IBioclipseManager {
         System.out.println("Format: " + format);
         return loadMolecule(
             new ByteArrayInputStream(molstring.getBytes()),
+            format,
+            new NullProgressMonitor()
+        );
+    }
+    
+    public List<ICDKMolecule> moleculesFromString( String s ) 
+                              throws BioclipseException, 
+                                     IOException, 
+                                     CoreException {
+        if (s == null)
+            throw new BioclipseException("Input cannot be null.");
+        if (s.length() == 0)
+            throw new BioclipseException("Input cannot be empty.");
+
+        IChemFormat format = determineIChemFormatOfString(s);
+        if (format == null)
+            throw new BioclipseException(
+                "Could not identify format for the input string."
+            );
+
+        System.out.println("Format: " + format);
+        return loadMolecules(
+            new ByteArrayInputStream(s.getBytes()),
             format,
             new NullProgressMonitor()
         );
@@ -1703,21 +1750,27 @@ public class CDKManager implements IBioclipseManager {
       }
 
       public List<ICDKMolecule> loadSMILESFile( IFile file, 
-                                                IProgressMonitor monitor )
+                                                IProgressMonitor monitor ) 
                                 throws CoreException, IOException {
 
           //Only process files with smiles extension
           if ( !file.getFileExtension().equals(
                 SMILESFormat.getInstance().getPreferredNameExtension() ) )
-              return null;
+              return new RecordableList<ICDKMolecule>();
+          return loadSMILESFile( file.getContents(), monitor );
+      }
+      
+      public List<ICDKMolecule> loadSMILESFile( InputStream contents,
+                                                IProgressMonitor monitor ) 
+                                throws CoreException, IOException {
 
-          BufferedInputStream buf = new BufferedInputStream(file.getContents());
+
+          BufferedInputStream buf = new BufferedInputStream(contents);
           InputStreamReader reader = new InputStreamReader(buf);
           BufferedReader br = new BufferedReader(reader);
 
           if ( !br.ready() ) {
-              throw new IOException("File: " + file.getName()
-                                    + " is not ready to read.");
+              throw new IOException("Input was not ready to be read.");
           }
 
           class StringPair {
@@ -1732,8 +1785,7 @@ public class CDKManager implements IBioclipseManager {
           String line = br.readLine();
 
           if (line == null)
-              throw new IOException("File: " + file.getName()
-                                    + " has null contents");
+              throw new IOException("Input had null content");
           int cnt = 0;
           List<StringPair> list = new LinkedList<StringPair>();
           while (line != null) {
