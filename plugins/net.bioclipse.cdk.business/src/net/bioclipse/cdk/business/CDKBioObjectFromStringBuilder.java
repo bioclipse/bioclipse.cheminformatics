@@ -10,6 +10,8 @@
  ******************************************************************************/
 package net.bioclipse.cdk.business;
 
+import java.util.List;
+
 import net.bioclipse.core.domain.IBioObject;
 import net.bioclipse.ui.business.IBioObjectFromStringBuilder;
 
@@ -20,32 +22,42 @@ import org.apache.log4j.Logger;
  * @author jonalv
  *
  */
-public class CDKMoleculeFromStringBuilder 
+public class CDKBioObjectFromStringBuilder 
        implements IBioObjectFromStringBuilder {
 
     private static final Logger logger 
-        = Logger.getLogger( CDKMoleculeFromStringBuilder.class );
+        = Logger.getLogger( CDKBioObjectFromStringBuilder.class );
     
     public IBioObject fromString( String s ) {
-        IBioObject b = null;
+        List<? extends IBioObject> l = null;
         try {
-            b = Activator.getDefault().getJavaCDKManager().fromString( s );
+            l = Activator.getDefault().getJavaCDKManager()
+                                      .moleculesFromString( s );
         }
         catch ( Exception e ) {
-            logger.debug( "CDKMoleculeFromStringBuilder could not " +
+            logger.debug( "CDKBioObjectFromStringBuilder could not " +
             		      "recognize the string: \n " + s );
             throw new IllegalArgumentException(
                 "Failed while parsing the content of the given " +
                 "string into a BioObject", e );
         }
-        if ( b == null ) {
-            logger.debug( "CDKMoleculeFromStringBuilder could not " +
+        if ( l == null || l.size() == 0 ) {
+            logger.debug( "CDKBioObjectFromStringBuilder could not " +
                           "recognize the string: \n " + s );
             throw new IllegalArgumentException(
                 "Failed while parsing the content of the given" + 
                 "string into a BioObject" );
         }
-        return b;
+        if ( l.size() == 1 ) {
+            return l.get( 0 );
+        }
+        if ( l instanceof IBioObject  ) {
+            return (IBioObject)l;
+        }
+        else {
+            throw new IllegalStateException(
+                "Failed cast to IBioOject. Expected a RecordableList." );
+        }
     }
 
     public boolean recognize( String s ) {

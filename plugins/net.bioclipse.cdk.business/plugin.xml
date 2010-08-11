@@ -44,6 +44,6 @@
    </extension>
    <extension point="net.bioclipse.ui.business.BioObjectFromStringBuilder">
       <BioObjectFromStringBuilder
-         object="net.bioclipse.cdk.business.CDKMoleculeFromStringBuilder" />
+         object="net.bioclipse.cdk.business.CDKBioObjectFromStringBuilder" />
    </extension>
 </plugin>
