@@ -36,6 +36,7 @@ import org.eclipse.ui.part.MessagePage;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.generators.IGenerator;
 
 
@@ -57,8 +58,8 @@ public class GeneratorsView extends PageBookView {
     @Override
     protected PageRec doCreatePage( final IWorkbenchPart part ) {
         final JChemPaintEditor editor = (JChemPaintEditor) part;
-        final List<IGenerator> generators = editor.getWidget().getRenderer()
-                                            .getGenerators();
+        final List<IGenerator<IAtomContainer>> generators =
+        	editor.getWidget().getRenderer().getGenerators();
 
         Page page = new Page() {
 

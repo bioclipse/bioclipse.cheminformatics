@@ -25,6 +25,7 @@ import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.ColumnHeaderLayerStack;
 import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.MolTableBodyMenuConfigurator;
 import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.MolTableHeaderMenuConfigurator;
 import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.RowHeaderLayerStack;
+import net.bioclipse.cdk.ui.sdfeditor.editor.painter.JmolCellPainter;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.sourceforge.nattable.NatTable;
 import net.sourceforge.nattable.config.AbstractUiBindingConfiguration;
@@ -86,6 +87,7 @@ public class MoleculeTableViewer extends ContentViewer {
 
     NatTable table;
     JCPCellPainter cellPainter;
+    JmolCellPainter jmolCellPainter;
     private BodyLayerStack bodyLayer;
 
     private int currentSelected;
@@ -180,6 +182,7 @@ public class MoleculeTableViewer extends ContentViewer {
 
      // Cell painting
         cellPainter = new JCPCellPainter();
+        jmolCellPainter = new JmolCellPainter();
         TextPainter textPainter = new TextPainter();
         textPainter.setWrappedPainter( new ColorProviderPainter() );
 
@@ -188,6 +191,7 @@ public class MoleculeTableViewer extends ContentViewer {
                                                 IEditableRule.NEVER_EDITABLE );
 
         configRegistry.registerConfigAttribute( CellConfigAttributes.CELL_PAINTER,
+//                                              jmolCellPainter,
                                                 cellPainter,
                                                 DisplayMode.NORMAL,
                                                 STRUCTURE_LABEL);

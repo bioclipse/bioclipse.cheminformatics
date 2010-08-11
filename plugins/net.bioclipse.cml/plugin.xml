@@ -14,7 +14,7 @@
     	point="org.eclipse.help.toc">
 		<toc
         	file="toc.xml"
-         	primary="true"/>
+         	primary="false"/>
 	</extension>
 	
     <extension
@@ -61,7 +61,7 @@
  	</extension-->
  	
  	    <extension
-          point="org.eclipse.core.runtime.contentTypes">
+          point="org.eclipse.core.contenttype.contentTypes">
           <content-type
                 base-type="org.eclipse.core.runtime.xml"
                 id="net.bioclipse.contenttypes.cml"
@@ -74,10 +74,6 @@
               </parameter>
             </describer>
           </content-type>
-    </extension>
-
-  <extension
-           point="org.eclipse.core.runtime.contentTypes">
         
 		<content-type
               base-type="net.bioclipse.contenttypes.cml"

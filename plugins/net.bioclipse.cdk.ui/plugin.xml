@@ -117,7 +117,15 @@
            id="net.bioclipse.cdk.ui.handlers.create2dwithoutreset"
            defaultHandler="net.bioclipse.cdk.ui.handlers.Create2dHandlerWithoutReset"
            name="create2D"/>
-  	</extension>
+        <command
+           id="net.bioclipse.cdk.ui.handlers.convertSMILEStoSDF"
+           defaultHandler="net.bioclipse.cdk.ui.handlers.ConvertSMILEStoSDF"
+           name="smi2sdf"/>  	
+        <command
+           id="net.bioclipse.cdk.ui.sdf.FilterOutSalts"
+           defaultHandler="net.bioclipse.cdk.ui.filters.FilterOutSalts"
+           name="filterSaltsFromSDF"/>  	
+    </extension>
 
   <extension point="org.eclipse.core.expressions.propertyTesters">
     <propertyTester
@@ -132,6 +140,60 @@
 
 	<extension 
   		point="org.eclipse.ui.menus">
+  		
+  		<menuContribution
+           locationURI="popup:net.bioclipse.chemoinformatics.popup.filter?after=additions">
+		    <command
+		    	commandId="net.bioclipse.cdk.ui.sdf.FilterOutSalts"
+		    	label="Filter out salts"
+		        icon="icons/filter.png">
+		        
+		        <visibleWhen>
+			   		<iterate operator="and" ifEmpty="false">
+		      			<adapt type="org.eclipse.core.resources.IResource">
+			      			<or>
+				                <test property="org.eclipse.core.resources.contentTypeId"
+				           	    	value="net.bioclipse.contenttypes.sdf"/>
+                                <test property="org.eclipse.core.resources.contentTypeId"
+                                    value="net.bioclipse.contenttypes.sdf0d"/>
+                                <test property="org.eclipse.core.resources.contentTypeId"
+                                    value="net.bioclipse.contenttypes.sdf2d"/>
+                                <test property="org.eclipse.core.resources.contentTypeId"
+                                    value="net.bioclipse.contenttypes.sdf3d"/>
+				            </or>
+			      		</adapt>
+			   		</iterate>
+		        </visibleWhen>
+	       </command>
+		</menuContribution>		      	
+		      	
+
+  		<menuContribution
+           locationURI="popup:net.bioclipse.chemoinformatics.popup.convert?after=additions">
+		    <command
+		    	commandId="net.bioclipse.cdk.ui.handlers.convertSMILEStoSDF"
+		    	label="Convert SMILES to SDF"
+		        icon="icons/molecule2D.png">
+		      	<visibleWhen>
+		      	
+    <with variable="selection">
+        <iterate ifEmpty="false">
+            <instanceof value="org.eclipse.core.resources.IResource"/>
+            <test property="org.eclipse.core.resources.name"
+                     value="*.smi"/>
+        </iterate>
+    </with>
+    
+			   		<!--iterate operator="and" ifEmpty="false">
+		      			<adapt type="org.eclipse.core.resources.IResource">
+							<test property="org.eclipse.core.resources.name" value="*.smi"/> 
+			      		</adapt>
+			      		<count value="1" />
+			   		</iterate-->
+		        </visibleWhen>
+	       </command>
+		</menuContribution>
+  		
 		<menuContribution
            locationURI="popup:net.bioclipse.chemoinformatics.popup.gen3d?after=additions">
 		    <command

@@ -112,7 +112,9 @@ public class CDKDebugManager implements IBioclipseManager {
             }
             if (type==null) {
 //                logger.debug("AT null for atom: " + atom);
-                type = atom.getBuilder().newAtomType(atom.getSymbol());
+                type = atom.getBuilder().newInstance(
+                	IAtomType.class, atom.getSymbol()
+                );
                 type.setAtomTypeName("X");
             }
             AtomTypeManipulator.configure(atom, type);

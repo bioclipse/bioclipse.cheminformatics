@@ -42,7 +42,12 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.PropertySheetPage;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IChemObject;
 
 
@@ -108,14 +113,100 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         }
     }
 
-    /**
-     *
-     */
-    private void createPropertiesJobs(final ICDKMolecule item) {
+	private String ensureFullAtomTyping(IAtomContainer hydrogenlessClone) {
+		// Do atom typing, and if atom typing did not work for all atoms,
+        // throw a BioclipseException.
+        // First, reset atom types
+        for (IAtom atom : hydrogenlessClone.atoms())
+        	atom.setAtomTypeName(null);
+        CDKAtomTypeMatcher matcher =
+        	CDKAtomTypeMatcher.getInstance(hydrogenlessClone.getBuilder());
+        IAtomType[] types;
+		try {
+			types = matcher.findMatchingAtomType(hydrogenlessClone);
+		} catch (CDKException exception) {
+			return "Cannot calculate SMILES: " + exception.getMessage();
+		}
+        int i = 0;
+        for (IAtomType type : types) {
+        	i++;
+        	if (type == null || "X".equals(type.getAtomTypeName()))
+        		return "Cannot calculate SMILES; Missing " +
+        			"atom type for atom " + i + ": " +
+        			hydrogenlessClone.getAtom(i-1);
+        }
+        return "";
+	}
+
+	private void createPropertiesJobs(final ICDKMolecule item) {
 
         final ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
         final IInChIManager inchi = net.bioclipse.inchi.business.Activator
                                        .getDefault().getJavaInChIManager();
+
+        // clear previous jobs
+        BioclipseJob inchiJobToBeCancelled  = inchiJobs.remove(  item );
+        BioclipseJob smilesJobToBeCancelled = smilesJobs.remove( item );
+        if ( inchiJobToBeCancelled != null ) {
+            inchiJobToBeCancelled.cancel();
+        }
+        if ( smilesJobToBeCancelled != null ) {
+            smilesJobToBeCancelled.cancel();
+        }
+
+        // check if we want to calculate new InChI / SMILES
+        boolean allOK = true;
+    	try {
+			IAtomContainer container = (IAtomContainer)item.getAtomContainer().clone();
+			String result = ensureFullAtomTyping(container);
+			if (result == null || result.length() > 0)
+				allOK = false;
+		} catch (CloneNotSupportedException e1) {
+			allOK = false;
+		}
+		if (!allOK) {
+            Job j = new Job("Calculating inchi for properties view") {
+                @Override
+                protected IStatus run( IProgressMonitor monitor ) {
+                	String msg = "Incorrect Structure.";
+                	item.setProperty( CDKMolecule.INCHI_OBJECT, msg );
+                	item.setProperty( PROPERTY_SMILES, msg );
+                    return Status.OK_STATUS;
+                }
+            };
+            j.addJobChangeListener( new JobChangeAdapter() {
+                @Override
+                public void done( IJobChangeEvent event ) {
+                    Display.getDefault().asyncExec( new Runnable() {
+
+                        public void run() {
+                            PropertySheet p
+                                = (PropertySheet)
+                                  PlatformUI.getWorkbench()
+                                            .getActiveWorkbenchWindow()
+                                            .getActivePage()
+                                            .findView(
+                                      "org.eclipse.ui.views.PropertySheet" );
+                            if(p != null) {
+                                //The page might be a TabbedPropertySheetPage
+                                //in the future but we ignore it for now
+                                if ( p.getCurrentPage()
+                                        instanceof
+                                        PropertySheetPage ) {
+                                    PropertySheetPage pp
+                                    = (PropertySheetPage) p.getCurrentPage();
+
+                                    pp.refresh();
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+            j.schedule();
+            return;
+		}
+        
         final ICDKMolecule inchiClone;
         final ICDKMolecule smilesClone;
         try {
@@ -125,17 +216,8 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         catch ( BioclipseException e ) {
             throw new RuntimeException(e);
         }
-        BioclipseJob inchiJobToBeCancelled  = inchiJobs.remove(  item );
-        BioclipseJob smilesJobToBeCancelled = smilesJobs.remove( item );
 
-        if ( inchiJobToBeCancelled != null ) {
-            inchiJobToBeCancelled.cancel();
-        }
-        if ( smilesJobToBeCancelled != null ) {
-            smilesJobToBeCancelled.cancel();
-        }
-        if (item.getProperty( PROPERTY_INCHI, Property.USE_CACHED ) == null) {
-
+        if (item.getProperty( CDKMolecule.INCHI_OBJECT, Property.USE_CACHED ) == null) {
             Job j = new Job("Calculating inchi for properties view") {
                 @Override
                 protected IStatus run( IProgressMonitor monitor ) {

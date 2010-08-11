@@ -33,8 +33,13 @@ public class JCPEditorDescriber implements IBioObjectDescriber {
             try {
                 ICDKMolecule cdkmol = cdk.asCDKMolecule( ( IMolecule)object);
                 System.out.println(cdk.calculateMass( cdkmol ));
-                if (!cdk.has3d( cdkmol )){
+                if (cdk.has2d( cdkmol )){
                     return "net.bioclipse.cdk.ui.editors.jchempaint";
+                }
+                //Dirty workaround until we ship the plugin net.bioclipse.jmol.cdk
+                //TODO: Move to JmolEditorDescriber in that plugin
+                else if (cdk.has3d( cdkmol )){
+                    return "net.bioclipse.jmol.editors.JmolEditor";
                 }
             } catch ( BioclipseException e ) {
             }

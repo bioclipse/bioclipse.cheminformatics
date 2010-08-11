@@ -47,16 +47,20 @@ import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.font.IFontManager;
 import org.openscience.cdk.renderer.font.SWTFontManager;
-import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
+import org.openscience.cdk.renderer.generators.AtomNumberGenerator;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
+import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.RingGenerator;
+import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactAtom;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactShape;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.Shape;
-import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BackGroundColor;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHydrogens;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BackgroundColor;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.FitToScreen;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
 
 
@@ -103,32 +107,34 @@ public class JCPCellPainter extends BackgroundPainter {
 
         IFontManager fontManager = new SWTFontManager(Display.getCurrent());
 
-        List<IGenerator> generators = new ArrayList<IGenerator>();
+        List<IGenerator<IAtomContainer>> generators =
+        	new ArrayList<IGenerator<IAtomContainer>>();
 
         generators.add(extensionGenerator = ChoiceGenerator.getGeneratorsFromExtensionPoint());
        // generators.add(new BasicBondGenerator());
         generators.add(new BasicSceneGenerator());
-        generators.add(new BasicAtomGenerator());
+        generators.add(new ExtendedAtomGenerator());
         generators.add(new RingGenerator());
         generators.add(new HighlightAtomGenerator());
         generators.add(new HighlightBondGenerator());
+        generators.add(new AtomNumberGenerator());
 
         renderer = new Renderer(generators, fontManager);
 
         RendererModel rModel = renderer.getRenderer2DModel();
-        rModel.getRenderingParameter(CompactShape.class).setValue(Shape.OVAL);
+        rModel.getParameter(CompactShape.class).setValue(Shape.OVAL);
 
         applyGlobalProperties( rModel );
 
-        rModel.getRenderingParameter(Margin.class).setValue(30.0);
-        rModel.setDrawNumbers( false );
-        rModel.getRenderingParameter(CompactAtom.class).setValue(true );
+        rModel.getParameter(Margin.class).setValue(30.0);
+        rModel.set(WillDrawAtomNumbers.class, false);
+        rModel.getParameter(CompactAtom.class).setValue(true );
 //        rModel.setUseAntiAliasing(true );
 
-        rModel.setShowExplicitHydrogens( false );
-        ((BackGroundColor)rModel.getRenderingParameter(BackGroundColor.class))
-        	.setValue( new java.awt.Color(252,253,254));
-        rModel.setFitToScreen( true );
+        rModel.getParameter(ShowExplicitHydrogens.class).setValue( false );
+        rModel.set(BackgroundColor.class,
+        	new java.awt.Color(252,253,254));
+        rModel.set(FitToScreen.class, true);
 
     }
 

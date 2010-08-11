@@ -73,11 +73,15 @@ public class ValidateCMLManager implements IBioclipseManager {
             is = input.getContents();
             Element element =
                     (Element) new Builder().build( is ).getRootElement();
-            if ( !element.getNamespaceURI().equals( CmlFileDescriber.NS_CML ) )
-                returnString.append( "Namespace is not "
-                                     + CmlFileDescriber.NS_CML + "; " );
+            if ( !element.getNamespaceURI().equals(CmlFileDescriber.NS_CML)) {
+                returnString.append(
+                	"Namespace is not " + CmlFileDescriber.NS_CML + "; "
+                );
+                succeeded = false;
+            }
             is.close();
             is = input.getContents();
+            
         } catch ( ParsingException e ) {
             returnString.append( e );
             succeeded = false;

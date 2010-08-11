@@ -27,6 +27,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
+import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
+import org.openscience.cdk.smiles.smarts.parser.TokenMgrError;
 
 
 public class AddEditSmartsDialog extends TitleAreaDialog{
@@ -133,6 +136,7 @@ public class AddEditSmartsDialog extends TitleAreaDialog{
 
             smartsWrapper.setName( txtName.getText() );
             smartsWrapper.setSmartsString( txtSmarts.getText() );
+            smartsWrapper.validate();
 
             okPressed();
             return;
@@ -151,10 +155,16 @@ public class AddEditSmartsDialog extends TitleAreaDialog{
             setErrorMessage("SMARTS string must not be empty");
             return;
         }
-
-        if (!(cdk.isValidSmarts( txtSmarts.getText() ))){
-            setErrorMessage( "SMARTS string is not valid. " );
+        
+        try {
+            new SMARTSQueryTool(txtSmarts.getText());
+        } catch (Exception e) {
+            setErrorMessage( e.getMessage() );
         }
+
+//        if (!(cdk.isValidSmarts( txtSmarts.getText() ))){
+//            setErrorMessage( "SMARTS string is not valid. " );
+//        }
         
         getButtonBar().update();
 

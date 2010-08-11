@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2007      Jonathan Alvarsson
  *               2007-2008 Ola Spjuth
- *               2008-2009 Egon Willighagen
+ *               2008-2010 Egon Willighagen
  *                    2009 Gilleain Torrance               
  *
  * All rights reserved. This program and the accompanying materials
@@ -14,23 +14,38 @@
 package net.bioclipse.cdk.jchempaint.business;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.bioclipse.cdk.jchempaint.Activator;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import net.bioclipse.cdk.jchempaint.preferences.PreferenceConstants;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.managers.business.IBioclipseManager;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.services.IServiceScopes;
 import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.IGeneratorParameter;
+import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowEndCarbons;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHydrogens;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondDistance;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondLength;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator.WedgeWidth;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
+import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;
+import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HighlightAtomDistance;
+import org.openscience.cdk.renderer.generators.HighlightBondGenerator.HighlightBondDistance;
 import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
 
 /**
@@ -38,8 +53,11 @@ import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
  * 
  * @author egonw
  */
-public class JChemPaintGlobalPropertiesManager
-    implements IJChemPaintGlobalPropertiesManager {
+public class JChemPaintGlobalPropertiesManager implements IBioclipseManager {
+
+	private static final Logger logger = Logger.getLogger(
+		JChemPaintGlobalPropertiesManager.class
+	);
 
     public String getManagerName() {
         return "jcpglobal";
@@ -72,18 +90,41 @@ public class JChemPaintGlobalPropertiesManager
         return jcpEditors;
     }
     
+    /**
+     * Tries to apply a parameter value, but since it matching {@link IGenerator}
+     * may not be registered, we silently eat the exception.
+     */
+    private <T extends IGeneratorParameter<S>,S> void applyProperty(
+    		RendererModel model, Class<T> paramType, S value) {
+    	try {
+    		model.set(paramType, value);
+    	} catch (Error error) {
+    		logger.warn(
+    			"Error while applying a rendering property preference: " +
+    			error.getMessage()
+    		);
+    	};
+    }
+    
     public void applyProperties(RendererModel model) throws BioclipseException {
-        model.getRenderingParameter(ShowAromaticity.class).setValue(getShowAromaticity());
-        model.getRenderingParameter(ShowEndCarbons.class).setValue(getShowEndCarbons());
-        model.setShowExplicitHydrogens(getShowExplicitHydrogens());
-        model.setShowImplicitHydrogens(getShowImplicitHydrogens());
-        model.setDrawNumbers(getShowNumbers());
-        model.getRenderingParameter(Margin.class).setValue(getMargin());
-        model.getRenderingParameter(AtomRadius.class).setValue(getAtomRadius());
-        model.setBondLength(getBondLength());
-        model.getRenderingParameter( BondDistance.class ).setValue( getBondDistance());
-        model.setHighlightDistance(getHighlightDistance());
-        model.setWedgeWidth(getWedgeWidth());
+    	applyProperty(model, ShowAromaticity.class, getShowAromaticity());
+    	applyProperty(model, ShowAromaticity.class, getShowAromaticity());
+    	applyProperty(model, ShowEndCarbons.class, getShowEndCarbons());
+    	applyProperty(model, ShowExplicitHydrogens.class, getShowExplicitHydrogens());
+    	applyProperty(model, Margin.class, getMargin());
+    	applyProperty(model, AtomRadius.class, getAtomRadius());
+    	applyProperty(model, BondLength.class, getBondLength());
+    	applyProperty(model, BondDistance.class, getBondDistance());
+    	applyProperty(model, HighlightAtomDistance.class, getHighlightAtomDistance());
+    	applyProperty(model, HighlightBondDistance.class, getHighlightBondDistance());
+    	applyProperty(model, WedgeWidth.class, getWedgeWidth());
+    	applyProperty(model, ShowImplicitHydrogens.class, getShowImplicitHydrogens());
+    	applyProperty(model, WillDrawAtomNumbers.class, getShowNumbers());
+
+    	ICommandService service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+      Map filter = new HashMap();
+      filter.put(IServiceScopes.WINDOW_SCOPE, PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+      service.refreshElements("net.bioclipse.cdk.jchempaint.preference.atomNumbers", filter);
     }
 
     public void applyGlobalProperties() throws BioclipseException {
@@ -215,6 +256,14 @@ public class JChemPaintGlobalPropertiesManager
         setDouble(PreferenceConstants.BOND_LENGTH_DOUBLE, bondLength);
     }
 
+    public double getBondWidth() throws BioclipseException {
+        return getDouble(PreferenceConstants.BOND_WIDTH_DOUBLE);
+    }
+
+    public void setBondWidth(double bondWidth) throws BioclipseException {
+        setDouble(PreferenceConstants.BOND_WIDTH_DOUBLE, bondWidth);
+    }
+
     public double getBondDistance() throws BioclipseException {
         return getDouble(PreferenceConstants.BOND_DISTANCE_DOUBLE);
     }
@@ -223,12 +272,20 @@ public class JChemPaintGlobalPropertiesManager
         setDouble(PreferenceConstants.BOND_DISTANCE_DOUBLE, bondDistance);
     }
 
-    public double getHighlightDistance() throws BioclipseException {
-        return getDouble(PreferenceConstants.HIGHLIGHT_DISTANCE_DOUBLE);
+    public double getHighlightAtomDistance() throws BioclipseException {
+        return getDouble(PreferenceConstants.HIGHLIGHT_ATOM_DISTANCE_DOUBLE);
     }
 
-    public void setHighlightDistance(double dist) throws BioclipseException {
-        setDouble(PreferenceConstants.HIGHLIGHT_DISTANCE_DOUBLE, dist);
+    public void setHighlightAtomDistance(double dist) throws BioclipseException {
+        setDouble(PreferenceConstants.HIGHLIGHT_ATOM_DISTANCE_DOUBLE, dist);
+    }
+
+    public double getHighlightBondDistance() throws BioclipseException {
+        return getDouble(PreferenceConstants.HIGHLIGHT_BOND_DISTANCE_DOUBLE);
+    }
+
+    public void setHighlightBondDistance(double dist) throws BioclipseException {
+        setDouble(PreferenceConstants.HIGHLIGHT_BOND_DISTANCE_DOUBLE, dist);
     }
 
     public double getMargin() throws BioclipseException {

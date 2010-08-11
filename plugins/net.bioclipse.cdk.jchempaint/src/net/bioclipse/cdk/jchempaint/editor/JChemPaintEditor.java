@@ -26,14 +26,10 @@ import java.util.Set;
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKChemObject;
-import net.bioclipse.cdk.domain.CDKMoleculeUtils;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.ISubStructure;
-import net.bioclipse.cdk.domain.CDKMoleculeUtils.MolProperty;
 import net.bioclipse.cdk.jchempaint.generators.SubStructureGenerator;
 import net.bioclipse.cdk.jchempaint.handlers.ModuleState;
-import net.bioclipse.cdk.jchempaint.handlers.RedoHandler;
-import net.bioclipse.cdk.jchempaint.handlers.UndoHandler;
 import net.bioclipse.cdk.jchempaint.outline.JCPOutlinePage;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message;
@@ -45,7 +41,9 @@ import net.bioclipse.jobs.BioclipseUIJob;
 import net.bioclipse.ui.dialogs.SaveAsDialog;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.State;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -65,6 +63,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -76,7 +75,6 @@ import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -87,11 +85,13 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartConstants;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.contexts.IContextService;
+import org.eclipse.ui.operations.UndoRedoActionGroup;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.services.IServiceScopes;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.IChemModelRelay;
@@ -108,6 +108,7 @@ import org.openscience.cdk.io.formats.IResourceFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
 import org.openscience.cdk.renderer.selection.AbstractSelection;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.selection.MultiSelection;
@@ -299,8 +300,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
     public void createPartControl( Composite parent ) {
 
         createWidget(parent);
-
         createMenu();
+        updateMenu(getWidget().getRenderer2DModel());
 
         getSite().getPage().addSelectionListener( this );
 
@@ -358,7 +359,11 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
 
         contextService.activateContext( "net.bioclipse.ui.contexts.JChemPaint" );
 
-        createUndoRedoHangler();
+        createUndoRedoHandler();
+        Map filter = new HashMap();
+        filter.put(IServiceScopes.WINDOW_SCOPE, getSite().getPage().getWorkbenchWindow());
+        ICommandService service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+        service.refreshElements("net.bioclipse.cdk.jchempaint.preference.atomNumbers", filter);
     }
 
     private void createPartListener() {
@@ -377,7 +382,9 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
                         service.refreshElements( ModuleState.COMMAND_ID,
                                                  null);
                     }
-
+                    IWorkbenchPart activatedPart = partRef.getPart(false);
+                    if(JChemPaintEditor.this.equals(activatedPart))
+                        widget.reset();
             }
 
             public void partBroughtToTop( IWorkbenchPartReference partRef ) {
@@ -406,13 +413,21 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
 
     }
 
-    private void createUndoRedoHangler() {
-     // set up action handlers
-        UndoHandler undoAction = new UndoHandler();
-        RedoHandler redoAction = new RedoHandler();
-        IActionBars actionBars = this.getEditorSite().getActionBars();
-        actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(),undoAction);
-        actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), redoAction);
+    private void createUndoRedoHandler() {
+        IEditorSite site = getEditorSite();
+        UndoRedoActionGroup actionGroup = new UndoRedoActionGroup( site,
+                                                        widget.getUndoContext(),
+                                                        true );
+        actionGroup.fillActionBars( site.getActionBars() );
+    }
+
+    public void updateMenu(RendererModel model) {
+        Boolean value = model.get(WillDrawAtomNumbers.class);
+        ICommandService service =
+            (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+            Command command = service.getCommand("net.bioclipse.cdk.jchempaint.preference.atomNumbers");
+            State state = command.getState("org.eclipse.ui.commands.toggleState");
+            state.setValue(value);
     }
 
     private void createMenu() {
@@ -458,8 +473,9 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
         widget = new JChemPaintEditorWidget( parent, SWT.NONE ) {
 
             @Override
-            protected List<IGenerator> createGenerators() {
-                List<IGenerator> generators = new ArrayList<IGenerator>();
+            protected List<IGenerator<IAtomContainer>> createGenerators() {
+                List<IGenerator<IAtomContainer>> generators =
+                	new ArrayList<IGenerator<IAtomContainer>>();
                 generators.add( subStructureGenerator = new SubStructureGenerator() );
                 generators.addAll( super.createGenerators() );
                 return generators;
@@ -555,7 +571,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
     }
 
     public void setMoleculeProperty(Object key,Object value) {
-
+        widget.setProperty(key, value);
     }
     @SuppressWarnings("unchecked")
     public Object getAdapter( Class adapter ) {
@@ -576,7 +592,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
                 return mol.getAtomContainer();
             return null;
         }
-        if( ICDKMolecule.class.equals( adapter )) {
+        if( adapter.isAssignableFrom(ICDKMolecule.class)) {
             return getCDKMolecule();
         }
         return super.getAdapter( adapter );
@@ -630,7 +646,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
             if(selection.isEmpty()) {
                 widget.getRenderer2DModel().setExternalSelectedPart(
                       widget.getControllerHub().getIChemModel().getBuilder().
-                          newAtomContainer() );
+                          newInstance(IAtomContainer.class));
             }
             subStructureGenerator.clear();
             Set<IChemObject> chemSelection = new HashSet<IChemObject>();
@@ -728,63 +744,12 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
 
     private void invalidateProperties() {
         final ICDKMolecule mol = getCDKMolecule();
-        CDKMoleculeUtils.clearProperty( mol, MolProperty.SMILES.name() );
-        CDKMoleculeUtils.clearProperty( mol, MolProperty.InChI.name() );
-        CDKMoleculeUtils.clearProperty( mol, MolProperty.Fingerprint.name() );
+        mol.setProperty("net.bioclipse.cdk.domain.property.SMILES", null);
+        mol.setProperty("net.bioclipse.InChI", null);
+        mol.setProperty("net.bioclipse.fingerprint", null);
 
+        widget.setSelection(StructuredSelection.EMPTY);
         widget.setSelection( widget.getSelection() );
-
-        if(mol == null || mol.getAtomContainer().getAtomCount() == 0) return;
-//        ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
-//        IInChIManager inchi = net.bioclipse.inchi.business.Activator
-//                        .getDefault().getJavaInChIManager();
-        //calculating smiles in the Propertysource instead.
-//        try {
-//            if(SMILESJob!=null) {
-//                if(SMILESJob.cancel());
-//                SMILESJob.join();
-//            }
-//        } catch ( InterruptedException e ) {
-//            logger.debug( "SMILES job interrupted" );
-//        }
-//        SMILESJob = cdk.calculateSMILES( mol,
-//                                  new BioclipseJobUpdateHook<String>("SMILES") {
-//            public void completeReturn(String object) {
-//                SMILESJob = null;
-//                CDKMoleculeUtils.setProperty( mol,
-//                                              MolProperty.SMILES.name(),
-//                                              object );
-//                Display.getDefault().asyncExec( new Runnable() {
-//                    public void run() {
-//                        widget.setSelection( widget.getSelection());
-//                    }
-//                });
-//            }
-//        });
-        // removed inchi auto generation bug 1257
-//        try {
-//            if(InChIJob!=null) {
-//                if(InChIJob.cancel());
-//                InChIJob.join();
-//            }
-//        } catch ( InterruptedException e ) {
-//            logger.debug( "InChI job interrupted" );
-//        }
-//        InChIJob = inchi.generate( mol, new BioclipseJobUpdateHook<InChI>(
-//                                        "InChI generation") {
-//            @Override
-//            public void completeReturn( InChI object ) {
-//                InChIJob = null;
-//                CDKMoleculeUtils.setProperty( mol,
-//                                              MolProperty.InChI.name(),
-//                                              object );
-//                Display.getDefault().asyncExec( new Runnable() {
-//                    public void run() {
-//                        widget.setSelection( widget.getSelection());
-//                    }
-//                });
-//            }
-//        });
     }
 
     protected final void fireStructureChanged() {

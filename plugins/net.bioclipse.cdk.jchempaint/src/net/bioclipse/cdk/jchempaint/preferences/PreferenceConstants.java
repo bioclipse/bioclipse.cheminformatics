@@ -22,9 +22,11 @@ public class PreferenceConstants {
     public static final String SHOW_NUMBERS_BOOL = "showNumbers";
     
     public static final String ATOM_RADIUS_DOUBLE = "atomRadius";
+    public static final String BOND_WIDTH_DOUBLE = "bondWidth";
     public static final String BOND_LENGTH_DOUBLE = "bondLength";
     public static final String BOND_DISTANCE_DOUBLE = "bondDistance";
-    public static final String HIGHLIGHT_DISTANCE_DOUBLE = "highlightDistance";
+    public static final String HIGHLIGHT_ATOM_DISTANCE_DOUBLE = "highlightAtomDistance";
+    public static final String HIGHLIGHT_BOND_DISTANCE_DOUBLE = "highlightBondDistance";
     public static final String MARGIN_DOUBLE = "margin";
     public static final String WEDGE_WIDTH_DOUBLE = "wedgeWidth";
 

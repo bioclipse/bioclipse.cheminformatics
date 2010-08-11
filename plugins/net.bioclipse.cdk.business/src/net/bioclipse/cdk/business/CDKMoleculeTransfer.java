@@ -72,7 +72,7 @@ public class CDKMoleculeTransfer extends ByteArrayTransfer{
 
     protected ICDKMolecule[] fromByteArray(byte[] bytes) {
         CMLReader reader= new CMLReader(new ByteArrayInputStream( bytes ));
-        IChemFile cFile = getBuilder().newChemFile();
+        IChemFile cFile = getBuilder().newInstance(IChemFile.class);
         try {
             cFile = (IChemFile) reader.read( cFile );
         } catch ( CDKException e ) {

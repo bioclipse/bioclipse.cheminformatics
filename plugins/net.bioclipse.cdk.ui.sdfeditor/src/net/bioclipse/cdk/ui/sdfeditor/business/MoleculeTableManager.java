@@ -373,6 +373,7 @@ public class MoleculeTableManager implements IBioclipseManager {
          try {
              if(renamePath != null) {
                  subMonitor.subTask( "Renaming file" );
+                 file.setHidden(true);
                  file.delete( true, subMonitor.newChild( 1000 ) );
                  target.move( renamePath, true, subMonitor.newChild( 1000 ) );
              }
@@ -626,7 +627,10 @@ public class MoleculeTableManager implements IBioclipseManager {
         header.append( "\n" );
         if(submon.isCanceled()) throw new OperationCanceledException();
         ByteArrayInputStream input = new ByteArrayInputStream( header.toString().getBytes() );
-        file.create(input, true, submon.newChild( 200 ));
+        
+        //We allow for overwriting existing files
+        if (!file.exists())
+        	file.create(input, true, submon.newChild( 200 ));
 
         submon.setWorkRemaining( model.getNumberOfMolecules()*100 );
         for(int i=0;i<model.getNumberOfMolecules();i++) {

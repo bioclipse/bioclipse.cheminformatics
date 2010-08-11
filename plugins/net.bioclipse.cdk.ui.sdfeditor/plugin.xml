@@ -119,6 +119,11 @@
               name="Extract Molecules">
         </command>
         <command
+              defaultHandler="net.bioclipse.cdk.ui.sdfeditor.handlers.ExportCSV"
+              id="net.bioclipse.cdk.moltable.exportcsv"
+              name="Export to CSV">
+        </command>
+        <command
               defaultHandler="net.bioclipse.cdk.ui.sdfeditor.handlers.RemoveColumnHandler"
               id="net.bioclipse.cdk.molTable.column.remove"
               name="Remove Column">
@@ -138,25 +143,25 @@
               style="push">
            <parameter
                  name="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
-                 value="net.bioclipse.cdk.calculator.numberOfAtoms">
+                 value="Number of Atoms">
            </parameter>
         </command>
         <command
               commandId="net.bioclipse.cdk.ui.sdfeditor.addProperty"
-              label="InChI"
+              label="Standard InChI"
               style="push">
            <parameter
                  name="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
-                 value="net.bioclipse.cdk.InChI">
+                 value="Standard InChI">
            </parameter>
         </command>
         <command
               commandId="net.bioclipse.cdk.ui.sdfeditor.addProperty"
-              label="Fingerprint"
+              label="CDK Fingerprint"
               style="push">
            <parameter
                  name="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
-                 value="net.bioclipse.cdk.fingerprint">
+                 value="CDK Fingerprint">
            </parameter>
         </command>
         <visibleWhen
@@ -214,7 +219,7 @@
                            value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
                      </instanceof>
                      <instanceof
-                           value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableSelection">
+                           value="net.bioclipse.cdk.ui.sdfeditor.editor.MolTableSelection">
                      </instanceof>
                    </or>
                 </iterate>
@@ -236,13 +241,33 @@
                           value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
                     </instanceof>
                     <instanceof
-                          value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableSelection">
+                          value="net.bioclipse.cdk.ui.sdfeditor.editor.MolTableSelection">
                     </instanceof>
                  </or>
               </iterate>
         </visibleWhen>
      </command>
-  </menuContribution>
+     <command
+           commandId="net.bioclipse.cdk.moltable.exportcsv"
+           label="Export to CSV"
+           style="push">
+        <visibleWhen
+              checkEnabled="true">
+              <iterate>
+                 <or>
+                    <instanceof
+                          value="net.bioclipse.cdk.domain.ICDKMolecule">
+                    </instanceof>
+                    <instanceof
+                          value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
+                    </instanceof>
+                    <instanceof
+                          value="net.bioclipse.cdk.ui.sdfeditor.editor.MolTableSelection">
+                    </instanceof>
+                 </or>
+              </iterate>
+        </visibleWhen>
+     </command>  </menuContribution>
 	</extension>
  <extension
        point="net.bioclipse.scripting.contribution">
@@ -255,15 +280,15 @@
        point="net.bioclipse.cdk.propertyCalculator">
     <Calculator
           class="net.bioclipse.cdk.ui.sdfeditor.NumberOfAtomCalculator"
-          id="net.bioclipse.cdk.calculator.numberOfAtoms">
+          id="Number of Atoms">
     </Calculator>
     <Calculator
           class="net.bioclipse.cdk.ui.sdfeditor.CDKFingerPrintPropertyCalculator"
-          id="net.bioclipse.cdk.fingerprint">
+          id="CDK Fingerprint">
     </Calculator>
     <Calculator
           class="net.bioclipse.cdk.ui.sdfeditor.InChIPropertyCalculator"
-          id="net.bioclipse.cdk.InChI">
+          id="Standard InChI">
     </Calculator>
  </extension>
  

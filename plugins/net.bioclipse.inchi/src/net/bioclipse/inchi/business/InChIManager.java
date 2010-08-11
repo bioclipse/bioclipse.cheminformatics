@@ -24,9 +24,8 @@ import net.sf.jniinchi.INCHI_RET;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.inchi.InChIGenerator;
-import org.openscience.cdk.inchi.InChIGeneratorFactory;
+import org.openscience.cdk.inchi.standard.InChIGenerator;
+import org.openscience.cdk.inchi.standard.InChIGeneratorFactory;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -50,15 +49,13 @@ public class InChIManager implements IBioclipseManager {
                 throws Exception {
     	monitor.beginTask("Calculating InChI", IProgressMonitor.UNKNOWN);
     	// return early if InChI library could not be loaded
-    	if (loadingFailed) returner.completeReturn(InChI.FAILED_TO_CALCULATE);
+    	if (!isAvailable()) {
+    		returner.completeReturn(InChI.FAILED_TO_CALCULATE);
+    		return;
+    	}
     	
     	Object adapted = molecule.getAdapter(IAtomContainer.class);
         if (adapted != null) {
-        	// ensure we can actually generate an InChI
-            if (!isLoaded && !LOADING_SUCCESS.equals(load())) {
-            	returner.completeReturn(InChI.FAILED_TO_CALCULATE);
-            }
-
             IAtomContainer container = (IAtomContainer)adapted;
             IAtomContainer clone = (IAtomContainer)container.clone();
             // remove aromaticity flags
@@ -94,7 +91,7 @@ public class InChIManager implements IBioclipseManager {
         if (factory == null) {
             try {
 				factory = InChIGeneratorFactory.getInstance();
-			} catch (CDKException exception) {
+			} catch (Exception exception) {
 				loadingFailed = true;
 				isLoaded = false;
 				return "Loading of the InChI library failed: " +
@@ -113,4 +110,10 @@ public class InChIManager implements IBioclipseManager {
     	return isLoaded;
     }
 
+    public boolean isAvailable() {
+    	if (!isLoaded && loadingFailed) return false;
+    	if (!loadingFailed && isLoaded) return true;
+    	load();
+    	return (factory != null);
+    }
 }

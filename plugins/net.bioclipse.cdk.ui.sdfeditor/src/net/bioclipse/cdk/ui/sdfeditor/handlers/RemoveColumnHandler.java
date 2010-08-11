@@ -10,9 +10,11 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.handlers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableContentProvider;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor;
-import net.sourceforge.nattable.NatTable;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -33,11 +35,12 @@ public class RemoveColumnHandler extends AbstractHandler implements IHandler {
         int[] vals  = molEditor.getMolTableViewer().getSelectedColumns();
         MoleculeTableContentProvider contentProvider =
                                                 molEditor.getContentProvider();
-
+        List<Object> propertiesToRemove = new ArrayList<Object>();
         for(int i:vals) {
-            Object o = contentProvider.getProperties().get( i-1 );
-            contentProvider.removeColumn( o );
+            propertiesToRemove.add(contentProvider.getProperties().get( i-1 ));
         }
+        for(Object o: propertiesToRemove)
+            contentProvider.removeColumn( o );
         molEditor.setDirty(true);
         return null;
     }

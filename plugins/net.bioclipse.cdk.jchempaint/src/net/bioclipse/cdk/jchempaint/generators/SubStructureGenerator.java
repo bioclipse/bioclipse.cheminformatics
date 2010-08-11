@@ -28,13 +28,15 @@ import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.IGeneratorParameter;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Scale;
+import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HighlightAtomDistance;
 
 
 /**
  * @author arvid
  *
  */
-public class SubStructureGenerator implements IGenerator {
+public class SubStructureGenerator implements IGenerator<IAtomContainer> {
     static final Color DEFAULT_COLOR = Color.MAGENTA;
 
     Set<ISubStructure> subStructures = new HashSet<ISubStructure>();
@@ -42,7 +44,8 @@ public class SubStructureGenerator implements IGenerator {
      * @see org.openscience.cdk.renderer.generators.IGenerator#generate(org.openscience.cdk.interfaces.IAtomContainer, org.openscience.cdk.renderer.RendererModel)
      */
     public IRenderingElement generate( IAtomContainer ac, RendererModel model ) {
-        double r = model.getHighlightDistance() / model.getScale();
+        double r = model.getParameter(HighlightAtomDistance.class).getValue() /
+                   model.getParameter(Scale.class).getValue();
         ElementGroup group = new ElementGroup();
         
         for(ISubStructure subStructure:subStructures) {

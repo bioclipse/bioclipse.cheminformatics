@@ -35,13 +35,15 @@ import org.openscience.cdk.renderer.elements.PathElement;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondWidth;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Scale;
+import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HighlightAtomDistance;
 
 
 /**
  * @author arvid
  *
  */
-public class ClosestToCenterOfMassGenerator implements IGenerator {
+public class ClosestToCenterOfMassGenerator implements IGenerator<IAtomContainer> {
 
     private static final Color STAR_COLOR = Color.ORANGE;
     /**
@@ -59,10 +61,11 @@ public class ClosestToCenterOfMassGenerator implements IGenerator {
         if(p2== null) return new ElementGroup();
         IAtom atom = jcp.getClosestAtom(p2);
         if(atom==null || atom.getPoint2d()==null) return new ElementGroup();
+        double scale = model.getParameter(Scale.class).getValue();
         return generateStar(
         	atom.getPoint2d(),
-            model.getHighlightDistance()*3/model.getScale(),
-            model.getRenderingParameter(BondWidth.class).getValue()/model.getScale());
+            model.getParameter(HighlightAtomDistance.class).getValue()*3/scale,
+            model.getParameter(BondWidth.class).getValue()/scale);
     }
 
     protected IRenderingElement generateStar( Point2d center,

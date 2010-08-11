@@ -8,9 +8,9 @@
 </head>
 
 <body>
-<h1>The "New SDF" wizard</h1>
+<h2>The "New SDF" wizard</h2>
 
-<p>This wizard (used via File->New->Chemistry ->New SDF or right click on a directory and go new etc.) allows you to build an SD file 
+<p>This wizard (started via <b>File -> New -> Chemistry -> New SDF</b> or right click on a directory and go new etc.) allows you to build an SD file 
 with any structures as content. The structures must be in the workspace, but can be in any file format.</p>
 <p>On the first page of the wizard, you have to select where the new file should be created and what its name should be 
 (if you have no extension, .sdf will be added). On the second page, you can choose the structures to include 
@@ -18,6 +18,14 @@ in the file. You can choose structure files directly. If any of these cannot be 
 get these displayed), but the rest will still be added. If you choose the "Include directories recursively" checkbox and 
 select any directory, all structure files in these directories and all its sub-directories will also 
 be included.</p>
+
+<h2>Extracting from an SD-file</h1>
+<p>You can extract a number of entries from an SDF by entry numbers. This function can also be used 
+to split an SDF in junks, by extracting one part after the other. To extract, right click on an SDF in 
+the navigator and choose "Extract Entries". You need to enter the start entry and the end entry (optional, if none choosen 
+one entry will be extracted) and the file to extract to. This will be either a mol file (if one entry) or an SDF 
+(if several entries). After you press Finish, the file will be created with your desired entries.</p>
+
 
 </body>
 </html>

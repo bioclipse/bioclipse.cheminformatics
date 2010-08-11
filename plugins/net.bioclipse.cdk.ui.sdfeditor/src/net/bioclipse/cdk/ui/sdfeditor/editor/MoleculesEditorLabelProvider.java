@@ -54,8 +54,11 @@ import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.RingGenerator;
+import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactAtom;
-import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BackGroundColor;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHydrogens;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BackgroundColor;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.FitToScreen;
 
 public class MoleculesEditorLabelProvider implements ITableLabelProvider{
 
@@ -96,7 +99,8 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
 
         IFontManager fontManager = new SWTFontManager(Display.getCurrent());
 
-        List<IGenerator> generators = new ArrayList<IGenerator>();
+        List<IGenerator<IAtomContainer>> generators =
+        	new ArrayList<IGenerator<IAtomContainer>>();
         generators.add(new BasicBondGenerator());
         generators.add(new BasicAtomGenerator());
         generators.add(new RingGenerator());
@@ -106,14 +110,14 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
         renderer = new Renderer(generators, fontManager);
 
         RendererModel rModel = renderer.getRenderer2DModel();
-        rModel.setDrawNumbers( false );
-        rModel.getRenderingParameter(CompactAtom.class).setValue(true);
+        rModel.set(WillDrawAtomNumbers.class, false);
+        rModel.getParameter(CompactAtom.class).setValue(true);
 //        rModel.setUseAntiAliasing(true );
 
-        rModel.setShowExplicitHydrogens( false );
-        ((BackGroundColor)rModel.getRenderingParameter(BackGroundColor.class))
-    		.setValue( new java.awt.Color(252,253,254));
-        rModel.setFitToScreen( true );
+        rModel.getParameter(ShowExplicitHydrogens.class).setValue( false );
+        rModel.set(BackgroundColor.class,
+        	new java.awt.Color(252,253,254));
+        rModel.set(FitToScreen.class, true);
 
         greenScreen = new Color(Display.getCurrent(), 252, 253, 254);
         generatedColor = new Color(Display.getCurrent(),200,100,100);

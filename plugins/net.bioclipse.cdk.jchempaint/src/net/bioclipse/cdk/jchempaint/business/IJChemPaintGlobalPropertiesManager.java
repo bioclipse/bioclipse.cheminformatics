@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008-2009  Egon Willighagen <egonw@users.sf.net>
+ * Copyright (c) 2008-2010  Egon Willighagen <egonw@users.sf.net>
  *                    2009  Gilleain Torrance
  *
  * All rights reserved. This program and the accompanying materials
@@ -125,16 +125,26 @@ public interface IJChemPaintGlobalPropertiesManager extends IBioclipseManager {
     
     @Recorded
     @PublishedMethod ( params = " double highlightDistance", 
-                       methodSummary = "Sets the distance withing which a " +
-                       		           "bond or atoms is highlighted" )
-    public void setHighlightDistance(double highlightDistance) 
+                       methodSummary = "Sets the distance within which a " +
+                       		           "atom is highlighted" )
+    public void setHighlightAtomDistance(double highlightDistance) 
     throws BioclipseException;
     
+    @Recorded
+    @PublishedMethod ( params = " double highlightDistance", 
+                       methodSummary = "Sets the distance within which a " +
+                       		           "bond is highlighted" )
+    public void setHighlightBondDistance(double highlightDistance) 
+    throws BioclipseException;
     
-    @PublishedMethod ( methodSummary = "Returns the length of a standard bond" )
-    public double getHighlightDistance() throws BioclipseException;
+    @PublishedMethod ( methodSummary = "Returns the distance within which a " +
+    		"bond is highlighted" )
+    public double getHighlightAtomDistance() throws BioclipseException;
     
-    
+    @PublishedMethod ( methodSummary = "Returns the distance within which an " +
+    		"atom is highlighted" )
+    public double getHighlightBondDistance() throws BioclipseException;
+
     @PublishedMethod ( methodSummary = "Returns the margin size" )
     public double getMargin() throws BioclipseException;
 
@@ -153,4 +163,14 @@ public interface IJChemPaintGlobalPropertiesManager extends IBioclipseManager {
     
     @PublishedMethod ( methodSummary = "Returns the width of a stereo wedge" )
     public double getWedgeWidth() throws BioclipseException;
+
+    @Recorded
+    @PublishedMethod ( params = "double bondWidth",
+                       methodSummary = "Sets the width of bonds." )
+    public void setBondWidth(double bondWidth);
+
+    @Recorded
+    @PublishedMethod ( methodSummary = "Returns the width of bonds." )
+    public double getBondWidth();
+
 }

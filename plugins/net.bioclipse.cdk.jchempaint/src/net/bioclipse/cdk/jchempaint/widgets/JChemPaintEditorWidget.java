@@ -40,14 +40,14 @@ import net.bioclipse.core.util.LogUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IOperationHistory;
+import org.eclipse.core.commands.operations.IOperationHistoryListener;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.core.commands.operations.IUndoableOperation;
+import org.eclipse.core.commands.operations.OperationHistoryEvent;
 import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.SafeRunner;
-import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -103,6 +103,12 @@ import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.MergeAtomsGenerator;
 import org.openscience.cdk.renderer.generators.SelectAtomGenerator;
 import org.openscience.cdk.renderer.generators.SelectBondGenerator;
+import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HighlightAtomShapeFilled;
+import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HoverOverColor;
+import org.openscience.cdk.renderer.generators.HighlightBondGenerator.HighlightBondShapeFilled;
+import org.openscience.cdk.renderer.generators.SelectAtomGenerator.SelectionAtomColor;
+import org.openscience.cdk.renderer.generators.SelectAtomGenerator.SelectionRadius;
+import org.openscience.cdk.renderer.generators.SelectBondGenerator.SelectionBondColor;
 import org.openscience.cdk.renderer.selection.AbstractSelection;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
@@ -163,11 +169,14 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                                     color.getGreen(),
                                     color.getBlue(),
                                     128);
-        rModel.setSelectedPartColor(color);
-        rModel.setSelectionRadius( 8 );
+        rModel.set(SelectionAtomColor.class, color);
+        rModel.set(SelectionBondColor.class, color);
+        rModel.set(SelectionRadius.class, 8.0 );
 
-        rModel.setHighlightShapeFilled( true );
-        rModel.setHoverOverColor( new Color( Color.GRAY.getRed(),
+        rModel.set(HighlightAtomShapeFilled.class, true);
+        rModel.set(HighlightBondShapeFilled.class, true);
+        rModel.getParameter(HoverOverColor.class).
+        	setValue( new Color( Color.GRAY.getRed(),
                                              Color.GRAY.getGreen(),
                                              Color.GRAY.getBlue(),
                                              128) );
@@ -280,7 +289,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                                               atomType);
                     }else {
                         String text = rmodel.getToolTipText( atom );
-                        return text.length()!=0?text:null;
+                        return text!=null&&text.length()!=0?text:null;
                     }
                 }
             }
@@ -298,11 +307,40 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         prefListener = new GenerateLabelPrefChangedLisener( this );
         Activator.getDefault().getPreferenceStore().addPropertyChangeListener( prefListener );
+        addUndoRedoListener();
+    }
+
+    private void addUndoRedoListener() {
+        operationHistory.addOperationHistoryListener(new IOperationHistoryListener() {
+
+            public void historyNotification(OperationHistoryEvent event) {
+                int type = event.getEventType();
+                if( type == OperationHistoryEvent.REDONE ||
+                    type == OperationHistoryEvent.UNDONE) {
+                    if(operationHistory.canUndo(undoContext)) {
+                        setDirty(true);
+                    }else setDirty(false);
+
+                    if(!isDisposed()) {
+                        Display.getDefault().asyncExec(new Runnable() {
+                            public void run() {
+                                hub.getRenderModel().setSelection(
+                                            AbstractSelection.EMPTY_SELECTION );
+                                hub.select( AbstractSelection.EMPTY_SELECTION );
+                                structureChanged();
+                                redraw();
+                            }
+                        });
+                    }
+                }
+            }
+        });
     }
 
     private void setupControllerHub( ) {
         IChemModel chemModel =
-            NoNotificationChemObjectBuilder.getInstance().newChemModel();
+            NoNotificationChemObjectBuilder.getInstance()
+            	.newInstance(IChemModel.class);
 
         c2dm = new ControllerModel();
         UndoRedoHandler undoRedoHandler = new UndoRedoHandler();
@@ -330,11 +368,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                     }
 
                     public void structureChanged() {
-                        Display.getDefault().syncExec( new Runnable() {
-                            public void run() {
                                 JChemPaintEditorWidget.this.structureChanged();
-                            }
-                        });
                         setDirty(true);
                     }
 
@@ -486,8 +520,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     }
 
     @Override
-    protected List<IGenerator> createGenerators() {
-        List<IGenerator> generatorList = new ArrayList<IGenerator>();
+    protected List<IGenerator<IAtomContainer>> createGenerators() {
+        List<IGenerator<IAtomContainer>> generatorList =
+        	new ArrayList<IGenerator<IAtomContainer>>();
         generatorList.add(new BasicSceneGenerator());
         generatorList.add(new ExternalHighlightGenerator());
         generatorList.addAll( super.createGenerators() );
@@ -519,8 +554,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     public void setReaction(IReaction reaction) {
         if( reaction != null) {
 
-            IChemModel model = reaction.getBuilder().newChemModel();
-            IReactionSet reactionSet = reaction.getBuilder().newReactionSet();
+            IChemModel model = reaction.getBuilder().newInstance(IChemModel.class);
+            IReactionSet reactionSet = reaction.getBuilder()
+            	.newInstance(IReactionSet.class);
             reactionSet.addReaction( reaction );
             model.setReactionSet( reactionSet );
             setModel( model );
@@ -533,7 +569,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     public void setReactionSet(IReactionSet reactionSet) {
         if( reactionSet != null) {
 
-            IChemModel model = reactionSet.getBuilder().newChemModel();
+            IChemModel model = reactionSet.getBuilder().newInstance(IChemModel.class);
             model.setReactionSet( reactionSet );
             setModel( model );
         }else {
@@ -567,7 +603,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 }else {
                     IAtomContainer oldAC = atomContainer;
                     atomContainer = atomContainer.getBuilder()
-                    .newAtomContainer( atomContainer );
+                    .newInstance(IAtomContainer.class, atomContainer );
                     atomContainer.setProperties( new HashMap<Object, Object>(
                             oldAC.getProperties()) );
                     setDirty( oldAC.getFlag( 7 ) );
@@ -576,7 +612,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             }
             else {
                 IChemModel model = NoNotificationChemObjectBuilder.getInstance()
-                .newChemModel();
+                .newInstance(IChemModel.class);
                 source = null;
                 setModel( model );
                 setDirty( false );
@@ -615,11 +651,10 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     public ISelection getSelection() {
         RendererModel rendererModel = getRenderer2DModel();
+        ICDKMolecule sourceMol = getMolecule();
         if (rendererModel == null)
-            if(source != null)
-                return new StructuredSelection(source);
-            else
-               return StructuredSelection.EMPTY;
+            return sourceMol != null? new StructuredSelection(sourceMol)
+                                    : StructuredSelection.EMPTY;
 
         List<CDKChemObject<?>> selection = new LinkedList<CDKChemObject<?>>();
 
@@ -638,8 +673,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             }
         }
 
-        if (selection.isEmpty() && source != null) {
-            return new StructuredSelection(source);
+        if (selection.isEmpty() && sourceMol != null) {
+            return new StructuredSelection(sourceMol);
         }
 
         return new StructuredSelection(selection);
@@ -672,12 +707,35 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     protected void structureChanged() {
         IChemModel model = hub.getIChemModel();
+        removeDanglingHydrogens( model );
         updateAtomTypesAndHCounts( model );
-        if(!this.isDisposed())
-            resizeControl();
+        if(!this.isDisposed()){
+            Display.getDefault().asyncExec(new Runnable() {
+                @Override
+                public void run() {
+                    resizeControl();
+                }
+            });
+        }
     }
 
-    private void updateAtomTypesAndHCounts( IChemModel model ) {
+    /**
+     * Removed hydrogens that are not involved in any bond.
+     */
+    private void removeDanglingHydrogens(IChemModel model) {
+    	for (IAtomContainer container :
+            ChemModelManipulator.getAllAtomContainers(model)) {
+    		List<IAtom> atomsToRemove = new ArrayList<IAtom>();
+    		for (IAtom atom : container.atoms()) {
+    			if ("H".equals(atom.getSymbol()) &&
+    				container.getConnectedBondsCount(atom) == 0)
+    				atomsToRemove.add(atom);
+    		}
+    		for (IAtom atom : atomsToRemove) container.removeAtom(atom);
+    	}
+	}
+
+	private void updateAtomTypesAndHCounts( IChemModel model ) {
         CDKHydrogenAdder hAdder =
             CDKHydrogenAdder.getInstance(model.getBuilder());
         CDKAtomTypeMatcher matcher =
@@ -748,6 +806,14 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         return isdirty;
     }
 
+    public void setProperty(Object key,Object value) {
+        IAtomContainer ac = model.getMoleculeSet().getAtomContainer(0);
+        if(value == null)
+            ac.removeProperty(key);
+        else
+            ac.setProperty(key, value);
+    }
+
    @Override
    protected void disposeView() {
        Activator.getDefault().getPreferenceStore()
@@ -789,6 +855,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         }
     }
 
+    public IUndoContext getUndoContext() {
+        return undoContext;
+    }
 
     public void redo() throws ExecutionException {
         if (this.operationHistory.canRedo(this.undoContext)) {
@@ -846,5 +915,19 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         DropTarget dropTarget = new DropTarget(control, operations);
         dropTarget.setTransfer(transferTypes);
         dropTarget.addDropListener(listener);
+    }
+
+    @Override
+    public ICDKMolecule getMolecule() {
+        ICDKMolecule model = super.getMolecule();
+        if(model == null) return null;
+        IAtomContainer modelContainer = model.getAtomContainer();
+        modelContainer.removeAllElements();
+        IChemModel chemModel = getControllerHub().getIChemModel();
+        for(IAtomContainer aContainer:ChemModelManipulator
+                                        .getAllAtomContainers( chemModel )) {
+            modelContainer.add( aContainer );
+        }
+        return model;
     }
 }

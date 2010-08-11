@@ -37,10 +37,16 @@ import org.openscience.cdk.renderer.elements.OvalElement;
 import org.openscience.cdk.renderer.elements.PathElement;
 import org.openscience.cdk.renderer.elements.RectangleElement;
 import org.openscience.cdk.renderer.elements.TextElement;
+import org.openscience.cdk.renderer.elements.TextGroupElement;
 import org.openscience.cdk.renderer.elements.WedgeLineElement;
 import org.openscience.cdk.renderer.font.IFontManager;
 import org.openscience.cdk.renderer.font.SWTFontManager;
-import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BackGroundColor;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator.WedgeWidth;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BackgroundColor;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.ForegroundColor;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Scale;
+import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;
+import org.openscience.cdk.renderer.generators.ReactionSceneGenerator.ArrowHeadWidth;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 
 public class SWTRenderer implements IDrawVisitor{
@@ -181,7 +187,8 @@ public class SWTRenderer implements IDrawVisitor{
         Vector2d normal =
             new Vector2d(wedge.y1 - wedge.y2, wedge.x2 - wedge.x1);
         normal.normalize();
-        normal.scale(model.getWedgeWidth() / model.getScale());
+        normal.scale(model.getParameter(WedgeWidth.class).getValue() /
+        		     model.getParameter(Scale.class).getValue());
 
         // make the triangle corners
         Point2d vertexA = new Point2d(wedge.x1, wedge.y1);
@@ -243,11 +250,11 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     private java.awt.Color getForgroundColor() {
-        return getModel().getForeColor();
+        return getModel().getParameter(ForegroundColor.class).getValue();
     }
 
     private java.awt.Color getBackgroundColor() {
-        return ((BackGroundColor)getModel().getRenderingParameter(BackGroundColor.class))
+        return getModel().getParameter(BackgroundColor.class)
         	.getValue();
     }
 
@@ -278,7 +285,8 @@ public class SWTRenderer implements IDrawVisitor{
         double[] b=transform( element.x2, element.y2 );
         path.moveTo((float)a[0], (float)a[1]);
         path.lineTo((float)b[0], (float)b[1]);
-        double aW = model.getArrowHeadWidth() / model.getScale();
+        double aW = model.getParameter(ArrowHeadWidth.class).getValue()
+            / model.getParameter(Scale.class).getValue();
         if (element.direction) {
             double[] c = transform( element.x1 - aW, element.y1 - aW );
             double[] d = transform( element.x1 - aW, element.y1 + aW );
@@ -299,7 +307,6 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void visit( TextElement element ) {
-
         int x = transformX(element.x);
         int y = transformY(element.y);
         String text = element.text;
@@ -313,6 +320,22 @@ public class SWTRenderer implements IDrawVisitor{
         setBackground(  getBackgroundColor() );
         gc.setAdvanced( true );
         gc.drawText( text, x, y, true );
+    }
+
+    public void visit( TextGroupElement element ) {
+        int x = transformX(element.x);
+        int y = transformY(element.y);
+        String text = element.text;
+
+        gc.setFont(getFont());
+
+        Point textSize = gc.textExtent( text );
+        x = x - textSize.x/2;
+        y = y - textSize.y/2;
+        setForeground( element.color );
+        setBackground(  getBackgroundColor() );
+        gc.setAdvanced( true );
+        gc.drawText( text, x, y, false );
     }
 
     public void visit(AtomSymbolElement element) {
@@ -345,7 +368,8 @@ public class SWTRenderer implements IDrawVisitor{
             gc.drawText( fc, fcX, fcY, true );
         }
 
-        if(element.hydrogenCount >0 && model.getShowImplicitHydrogens()) {
+        if(element.hydrogenCount >0 && model.getParameter(
+        	ShowImplicitHydrogens.class).getValue()) {
 
             Point hc = new Point(0,0);
             if(element.hydrogenCount >1) {
@@ -354,8 +378,8 @@ public class SWTRenderer implements IDrawVisitor{
             switch(element.alignment) {
                 case -1: x = x -secondTextSize.x - hc.x;break;
                 case 1:  x = x + textSize.x+cp.x;break;
-                case 2: y = y + textSize.y;break;
-                case -2:  y = y+cp.y/2 - Math.max( secondTextSize.y,secondTextSize.y/2 - hc.y);break;
+                case -2: y = y + textSize.y;break;
+                case 2:  y = y+cp.y/2 - Math.max( secondTextSize.y,secondTextSize.y/2 - hc.y);break;
             }
             if(element.hydrogenCount >1) {
                 gc.drawText( Integer.toString( element.hydrogenCount),

@@ -2,7 +2,7 @@
 <feature
       id="net.bioclipse.chemoinformatics_feature"
       label="Bioclipse Chemoinformatics"
-      version="2.4.0.RC1"
+      version="2.4.0.20100709"
       provider-name="The Bioclipse Team"
       plugin="net.bioclipse.chemoinformatics">
 
@@ -27,7 +27,7 @@ The Eclipse Public License accompanies this distribution, and is available at ht
    </url>
 
    <requires>
-      <import feature="net.bioclipse.core_feature" version="2.4.0.RC1" match="greaterOrEqual"/>
+      <import feature="net.bioclipse.core_feature" version="2.4.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -143,7 +143,7 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          unpack="false"/>
 
    <plugin
-         id="org.openscience.cdk.inchi"
+         id="org.openscience.cdk.sinchi"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -330,12 +330,6 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="net.sf.jniinchi"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
    <plugin
          id="javax.vecmath"
@@ -528,13 +522,6 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          unpack="false"/>
 
    <plugin
-         id="org.openscience.cdk.log4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="net.sourceforge.nattable.core"
          download-size="0"
          install-size="0"
@@ -557,6 +544,40 @@ The Eclipse Public License accompanies this distribution, and is available at ht
 
    <plugin
          id="com.springsource.nu.xom"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.bioclipse.chemspider"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.bioclipse.ioformats"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.bioclipse.jniinchi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="net.bioclipse.jnati"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.bioclipse.sea36.util.config"
          download-size="0"
          install-size="0"
          version="0.0.0"

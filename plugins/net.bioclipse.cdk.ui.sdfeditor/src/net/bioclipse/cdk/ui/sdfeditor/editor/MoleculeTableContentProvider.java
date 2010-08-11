@@ -48,6 +48,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -214,7 +215,8 @@ public class MoleculeTableContentProvider implements
     }
 
     private void updateSize(int size) {
-        getCompositeTable( viewer ).redraw();
+        Control control = getCompositeTable( viewer );
+        if(!control.isDisposed()) control.redraw();
     }
 
 

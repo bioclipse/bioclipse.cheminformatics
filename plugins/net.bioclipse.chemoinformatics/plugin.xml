@@ -58,7 +58,7 @@
      </perspectiveExtension>
   </extension>
 
-  <extension point="org.eclipse.core.runtime.contentTypes">
+  <extension point="org.eclipse.core.contenttype.contentTypes">
     <content-type base-type="org.eclipse.core.runtime.text"
       id="net.bioclipse.contenttypes.smiles.singlemol"
       name="SMILES value (Single Molecule)"
@@ -194,6 +194,12 @@
 		</menu>
 		<menu label="Compare"
 			  id="net.bioclipse.chemoinformatics.popup.compare">
+		</menu>
+		<menu label="Convert"
+			  id="net.bioclipse.chemoinformatics.popup.convert">
+		</menu>
+		<menu label="Filter"
+			  id="net.bioclipse.chemoinformatics.popup.filter">
 		</menu>
       </menuContribution>
  </extension>

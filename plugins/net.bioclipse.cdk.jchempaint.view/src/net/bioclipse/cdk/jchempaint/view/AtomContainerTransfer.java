@@ -68,7 +68,7 @@ public class AtomContainerTransfer extends ByteArrayTransfer{
 
     protected IAtomContainer fromByteArray(byte[] bytes) {
         CMLReader reader= new CMLReader(new ByteArrayInputStream( bytes ));
-        IChemFile cFile = getBuilder().newChemFile();
+        IChemFile cFile = getBuilder().newInstance(IChemFile.class);
         try {
             cFile = (IChemFile) reader.read( cFile );
             List<IAtomContainer> acs = ChemFileManipulator.getAllAtomContainers( cFile );
@@ -90,6 +90,7 @@ public class AtomContainerTransfer extends ByteArrayTransfer{
     @Override
     protected Object nativeToJava( TransferData transferData ) {
         byte[] bytes = (byte[]) super.nativeToJava( transferData );
+        if(bytes==null) return null;
         return fromByteArray( bytes );
     }
 }

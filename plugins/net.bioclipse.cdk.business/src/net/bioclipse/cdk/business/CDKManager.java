@@ -97,6 +97,7 @@ import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IIsotope;
 import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CMLReader;
@@ -510,7 +511,8 @@ public class CDKManager implements IBioclipseManager {
             cdkMol.getClass())) {
             newMol = (org.openscience.cdk.interfaces.IMolecule)cdkMol;
         } else {
-            newMol = cdkMol.getBuilder().newMolecule(cdkMol);
+            newMol = cdkMol.getBuilder().newInstance(
+            	org.openscience.cdk.interfaces.IMolecule.class, cdkMol);
         }
         result = generator.createSMILES( newMol );
         }catch (Exception e) {
@@ -625,14 +627,15 @@ public class CDKManager implements IBioclipseManager {
             		chemWriter.write(model);
             	} else if (chemWriter.accepts(AtomContainerSet.class)) {
             		IAtomContainerSet set =
-            			model.getBuilder().newAtomContainerSet();
+            			model.getBuilder().newInstance(IAtomContainerSet.class);
             		set.addAtomContainer((IAtomContainer)model);
             		chemWriter.write(set);
             	} else if (chemWriter.accepts(ChemModel.class)) {
             		IMoleculeSet set =
-            			model.getBuilder().newMoleculeSet();
+            			model.getBuilder().newInstance(IMoleculeSet.class);
             		set.addAtomContainer((IAtomContainer)model);
-            		IChemModel chemModel = model.getBuilder().newChemModel();
+            		IChemModel chemModel = model.getBuilder().newInstance(
+            			IChemModel.class);
             		chemModel.setMoleculeSet(set);
             		chemWriter.write(chemModel);
             	} else {
@@ -646,7 +649,7 @@ public class CDKManager implements IBioclipseManager {
             		chemWriter.write(model);
             	} else if (chemWriter.accepts(MoleculeSet.class)){
             		IMoleculeSet list =
-            			model.getBuilder().newMoleculeSet();
+            			model.getBuilder().newInstance(IMoleculeSet.class);
             		for (IAtomContainer container :
             			ChemModelManipulator.getAllAtomContainers(
             			    (IChemModel)model)
@@ -656,7 +659,8 @@ public class CDKManager implements IBioclipseManager {
             		chemWriter.write(list);
             	} else if (chemWriter.accepts(Molecule.class)){
             		org.openscience.cdk.interfaces.IMolecule smashedContainer =
-            			model.getBuilder().newMolecule();
+            			model.getBuilder().newInstance(
+            				org.openscience.cdk.interfaces.IMolecule.class);
             		for (IAtomContainer container :
             			ChemModelManipulator.getAllAtomContainers(
             				(IChemModel)model)
@@ -897,8 +901,9 @@ public class CDKManager implements IBioclipseManager {
                filetype == SDFFormat.getInstance()) {
 
               IChemModel chemModel = new ChemModel();
-              chemModel.setMoleculeSet( chemModel.getBuilder()
-                                                 .newMoleculeSet() );
+              chemModel.setMoleculeSet(
+                  chemModel.getBuilder().newInstance(IMoleculeSet.class)
+              );
               for (IMolecule mol : molecules) {
 
                   ICDKMolecule cdkmol = asCDKMolecule(mol);
@@ -1341,7 +1346,8 @@ public class CDKManager implements IBioclipseManager {
                 List<List<Integer>> mappings = querytool.getMatchingAtoms();
                 for (int i = 0; i < nmatch; i++) {
                     List<Integer> atomIndices = (List<Integer>) mappings.get(i);
-                    IAtomContainer match=ac.getBuilder().newAtomContainer();
+                    IAtomContainer match =
+                    	ac.getBuilder().newInstance(IAtomContainer.class);
                     for (Integer aindex : atomIndices){
                         IAtom atom=ac.getAtom( aindex );
                         match.addAtom( atom );
@@ -1620,7 +1626,7 @@ public class CDKManager implements IBioclipseManager {
     }
 
       public void generate2dCoordinates(IMolecule molecule,
-                                        IReturner returner,
+                                        IReturner<IMolecule> returner,
                                         IProgressMonitor monitor)
                        throws Exception {
           monitor.beginTask( "Creating 2d coordinates", IProgressMonitor.UNKNOWN );
@@ -1655,10 +1661,14 @@ public class CDKManager implements IBioclipseManager {
             StructureDiagramGenerator sdg = new StructureDiagramGenerator();
   
             org.openscience.cdk.interfaces.IMolecule newmolecule =
-            	mols.getBuilder().newMolecule();
+            	mols.getBuilder().newInstance(
+            		org.openscience.cdk.interfaces.IMolecule.class
+            	);
             for ( IAtomContainer mol : mols.molecules() ) {
                 sdg.setMolecule( cdkmol.getAtomContainer()
-                                       .getBuilder().newMolecule(mol) );
+                     .getBuilder().newInstance(
+                    	  org.openscience.cdk.interfaces.IMolecule.class, mol)
+                );
                 sdg.generateCoordinates();
                 IAtomContainer ac = sdg.getMolecule();
                 newmolecule.add(ac);
@@ -1848,7 +1858,9 @@ public class CDKManager implements IBioclipseManager {
                                     cdkmol.getAtomContainer() );
   
             org.openscience.cdk.interfaces.IMolecule newmolecule
-                = cdkmol.getAtomContainer().getBuilder().newMolecule();
+                = cdkmol.getAtomContainer().getBuilder().newInstance(
+                		org.openscience.cdk.interfaces.IMolecule.class
+                	);
   
             for ( IAtomContainer mol : mols.molecules() ) {
                 try{
@@ -2216,7 +2228,7 @@ public class CDKManager implements IBioclipseManager {
 
         if (missingHCount > 0) {
             mf.addIsotope( m.getAtomContainer().getBuilder()
-                           .newIsotope( Elements.HYDROGEN),
+                           .newInstance(IIsotope.class, Elements.HYDROGEN),
                            missingHCount
             );
         }

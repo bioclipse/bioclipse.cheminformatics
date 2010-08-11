@@ -32,21 +32,21 @@ import org.openscience.cdk.renderer.elements.IRenderingVisitor;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 
-public class ChoiceGenerator implements IGenerator {
+public class ChoiceGenerator implements IGenerator<IAtomContainer> {
 
     boolean use = false;
-    List<IGenerator> generators;
+    List<IGenerator<IAtomContainer>> generators;
 
     public ChoiceGenerator() {
-        generators = new ArrayList<IGenerator>();
+        generators = new ArrayList<IGenerator<IAtomContainer>>();
     }
 
-    public ChoiceGenerator(IGenerator generator) {
+    public ChoiceGenerator(IGenerator<IAtomContainer> generator) {
         this();
         generators.add(generator);
     }
 
-    private void add(IGenerator generator) {
+    private void add(IGenerator<IAtomContainer> generator) {
         generators.add(generator);
     }
 
@@ -65,7 +65,7 @@ public class ChoiceGenerator implements IGenerator {
 
         if(use) {
             ElementGroup group = new ElementGroup();
-            for(IGenerator generator:generators) {
+            for(IGenerator<IAtomContainer> generator:generators) {
                 group.add( generator.generate( ac, model ));
             }
             return group;
@@ -77,7 +77,16 @@ public class ChoiceGenerator implements IGenerator {
     public static final String EP_GENERATOR = "net.bioclipse.cdk.jchempaint.generator";
 
     public static ChoiceGenerator getGeneratorsFromExtensionPoint() {
-        ChoiceGenerator choiseGenerator = new ChoiceGenerator();
+        ChoiceGenerator choiceGenerator = new ChoiceGenerator();
+        for(IGenerator<IAtomContainer> generator:getGeneratorsFromExtension()) {
+            choiceGenerator.add(generator);
+        }
+        return choiceGenerator;
+    }
+
+    public static List<IGenerator<IAtomContainer>> getGeneratorsFromExtension() {
+        List<IGenerator<IAtomContainer>> choiseGenerator =
+        	new ArrayList<IGenerator<IAtomContainer>>();
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IExtensionPoint generatorExtensionPoint = registry
         .getExtensionPoint(EP_GENERATOR);
@@ -90,7 +99,8 @@ public class ChoiceGenerator implements IGenerator {
                 for( IConfigurationElement element
                         : extension.getConfigurationElements() ) {
                     try {
-                        final IGenerator generator = (IGenerator)
+                        final IGenerator<IAtomContainer> generator =
+                            (IGenerator<IAtomContainer>)
                                      element.createExecutableExtension("class");
                         choiseGenerator.add( generator);
                     } catch (CoreException e) {
@@ -112,7 +122,7 @@ public class ChoiceGenerator implements IGenerator {
 
     public List<IGeneratorParameter<?>> getParameters() {
         List<IGeneratorParameter<?>> params = new ArrayList<IGeneratorParameter<?>>();
-        for(IGenerator gen:generators) {
+        for(IGenerator<IAtomContainer> gen:generators) {
             params.addAll( gen.getParameters() );
         }
         return params;

@@ -49,7 +49,7 @@ public class CDKFingerPrintPropertyCalculator implements IPropertyCalculator<Bit
 
     public String getPropertyName() {
 
-        return "net.bioclipse.cdk.fingerprint";
+        return "CDK Fingerprint";
     }
 
     public BitSet parse( String value ) {
@@ -65,6 +65,7 @@ public class CDKFingerPrintPropertyCalculator implements IPropertyCalculator<Bit
     }
 
     public String toString( Object value ) {
+        if(value instanceof String) return (String)value;
         // TODO check if this is right
          BitSet val = (BitSet)value;
          byte[] bytes = new byte[val.length()/8+1];

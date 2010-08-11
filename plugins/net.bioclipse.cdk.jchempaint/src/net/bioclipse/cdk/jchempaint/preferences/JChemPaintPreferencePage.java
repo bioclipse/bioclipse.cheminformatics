@@ -35,7 +35,8 @@ public class JChemPaintPreferencePage
     private DoubleFieldEditor atomRadius;
     private DoubleFieldEditor bondLength;
     private DoubleFieldEditor bondDistance;
-    private DoubleFieldEditor highlightDistance;
+    private DoubleFieldEditor highlightAtomDistance;
+    private DoubleFieldEditor highlightBondDistance;
     private DoubleFieldEditor margin;
     private DoubleFieldEditor wedgeWidth;
     
@@ -109,12 +110,19 @@ public class JChemPaintPreferencePage
         );
         addField(bondDistance);
         
-        highlightDistance = new DoubleFieldEditor(
-                PreferenceConstants.HIGHLIGHT_DISTANCE_DOUBLE,
-                "&Highlight Distance",
+        highlightAtomDistance = new DoubleFieldEditor(
+                PreferenceConstants.HIGHLIGHT_ATOM_DISTANCE_DOUBLE,
+                "&Highlight Atom Distance",
                 getFieldEditorParent()
         );
-        addField(highlightDistance);
+        addField(highlightAtomDistance);
+        
+        highlightBondDistance = new DoubleFieldEditor(
+                PreferenceConstants.HIGHLIGHT_BOND_DISTANCE_DOUBLE,
+                "&Highlight Bond Distance",
+                getFieldEditorParent()
+        );
+        addField(highlightBondDistance);
         
         margin = new DoubleFieldEditor(
                 PreferenceConstants.MARGIN_DOUBLE,

@@ -10,6 +10,7 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -25,6 +26,8 @@ import net.bioclipse.jobs.IReturner;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 public interface IMoleculeTableManager extends IBioclipseManager {
 
@@ -90,4 +93,9 @@ public interface IMoleculeTableManager extends IBioclipseManager {
     @PublishedMethod( params="IMoleculesEditorModel mol, String filename",
                       methodSummary="Saves the molecule list as a file as CSV")
     public void saveAsCSV(IMoleculesEditorModel model, String file) throws Exception;
+    
+    public void saveAsCSV( IMoleculesEditorModel model,IFile file, IProgressMonitor monitor) 
+    throws BioclipseException, IOException, CoreException;
+
+    
 }

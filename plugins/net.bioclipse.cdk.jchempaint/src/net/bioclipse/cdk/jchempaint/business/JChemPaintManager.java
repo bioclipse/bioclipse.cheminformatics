@@ -44,12 +44,21 @@ import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IBond.Order;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
+import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactAtom;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowEndCarbons;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHydrogens;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondDistance;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondLength;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondWidth;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator.WedgeWidth;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.FitToScreen;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.ZoomFactor;
+import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;
+import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HighlightAtomDistance;
+import org.openscience.cdk.renderer.generators.HighlightBondGenerator.HighlightBondDistance;
 import org.openscience.cdk.renderer.generators.RingGenerator.CDKStyleAromaticity;
 import org.openscience.cdk.renderer.generators.RingGenerator.RingProportion;
 import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
@@ -432,7 +441,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setBondLength(double bondLength) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setBondLength(bondLength);
+            model.getParameter(BondLength.class).setValue(bondLength);
         }
         updateView();
     }
@@ -440,7 +449,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setAtomRadius(double atomRadius) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            ((AtomRadius)model.getRenderingParameter(AtomRadius.class))
+            ((AtomRadius)model.getParameter(AtomRadius.class))
                .setValue(atomRadius);
         }
         updateView();
@@ -449,7 +458,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setIsCompact(boolean isCompact) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.getRenderingParameter(CompactAtom.class).setValue(true);
+            model.getParameter(CompactAtom.class).setValue(true);
         }
         updateView();
     }
@@ -457,7 +466,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setBondDistance(double bondDistance) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.getRenderingParameter( BondDistance.class ).setValue( bondDistance);
+            model.getParameter( BondDistance.class ).setValue( bondDistance);
         }
         updateView();
     }
@@ -465,7 +474,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setBondWidth(double bondWidth) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.getRenderingParameter(BondWidth.class).setValue(bondWidth);
+            model.getParameter(BondWidth.class).setValue(bondWidth);
         }
         updateView();
     }
@@ -473,7 +482,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setDrawNumbers(boolean setDrawNumbers) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setDrawNumbers(setDrawNumbers);
+            model.set(WillDrawAtomNumbers.class, setDrawNumbers);
         }
         updateView();
     }
@@ -481,15 +490,23 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setFitToScreen(boolean fitToScreen) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setFitToScreen(fitToScreen);
+            model.set(FitToScreen.class, fitToScreen);
         }
         updateView();
     }
 
-    public void setHighlightDistance(double highlightDistance) {
+    public void setHighlightAtomDistance(double highlightDistance) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setHighlightDistance(highlightDistance);
+            model.set(HighlightAtomDistance.class, highlightDistance);
+        }
+        updateView();
+    }
+
+    public void setHighlightBondDistance(double highlightDistance) {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            model.set(HighlightBondDistance.class, highlightDistance);
         }
         updateView();
     }
@@ -497,7 +514,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setRingProportion(double ringProportion) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.getRenderingParameter( BondDistance.class ).setValue( ringProportion );
+            model.getParameter( BondDistance.class ).setValue( ringProportion );
         }
         updateView();
     }
@@ -505,7 +522,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setShowAromaticity(boolean showAromaticity) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.getRenderingParameter(ShowAromaticity.class).setValue(showAromaticity);
+            model.getParameter(ShowAromaticity.class).setValue(showAromaticity);
         }
         updateView();
     }
@@ -513,7 +530,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setShowAromaticityInCDKStyle(boolean showAromaticityCDK) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.getRenderingParameter(CDKStyleAromaticity.class).setValue(showAromaticityCDK);
+            model.getParameter(CDKStyleAromaticity.class).setValue(showAromaticityCDK);
         }
         updateView();
     }
@@ -521,7 +538,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setShowEndCarbons(boolean showEndCarbons) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.getRenderingParameter(ShowEndCarbons.class).setValue(showEndCarbons);
+            model.getParameter(ShowEndCarbons.class).setValue(showEndCarbons);
         }
         updateView();
     }
@@ -529,7 +546,8 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setShowExplicitHydrogens(boolean explicitHydrogens) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setShowExplicitHydrogens(explicitHydrogens);
+            model.getParameter(ShowExplicitHydrogens.class)
+            	.setValue(explicitHydrogens);
         }
         updateView();
     }
@@ -537,7 +555,8 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setShowImplicitHydrogens(boolean implicitHydrogens) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setShowImplicitHydrogens(implicitHydrogens);
+            model.getParameter(ShowImplicitHydrogens.class)
+            	.setValue(implicitHydrogens);
         }
         updateView();
     }
@@ -545,7 +564,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setWedgeWidth(double wedgeWidth) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setWedgeWidth(wedgeWidth);
+            model.set(WedgeWidth.class, wedgeWidth);
         }
         updateView();
     }
@@ -553,7 +572,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setMargin(double margin) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.getRenderingParameter(Margin.class).setValue(margin);
+            model.getParameter(Margin.class).setValue(margin);
         }
         updateView();
     }
@@ -561,7 +580,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public void setZoom(double zoom) {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            model.setZoomFactor(zoom);
+            model.getParameter(ZoomFactor.class).setValue(zoom);
         }
         updateView();
     }
@@ -569,7 +588,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public double getAtomRadius() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return (Double)model.getRenderingParameter(BasicAtomGenerator.AtomRadius.class).getValue();
+            return (Double)model.getParameter(BasicAtomGenerator.AtomRadius.class).getValue();
         } else {
             return 0;
         }
@@ -578,7 +597,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public double getBondDistance() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getRenderingParameter( BondDistance.class ).getValue();
+            return model.getParameter( BondDistance.class ).getValue();
         } else {
             return 0;
         }
@@ -587,7 +606,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public double getBondLength() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getBondLength();
+            return model.getParameter(BondLength.class).getValue();
         } else {
             return 0;
         }
@@ -596,7 +615,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public double getBondWidth() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getRenderingParameter(BondWidth.class).getValue();
+            return model.getParameter(BondWidth.class).getValue();
         } else {
             return 0;
         }
@@ -605,7 +624,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public boolean getDrawNumbers() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getDrawNumbers();
+            return model.getParameter(WillDrawAtomNumbers.class).getValue();
         } else {
             return false;
         }
@@ -614,16 +633,25 @@ public class JChemPaintManager implements IBioclipseManager {
     public boolean getFitToScreen() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.isFitToScreen();
+            return model.getParameter(FitToScreen.class).getValue();
         } else {
             return false;
         }
     }
 
-    public double getHighlightDistance() {
+    public double getHighlightAtomDistance() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getHighlightDistance();
+            return model.getParameter(HighlightAtomDistance.class).getValue();
+        } else {
+            return 0;
+        }
+    }
+
+    public double getHighlightBondDistance() {
+        RendererModel model = this.getRendererModel();
+        if (model != null) {
+            return model.getParameter(HighlightBondDistance.class).getValue();
         } else {
             return 0;
         }
@@ -632,7 +660,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public boolean getIsCompact() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getRenderingParameter(CompactAtom.class).getValue();
+            return model.getParameter(CompactAtom.class).getValue();
         } else {
             return false;
         }
@@ -641,7 +669,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public double getRingProportion() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getRenderingParameter(RingProportion.class).getValue();
+            return model.getParameter(RingProportion.class).getValue();
         } else {
             return 0;
         }
@@ -650,7 +678,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public boolean getShowAromaticity() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getRenderingParameter(ShowAromaticity.class).getValue();
+            return model.getParameter(ShowAromaticity.class).getValue();
         } else {
             return false;
         }
@@ -659,7 +687,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public boolean getShowAromaticityInCDKStyle() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getRenderingParameter(CDKStyleAromaticity.class).getValue();
+            return model.getParameter(CDKStyleAromaticity.class).getValue();
         } else {
             return false;
         }
@@ -668,7 +696,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public boolean getShowEndCarbons() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getRenderingParameter(ShowEndCarbons.class).getValue();
+            return model.getParameter(ShowEndCarbons.class).getValue();
         } else {
             return false;
         }
@@ -677,7 +705,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public boolean getShowExplicitHydrogens() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getShowExplicitHydrogens();
+            return model.getParameter(ShowExplicitHydrogens.class).getValue();
         } else {
             return false;
         }
@@ -686,7 +714,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public boolean getShowImplicitHydrogens() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getShowImplicitHydrogens();
+            return model.getParameter(ShowImplicitHydrogens.class).getValue();
         } else {
             return false;
         }
@@ -695,7 +723,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public double getWedgeWidth() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getWedgeWidth();
+            return model.getParameter(WedgeWidth.class).getValue();
         } else {
             return 0;
         }
@@ -704,7 +732,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public double getMargin() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getRenderingParameter(Margin.class).getValue();
+            return model.getParameter(Margin.class).getValue();
         } else {
             return 0;
         }
@@ -713,7 +741,7 @@ public class JChemPaintManager implements IBioclipseManager {
     public double getZoom() {
         RendererModel model = this.getRendererModel();
         if (model != null) {
-            return model.getZoomFactor();
+            return model.getParameter(ZoomFactor.class).getValue();
         } else {
             return 0;
         }
@@ -732,8 +760,10 @@ public class JChemPaintManager implements IBioclipseManager {
                         atomsToRemove.add( RemoveAtom.remove( atom) );
                 }
             }
-            relay.execute( CompositEdit.compose( atomsToRemove ) );
-            updateView();
+            if(!atomsToRemove.isEmpty()) {
+                relay.execute( CompositEdit.compose( atomsToRemove ) );
+                updateView();
+            }
         } else {
             say("No opened JChemPaint editor");
         }

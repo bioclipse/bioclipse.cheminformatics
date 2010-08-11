@@ -40,6 +40,8 @@ import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.jobs.BioclipseUIJob;
 import net.sourceforge.nattable.NatTable;
+import net.sourceforge.nattable.grid.GridRegion;
+import net.sourceforge.nattable.layer.LabelStack;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -71,6 +73,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -218,11 +221,23 @@ public class MoleculesEditor extends EditorPart implements
 
             @Override
             public void dragStart( DragSourceEvent event ) {
-                start = new Point(event.x,event.y);
+                Control widget = ((DragSource)event.widget).getControl();
+                if(widget instanceof NatTable) {
+                    NatTable table = ((NatTable)widget);
+                    LabelStack regionLabels = table.getRegionLabelsByXY(event.x, event.y);
+                    if(regionLabels.hasLabel(GridRegion.BODY)) {
+                        start = new Point(event.x,event.y);
+                        return;
+                    }
+                }
+                event.doit = false;
             }
             @Override
             public void dragSetData( DragSourceEvent event ) {
-                if(start==null) return;
+                if(start==null){
+                    event.doit = false;
+                    return;
+                }
                 MoleculeTableViewer viewer = getMolTableViewer();
                 NatTable table = (NatTable) viewer.getControl();
                 int col = table.getColumnPositionByX( start.x );
@@ -243,10 +258,14 @@ public class MoleculesEditor extends EditorPart implements
                         else if (PluginTransfer.getInstance().isSupportedType(event.dataType)) {
                             byte[] bData = AtomContainerTransfer.getInstance().toByteArray(mol.getAtomContainer());
                             event.data = new PluginTransferData("net.bioclipse.cdk.jchempaint.atomContainerDrop", bData);
-                        }
+                        }else event.doit = false;
                 } else if ( TextTransfer.getInstance().isSupportedType( event.dataType )) {
                     event.data = data.toString();
                 }
+                else if( plugTransfer.isSupportedType(event.dataType)) {
+                    event.data = new PluginTransferData( "net.bioclipse.cdk.jchempaint.atomContainerDrop",
+                                                         data.toString().getBytes());
+                } else event.doit = false;
             }
         });
     }
@@ -267,7 +286,10 @@ public class MoleculesEditor extends EditorPart implements
                                        new DropTargetAdapter() {
 
             public void drop( DropTargetEvent event ) {
-                if(event.data == null) return;
+                if(event.data == null){
+                    event.detail = DND.DROP_NONE;
+                    return;
+                }
                 if(localSelTransfer.isSupportedType( event.currentDataType )) {
                     IStructuredSelection sel = (IStructuredSelection)
                                     localSelTransfer.getSelection();
