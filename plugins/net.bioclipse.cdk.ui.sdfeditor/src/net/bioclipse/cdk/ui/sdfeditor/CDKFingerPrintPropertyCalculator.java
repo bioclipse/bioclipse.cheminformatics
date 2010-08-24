@@ -55,7 +55,7 @@ public class CDKFingerPrintPropertyCalculator implements IPropertyCalculator<Bit
     public BitSet parse( String value ) {
         // TODO check if this is right
         byte[] bytes = new Base64().decode( value.getBytes() );
-        BitSet set = new BitSet();
+        BitSet set = new BitSet(1024);
         for(int i=0;i<bytes.length*8;i++) {
             if( (bytes[bytes.length-i/8-1] & (1<<(i%8))) > 0) {
                 set.set( i );
