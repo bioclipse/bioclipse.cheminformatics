@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JChemPaint3 Test Plug-in
 Bundle-SymbolicName: net.bioclipse.cdk.jchempaint.test
-Bundle-Version: 2.4.0.20100709
+Bundle-Version: 2.4.1.v20100830
 Bundle-Activator: net.bioclipse.cdk.jchempaint.business.test.Activator
 Bundle-Vendor: The Bioclipse Team
 Require-Bundle: org.eclipse.ui,
