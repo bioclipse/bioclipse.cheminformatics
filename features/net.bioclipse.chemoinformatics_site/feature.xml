@@ -18,6 +18,6 @@
 
    <includes
          id="net.bioclipse.chemoinformatics_feature"
-         version="2.4.0.RC1"/>
+         version="2.4.0.20100709"/>
 
 </feature>
