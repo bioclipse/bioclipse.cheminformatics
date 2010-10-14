@@ -11,6 +11,7 @@ import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.preferences.PreferenceConstants;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.openscience.cdk.tools.ILoggingTool;
 
 public class BioclipseLoggingTool implements ILoggingTool {
@@ -18,10 +19,10 @@ public class BioclipseLoggingTool implements ILoggingTool {
 	private final Logger logger = Logger.getLogger(BioclipseLoggingTool.class);
 	private String className;
 	
-	public static boolean useBioclipseLogging = Activator.getDefault()
-		.getPluginPreferences().getBoolean(
-			PreferenceConstants.BIOCLIPSE_LOGGING
-		);
+	public static boolean useBioclipseLogging 
+	    = new InstanceScope().getNode( PreferenceConstants.NODEQUALIFIER )
+                  .getBoolean( PreferenceConstants.BIOCLIPSE_LOGGING, 
+                               false );
 	
     /**
      * Constructs a LoggingTool which produces log lines without any special

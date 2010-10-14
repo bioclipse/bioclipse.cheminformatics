@@ -17,5 +17,6 @@ public class PreferenceConstants {
 
 	public static final String PRETTY_CML = "prettyCML";
 	public static final String BIOCLIPSE_LOGGING = "bioclipseLogging";
+	public static final String NODEQUALIFIER = "net.bioclipse.cdk.business";
 	
 }

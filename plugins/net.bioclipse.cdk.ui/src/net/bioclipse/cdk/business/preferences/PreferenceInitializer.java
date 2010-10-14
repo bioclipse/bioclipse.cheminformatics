@@ -11,7 +11,9 @@
 package net.bioclipse.cdk.business.preferences;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 import net.bioclipse.cdk.business.Activator;
 
@@ -26,7 +28,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
 	 */
 	public void initializeDefaultPreferences() {
-		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		IPreferenceStore store = new ScopedPreferenceStore( 
+		                                 new InstanceScope(), 
+		                                 PreferenceConstants.NODEQUALIFIER );
 		store.setDefault(PreferenceConstants.PRETTY_CML, true);
 		store.setDefault(PreferenceConstants.BIOCLIPSE_LOGGING, false);
 	}

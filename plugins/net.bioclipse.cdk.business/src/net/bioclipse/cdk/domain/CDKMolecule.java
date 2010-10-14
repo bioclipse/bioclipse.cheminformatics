@@ -28,6 +28,7 @@ import net.bioclipse.inchi.business.IInChIManager;
 import nu.xom.Element;
 
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
@@ -176,7 +177,9 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         if (getAtomContainer()==null) 
             throw new BioclipseException("No molecule to get CML from!");
 
-        if (prefs != null && prefs.getBoolean(PreferenceConstants.PRETTY_CML)) {
+        if ( new InstanceScope().getNode( PreferenceConstants.NODEQUALIFIER )
+                                .getBoolean( PreferenceConstants.PRETTY_CML, 
+                                             true ) ) {
             ByteArrayOutputStream bo=new ByteArrayOutputStream();
 
             CMLWriter writer=new CMLWriter(bo);

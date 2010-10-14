@@ -15,7 +15,7 @@ import net.bioclipse.cdk.logging.BioclipseLoggingTool;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.core.runtime.Plugin;
 import org.openscience.cdk.tools.LoggingToolFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -23,7 +23,7 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractUIPlugin {
+public class Activator extends Plugin {
 
     private static final Logger logger = Logger.getLogger(Activator.class);
     

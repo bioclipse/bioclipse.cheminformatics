@@ -13,10 +13,13 @@ package net.bioclipse.cdk.business.preferences;
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.logging.BioclipseLoggingTool;
 
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.openscience.cdk.tools.LoggingToolFactory;
 
 /**
@@ -30,7 +33,12 @@ public class CDKPreferencePage
 
 	public CDKPreferencePage() {
 		super(GRID);
-		setPreferenceStore(Activator.getDefault().getPreferenceStore());
+		ScopedPreferenceStore store 
+		    = new ScopedPreferenceStore( new InstanceScope(), 
+                                         PreferenceConstants.NODEQUALIFIER );
+		store.setDefault( PreferenceConstants.PRETTY_CML,        true  );
+        store.setDefault( PreferenceConstants.BIOCLIPSE_LOGGING, false );
+		setPreferenceStore(store);
 		setDescription("Cheminformatics");
 	}
 	
