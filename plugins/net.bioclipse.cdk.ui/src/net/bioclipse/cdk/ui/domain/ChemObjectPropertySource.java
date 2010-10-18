@@ -9,7 +9,7 @@
  *     Ola Spjuth
  *     
  ******************************************************************************/
-package net.bioclipse.cdk.domain;
+package net.bioclipse.cdk.ui.domain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +17,7 @@ import java.util.HashMap;
 import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
 
+import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.core.domain.props.BasicPropertySource;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;

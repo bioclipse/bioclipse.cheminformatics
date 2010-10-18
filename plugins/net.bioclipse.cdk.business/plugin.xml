@@ -17,10 +17,5 @@
                type="net.bioclipse.cdk.domain.ICDKMolecule">
          </adapter>
       </factory>
-      
-   </extension>
-   <extension point="net.bioclipse.ui.business.BioObjectFromStringBuilder">
-      <BioObjectFromStringBuilder
-         object="net.bioclipse.cdk.business.CDKBioObjectFromStringBuilder" />
    </extension>
 </plugin>

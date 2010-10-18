@@ -14,7 +14,6 @@ package net.bioclipse.cdk.domain;
 import net.bioclipse.core.domain.BioObject;
 import net.bioclipse.core.domain.IBioObject;
 
-import org.eclipse.ui.views.properties.IPropertySource;
 import org.openscience.cdk.interfaces.IChemObject;
 
 /**
@@ -30,8 +29,6 @@ public class CDKChemObject<T extends IChemObject> extends BioObject implements I
 //    private ChemObjectPropertySource propSource;
     private String name;
 
-    private IPropertySource propSource;
-    
     /**
      * Used to look up e.g. the molecule of an Atom
      */
@@ -73,12 +70,14 @@ public class CDKChemObject<T extends IChemObject> extends BioObject implements I
 
     @SuppressWarnings("unchecked")
     public Object getAdapter(Class adapter) {
-        if (adapter ==IPropertySource.class){
-            if (propSource ==null){
-                propSource=new ChemObjectPropertySource(this);
-            }
-            return propSource;
-        }
+        
+//        TODO: Gpox please add this functionality again
+//        if (adapter ==IPropertySource.class){
+//            if (propSource ==null){
+//                propSource=new ChemObjectPropertySource(this);
+//            }
+//            return propSource;
+//        }
         if (adapter.isAssignableFrom( chemobj.getClass() )) {
             return chemobj;
         }

@@ -8,10 +8,11 @@
  *
  * Contact: http://www.bioclipse.net/
  ******************************************************************************/
-package net.bioclipse.cdk.business;
+package net.bioclipse.cdk.ui;
 
 import java.util.List;
 
+import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.core.domain.IBioObject;
 import net.bioclipse.ui.business.IBioObjectFromStringBuilder;
 

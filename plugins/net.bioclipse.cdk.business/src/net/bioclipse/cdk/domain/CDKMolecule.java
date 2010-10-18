@@ -29,7 +29,6 @@ import nu.xom.Element;
 
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.ui.views.properties.IPropertySource;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
