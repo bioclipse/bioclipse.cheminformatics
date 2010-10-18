@@ -263,11 +263,11 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
             return this.getAtomContainer();
         }
         
-        if (adapter.isAssignableFrom(IPropertySource.class)) {
-            return new CDKMoleculePropertySource(this);
-        }
+//        TODO: Gpox please help get this functionality back:
+//        if (adapter.isAssignableFrom(IPropertySource.class)) {
+//            return new CDKMoleculePropertySource(this);
+//        }
         
-        // TODO Auto-generated method stub
         return super.getAdapter( adapter );
     }
 

@@ -16,8 +16,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import net.bioclipse.cdk.domain.CDKMoleculePropertySource;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.ui.domain.CDKMoleculePropertySource;
 import net.bioclipse.cdk.ui.sdfeditor.Activator;
 import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.BodyLayerStack;
 import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.ColorProviderPainter;

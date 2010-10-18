@@ -8,14 +8,14 @@
  * Contributors:
  *     Ola Spjuth - initial API and implementation
  ******************************************************************************/
-package net.bioclipse.cdk.business;
+package net.bioclipse.cdk.ui.handlers;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.bioclipse.cdk.domain.CDKMoleculeSelectionHelper;
 import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.ui.domain.CDKMoleculeSelectionHelper;
 import net.bioclipse.inchi.ui.InChIDialog;
 
 import org.eclipse.core.commands.AbstractHandler;

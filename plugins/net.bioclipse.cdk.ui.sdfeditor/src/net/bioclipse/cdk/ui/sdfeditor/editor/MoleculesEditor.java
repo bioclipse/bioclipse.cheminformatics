@@ -20,13 +20,13 @@ import java.util.Collections;
 import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
-import net.bioclipse.cdk.business.CDKMoleculeTransfer;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.jchempaint.view.AtomContainerTransfer;
+import net.bioclipse.cdk.ui.domain.CDKMoleculeTransfer;
+import net.bioclipse.cdk.ui.domain.MoleculesIndexEditorInput;
 import net.bioclipse.cdk.ui.sdfeditor.business.IMoleculeTableManager;
 import net.bioclipse.cdk.ui.sdfeditor.business.MappingEditorModel;
 import net.bioclipse.cdk.ui.sdfeditor.business.SDFIndexEditorModel;

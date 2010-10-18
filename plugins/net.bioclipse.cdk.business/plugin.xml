@@ -17,16 +17,7 @@
                type="net.bioclipse.cdk.domain.ICDKMolecule">
          </adapter>
       </factory>
-      <factory
-            adaptableType="net.bioclipse.cdk.domain.SDFElement"
-            class="net.bioclipse.cdk.domain.SDFAdapterFactory">
-         <adapter
-               type="net.bioclipse.cdk.domain.ICDKMolecule">
-         </adapter>
-         <adapter
-               type="net.bioclipse.cdk.domain.MoleculesIndexEditorInput">
-         </adapter>
-      </factory>
+      
    </extension>
    <extension point="net.bioclipse.ui.business.BioObjectFromStringBuilder">
       <BioObjectFromStringBuilder

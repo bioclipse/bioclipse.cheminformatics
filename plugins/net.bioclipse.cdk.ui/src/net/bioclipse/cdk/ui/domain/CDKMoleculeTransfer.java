@@ -8,7 +8,7 @@
  * Contributors:
  *     Arvid Berg
  ******************************************************************************/
-package net.bioclipse.cdk.business;
+package net.bioclipse.cdk.ui.domain;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

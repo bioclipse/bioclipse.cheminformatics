@@ -8,7 +8,7 @@
  *
  * Contact: http://www.bioclipse.net/
  ******************************************************************************/
-package net.bioclipse.cdk.domain;
+package net.bioclipse.cdk.ui.domain;
 
 import static net.bioclipse.core.Activator.getVirtualProject;
 
@@ -21,6 +21,8 @@ import java.util.Scanner;
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.cdk.business.ICDKManager;
+import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.domain.SDFElement;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;

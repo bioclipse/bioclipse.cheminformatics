@@ -80,9 +80,9 @@
                label="Create Smiles"
                menubarPath="additions"
                tooltip="Create SMILES code for the selected molecule"/>
-      </objectContribution> 
+      </objectContribution>
    </extension-->
-   
+
     <extension
         point="org.eclipse.ui.commands">
         <command
@@ -120,11 +120,11 @@
         <command
            id="net.bioclipse.cdk.ui.handlers.convertSMILEStoSDF"
            defaultHandler="net.bioclipse.cdk.ui.handlers.ConvertSMILEStoSDF"
-           name="smi2sdf"/>  	
+           name="smi2sdf"/>
         <command
            id="net.bioclipse.cdk.ui.sdf.FilterOutSalts"
            defaultHandler="net.bioclipse.cdk.ui.filters.FilterOutSalts"
-           name="filterSaltsFromSDF"/>  	
+           name="filterSaltsFromSDF"/>
     </extension>
 
   <extension point="org.eclipse.core.expressions.propertyTesters">
@@ -138,16 +138,16 @@
   </extension>
 
 
-	<extension 
+	<extension
   		point="org.eclipse.ui.menus">
-  		
+
   		<menuContribution
            locationURI="popup:net.bioclipse.chemoinformatics.popup.filter?after=additions">
 		    <command
 		    	commandId="net.bioclipse.cdk.ui.sdf.FilterOutSalts"
 		    	label="Filter out salts"
 		        icon="icons/filter.png">
-		        
+
 		        <visibleWhen>
 			   		<iterate operator="and" ifEmpty="false">
 		      			<adapt type="org.eclipse.core.resources.IResource">
@@ -165,8 +165,8 @@
 			   		</iterate>
 		        </visibleWhen>
 	       </command>
-		</menuContribution>		      	
-		      	
+		</menuContribution>
+
 
   		<menuContribution
            locationURI="popup:net.bioclipse.chemoinformatics.popup.convert?after=additions">
@@ -175,7 +175,7 @@
 		    	label="Convert SMILES to SDF"
 		        icon="icons/molecule2D.png">
 		      	<visibleWhen>
-		      	
+
     <with variable="selection">
         <iterate ifEmpty="false">
             <instanceof value="org.eclipse.core.resources.IResource"/>
@@ -183,17 +183,17 @@
                      value="*.smi"/>
         </iterate>
     </with>
-    
+
 			   		<!--iterate operator="and" ifEmpty="false">
 		      			<adapt type="org.eclipse.core.resources.IResource">
-							<test property="org.eclipse.core.resources.name" value="*.smi"/> 
+							<test property="org.eclipse.core.resources.name" value="*.smi"/>
 			      		</adapt>
 			      		<count value="1" />
 			   		</iterate-->
 		        </visibleWhen>
 	       </command>
 		</menuContribution>
-  		
+
 		<menuContribution
            locationURI="popup:net.bioclipse.chemoinformatics.popup.gen3d?after=additions">
 		    <command
@@ -204,9 +204,9 @@
 			   		<iterate operator="and" ifEmpty="false">
 		      			<adapt type="org.eclipse.core.resources.IResource">
 			      			<or>
-				                <test property="org.eclipse.core.resources.contentTypeId" 
+				                <test property="org.eclipse.core.resources.contentTypeId"
 				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule3d"/>
-				                <test property="org.eclipse.core.resources.contentTypeId" 
+				                <test property="org.eclipse.core.resources.contentTypeId"
 				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule5d"/>
 				            </or>
 			      		</adapt>
@@ -224,9 +224,9 @@
 			   		<iterate operator="and" ifEmpty="false">
 		      			<adapt type="org.eclipse.core.resources.IResource">
 			      			<or>
-					   		    <test property="org.eclipse.core.resources.contentTypeId" 
+					   		    <test property="org.eclipse.core.resources.contentTypeId"
 				       	        	value="net.bioclipse.contenttypes.cml.singleMolecule2d"/>
-					   		    <test property="org.eclipse.core.resources.contentTypeId" 
+					   		    <test property="org.eclipse.core.resources.contentTypeId"
 				       	        	value="net.bioclipse.contenttypes.cml.singleMolecule0d"/>
 				            </or>
 			      		</adapt>
@@ -244,9 +244,9 @@
 			   		<iterate operator="and" ifEmpty="false">
 		      			<adapt type="org.eclipse.core.resources.IResource">
 			      			<or>
-				                <test property="org.eclipse.core.resources.contentTypeId" 
+				                <test property="org.eclipse.core.resources.contentTypeId"
 				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule2d"/>
-				                <test property="org.eclipse.core.resources.contentTypeId" 
+				                <test property="org.eclipse.core.resources.contentTypeId"
 				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule5d"/>
 				            </or>
 			      		</adapt>
@@ -264,9 +264,9 @@
 			   		<iterate operator="and" ifEmpty="false">
 		      			<adapt type="org.eclipse.core.resources.IResource">
 			      			<or>
-				                <test property="org.eclipse.core.resources.contentTypeId" 
+				                <test property="org.eclipse.core.resources.contentTypeId"
 				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule3d"/>
-				                <test property="org.eclipse.core.resources.contentTypeId" 
+				                <test property="org.eclipse.core.resources.contentTypeId"
 				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule0d"/>
 				            </or>
 			      		</adapt>
@@ -284,7 +284,7 @@
 			   		<iterate operator="and" ifEmpty="false">
 		      			<adapt type="org.eclipse.core.resources.IResource">
 			      			<or>
-					   		    <test property="org.eclipse.core.resources.contentTypeId" 
+					   		    <test property="org.eclipse.core.resources.contentTypeId"
 				       	        	value="net.bioclipse.contenttypes.mdlMolFile3D"/>
 				            </or>
 			      		</adapt>
@@ -302,9 +302,9 @@
 			   		<iterate operator="and" ifEmpty="false">
 		      			<adapt type="org.eclipse.core.resources.IResource">
 			      			<or>
-				                <test property="org.eclipse.core.resources.contentTypeId" 
+				                <test property="org.eclipse.core.resources.contentTypeId"
 				           	    	value="net.bioclipse.contenttypes.mdlMolFile2D"/>
-				                <test property="org.eclipse.core.resources.contentTypeId" 
+				                <test property="org.eclipse.core.resources.contentTypeId"
 				           	    	value="net.bioclipse.contenttypes.mdlMolFile0D"/>
 				            </or>
 			      		</adapt>
@@ -322,7 +322,7 @@
 			   		<iterate operator="and" ifEmpty="false">
 		      			<adapt type="org.eclipse.core.resources.IResource">
 			      			<or>
-					   		    <test property="org.eclipse.core.resources.contentTypeId" 
+					   		    <test property="org.eclipse.core.resources.contentTypeId"
 				       	        	value="net.bioclipse.contenttypes.mdlMolFile2D"/>
 				            </or>
 			      		</adapt>
@@ -340,9 +340,9 @@
 			   		<iterate operator="and" ifEmpty="false">
 		      			<adapt type="org.eclipse.core.resources.IResource">
 			      			<or>
-					   		    <test property="org.eclipse.core.resources.contentTypeId" 
+					   		    <test property="org.eclipse.core.resources.contentTypeId"
 				       	        	value="net.bioclipse.contenttypes.mdlMolFile3D"/>
-					   		    <test property="org.eclipse.core.resources.contentTypeId" 
+					   		    <test property="org.eclipse.core.resources.contentTypeId"
 				       	        	value="net.bioclipse.contenttypes.mdlMolFile0D"/>
 				            </or>
 			      		</adapt>
@@ -350,9 +350,9 @@
 		        </visibleWhen>
 	       </command>
 		</menuContribution>
-		
+
 		<!-- -->
-		
+
 		<menuContribution
            locationURI="popup:net.bioclipse.chemoinformatics.popup.compare?after=additions">
 		    <command
@@ -365,19 +365,19 @@
 			   		<iterate operator="and" ifEmpty="false">
 		      			<adapt type="org.eclipse.core.resources.IResource">
 			      			<or>
-				                <test property="org.eclipse.core.resources.contentTypeId" 
+				                <test property="org.eclipse.core.resources.contentTypeId"
 				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule3d"/>
-				                <test property="org.eclipse.core.resources.contentTypeId" 
+				                <test property="org.eclipse.core.resources.contentTypeId"
 				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule5d"/>
-				                <test property="org.eclipse.core.resources.contentTypeId" 
+				                <test property="org.eclipse.core.resources.contentTypeId"
 				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule2d"/>
-				                <test property="org.eclipse.core.resources.contentTypeId" 
+				                <test property="org.eclipse.core.resources.contentTypeId"
 				           	    	value="net.bioclipse.contenttypes.cml.singleMolecule0d"/>
-				                <test property="org.eclipse.core.resources.contentTypeId" 
+				                <test property="org.eclipse.core.resources.contentTypeId"
 				           	    	value="net.bioclipse.contenttypes.mdlMolFile2D"/>
-				                <test property="org.eclipse.core.resources.contentTypeId" 
+				                <test property="org.eclipse.core.resources.contentTypeId"
 				           	    	value="net.bioclipse.contenttypes.mdlMolFile3D"/>
-				                <test property="org.eclipse.core.resources.contentTypeId" 
+				                <test property="org.eclipse.core.resources.contentTypeId"
 				           	    	value="net.bioclipse.contenttypes.mdlMolFile0D"/>
 				            </or>
 			      		</adapt>
@@ -487,8 +487,17 @@
              type="net.bioclipse.cdk.ui.views.IMoleculesEditorModel">
        </adapter>
     </factory>
+    <factory adaptableType="net.bioclipse.cdk.domain.SDFElement"
+             class="net.bioclipse.cdk.ui.domain.SDFAdapterFactory">
+        <adapter 
+            type="net.bioclipse.cdk.domain.ICDKMolecule">
+        </adapter>
+        <adapter
+            type="net.bioclipse.cdk.ui.domain.MoleculesIndexEditorInput">
+        </adapter>
+    </factory>
  </extension>
- 
+
     <extension point="org.eclipse.ui.newWizards">
       <wizard
             category="net.bioclipse.cheminformatics"
@@ -535,12 +544,12 @@
       </view>
    </extension>
 
-    <extension point="org.eclipse.ui.perspectiveExtensions"> 
-        <perspectiveExtension 
-            targetID="net.bioclipse.chemoinformatics.ChemoinformaticsPerspective"> 
-            <viewShortcut id="net.bioclipse.cdk.ui.views.periodictable"/> 
-        </perspectiveExtension> 
-    </extension> 
+    <extension point="org.eclipse.ui.perspectiveExtensions">
+        <perspectiveExtension
+            targetID="net.bioclipse.chemoinformatics.ChemoinformaticsPerspective">
+            <viewShortcut id="net.bioclipse.cdk.ui.views.periodictable"/>
+        </perspectiveExtension>
+    </extension>
 
        <extension
          point="org.eclipse.ui.preferencePages">
