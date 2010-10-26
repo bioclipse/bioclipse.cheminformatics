@@ -12,8 +12,8 @@ package net.bioclipse.cdk.business.test;
 
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.ICDKManager;
+import net.bioclipse.core.api.managers.IBioclipseManager;
 import net.bioclipse.core.tests.AbstractManagerTest;
-import net.bioclipse.managers.business.IBioclipseManager;
 
 /**
  * JUnit tests for checking if the tested Manager has an expected API.

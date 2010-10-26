@@ -13,14 +13,14 @@ package net.bioclipse.jmol.business;
 
 import java.util.List;
 
-import net.bioclipse.core.ResourcePathTransformer;
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.api.BioclipseException;
+import net.bioclipse.core.api.ResourcePathTransformer;
+import net.bioclipse.core.api.domain.IMolecule;
+import net.bioclipse.core.api.managers.IBioclipseManager;
 import net.bioclipse.jmol.Activator;
 import net.bioclipse.jmol.editors.JmolEditor;
 import net.bioclipse.jmol.model.IJmolMolecule;
 import net.bioclipse.jmol.views.JmolConsoleView;
-import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;

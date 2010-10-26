@@ -12,9 +12,9 @@
  ******************************************************************************/
 package net.bioclipse.jmol.test;
 
+import net.bioclipse.core.api.managers.IBioclipseManager;
 import net.bioclipse.core.tests.AbstractManagerTest;
 import net.bioclipse.jmol.business.JmolManager;
-import net.bioclipse.managers.business.IBioclipseManager;
 
 public class JmolManagerTest extends AbstractManagerTest {
 

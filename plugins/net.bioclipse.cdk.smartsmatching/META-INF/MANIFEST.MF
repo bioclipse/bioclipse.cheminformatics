@@ -18,7 +18,8 @@ Require-Bundle: org.eclipse.core.runtime,
  net.bioclipse.cdk.ui.sdfeditor,
  javax.vecmath,
  org.openscience.cdk.smarts,
- org.openscience.cdk.standard
+ org.openscience.cdk.standard,
+ net.bioclipse.core.api;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Import-Package: net.bioclipse.core.business,
  net.bioclipse.core.domain,

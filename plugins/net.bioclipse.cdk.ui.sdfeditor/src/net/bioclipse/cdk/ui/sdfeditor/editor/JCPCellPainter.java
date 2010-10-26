@@ -25,7 +25,7 @@ import net.bioclipse.cdk.jchempaint.view.ChoiceGenerator;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message;
 import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
-import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.api.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 import net.sourceforge.nattable.config.IConfigRegistry;
 import net.sourceforge.nattable.layer.cell.LayerCell;

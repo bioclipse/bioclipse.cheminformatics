@@ -13,7 +13,7 @@ package net.bioclipse.cdk.ui;
 import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
-import net.bioclipse.core.domain.IBioObject;
+import net.bioclipse.core.api.domain.IBioObject;
 import net.bioclipse.ui.business.IBioObjectFromStringBuilder;
 
 import org.apache.log4j.Logger;

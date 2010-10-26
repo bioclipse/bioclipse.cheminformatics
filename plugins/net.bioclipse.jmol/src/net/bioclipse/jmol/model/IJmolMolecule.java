@@ -10,7 +10,7 @@
  ******************************************************************************/
 package net.bioclipse.jmol.model;
 
-import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.api.domain.IMolecule;
 
 /**
  * Interface to the Jmol data model. Implements the {@link IMolecule}

@@ -23,7 +23,7 @@ import java.util.List;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.cdk.ui.views.ISortable;
-import net.bioclipse.core.domain.IMolecule.Property;
+import net.bioclipse.core.api.domain.IMolecule.Property;
 
 
 public class ListMoleculesEditorModel implements IMoleculesEditorModel,

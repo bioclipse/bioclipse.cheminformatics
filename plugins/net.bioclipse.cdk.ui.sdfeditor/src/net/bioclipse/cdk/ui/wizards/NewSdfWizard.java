@@ -17,7 +17,7 @@ import java.util.List;
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.chemoinformatics.wizards.AddMoleculeWizardPage;
 import net.bioclipse.chemoinformatics.wizards.WizardHelper;
-import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.api.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;

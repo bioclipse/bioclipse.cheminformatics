@@ -12,8 +12,8 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 
 import net.bioclipse.cml.contenttypes.CmlFileDescriber;
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.managers.business.IBioclipseManager;
+import net.bioclipse.core.api.BioclipseException;
+import net.bioclipse.core.api.managers.IBioclipseManager;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;

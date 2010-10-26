@@ -15,12 +15,12 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 
-import net.bioclipse.core.PublishedClass;
-import net.bioclipse.core.PublishedMethod;
-import net.bioclipse.core.Recorded;
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IMolecule;
-import net.bioclipse.managers.business.IBioclipseManager;
+import net.bioclipse.core.api.BioclipseException;
+import net.bioclipse.core.api.Recorded;
+import net.bioclipse.core.api.domain.IMolecule;
+import net.bioclipse.core.api.managers.IBioclipseManager;
+import net.bioclipse.core.api.managers.PublishedClass;
+import net.bioclipse.core.api.managers.PublishedMethod;
 
 @PublishedClass(
     value="Manager that allows interaction with the ChemSpider database."

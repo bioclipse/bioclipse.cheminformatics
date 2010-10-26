@@ -17,7 +17,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
-import net.bioclipse.core.domain.BioObject;
+import net.bioclipse.core.api.domain.BioObject;
 
 /**
  * Wraps a smarts string and holds a list of hits in a molecule

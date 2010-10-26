@@ -44,17 +44,18 @@ import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesInfo;
 import net.bioclipse.cdk.exceptions.TimedOutException;
-import net.bioclipse.core.ResourcePathTransformer;
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IMolecule;
-import net.bioclipse.core.domain.IMolecule.Property;
-import net.bioclipse.core.domain.RecordableList;
-import net.bioclipse.core.util.LogUtils;
-import net.bioclipse.jobs.IReturner;
-import net.bioclipse.managers.business.IBioclipseManager;
+import net.bioclipse.core.api.BioclipseException;
+import net.bioclipse.core.api.ResourcePathTransformer;
+import net.bioclipse.core.api.domain.IMolecule;
+import net.bioclipse.core.api.domain.RecordableList;
+import net.bioclipse.core.api.domain.IMolecule.Property;
+import net.bioclipse.core.api.jobs.IReturner;
+import net.bioclipse.core.api.managers.IBioclipseManager;
 import nu.xom.Element;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -511,16 +512,12 @@ public class CDKManager implements IBioclipseManager {
     }
 
       public void calculateSMILES(IMolecule molecule,IReturner<String> returner,
-                                  IProgressMonitor monitor ) {
+                                  IProgressMonitor monitor ) throws BioclipseException {
         assert(molecule!=null);
         monitor.beginTask( "Calculating SMILES", IProgressMonitor.UNKNOWN );
         ICDKMolecule mol;
-        try {
-            mol = asCDKMolecule( molecule );
-        } catch ( BioclipseException e ) {
-            LogUtils.handleException( e, logger, "net.bioclipse.cdk.business" );
-            return;
-        }
+        mol = asCDKMolecule( molecule );
+        
         String result;
         try {
             IAtomContainer cdkMol = mol.getAtomContainer();
@@ -1161,10 +1158,8 @@ public class CDKManager implements IBioclipseManager {
                    throws BioclipseException {
 
           return FingerprinterTool.isSubset(
-              molecule.getFingerprint(net.bioclipse.core.domain
-                  .IMolecule.Property.USE_CALCULATED),
-              molecule.getFingerprint(net.bioclipse.core.domain
-                  .IMolecule.Property.USE_CALCULATED)
+              molecule.getFingerprint(net.bioclipse.core.api.domain.IMolecule.Property.USE_CALCULATED),
+              molecule.getFingerprint(net.bioclipse.core.api.domain.IMolecule.Property.USE_CALCULATED)
           );
       }
 
@@ -1614,10 +1609,10 @@ public class CDKManager implements IBioclipseManager {
 
               }
               catch ( IOException e ) {
-                  LogUtils.debugTrace( logger, e );
+                  logger.log( Level.DEBUG, "Caught exception", e );
               }
               catch ( CoreException e ) {
-                  LogUtils.debugTrace( logger, e );
+                  logger.log( Level.DEBUG, "Caught exception", e );
               }
               finally {
                   monitor.done();
@@ -2177,11 +2172,11 @@ public class CDKManager implements IBioclipseManager {
               reader.close();
           } catch (IOException e ) {
               monitor.done();
-              LogUtils.debugTrace( logger, e );
+              logger.log( Level.DEBUG, "Caught exception", e );
               logger.error( "Failed to extract molecules from "+file.getName() );
           } catch ( Exception e ) {
               monitor.done();
-              LogUtils.debugTrace( logger, e );
+              logger.log( Level.DEBUG, "Caught exception", e );
               logger.error( "Failed to extract molecules from "+file.getName() );
           }
           monitor.done();
@@ -2468,7 +2463,7 @@ public class CDKManager implements IBioclipseManager {
     public float calculateTanimoto(IMolecule calculateFor, BitSet reference )
         throws BioclipseException {
         BitSet f2 = asCDKMolecule(calculateFor).getFingerprint(
-            net.bioclipse.core.domain.IMolecule.Property.USE_CALCULATED);
+            net.bioclipse.core.api.domain.IMolecule.Property.USE_CALCULATED);
         return calculateTanimoto( reference, f2 );
     }
 
@@ -2476,9 +2471,9 @@ public class CDKManager implements IBioclipseManager {
                                     IMolecule reference )
                                     throws BioclipseException {
         BitSet f1 = asCDKMolecule(reference).getFingerprint(
-                net.bioclipse.core.domain.IMolecule.Property.USE_CALCULATED);
+                net.bioclipse.core.api.domain.IMolecule.Property.USE_CALCULATED);
         BitSet f2 = asCDKMolecule(calculateFor).getFingerprint(
-                net.bioclipse.core.domain.IMolecule.Property.USE_CALCULATED);
+                net.bioclipse.core.api.domain.IMolecule.Property.USE_CALCULATED);
         return calculateTanimoto( f1, f2 );
     }
 
@@ -2489,7 +2484,7 @@ public class CDKManager implements IBioclipseManager {
                 throws BioclipseException {
         List<Float> result = new ArrayList<Float>();
         BitSet refensetBitSet = asCDKMolecule(reference).getFingerprint(
-                net.bioclipse.core.domain.IMolecule.Property.USE_CALCULATED);
+                net.bioclipse.core.api.domain.IMolecule.Property.USE_CALCULATED);
         for(int i=0;i<calculateFor.size();i++ ){
             result.add(
                 calculateTanimoto(calculateFor.get(i), refensetBitSet)

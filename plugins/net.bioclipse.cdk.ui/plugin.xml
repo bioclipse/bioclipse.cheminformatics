@@ -71,7 +71,7 @@
       <objectContribution
             adaptable="false"
             id="net.bioclipse.cdk.ui.actions.moleculeResource"
-            objectClass="net.bioclipse.core.domain.IMolecule">
+            objectClass="net.bioclipse.core.api.domain.IMolecule">
          <action
                class="net.bioclipse.cdk.ui.actions.CreateSmilesAction"
                enablesFor="1"

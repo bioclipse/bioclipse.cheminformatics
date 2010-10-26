@@ -10,16 +10,16 @@
  ******************************************************************************/
 package net.bioclipse.inchi.business;
 
-import net.bioclipse.core.PublishedClass;
-import net.bioclipse.core.PublishedMethod;
-import net.bioclipse.core.Recorded;
-import net.bioclipse.core.TestClasses;
-import net.bioclipse.core.TestMethods;
-import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.api.Recorded;
+import net.bioclipse.core.api.domain.IMolecule;
+import net.bioclipse.core.api.jobs.IBioclipseJob;
+import net.bioclipse.core.api.jobs.IReturner;
+import net.bioclipse.core.api.managers.IBioclipseManager;
+import net.bioclipse.core.api.managers.PublishedClass;
+import net.bioclipse.core.api.managers.PublishedMethod;
+import net.bioclipse.core.api.managers.TestClasses;
+import net.bioclipse.core.api.managers.TestMethods;
 import net.bioclipse.inchi.InChI;
-import net.bioclipse.jobs.BioclipseJob;
-import net.bioclipse.jobs.BioclipseJobUpdateHook;
-import net.bioclipse.managers.business.IBioclipseManager;
 
 @PublishedClass ("Manager for creating InChI and InChIKeys.")
 @TestClasses(
@@ -35,8 +35,8 @@ public interface IInChIManager extends IBioclipseManager {
         		"given molecule.")
     @TestMethods("testGenerate")
     public InChI generate(IMolecule molecule) throws Exception;
-    public BioclipseJob<InChI> generate(IMolecule molecule,
-            BioclipseJobUpdateHook<InChI> h );
+    public IBioclipseJob<InChI> generate( IMolecule molecule,
+                                          IReturner<InChI> h );
 
     @Recorded
     @PublishedMethod(

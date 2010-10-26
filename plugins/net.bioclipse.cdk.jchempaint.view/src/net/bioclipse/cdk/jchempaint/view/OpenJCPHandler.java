@@ -12,8 +12,8 @@ package net.bioclipse.cdk.jchempaint.view;
 
 import java.io.IOException;
 
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IBioObject;
+import net.bioclipse.core.api.BioclipseException;
+import net.bioclipse.core.api.domain.IBioObject;
 import net.bioclipse.ui.business.IUIManager;
 
 import org.apache.log4j.Logger;

@@ -34,7 +34,7 @@ import net.bioclipse.cdk.jchempaint.preferences.GenerateLabelPrefChangedLisener;
 import net.bioclipse.cdk.jchempaint.preferences.PreferenceConstants;
 import net.bioclipse.cdk.jchempaint.undoredo.SWTUndoRedoFactory;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
-import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.api.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;

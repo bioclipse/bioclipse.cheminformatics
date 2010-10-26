@@ -17,7 +17,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.api.BioclipseException;
 import net.sourceforge.nattable.config.IConfigRegistry;
 import net.sourceforge.nattable.layer.cell.LayerCell;
 import net.sourceforge.nattable.painter.cell.BackgroundPainter;

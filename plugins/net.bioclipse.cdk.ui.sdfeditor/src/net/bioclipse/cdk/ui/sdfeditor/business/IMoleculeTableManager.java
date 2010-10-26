@@ -16,14 +16,14 @@ import java.util.Collection;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IFileMoleculesEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
-import net.bioclipse.core.PublishedMethod;
-import net.bioclipse.core.Recorded;
-import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.api.BioclipseException;
+import net.bioclipse.core.api.Recorded;
+import net.bioclipse.core.api.jobs.IReturner;
+import net.bioclipse.core.api.managers.IBioclipseManager;
+import net.bioclipse.core.api.managers.IBioclipseUIJob;
+import net.bioclipse.core.api.managers.PublishedMethod;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
-import net.bioclipse.jobs.BioclipseUIJob;
-import net.bioclipse.jobs.IReturner;
-import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -36,7 +36,7 @@ public interface IMoleculeTableManager extends IBioclipseManager {
 
     @Recorded
     public void createSDFIndex( IFile file,
-                                BioclipseUIJob<SDFIndexEditorModel> uiJob);
+                                IBioclipseUIJob<SDFIndexEditorModel> uiJob);
 
     public BioclipseJob<SDFIndexEditorModel> createSDFIndex(IFile file,
                              BioclipseJobUpdateHook<SDFIndexEditorModel> hook);
@@ -51,22 +51,22 @@ public interface IMoleculeTableManager extends IBioclipseManager {
     @Recorded
     public void calculateProperty( IMoleculesEditorModel model,
                                    IPropertyCalculator<?> calculator,
-                                   BioclipseUIJob<Void> uiJob);
+                                   IBioclipseUIJob<Void> uiJob);
 
     @Recorded
     public void calculateProperty( IMoleculesEditorModel model,
                                    IPropertyCalculator<?>[] calculators,
-                                   BioclipseUIJob<Void> uiJob);
+                                   IBioclipseUIJob<Void> uiJob);
 
     @Recorded
     public void calculateProperties( ICDKMolecule molecule,
                                       IPropertyCalculator<?>[] calculators,
-                                      BioclipseUIJob<Void> uiJob);
+                                      IBioclipseUIJob<Void> uiJob);
     @Recorded
     public void saveSDF(IMoleculesEditorModel model, IFile file)
                                                       throws BioclipseException;
     public void saveSDF( IMoleculesEditorModel model, IFile file,
-                         BioclipseUIJob<IFileMoleculesEditorModel> uiJob)
+                         IBioclipseUIJob<IFileMoleculesEditorModel> uiJob)
                                                       throws BioclipseException;
 
     public void saveSDF( IFileMoleculesEditorModel model,

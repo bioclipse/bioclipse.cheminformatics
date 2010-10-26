@@ -10,8 +10,8 @@
  ******************************************************************************/
 package net.bioclipse.pubchem.tests;
 
+import net.bioclipse.core.api.managers.IBioclipseManager;
 import net.bioclipse.core.tests.coverage.AbstractCoverageTest;
-import net.bioclipse.managers.business.IBioclipseManager;
 import net.bioclipse.pubchem.business.IPubChemManager;
 import net.bioclipse.pubchem.business.PubChemManager;
 

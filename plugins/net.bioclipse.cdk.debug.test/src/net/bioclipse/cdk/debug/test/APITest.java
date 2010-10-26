@@ -12,8 +12,8 @@ package net.bioclipse.cdk.debug.test;
 
 import net.bioclipse.cdkdebug.business.CDKDebugManager;
 import net.bioclipse.cdkdebug.business.ICDKDebugManager;
+import net.bioclipse.core.api.managers.IBioclipseManager;
 import net.bioclipse.core.tests.AbstractManagerTest;
-import net.bioclipse.managers.business.IBioclipseManager;
 
 /**
  * JUnit tests for checking if the tested Manager is properly tested.

@@ -1,9 +1,8 @@
 package net.bioclipse.cdk.domain;
 
 import net.bioclipse.cdk.business.Activator;
-import net.bioclipse.core.BioclipseStore;
-import net.bioclipse.core.util.LogUtils;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IAdapterFactory;
@@ -26,7 +25,7 @@ public class CDKAdapterFactory implements IAdapterFactory {
                                             .getJavaCDKManager()
                                             .loadMolecule( file );
                     } catch ( Exception e ) {
-                        logger.debug( LogUtils.traceStringOf( e ));
+                        logger.log( Level.DEBUG, "Caught exception", e );
                         return null;
                     }
                 }

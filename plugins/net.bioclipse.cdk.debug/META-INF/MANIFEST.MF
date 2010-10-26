@@ -21,7 +21,8 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.libiocml,
  org.openscience.cdk.nonotify,
  net.bioclipse.cdk.business,
- net.bioclipse.scripting.ui
+ net.bioclipse.scripting.ui,
+ net.bioclipse.core.api;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.cdkdebug,
  net.bioclipse.cdkdebug.business

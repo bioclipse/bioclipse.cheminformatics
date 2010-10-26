@@ -13,13 +13,13 @@ package net.bioclipse.pubchem.business;
 import java.io.IOException;
 import java.util.List;
 
-import net.bioclipse.core.PublishedMethod;
-import net.bioclipse.core.Recorded;
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IMolecule;
-import net.bioclipse.jobs.BioclipseJob;
+import net.bioclipse.core.api.BioclipseException;
+import net.bioclipse.core.api.Recorded;
+import net.bioclipse.core.api.domain.IMolecule;
+import net.bioclipse.core.api.jobs.IBioclipseJob;
+import net.bioclipse.core.api.managers.IBioclipseManager;
+import net.bioclipse.core.api.managers.PublishedMethod;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
-import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -39,7 +39,7 @@ public interface IPubChemManager extends IBioclipseManager {
     public IFile loadCompound(int cid, IFile target, IProgressMonitor monitor )
         throws IOException, BioclipseException, CoreException;
 
-    public BioclipseJob<IFile> loadCompound(int cid, 
+    public IBioclipseJob<IFile> loadCompound(int cid, 
                                          IFile target, 
                                          BioclipseJobUpdateHook<IFile> hook )
         throws IOException, BioclipseException, CoreException;
@@ -56,7 +56,7 @@ public interface IPubChemManager extends IBioclipseManager {
     public IFile loadCompound3d(int cid, IFile target, IProgressMonitor monitor )
         throws IOException, BioclipseException, CoreException;
 
-    public BioclipseJob<IFile> loadCompound3d(int cid, 
+    public IBioclipseJob<IFile> loadCompound3d(int cid, 
                                             IFile target, 
                                             BioclipseJobUpdateHook<IFile> hook )
         throws IOException, BioclipseException, CoreException;
@@ -126,7 +126,7 @@ public interface IPubChemManager extends IBioclipseManager {
     public List<Integer> search(String query, IProgressMonitor monitor )
         throws IOException, BioclipseException, CoreException;
 
-    public BioclipseJob<IFile> search(String query,
+    public IBioclipseJob<IFile> search(String query,
                                       BioclipseJobUpdateHook<IFile> hook)
           throws IOException, BioclipseException, CoreException;
 

@@ -42,10 +42,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JScrollPane;
 import javax.vecmath.Point3f;
 
-import net.bioclipse.core.IResourcePathTransformer;
-import net.bioclipse.core.ResourcePathTransformer;
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jmol.Activator;
 import net.bioclipse.jmol.model.IJmolMolecule;
@@ -59,6 +55,12 @@ import net.bioclipse.jmol.views.outline.JmolModelString;
 import net.bioclipse.jmol.views.outline.JmolObject;
 
 import org.apache.log4j.Logger;
+
+import net.bioclipse.core.api.BioclipseException;
+import net.bioclipse.core.api.IResourcePathTransformer;
+import net.bioclipse.core.api.ResourcePathTransformer;
+import net.bioclipse.core.api.domain.IMolecule;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;

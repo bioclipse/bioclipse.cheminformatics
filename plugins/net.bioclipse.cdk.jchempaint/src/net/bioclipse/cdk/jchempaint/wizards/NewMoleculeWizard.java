@@ -12,7 +12,7 @@ package net.bioclipse.cdk.jchempaint.wizards;
 
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.api.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.ui.business.Activator;
 

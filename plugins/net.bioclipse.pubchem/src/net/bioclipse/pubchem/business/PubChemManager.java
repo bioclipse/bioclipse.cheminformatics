@@ -23,10 +23,10 @@ import java.util.regex.PatternSyntaxException;
 
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IMolecule;
-import net.bioclipse.core.domain.RecordableList;
-import net.bioclipse.managers.business.IBioclipseManager;
+import net.bioclipse.core.api.BioclipseException;
+import net.bioclipse.core.api.domain.IMolecule;
+import net.bioclipse.core.api.domain.RecordableList;
+import net.bioclipse.core.api.managers.IBioclipseManager;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Nodes;

@@ -12,8 +12,8 @@
 package net.bioclipse.cdk.business;
 
 import net.bioclipse.cdk.logging.BioclipseLoggingTool;
-import net.bioclipse.core.util.LogUtils;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Plugin;
 import org.openscience.cdk.tools.LoggingToolFactory;
@@ -91,7 +91,7 @@ public class Activator extends Plugin {
         try {
             manager = (ICDKManager) finderTracker.waitForService(1000*10);
         } catch (InterruptedException e) {
-            LogUtils.debugTrace(logger, e);
+            logger.log( Level.DEBUG, "Caught exception", e );;
             throw new IllegalStateException("Could not get the CDK manager: " +
                 e.getMessage(), e);
         }
@@ -106,7 +106,7 @@ public class Activator extends Plugin {
         try {
             manager = (IJavaScriptCDKManager) jsFinderTracker.waitForService(1000*10);
         } catch (InterruptedException e) {
-            LogUtils.debugTrace(logger, e);
+            logger.log( Level.DEBUG, "Caught exception", e );;
         }
         if(manager == null) {
             throw new IllegalStateException("Could not get the CDK manager");

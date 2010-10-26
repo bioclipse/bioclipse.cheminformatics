@@ -13,7 +13,7 @@ package net.bioclipse.cdk.domain;
 
 import org.eclipse.core.resources.IFile;
 
-import net.bioclipse.core.domain.BioObject;
+import net.bioclipse.core.api.domain.BioObject;
 
 
 /**

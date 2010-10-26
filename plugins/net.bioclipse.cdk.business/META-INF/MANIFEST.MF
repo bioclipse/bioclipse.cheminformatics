@@ -35,7 +35,7 @@ Require-Bundle: org.openscience.cdk.io,
  org.openscience.cdk.fingerprint,
  net.bioclipse.inchi,
  net.sf.cglib,
- net.bioclipse.core;bundle-version="2.4.0"
+ net.bioclipse.core.api;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.cdk.business,
  net.bioclipse.cdk.business.preferences,

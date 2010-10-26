@@ -18,8 +18,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.bioclipse.browser.scraper.IBrowserScraper;
-import net.bioclipse.core.domain.IBioObject;
-import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.api.domain.IBioObject;
+import net.bioclipse.core.api.domain.IMolecule;
 import net.bioclipse.pubchem.domain.LWPubchemMolecule;
 
 /**

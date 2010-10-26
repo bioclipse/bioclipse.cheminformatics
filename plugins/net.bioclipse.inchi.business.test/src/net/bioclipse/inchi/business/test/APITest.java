@@ -10,10 +10,10 @@
  ******************************************************************************/
 package net.bioclipse.inchi.business.test;
 
+import net.bioclipse.core.api.managers.IBioclipseManager;
 import net.bioclipse.core.tests.AbstractManagerTest;
 import net.bioclipse.inchi.business.IInChIManager;
 import net.bioclipse.inchi.business.InChIManager;
-import net.bioclipse.managers.business.IBioclipseManager;
 
 public class APITest extends AbstractManagerTest {
 

@@ -10,10 +10,10 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.describer;
 
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IMolecule;
-import net.bioclipse.core.domain.RecordableList;
-import net.bioclipse.core.domain.IBioObject;
+import net.bioclipse.core.api.BioclipseException;
+import net.bioclipse.core.api.domain.IBioObject;
+import net.bioclipse.core.api.domain.IMolecule;
+import net.bioclipse.core.api.domain.RecordableList;
 import net.bioclipse.ui.business.describer.IBioObjectDescriber;
 
 

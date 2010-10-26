@@ -11,8 +11,8 @@
 
 package net.bioclipse.cdk.domain;
 
-import net.bioclipse.core.domain.BioObject;
-import net.bioclipse.core.domain.IBioObject;
+import net.bioclipse.core.api.domain.BioObject;
+import net.bioclipse.core.api.domain.IBioObject;
 
 import org.openscience.cdk.interfaces.IChemObject;
 

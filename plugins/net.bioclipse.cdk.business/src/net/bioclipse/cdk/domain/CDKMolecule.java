@@ -20,9 +20,9 @@ import java.util.Properties;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.preferences.PreferenceConstants;
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.BioObject;
-import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.api.BioclipseException;
+import net.bioclipse.core.api.domain.BioObject;
+import net.bioclipse.core.api.domain.IMolecule;
 import net.bioclipse.inchi.InChI;
 import net.bioclipse.inchi.business.IInChIManager;
 import nu.xom.Element;

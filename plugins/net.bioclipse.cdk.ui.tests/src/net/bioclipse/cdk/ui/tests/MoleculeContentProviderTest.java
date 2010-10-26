@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.bioclipse.cdk.ui.views.MoleculeContentProvider;
-import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.api.domain.IMolecule;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;

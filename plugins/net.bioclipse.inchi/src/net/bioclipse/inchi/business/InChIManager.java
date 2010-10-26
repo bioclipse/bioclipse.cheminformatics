@@ -13,12 +13,12 @@ package net.bioclipse.inchi.business;
 
 import java.security.InvalidParameterException;
 
-import net.bioclipse.core.PublishedMethod;
-import net.bioclipse.core.Recorded;
-import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.api.Recorded;
+import net.bioclipse.core.api.domain.IMolecule;
+import net.bioclipse.core.api.jobs.IReturner;
+import net.bioclipse.core.api.managers.IBioclipseManager;
+import net.bioclipse.core.api.managers.PublishedMethod;
 import net.bioclipse.inchi.InChI;
-import net.bioclipse.jobs.IReturner;
-import net.bioclipse.managers.business.IBioclipseManager;
 import net.sf.jniinchi.INCHI_RET;
 
 import org.eclipse.core.runtime.IProgressMonitor;

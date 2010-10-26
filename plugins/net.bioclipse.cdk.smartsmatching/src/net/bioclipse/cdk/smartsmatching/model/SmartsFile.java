@@ -13,7 +13,7 @@ package net.bioclipse.cdk.smartsmatching.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.bioclipse.core.domain.BioObject;
+import net.bioclipse.core.api.domain.BioObject;
 
 
 public class SmartsFile extends BioObject{

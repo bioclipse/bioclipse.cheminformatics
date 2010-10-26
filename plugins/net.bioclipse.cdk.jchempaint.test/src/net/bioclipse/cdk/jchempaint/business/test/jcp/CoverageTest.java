@@ -12,8 +12,8 @@ package net.bioclipse.cdk.jchempaint.business.test.jcp;
 
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintManager;
 import net.bioclipse.cdk.jchempaint.business.JChemPaintManager;
+import net.bioclipse.core.api.managers.IBioclipseManager;
 import net.bioclipse.core.tests.coverage.AbstractCoverageTest;
-import net.bioclipse.managers.business.IBioclipseManager;
 
 /**
  * JUnit tests for checking if the tested Manager is properly tested.

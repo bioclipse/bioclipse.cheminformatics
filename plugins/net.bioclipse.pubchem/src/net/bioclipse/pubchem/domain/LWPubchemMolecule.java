@@ -19,9 +19,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.BioObject;
-import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.api.BioclipseException;
+import net.bioclipse.core.api.domain.BioObject;
+import net.bioclipse.core.api.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.pubchem.Activator;
 

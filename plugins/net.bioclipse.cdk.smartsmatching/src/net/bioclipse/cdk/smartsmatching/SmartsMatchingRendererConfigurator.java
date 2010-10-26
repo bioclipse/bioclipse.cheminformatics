@@ -21,7 +21,7 @@ import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.smartsmatching.views.SmartsMatchingView;
 import net.bioclipse.cdk.ui.sdfeditor.editor.IRenderer2DConfigurator;
-import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.api.BioclipseException;
 
 import org.apache.log4j.Logger;
 import org.openscience.cdk.interfaces.IAtom;

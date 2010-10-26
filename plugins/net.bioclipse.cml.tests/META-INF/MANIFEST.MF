@@ -19,7 +19,8 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.extra,
  org.openscience.cdk.ioformats,
  net.bioclipse.ui,
- net.bioclipse.cml
+ net.bioclipse.cml,
+ net.bioclipse.core.api;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.cml.tests
 Import-Package: nu.xom;version="1.1.0",

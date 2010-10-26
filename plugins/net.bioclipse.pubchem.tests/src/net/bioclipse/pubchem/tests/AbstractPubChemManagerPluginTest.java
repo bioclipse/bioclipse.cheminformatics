@@ -10,7 +10,7 @@
  ******************************************************************************/
 package net.bioclipse.pubchem.tests;
 
-import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.api.domain.IMolecule;
 import net.bioclipse.pubchem.business.IPubChemManager;
 
 import org.junit.Assert;

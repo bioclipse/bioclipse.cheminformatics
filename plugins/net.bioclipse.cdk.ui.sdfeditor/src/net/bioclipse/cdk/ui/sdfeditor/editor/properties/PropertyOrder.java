@@ -16,7 +16,7 @@ import java.util.concurrent.Callable;
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
-import net.bioclipse.core.domain.IMolecule.Property;
+import net.bioclipse.core.api.domain.IMolecule.Property;
 
 import org.openscience.cdk.geometry.GeometryTools;
 

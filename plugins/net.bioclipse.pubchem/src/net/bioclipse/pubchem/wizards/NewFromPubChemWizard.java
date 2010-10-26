@@ -13,8 +13,8 @@ package net.bioclipse.pubchem.wizards;
 import java.io.IOException;
 import java.util.List;
 
-import net.bioclipse.core.ResourcePathTransformer;
-import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.api.BioclipseException;
+import net.bioclipse.core.api.ResourcePathTransformer;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.pubchem.business.PubChemManager;
 import net.bioclipse.ui.business.UIManager;

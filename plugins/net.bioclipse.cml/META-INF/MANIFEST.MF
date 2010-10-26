@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  net.bioclipse.ui,
  org.eclipse.swt,
- org.eclipse.ui
+ org.eclipse.ui,
+ net.bioclipse.core.api;bundle-version="1.0.0"
 Bundle-ClassPath: .
 Bundle-Activator: net.bioclipse.cml.managers.Activator
 Bundle-ActivationPolicy: lazy

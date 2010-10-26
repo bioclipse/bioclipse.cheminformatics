@@ -33,7 +33,7 @@ import net.bioclipse.cdk.smartsmatching.model.SmartsWrapper;
 import net.bioclipse.cdk.smartsmatching.prefs.SmartsMatchingPrefsHelper;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart;
-import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.api.BioclipseException;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.contexts.ContextManagerEvent;

@@ -13,8 +13,8 @@ package net.bioclipse.jmol.cdk.describer;
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IBioObject;
+import net.bioclipse.core.api.BioclipseException;
+import net.bioclipse.core.api.domain.IBioObject;
 import net.bioclipse.jmol.editors.JmolEditor;
 import net.bioclipse.ui.business.describer.IBioObjectDescriber;
 

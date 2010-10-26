@@ -35,7 +35,7 @@ import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message.Alignment;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
-import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.api.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.BioclipseUIJob;
 import net.bioclipse.ui.dialogs.SaveAsDialog;

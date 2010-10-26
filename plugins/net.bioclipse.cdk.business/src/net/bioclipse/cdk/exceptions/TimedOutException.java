@@ -10,7 +10,7 @@
  ******************************************************************************/
 package net.bioclipse.cdk.exceptions;
 
-import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.api.BioclipseException;
 
 
 /**

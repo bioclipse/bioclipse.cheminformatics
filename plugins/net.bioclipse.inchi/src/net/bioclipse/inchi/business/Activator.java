@@ -10,10 +10,9 @@
  ******************************************************************************/
 package net.bioclipse.inchi.business;
 
-import net.bioclipse.core.util.LogUtils;
-
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -22,7 +21,7 @@ import org.osgi.util.tracker.ServiceTracker;
  * 
  * @author jonalv
  */
-public class Activator extends AbstractUIPlugin {
+public class Activator extends Plugin {
 
     private static final Logger logger = Logger.getLogger(Activator.class);
     public static final String PLUGIN_ID = "net.bioclipse.inchi";
@@ -58,7 +57,7 @@ public class Activator extends AbstractUIPlugin {
             inchiManager = (IInChIManager)
                 javaFinderTracker.waitForService(1000*10);
         } catch (InterruptedException e) {
-            LogUtils.debugTrace(logger, e);
+            logger.log( Level.DEBUG, "Caught exception", e );
         }
         if(inchiManager == null) {
             throw new IllegalStateException("Could not get inchi manager");
@@ -72,7 +71,7 @@ public class Activator extends AbstractUIPlugin {
             inchiManager = (IInChIManager)
                 jsFinderTracker.waitForService(1000*10);
         } catch (InterruptedException e) {
-            LogUtils.debugTrace(logger, e);
+            logger.log( Level.DEBUG, "Caught exception", e );
         }
         if(inchiManager == null) {
             throw new IllegalStateException("Could not get inchi manager");

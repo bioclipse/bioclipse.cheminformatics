@@ -16,7 +16,7 @@ import java.util.Map;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.domain.CDKMoleculeSelectionHelper;
-import net.bioclipse.inchi.ui.InChIDialog;
+import net.bioclipse.inchi.ui.dialogs.InChIDialog;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -53,7 +53,7 @@ public class GenerateInChI extends AbstractHandler {
 			String ret;
 			try {
 				ret = cdkmol.getInChI(
-				    net.bioclipse.core.domain.IMolecule
+				    net.bioclipse.core.api.domain.IMolecule
 				        .Property.USE_CACHED_OR_CALCULATED
 				);
 			} catch (Exception e) {

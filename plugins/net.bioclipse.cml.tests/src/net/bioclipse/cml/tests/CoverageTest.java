@@ -12,8 +12,8 @@ package net.bioclipse.cml.tests;
 
 import net.bioclipse.cml.managers.IValidateCMLManager;
 import net.bioclipse.cml.managers.ValidateCMLManager;
+import net.bioclipse.core.api.managers.IBioclipseManager;
 import net.bioclipse.core.tests.coverage.AbstractCoverageTest;
-import net.bioclipse.managers.business.IBioclipseManager;
 
 /**
  * JUnit tests for checking if the tested Manager is properly tested.

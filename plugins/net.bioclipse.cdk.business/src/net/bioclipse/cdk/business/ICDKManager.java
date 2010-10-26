@@ -24,17 +24,17 @@ import java.util.Properties;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.domain.MoleculesInfo;
-import net.bioclipse.core.PublishedClass;
-import net.bioclipse.core.PublishedMethod;
-import net.bioclipse.core.Recorded;
-import net.bioclipse.core.TestClasses;
-import net.bioclipse.core.TestMethods;
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IMolecule;
-import net.bioclipse.jobs.BioclipseJob;
-import net.bioclipse.jobs.BioclipseJobUpdateHook;
-import net.bioclipse.jobs.BioclipseUIJob;
-import net.bioclipse.managers.business.IBioclipseManager;
+import net.bioclipse.core.api.BioclipseException;
+import net.bioclipse.core.api.Recorded;
+import net.bioclipse.core.api.domain.IMolecule;
+import net.bioclipse.core.api.jobs.IBioclipseJob;
+import net.bioclipse.core.api.jobs.IReturner;
+import net.bioclipse.core.api.managers.IBioclipseManager;
+import net.bioclipse.core.api.managers.IBioclipseUIJob;
+import net.bioclipse.core.api.managers.PublishedClass;
+import net.bioclipse.core.api.managers.PublishedMethod;
+import net.bioclipse.core.api.managers.TestClasses;
+import net.bioclipse.core.api.managers.TestMethods;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -109,8 +109,9 @@ public interface ICDKManager extends IBioclipseManager {
     public ICDKMolecule fromSMILES(String SMILES)
                         throws BioclipseException;
 
-    public BioclipseJob<ICDKMolecule> fromSMILES( String SMILES,
-                                                  BioclipseJobUpdateHook hook );    
+    public IBioclipseJob<ICDKMolecule> fromSMILES( 
+                                           String SMILES,
+                                           IReturner<ICDKMolecule> hook );    
     
     /**
      * Perceives aromaticity on an IMolecule
@@ -219,7 +220,7 @@ public interface ICDKManager extends IBioclipseManager {
 
     public List<ICDKMolecule> 
         loadMolecules( IFile file,
-                       BioclipseUIJob<List<ICDKMolecule>> uiJob );
+                       IBioclipseUIJob<List<ICDKMolecule>> uiJob );
 
     /**
      * Save a molecule in same format as loaded to same filename, if exists
@@ -456,8 +457,8 @@ public interface ICDKManager extends IBioclipseManager {
                   throws BioclipseException;
 
     @Recorded
-    public BioclipseJob<String> calculateSMILES( IMolecule molecule,
-                                 BioclipseJobUpdateHook<String> hook);
+    public IBioclipseJob<String> calculateSMILES( IMolecule molecule,
+                                                  IReturner<String> hook );
 
     /**
      * @param path
@@ -644,7 +645,7 @@ public interface ICDKManager extends IBioclipseManager {
                        methodSummary = "Creates a index file for the SD-file." )
     public void createSDFileIndex( String filePath);
 
-    public void createSDFileIndex(IFile file, BioclipseUIJob<?> uiJob);
+    public void createSDFileIndex(IFile file, IBioclipseUIJob<?> uiJob);
     
     /**
      * Reads files and extracts conformers if available.
@@ -685,7 +686,7 @@ public interface ICDKManager extends IBioclipseManager {
 
     @TestMethods( "testNumberOfEntriesInSDFIFileUIJob" )
     public int numberOfEntriesInSDF( IFile file, 
-                                     BioclipseUIJob<Integer> uiJob );
+                                     IBioclipseUIJob<Integer> uiJob );
 
     @Recorded
     @PublishedMethod(
@@ -707,14 +708,14 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     @TestMethods("testGenerate2DCoordinates")
     public void generate2dCoordinates( List<? extends IMolecule> molecules,
-                                       BioclipseUIJob<List<IMolecule>> uiJob) 
+                                       IBioclipseUIJob<List<IMolecule>> uiJob ) 
            throws Exception;
 
     @Recorded
     @TestMethods("testGenerate2DCoordinatesSingle")
-    public void generate2dCoordinates(IMolecule molecule,
-                                      BioclipseUIJob<IMolecule> uiJob)
-                        throws Exception;
+    public void generate2dCoordinates( IMolecule molecule,
+                                       IBioclipseUIJob<IMolecule> uiJob )
+                throws Exception;
 
     @Recorded
     @PublishedMethod(
@@ -733,16 +734,15 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @TestMethods("testGenerate3DCoordinates")
-    public void generate3dCoordinates(List<IMolecule> molecule,
-                                      BioclipseUIJob<List<IMolecule>> uiJob) 
-                           throws BioclipseException;
+    public void generate3dCoordinates( List<IMolecule> molecule,
+                                       IBioclipseUIJob<List<IMolecule>> uiJob ) 
+                throws BioclipseException;
 
     @Recorded
     @TestMethods("testGenerate3DCoordinatesSingle")
-    public void generate3dCoordinates(IMolecule molecule,
-                                      BioclipseUIJob<IMolecule> uiJob) 
-    throws BioclipseException;
-
+    public void generate3dCoordinates( IMolecule molecule,
+                                       IBioclipseUIJob<IMolecule> uiJob ) 
+                throws BioclipseException;
     
     @Recorded
 	  public void saveMol2(ICDKMolecule mol2, String filename) 
@@ -798,7 +798,7 @@ public interface ICDKManager extends IBioclipseManager {
 
 	public List<ICDKMolecule> 
 	    loadSMILESFile( IFile file,
-	                    BioclipseUIJob<List<ICDKMolecule>> uiJob )
+	                    IBioclipseUIJob<List<ICDKMolecule>> uiJob )
 	       throws CoreException, IOException;
 
 	/**
@@ -879,7 +879,7 @@ public interface ICDKManager extends IBioclipseManager {
     @Recorded
     public void saveSDFile( IFile file, 
                             List<? extends IMolecule> entries ,
-                            BioclipseUIJob<Void> uiJob) 
+                            IBioclipseUIJob<Void> uiJob) 
                 throws BioclipseException, InvocationTargetException;
     
     @Recorded
@@ -1071,7 +1071,7 @@ public interface ICDKManager extends IBioclipseManager {
     @TestMethods("testMultipleTanimoto")
     public void calculateTanimoto( List<IMolecule> calculateFor, 
                                           IMolecule reference, 
-                                          BioclipseUIJob<List<Float>> uiJob )
+                                          IBioclipseUIJob<List<Float>> uiJob )
                        throws BioclipseException;
     
     @Recorded
@@ -1117,7 +1117,7 @@ public interface ICDKManager extends IBioclipseManager {
     public ICDKMolecule removeExplicitHydrogens(ICDKMolecule molecule);
 
     public void loadMolecule( IFile file,
-                              BioclipseUIJob<ICDKMolecule> bioclipseUIJob );
+                              IBioclipseUIJob<ICDKMolecule> bioclipseUIJob );
 
     public int numberOfEntriesInSDF( IFile file,
                                      IProgressMonitor monitor );

@@ -26,7 +26,7 @@ import net.bioclipse.cdk.domain.AtomContainerSelection;
 import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.providers.IPharmacophoreProvider;
-import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.api.BioclipseException;
 import net.bioclipse.core.domain.AtomIndexSelection;
 import net.bioclipse.core.domain.IChemicalSelection;
 import net.bioclipse.core.domain.ModelSelection;
@@ -749,7 +749,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                 
                 //Handle case where Iadaptable can return a molecule
                 Object molobj=ada
-                .getAdapter( net.bioclipse.core.domain.IMolecule.class );
+                .getAdapter( net.bioclipse.core.api.domain.IMolecule.class );
                 if (molobj!=null){
                     //If adaptable returns a cdkmolecule, add it directly 
                     if (molobj instanceof ICDKMolecule) {
@@ -759,9 +759,9 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 
                     //If adaptable at least returns an IMolecule
                     //we can create CDKMolecule from it (this is costly though)
-                    else if (molobj instanceof net.bioclipse.core.domain.IMolecule ){
-                        net.bioclipse.core.domain.IMolecule bcmol 
-                        = (net.bioclipse.core.domain.IMolecule) molobj;
+                    else if (molobj instanceof net.bioclipse.core.api.domain.IMolecule ){
+                        net.bioclipse.core.api.domain.IMolecule bcmol 
+                        = (net.bioclipse.core.api.domain.IMolecule) molobj;
                         try {
                             //Lengthy operation, as via CML or SMILES
                             ICDKMolecule cdkmol=cdk.asCDKMolecule( bcmol );

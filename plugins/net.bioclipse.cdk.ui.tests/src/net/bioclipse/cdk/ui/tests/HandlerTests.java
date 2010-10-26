@@ -28,7 +28,7 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.filters.FilterOutSalts;
 import net.bioclipse.cdk.ui.handlers.ConvertSMILEStoSDF;
 import net.bioclipse.core.MockIFile;
-import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.api.BioclipseException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;

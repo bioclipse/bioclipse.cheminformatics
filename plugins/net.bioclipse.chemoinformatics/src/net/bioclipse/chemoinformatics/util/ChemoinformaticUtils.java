@@ -16,7 +16,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.bioclipse.core.TestClasses;
+import net.bioclipse.core.api.managers.TestClasses;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;

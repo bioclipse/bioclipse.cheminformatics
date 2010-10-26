@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.ui,
  net.sf.cglib,
  org.springframework.osgi.aopalliance.osgi,
  org.eclipse.core.resources,
- net.bioclipse.cdk.business
+ net.bioclipse.cdk.business,
+ net.bioclipse.core.api;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.apache.log4j
 Bundle-ActivationPolicy: lazy

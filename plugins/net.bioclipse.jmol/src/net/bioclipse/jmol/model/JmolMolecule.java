@@ -14,10 +14,10 @@ import java.util.List;
 
 import org.xmlcml.cml.element.CMLMolecule;
 
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.BioObject;
-import net.bioclipse.core.domain.IMolecule;
-import net.bioclipse.core.domain.RecordableList;
+import net.bioclipse.core.api.BioclipseException;
+import net.bioclipse.core.api.domain.BioObject;
+import net.bioclipse.core.api.domain.IMolecule;
+import net.bioclipse.core.api.domain.RecordableList;
 
 public class JmolMolecule extends BioObject implements IJmolMolecule {
 

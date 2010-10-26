@@ -10,7 +10,7 @@
  ******************************************************************************/
 package net.bioclipse.jmol.actions;
 
-import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.api.BioclipseException;
 import net.bioclipse.jmol.Activator;
 import net.bioclipse.jmol.business.IJmolManager;
 

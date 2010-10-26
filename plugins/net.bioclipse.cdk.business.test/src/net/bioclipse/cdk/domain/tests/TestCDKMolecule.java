@@ -21,7 +21,7 @@ import java.util.BitSet;
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.MockIFile;
-import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.api.BioclipseException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -64,7 +64,7 @@ public class TestCDKMolecule {
                                              new NullProgressMonitor() );
         assertNotNull(mol);
         BitSet bs = mol.getFingerprint(
-            net.bioclipse.core.domain.IMolecule
+            net.bioclipse.core.api.domain.IMolecule
                 .Property.USE_CACHED_OR_CALCULATED
         );
         assertNotNull(bs);

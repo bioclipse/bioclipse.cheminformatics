@@ -29,8 +29,8 @@ import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.ui.model.IMoleculesFromFile;
 import net.bioclipse.cdk.ui.model.MoleculesFromSDF;
 import net.bioclipse.cdk.ui.model.MoleculesFromSMI;
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IBioObject;
+import net.bioclipse.core.api.BioclipseException;
+import net.bioclipse.core.api.domain.IBioObject;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.EFS;

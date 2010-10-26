@@ -29,7 +29,7 @@ import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculeUtils;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IFileMoleculesEditorModel;
-import net.bioclipse.core.domain.IMolecule.Property;
+import net.bioclipse.core.api.domain.IMolecule.Property;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;

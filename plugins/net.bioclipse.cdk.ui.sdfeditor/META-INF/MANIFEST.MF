@@ -34,7 +34,8 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.rendercontrol,
  net.sourceforge.nattable.core,
  org.openscience.cdk.renderswt,
- org.openscience.cdk.extra
+ org.openscience.cdk.extra,
+ net.bioclipse.core.api
 Bundle-ActivationPolicy: lazy
 Import-Package: net.bioclipse.inchi.business,
  org.apache.log4j

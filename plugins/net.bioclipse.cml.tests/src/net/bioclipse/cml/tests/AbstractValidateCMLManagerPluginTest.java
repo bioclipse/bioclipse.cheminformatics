@@ -15,7 +15,7 @@ package net.bioclipse.cml.tests;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cml.managers.IValidateCMLManager;
-import net.bioclipse.core.ResourcePathTransformer;
+import net.bioclipse.core.api.ResourcePathTransformer;
 import nu.xom.Elements;
 import nu.xom.Nodes;
 

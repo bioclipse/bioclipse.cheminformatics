@@ -14,7 +14,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 
 import net.bioclipse.cdk.business.ICDKManager;
-import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.api.domain.IMolecule;
 import net.bioclipse.inchi.InChI;
 import net.bioclipse.inchi.business.IInChIManager;
 

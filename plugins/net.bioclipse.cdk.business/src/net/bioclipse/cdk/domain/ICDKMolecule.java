@@ -15,8 +15,8 @@ package net.bioclipse.cdk.domain;
 
 import java.util.BitSet;
 
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.api.BioclipseException;
+import net.bioclipse.core.api.domain.IMolecule;
 
 import org.openscience.cdk.interfaces.IAtomContainer;
 
