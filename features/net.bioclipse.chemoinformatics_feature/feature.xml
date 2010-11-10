@@ -2,7 +2,7 @@
 <feature
       id="net.bioclipse.chemoinformatics_feature"
       label="Bioclipse Chemoinformatics"
-      version="2.4.0.20100709"
+      version="2.4.1.v20100830"
       provider-name="The Bioclipse Team"
       plugin="net.bioclipse.chemoinformatics">
 
