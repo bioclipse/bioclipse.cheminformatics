@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Opsin
+Bundle-SymbolicName: net.bioclipse.opsin; singleton:=true
+Bundle-Version: 2.4.2
+Bundle-Activator: net.bioclipse.opsin.Activator
+Export-Package: net.bioclipse.opsin, net.bioclipse.opsin.business
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ net.bioclipse.core,
+ net.bioclipse.scripting,
+ org.springframework.bundle.spring.aop,
+ net.sf.cglib,
+ org.springframework.osgi.aopalliance.osgi,
+ net.bioclipse.cdk.business
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
+ jar/opsin-0.9.0.jar
