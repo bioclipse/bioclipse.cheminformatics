@@ -23,8 +23,14 @@ public interface IOpsinManager extends IBioclipseManager {
 
 	@PublishedMethod(
 		params="String iupacName",
-		methodSummary="Converts an IUPAC name into a chemical structure"	
+		methodSummary="Converts an IUPAC name into a chemical structure"
 	)
 	public ICDKMolecule parseIUPACName(String iupacName);
+
+	@PublishedMethod(
+		params="String iupacName",
+		methodSummary="Converts an IUPAC name into a CML document"
+	)
+	public String parseIUPACNameAsCML(String iupacName);
 
 }

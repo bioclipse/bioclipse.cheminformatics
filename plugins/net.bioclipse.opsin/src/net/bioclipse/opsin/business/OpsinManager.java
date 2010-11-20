@@ -42,6 +42,21 @@ public class OpsinManager implements IBioclipseManager {
     	if (monitor == null) monitor = new NullProgressMonitor();
 
     	monitor.beginTask("Processing IUPAC name", 1);
+        try {
+        	return cdk.fromCml(parseIUPACNameAsCML(iupacName, monitor));
+        } catch (IOException exception) {
+        	throw new BioclipseException(
+       			"Error while converting CML into a CDKMolecule: " + exception.getMessage(),
+       			exception
+        	);
+        }
+    }
+
+    public String parseIUPACNameAsCML(String iupacName, IProgressMonitor monitor)
+    throws BioclipseException {
+    	if (monitor == null) monitor = new NullProgressMonitor();
+
+    	monitor.beginTask("Processing IUPAC name", 1);
     	NameToStructure nameToStructure;
 		try {
 			nameToStructure = NameToStructure.getInstance();
@@ -55,14 +70,7 @@ public class OpsinManager implements IBioclipseManager {
         	iupacName, false
         );
         if (result.getStatus() == OPSIN_RESULT_STATUS.SUCCESS) {
-            try {
-            	return cdk.fromCml(result.getCml().toXML());
-            } catch (IOException exception) {
-            	throw new BioclipseException(
-           			"Error while converting CML into a CDKMolecule: " + exception.getMessage(),
-           			exception
-            	);
-            }
+        	return result.getCml().toXML();
         }
         throw new BioclipseException(
         	"Could not parse the IUPAC name (" + iupacName + "), because: " +
