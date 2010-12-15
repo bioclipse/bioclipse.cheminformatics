@@ -15,7 +15,6 @@ Require-Bundle: org.eclipse.core.runtime,
  net.bioclipse.ui,
  net.bioclipse.cdk.business,
  net.bioclipse.cdk.ui,
- org.eclipse.jdt.junit4.runtime,
  org.openscience.cdk.interfaces,
  net.bioclipse.core.tests;bundle-version="2.4.0"
 Eclipse-LazyStart: true
