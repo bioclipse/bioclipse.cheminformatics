@@ -10,7 +10,7 @@
  ******************************************************************************/
 package net.bioclipse.inchi.business.test;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.inchi.InChI;

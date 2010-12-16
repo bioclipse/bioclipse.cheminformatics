@@ -6,7 +6,6 @@ Bundle-Version: 2.4.1.v20100830
 Bundle-Activator: net.bioclipse.cdk.ui.tests.Activator
 Bundle-Vendor: The Bioclipse Team
 Require-Bundle: org.eclipse.core.runtime,
- org.junit4,
  org.eclipse.ui,
  net.bioclipse.core,
  net.bioclipse.scripting,
@@ -19,3 +18,6 @@ Require-Bundle: org.eclipse.core.runtime,
  net.bioclipse.core.tests;bundle-version="2.4.0"
 Eclipse-LazyStart: true
 Export-Package: net.bioclipse.cdk.ui.tests
+Import-Package: org.junit,
+ org.junit.runner,
+ org.junit.runners

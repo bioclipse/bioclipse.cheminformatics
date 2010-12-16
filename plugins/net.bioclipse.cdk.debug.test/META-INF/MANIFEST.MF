@@ -7,7 +7,6 @@ Bundle-Activator: net.bioclipse.cdk.debug.test.Activator
 Bundle-Vendor: The Bioclipse Team
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.junit4,
  net.bioclipse.core,
  org.eclipse.core.resources,
  net.bioclipse.core.tests;bundle-version="0.1.0",
@@ -22,3 +21,6 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.ui;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.cdk.debug.test
+Import-Package: org.junit,
+ org.junit.runner,
+ org.junit.runners
