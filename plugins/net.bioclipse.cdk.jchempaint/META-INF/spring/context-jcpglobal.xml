@@ -14,7 +14,7 @@
 		interface="net.bioclipse.cdk.jchempaint.business.IJavaScriptJChemPaintGlobalPropertiesManager" />
 
 	<osgi:reference id="recordingAdvice"
-		interface="net.bioclipse.recording.IRecordingAdvice" />
+		interface="net.bioclipse.core.api.recording.IRecordingAdvice" />
 
 	<osgi:reference id="javaManagerDispatcherAdvisor"
 		interface="net.bioclipse.managers.business.IJavaManagerDispatcherAdvisor" />
