@@ -30,7 +30,7 @@
       </scriptContribution>
    </extension>
 
-   <extension
+   <!-- extension
          point="net.bioclipse.browser.scraper">
          <scraper
                class="net.bioclipse.pubchem.scraper.PubChemScraper"
@@ -38,7 +38,7 @@
                icon="icons/benzene.gif"
                name="net.bioclipse.browser.pubchem">
          </scraper>
-   </extension>
+   </extension -->
 
 
 </plugin>
