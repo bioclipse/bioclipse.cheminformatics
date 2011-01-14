@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//import net.bioclipse.browser.scraper.IBrowserScraper;
+import net.bioclipse.browser.scraper.IBrowserScraper;
 import net.bioclipse.core.domain.IBioObject;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.pubchem.domain.LWPubchemMolecule;
@@ -27,7 +27,7 @@ import net.bioclipse.pubchem.domain.LWPubchemMolecule;
  * @author ola
  *
  */
-public class PubChemScraper { // implements IBrowserScraper {
+public class PubChemScraper implements IBrowserScraper {
     
     
     public PubChemScraper() {
