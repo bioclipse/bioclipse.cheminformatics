@@ -18,12 +18,12 @@ import net.bioclipse.cdk.ui.views.IFileMoleculesEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.api.BioclipseException;
 import net.bioclipse.core.api.Recorded;
+import net.bioclipse.core.api.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.core.api.jobs.IReturner;
 import net.bioclipse.core.api.managers.IBioclipseManager;
 import net.bioclipse.core.api.managers.IBioclipseUIJob;
 import net.bioclipse.core.api.managers.PublishedMethod;
 import net.bioclipse.jobs.BioclipseJob;
-import net.bioclipse.jobs.BioclipseJobUpdateHook;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;

@@ -60,7 +60,7 @@ public class Activator extends Plugin {
             logger.log( Level.DEBUG, "Caught exception", e );
         }
         if(inchiManager == null) {
-            throw new IllegalStateException("Could not get inchi manager");
+            throw new IllegalStateException("Could not get java inchi manager");
         }
         return inchiManager;
     }
@@ -74,7 +74,7 @@ public class Activator extends Plugin {
             logger.log( Level.DEBUG, "Caught exception", e );
         }
         if(inchiManager == null) {
-            throw new IllegalStateException("Could not get inchi manager");
+            throw new IllegalStateException("Could not get JS inchi manager");
         }
         return inchiManager;
     }

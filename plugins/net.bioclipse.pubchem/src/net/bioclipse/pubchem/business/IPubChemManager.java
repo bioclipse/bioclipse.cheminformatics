@@ -16,10 +16,10 @@ import java.util.List;
 import net.bioclipse.core.api.BioclipseException;
 import net.bioclipse.core.api.Recorded;
 import net.bioclipse.core.api.domain.IMolecule;
+import net.bioclipse.core.api.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.core.api.jobs.IBioclipseJob;
 import net.bioclipse.core.api.managers.IBioclipseManager;
 import net.bioclipse.core.api.managers.PublishedMethod;
-import net.bioclipse.jobs.BioclipseJobUpdateHook;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
