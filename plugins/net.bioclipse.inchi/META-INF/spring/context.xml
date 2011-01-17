@@ -2,43 +2,49 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:osgi="http://www.springframework.org/schema/osgi"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans 
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
                       http://www.springframework.org/schema/beans/spring-beans.xsd
-                      http://www.springframework.org/schema/osgi 
+                      http://www.springframework.org/schema/osgi
                       http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
   <!-- Gets the recording advice -->
-<!-- 
-  <osgi:reference id="recordingAdvice" 
-                  interface="net.bioclipse.core.api.recording.IRecordingAdvice" />
+  <osgi:reference
+      id="recordingAdvice"
+      interface="net.bioclipse.core.api.recording.IRecordingAdvice" />
 
-  <osgi:reference id="javaManagerDispatcherAdvisor"
-		interface="net.bioclipse.core.api.managers.IJavaManagerDispatcherAdvisor" />
+  <osgi:reference
+    id="javaManagerDispatcherAdvisor"
+    interface="net.bioclipse.core.api.managers.IJavaManagerDispatcherAdvisor" />
 
- -->
-  <osgi:reference id="javaScriptManagerDispatcherAdvisor"
-		interface="net.bioclipse.core.api.managers.IJavaScriptManagerDispatcherAdvisor" />
-<!--
-  <osgi:reference id="wrapInProxyAdvice"
-		interface="net.bioclipse.core.api.recording.IWrapInProxyAdvice" />
+  <osgi:reference
+    id="javaScriptManagerDispatcherAdvisor"
+    interface="net.bioclipse.core.api.managers.IJavaScriptManagerDispatcherAdvisor" />
 
-  <bean id="recordingAdvisor"
-  		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+  <osgi:reference
+    id="wrapInProxyAdvice"
+    interface="net.bioclipse.core.api.recording.IWrapInProxyAdvice" />
+
+  <bean
+    id="recordingAdvisor"
+    class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
         <property name="advice"  ref="recordingAdvice" />
   		<property name="pattern" value=".*" />
   </bean>
- -->
-  <bean id="inchiManagerTarget" 
-        class="net.bioclipse.inchi.business.InChIManager">
+
+  <bean
+    id="inchiManagerTarget"
+    class="net.bioclipse.inchi.business.InChIManager">
   </bean>
-<!--  
-  <osgi:service id="javaInchiManagerOSGI" ref="javaInchiManager"
-      interface="net.bioclipse.inchi.business.IJavaInChIManager" />
-      
-  <bean id="javaInchiManager"
-  		class="org.springframework.aop.framework.ProxyFactoryBean">
+
+  <osgi:service
+    id="javaInchiManagerOSGI" ref="javaInchiManager"
+    interface="net.bioclipse.inchi.business.IJavaInChIManager" />
+
+  <bean
+    id="javaInchiManager"
+    class="org.springframework.aop.framework.ProxyFactoryBean">
   	<property name="target" ref="inchiManagerTarget" />
-  	<property name="proxyInterfaces" 
+  	<property name="proxyInterfaces"
   	          value="net.bioclipse.inchi.business.IJavaInChIManager" />
   	<property name="interceptorNames">
         <list>
@@ -48,18 +54,18 @@
         </list>
     </property>
   </bean>
- -->
+
   <osgi:service id="javaScriptInchiManagerOSGI" ref="javaScriptInchiManager"
       interface="net.bioclipse.inchi.business.IJavaScriptInChIManager" />
-      
+
   <bean id="javaScriptInchiManager"
   		class="org.springframework.aop.framework.ProxyFactoryBean">
   	<property name="target" ref="inchiManagerTarget" />
-  	<property name="proxyInterfaces" 
+  	<property name="proxyInterfaces"
   	          value="net.bioclipse.inchi.business.IJavaScriptInChIManager" />
   	<property name="interceptorNames">
         <list>
-           <value>javaScriptManagerDispatcherAdvisor</value> 
+           <value>javaScriptManagerDispatcherAdvisor</value>
         </list>
     </property>
   </bean>
