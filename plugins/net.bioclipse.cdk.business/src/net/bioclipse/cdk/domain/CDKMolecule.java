@@ -156,7 +156,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
                           atomContainer.getProperty(CDKConstants.TITLE);
         }
         if ( returnValue == null ) {
-            returnValue = Activator.getDefault().getJavaCDKManager()
+            returnValue = Activator.getDefault().getJavaScriptCDKManager()
                                                 .molecularFormula(this);
         }
         return returnValue;
@@ -285,7 +285,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
             return getClass().getSimpleName() + ":" + hashCode();
 
         return getClass().getSimpleName() + ":" 
-               + Activator.getDefault().getJavaCDKManager()
+               + Activator.getDefault().getJavaScriptCDKManager()
                                        .molecularFormula(this);
     }
 
