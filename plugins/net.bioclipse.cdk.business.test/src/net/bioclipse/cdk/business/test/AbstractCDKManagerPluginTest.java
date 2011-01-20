@@ -169,6 +169,7 @@ public abstract class AbstractCDKManagerPluginTest {
         for (ICDKMolecule mol : mols) {
             Assert.assertNotNull(mol);
             Assert.assertNotSame(0, mol.getAtomContainer().getAtomCount());
+            Assert.assertNotNull(mol.getResource());
             Assert.assertEquals( "dbsmallconf.sdf",
                                  mol.getResource().getName() );
         }
