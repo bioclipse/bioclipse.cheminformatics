@@ -11,6 +11,7 @@
 package net.bioclipse.chemoinformatics.test.feature;
 
 import net.bioclipse.cdk.AllCDKBusinessTestsSuite;
+import net.bioclipse.cdk.debug.test.AllCDKDebugManagerTests;
 import net.bioclipse.cdk.jchempaint.business.test.jcp.AllJChemPaintManagerTest;
 import net.bioclipse.cdk.jchempaint.business.test.jcpglobal.AllJChemPaintGlobalPropertiesManagerTest;
 import net.bioclipse.cml.tests.AllValidateCMLManagerTest;
@@ -34,7 +35,8 @@ import org.junit.runners.Suite.SuiteClasses;
     AllInChIManagerTests.class,
     AllValidateCMLManagerTest.class,
     AllJChemPaintGlobalPropertiesManagerTest.class,
-    AllJChemPaintManagerTest.class
+    AllJChemPaintManagerTest.class,
+    AllCDKDebugManagerTests.class
 })
 public class AllFeatureTest {
 

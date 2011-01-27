@@ -11,6 +11,7 @@
 package net.bioclipse.chemoinformatics.test.feature;
 
 import net.bioclipse.cdk.AllCDKBusinessPluginTestSuite;
+import net.bioclipse.cdk.debug.test.AllCDKDebugManagerPluginTests;
 import net.bioclipse.cml.tests.AllValidateCMLManagerPluginTest;
 import net.bioclipse.inchi.business.test.AllInChIManagerPluginTests;
 import net.bioclipse.pubchem.tests.AllPubChemManagerPluginTests;
@@ -29,6 +30,7 @@ import org.junit.runners.Suite.SuiteClasses;
     AllCDKBusinessPluginTestSuite.class,
     AllPubChemManagerPluginTests.class,
     AllInChIManagerPluginTests.class,
-    AllValidateCMLManagerPluginTest.class
+    AllValidateCMLManagerPluginTest.class,
+    AllCDKDebugManagerPluginTests.class
 })
 public class AllFeaturePluginTest {}
