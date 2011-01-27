@@ -20,4 +20,8 @@
          id="net.bioclipse.chemoinformatics_feature"
          version="0.0.0"/>
 
+   <includes
+         id="net.bioclipse.cdk_feature"
+         version="0.0.0"/>
+
 </feature>
