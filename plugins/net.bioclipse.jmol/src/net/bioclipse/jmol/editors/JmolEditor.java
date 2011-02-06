@@ -1,5 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2007-2008 Bioclipse Project
+ *               2011      Kalishenko Evgeny <ydginster@gmail.com> 
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +44,7 @@ import javax.vecmath.Point3f;
 
 import net.bioclipse.core.IResourcePathTransformer;
 import net.bioclipse.core.ResourcePathTransformer;
+import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jmol.Activator;
@@ -56,8 +59,6 @@ import net.bioclipse.jmol.views.outline.JmolModelString;
 import net.bioclipse.jmol.views.outline.JmolObject;
 
 import org.apache.log4j.Logger;
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IMolecule;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -92,8 +93,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.IPage;
-import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.jmol.modelset.Model;
@@ -103,9 +104,9 @@ import org.xmlcml.cml.element.CMLBond;
 import org.xmlcml.cml.element.CMLMolecule;
 
 /**
- * A Multi Page Editor with Jmol embedded on foremost page.
+ * An Editor with Jmol
  */
-public class JmolEditor extends MultiPageEditorPart 
+public class JmolEditor extends EditorPart 
                         implements IResourceChangeListener, 
                                    IAdaptable, 
                                    ISelectionListener, 
@@ -115,9 +116,6 @@ public class JmolEditor extends MultiPageEditorPart
         = "net.bioclipse.jmol.editors.JmolEditor";
 
     private static final Logger logger = Logger.getLogger(JmolEditor.class);
-
-    /** The text editor used in page 1. */
-//    private TextEditor editor;
 
     /** The ContentOutlinePage for the Outline View */
     JmolContentOutlinePage fOutlinePage;
@@ -134,13 +132,6 @@ public class JmolEditor extends MultiPageEditorPart
     /** Store last selection */
     private volatile JmolSelection selection;
 
-    //Should we hold the model as a string (read from file) or let 
-    //it be the actual file?
-    //Not yet decided. Will start by having as String.
-    //Must check how react on resource changes works.
-    //Ola 2007-11-20
-    String content;        //Read from EditorInput
-
     /**
      * Creates a multi-page editor example.
      */
@@ -154,7 +145,7 @@ public class JmolEditor extends MultiPageEditorPart
      * Creates page 0 of the multi-page editor,
      * which consists of Jmol.
      */
-    void createPage0() {
+    public void createPartControl(Composite parent) {
     	
         /*
          * Set a Windows specific AWT property that prevents heavyweight
@@ -166,8 +157,6 @@ public class JmolEditor extends MultiPageEditorPart
         	System.setProperty("sun.awt.noerasebackground", "true");
         } catch (NoSuchMethodError error) {
         }
-
-        Composite parent = new Composite(getContainer(), SWT.NONE);
 
         //Set the layout for parent
         GridLayout layout = new GridLayout();
@@ -190,8 +179,6 @@ public class JmolEditor extends MultiPageEditorPart
         composite.setLayout(layout);
         layoutData = new GridData(GridData.FILL_BOTH);
         composite.setLayoutData(layoutData);
-
-
 
         java.awt.Frame awtFrame = SWT_AWT.new_Frame(composite);
         java.awt.Panel awtPanel 
@@ -231,6 +218,7 @@ public class JmolEditor extends MultiPageEditorPart
                }
             }
         });
+        
         jmolPanel.requestFocusInWindow();
         jmolPanel.addMouseWheelListener(
             new java.awt.event.MouseWheelListener() {
@@ -252,77 +240,57 @@ public class JmolEditor extends MultiPageEditorPart
             }
         );
 
-        content = getContentsFromEditor();
-        if (content == null) {
-            logger.error("Could not get FILE in jmol editor");
-            content = "";//return;
-        }
-
-        jmolPanel.getViewer().openStringInline(content);
-
-        // Initialize jmol
-        // ===============
-        // Use halos as selection marker
-        jmolPanel.getViewer().setSelectionHalos(true);
+        loadFile();
+        initJMolPanel();
         
-        // display all frames, then use 'display'
-        runScript("frame 0.0");
-        runScript("display 1.1");
-
-        runScript("select none");
-        
-        //make clicking on elemtents select those elements
-        if (jmolPanel.getViewer().getPolymerCount() == 0 ) {
-            runScript("set picking select atoms");
-        }
-        else {
-            runScript("set picking select group");
-        }
-        // End Initialize jmol
-        // ===============
-
-        int index = addPage(parent);
-        setPageText(index, "Jmol");
-
         // Post selections in Jmol to Eclipse
         getSite().setSelectionProvider(this);
         
         // Register help context for this editor
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(
-                this.getControl( 0 ),
-                "net.bioclipse.jmol.jmolEditor"
-        );
-    }
-
-    /**
-     * Creates page 1 of the multi-page editor,
-     * which contains a text editor.
-     */
-    void createPage1() {
-//        try {
-//            editor = new TextEditor();
-//            int index = addPage(editor, getEditorInput());
-//            setPageText(index, editor.getTitle());
-//        } catch (PartInitException e) {
-//            ErrorDialog.openError(
-//                    getSite().getShell(),
-//                    "Error creating nested text editor",
-//                    null,
-//                    e.getStatus());
-//        }
-    }
-
-    /**
-     * Creates the pages of the multi-page editor.
-     */
-    protected void createPages() {
-
-        createPage0();
-        //createPage1();
-
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "net.bioclipse.jmol.jmolEditor");
+        
         getSite().getPage().addSelectionListener(this);
     }
 
+    /**
+     * Read file by JMol and show it
+     */
+    private void loadFile()
+    {
+      String content; 
+      
+      content = getContentsFromEditor();
+      
+      if (content == null)
+      {
+        logger.error("Could not get FILE in jmol editor");
+        content = "";
+      }
+      
+      jmolPanel.getViewer().openStringInline(content);
+    }
+    
+    /**
+     * JMol panel view initialization
+     */
+    private void initJMolPanel()
+    {
+      // Use halos as selection marker
+      jmolPanel.getViewer().setSelectionHalos(true);
+      
+      // display all frames, then use 'display'
+      runScript("frame 0.0");
+      runScript("display 1.1");
+
+      runScript("select none");
+      
+      //make clicking on elemtents select those elements
+      if (jmolPanel.getViewer().getPolymerCount() == 0)
+          runScript("set picking select atoms");
+      else
+          runScript("set picking select group");      
+    }
+    
     /**
      * The <code>MultiPageEditorPart</code> implementation of this
      * <code>IWorkbenchPart</code> method disposes all nested editors.
@@ -395,15 +363,14 @@ public class JmolEditor extends MultiPageEditorPart
      * Method declared on IEditorPart
      */
     public void gotoMarker(IMarker marker) {
-        setActivePage(0);
-        IDE.gotoMarker(getEditor(0), marker);
+        IDE.gotoMarker(this, marker);
     }
     
     public void init(IEditorSite site, IEditorInput editorInput)
                                                     throws PartInitException {
-        super.init(site, editorInput);
         setPartName(editorInput.getName());
-
+        setSite(site);
+        setInput(editorInput);
     }
 
     /* (non-Javadoc)
@@ -503,11 +470,14 @@ public class JmolEditor extends MultiPageEditorPart
     private String getContentsFromEditor() {
 
         IEditorInput input=getEditorInput();
+        
+        if(input == null)
+          return null;
+        
         IResourcePathTransformer transformer 
                                     = ResourcePathTransformer.getInstance();
 
         try {
-
             String val = (String) input.getAdapter( String.class );
             if(val != null) return val;
             
@@ -894,8 +864,8 @@ public class JmolEditor extends MultiPageEditorPart
             else {
                 StringBuilder builder = new StringBuilder();
                 builder.append( "Select " );
-                for ( String s : this.selection) {
-                    builder.append( s );
+                for ( Object s : this.selection) {
+                    builder.append( (String)s );
                     builder.append( ", " );
                 }
                 // -2 to get rid of last ", " part
@@ -942,97 +912,115 @@ public class JmolEditor extends MultiPageEditorPart
     }
 
     /**
+     * Create file filled with scanner contents
+     * @param scanner Serialized molecule
+     * @return Created temporary file
+     */
+    private File createMolecularFile(Scanner scanner)
+    {
+      File tmpFile = null;
+      FileWriter fileWriter = null;
+      
+      try {
+        tmpFile = File.createTempFile(UUID.randomUUID().toString(), ".cml");
+        fileWriter = new FileWriter(tmpFile);
+        
+        while (scanner.hasNext()) {
+          fileWriter.append(scanner.nextLine()).append('\n');
+        }
+      } catch (Exception exc) {
+        throw new RuntimeException(
+            "Exception when creating temp file.", exc
+        );
+      }
+      finally { 
+        try {
+          fileWriter.close();          
+        } catch (Exception exc2) {
+          throw new RuntimeException(
+              "Exception when creating temp file.", exc2
+          );
+        }
+      }
+      
+      return tmpFile;
+    }
+    
+    /**
      * @param file
      */
     public void append( IFile file ) {
-        File        f = null;
-        FileWriter fw = null;
-        Scanner     s = null;
+        File    tempFile = null;
+        Scanner scanner = null;
+        
         try {
-            f = File.createTempFile( UUID.randomUUID().toString(), 
-                                     "." + file.getFileExtension() );
-            fw = new FileWriter( f );
-            s = new Scanner( file.getContents() );
-            while ( s.hasNext() ) {
-                fw.append( s.nextLine() );
-                fw.append( "\n" );
-            }
+          scanner = new Scanner(file.getContents());          
+          tempFile = createMolecularFile(scanner);
         }
-        catch ( Exception e ) {
+        catch (CoreException e) {
             throw new RuntimeException("Exception when creating temp file", e);
         }
-        finally { 
-            try {
-                fw.close();
-                s.close();
-            }
-            catch (Exception e2) {
-                throw new RuntimeException( "Exception when creating temp file",
-                                            e2 );
-            }
+        finally
+        {
+          scanner.close();
         }
-        runScript( "load append " + f.getAbsolutePath() );
+
+        runScript( "load append " + tempFile.getAbsolutePath() );
         runScript( "frame all" );
+    }
+    
+    /**
+     * @param mol {@link IMolecule} to show
+     * @param toAppend append molecule or load
+     */
+    private void showMolecule(IMolecule mol, Boolean toAppend) {
+      File    tempFile = null;
+      Scanner scanner = null;
+      
+      try {
+        scanner = new Scanner(mol.toCML());          
+        tempFile = createMolecularFile(scanner);
+      }
+      catch (Exception e) {
+          throw new RuntimeException("Exception when creating temp file", e);
+      }
+      finally
+      {
+        scanner.close();
+      }
+      
+      if(toAppend == true)
+        runScript("load append " + tempFile.getAbsolutePath());
+      else
+        runScript("load " + tempFile.getAbsolutePath());
         
-        // TODO: Here I am dutifully updating the editors model but 
-        //       I am not sure why. The content String should probably not 
-        //       exist at all...
-        //       //jonalv 2009-10-26
-        try {
-            content += "\n" + readFile( file.getContents() );
-        }
-        catch ( Exception e ) {
-            throw new RuntimeException( "Exception while reading from file: " 
-                                        + file, 
-                                        e );
-        }
+      runScript("frame all");
     }
     
     /**
      * @param mol {@link IMolecule} to append
      */
     public void append(IMolecule mol) {
-        File tmpFile = null;
-        FileWriter fileWriter = null;
-        Scanner scanner = null;
-        try {
-            tmpFile = File.createTempFile(UUID.randomUUID().toString(), ".cml");
-            fileWriter = new FileWriter(tmpFile);
-            scanner = new Scanner(mol.toCML());
-            while (scanner.hasNext()) {
-                fileWriter.append(scanner.nextLine()).append('\n');
-            }
-        } catch (Exception exc) {
-            throw new RuntimeException(
-                "Exception when creating temp file.", exc
-            );
-        }
-        finally { 
-            try {
-                fileWriter.close();
-                scanner.close();
-            } catch (Exception exc2) {
-                throw new RuntimeException(
-                    "Exception when creating temp file.", exc2
-                );
-            }
-        }
-        runScript("load append " + tmpFile.getAbsolutePath());
-        runScript("frame all");
+      showMolecule(mol, true);
+    }
+    
+    /**
+     * Show the molecule, the previous one will be erased
+     * @param mol {@link IMolecule} to load 
+     */
+    public void loadMolecule(IMolecule mol) {
+      showMolecule(mol, false);
+    }
 
-        // TODO: Here I am dutifully updating the editors model but 
-        //       I am not sure why. The content String should probably not 
-        //       exist at all...
-        //       //jonalv 2009-10-26
-        try {
-            content += "\n" + readFile(
-                new ByteArrayInputStream(mol.toCML().getBytes())
-            );
-        }
-        catch (Exception exc) {
-            throw new RuntimeException(
-                "Exception while reading from file: " + mol.toString(), exc
-            );
-        }
+    @Override
+    public boolean isDirty() {
+      // TODO Auto-generated method stub
+      return false;
+    }
+
+    @Override
+    public void setFocus() {
+      // TODO Auto-generated method stub
+      
     }
 }
