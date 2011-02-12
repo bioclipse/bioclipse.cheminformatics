@@ -30,3 +30,4 @@ Export-Package: net.bioclipse.cdk,
 Import-Package: org.junit,
  org.junit.runner,
  org.junit.runners
+Bundle-ClassPath: .
