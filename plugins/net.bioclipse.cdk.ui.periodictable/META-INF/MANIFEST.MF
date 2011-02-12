@@ -14,5 +14,6 @@ Require-Bundle: org.eclipse.swt,
  org.openscience.cdk.render,
  net.bioclipse.cdk.business,
  net.bioclipse.core,
- org.openscience.cdk.standard
+ org.openscience.cdk.standard,
+ org.openscience.cdk.core
 Bundle-Vendor: The Bioclipse Team

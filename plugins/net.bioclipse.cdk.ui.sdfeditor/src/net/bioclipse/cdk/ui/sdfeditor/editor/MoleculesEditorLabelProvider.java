@@ -44,27 +44,27 @@ import org.eclipse.ui.progress.PendingUpdateAdapter;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.renderer.Renderer;
+import org.openscience.cdk.renderer.AtomContainerRenderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.font.IFontManager;
 import org.openscience.cdk.renderer.font.SWTFontManager;
+import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactAtom;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHydrogens;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BackgroundColor;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.FitToScreen;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.RingGenerator;
-import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
-import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactAtom;
-import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHydrogens;
-import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BackgroundColor;
-import org.openscience.cdk.renderer.generators.BasicSceneGenerator.FitToScreen;
 
 public class MoleculesEditorLabelProvider implements ITableLabelProvider{
 
     public Logger logger = Logger.getLogger(MoleculesEditorLabelProvider.class );
     public List<String>                          propertyHeaders;
-    public Renderer renderer;
+    public AtomContainerRenderer renderer;
     public int imageWidth;
     private  IRenderer2DConfigurator renderer2DConfigurator;
     Color greenScreen;
@@ -107,7 +107,7 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
         generators.add(new HighlightAtomGenerator());
         generators.add(new HighlightBondGenerator());
 
-        renderer = new Renderer(generators, fontManager);
+        renderer = new AtomContainerRenderer(generators, fontManager);
 
         RendererModel rModel = renderer.getRenderer2DModel();
         rModel.set(WillDrawAtomNumbers.class, false);
@@ -186,7 +186,7 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
             }
 
             SWTRenderer drawVisitor= new SWTRenderer(gc);
-            renderer.paintMolecule( acArray[0],
+            renderer.paint( acArray[0],
                                     drawVisitor,
                                     imageBounds,
                                     true );

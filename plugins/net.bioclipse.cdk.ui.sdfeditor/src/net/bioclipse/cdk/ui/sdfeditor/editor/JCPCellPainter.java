@@ -22,8 +22,8 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager;
 import net.bioclipse.cdk.jchempaint.view.ChoiceGenerator;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
-import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message;
+import net.bioclipse.cdk.jchempaint.view.SWTRenderer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 import net.sourceforge.nattable.config.IConfigRegistry;
@@ -43,25 +43,25 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.renderer.Renderer;
+import org.openscience.cdk.renderer.AtomContainerRenderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.font.IFontManager;
 import org.openscience.cdk.renderer.font.SWTFontManager;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator;
-import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
-import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator;
-import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
-import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
-import org.openscience.cdk.renderer.generators.IGenerator;
-import org.openscience.cdk.renderer.generators.RingGenerator;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactAtom;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.CompactShape;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.Shape;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHydrogens;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BackgroundColor;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.FitToScreen;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
+import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator;
+import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
+import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
+import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.RingGenerator;
 
 
 /**
@@ -71,7 +71,7 @@ import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
 public class JCPCellPainter extends BackgroundPainter {
     public Logger logger = Logger.getLogger(JCPCellPainter.class );
 
-    private Renderer renderer;
+    private AtomContainerRenderer renderer;
     private ChoiceGenerator extensionGenerator;
 
     private  IRenderer2DConfigurator renderer2DConfigurator;
@@ -119,7 +119,7 @@ public class JCPCellPainter extends BackgroundPainter {
         generators.add(new HighlightBondGenerator());
         generators.add(new AtomNumberGenerator());
 
-        renderer = new Renderer(generators, fontManager);
+        renderer = new AtomContainerRenderer(generators, fontManager);
 
         RendererModel rModel = renderer.getRenderer2DModel();
         rModel.getParameter(CompactShape.class).setValue(Shape.OVAL);
@@ -191,7 +191,7 @@ public class JCPCellPainter extends BackgroundPainter {
                                                             rect.width,
                                                             rect.height);
             SWTRenderer drawVisitor= new SWTRenderer(gc);
-            renderer.paintMolecule( atomContainer,
+            renderer.paint( atomContainer,
                                     drawVisitor,
                                     rectangle,
                                     true );

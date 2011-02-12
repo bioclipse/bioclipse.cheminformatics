@@ -779,12 +779,12 @@ public class JChemPaintManager implements IBioclipseManager {
             List<AppendAtom> edits = new LinkedList<AppendAtom>();
             for (IAtomContainer container : containers) {
                 for (IAtom atom : container.atoms()) {
-                    int hCount = atom.getHydrogenCount() == null ? 0 :
-                        atom.getHydrogenCount();
+                    int hCount = atom.getImplicitHydrogenCount() == null ? 0 :
+                        atom.getImplicitHydrogenCount();
                     for (int i=0; i<hCount; i++) {
                         edits.add( AppendAtom.appendAtom( "H", atom));
                     }
-                    atom.setHydrogenCount(0);
+                    atom.setImplicitHydrogenCount(0);
                 }
             }
             relay.execute( CompositEdit.compose( edits ) );

@@ -1622,7 +1622,7 @@ public abstract class AbstractCDKManagerPluginTest {
         ICDKMolecule mol = cdk.fromSMILES("CC");
         cdk.removeImplicitHydrogens(mol);
         for (IAtom atom : mol.getAtomContainer().atoms()) {
-            Assert.assertEquals(0, atom.getHydrogenCount().intValue());
+            Assert.assertEquals(0, atom.getImplicitHydrogenCount().intValue());
         }
     }
 
@@ -1703,7 +1703,7 @@ public abstract class AbstractCDKManagerPluginTest {
         assertEquals(5, molecule.getAtomContainer().getAtomCount());
         assertEquals(
         	0,
-        	molecule.getAtomContainer().getAtom(0).getHydrogenCount().intValue()
+        	molecule.getAtomContainer().getAtom(0).getImplicitHydrogenCount().intValue()
         );
     }
 
@@ -1714,7 +1714,7 @@ public abstract class AbstractCDKManagerPluginTest {
         assertEquals(24, molecule.getAtomContainer().getAtomCount());
         assertEquals(
         	0,
-        	molecule.getAtomContainer().getAtom(0).getHydrogenCount().intValue()
+        	molecule.getAtomContainer().getAtom(0).getImplicitHydrogenCount().intValue()
         );
     }
 
@@ -1725,7 +1725,7 @@ public abstract class AbstractCDKManagerPluginTest {
         assertEquals(1, molecule.getAtomContainer().getAtomCount());
         assertEquals(
         	4,
-        	molecule.getAtomContainer().getAtom(0).getHydrogenCount().intValue()
+        	molecule.getAtomContainer().getAtom(0).getImplicitHydrogenCount().intValue()
         );
     }
 

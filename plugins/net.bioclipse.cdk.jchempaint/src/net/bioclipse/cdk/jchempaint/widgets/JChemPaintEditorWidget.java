@@ -95,7 +95,7 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.interfaces.IReactionSet;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
-import org.openscience.cdk.renderer.Renderer;
+import org.openscience.cdk.renderer.ChemModelRenderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
 import org.openscience.cdk.renderer.generators.ExternalHighlightGenerator;
@@ -454,12 +454,12 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     @Override
     protected void paint( IDrawVisitor visitor ) {
 
-        Renderer renderer = getRenderer();
+    	ChemModelRenderer renderer = getRenderer();
 
         if ( isScrolling ) {
             renderer.repaint( visitor );
         } else {
-            renderer.paintChemModel( model, visitor );
+            renderer.paint( model, visitor );
         }
     }
 
@@ -746,7 +746,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             for (IAtom atom : container.atoms()) {
                 atom.setAtomTypeName(null);
                 atom.setHybridization(null);
-                atom.setHydrogenCount(0);
+                atom.setImplicitHydrogenCount(0);
                 atom.setFlag(CDKConstants.ISAROMATIC, false);
             }
             for (IBond bond : container.bonds())

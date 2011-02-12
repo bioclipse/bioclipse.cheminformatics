@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.vecmath.Vector2d;
-
 import net.bioclipse.cdk.domain.ICDKMolecule;
 
 import org.eclipse.swt.SWT;
@@ -45,11 +43,12 @@ import org.eclipse.ui.services.IServiceScopes;
 import org.openscience.cdk.event.ICDKChangeListener;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.renderer.ChemModelRenderer;
 import org.openscience.cdk.renderer.IRenderer;
-import org.openscience.cdk.renderer.Renderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.font.SWTFontManager;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator;
+import org.openscience.cdk.renderer.generators.AtomNumberGenerator.AtomNumberTextColor;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
 import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator;
@@ -59,7 +58,6 @@ import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 import org.openscience.cdk.renderer.generators.RadicalGenerator;
 import org.openscience.cdk.renderer.generators.RingGenerator;
-import org.openscience.cdk.renderer.generators.AtomNumberGenerator.AtomNumberTextColor;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 
 /**
@@ -113,7 +111,7 @@ public class JChemPaintWidget extends Canvas {
     protected ChoiceGenerator extensionGenerator;
     protected ChoiceGenerator drawNumbers;
 
-    private Renderer renderer;
+    private ChemModelRenderer renderer;
 
     private SWTFontManager fontManager;
 
@@ -131,11 +129,10 @@ public class JChemPaintWidget extends Canvas {
 
         List<IGenerator<IAtomContainer>> generators =  createGenerators();
         generators.add( drawNumbers = new ChoiceGenerator(
-
-          new AtomNumberGenerator(new Vector2d(7,-7))
+          new AtomNumberGenerator()
         ) );
 
-        renderer = new Renderer(generators, fontManager);
+        renderer = new ChemModelRenderer(generators, fontManager);
         rendererModel = renderer.getRenderer2DModel();
         setupPaintListener();
         setupPreferenceListener( renderer );
@@ -207,7 +204,7 @@ public class JChemPaintWidget extends Canvas {
             Rectangle c = getClientArea();
             Rectangle2D drawArea = new Rectangle2D.Double( c.x, c.y,
                                                            c.width, c.height);
-            renderer.paintChemModel( model, visitor,drawArea,true );
+            renderer.paint( model, visitor,drawArea,true );
     }
 
     private void paintControl( GC gc ) {
@@ -255,7 +252,7 @@ public class JChemPaintWidget extends Canvas {
         redraw();
     }
 
-    public Renderer getRenderer() {
+    public ChemModelRenderer getRenderer() {
         return renderer;
     }
 

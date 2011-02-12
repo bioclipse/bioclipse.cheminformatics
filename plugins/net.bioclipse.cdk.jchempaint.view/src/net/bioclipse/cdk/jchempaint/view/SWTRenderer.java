@@ -307,8 +307,8 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void visit( TextElement element ) {
-        int x = transformX(element.x);
-        int y = transformY(element.y);
+        int x = transformX(element.xCoord);
+        int y = transformY(element.yCoord);
         String text = element.text;
 
         gc.setFont(getFont());
@@ -323,8 +323,8 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void visit( TextGroupElement element ) {
-        int x = transformX(element.x);
-        int y = transformY(element.y);
+        int x = transformX(element.xCoord);
+        int y = transformY(element.yCoord);
         String text = element.text;
 
         gc.setFont(getFont());
@@ -339,8 +339,8 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void visit(AtomSymbolElement element) {
-        int x = transformX( element.x );
-        int y = transformY( element.y);
+        int x = transformX( element.xCoord);
+        int y = transformY( element.yCoord);
 
         String text = element.text;
 

@@ -105,7 +105,7 @@ import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.FormatFactory;
 import org.openscience.cdk.io.IChemObjectWriter;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
-import org.openscience.cdk.io.MDLWriter;
+import org.openscience.cdk.io.MDLV2000Writer;
 import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.SDFWriter;
 import org.openscience.cdk.io.WriterFactory;
@@ -2596,7 +2596,7 @@ public class CDKManager implements IBioclipseManager {
         ICDKMolecule molecule = asCDKMolecule(molecule_in);
 
         StringWriter stringWriter = new StringWriter();
-        MDLWriter writer = new MDLWriter(stringWriter);
+        MDLV2000Writer writer = new MDLV2000Writer(stringWriter);
         try {
             writer.writeMolecule(molecule.getAtomContainer());
             writer.close();
@@ -2646,7 +2646,7 @@ public class CDKManager implements IBioclipseManager {
     public ICDKMolecule removeImplicitHydrogens(ICDKMolecule molecule) {
         IAtomContainer container = molecule.getAtomContainer();
         for (IAtom atom : container.atoms()) {
-            atom.setHydrogenCount(0);
+            atom.setImplicitHydrogenCount(0);
         }
         return molecule;
     }
