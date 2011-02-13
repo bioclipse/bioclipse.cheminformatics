@@ -121,6 +121,7 @@ import org.openscience.cdk.io.formats.PubChemCompoundXMLFormat;
 import org.openscience.cdk.io.formats.PubChemCompoundsXMLFormat;
 import org.openscience.cdk.io.formats.PubChemSubstanceXMLFormat;
 import org.openscience.cdk.io.formats.PubChemSubstancesXMLFormat;
+import org.openscience.cdk.io.formats.RGroupQueryFormat;
 import org.openscience.cdk.io.formats.SDFFormat;
 import org.openscience.cdk.io.formats.SMILESFormat;
 import org.openscience.cdk.io.iterator.IteratingMDLConformerReader;
@@ -831,6 +832,8 @@ public class CDKManager implements IBioclipseManager {
         for (IChemFormat aFormat : formatsFactory.getFormats()) {
             if (aFormat == MDLFormat.getInstance()) {
                 // never match this one: it's outdated and != MDLV2000Format
+            } else if (aFormat == RGroupQueryFormat.getInstance()) {
+            	// Bioclipse does not support such files yet
             } else if (file.endsWith("."+aFormat.getPreferredNameExtension())) {
                 return aFormat;
             }
