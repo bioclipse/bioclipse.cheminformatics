@@ -667,7 +667,8 @@ public class CDKManager implements IBioclipseManager {
             	} else {
                     throw new BioclipseException(
                         "Writer does not support writing of " +
-                        "IAtomContainer, IMoleculeSet, and IChemModel."
+                        "IAtomContainer, IMoleculeSet, and IChemModel: "+
+                        chemWriter.getClass().getName()
                     );
             	}
             } else if (model instanceof IChemModel) {
