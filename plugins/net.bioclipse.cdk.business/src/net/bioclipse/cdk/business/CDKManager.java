@@ -47,8 +47,8 @@ import net.bioclipse.cdk.exceptions.TimedOutException;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
-import net.bioclipse.core.domain.RecordableList;
 import net.bioclipse.core.domain.IMolecule.Property;
+import net.bioclipse.core.domain.RecordableList;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.IReturner;
 import net.bioclipse.managers.business.IBioclipseManager;
@@ -100,7 +100,6 @@ import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IIsotope;
 import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMoleculeSet;
-import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.FormatFactory;
 import org.openscience.cdk.io.IChemObjectWriter;
@@ -605,6 +604,8 @@ public class CDKManager implements IBioclipseManager {
             IChemObjectWriter chemWriter = null;
             if (filetype == SDFFormat.getInstance()) {
                 chemWriter = new SDFWriter(writer);
+            } else if (filetype == MDLV2000Format.getInstance()) {
+            	chemWriter = new MDLV2000Writer(writer);
             } else {
                 chemWriter = writerFactory.createWriter(filetype);
                 if (chemWriter == null) {
