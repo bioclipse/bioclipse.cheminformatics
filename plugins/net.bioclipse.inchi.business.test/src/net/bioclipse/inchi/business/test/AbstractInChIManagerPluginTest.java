@@ -24,6 +24,11 @@ public abstract class AbstractInChIManagerPluginTest {
 
     protected static IInChIManager inchi;
     protected static ICDKManager cdk;
+
+    @Test
+    public void testInitialization() {
+    	Assert.assertNotNull(inchi);
+    }
     
     @Ignore("Until library loading is fixed on Hudons")
     public void testGenerate() throws Exception {
