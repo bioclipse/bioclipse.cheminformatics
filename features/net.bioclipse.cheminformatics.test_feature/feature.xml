@@ -29,6 +29,8 @@ The Eclipse Public License accompanies this distribution, and is available at ht
 
    <requires>
       <import feature="net.bioclipse.chemoinformatics_feature" version="2.4.1.v20100830" match="greaterOrEqual"/>
+      <import feature="net.bioclipse.core.tests_feature" version="1.0.0.qualifier"/>
+      <import feature="net.bioclipse.core_feature" version="2.4.0.20100709"/>
    </requires>
 
    <plugin
