@@ -20,6 +20,7 @@ import java.util.List;
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager;
+import net.bioclipse.cdk.jchempaint.generators.RSGenerator;
 import net.bioclipse.cdk.jchempaint.view.ChoiceGenerator;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message;
@@ -118,6 +119,7 @@ public class JCPCellPainter extends BackgroundPainter {
         generators.add(new HighlightAtomGenerator());
         generators.add(new HighlightBondGenerator());
         generators.add(new AtomNumberGenerator());
+        generators.add(new RSGenerator());
 
         renderer = new AtomContainerRenderer(generators, fontManager);
 
