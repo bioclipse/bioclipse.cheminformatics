@@ -10,7 +10,8 @@
  ******************************************************************************/
 package net.bioclipse.opsin.business;
 
-import net.bioclipse.managers.business.IBioclipseJSManager;
+import net.bioclipse.core.api.managers.IBioclipseJSManager;
+
 
 public interface IJavaScriptOpsinManager
        extends IOpsinManager, IBioclipseJSManager {

@@ -11,9 +11,9 @@
 package net.bioclipse.opsin.business;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.core.PublishedClass;
-import net.bioclipse.core.PublishedMethod;
-import net.bioclipse.managers.business.IBioclipseManager;
+import net.bioclipse.core.api.managers.IBioclipseManager;
+import net.bioclipse.core.api.managers.PublishedClass;
+import net.bioclipse.core.api.managers.PublishedMethod;
 
 @PublishedClass(
     value="Manager for the OPSIN functionality to convert IUPAC names into " +
