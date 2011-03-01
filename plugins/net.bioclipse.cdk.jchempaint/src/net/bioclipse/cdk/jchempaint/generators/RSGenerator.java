@@ -27,7 +27,7 @@ public class RSGenerator implements IGenerator<IAtomContainer> {
 	public static class TextColor
 	extends AbstractGeneratorParameter<Color> {
 		public Color getDefault() {
-			return Color.BLACK;
+			return Color.ORANGE;
 		}
 	}
 
