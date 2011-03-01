@@ -1712,25 +1712,20 @@ public class CDKManager implements IBioclipseManager {
 
             StructureDiagramGenerator sdg = new StructureDiagramGenerator();
 
-            org.openscience.cdk.interfaces.IMolecule newmolecule =
-            	mols.getBuilder().newInstance(
-            		org.openscience.cdk.interfaces.IMolecule.class
-            	);
             for ( IAtomContainer mol : mols.molecules() ) {
                 sdg.setMolecule( cdkmol.getAtomContainer()
                      .getBuilder().newInstance(
                     	  org.openscience.cdk.interfaces.IMolecule.class, mol)
                 );
                 sdg.generateCoordinates();
-                IAtomContainer ac = sdg.getMolecule();
-                newmolecule.add(ac);
+                IAtomContainer molWithCoords = sdg.getMolecule();
+                // copy the coordinates
+                for (int i=0; i<molWithCoords.getAtomCount(); i++) {
+                	mol.getAtom(i).setPoint2d(molWithCoords.getAtom(i).getPoint2d());
+                }
             }
-            // copy IAtomContainer properties
-            newmolecule.setProperties(
-            	cdkmol.getAtomContainer().getProperties()
-            );
 
-            newMolecules.add(  new CDKMolecule(newmolecule) );
+            newMolecules.add(cdkmol);
           }
           if(monitor.isCanceled())
               return null;
