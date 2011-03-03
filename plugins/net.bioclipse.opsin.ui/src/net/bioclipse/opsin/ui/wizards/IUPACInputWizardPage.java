@@ -9,7 +9,7 @@
  */
 package net.bioclipse.opsin.ui.wizards;
 
-import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.api.BioclipseException;
 import net.bioclipse.opsin.business.OpsinManager;
 
 import org.eclipse.jface.wizard.WizardPage;
