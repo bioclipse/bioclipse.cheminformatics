@@ -16,4 +16,4 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- jar/opsin-0.9.0.jar
+ jar/opsin-opsin-1.0.0-jar-with-dependencies.jar

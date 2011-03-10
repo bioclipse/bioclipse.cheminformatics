@@ -66,9 +66,7 @@ public class OpsinManager implements IBioclipseManager {
 				e
 			);
 		}
-        OpsinResult result = nameToStructure.parseChemicalName(
-        	iupacName, false
-        );
+        OpsinResult result = nameToStructure.parseChemicalName(iupacName);
         if (result.getStatus() == OPSIN_RESULT_STATUS.SUCCESS) {
         	return result.getCml().toXML();
         }
