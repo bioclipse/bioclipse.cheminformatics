@@ -17,7 +17,8 @@ import net.bioclipse.managers.business.IBioclipseManager;
 
 @PublishedClass(
     value="Manager for the OPSIN functionality to convert IUPAC names into " +
-    		"chemical structures."
+    		"chemical structures.",
+    doi="10.1021/ci100384d"
 )
 public interface IOpsinManager extends IBioclipseManager {
 
