@@ -4,7 +4,9 @@ Bundle-Name: Opsin
 Bundle-SymbolicName: net.bioclipse.opsin; singleton:=true
 Bundle-Version: 2.5.0.qualifier
 Bundle-Activator: net.bioclipse.opsin.Activator
-Export-Package: net.bioclipse.opsin, net.bioclipse.opsin.business
+Export-Package: net.bioclipse.opsin,
+ net.bioclipse.opsin.business,
+ uk.ac.cam.ch.wwmm.opsin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  net.bioclipse.core,
@@ -16,5 +18,5 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- jar/opsin-opsin-1.0.0-jar-with-dependencies.jar
+ jar/opsin-1.0.0-jar-with-dependencies.jar
 Import-Package: org.apache.log4j
