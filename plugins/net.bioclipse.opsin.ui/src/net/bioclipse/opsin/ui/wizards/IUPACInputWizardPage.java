@@ -42,7 +42,7 @@ public class IUPACInputWizardPage extends WizardPage {
         final GridData gridData = new GridData();
         gridData.horizontalSpan = 3;
         label.setLayoutData(gridData);
-        label.setText("SMILES");
+        label.setText("IUPAC name");
         
         Text gistNumberField = new Text(container, SWT.BORDER);
         gistNumberField.addModifyListener(new ModifyListener() {
