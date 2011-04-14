@@ -87,7 +87,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         );
         store.setDefault(
                 PreferenceConstants.MARGIN_DOUBLE,
-                model.getDefault(Margin.class)
+                30d//model.getDefault(Margin.class)
         );
         store.setDefault(
                 PreferenceConstants.WEDGE_WIDTH_DOUBLE,
