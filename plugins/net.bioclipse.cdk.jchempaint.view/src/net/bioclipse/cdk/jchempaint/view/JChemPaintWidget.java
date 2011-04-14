@@ -231,7 +231,7 @@ public class JChemPaintWidget extends Canvas {
         }
     }
 
-    private java.awt.Rectangle adaptRectangle(Rectangle rect) {
+    protected java.awt.Rectangle adaptRectangle(Rectangle rect) {
     	return new java.awt.Rectangle(rect.x,rect.y,rect.width,rect.height);
     }
 

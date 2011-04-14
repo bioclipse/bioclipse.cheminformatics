@@ -16,6 +16,7 @@ import static net.bioclipse.cdk.jchempaint.outline.StructureContentProvider.crea
 import static org.openscience.cdk.geometry.GeometryTools.has2DCoordinatesNew;
 
 import java.awt.Color;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -459,7 +460,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         if ( isScrolling ) {
             renderer.repaint( visitor );
         } else {
-            renderer.paint( model, visitor );
+            Rectangle2D bounds = adaptRectangle(getClientArea());
+            renderer.paint( model, visitor ,bounds,false);
         }
     }
 
