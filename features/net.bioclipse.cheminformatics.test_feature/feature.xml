@@ -2,7 +2,7 @@
 <feature
       id="net.bioclipse.cheminformatics.test_feature"
       label="Bioclipse Cheminformatics Test Feature"
-      version="2.4.0.20100709"
+      version="2.5.0.qualifier"
       provider-name="The Bioclipse Team"
       plugin="net.bioclipse.cdk.debug">
 
@@ -28,9 +28,9 @@ The Eclipse Public License accompanies this distribution, and is available at ht
    </url>
 
    <requires>
-      <import feature="net.bioclipse.chemoinformatics_feature" version="2.4.1.v20100830" match="greaterOrEqual"/>
-      <import feature="net.bioclipse.core.tests_feature" version="1.0.0.qualifier"/>
-      <import feature="net.bioclipse.core_feature" version="2.4.0.20100709"/>
+      <import feature="net.bioclipse.chemoinformatics_feature"/>
+      <import feature="net.bioclipse.core.tests_feature"/>
+      <import feature="net.bioclipse.core_feature"/>
    </requires>
 
    <plugin
