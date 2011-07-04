@@ -125,6 +125,10 @@
            id="net.bioclipse.cdk.ui.sdf.FilterOutSalts"
            defaultHandler="net.bioclipse.cdk.ui.filters.FilterOutSalts"
            name="filterSaltsFromSDF"/>  	
+        <command
+           id="net.bioclipse.cdk.ui.sdf.FilterUnique"
+           defaultHandler="net.bioclipse.cdk.ui.filters.FilterOutUnique"
+           name="filterUniqueFromSDF"/>  	
     </extension>
 
   <extension point="org.eclipse.core.expressions.propertyTesters">
@@ -165,7 +169,30 @@
 			   		</iterate>
 		        </visibleWhen>
 	       </command>
-		</menuContribution>		      	
+		    <command
+		    	commandId="net.bioclipse.cdk.ui.sdf.FilterUnique"
+		    	label="Filter unique"
+		        icon="icons/filter.png">
+		        
+		        <visibleWhen>
+			   		<iterate operator="and" ifEmpty="false">
+		      			<adapt type="org.eclipse.core.resources.IResource">
+			      			<or>
+				                <test property="org.eclipse.core.resources.contentTypeId"
+				           	    	value="net.bioclipse.contenttypes.sdf"/>
+                                <test property="org.eclipse.core.resources.contentTypeId"
+                                    value="net.bioclipse.contenttypes.sdf0d"/>
+                                <test property="org.eclipse.core.resources.contentTypeId"
+                                    value="net.bioclipse.contenttypes.sdf2d"/>
+                                <test property="org.eclipse.core.resources.contentTypeId"
+                                    value="net.bioclipse.contenttypes.sdf3d"/>
+				            </or>
+			      		</adapt>
+			   		</iterate>
+		        </visibleWhen>
+	       </command>		
+	       
+	       </menuContribution>		      	
 		      	
 
   		<menuContribution
