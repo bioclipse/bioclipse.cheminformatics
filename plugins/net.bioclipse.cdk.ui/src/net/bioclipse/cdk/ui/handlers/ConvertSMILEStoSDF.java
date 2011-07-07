@@ -33,10 +33,14 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.smiles.DeduceBondSystemTool;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
+import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
@@ -109,7 +113,10 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 				String newPath = file.getFullPath().toOSString()
 									.replace(".smi", ".sdf");
 				
+				
 				ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
+//				debugAromaticity(mols.get(0));
+
 				try {
 					monitor.subTask("Saving SDFile");
 					monitor.worked(1);
@@ -134,8 +141,7 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 		return null;
 	}		
 
-	
-	
+
 	/**
 	 * Read a SMILES file into a list of molecules.
 	 * @param file
@@ -152,11 +158,11 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 		
 		ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
 		List<ICDKMolecule> molecules=new ArrayList<ICDKMolecule>();
-		
+		DeduceBondSystemTool bondSystemTool= new DeduceBondSystemTool();
+
 		try {
 
 			int noLines=countLines(file.getContents());
-//			int noLines=4000;
 
 			logger.debug("Number of lines in file: " + noLines);
 			
@@ -191,6 +197,9 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 			line=br.readLine();
 			while(line!=null){
 				
+				if (monitor.isCanceled())
+					throw new InterruptedException("Canceled by user");
+				
 				String[] parts = line.split(separator);
 				
 				//Assert header is same size as data
@@ -205,6 +214,13 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 
 				//Create a new CDKMolecule from smiles
 				ICDKMolecule mol = cdk.fromSMILES(smiles);
+				
+				try {
+					IMolecule newAC = bondSystemTool.fixAromaticBondOrders((IMolecule)mol.getAtomContainer());
+					mol=new CDKMolecule(newAC);
+				} catch (CDKException e) {
+					logger.error("Could not deduce bond orders for mol: " + mol);
+				}
 
 				//Store rest of parts as properties on mol
 				for (int i=1; i<headers.length;i++){
