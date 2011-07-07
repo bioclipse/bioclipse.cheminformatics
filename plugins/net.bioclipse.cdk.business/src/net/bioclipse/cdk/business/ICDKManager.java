@@ -1166,5 +1166,17 @@ public interface ICDKManager extends IBioclipseManager {
     public void saveSDFile( IFile molFile, List<? extends IMolecule> mols,
                             IProgressMonitor monitor );
 
-	
+
+    @Recorded
+    @PublishedMethod(
+         params="List<IMolecule> mols, int parts",
+         methodSummary="Split a list of molecules in N parts.")
+    public List<List<IMolecule>> randomSplit(List<IMolecule> mols, int parts);
+    @Recorded
+    @PublishedMethod(
+         params="List<IMolecule> mols, double firstRatio",
+         methodSummary="Split a list of molecules in 2 parts by a ratio.")
+    public List<List<IMolecule>> randomSplit2parts(List<IMolecule> mols_in, double firstRatio);    
+
+    
 }

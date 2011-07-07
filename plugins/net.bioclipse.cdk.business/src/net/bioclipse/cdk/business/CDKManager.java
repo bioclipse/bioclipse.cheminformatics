@@ -35,6 +35,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,6 +50,7 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.domain.RecordableList;
+import net.bioclipse.core.domain.SMILESMolecule;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.IReturner;
 import net.bioclipse.managers.business.IBioclipseManager;
@@ -2764,4 +2766,78 @@ public class CDKManager implements IBioclipseManager {
 
         return results;
     }
+
+    /**
+     * Split a list of mols in N equally sized parts by random sampling.
+     * 
+     * @param mols
+     * @param parts
+     * @return
+     */
+    public List<List<IMolecule>> randomSplit(List<IMolecule> mols_in, int parts){
+
+    	//Make a local copy of mols
+    	ArrayList<IMolecule> mols = new ArrayList<IMolecule>(mols_in.size()); 
+    	for (IMolecule mol : mols_in)
+    		mols.add(mol);
+
+		Random generator = new Random();
+    	List<List<IMolecule>> retList= new ArrayList<List<IMolecule>>();
+    	//Add parts # lists
+    	for (int i=0; i< parts; i++){
+    		retList.add(new ArrayList<IMolecule>());
+    	}
+
+    	//Draw one element of a time from list and put in partLists
+    	int partIX=0;
+    	int maxSize=mols.size();
+    	for (int i=0; i< maxSize; i++){
+    		int ix = generator.nextInt(mols.size());
+    		List<IMolecule> r = retList.get(partIX);
+    		r.add(mols.get(ix));
+    		mols.remove(ix);
+
+    		partIX++;
+    		if (partIX % parts==0)
+    			partIX=0; //Start over sequence
+    		
+    	}
+    	
+    	return retList;
+    }
+    
+    /**
+     * Split a list of mols in N equally sized parts by random sampling.
+     * 
+     * @param mols
+     * @param parts
+     * @return
+     */
+    public List<List<IMolecule>> randomSplit2parts(List<IMolecule> mols_in, double firstRatio){
+
+    	//Make a local copy of mols
+    	ArrayList<IMolecule> mols = new ArrayList<IMolecule>(mols_in.size()); 
+    	for (IMolecule mol : mols_in)
+    		mols.add(mol);
+    	
+		Random generator = new Random();
+    	List<List<IMolecule>> retList= new ArrayList<List<IMolecule>>();
+    	List<IMolecule> firstList = new ArrayList<IMolecule>();
+		retList.add(firstList);
+		retList.add(mols);
+		
+		//Sizes
+		int firstLength = (int) (mols.size() * firstRatio);
+		
+		//Randomly draw firstLength from mols
+		for (int i = 0; i < firstLength; i++){
+    		int ix = generator.nextInt(mols.size());
+    		firstList.add(mols.get(ix));
+    		mols.remove(ix);
+		}
+
+    	return retList;
+    }
+    
+        
 }
