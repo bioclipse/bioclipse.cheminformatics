@@ -129,6 +129,9 @@ public interface ICDKManager extends IBioclipseManager {
        "testPerceiveAromaticity,")
     public ICDKMolecule perceiveAromaticity(IMolecule mol) 
                      throws BioclipseException;
+    
+	public List<ICDKMolecule> perceiveAromaticity(List<? extends IMolecule> mols);
+
 
     /**
      * Loads a molecule from file using CDK.
@@ -1162,4 +1165,6 @@ public interface ICDKManager extends IBioclipseManager {
 
     public void saveSDFile( IFile molFile, List<? extends IMolecule> mols,
                             IProgressMonitor monitor );
+
+	
 }

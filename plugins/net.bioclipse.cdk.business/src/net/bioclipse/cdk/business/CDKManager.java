@@ -2418,6 +2418,15 @@ public class CDKManager implements IBioclipseManager {
         }
         return new CDKMolecule( ((ICDKMolecule) mol).getAtomContainer() );
     }
+    
+	public List<ICDKMolecule> perceiveAromaticity(List<? extends IMolecule> mols) throws BioclipseException{
+		
+		List<ICDKMolecule> retmols=new ArrayList<ICDKMolecule>();
+		for (IMolecule mol : mols)
+			retmols.add(perceiveAromaticity(mol));
+		return retmols;
+	}
+
 
     public List<IAtomContainer> partition(IMolecule molecule)
             throws BioclipseException {
