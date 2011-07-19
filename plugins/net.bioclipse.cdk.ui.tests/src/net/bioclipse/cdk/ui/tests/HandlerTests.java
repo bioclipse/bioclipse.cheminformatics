@@ -33,6 +33,7 @@ import net.bioclipse.core.business.BioclipseException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -94,8 +95,9 @@ public class HandlerTests {
 		}
 
 		//Remove salts
-		FilterOutSalts.filterOutSalts(mols, new NullProgressMonitor());
-
+		//FIXME The next line does not compile
+//		FilterOutSalts.filterOutSalts(mols, new NullProgressMonitor());
+		Assert.fail();
 		//Assert we have NO salts in all mols
 		for (ICDKMolecule mol : mols){
 			assertTrue(cdk.isConnected(mol));
