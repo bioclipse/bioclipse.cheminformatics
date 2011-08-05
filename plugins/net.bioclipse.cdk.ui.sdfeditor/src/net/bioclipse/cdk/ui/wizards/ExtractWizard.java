@@ -21,7 +21,10 @@ import net.bioclipse.core.util.LogUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -53,43 +56,76 @@ public class ExtractWizard extends Wizard implements INewWizard {
 
 	}
 	
-	@Override
-	public boolean performFinish() {
-		ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
-		try {
-		    ISelection sel=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
-	      if (sel instanceof IStructuredSelection) {
-          IStructuredSelection ssel = (IStructuredSelection) sel;
-          IFile toExtract=(IFile) ssel.getFirstElement();
-          List<ICDKMolecule> result= cdk.extractFromSDFile(
-              toExtract, Integer.parseInt( selectFilePage.getFrom() ),
-              selectFilePage.getTo().equals( "" ) ?
-            	  Integer.parseInt( selectFilePage.getFrom() ) :
-                  Integer.parseInt( selectFilePage.getTo() )
-          );
-          if(result.size()==1){
-              String filename=selectFilePage.getPathStr()+
-                  Path.SEPARATOR+selectFilePage.getFileName()+"."+
-                  MDLFormat.getInstance().getPreferredNameExtension();
-              cdk.saveMDLMolfile( (ICDKMolecule)result.get( 0 ), filename );
-          }else{
-              String filename=selectFilePage.getPathStr()+
-                  Path.SEPARATOR+selectFilePage.getFileName()+"."+
-                  SDFFormat.getInstance().getPreferredNameExtension();
-              cdk.saveMolecules(
-                  result, filename,
-                  (IChemFormat)SDFFormat.getInstance()
-              );
-          }
-	      }
-	      return true;
-		} catch (InvocationTargetException e) {
-			LogUtils.handleException(e,logger);
-		} catch (BioclipseException e) {
-			LogUtils.handleException(e,logger);
-		} catch (CoreException e) {
-			LogUtils.handleException(e,logger);
-		}
-		return false;
-	}
+    @Override
+    public boolean performFinish() {
+        ISelection sel = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                                        .getSelectionService().getSelection();
+        if ( sel instanceof IStructuredSelection ) {
+            IStructuredSelection ssel = (IStructuredSelection) sel;
+            final IFile toExtract = (IFile) ssel.getFirstElement();
+            final String from = selectFilePage.getFrom();
+            final String to = selectFilePage.getTo();
+            final String filename = selectFilePage.getPathStr() +
+                                    Path.SEPARATOR +
+                                    selectFilePage.getFileName() + ".";
+            try {
+                getContainer().run( true, true, new IRunnableWithProgress() {
+
+                    @Override
+                    public void run( IProgressMonitor monitor ) {
+
+                        try {
+                            extractMoleuces( toExtract,filename,
+                                             from, to, monitor );
+                        } catch ( BioclipseException e ) {
+                            LogUtils.handleException( e, logger,
+                                             "net.bioclipse.cdk.ui.sdfeditor" );
+                        } catch ( InvocationTargetException e ) {
+                            LogUtils.handleException( e, logger,
+                                             "net.bioclipse.cdk.ui.sdfeditor" );
+                        } catch ( CoreException e ) {
+                            LogUtils.handleException( e, logger,
+                                             "net.bioclipse.cdk.ui.sdfeditor" );
+                        }
+                    }
+                } );
+            } catch ( InvocationTargetException e ) {
+                LogUtils.handleException( e, logger,
+                                          "net.bioclipse.cdk.ui.sdfeditor" );
+            } catch ( InterruptedException e ) {
+                LogUtils.handleException( e, logger,
+                                          "net.bioclipse.cdk.ui.sdfeditor" );
+            }
+        }
+        return true;
+    }
+
+    void extractMoleuces( IFile toExtract, String filename,
+                          String from, String to, IProgressMonitor monitor )
+                                              throws BioclipseException,
+                                                     InvocationTargetException,
+                                                     CoreException {
+
+        ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
+        SubMonitor progress = SubMonitor.convert( monitor );
+        int formInt = Integer.parseInt( from );
+        int toInt = to.equals( "" ) ? formInt : Integer.parseInt( to );
+        progress.beginTask( "Extracting molecules", 100 );
+
+        List<ICDKMolecule> result = cdk.extractFromSDFile( toExtract,
+                                                           formInt, toInt,
+                                                           progress.newChild(80)
+                                                         );
+        progress.setWorkRemaining( 20 );
+        progress.subTask( "Saving" );
+        if ( result.size() == 1 ) {
+            filename += MDLFormat.getInstance().getPreferredNameExtension();
+            cdk.saveMDLMolfile( (ICDKMolecule) result.get( 0 ), filename );
+        } else {
+            filename += SDFFormat.getInstance().getPreferredNameExtension();
+            cdk.saveMolecules( result, filename,
+                               (IChemFormat) SDFFormat.getInstance() );
+        }
+        progress.done();
+    }
 }
