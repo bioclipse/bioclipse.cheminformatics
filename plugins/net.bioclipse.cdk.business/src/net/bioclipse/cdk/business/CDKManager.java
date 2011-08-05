@@ -2233,31 +2233,32 @@ public class CDKManager implements IBioclipseManager {
       }
 
       public List<ICDKMolecule> extractFromSDFile( IFile file, int startenty,
-                                                int endentry )
+                                                int endentry ,IProgressMonitor monitor)
                                                 throws BioclipseException,
                                                 InvocationTargetException {
 
-          IProgressMonitor monitor = new NullProgressMonitor();
-          int ticks = 10000;
+          int ticks = endentry+1;
 
           try {
-              monitor.beginTask( "Writing file", ticks );
+              monitor.beginTask("Reading file",ticks);
               IteratingBioclipseMDLReader reader
                   = new IteratingBioclipseMDLReader(
                             file.getContents(),
                             DefaultChemObjectBuilder.getInstance(),
-                            monitor );
+                            null );
               int i = 0;
               List<ICDKMolecule> result=new RecordableList<ICDKMolecule>();
               while (reader.hasNext()) {
                   if (i>=startenty && i<=endentry) {
                       result.add( reader.next() );
                   }
+                  monitor.worked(1);
+                  if(monitor.isCanceled()) throw new OperationCanceledException("Operation was canceled");
                   i++;
                   if(i>endentry)
                       break;
               }
-              monitor.worked(ticks);
+              monitor.worked(1);
               return result;
           }
           catch (Exception e) {

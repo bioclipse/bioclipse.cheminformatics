@@ -901,6 +901,13 @@ public interface ICDKManager extends IBioclipseManager {
                            throws BioclipseException, InvocationTargetException;
 
     @Recorded
+    @TestMethods("testExtractFromSDFile_IFile_int_int")
+    public List<ICDKMolecule> extractFromSDFile( IFile file,
+                                                 int startentry,
+                                                 int endentry,
+                                                 IProgressMonitor monitor)
+                           throws BioclipseException, InvocationTargetException;
+    @Recorded
     @PublishedMethod(
         params = "String file, int startentry, int endentry",
         methodSummary = "Extracts a number of entries from an sd file. " +
