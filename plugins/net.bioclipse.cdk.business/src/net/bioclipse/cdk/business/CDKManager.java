@@ -50,6 +50,7 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.domain.RecordableList;
+import net.bioclipse.core.domain.SMILESMolecule;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.IReturner;
 import net.bioclipse.managers.business.IBioclipseManager;
@@ -910,13 +911,12 @@ public class CDKManager implements IBioclipseManager {
        */
       public void saveMolecules( List<? extends IMolecule> molecules,
                                  String path,
-                               IChemFormat filetype, IProgressMonitor monitor )
+                               IChemFormat filetype )
                   throws BioclipseException, CoreException {
 
           saveMolecules( molecules,
                          ResourcePathTransformer.getInstance().transform(path),
-                         filetype,
-                         null) ;
+                         filetype) ;
       }
 
       /**
@@ -924,10 +924,8 @@ public class CDKManager implements IBioclipseManager {
        */
       public void saveMolecules( List<? extends IMolecule> molecules,
                                  IFile target,
-                                 IChemFormat filetype,
-                                 IProgressMonitor monitor)
+                                 IChemFormat filetype )
                   throws BioclipseException, CoreException {
-    	  if (monitor == null) monitor = new NullProgressMonitor();
 
           if ( filetype == CMLFormat.getInstance() ||
                filetype == MDLV2000Format.getInstance() ||
@@ -2029,17 +2027,6 @@ public class CDKManager implements IBioclipseManager {
                          BioclipseException,
                          CoreException {
           saveMolecule(cml, filename, (IChemFormat)CMLFormat.getInstance());
-      }
-
-      public void saveCML(List<? extends IMolecule> molecules,
-    		  String filename, IProgressMonitor monitor)
-                  throws BioclipseException, InvocationTargetException,
-                         CoreException {
-    	  saveMolecules(
-    		  molecules, filename,
-    		  (IChemFormat)CMLFormat.getInstance(),
-    		  monitor
-    	  );
       }
 
       public void saveMDLMolfile(ICDKMolecule mol, String filename)
