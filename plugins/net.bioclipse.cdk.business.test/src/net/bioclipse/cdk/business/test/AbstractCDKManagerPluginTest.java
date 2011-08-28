@@ -1334,6 +1334,17 @@ public abstract class AbstractCDKManagerPluginTest {
     }
 
     @Test
+    public void testSaveCMLList() throws Exception {
+    	List<ICDKMolecule> molecules = cdk.createMoleculeList();
+        molecules.add(cdk.fromSMILES("CCC"));
+        molecules.add(cdk.fromSMILES("CCO"));
+        molecules.add(cdk.fromSMILES("COC"));
+        String path = "/Virtual/testSaveCMLfile" + molecules.hashCode() + ".cml";
+        cdk.saveCML(molecules, path);
+        // cannot read it yet, but for now, if it did not crash
+    }
+
+    @Test
     public void testSaveCML() throws Exception {
         ICDKMolecule propane  = cdk.fromSMILES("CCC");
         String path = "/Virtual/testSaveCMLfile" + propane.hashCode() + ".mol";
