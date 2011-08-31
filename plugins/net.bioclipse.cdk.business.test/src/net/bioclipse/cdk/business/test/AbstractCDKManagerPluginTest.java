@@ -50,6 +50,7 @@ import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.jobs.BioclipseUIJob;
 import net.bioclipse.ui.business.IUIManager;
 
@@ -255,6 +256,17 @@ public abstract class AbstractCDKManagerPluginTest {
         	}
         }
 
+    }
+    
+    @Test
+    public void testBug3055_SmilesProperties() throws Exception {
+        URI uri = getClass().getResource(
+                      "/testFiles/molsforSMILESbug.smi" ).toURI();
+        URL url = FileLocator.toFileURL(uri.toURL());
+        String path = url.getFile();
+        List<ICDKMolecule> mols = cdk.loadSMILESFile(path);
+        assertNotNull( mols.get( 0 ).getProperty("name", 
+                                                 Property.USE_CACHED) );
     }
 
     @Test
