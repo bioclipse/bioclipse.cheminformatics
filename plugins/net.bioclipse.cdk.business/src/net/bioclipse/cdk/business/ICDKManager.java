@@ -1183,7 +1183,8 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod(
          params="List<IMolecule> mols, double firstRatio",
          methodSummary="Split a list of molecules in 2 parts by a ratio.")
-    public List<List<IMolecule>> randomSplit2parts(List<IMolecule> mols_in, double firstRatio);    
+    public List<List<IMolecule>> randomSplit2parts(List<IMolecule> mols_in, double firstRatio);
 
-    
+    public List<ICDKMolecule> loadSMILESFile( IFile file,
+                                              IProgressMonitor monitor );    
 }

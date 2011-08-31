@@ -286,6 +286,7 @@ public abstract class AbstractCDKManagerPluginTest {
 
         List<ICDKMolecule> molecules = cdk.loadSMILESFile(file);
         Assert.assertNotNull( molecules );
+        Assert.assertEquals( input.length, molecules.size() );
         List<String> inputList = new ArrayList<String>(Arrays.asList( input ));
 
         for(ICDKMolecule molecule:molecules) {

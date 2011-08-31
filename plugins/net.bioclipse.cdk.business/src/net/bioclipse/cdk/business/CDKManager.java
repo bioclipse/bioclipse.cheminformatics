@@ -146,6 +146,7 @@ import org.openscience.cdk.nonotify.NNMolecule;
 import org.openscience.cdk.nonotify.NNMoleculeSet;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.similarity.Tanimoto;
+import org.openscience.cdk.smiles.DeduceBondSystemTool;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
@@ -1762,6 +1763,24 @@ public class CDKManager implements IBioclipseManager {
           return loadSMILESFile( file.getContents(), monitor );
       }
 
+      /**
+       * A simple implementation testing separator by splitting a line using a 
+       * list of possible separators and returning the first one giving 
+       * more than 1 parts.
+       * 
+       * @param line Line to split
+       * @return a String separator, or null if none found
+       */
+      private static String determineSeparator(String line) {
+          String[] POSSIBLE_SEPARATORS=new String[]{",","\t"," "};
+          for (int i = 0; i< POSSIBLE_SEPARATORS.length; i++){
+              String[] splits = line.split(POSSIBLE_SEPARATORS[i]);
+              if (splits.length>1)
+                  return POSSIBLE_SEPARATORS[i];
+          }
+          return null;
+      }
+      
       public List<ICDKMolecule> loadSMILESFile( InputStream contents,
                                                 IProgressMonitor monitor )
                                 throws CoreException, IOException {
@@ -1769,86 +1788,151 @@ public class CDKManager implements IBioclipseManager {
 
           BufferedInputStream buf = new BufferedInputStream(contents);
           InputStreamReader reader = new InputStreamReader(buf);
-          BufferedReader br = new BufferedReader(reader);
+          BufferedReader breader = new BufferedReader(reader);
 
-          if ( !br.ready() ) {
+          if ( !breader.ready() ) {
               throw new IOException("Input was not ready to be read.");
           }
-
-          class StringPair {
-              final String first;
-              final String second;
-              StringPair(String first,String second) {
-                  this.first = first;
-                  this.second = second;
-              }
-          };
-
-          String line = br.readLine();
-
-          if (line == null)
-              throw new IOException("Input had null content");
-          int cnt = 0;
-          List<StringPair> list = new LinkedList<StringPair>();
-          while (line != null) {
-              //			System.out.println("Line " + cnt + ": " + line);
-              Scanner smilesScanner = new Scanner(line).useDelimiter("\\s+");
-              String part1 = null;
-              String part2 = null;
-              if (smilesScanner.hasNext()) {
-                  part1 = smilesScanner.next();
-                  if (smilesScanner.hasNext()) {
-                      part2 = smilesScanner.next();
-                  }
-              }
-              if (part1 != null) {
-                  if (part2 != null) {
-                      list.add( new StringPair(part1,part2) );
-                  }else{
-                      list.add( new StringPair(part1,"entry-" + cnt) );
-                  }
-                  //				System.out
-                  //						.println("  - " + part1 + " -> " + entries.get(part1));
-              }
-              // Get next line
-              line = br.readLine();
-              cnt++;
+          List<ICDKMolecule> molecules = new ArrayList<ICDKMolecule>();
+          DeduceBondSystemTool bondSystemTool = new DeduceBondSystemTool();
+          List<String> lines = new LinkedList<String>();
+          for ( String line = breader.readLine() ; 
+                line != null ; 
+                line = breader.readLine() ) {
+              lines.add( line );
           }
-          // Depict where the smiles are, in first or second
-          boolean smilesInFirst = true;
-          String firstKey = list.get( 0 ).first;
-          String firstVal = list.get( 0 ).second;
-          ICDKMolecule mol = null;
+          breader.close();
+          
           try {
-              mol = fromSMILES(firstKey);
+
+              int noLines = lines.size();
+
+              logger.debug("Number of lines in file: " + noLines);
+              
+              monitor.beginTask("Converting SMILES file to SDF", noLines);
+              
+              String firstLine = lines.remove( 0 );
+
+              if (firstLine==null)
+                  throw new IOException("First line is null!");
+              
+              logger.debug("Header line is: " + firstLine);
+
+              //Determine separator from first line
+              String separator=determineSeparator(firstLine);
+
+              //First line is header
+              String[] headers;
+              if ( separator == null) {
+                  // no separator so assuming only a SMILES string on each row
+                  headers = new String[] {"smiles"};
+              }
+              else {
+                   headers = firstLine.split(separator);
+              }
+              
+              
+              // or is it?
+              boolean haveHeaders = false;
+              try { 
+                  fromSMILES( headers.length == 1 ? firstLine 
+                                                  : headers[0] );
+              }
+              catch (BioclipseException e) {
+                // well at least it's not SMILES so suppose it's headers
+                haveHeaders = true;
+              }
+              
+              if (!haveHeaders) {
+                  lines.add( 0, firstLine );
+                  if ( headers.length != 1 ) {
+                      headers = new String[] {"smiles", "identifier"};
+                  }
+              }
+              
+              //Strip headers of " and spaces
+              for (int i=0; i< headers.length; i++){
+                  headers[i]=headers[i].trim();
+                  if (headers[i].startsWith("\""))
+                      headers[i] = headers[i].substring(1);
+                  if (headers[i].endsWith("\""))
+                      headers[i] = headers[i].substring( 
+                                       0,
+                                       headers[i].length() - 1 );
+              }
+
+              //Read subsequent lines until end
+              int lineno=2;
+              for (String line : lines) {
+                  
+                  if (monitor.isCanceled())
+                      return null;
+                  
+                  String[] parts = headers.length > 1 ? line.split(separator) 
+                                                      : new String[] {line};
+                  
+                  //Assert header is same size as data
+                  if (parts.length!=headers.length)
+                      throw new BioclipseException("Header and data have " +
+                              "different number of columns. " +
+                              "Header size=" + headers.length + 
+                              "Line " + lineno + " size=" + parts.length );
+
+                  //Part 1 is expected to be SMILES
+                  String smiles=parts[0];
+
+                  //Create a new CDKMolecule from smiles
+                  ICDKMolecule mol = fromSMILES(smiles);
+                  
+                  try {
+                      org.openscience.cdk.interfaces.IMolecule newAC 
+                          = bondSystemTool.fixAromaticBondOrders(
+                              (org.openscience.cdk.interfaces.IMolecule)
+                              mol.getAtomContainer() );
+                      mol = new CDKMolecule(newAC);
+                  } 
+                  catch (CDKException e) {
+                      logger.error("Could not deduce bond orders for mol: " + mol);
+                  }
+
+                  //Store rest of parts as properties on mol
+                  for (int i=1; i<headers.length;i++){
+                      mol.getAtomContainer().setProperty(headers[i], parts[i]);
+                  }
+                  
+                  //Filter molecules with failing atom types
+                  boolean filterout=false;
+                  for (IAtom atom : mol.getAtomContainer().atoms()){
+                      if (atom.getAtomTypeName()==null || 
+                              atom.getAtomTypeName().equals("X"))
+                          filterout=true;
+                  }
+
+                  if (filterout)
+                      logger.debug("Skipped molecule " + lineno + " due to " +
+                              "failed atom typing.");
+                  else
+                      molecules.add(mol);
+
+                  //Read next line
+                  lineno++;
+                  
+                  monitor.worked(1);
+                  if (lineno%100==0){
+                      if (monitor.isCanceled())
+                          return null;
+                      monitor.subTask("Processed: " + lineno + "/" + noLines);
+                  }
+              }
+          } catch (IOException e) {
+              e.printStackTrace();
           } catch (BioclipseException e) {
+              e.printStackTrace();
+          }finally{
+              monitor.done();
           }
-          if (mol == null) {
-              try {
-                  mol = fromSMILES(firstVal);
-                  smilesInFirst = false;
-              } catch (BioclipseException e) {
-              }
-          }
-          List<ICDKMolecule> mols = new RecordableList<ICDKMolecule>();
-          for (StringPair part : list) {
-              if (smilesInFirst) {
-                  try {
-                      mol = fromSMILES(part.first);
-                      mol.setName(part.second);
-                      mols.add(mol);
-                  } catch (BioclipseException e) {
-                  }
-              } else {
-                  try {
-                      mol = fromSMILES(part.second);
-                      mol.setName(part.first);
-                      mols.add(mol);
-                  } catch (BioclipseException e) {
-                  }
-              }
-          }
-          return mols;
+          logger.debug("Read " + molecules.size() +" molecules.");
+          return molecules;
       }
 
       public int getNoMolecules(IFile file)
@@ -2233,32 +2317,31 @@ public class CDKManager implements IBioclipseManager {
       }
 
       public List<ICDKMolecule> extractFromSDFile( IFile file, int startenty,
-                                                int endentry ,IProgressMonitor monitor)
+                                                int endentry )
                                                 throws BioclipseException,
                                                 InvocationTargetException {
 
-          int ticks = endentry+1;
+          IProgressMonitor monitor = new NullProgressMonitor();
+          int ticks = 10000;
 
           try {
-              monitor.beginTask("Reading file",ticks);
+              monitor.beginTask( "Writing file", ticks );
               IteratingBioclipseMDLReader reader
                   = new IteratingBioclipseMDLReader(
                             file.getContents(),
                             DefaultChemObjectBuilder.getInstance(),
-                            null );
+                            monitor );
               int i = 0;
               List<ICDKMolecule> result=new RecordableList<ICDKMolecule>();
               while (reader.hasNext()) {
                   if (i>=startenty && i<=endentry) {
                       result.add( reader.next() );
                   }
-                  monitor.worked(1);
-                  if(monitor.isCanceled()) throw new OperationCanceledException("Operation was canceled");
                   i++;
                   if(i>endentry)
                       break;
               }
-              monitor.worked(1);
+              monitor.worked(ticks);
               return result;
           }
           catch (Exception e) {

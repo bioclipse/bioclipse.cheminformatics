@@ -87,13 +87,14 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 			protected IStatus run(IProgressMonitor monitor) {
 				List<ICDKMolecule> mols;
 				monitor.beginTask("Converting SMILES", 10);
+				ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
 				try {
-					mols = ConvertSMILEStoSDF.readFileIntoMoleculeList(
-							file, new SubProgressMonitor(monitor, 9));
-				} catch (InterruptedException e) {
-					monitor.done();
-					logger.debug("Canceled.");
-					return Status.CANCEL_STATUS;
+					mols = cdk.loadSMILESFile( 
+					           file, 
+					           new SubProgressMonitor(monitor, 9) );
+					if ( monitor.isCanceled()) {
+					    return Status.CANCEL_STATUS;
+					}
 				} catch (Exception e) {
 					LogUtils.handleException(e, logger, 
 							net.bioclipse.cdk.ui.Activator.PLUGIN_ID);
@@ -114,7 +115,7 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 									.replace(".smi", ".sdf");
 				
 				
-				ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
+				
 //				debugAromaticity(mols.get(0));
 
 				try {
@@ -140,177 +141,4 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 		
 		return null;
 	}		
-
-
-	/**
-	 * Read a SMILES file into a list of molecules.
-	 * @param file
-	 * @param monitor
-	 * @return
-	 * @throws BioclipseException
-	 * @throws InvocationTargetException
-	 * @throws InterruptedException
-	 */
-	public static List<ICDKMolecule> readFileIntoMoleculeList(
-			IFile file, IProgressMonitor monitor)
-			throws BioclipseException, InvocationTargetException, 
-			InterruptedException {
-		
-		ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
-		List<ICDKMolecule> molecules=new ArrayList<ICDKMolecule>();
-		DeduceBondSystemTool bondSystemTool= new DeduceBondSystemTool();
-
-		try {
-
-			int noLines=countLines(file.getContents());
-
-			logger.debug("Number of lines in file: " + noLines);
-			
-			monitor.beginTask("Converting SMILES file to SDF", noLines);
-			
-			BufferedReader br = 
-				new BufferedReader(new InputStreamReader(file.getContents()));
-
-			String line = br.readLine();
-
-			if (line==null)
-				throw new IOException("First line is null!");
-			
-			logger.debug("Header line is: " + line);
-
-			//Determine separator from first line
-			String separator=determineSeparator(line);
-
-			//First line is header
-			String[] headers = line.split(separator);
-			//Strip headers of " and spaces
-			for (int i=0; i< headers.length; i++){
-				headers[i]=headers[i].trim();
-				if (headers[i].startsWith("\""))
-					headers[i]=headers[i].substring(1);
-				if (headers[i].endsWith("\""))
-					headers[i]=headers[i].substring(0,headers[i].length()-1);
-			}
-
-			//Read subsequent lines until end
-			int lineno=2;
-			line=br.readLine();
-			while(line!=null){
-				
-				if (monitor.isCanceled())
-					throw new InterruptedException("Canceled by user");
-				
-				String[] parts = line.split(separator);
-				
-				//Assert header is same size as data
-				if (parts.length!=headers.length)
-					throw new BioclipseException("Header and data have " +
-							"different number of columns. " +
-							"Header size=" + headers.length + 
-							"Line " + lineno + " size=" + parts.length );
-
-				//Part 1 is expected to be SMILES
-				String smiles=parts[0];
-
-				//Create a new CDKMolecule from smiles
-				ICDKMolecule mol = cdk.fromSMILES(smiles);
-				
-				try {
-					IMolecule newAC = bondSystemTool.fixAromaticBondOrders((IMolecule)mol.getAtomContainer());
-					mol=new CDKMolecule(newAC);
-				} catch (CDKException e) {
-					logger.error("Could not deduce bond orders for mol: " + mol);
-				}
-
-				//Store rest of parts as properties on mol
-				for (int i=1; i<headers.length;i++){
-					mol.getAtomContainer().setProperty(headers[i], parts[i]);
-				}
-				
-				//Filter molecules with failing atom types
-				boolean filterout=false;
-				for (IAtom atom : mol.getAtomContainer().atoms()){
-					if (atom.getAtomTypeName()==null || 
-							atom.getAtomTypeName().equals("X"))
-						filterout=true;
-				}
-
-				if (filterout)
-					logger.debug("Skipped molecule " + lineno + " due to " +
-							"failed atom typing.");
-				else
-					molecules.add(mol);
-
-				//Read next line
-				line=br.readLine();
-				lineno++;
-				
-				monitor.worked(1);
-				if (lineno%100==0){
-					if (monitor.isCanceled())
-			            throw new InterruptedException("Operation cancelled");
-					monitor.subTask("Processed: " + lineno + "/" + noLines);
-				}
-			}
-
-			br.close();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (BioclipseException e) {
-			e.printStackTrace();
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}finally{
-			monitor.done();
-		}
-		
-
-		logger.debug("Read " + molecules.size() +" molecules.");
-		return molecules;
-		
-	}
-
-	/**
-	 * A simple implementation testing separator by splitting a line using a 
-	 * list of possible separators and returning the first one giving 
-	 * more than 1 parts.
-	 * 
-	 * @param line Line to split
-	 * @return a String separator, or null if none found
-	 */
-	private static String determineSeparator(String line) {
-
-		for (int i = 0; i< POSSIBLE_SEPARATORS.length; i++){
-			String[] splits = line.split(POSSIBLE_SEPARATORS[i]);
-			if (splits.length>1)
-				return POSSIBLE_SEPARATORS[i];
-		}
-
-		return null;
-	}
-
-	/**
-	 * A fast implementation to count lines in a file.
-	 * Reference: http://stackoverflow.com/questions/453018/number-of-lines-in-a-file-in-java
-	 * 
-	 * @param instream
-	 * @return
-	 * @throws IOException
-	 */
-	public static int countLines(InputStream instream) throws IOException {
-	    InputStream is = new BufferedInputStream(instream);
-	    byte[] c = new byte[1024];
-	    int count = 0;
-	    int readChars = 0;
-	    while ((readChars = is.read(c)) != -1) {
-	        for (int i = 0; i < readChars; ++i) {
-	            if (c[i] == '\n')
-	                ++count;
-	        }
-	    }
-	    is.close();
-	    return count;
-	}
-
 }
