@@ -62,6 +62,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentType;
@@ -267,6 +268,37 @@ public abstract class AbstractCDKManagerPluginTest {
         List<ICDKMolecule> mols = cdk.loadSMILESFile(path);
         assertNotNull( mols.get( 0 ).getProperty("name", 
                                                  Property.USE_CACHED) );
+        
+        String csvfile = "/testFiles/testsmi2sdf.smi";
+        InputStream stream = getClass().getResourceAsStream(csvfile);
+        MockIFile ifile=new MockIFile(stream).extension("smi");
+
+        mols = cdk.loadSMILESFile( ifile, new NullProgressMonitor() );
+
+        //Confirm all molecules are read
+        assertEquals(8, mols.size());
+        
+        //Confirm properties are stored on first mol
+        assertEquals("842267", mols.get(0).getAtomContainer()
+                                   .getProperty("PUBCHEM_SID"));
+        assertEquals("", mols.get(0).getAtomContainer()
+                             .getProperty("PUBCHEM_EXT_DATASOURCE_REGID"));
+        assertEquals("644526", mols.get(0).getAtomContainer()
+                                   .getProperty("PUBCHEM_CID"));
+        assertEquals("2", mols.get(0).getAtomContainer()
+                              .getProperty("PUBCHEM_ACTIVITY_OUTCOME"));
+        assertEquals("26", mols.get(0).getAtomContainer()
+                               .getProperty("PUBCHEM_ACTIVITY_SCORE"));
+        assertEquals("\"\"", mols.get(0).getAtomContainer()
+                                 .getProperty("PUBCHEM_ACTIVITY_URL"));
+        assertEquals("20100519", mols.get(0).getAtomContainer()
+                                   .getProperty("PUBCHEM_ASSAYDATA_COMMENT"));
+        assertEquals("\"\"", mols.get(0).getAtomContainer()
+                                 .getProperty("PUBCHEM_ASSAYDATA_REVOKE"));
+        assertEquals("123.22", mols.get(0).getAtomContainer()
+                                   .getProperty("1"));
+        assertEquals("10.2743", mols.get(0).getAtomContainer()
+                                    .getProperty("2"));
     }
 
     @Test

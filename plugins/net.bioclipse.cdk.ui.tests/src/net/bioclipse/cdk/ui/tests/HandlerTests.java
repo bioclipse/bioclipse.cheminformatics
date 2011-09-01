@@ -44,40 +44,6 @@ import org.junit.Test;
  */
 public class HandlerTests {
 
-	/**
-	 * Test converting a comma-separated SMIELS file into an SDF.
-	 * @throws CoreException
-	 * @throws IOException
-	 * @throws URISyntaxException
-	 * @throws BioclipseException
-	 * @throws InvocationTargetException
-	 * @throws InterruptedException
-	 */
-    @Test
-    public void testConvertSMILEStoSDF() throws CoreException, IOException, URISyntaxException, BioclipseException, InvocationTargetException, InterruptedException {
-		String csvfile = "/testFiles/testsmi2sdf.smi";
-		InputStream stream = getClass().getResourceAsStream(csvfile);
-		MockIFile ifile=new MockIFile(stream);
-
-		List<ICDKMolecule> mols = ConvertSMILEStoSDF.readFileIntoMoleculeList(ifile, new NullProgressMonitor());
-
-		//Confirm all molecules are read
-		assertEquals(8, mols.size());
-		
-		//Confirm properties are stored on first mol
-		assertEquals("842267", mols.get(0).getAtomContainer().getProperty("PUBCHEM_SID"));
-		assertEquals("", mols.get(0).getAtomContainer().getProperty("PUBCHEM_EXT_DATASOURCE_REGID"));
-		assertEquals("644526", mols.get(0).getAtomContainer().getProperty("PUBCHEM_CID"));
-		assertEquals("2", mols.get(0).getAtomContainer().getProperty("PUBCHEM_ACTIVITY_OUTCOME"));
-		assertEquals("26", mols.get(0).getAtomContainer().getProperty("PUBCHEM_ACTIVITY_SCORE"));
-		assertEquals("\"\"", mols.get(0).getAtomContainer().getProperty("PUBCHEM_ACTIVITY_URL"));
-		assertEquals("20100519", mols.get(0).getAtomContainer().getProperty("PUBCHEM_ASSAYDATA_COMMENT"));
-		assertEquals("\"\"", mols.get(0).getAtomContainer().getProperty("PUBCHEM_ASSAYDATA_REVOKE"));
-		assertEquals("123.22", mols.get(0).getAtomContainer().getProperty("1"));
-		assertEquals("10.2743", mols.get(0).getAtomContainer().getProperty("2"));
-
-	}	
-    
     @Test
     public void testFilterOutSalts() throws MalformedURLException, IOException, BioclipseException, CoreException, URISyntaxException{
 
@@ -104,13 +70,4 @@ public class HandlerTests {
 		}
 
     }
-    
-
-	private String sourcePathtoAbsolutePath(String sourcepath) 
-	throws URISyntaxException, MalformedURLException, IOException{
-		URI uri = getClass().getResource(sourcepath).toURI();
-		URL url = FileLocator.toFileURL(uri.toURL());
-		return url.getFile();
-	}
-
 }
