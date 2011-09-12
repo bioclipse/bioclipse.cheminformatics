@@ -18,5 +18,5 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- jar/opsin-1.0.0-jar-with-dependencies.jar
+ jar/opsin-1.1.0-jar-with-dependencies.jar
 Import-Package: org.apache.log4j
