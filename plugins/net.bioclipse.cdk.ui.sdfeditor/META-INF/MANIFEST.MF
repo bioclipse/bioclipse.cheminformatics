@@ -37,6 +37,8 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.extra,
  org.openscience.cdk.silent,
  org.eclipse.core.expressions
+ org.openscience.cdk.extra,
+ org.openscience.cdk.smiles
 Bundle-ActivationPolicy: lazy
 Import-Package: net.bioclipse.inchi.business,
  org.apache.log4j,

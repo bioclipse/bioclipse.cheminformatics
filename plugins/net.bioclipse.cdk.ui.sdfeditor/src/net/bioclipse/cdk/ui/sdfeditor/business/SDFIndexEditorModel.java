@@ -44,6 +44,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
@@ -51,13 +52,17 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
+import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IBond.Order;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IChemSequence;
+import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.MDLV2000Reader;
+import org.openscience.cdk.smiles.DeduceBondSystemTool;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 
 
@@ -143,7 +148,21 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
                     StringReader reader = new StringReader(input.getRecord( index ));
                     chemReader.setReader( reader );
                     IChemObject chemObj = processContent();
-                    mol = new CDKMolecule((IAtomContainer)chemObj);
+                    assert( chemObj instanceof IMolecule);
+                    IMolecule cdkMolecule = (IMolecule)chemObj;
+                    sanatizeMDLV2000MolFileInput(cdkMolecule);
+                    if(input.isBondOrder4){
+                        boolean deduceBondOrder = false;
+                        for(IBond bond:cdkMolecule.bonds()){
+                            if(bond.getFlag(CDKConstants.ISAROMATIC) && bond.getOrder() == Order.SINGLE) {
+                                deduceBondOrder=true;
+                                break;
+                            }
+                        }
+                        if(deduceBondOrder)
+                            cdkMolecule = deduceBondOrder(cdkMolecule);
+                    }
+                    mol = new CDKMolecule(cdkMolecule);
                     setLastRead( index, mol );
                     readProperties( mol );
                 } catch ( Throwable e ) {
@@ -154,7 +173,6 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
                 } 
             }
 
-            sanatizeMDLV2000MolFileInput(mol);
 
             for(IPropertyCalculator<?> calculator:calculators.values()) {
                 Object propertyValue = getPropertyFor( index,
@@ -170,8 +188,7 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
 
     /* copy form CDKManager to fix bug 2052 */
     // TODO bug 2053 Remove this code
-    private void sanatizeMDLV2000MolFileInput(ICDKMolecule molecule) {
-        IAtomContainer container = molecule.getAtomContainer();
+    private void sanatizeMDLV2000MolFileInput(IAtomContainer container) {
         if (container != null && container.getAtomCount() > 0) {
             CDKHydrogenAdder hAdder =
                 CDKHydrogenAdder.getInstance(container.getBuilder());
@@ -409,5 +426,21 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
 
     public void delete( int index ) {
         throw new UnsupportedOperationException();
+    }
+
+    public boolean isBondOrder4() {
+        return input.isBondOrder4;
+    }
+
+    private IMolecule deduceBondOrder(IMolecule ac) {
+        DeduceBondSystemTool tool = new DeduceBondSystemTool();
+        try {
+            logger.debug("Deduceing bond orders");
+            return tool.fixAromaticBondOrders( ac );
+        } catch ( CDKException e ) {
+            logger.error( "Could not deduce bond order. "+e.getMessage() ,e);
+            LogUtils.handleException( e, logger ,"net.bioclipse.cdk.ui.sdfeditor");
+            return ac;
+        }
     }
 }
