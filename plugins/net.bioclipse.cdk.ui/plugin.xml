@@ -516,5 +516,14 @@
         </perspectiveExtension> 
     </extension> 
 
-
+    <extension
+        point="org.eclipse.ui.views">
+        <view
+            allowMultiple="true"
+            category="org.eclipse.ui"
+            class="org.eclipse.ui.internal.views.markers.ProblemsView"
+            id="org.eclipse.ui.views.ProblemView"
+            name="Problems">
+      </view>
+</extension>
 </plugin>
