@@ -13,8 +13,10 @@
  ******************************************************************************/
 package net.bioclipse.cdkdebug.business;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -24,6 +26,7 @@ import net.bioclipse.managers.business.IBioclipseManager;
 import net.bioclipse.scripting.ui.views.JsConsoleView;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.Platform;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
@@ -54,12 +57,17 @@ public class CDKDebugManager implements IBioclipseManager {
     private static AtomTypeFactory factory;
     
     static {
-        InputStream iStream 
-            = org.openscience.cdk.atomtype.Activator.class.getResourceAsStream(
-                "/org/openscience/cdk/dict/data/sybyl-atom-types.owl");
+    	try {
+    	URL owlURL = Platform.getBundle("org.openscience.cdk.io").getResource("/org/openscience/cdk/dict/data/sybyl-atom-types.owl");
+        InputStream iStream = owlURL.openStream();
+//            = org.openscience.cdk.atomtype.Activator.class.getResourceAsStream(
+//                "/org/openscience/cdk/dict/data/sybyl-atom-types.owl");
         factory = AtomTypeFactory.getInstance( iStream, "owl",
             NoNotificationChemObjectBuilder.getInstance()
         );
+    	} catch (IOException e) {
+    		logger.error("Could not get sybyl-atom-types.owl file",e);
+    	} 
     }
 
     
