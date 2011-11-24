@@ -281,22 +281,22 @@ public class SWTRenderer implements IDrawVisitor{
 
     public void visit(ArrowElement element) {
         Path path = new Path(gc.getDevice());
-        double[] a=transform( element.x1, element.y1 );
-        double[] b=transform( element.x2, element.y2 );
+        double[] a=transform( element.startX, element.startY );
+        double[] b=transform( element.endX, element.endY );
         path.moveTo((float)a[0], (float)a[1]);
         path.lineTo((float)b[0], (float)b[1]);
         double aW = model.getParameter(ArrowHeadWidth.class).getValue()
             / model.getParameter(Scale.class).getValue();
         if (element.direction) {
-            double[] c = transform( element.x1 - aW, element.y1 - aW );
-            double[] d = transform( element.x1 - aW, element.y1 + aW );
+            double[] c = transform( element.startX - aW, element.startY - aW );
+            double[] d = transform( element.startX - aW, element.startY + aW );
             path.moveTo((float)a[0], (float)a[1]);
             path.lineTo((float)c[0], (float)c[1]);
             path.lineTo((float)a[0], (float)a[1]);
             path.lineTo((float)d[0], (float)d[1]);
         } else {
-            double[] c = transform( element.x2 + aW, element.y2 - aW );
-            double[] d = transform( element.x2 + aW, element.y2 + aW );
+            double[] c = transform( element.endX + aW, element.endY - aW );
+            double[] d = transform( element.endX + aW, element.endY + aW );
             path.moveTo((float)a[0], (float)a[1]);
             path.lineTo((float)c[0], (float)c[1]);
             path.lineTo((float)a[0], (float)a[1]);
