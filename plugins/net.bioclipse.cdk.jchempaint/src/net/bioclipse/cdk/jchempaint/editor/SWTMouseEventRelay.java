@@ -115,11 +115,11 @@ public class SWTMouseEventRelay implements  Listener {
         if(isDragging){
 
             if(checkState( event, 0, SWT.SHIFT )) {
-                int dx = event.x-dragFromX;
-                if(dx<0)
-                    relay.mouseWheelMovedBackward( 0 );
-                else if(dx>0)
-                    relay.mouseWheelMovedForward( 0 );
+//                int dx = event.x-dragFromX;
+//                if(dx<0)
+//                    relay.mouseWheelMovedBackward( 0 );
+//                else if(dx>0)
+//                    relay.mouseWheelMovedForward( 0 );
 
             }else
                 relay.mouseDrag(dragFromX,dragFromY, event.x, event.y);
@@ -131,13 +131,13 @@ public class SWTMouseEventRelay implements  Listener {
 
     public void mouseScrolled(Event e) {
 
-        int clicks = e.count;
-        if (clicks > 0) {
-            relay.mouseWheelMovedBackward(0);
-        } else if(clicks<0){
-            relay.mouseWheelMovedForward(0);
-        }
-        e.doit = false;
+//        int clicks = e.count;
+//        if (clicks > 0) {
+//            relay.mouseWheelMovedBackward(0);
+//        } else if(clicks<0){
+//            relay.mouseWheelMovedForward(0);
+//        }
+//        e.doit = false;
     }
 
 }

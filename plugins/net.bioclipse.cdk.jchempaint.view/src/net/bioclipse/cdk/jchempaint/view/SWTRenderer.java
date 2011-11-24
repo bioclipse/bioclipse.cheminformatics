@@ -143,15 +143,15 @@ public class SWTRenderer implements IDrawVisitor{
         if (element.fill) {
             setBackground(element.color);
 
-            gc.fillOval(transformX(element.x) - radius,
-                        transformY(element.y) - radius,
+            gc.fillOval(transformX(element.xCoord) - radius,
+                        transformY(element.yCoord) - radius,
                         diameter,
                         diameter );
         } else {
             setForeground(element.color);
 
-            gc.drawOval(transformX(element.x) - radius,
-                        transformY(element.y) - radius,
+            gc.drawOval(transformX(element.xCoord) - radius,
+                        transformY(element.yCoord) - radius,
                         diameter,
                         diameter );
         }
@@ -185,14 +185,14 @@ public class SWTRenderer implements IDrawVisitor{
     private void drawWedge(WedgeLineElement wedge) {
 
         Vector2d normal =
-            new Vector2d(wedge.y1 - wedge.y2, wedge.x2 - wedge.x1);
+            new Vector2d(wedge.firstPointY - wedge.secondPointY, wedge.secondPointX - wedge.firstPointX);
         normal.normalize();
         normal.scale(model.getParameter(WedgeWidth.class).getValue() /
         		     model.getParameter(Scale.class).getValue());
 
         // make the triangle corners
-        Point2d vertexA = new Point2d(wedge.x1, wedge.y1);
-        Point2d vertexB = new Point2d(wedge.x2, wedge.y2);
+        Point2d vertexA = new Point2d(wedge.firstPointX, wedge.firstPointY);
+        Point2d vertexB = new Point2d(wedge.secondPointX, wedge.secondPointY);
         Point2d vertexC = new Point2d(vertexB);
         vertexB.add(normal);
         vertexC.sub(normal);
@@ -261,8 +261,8 @@ public class SWTRenderer implements IDrawVisitor{
 
     private void drawLine(LineElement element) {
         Path path = new Path(gc.getDevice());
-        double[] p1=transform( element.x1, element.y1 );
-        double[] p2=transform( element.x2, element.y2 );
+        double[] p1=transform( element.firstPointX, element.firstPointY );
+        double[] p2=transform( element.secondPointX, element.secondPointY );
         path.moveTo( (float)p1[0], (float)p1[1] );
         path.lineTo( (float)p2[0], (float)p2[1] );
         gc.drawPath( path );
@@ -440,12 +440,12 @@ public class SWTRenderer implements IDrawVisitor{
         if (element.filled) {
             setBackground(element.color);
             gc.fillRectangle(
-                    transformX(element.x), transformY(element.y),
+                    transformX(element.xCoord), transformY(element.yCoord),
                     scaleX(element.width), scaleY(element.height));
         } else {
             setForeground( element.color );
             gc.drawRectangle(
-                    transformX(element.x), transformY(element.y),
+                    transformX(element.xCoord), transformY(element.yCoord),
                     scaleX(element.width), scaleY(element.height));
         }
     }
