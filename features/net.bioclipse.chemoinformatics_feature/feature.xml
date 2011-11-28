@@ -399,7 +399,7 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          id="net.bioclipse.org.cmlxom"
          download-size="0"
          install-size="0"
-         version="2.5.0.b1"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
