@@ -69,7 +69,7 @@ public class CDKManagerHelper {
      */
     public static void registerAllFormats(FormatFactory fac) {
         try {
-        	URL file = Platform.getBundle("org.openscience.cdk.io").getResource("io-formats.set");
+        	URL file = Platform.getBundle("org.openscience.cdk.ioformats").getResource("io-formats.set");
             InputStream iStream =  file.openStream();//org.openscience.cdk.ioformats.Activator.class.getResourceAsStream("/io-formats.set");
             BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
             int formatCount = 0;
