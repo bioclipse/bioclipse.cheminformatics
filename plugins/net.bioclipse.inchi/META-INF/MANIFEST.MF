@@ -18,3 +18,4 @@ Bundle-Vendor: The Bioclipse Team
 Bundle-ClassPath: .
 Import-Package: net.sf.jniinchi,
  org.apache.log4j
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
