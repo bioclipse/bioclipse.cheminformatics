@@ -557,13 +557,6 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          unpack="false"/>
 
    <plugin
-         id="net.bioclipse.jnati"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="net.bioclipse.sea36.util.config"
          download-size="0"
          install-size="0"
@@ -592,13 +585,6 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          unpack="false"/>
 
    <plugin
-         id="net.sf.jni-inchi"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="log4j.over.slf4j"
          download-size="0"
          install-size="0"
@@ -617,5 +603,33 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          download-size="0"
          install-size="0"
          version="0.0.0"/>
+
+   <plugin
+         id="net.sf.jni-inchi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="jnati-core-0.4"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="jnati-deploy-0.4"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="jnati-proc-0.4"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>
