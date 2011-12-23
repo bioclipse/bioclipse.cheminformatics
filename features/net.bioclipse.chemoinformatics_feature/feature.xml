@@ -100,7 +100,6 @@ The Eclipse Public License accompanies this distribution, and is available at ht
       <import plugin="com.springsource.nu.xom"/>
       <import plugin="log4j.over.slf4j"/>
       <import plugin="net.sourceforge.nattable.core"/>
-      <import plugin="net.sf.jni-inchi"/>
    </requires>
 
    <plugin
@@ -210,6 +209,13 @@ The Eclipse Public License accompanies this distribution, and is available at ht
 
    <plugin
          id="net.bioclipse.opsin.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.sf.jni-inchi"
          download-size="0"
          install-size="0"
          version="0.0.0"
