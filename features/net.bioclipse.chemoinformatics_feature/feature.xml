@@ -61,6 +61,8 @@ The Eclipse Public License accompanies this distribution, and is available at ht
       <import plugin="org.openscience.cdk.fingerprint"/>
       <import plugin="net.bioclipse.ui.business"/>
       <import plugin="net.sf.cglib"/>
+      <import plugin="com.springsource.nu.xom"/>
+      <import plugin="log4j.over.slf4j"/>
       <import plugin="org.openscience.cdk.render"/>
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.jface.text"/>
@@ -91,15 +93,15 @@ The Eclipse Public License accompanies this distribution, and is available at ht
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.openscience.cdk.renderswt"/>
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="javax.mail.glassfish"/>
       <import plugin="org.apache.commons.codec"/>
+      <import plugin="net.sourceforge.nattable.core"/>
       <import plugin="org.openscience.cdk.inchi"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="net.bioclipse.browser.business"/>
       <import plugin="org.eclipse.core.contenttype"/>
-      <import plugin="com.springsource.nu.xom"/>
-      <import plugin="log4j.over.slf4j"/>
-      <import plugin="net.sourceforge.nattable.core"/>
+      <import feature="org.eclipse.rcp" version="3.7.1.r37x_v20110729-9DB5FmNFnFLSFCtLxnRfMqt15A4A"/>
+      <import plugin="com.springsource.javax.mail"/>
+      <import plugin="jnati-core-0.4"/>
    </requires>
 
    <plugin
