@@ -271,11 +271,12 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 				String[] parts = line.split(separator);
 				
 				//Assert header is same size as data
-				if (parts.length!=headers.length)
-					throw new BioclipseException("Header and data have " +
-							"different number of columns. " +
-							"Header size=" + headers.length + 
-							"Line " + lineno + " size=" + parts.length );
+//				if (parts.length!=headers.length)
+//					throw new BioclipseException("Header and data have " +
+//							"different number of columns. " +
+//							"Header size=" + headers.length + 
+//							"Line " + lineno + " size=" + parts.length );
+				//TODO: We allow this for now, this needs to be defined in wiki how we handle
 
 				//Part 1 is expected to be SMILES
 				String smiles=parts[0];
@@ -316,7 +317,7 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 
 
 				//Store rest of parts as properties on mol
-				for (int i=1; i<headers.length;i++){
+				for (int i=1; i<parts.length;i++){
 					mol.getAtomContainer().setProperty(headers[i], parts[i]);
 				}
 				
