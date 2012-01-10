@@ -6,6 +6,7 @@
 	<dependencies>
 	   <dependency name="org.xmlpull.xpp3" componentType="osgi.bundle" />
 	   <dependency name="org.eclipse.wst.web_core.feature" componentType="eclipse.feature"/>
+	   <dependency name="org.eclipse.rcp" componentType="eclipse.feature"/>
 	</dependencies>
 	<generators>
 		<!-- Place your Generators here -->

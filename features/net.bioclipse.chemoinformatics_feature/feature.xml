@@ -99,9 +99,9 @@ The Eclipse Public License accompanies this distribution, and is available at ht
       <import plugin="org.eclipse.help"/>
       <import plugin="net.bioclipse.browser.business"/>
       <import plugin="org.eclipse.core.contenttype"/>
-      <import feature="org.eclipse.rcp" version="3.7.1.r37x_v20110729-9DB5FmNFnFLSFCtLxnRfMqt15A4A"/>
       <import plugin="com.springsource.javax.mail"/>
       <import plugin="jnati-core-0.4"/>
+      <import feature="org.eclipse.rcp" version="3.7.1" match="greaterOrEqual"/>
    </requires>
 
    <plugin
