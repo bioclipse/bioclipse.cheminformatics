@@ -21,7 +21,7 @@ This tutorial demonstrates how to edit and run scripts in Bioclipse.
       </description>
       <command
             required="false"
-            serialization="org.eclipse.ui.navigate.openResource(filePath=/Sample Data/Javascripts/extractsmilesAndMass.js)"/>
+            serialization="org.eclipse.ui.navigate.openResource(filePath=/Sample Data/JavaScript scripts/extractsmilesAndMass.js)"/>
    </item>
 
    <item
