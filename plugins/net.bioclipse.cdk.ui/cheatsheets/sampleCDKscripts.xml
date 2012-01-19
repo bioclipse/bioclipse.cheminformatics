@@ -10,7 +10,7 @@
    <item
          title="Step 1: Download and visualize proteins">
       <description>
-         The following script downloads, opens, and runs a Gist (95779 to retrieve a 
+         The following script downloads, opens, and runs a Gist (95779) to retrieve a 
          PDB via a Web service from the EBI databases, open it with Jmol, and do 
          some custom visualization.
       </description>
@@ -18,7 +18,7 @@
           	<action
 			pluginId="net.bioclipse.scripting.ui"
 			class="net.bioclipse.scripting.ui.actions.ScriptAction"
-			param1="res=gist.download(95779,&quot;/Virtual/dnaiso.js&quot;); ui.open(res); js.executeFile(res)"/>
+			param1="res=gist.download(95779); itr = res.iterator(); while (itr.hasNext()) { file = itr.next(); ui.open(file); js.executeFile(file) }"/>
       
    </item>
    
@@ -33,7 +33,7 @@
           	<action
 			pluginId="net.bioclipse.scripting.ui"
 			class="net.bioclipse.scripting.ui.actions.ScriptAction"
-			param1="res=gist.download(95790,&quot;/Virtual/multimol.js&quot;); ui.open(res); js.executeFile(res)"/>
+			param1="res=gist.download(95790); itr = res.iterator(); while (itr.hasNext()) { file = itr.next(); ui.open(file); js.executeFile(file) }"/>
       
    </item>
    
@@ -48,7 +48,7 @@
           	<action
 			pluginId="net.bioclipse.scripting.ui"
 			class="net.bioclipse.scripting.ui.actions.ScriptAction"
-			param1="res=gist.download(95755,&quot;/Virtual/gencoords.js&quot;); ui.open(res); js.executeFile(res)"/>
+			param1="res=gist.download(95755); itr = res.iterator(); while (itr.hasNext()) { file = itr.next(); ui.open(file); js.executeFile(file) }"/>
       
    </item>
    
@@ -63,7 +63,7 @@
           	<action
 			pluginId="net.bioclipse.scripting.ui"
 			class="net.bioclipse.scripting.ui.actions.ScriptAction"
-			param1="res=gist.download(96594,&quot;/Virtual/buildmol.js&quot;); ui.open(res); js.executeFile(res)"/>
+			param1="res=gist.download(96594); itr = res.iterator(); while (itr.hasNext()) { file = itr.next(); ui.open(file); js.executeFile(file) }"/>
       
    </item>
 </cheatsheet>
