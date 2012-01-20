@@ -12,7 +12,7 @@
        title="Step 1: Create molecule from SMILES">
     <description>
     	To create a molecule from SMILES, use the command:<br/><br/>
- <b>mol=cdk.fromSMILES(&quot;CCCO&quot;</b><br/>
+ <b>mol=cdk.fromSMILES(&quot;CCCO&quot;)</b><br/>
     </description>
     <action
 			pluginId="net.bioclipse.scripting.ui"
