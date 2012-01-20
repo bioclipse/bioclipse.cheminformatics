@@ -15,7 +15,7 @@ This tutorial demonstrates how to edit and run scripts in Bioclipse.
 		Note: You need Sample Data installed to complete this step.<br/><br/>
 		
 		In the navigator, exapand the <b>Sample Data</b> project, navigate to the 
-		folder <b>Javascripts</b> and double-click on the file <b>extractsmilesAndMass.js</b>. 
+		folder <b>JavaScript scripts</b> and double-click on the file <b>extractsmilesAndMass.js</b>. 
 		This opens the file in an editor.
          
       </description>
@@ -43,7 +43,7 @@ This tutorial demonstrates how to edit and run scripts in Bioclipse.
          title="Step 3: View Gist for Bioclipse">
       <description>
 
-		Gists are versioned scripts available from http://gist.github.com. &lt;p/&gt;
+		Gists are versioned scripts available from http://gist.github.com.
 		You can find scripts for Bioclipse on Delicious, http://delicious.com/tag/bioclipse+gist.
 
       </description>
@@ -60,7 +60,7 @@ This tutorial demonstrates how to edit and run scripts in Bioclipse.
 	
 		<b>gist.download(95755)</b><br/><br/>
 		
-		The result in the Javascript console tells you the name of teh downloaded file.
+		The result in the Javascript console tells you the name of the downloaded file.
 		
       </description>
     	<action
@@ -70,7 +70,8 @@ This tutorial demonstrates how to edit and run scripts in Bioclipse.
       
    </item>
 
-   <item
+
+<!--   <item 
          title="Step 5: Download Gists to specified file">
       <description>
 
@@ -84,6 +85,6 @@ This tutorial demonstrates how to edit and run scripts in Bioclipse.
 			class="net.bioclipse.scripting.ui.actions.ScriptAction"
 			param1="gist.download(95779,&quot;/Virtual/dnaiso.js&quot;)"/>
       
-   </item>   
+   </item>  -->
    
 </cheatsheet>
