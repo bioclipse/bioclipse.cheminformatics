@@ -8,7 +8,7 @@
 	</intro>
 	<item
        href="/net.bioclipse.cdk.jchempaint/doc/jcpEditor.html"
-       title="Open and Edit structures in 2D">
+       title="Step 1: Open and Edit structures in 2D">
 		<description>
 			The JChemPaint editor (JCP) allows graphical viewing and editing of 2D
 			diagrams of chemical structures in various formats. You can also
@@ -26,7 +26,7 @@
 
 		<item
        href="/net.bioclipse.cdk.jchempaint/doc/jcpEditor.html"
-       title="Draw new structures in 2D from scratch">
+       title="Step 2: Draw new structures in 2D from scratch">
 		<description>
 			To start drawing a new molecule in 2D, use the top menu <b>File > New... </b>  and select <b>Molecule</b>.
 		</description>
@@ -37,7 +37,7 @@
 
 	<item
        href="/net.bioclipse.spectrum/html/sdfEditor.html"
-       title="Open files with multiple structures">
+       title="Step 3: Open files with multiple structures">
 		<description>
 			Files with multiple structures (MDL SD files, and SMILES files) are
 			handled by the Molecule Table Editor. Double-click a molecule-file 
@@ -60,7 +60,7 @@
 	</item>
 
 	<item
-       title="Create 2D and 3D coordinates">
+       title="Step 4: Create 2D and 3D coordinates">
 		<description>
 			You can create 2D and 3D coordinates for molecules. 
 			Right click on the file in the Navigator and choose one of the Generate 2D or 3D options.
@@ -68,7 +68,7 @@
 	</item>
 	<item
        href="/net.bioclipse.cdk.smartsmatching/html/smartsmatchingview.html"
-       title="Smarts matching">
+       title="Step 5: Smarts matching">
 		<description>
 			Show the view Smarts Matching from the menu <b>Window > Show view > Other...</b> and select <b>SmartsMatching</b> in the <b>Cheminformatics</b> folder.
 			<br/><br/>
@@ -81,7 +81,7 @@
 
 	<item
        href="/net.bioclipse.webservices/doc/wsplugin.html"
-       title="Query and download proteins via web service">
+       title="Step 6: Query and download proteins via web service">
 		<description>
 			You can search and query a variety of external (EBI) databases using the Wizard at <b>File > New > Cheminformatics > Query WSDbfetch at EBI</b>.
 		</description>
@@ -92,7 +92,7 @@
 
 	<item
        href="/net.bioclipse.webservices/doc/wsplugin.html"
-       title="Search and download chemical structures from PubChem">
+       title="Step 7: Search and download chemical structures from PubChem">
 		<description>
 			It is possible to search and download compounds from PubChem using teh Wizard at <b>File > New > Cheminformatics > Get structures from PubChem</b>.
 		</description>
