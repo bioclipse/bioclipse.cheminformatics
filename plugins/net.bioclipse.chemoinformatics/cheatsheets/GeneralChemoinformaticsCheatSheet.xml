@@ -70,7 +70,7 @@
        href="/net.bioclipse.cdk.smartsmatching/html/smartsmatchingview.html"
        title="Step 5: Smarts matching">
 		<description>
-			Show the view Smarts Matching from the menu <b>Window > Show view > Other...</b> and select <b>SmartsMatching</b> in the <b>Cheminformatics</b> folder.
+			Show the view SMARTS Matching from the menu <b>Window > Show view > Other...</b> and select <b>SmartsMatching</b> in the <b>Cheminformatics</b> folder.
 			<br/><br/>
 			The opened view has a local toolbar and a context menu (just right-click in the view) with several options that can be used to add/delete and run smarts matching.
 		</description>
@@ -83,7 +83,7 @@
        href="/net.bioclipse.webservices/doc/wsplugin.html"
        title="Step 6: Query and download proteins via web service">
 		<description>
-			You can search and query a variety of external (EBI) databases using the Wizard at <b>File > New > Cheminformatics > Query WSDbfetch at EBI</b>.
+			You can search and query a variety of external (EBI) databases using the Wizard at <b>File > New > Download > Query WSDbfetch at EBI</b>.
 		</description>
 	  <command
         required="false"
@@ -94,7 +94,7 @@
        href="/net.bioclipse.webservices/doc/wsplugin.html"
        title="Step 7: Search and download chemical structures from PubChem">
 		<description>
-			It is possible to search and download compounds from PubChem using teh Wizard at <b>File > New > Cheminformatics > Get structures from PubChem</b>.
+			It is possible to search and download compounds from PubChem using teh Wizard at <b>File > New > Download > Get structures from PubChem</b>.
 		</description>
 	  <command
         required="false"
