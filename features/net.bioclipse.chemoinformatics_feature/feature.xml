@@ -44,7 +44,7 @@ The Eclipse Public License accompanies this distribution, and is available at ht
       <import plugin="org.openscience.cdk.pdb"/>
       <import plugin="org.openscience.cdk.pcore"/>
       <import plugin="org.openscience.cdk.ioformats"/>
-      <import plugin="org.openscience.cdk.isomorphism"/>
+      <import plugin="org.openscience.cdk.isomorphism" version="1.4.0" match="greaterOrEqual"/>
       <import plugin="javax.vecmath" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
@@ -63,6 +63,7 @@ The Eclipse Public License accompanies this distribution, and is available at ht
       <import plugin="net.sf.cglib"/>
       <import plugin="com.springsource.nu.xom"/>
       <import plugin="log4j.over.slf4j"/>
+      <import plugin="cmlxom"/>
       <import plugin="org.openscience.cdk.render"/>
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.jface.text"/>
@@ -76,30 +77,24 @@ The Eclipse Public License accompanies this distribution, and is available at ht
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.xmlpull.xpp3"/>
       <import plugin="org.openscience.cdk.control"/>
-      <import plugin="org.openscience.cdk.ioformats" version="1.1.5" match="greaterOrEqual"/>
-      <import plugin="org.openscience.cdk.io" version="1.1.5" match="greaterOrEqual"/>
-      <import plugin="org.openscience.cdk.libiocml" version="1.1.5" match="greaterOrEqual"/>
-      <import plugin="org.openscience.cdk.smarts" version="1.1.5" match="greaterOrEqual"/>
-      <import plugin="org.openscience.cdk.data" version="1.2.2" match="greaterOrEqual"/>
-      <import plugin="net.bioclipse.inchi" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.openscience.cdk.renderextra" version="1.3.0" match="greaterOrEqual"/>
       <import plugin="org.openscience.cdk.renderbasic" version="1.3.0" match="greaterOrEqual"/>
       <import plugin="org.openscience.cdk.controlbasic" version="1.3.0" match="greaterOrEqual"/>
       <import plugin="org.openscience.cdk.controlextra" version="1.3.0" match="greaterOrEqual"/>
       <import plugin="org.openscience.cdk.rendercontrol" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="net.bioclipse.ioformats"/>
       <import plugin="org.openscience.cdk.cip"/>
       <import plugin="org.openscience.cdk.annotation"/>
       <import plugin="org.eclipse.core.commands"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.openscience.cdk.renderswt"/>
       <import plugin="org.eclipse.osgi"/>
+      <import plugin="com.springsource.javax.mail"/>
       <import plugin="org.apache.commons.codec"/>
       <import plugin="net.sourceforge.nattable.core"/>
       <import plugin="org.openscience.cdk.inchi"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="net.bioclipse.browser.business"/>
-      <import plugin="org.eclipse.core.contenttype"/>
-      <import plugin="com.springsource.javax.mail"/>
       <import plugin="jnati-core-0.4"/>
       <import feature="org.eclipse.rcp" version="3.7.1" match="greaterOrEqual"/>
    </requires>
