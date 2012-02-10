@@ -63,7 +63,6 @@ The Eclipse Public License accompanies this distribution, and is available at ht
       <import plugin="net.sf.cglib"/>
       <import plugin="com.springsource.nu.xom"/>
       <import plugin="log4j.over.slf4j"/>
-      <import plugin="cmlxom"/>
       <import plugin="org.openscience.cdk.render"/>
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.jface.text"/>
@@ -94,8 +93,8 @@ The Eclipse Public License accompanies this distribution, and is available at ht
       <import plugin="org.openscience.cdk.inchi"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="net.bioclipse.browser.business"/>
-      <import feature="org.eclipse.rcp" version="3.7.1" match="greaterOrEqual"/>
       <import plugin="jcl.over.slf4j"/>
+      <import feature="org.eclipse.rcp" version="3.7.1" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -218,14 +217,14 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          unpack="false"/>
 
    <plugin
-         id="jnati-core-0.4"
+         id="org.apache.commons.lang"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.lang"
+         id="jnati-core"
          download-size="0"
          install-size="0"
          version="0.0.0"
