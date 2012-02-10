@@ -91,12 +91,11 @@ The Eclipse Public License accompanies this distribution, and is available at ht
       <import plugin="org.eclipse.osgi"/>
       <import plugin="com.springsource.javax.mail"/>
       <import plugin="org.apache.commons.codec"/>
-      <import plugin="net.sourceforge.nattable.core"/>
       <import plugin="org.openscience.cdk.inchi"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="net.bioclipse.browser.business"/>
-      <import plugin="jnati-core-0.4"/>
       <import feature="org.eclipse.rcp" version="3.7.1" match="greaterOrEqual"/>
+      <import plugin="jcl.over.slf4j"/>
    </requires>
 
    <plugin
@@ -206,6 +205,27 @@ The Eclipse Public License accompanies this distribution, and is available at ht
 
    <plugin
          id="net.sf.jni-inchi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.sourceforge.nattable.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="jnati-core-0.4"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.lang"
          download-size="0"
          install-size="0"
          version="0.0.0"
