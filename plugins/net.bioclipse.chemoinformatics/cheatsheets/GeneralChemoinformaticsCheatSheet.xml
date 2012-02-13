@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<cheatsheet title="General Chemistry Tasks">
+<cheatsheet title="Basic Chemistry Tasks">
 	<intro>
 		<description>
 			This cheat sheet demonstrates general chemistry (or, more strictly speaking, chemoinformatics) tasks you can 
 			do in Bioclipse. These are centered around handling molecular data files.
 		</description>
 	</intro>
+	
 	<item
        href="/net.bioclipse.cdk.jchempaint/doc/jcpEditor.html"
-       title="Step 1: Open and Edit structures in 2D">
+       title="Step 1: Install sample data">
+        <description>
+             In this cheat sheet we need some molecules. A package called "Sample Data" have some, so If you haven't installed it, now is a good time to do it. 
+             This is done via the menu <b>Help > Install Sample Data</b>
+        </description>
+        
+    </item>
+    
+	<item
+       href="/net.bioclipse.cdk.jchempaint/doc/jcpEditor.html"
+       title="Step 2: Open and Edit structures in 2D">
 		<description>
 			The JChemPaint editor (JCP) allows graphical viewing and editing of 2D
 			diagrams of chemical structures in various formats. You can also
@@ -24,9 +35,9 @@
 			param1="ui.open(cdk.fromSMILES(&quot;C1CCCCC1CC(CN(CC))CO&quot;))"/>
 	</item>
 
-		<item
+	<item
        href="/net.bioclipse.cdk.jchempaint/doc/jcpEditor.html"
-       title="Step 2: Draw new structures in 2D from scratch">
+       title="Step 3: Draw new structures in 2D from scratch">
 		<description>
 			To start drawing a new molecule in 2D, use the top menu <b>File > New... </b>  and select <b>Molecule</b>.
 		</description>
@@ -37,7 +48,7 @@
 
 	<item
        href="/net.bioclipse.spectrum/html/sdfEditor.html"
-       title="Step 3: Open files with multiple structures">
+       title="Step 4: Open files with multiple structures">
 		<description>
 			Files with multiple structures (MDL SD files, and SMILES files) are
 			handled by the Molecule Table Editor. Double-click a molecule-file 
@@ -60,7 +71,7 @@
 	</item>
 
 	<item
-       title="Step 4: Create 2D and 3D coordinates">
+       title="Step 5: Create 2D and 3D coordinates">
 		<description>
 			You can create 2D and 3D coordinates for molecules. 
 			Right click on the file in the Navigator and choose one of the Generate 2D or 3D options.
@@ -68,20 +79,20 @@
 	</item>
 	<item
        href="/net.bioclipse.cdk.smartsmatching/html/smartsmatchingview.html"
-       title="Step 5: Smarts matching">
+       title="Step 6: Smarts matching">
 		<description>
 			Show the view SMARTS Matching from the menu <b>Window > Show view > Other...</b> and select <b>SmartsMatching</b> in the <b>Cheminformatics</b> folder.
 			<br/><br/>
 			The opened view has a local toolbar and a context menu (just right-click in the view) with several options that can be used to add/delete and run smarts matching.
 		</description>
-  <command
-        required="false"
-        serialization="org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=net.bioclipse.cdk.smartsmatching.views.SmartsMatchingView)"/>
+        <command
+            required="false"
+            serialization="org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=net.bioclipse.cdk.smartsmatching.views.SmartsMatchingView)"/>
 	</item>
 
 	<item
        href="/net.bioclipse.webservices/doc/wsplugin.html"
-       title="Step 6: Query and download proteins via web service">
+       title="Step 7: Query and download proteins via web service">
 		<description>
 			You can search and query a variety of external (EBI) databases using the Wizard at <b>File > New > Download > Query WSDbfetch at EBI</b>.
 		</description>
@@ -92,7 +103,7 @@
 
 	<item
        href="/net.bioclipse.webservices/doc/wsplugin.html"
-       title="Step 7: Search and download chemical structures from PubChem">
+       title="Step 8: Search and download chemical structures from PubChem">
 		<description>
 			It is possible to search and download compounds from PubChem using teh Wizard at <b>File > New > Download > Get structures from PubChem</b>.
 		</description>
