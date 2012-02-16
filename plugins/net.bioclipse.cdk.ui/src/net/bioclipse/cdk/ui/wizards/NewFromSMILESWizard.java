@@ -41,8 +41,6 @@ import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.smiles.DeduceBondSystemTool;
 
-import com.sun.javadoc.ThrowsTag;
-
 public class NewFromSMILESWizard extends BasicNewResourceWizard {
 
     private static final Logger logger =
