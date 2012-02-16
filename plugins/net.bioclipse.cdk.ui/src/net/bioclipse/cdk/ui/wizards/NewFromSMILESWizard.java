@@ -10,6 +10,14 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.wizards;
 
+import static org.openscience.cdk.graph.ConnectivityChecker.partitionIntoMolecules;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -17,17 +25,23 @@ import net.bioclipse.cdk.ui.Activator;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
-import org.openscience.cdk.graph.ConnectivityChecker;
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.smiles.DeduceBondSystemTool;
+
+import com.sun.javadoc.ThrowsTag;
 
 public class NewFromSMILESWizard extends BasicNewResourceWizard {
 
@@ -68,44 +82,80 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
 
     public boolean performFinish() {
         //Open editor with content (String) as content
-        ICDKManager cdk = net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
-        try {
-            ICDKMolecule mol = cdk.fromSMILES(getSMILES());
-            IMoleculeSet containers =
-            	ConnectivityChecker.partitionIntoMolecules(mol.getAtomContainer()
-            );
-            for (IAtomContainer container : containers.molecules()) {
-            	// ok, try to do something smart (tm) with SMILES input:
-            	//   try to resolve bond orders
-            	DeduceBondSystemTool tool = new DeduceBondSystemTool();
-            	org.openscience.cdk.interfaces.IMolecule cdkMol =
-            		asCDKMolecule(container);
-            	cdkMol = tool.fixAromaticBondOrders(cdkMol);
-            	mol = new CDKMolecule(cdkMol);
-
-            	mol = cdk.generate2dCoordinates(mol);
-            	CDKAtomTypeMatcher matcher = CDKAtomTypeMatcher.getInstance(
-            			NoNotificationChemObjectBuilder.getInstance()
-            	);
-            	IAtomType[] types = matcher.findMatchingAtomType(
+    	 IRunnableWithProgress job = new IRunnableWithProgress() {
+    	      public void run(IProgressMonitor monitor) {
+    	    	  SubMonitor progress = SubMonitor.convert(monitor);
+    	    	  progress.beginTask("Creating molecule from SMILES", 200);
+    	    	  Executor executor = Executors.newSingleThreadExecutor();
+        		try {
+        			ICDKManager cdk = net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
+        			progress.subTask("Generating molecule");
+        			ICDKMolecule mol = cdk.fromSMILES(getSMILES());
+        			IMoleculeSet containers =partitionIntoMolecules(mol.getAtomContainer());
+        			progress.worked(50);
+        			for (IAtomContainer container : containers.molecules()) {
+        				// ok, try to do something smart (tm) with SMILES input:
+        				//   try to resolve bond orders
+        				final DeduceBondSystemTool tool = new DeduceBondSystemTool();
+        				final org.openscience.cdk.interfaces.IMolecule cdkMol =
+        						asCDKMolecule(container);
+        				try{
+        					progress.setWorkRemaining(150);
+        					FutureTask<IMolecule> future =
+        						       new FutureTask<IMolecule>(new Callable<IMolecule>() {
+        						         public IMolecule call() throws CDKException{
+        						        	 return tool.fixAromaticBondOrders(cdkMol);
+        						       }});
+        					progress.subTask("Deducing aromaticity");
+        				    executor.execute(future);
+        				    while(!future.isDone()) {
+        				    	progress.worked(1);
+        				    	if(progress.isCanceled()) {
+        				    		future.cancel(true);
+        				    		throw new OperationCanceledException();
+        				    	}
+        				    	Thread.sleep(1000);
+        				    }
+        				} catch(Exception e) {
+        					logger.warn("Aromaticity detection failed du to "+e.getMessage());
+        				}
+        				mol = new CDKMolecule(cdkMol);
+        				progress.setWorkRemaining(50);
+        				progress.subTask("Generating coordinates");
+        				progress.worked(25);
+        				mol = cdk.generate2dCoordinates(mol);
+        				progress.subTask("Preforming atom type matching");
+        				CDKAtomTypeMatcher matcher = CDKAtomTypeMatcher.getInstance(
+        						NoNotificationChemObjectBuilder.getInstance()
+        						);
+        				IAtomType[] types = matcher.findMatchingAtomType(
             			mol.getAtomContainer()
-            	);
-            	for (int i=0; i<types.length; i++) {
-            		if (types[i] != null) {
-            			mol.getAtomContainer().getAtom(i).setAtomTypeName(
+        						);
+        				progress.setWorkRemaining(types.length);
+        				for (int i=0; i<types.length; i++) {
+        					progress.worked(1);
+        					if (types[i] != null) {
+        						mol.getAtomContainer().getAtom(i).setAtomTypeName(
             					types[i].getAtomTypeName()
-            			);
-            		}
-            	}
-            	net.bioclipse.ui.business.Activator.getDefault().getUIManager()
-            		.open(mol, "net.bioclipse.cdk.ui.editors.jchempaint.cml");
-            }
-        } catch (Exception e) {
-            LogUtils.handleException(
-                e, logger,
-                Activator.PLUGIN_ID
-            );
-        }
+        								);
+        					}
+        				}
+        				net.bioclipse.ui.business.Activator.getDefault().getUIManager()
+        					.open(mol, "net.bioclipse.cdk.ui.editors.jchempaint.cml");
+        			}
+        		} catch (Exception e) {
+        			LogUtils.handleException( e, logger, Activator.PLUGIN_ID );
+        		}
+        		progress.done();
+        	}
+        };
+        try {
+			getContainer().run(true, true,job);
+		} catch (InvocationTargetException e) {
+			LogUtils.handleException( e, logger, Activator.PLUGIN_ID );
+		} catch (InterruptedException e) {
+			LogUtils.handleException( e, logger, Activator.PLUGIN_ID );
+		}
         return true;
     }
 
