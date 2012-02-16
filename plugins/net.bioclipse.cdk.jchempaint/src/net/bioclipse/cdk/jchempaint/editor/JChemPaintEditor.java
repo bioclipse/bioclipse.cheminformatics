@@ -213,6 +213,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
         List<IResourceFormat> formats = new ArrayList<IResourceFormat>();
         formats.add(CMLFormat.getInstance());
         formats.add(MDLV2000Format.getInstance());
+        net.bioclipse.core.Activator.getVirtualProject();
         SaveAsDialog saveAsDialog = new SaveAsDialog(
             this.getSite().getShell(), formats
         );
