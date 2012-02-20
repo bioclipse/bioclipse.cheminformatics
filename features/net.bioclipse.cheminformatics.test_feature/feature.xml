@@ -27,11 +27,17 @@ The Eclipse Public License accompanies this distribution, and is available at ht
       <discovery label="The CDK Homepage" url="http://cdk.sf.net"/>
    </url>
 
-   <requires>
-      <import feature="net.bioclipse.chemoinformatics_feature"/>
-      <import feature="net.bioclipse.core.tests_feature"/>
-      <import feature="net.bioclipse.core_feature"/>
-   </requires>
+   <includes
+         id="net.bioclipse.platform_feature"
+         version="0.0.0"/>
+
+   <includes
+         id="net.bioclipse.core_feature"
+         version="0.0.0"/>
+
+   <includes
+         id="net.bioclipse.chemoinformatics_feature"
+         version="0.0.0"/>
 
    <plugin
          id="net.bioclipse.cdk.business.test"
