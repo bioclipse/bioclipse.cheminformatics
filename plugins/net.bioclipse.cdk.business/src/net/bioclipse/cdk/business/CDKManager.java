@@ -529,7 +529,7 @@ public class CDKManager implements IBioclipseManager {
             IAtomContainer cdkMol = mol.getAtomContainer();
 
         // Create the SMILES
-        SmilesGenerator generator = new SmilesGenerator();
+        SmilesGenerator generator = new SmilesGenerator(true);
 
         // Operate on a clone with removed hydrogens
         cdkMol = AtomContainerManipulator.removeHydrogens(cdkMol);
