@@ -238,6 +238,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
             if (format instanceof MDLV2000Format) {
                 Properties properties = new Properties();
                 properties.setProperty("ForceWriteAs2DCoordinates", "true");
+                properties.setProperty("WriteAromaticBondTypes", "true");
                 Activator.getDefault().getJavaCDKManager().saveMolecule(
                     model, file, format, true, properties
                 );
