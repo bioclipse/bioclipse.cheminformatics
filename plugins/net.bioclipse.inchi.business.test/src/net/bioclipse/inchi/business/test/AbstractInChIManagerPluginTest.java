@@ -30,7 +30,7 @@ public abstract class AbstractInChIManagerPluginTest {
     	Assert.assertNotNull(inchi);
     }
     
-    @Ignore("Until library loading is fixed on Hudons")
+    @Test
     public void testGenerate() throws Exception {
         IMolecule mol = cdk.fromSMILES("C");
         Assert.assertNotNull("Input structure is unexpectedly null", mol);
@@ -39,7 +39,7 @@ public abstract class AbstractInChIManagerPluginTest {
         Assert.assertEquals("InChI=1/CH4/h1H4", inchiObj.getValue());
     }
 
-    @Ignore("Until library loading is fixed on Hudons")
+    @Test
     public void testGenerateNoStereo() throws Exception {
         IMolecule mol = cdk.fromSMILES("ClC(Br)(F)(O)");
         Assert.assertNotNull("Input structure is unexpectedly null", mol);
@@ -51,7 +51,7 @@ public abstract class AbstractInChIManagerPluginTest {
         );
     }
 
-    @Ignore("Until library loading is fixed on Hudons")
+    @Test
     public void testGenerateKey() throws Exception {
         IMolecule mol = cdk.fromSMILES("C");
         Assert.assertNotNull("Input structure is unexpectedly null", mol);
