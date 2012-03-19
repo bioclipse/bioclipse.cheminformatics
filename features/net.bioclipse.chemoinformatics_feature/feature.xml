@@ -147,13 +147,6 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          unpack="false"/>
 
    <plugin
-         id="net.bioclipse.org.cmlxom"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="net.bioclipse.cdk.ui.sdfeditor"
          download-size="0"
          install-size="0"
@@ -231,7 +224,7 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          unpack="false"/>
 
    <plugin
-         id="cmlxom"
+         id="net.bioclipse.org.cmlxom"
          download-size="0"
          install-size="0"
          version="0.0.0"
