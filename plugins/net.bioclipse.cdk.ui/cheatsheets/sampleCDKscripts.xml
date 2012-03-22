@@ -18,7 +18,7 @@
           	<action
 			pluginId="net.bioclipse.scripting.ui"
 			class="net.bioclipse.scripting.ui.actions.ScriptAction"
-			param1="res=gist.download(95779); itr = res.iterator(); while (itr.hasNext()) { file = itr.next(); ui.open(file); js.executeFile(file) }"/>
+			param1="res=gist.download(95779); ui.openFiles(res);"/>
       
    </item>
    
@@ -33,7 +33,7 @@
           	<action
 			pluginId="net.bioclipse.scripting.ui"
 			class="net.bioclipse.scripting.ui.actions.ScriptAction"
-			param1="res=gist.download(95790); itr = res.iterator(); while (itr.hasNext()) { file = itr.next(); ui.open(file); js.executeFile(file) }"/>
+			param1="res=gist.download(95790); ui.openFiles(res);"/>
       
    </item>
    
@@ -48,7 +48,7 @@
           	<action
 			pluginId="net.bioclipse.scripting.ui"
 			class="net.bioclipse.scripting.ui.actions.ScriptAction"
-			param1="res=gist.download(95755); itr = res.iterator(); while (itr.hasNext()) { file = itr.next(); ui.open(file); js.executeFile(file) }"/>
+			param1="res=gist.download(95755); ui.openFiles(res);"/>
       
    </item>
    
@@ -63,7 +63,7 @@
           	<action
 			pluginId="net.bioclipse.scripting.ui"
 			class="net.bioclipse.scripting.ui.actions.ScriptAction"
-			param1="res=gist.download(96594); itr = res.iterator(); while (itr.hasNext()) { file = itr.next(); ui.open(file); js.executeFile(file) }"/>
+			param1="res=gist.download(96594); ui.openFiles(res);"/>
       
    </item>
 </cheatsheet>
