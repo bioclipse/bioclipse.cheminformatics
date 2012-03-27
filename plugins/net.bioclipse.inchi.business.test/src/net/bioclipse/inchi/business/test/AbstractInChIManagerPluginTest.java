@@ -36,7 +36,7 @@ public abstract class AbstractInChIManagerPluginTest {
         Assert.assertNotNull("Input structure is unexpectedly null", mol);
         InChI inchiObj = inchi.generate(mol);
         Assert.assertNotNull(inchiObj);
-        Assert.assertEquals("InChI=1/CH4/h1H4", inchiObj.getValue());
+        Assert.assertEquals("InChI=1S/CH4/h1H4", inchiObj.getValue());
     }
 
     @Test
@@ -46,7 +46,7 @@ public abstract class AbstractInChIManagerPluginTest {
         InChI inchiStr = inchi.generate(mol);
         Assert.assertNotNull(inchiStr);
         Assert.assertEquals(
-            "InChI=1/CHBrClFO/c2-1(3,4)5/h5H",
+            "InChI=1S/CHBrClFO/c2-1(3,4)5/h5H",
             inchiStr.getValue()
         );
     }
@@ -58,7 +58,7 @@ public abstract class AbstractInChIManagerPluginTest {
         InChI key = inchi.generate(mol);
         Assert.assertNotNull(key);
         Assert.assertEquals(
-            "VNWKTOKETHGBQD-UHFFFAOYAM",
+            "VNWKTOKETHGBQD-UHFFFAOYSA-N",
             key.getKey()
         );
     }
