@@ -629,7 +629,7 @@ public abstract class AbstractCDKManagerPluginTest {
 
     @Test
     public void testCDKMoleculeFromIMolecule() throws BioclipseException {
-        final String indoleSmiles  = new SmilesGenerator().createSMILES(
+        final String indoleSmiles  = new SmilesGenerator(true).createSMILES(
         	MoleculeFactory.makeIndole()
         );
         ICDKMolecule cdkm = cdk.asCDKMolecule(new MockMolecule(indoleSmiles));
