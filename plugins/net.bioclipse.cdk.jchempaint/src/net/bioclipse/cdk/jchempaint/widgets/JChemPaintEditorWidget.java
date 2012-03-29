@@ -923,12 +923,15 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     public ICDKMolecule getMolecule() {
         ICDKMolecule model = super.getMolecule();
         if(model == null) return null;
-        IAtomContainer modelContainer = model.getAtomContainer();
-        modelContainer.removeAllElements();
         IChemModel chemModel = getControllerHub().getIChemModel();
-        for(IAtomContainer aContainer:ChemModelManipulator
-                                        .getAllAtomContainers( chemModel )) {
-            modelContainer.add( aContainer );
+        List<IAtomContainer> modelAtomContainers = ChemModelManipulator
+                .getAllAtomContainers( chemModel );
+        IAtomContainer modelContainer = model.getAtomContainer();
+        if( !modelAtomContainers.contains(modelContainer)) {
+        	modelContainer.removeAllElements();
+        	for(IAtomContainer aContainer:modelAtomContainers) {
+        		modelContainer.add( aContainer );
+        	}
         }
         return model;
     }

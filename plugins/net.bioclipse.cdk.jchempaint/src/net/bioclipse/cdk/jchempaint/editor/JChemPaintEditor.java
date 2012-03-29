@@ -559,17 +559,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
     }
 
     public ICDKMolecule getCDKMolecule() {
-        ICDKMolecule model = widget.getMolecule();
-        if(model == null) return null;
-        IAtomContainer modelContainer = model.getAtomContainer();
-        modelContainer.removeAllElements();
-        IChemModel chemModel = getControllerHub().getIChemModel();
-        for(IAtomContainer aContainer:ChemModelManipulator
-                                        .getAllAtomContainers( chemModel )) {
-            modelContainer.add( aContainer );
-        }
-
-        return model;
+        return widget.getMolecule();
     }
 
     public void setMoleculeProperty(Object key,Object value) {
