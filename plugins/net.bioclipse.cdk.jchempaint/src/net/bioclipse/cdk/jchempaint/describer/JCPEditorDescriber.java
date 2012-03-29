@@ -40,6 +40,8 @@ public class JCPEditorDescriber implements IBioObjectDescriber {
                 //TODO: Move to JmolEditorDescriber in that plugin
                 else if (cdk.has3d( cdkmol )){
                     return "net.bioclipse.jmol.editors.JmolEditor";
+                } else {
+                	return "net.bioclipse.cdk.ui.editors.jchempaint";
                 }
             } catch ( BioclipseException e ) {
             }
