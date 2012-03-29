@@ -47,8 +47,19 @@ public class MolTableBodyMenuConfigurator extends AbstractUiBindingConfiguration
     }
     
     public void configureUiBindings(UiBindingRegistry uiBindingRegistry) {
+    	PopupMenuAction popupAction = new PopupMenuAction(colHeaderMenu);
         uiBindingRegistry.registerMouseDownBinding(
                 new MouseEventMatcher(SWT.NONE, GridRegion.BODY, 3), 
-                new PopupMenuAction(colHeaderMenu));
+                popupAction);
+        if(isMac()) {
+        	uiBindingRegistry.registerMouseDownBinding(
+                new MouseEventMatcher(SWT.CTRL, GridRegion.BODY, 1), 
+                popupAction);
+        }
+    }
+    
+    private static boolean isMac() {
+        String vers = System.getProperty( "os.name" ).toLowerCase();
+        return vers.indexOf( "mac" )!=-1;
     }
 }
