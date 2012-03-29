@@ -22,8 +22,10 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
+import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 
 /**
  * Manager for the JChemPaintEditor scripting language.
@@ -63,6 +65,10 @@ public interface IJChemPaintManager extends IBioclipseManager {
                        methodSummary = "Sets whether explicit hydrogens" +
                        		           " are shown." )
     public void setShowExplicitHydrogens(boolean explicitHydrogens);
+    
+    @PublishedMethod ( params = "Class parameter",
+    				   methodSummary = "Gets the generator parameter of type class.")
+    public Object getParameter();
     
     @Recorded
     @PublishedMethod ( params = "boolean implicitHydrogens",
