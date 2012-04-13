@@ -13,6 +13,7 @@ package net.bioclipse.opsin.business;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
+import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 @PublishedClass(
@@ -26,12 +27,14 @@ public interface IOpsinManager extends IBioclipseManager {
 		params="String iupacName",
 		methodSummary="Converts an IUPAC name into a chemical structure"
 	)
-	public ICDKMolecule parseIUPACName(String iupacName);
+	public ICDKMolecule parseIUPACName(String iupacName) 
+	                    throws BioclipseException;
 
 	@PublishedMethod(
 		params="String iupacName",
 		methodSummary="Converts an IUPAC name into a CML document"
 	)
-	public String parseIUPACNameAsCML(String iupacName);
+	public String parseIUPACNameAsCML(String iupacName) 
+	              throws BioclipseException;
 
 }
