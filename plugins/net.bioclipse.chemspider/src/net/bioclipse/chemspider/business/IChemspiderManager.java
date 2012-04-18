@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2010  Egon Willighagen <egon.willighagen@gmail.com>
+ * Copyright (c) 2012  Ola Spjuth <ola.spjuth@gmail.com>
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,10 +12,13 @@
 package net.bioclipse.chemspider.business;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 
+import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
@@ -61,4 +65,46 @@ public interface IChemspiderManager extends IBioclipseManager {
     )
     public IMolecule download(Integer cid)
         throws IOException, BioclipseException, CoreException;
+    
+    
+    @Recorded
+    @PublishedMethod(
+        params = "IMolecule molecule, Float tanimoto", 
+        methodSummary = "Query ChemSpider for similar molecules within a certain tanimoto distance."
+    )
+	public List<ICDKMolecule> similaritySearch(IMolecule molecule, Float tanimoto)
+	throws BioclipseException;
+	public List<ICDKMolecule> similaritySearch(IMolecule molecule, Float tanimoto, IProgressMonitor monitor)
+	throws BioclipseException;
+
+
+    @Recorded
+    @PublishedMethod(
+        params = "IMolecule molecule", 
+        methodSummary = "Query ChemSpider for a molecular structure"
+    )
+	public List<ICDKMolecule> simpleSearch(IMolecule molecule)
+	throws BioclipseException;
+	
+    @Recorded
+    @PublishedMethod(
+        params = "IMolecule molecule", 
+        methodSummary = "Query ChemSpider for compounds where input is a substructure"
+    )
+	public List<ICDKMolecule> substructureSearch(IMolecule mol)
+	throws BioclipseException;
+	public List<ICDKMolecule> substructureSearch(IMolecule mol, IProgressMonitor monitor)
+	throws BioclipseException;
+
+    @Recorded
+    @PublishedMethod(
+        params = "IMolecule molecule", 
+        methodSummary = "Query ChemSpider for exact matches"
+    )
+	public List<ICDKMolecule> exactSearch(IMolecule molmonitor)
+	throws BioclipseException;
+	public List<ICDKMolecule> exactSearch(IMolecule molmonitor, IProgressMonitor monitor)
+	throws BioclipseException;
+
+    
 }
