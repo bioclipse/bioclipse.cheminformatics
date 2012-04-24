@@ -101,6 +101,7 @@ import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.renderer.IRenderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Scale;
 import org.openscience.cdk.renderer.generators.ExternalHighlightGenerator;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HighlightAtomShapeFilled;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HoverOverColor;
@@ -580,6 +581,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                                                               clientRect.width,
                                                               clientRect.height);
             getRenderer().setup( hub.getIChemModel(), rect );
+            if(ChemModelManipulator.getAtomCount(hub.getIChemModel())<2)
+            	getRenderer2DModel().set(Scale.class,28d);
             resizeControl();
         }
     }

@@ -66,10 +66,11 @@ public interface IJChemPaintManager extends IBioclipseManager {
                        		           " are shown." )
     public void setShowExplicitHydrogens(boolean explicitHydrogens);
     
-    @PublishedMethod ( params = "Class parameter",
-    				   methodSummary = "Gets the generator parameter of type class.")
-    public Object getParameter();
+    @PublishedMethod ( methodSummary = "Gets the scale paramterer.")
+    public double getScale();
     
+    @PublishedMethod( params = "double new scale", methodSummary="Sets a new scale")
+    public void setScale(double scale);
     @Recorded
     @PublishedMethod ( params = "boolean implicitHydrogens",
                        methodSummary = "Sets whether implicit hydrogens are " +

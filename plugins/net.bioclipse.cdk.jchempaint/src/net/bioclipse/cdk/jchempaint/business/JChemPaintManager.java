@@ -686,8 +686,12 @@ public class JChemPaintManager implements IBioclipseManager {
         }
     }
     
-    public Object getParameter() {
+    public double getScale() {
     	return this.getRendererModel().get(Scale.class);
+    }
+    
+    public void setScale(double scale) {
+    	this.getRendererModel().set(Scale.class,scale);
     }
 
     public boolean getShowAromaticityInCDKStyle() {
