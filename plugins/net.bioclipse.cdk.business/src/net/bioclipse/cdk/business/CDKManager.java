@@ -1879,7 +1879,7 @@ public class CDKManager implements IBioclipseManager {
                               "Line " + lineno + " size=" + parts.length );
 
                   //Part 1 is expected to be SMILES
-                  String smiles=parts[0];
+                String smiles = parts[0].trim();
 
                   //Create a new CDKMolecule from smiles
                   ICDKMolecule mol = fromSMILES(smiles);
