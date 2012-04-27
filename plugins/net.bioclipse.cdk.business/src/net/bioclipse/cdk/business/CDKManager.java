@@ -52,6 +52,7 @@ import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.domain.RecordableList;
 import net.bioclipse.core.domain.SMILESMolecule;
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.core.util.TimeCalculator;
 import net.bioclipse.jobs.IReturner;
 import net.bioclipse.managers.business.IBioclipseManager;
 import nu.xom.Element;
@@ -1863,6 +1864,7 @@ public class CDKManager implements IBioclipseManager {
 
               //Read subsequent lines until end
               int lineno=2;
+              long before = System.currentTimeMillis();
               for (String line : lines) {
                   
                   if (monitor.isCanceled())
@@ -1918,10 +1920,13 @@ public class CDKManager implements IBioclipseManager {
                   lineno++;
                   
                   monitor.worked(1);
-                  if (lineno%100==0){
+                  if (lineno%10==0){
                       if (monitor.isCanceled())
                           return null;
-                      monitor.subTask("Processed: " + lineno + "/" + noLines);
+                      monitor.subTask("Processed: " + lineno + "/" + noLines 
+                                      + " (" + 
+                                      TimeCalculator.generateTimeRemainEst( 
+                                           before, lineno, noLines ) + ")" );
                   }
               }
           } catch (IOException e) {
