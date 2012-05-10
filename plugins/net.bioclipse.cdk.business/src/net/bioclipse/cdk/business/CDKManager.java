@@ -193,22 +193,22 @@ public class CDKManager implements IBioclipseManager {
     }
 
     public ICDKMolecule newMolecule(IAtomContainer atomContainer) {
-    	return new CDKMolecule(atomContainer);
+        return new CDKMolecule(atomContainer);
     }
 
     public List<ICDKMolecule> asList(IMoleculeSet set) {
-    	List<ICDKMolecule> result = new RecordableList<ICDKMolecule>();
-    	for (IAtomContainer mol : set.molecules()) {
-    		result.add(newMolecule(mol));
-    	}
-    	return result;
+        List<ICDKMolecule> result = new RecordableList<ICDKMolecule>();
+        for (IAtomContainer mol : set.molecules()) {
+            result.add(newMolecule(mol));
+        }
+        return result;
     }
 
     public IMoleculeSet asSet(List<ICDKMolecule> list) {
-    	IMoleculeSet set = new NNMoleculeSet();
-    	for (ICDKMolecule mol : list)
-    		set.addAtomContainer(mol.getAtomContainer());
-    	return set;
+        IMoleculeSet set = new NNMoleculeSet();
+        for (ICDKMolecule mol : list)
+            set.addAtomContainer(mol.getAtomContainer());
+        return set;
     }
 
     public ICDKMolecule loadMolecule(IFile file, IProgressMonitor monitor)
@@ -540,7 +540,7 @@ public class CDKManager implements IBioclipseManager {
             newMol = (org.openscience.cdk.interfaces.IMolecule)cdkMol;
         } else {
             newMol = cdkMol.getBuilder().newInstance(
-            	org.openscience.cdk.interfaces.IMolecule.class, cdkMol);
+                org.openscience.cdk.interfaces.IMolecule.class, cdkMol);
         }
         result = generator.createSMILES( newMol );
         }catch (Exception e) {
@@ -568,7 +568,7 @@ public class CDKManager implements IBioclipseManager {
               IProgressMonitor monitor,
               Properties writerProperties )
       throws BioclipseException, CoreException {
-    	  saveChemObject(model, target, filetype, monitor, writerProperties);
+          saveChemObject(model, target, filetype, monitor, writerProperties);
       }
 
       public void save( IChemModel model,
@@ -577,7 +577,7 @@ public class CDKManager implements IBioclipseManager {
                         IProgressMonitor monitor,
                         Properties writerProperties )
                   throws BioclipseException, CoreException {
-    	  saveChemObject(model, target, filetype, monitor, writerProperties);
+          saveChemObject(model, target, filetype, monitor, writerProperties);
       }
 
 
@@ -587,11 +587,11 @@ public class CDKManager implements IBioclipseManager {
               IProgressMonitor monitor,
               Properties writerProperties )
         throws BioclipseException, CoreException {
-    	  if (!(model instanceof IAtomContainer ||
-    			model instanceof IChemModel))
-    		  throw new BioclipseException(
-    		      "The model must be an IChemModel or an IAtomContainer."
-    		  );
+          if (!(model instanceof IAtomContainer ||
+                model instanceof IChemModel))
+              throw new BioclipseException(
+                  "The model must be an IChemModel or an IAtomContainer."
+              );
 
           if (monitor == null)
               monitor = new NullProgressMonitor();
@@ -610,7 +610,7 @@ public class CDKManager implements IBioclipseManager {
             if (filetype == SDFFormat.getInstance()) {
                 chemWriter = new SDFWriter(writer);
             } else if (filetype == MDLV2000Format.getInstance()) {
-            	chemWriter = new MDLV2000Writer(writer);
+                chemWriter = new MDLV2000Writer(writer);
             } else {
                 chemWriter = writerFactory.createWriter(filetype);
                 if (chemWriter == null) {
@@ -653,56 +653,56 @@ public class CDKManager implements IBioclipseManager {
 
             // write the model
             if (model instanceof IAtomContainer) {
-            	if (chemWriter.accepts(AtomContainer.class)) {
-            		chemWriter.write(model);
-            	} else if (chemWriter.accepts(AtomContainerSet.class)) {
-            		IAtomContainerSet set =
-            			model.getBuilder().newInstance(IAtomContainerSet.class);
-            		set.addAtomContainer((IAtomContainer)model);
-            		chemWriter.write(set);
-            	} else if (chemWriter.accepts(ChemModel.class)) {
-            		IMoleculeSet set =
-            			model.getBuilder().newInstance(IMoleculeSet.class);
-            		set.addAtomContainer((IAtomContainer)model);
-            		IChemModel chemModel = model.getBuilder().newInstance(
-            			IChemModel.class);
-            		chemModel.setMoleculeSet(set);
-            		chemWriter.write(chemModel);
-            	} else {
+                if (chemWriter.accepts(AtomContainer.class)) {
+                    chemWriter.write(model);
+                } else if (chemWriter.accepts(AtomContainerSet.class)) {
+                    IAtomContainerSet set =
+                        model.getBuilder().newInstance(IAtomContainerSet.class);
+                    set.addAtomContainer((IAtomContainer)model);
+                    chemWriter.write(set);
+                } else if (chemWriter.accepts(ChemModel.class)) {
+                    IMoleculeSet set =
+                        model.getBuilder().newInstance(IMoleculeSet.class);
+                    set.addAtomContainer((IAtomContainer)model);
+                    IChemModel chemModel = model.getBuilder().newInstance(
+                        IChemModel.class);
+                    chemModel.setMoleculeSet(set);
+                    chemWriter.write(chemModel);
+                } else {
                     throw new BioclipseException(
                         "Writer does not support writing of " +
                         "IAtomContainer, IMoleculeSet, and IChemModel: "+
                         chemWriter.getClass().getName()
                     );
-            	}
+                }
             } else if (model instanceof IChemModel) {
-            	if (chemWriter.accepts(ChemModel.class)) {
-            		chemWriter.write(model);
-            	} else if (chemWriter.accepts(MoleculeSet.class)){
-            		IMoleculeSet list =
-            			model.getBuilder().newInstance(IMoleculeSet.class);
-            		for (IAtomContainer container :
-            			ChemModelManipulator.getAllAtomContainers(
-            			    (IChemModel)model)
-            			) {
-            			list.addAtomContainer(container);
-            		}
-            		chemWriter.write(list);
-            	} else if (chemWriter.accepts(Molecule.class)){
-            		org.openscience.cdk.interfaces.IMolecule smashedContainer =
-            			model.getBuilder().newInstance(
-            				org.openscience.cdk.interfaces.IMolecule.class);
-            		for (IAtomContainer container :
-            			ChemModelManipulator.getAllAtomContainers(
-            				(IChemModel)model)
-            			) {
-            			smashedContainer.add(container);
-            		}
-            		chemWriter.write(smashedContainer);
-            	} else {
-            		throw new BioclipseException("Writer does not support writing" +
-            		"IChemModel or IMolecule.");
-            	}
+                if (chemWriter.accepts(ChemModel.class)) {
+                    chemWriter.write(model);
+                } else if (chemWriter.accepts(MoleculeSet.class)){
+                    IMoleculeSet list =
+                        model.getBuilder().newInstance(IMoleculeSet.class);
+                    for (IAtomContainer container :
+                        ChemModelManipulator.getAllAtomContainers(
+                            (IChemModel)model)
+                        ) {
+                        list.addAtomContainer(container);
+                    }
+                    chemWriter.write(list);
+                } else if (chemWriter.accepts(Molecule.class)){
+                    org.openscience.cdk.interfaces.IMolecule smashedContainer =
+                        model.getBuilder().newInstance(
+                            org.openscience.cdk.interfaces.IMolecule.class);
+                    for (IAtomContainer container :
+                        ChemModelManipulator.getAllAtomContainers(
+                            (IChemModel)model)
+                        ) {
+                        smashedContainer.add(container);
+                    }
+                    chemWriter.write(smashedContainer);
+                } else {
+                    throw new BioclipseException("Writer does not support writing" +
+                    "IChemModel or IMolecule.");
+                }
             }
               chemWriter.close();
 
@@ -783,7 +783,7 @@ public class CDKManager implements IBioclipseManager {
     public void saveMolecule(IMolecule mol, IFile file, boolean overwrite)
                 throws BioclipseException, CoreException {
 
-    	if ( file.exists() && overwrite == false ) {
+        if ( file.exists() && overwrite == false ) {
             throw new BioclipseException("File already exists!");
         }
 
@@ -838,7 +838,7 @@ public class CDKManager implements IBioclipseManager {
             if (aFormat == MDLFormat.getInstance()) {
                 // never match this one: it's outdated and != MDLV2000Format
             } else if (aFormat == RGroupQueryFormat.getInstance()) {
-            	// Bioclipse does not support such files yet
+                // Bioclipse does not support such files yet
             } else if (file.endsWith("."+aFormat.getPreferredNameExtension())) {
                 return aFormat;
             }
@@ -1054,19 +1054,19 @@ public class CDKManager implements IBioclipseManager {
           createMoleculeIterator( IFile file, IProgressMonitor monitor)
               throws CoreException, IOException, BioclipseException {
 
-    	IChemFormat format = determineIChemFormat(file);
-    	if (format == SMILESFormat.getInstance()) {
-    		return null;
-    		//TODO: Implement IteratingBioclipseSMILESReader
-    	}
-    	else if (format == null) {
-    		throw new BioclipseException("Unsupported format for file: " + file.getName());
-    	}
+        IChemFormat format = determineIChemFormat(file);
+        if (format == SMILESFormat.getInstance()) {
+            return null;
+            //TODO: Implement IteratingBioclipseSMILESReader
+        }
+        else if (format == null) {
+            throw new BioclipseException("Unsupported format for file: " + file.getName());
+        }
 
-    	return new IteratingBioclipseMDLReader(
-    			file.getContents(),
-    			NoNotificationChemObjectBuilder.getInstance(),
-    			monitor );
+        return new IteratingBioclipseMDLReader(
+                file.getContents(),
+                NoNotificationChemObjectBuilder.getInstance(),
+                monitor );
       }
 
       static class IteratingBioclipseMDLReader
@@ -1360,7 +1360,7 @@ public class CDKManager implements IBioclipseManager {
               if ( e.getMessage().contains(
                        "Timeout for AllringsFinder exceeded" ) ) {
                   throw new TimedOutException( "The AllringsFinder in CDK " +
-                  		                          "did not succed in time", e );
+                                                    "did not succed in time", e );
               }
               throw new BioclipseException("A problem occured trying "
                                            + "to match SMARTS query", e);
@@ -1403,7 +1403,7 @@ public class CDKManager implements IBioclipseManager {
                 for (int i = 0; i < nmatch; i++) {
                     List<Integer> atomIndices = (List<Integer>) mappings.get(i);
                     IAtomContainer match =
-                    	ac.getBuilder().newInstance(IAtomContainer.class);
+                        ac.getBuilder().newInstance(IAtomContainer.class);
                     for (Integer aindex : atomIndices){
                         IAtom atom=ac.getAtom( aindex );
                         match.addAtom( atom );
@@ -1719,13 +1719,13 @@ public class CDKManager implements IBioclipseManager {
             for ( IAtomContainer mol : mols.molecules() ) {
                 sdg.setMolecule( cdkmol.getAtomContainer()
                      .getBuilder().newInstance(
-                    	  org.openscience.cdk.interfaces.IMolecule.class, mol)
+                          org.openscience.cdk.interfaces.IMolecule.class, mol)
                 );
                 sdg.generateCoordinates();
                 IAtomContainer molWithCoords = sdg.getMolecule();
                 // copy the coordinates
                 for (int i=0; i<molWithCoords.getAtomCount(); i++) {
-                	mol.getAtom(i).setPoint2d(molWithCoords.getAtom(i).getPoint2d());
+                    mol.getAtom(i).setPoint2d(molWithCoords.getAtom(i).getPoint2d());
                 }
             }
 
@@ -2002,8 +2002,8 @@ public class CDKManager implements IBioclipseManager {
 
             org.openscience.cdk.interfaces.IMolecule newmolecule
                 = cdkmol.getAtomContainer().getBuilder().newInstance(
-                		org.openscience.cdk.interfaces.IMolecule.class
-                	);
+                        org.openscience.cdk.interfaces.IMolecule.class
+                    );
 
             for ( IAtomContainer mol : mols.molecules() ) {
                 try{
@@ -2127,8 +2127,8 @@ public class CDKManager implements IBioclipseManager {
 
       private IChemFormat determineIChemFormatOfStream(InputStream fileContent)
       throws IOException {
-    	  if (!fileContent.markSupported())
-    		  fileContent = new BufferedInputStream(fileContent);
+          if (!fileContent.markSupported())
+              fileContent = new BufferedInputStream(fileContent);
           return formatsFactory.guessFormat(fileContent);
       }
 
@@ -2175,9 +2175,9 @@ public class CDKManager implements IBioclipseManager {
             final StringWriter writer = new StringWriter();
             SDFWriter mdlwriter = new SDFWriter(writer);
             for (IMolecule molecule : entries) {
-            	ICDKMolecule cdkMol = asCDKMolecule(molecule);
-            	mdlwriter.write(cdkMol.getAtomContainer());
-            	monitor.worked(1);
+                ICDKMolecule cdkMol = asCDKMolecule(molecule);
+                mdlwriter.write(cdkMol.getAtomContainer());
+                monitor.worked(1);
             }
             mdlwriter.close();
 
@@ -2450,15 +2450,15 @@ public class CDKManager implements IBioclipseManager {
         // first try a quick exact match ...
         IChemFormat format = null;
         if (contentTypeMap.containsKey(type.getId()))
-        	format = contentTypeMap.get(type.getId());
+            format = contentTypeMap.get(type.getId());
         if (format == null) {
-        	// ... then as prefix
-        	for (String prefix : contentTypeMap.keySet()) {
-        		if (type.getId().startsWith(prefix)) {
-        			format = contentTypeMap.get(prefix);
-        			return format;
-        		}
-        	}
+            // ... then as prefix
+            for (String prefix : contentTypeMap.keySet()) {
+                if (type.getId().startsWith(prefix)) {
+                    format = contentTypeMap.get(prefix);
+                    return format;
+                }
+            }
         }
         return format;
     }
@@ -2510,13 +2510,13 @@ public class CDKManager implements IBioclipseManager {
         return new CDKMolecule( ((ICDKMolecule) mol).getAtomContainer() );
     }
     
-	public List<ICDKMolecule> perceiveAromaticity(List<? extends IMolecule> mols) throws BioclipseException{
-		
-		List<ICDKMolecule> retmols=new ArrayList<ICDKMolecule>();
-		for (IMolecule mol : mols)
-			retmols.add(perceiveAromaticity(mol));
-		return retmols;
-	}
+    public List<ICDKMolecule> perceiveAromaticity(List<? extends IMolecule> mols) throws BioclipseException{
+        
+        List<ICDKMolecule> retmols=new ArrayList<ICDKMolecule>();
+        for (IMolecule mol : mols)
+            retmols.add(perceiveAromaticity(mol));
+        return retmols;
+    }
 
 
     public List<IAtomContainer> partition(IMolecule molecule)
@@ -2865,34 +2865,34 @@ public class CDKManager implements IBioclipseManager {
      */
     public List<List<IMolecule>> randomSplit(List<IMolecule> mols_in, int parts){
 
-    	//Make a local copy of mols
-    	ArrayList<IMolecule> mols = new ArrayList<IMolecule>(mols_in.size()); 
-    	for (IMolecule mol : mols_in)
-    		mols.add(mol);
+        //Make a local copy of mols
+        ArrayList<IMolecule> mols = new ArrayList<IMolecule>(mols_in.size()); 
+        for (IMolecule mol : mols_in)
+            mols.add(mol);
 
-		Random generator = new Random();
-    	List<List<IMolecule>> retList= new ArrayList<List<IMolecule>>();
-    	//Add parts # lists
-    	for (int i=0; i< parts; i++){
-    		retList.add(new ArrayList<IMolecule>());
-    	}
+        Random generator = new Random();
+        List<List<IMolecule>> retList= new ArrayList<List<IMolecule>>();
+        //Add parts # lists
+        for (int i=0; i< parts; i++){
+            retList.add(new ArrayList<IMolecule>());
+        }
 
-    	//Draw one element of a time from list and put in partLists
-    	int partIX=0;
-    	int maxSize=mols.size();
-    	for (int i=0; i< maxSize; i++){
-    		int ix = generator.nextInt(mols.size());
-    		List<IMolecule> r = retList.get(partIX);
-    		r.add(mols.get(ix));
-    		mols.remove(ix);
+        //Draw one element of a time from list and put in partLists
+        int partIX=0;
+        int maxSize=mols.size();
+        for (int i=0; i< maxSize; i++){
+            int ix = generator.nextInt(mols.size());
+            List<IMolecule> r = retList.get(partIX);
+            r.add(mols.get(ix));
+            mols.remove(ix);
 
-    		partIX++;
-    		if (partIX % parts==0)
-    			partIX=0; //Start over sequence
-    		
-    	}
-    	
-    	return retList;
+            partIX++;
+            if (partIX % parts==0)
+                partIX=0; //Start over sequence
+            
+        }
+        
+        return retList;
     }
     
     /**
@@ -2904,28 +2904,28 @@ public class CDKManager implements IBioclipseManager {
      */
     public List<List<IMolecule>> randomSplit2parts(List<IMolecule> mols_in, double firstRatio){
 
-    	//Make a local copy of mols
-    	ArrayList<IMolecule> mols = new ArrayList<IMolecule>(mols_in.size()); 
-    	for (IMolecule mol : mols_in)
-    		mols.add(mol);
-    	
-		Random generator = new Random();
-    	List<List<IMolecule>> retList= new ArrayList<List<IMolecule>>();
-    	List<IMolecule> firstList = new ArrayList<IMolecule>();
-		retList.add(firstList);
-		retList.add(mols);
-		
-		//Sizes
-		int firstLength = (int) (mols.size() * firstRatio);
-		
-		//Randomly draw firstLength from mols
-		for (int i = 0; i < firstLength; i++){
-    		int ix = generator.nextInt(mols.size());
-    		firstList.add(mols.get(ix));
-    		mols.remove(ix);
-		}
+        //Make a local copy of mols
+        ArrayList<IMolecule> mols = new ArrayList<IMolecule>(mols_in.size()); 
+        for (IMolecule mol : mols_in)
+            mols.add(mol);
+        
+        Random generator = new Random();
+        List<List<IMolecule>> retList= new ArrayList<List<IMolecule>>();
+        List<IMolecule> firstList = new ArrayList<IMolecule>();
+        retList.add(firstList);
+        retList.add(mols);
+        
+        //Sizes
+        int firstLength = (int) (mols.size() * firstRatio);
+        
+        //Randomly draw firstLength from mols
+        for (int i = 0; i < firstLength; i++){
+            int ix = generator.nextInt(mols.size());
+            firstList.add(mols.get(ix));
+            mols.remove(ix);
+        }
 
-    	return retList;
+        return retList;
     }
     
         
