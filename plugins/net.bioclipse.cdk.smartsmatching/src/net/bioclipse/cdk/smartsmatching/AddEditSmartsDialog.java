@@ -27,10 +27,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
-import org.openscience.cdk.smiles.smarts.parser.TokenMgrError;
-
 
 public class AddEditSmartsDialog extends TitleAreaDialog{
 
@@ -68,8 +65,7 @@ public class AddEditSmartsDialog extends TitleAreaDialog{
 
         Composite area = (Composite) super.createDialogArea(parent);
         Composite container = new Composite(area, SWT.NONE);
-        container.setLayoutData(new GridData(GridData.FILL_BOTH));
-
+        container.setLayoutData(new GridData(600, 60));
         txtName = new Text(container, SWT.BORDER);
         txtName.setBounds(20, 30, 180, 30);
         if (name!=null)

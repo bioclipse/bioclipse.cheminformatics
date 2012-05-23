@@ -31,6 +31,7 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IFileMoleculesEditorModel;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.core.util.TimeCalculator;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -39,7 +40,10 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
@@ -88,6 +92,8 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
 
     private boolean dirty = false;
 
+    private IProgressMonitor monitor;
+
     private SDFIndexEditorModel() {
         molProps = new HashMap<Integer, Map<String,Object>>();
         propertyList = new HashMap<String, Class<?>>();
@@ -100,9 +106,10 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
         }
     }
 
-    public SDFIndexEditorModel(SDFileIndex input) {
+    public SDFIndexEditorModel(SDFileIndex input, IProgressMonitor monitor) {
         this();
         this.input = input;
+        this.monitor = monitor;
         if(getNumberOfMolecules()>0) getMoleculeAt( 0 );
     }
 
@@ -123,6 +130,9 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
      */
     public synchronized ICDKMolecule getMoleculeAt( int index ) {
 
+        if (monitor.isCanceled()) {
+            throw new OperationCanceledException();
+        }
         ICDKMolecule mol = edited.get( index );
         if(mol == null) {
             if ( cache.containsKey( index ) )  {
@@ -318,13 +328,26 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
 
         return new Iterator<ICDKMolecule>() {
 
+            IProgressMonitor m = new SubProgressMonitor( 
+                                         monitor, IProgressMonitor.UNKNOWN );
             int pos = 0;
+            int size = getNumberOfMolecules();
+            long before = System.currentTimeMillis();
             public boolean hasNext() {
                 return pos < getNumberOfMolecules();
             }
 
             public ICDKMolecule next() {
-
+                if ( pos % (size/100) == 0 ) {
+                    synchronized ( monitor ) {
+                        if (monitor.isCanceled()) {
+                            throw new OperationCanceledException();
+                        }
+                    }
+                    monitor.subTask( "Read molecule " + pos + "/" + size+" ("
+                                     +TimeCalculator.generateTimeRemainEst( 
+                                           before, pos, size ) + ")" );
+                }
                 return getMoleculeAt( ++pos );
             }
 

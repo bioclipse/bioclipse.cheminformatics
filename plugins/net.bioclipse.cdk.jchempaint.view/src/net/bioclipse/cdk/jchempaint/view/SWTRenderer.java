@@ -100,14 +100,20 @@ public class SWTRenderer implements IDrawVisitor{
         return model;
     }
 
+    @Deprecated
     private int transformX(double x) {
         return (int) transform( x, 1 )[0];
     }
 
+    @Deprecated
     private int transformY(double y) {
         return (int) transform( 1, y )[1];
     }
 
+    private Point transformXY(double x, double y) {
+    	double[] vals = transform(x,y);
+    	return new Point((int)(vals[0]+.5),(int)(vals[1]+.5));
+    }
     private double[] transform(double x, double y) {
         double [] result = new double[2];
         transform.transform( new double[] {x,y}, 0, result, 0, 1 );
@@ -140,18 +146,19 @@ public class SWTRenderer implements IDrawVisitor{
         int radius = scaleX(element.radius);
         int diameter = scaleX(element.radius * 2);
 
+        Point p = transformXY(element.xCoord,element.yCoord);
         if (element.fill) {
             setBackground(element.color);
 
-            gc.fillOval(transformX(element.xCoord) - radius,
-                        transformY(element.yCoord) - radius,
+            gc.fillOval(p.x - radius,
+                        p.y - radius,
                         diameter,
                         diameter );
         } else {
             setForeground(element.color);
 
-            gc.drawOval(transformX(element.xCoord) - radius,
-                        transformY(element.yCoord) - radius,
+            gc.drawOval(p.x - radius,
+                        p.y - radius,
                         diameter,
                         diameter );
         }
@@ -307,8 +314,9 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void visit( TextElement element ) {
-        int x = transformX(element.xCoord);
-        int y = transformY(element.yCoord);
+    	Point p = transformXY(element.xCoord,element.yCoord);
+        int x = p.x;
+        int y = p.y;
         String text = element.text;
 
         gc.setFont(getFont());
@@ -323,8 +331,9 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void visit( TextGroupElement element ) {
-        int x = transformX(element.xCoord);
-        int y = transformY(element.yCoord);
+    	Point p = transformXY(element.xCoord,element.yCoord);
+        int x = p.x;
+        int y = p.y;
         String text = element.text;
 
         gc.setFont(getFont());
@@ -339,8 +348,9 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void visit(AtomSymbolElement element) {
-        int x = transformX( element.xCoord);
-        int y = transformY( element.yCoord);
+    	Point p = transformXY(element.xCoord,element.yCoord);
+        int x = p.x;
+        int y = p.y;
 
         String text = element.text;
 

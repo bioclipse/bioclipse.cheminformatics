@@ -55,10 +55,12 @@ import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondWidth;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.WedgeWidth;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.FitToScreen;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Scale;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.ZoomFactor;
 import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HighlightAtomDistance;
 import org.openscience.cdk.renderer.generators.HighlightBondGenerator.HighlightBondDistance;
+import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 import org.openscience.cdk.renderer.generators.RingGenerator.CDKStyleAromaticity;
 import org.openscience.cdk.renderer.generators.RingGenerator.RingProportion;
 import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
@@ -682,6 +684,14 @@ public class JChemPaintManager implements IBioclipseManager {
         } else {
             return false;
         }
+    }
+    
+    public double getScale() {
+    	return this.getRendererModel().get(Scale.class);
+    }
+    
+    public void setScale(double scale) {
+    	this.getRendererModel().set(Scale.class,scale);
     }
 
     public boolean getShowAromaticityInCDKStyle() {

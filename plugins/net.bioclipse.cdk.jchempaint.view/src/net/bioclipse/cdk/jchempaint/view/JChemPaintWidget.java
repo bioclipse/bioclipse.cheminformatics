@@ -51,6 +51,7 @@ import org.openscience.cdk.renderer.generators.AtomNumberGenerator;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator.AtomNumberTextColor;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Scale;
 import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
 import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
@@ -59,6 +60,7 @@ import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 import org.openscience.cdk.renderer.generators.RadicalGenerator;
 import org.openscience.cdk.renderer.generators.RingGenerator;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
+import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 /**
  * @author arvid
@@ -223,6 +225,8 @@ public class JChemPaintWidget extends Canvas {
             this.model = model;
             setBackground( getDisplay().getSystemColor( SWT.COLOR_WHITE ) );
             renderer.setup(model, adaptRectangle(getClientArea()));
+            if(ChemModelManipulator.getAtomCount(model)<2)
+            	getRenderer2DModel().set(Scale.class,28d);
             updateView( true );
         } else {
             this.model = null;
