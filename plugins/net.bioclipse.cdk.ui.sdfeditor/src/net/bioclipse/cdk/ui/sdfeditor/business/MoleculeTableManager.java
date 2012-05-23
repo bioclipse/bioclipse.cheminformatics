@@ -48,6 +48,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubMonitor;
 import org.openscience.cdk.Molecule;
@@ -82,7 +83,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                                 IProgressMonitor monitor ) {
 
         returner.completeReturn(
-                  new SDFIndexEditorModel(createIndex( file, monitor ) ) );
+                  new SDFIndexEditorModel(createIndex( file, monitor ), monitor ) );
 
     }
 
@@ -381,7 +382,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                   SDFileIndex index=
                  createIndex( file, subMonitor.newChild( 1000 ) );
                   if(index!=null) {
-                      sdfModel = new SDFIndexEditorModel(index);
+                      sdfModel = new SDFIndexEditorModel(index, new NullProgressMonitor());
                   }else
                      throw new BioclipseException("Failed to create new index");
          } catch ( CoreException e1 ) {
@@ -499,7 +500,7 @@ public class MoleculeTableManager implements IBioclipseManager {
         }
 
         SDFileIndex index = createIndex( file, progress.newChild( 1000 ) );
-        SDFIndexEditorModel model = new SDFIndexEditorModel(index);
+        SDFIndexEditorModel model = new SDFIndexEditorModel(index, new NullProgressMonitor());
 
         IFile target = null;
         SubMonitor loopProgress = progress.newChild( 8000 );
