@@ -714,7 +714,7 @@
        </toolbar>
     </menuContribution>
     <menuContribution
-          locationURI="popup:net.bioclipse.cdk.ui.editors.jchempaint?after=additions">
+          locationURI="popup:net.bioclipse.cdk.ui.editors.jchempaint?after=edits">
        <menu
              label="Change Element">
           <menu
