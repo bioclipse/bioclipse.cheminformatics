@@ -107,8 +107,8 @@ import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.IResourceFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
 import org.openscience.cdk.renderer.RendererModel;
-import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
+import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.selection.AbstractSelection;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.selection.MultiSelection;
@@ -120,6 +120,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
 
     private Logger logger = Logger.getLogger(JChemPaintEditor.class);
 
+    public static final String     contextMenuId               = "net.bioclipse.cdk.ui.editors.jchempaint";
     public static final String STRUCUTRE_CHANGED_EVENT="structure_changed";
     public static final String MODEL_LOADED = "net.bioclipse.jchempaint.load.model";
 
@@ -434,10 +435,9 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
 
     private void createMenu() {
 
-        MenuManager menuMgr = new MenuManager();
+        MenuManager menuMgr = new MenuManager( contextMenuId, contextMenuId );
         menuMgr.add( new GroupMarker( IWorkbenchActionConstants.MB_ADDITIONS ) );
-        getSite().registerContextMenu("net.bioclipse.cdk.ui.editors.jchempaint",
-                                      menuMgr, widget );
+        getSite().registerContextMenu( contextMenuId, menuMgr, widget );
 
         menu = menuMgr.createContextMenu( widget );
         widget.setMenu( menu );
