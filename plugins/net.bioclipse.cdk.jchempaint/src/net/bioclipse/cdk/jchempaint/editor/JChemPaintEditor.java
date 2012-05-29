@@ -436,6 +436,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
     private void createMenu() {
 
         MenuManager menuMgr = new MenuManager( contextMenuId, contextMenuId );
+        menuMgr.add( new GroupMarker( "edits" ) );
         menuMgr.add( new GroupMarker( IWorkbenchActionConstants.MB_ADDITIONS ) );
         getSite().registerContextMenu( contextMenuId, menuMgr, widget );
 
