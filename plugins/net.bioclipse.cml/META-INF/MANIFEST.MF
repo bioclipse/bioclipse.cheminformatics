@@ -23,4 +23,4 @@ Export-Package: net.bioclipse.cml.handlers,
 Import-Package: nu.xom;version="1.1.0",
  org.xmlcml.cml.base,
  org.xmlcml.cml.element,
- org.xmlpull.v1;version="[0.0.0,1.0.0)"
+ org.xmlpull.v1
