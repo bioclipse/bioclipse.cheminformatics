@@ -338,6 +338,7 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
             }
 
             public ICDKMolecule next() {
+                ++pos;
                 if ( pos % (size/100.0) == 0 ) {
                     synchronized ( monitor ) {
                         if (monitor.isCanceled()) {
@@ -348,7 +349,7 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
                                      +TimeCalculator.generateTimeRemainEst( 
                                            before, pos, size ) + ")" );
                 }
-                return getMoleculeAt( ++pos );
+                return getMoleculeAt( pos );
             }
 
             public void remove() {
