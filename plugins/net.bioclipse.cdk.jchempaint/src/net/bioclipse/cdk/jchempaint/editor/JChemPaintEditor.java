@@ -170,12 +170,13 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
                 IAtomContainer container = model.getAtomContainer();
                 if (GeometryTools.has3DCoordinates(container) &&
                     GeometryTools.has2DCoordinates(container)) {
-                    boolean agreedWithInfoLoss = MessageDialog.openQuestion(
-                        this.getSite().getShell(),
-                        chemFormat.getFormatName(),
-                        "This file format cannot save 3D and 2D coordinates. " +
-                        "Do you want to save only 2D?"
-                    );
+            		boolean agreedWithInfoLoss = MessageDialog.openConfirm(
+            				this.getSite().getShell(),
+            				"WARNING",
+            				"When saving 2D coordinates to MDL molfile the 3D coordinates will be lost.\n\n" +
+            				"If you want to save both 2D and 3D try another file format (e.g CML) via the \"Save as...\" menu.\n\n" +
+            				"Click OK if you want ot save 2D coordinates?"
+					);
                     if (!agreedWithInfoLoss) return;
                 }
 
