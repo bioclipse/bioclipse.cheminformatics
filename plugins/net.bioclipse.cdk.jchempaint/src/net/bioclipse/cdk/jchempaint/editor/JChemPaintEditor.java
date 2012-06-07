@@ -175,7 +175,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
             				"WARNING",
             				"When saving 2D coordinates to MDL molfile the 3D coordinates will be lost.\n\n" +
             				"If you want to save both 2D and 3D try another file format (e.g CML) via the \"Save as...\" menu.\n\n" +
-            				"Click OK if you want ot save 2D coordinates?"
+            				"Click OK if you want to save 2D coordinates?"
 					);
                     if (!agreedWithInfoLoss) return;
                 }
