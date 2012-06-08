@@ -1,0 +1,6 @@
+id	olaprop	weeprop
+F0326-0513	12	abc
+F0326-0491	65	num
+F0326-0484	23	sep
+F0326-0480	-98	roki
+F0326-0475	24	kroka
