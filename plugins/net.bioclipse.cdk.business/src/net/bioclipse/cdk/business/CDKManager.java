@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,7 +49,6 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.domain.RecordableList;
-import net.bioclipse.core.domain.SMILESMolecule;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.core.util.TimeCalculator;
 import net.bioclipse.jobs.IReturner;
@@ -1895,6 +1893,9 @@ public class CDKManager implements IBioclipseManager {
                   } 
                   catch (CDKException e) {
                       logger.error("Could not deduce bond orders for mol: " + mol);
+                  }
+                  catch (NullPointerException e) {
+                    logger.error( "Faild to deduce bond orders for mol: " + mol );
                   }
 
                   //Store rest of parts as properties on mol
