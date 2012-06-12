@@ -13,7 +13,7 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * A filter implementation to remove unique entries from a collection.
@@ -32,7 +32,7 @@ public class FilterOutUnique extends BaseFilter {
 
 	@Override
 	protected List<ICDKMolecule> applyFilter(List<ICDKMolecule> mols,
-			SubProgressMonitor monitor) {
+                                              IProgressMonitor monitor ) {
 
 		ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
 
