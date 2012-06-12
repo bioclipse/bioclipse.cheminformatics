@@ -9,7 +9,7 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.openscience.cdk.interfaces.IAtomContainer;
 
 /**
@@ -28,8 +28,8 @@ public class FilterOutSalts extends BaseFilter {
 	}
 
 	@Override
-	protected List<ICDKMolecule> applyFilter(List<ICDKMolecule> mols,
-			SubProgressMonitor monitor) {
+    public List<ICDKMolecule> applyFilter( List<ICDKMolecule> mols,
+                                              IProgressMonitor monitor ) {
 
 		ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
 

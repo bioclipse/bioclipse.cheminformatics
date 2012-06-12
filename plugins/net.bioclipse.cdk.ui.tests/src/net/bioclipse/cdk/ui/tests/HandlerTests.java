@@ -10,15 +10,12 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,14 +23,10 @@ import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.filters.FilterOutSalts;
-import net.bioclipse.cdk.ui.handlers.ConvertSMILEStoSDF;
-import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.business.BioclipseException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -62,8 +55,7 @@ public class HandlerTests {
 
 		//Remove salts
 		//FIXME The next line does not compile
-//		FilterOutSalts.filterOutSalts(mols, new NullProgressMonitor());
-		Assert.fail();
+        new FilterOutSalts().applyFilter( mols, new NullProgressMonitor() );
 		//Assert we have NO salts in all mols
 		for (ICDKMolecule mol : mols){
 			assertTrue(cdk.isConnected(mol));

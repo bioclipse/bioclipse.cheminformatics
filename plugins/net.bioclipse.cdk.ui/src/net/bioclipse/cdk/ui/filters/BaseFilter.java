@@ -99,7 +99,7 @@ public abstract class BaseFilter extends AbstractHandler {
 	protected abstract String getFilterName();
 
 	protected abstract List<ICDKMolecule> applyFilter(List<ICDKMolecule> mols,
-			SubProgressMonitor subProgressMonitor);
+                                                       IProgressMonitor subProgressMonitor );
 
 
 }
