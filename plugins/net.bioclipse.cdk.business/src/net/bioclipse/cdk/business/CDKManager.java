@@ -2181,6 +2181,11 @@ public class CDKManager implements IBioclipseManager {
                                           + " for writing.",
                                           e );
         }
+        try {
+            sdFile.refreshLocal( 1, new NullProgressMonitor() );
+        } catch ( CoreException e ) {
+            throw new BioclipseException( "Failed to refresh resource", e );
+        }
     }
 
       public void saveSDFile(final IFile file, List<? extends IMolecule> entries,
