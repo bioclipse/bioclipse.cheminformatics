@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2008-2009  Ola Spjuth
- *               2008-2010  Jonathan Alvarsson
+ *               2008-2012  Jonathan Alvarsson
  *               2008-2009  Stefan Kuhn
  *               2008-2009  Egon Willighagen <egonw@users.sf.net>
  *
@@ -17,6 +17,8 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -2155,6 +2157,30 @@ public class CDKManager implements IBioclipseManager {
             ResourcePathTransformer.getInstance().transform(path)
         );
         return format == null ? "Unknown" : format.getFormatName();
+    }
+    
+    public void appendToSDF( IFile sdFile, ICDKMolecule molecule ) throws BioclipseException {
+        try {
+            SDFWriter writer 
+                = new SDFWriter( EFS.getStore(sdFile.getLocationURI())
+                                    .openOutputStream( 
+                                         EFS.APPEND, 
+                                         new NullProgressMonitor() ) );
+            try {
+                writer.write( molecule.getAtomContainer() );
+                writer.close();
+            } catch ( CDKException e ) {
+                throw new BioclipseException(
+                              "Failed in writing molecule to file", e );
+            } catch ( IOException e ) {
+                throw new BioclipseException(
+                              "Failed in writing molecule to file", e );
+            }
+        } catch ( CoreException e ) {
+            throw new BioclipseException( "Could not open file: " + sdFile 
+                                          + " for writing.",
+                                          e );
+        }
     }
 
       public void saveSDFile(final IFile file, List<? extends IMolecule> entries,

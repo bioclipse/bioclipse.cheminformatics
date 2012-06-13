@@ -55,6 +55,7 @@ import net.bioclipse.jobs.BioclipseUIJob;
 import net.bioclipse.ui.business.IUIManager;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
@@ -1376,6 +1377,35 @@ public abstract class AbstractCDKManagerPluginTest {
         ICDKMolecule mol = cdk.loadMolecule(path);
         assertEquals("CCC", mol.toSMILES(
         ));
+    }
+    
+    @Test
+    public void testAppendToSDF() throws Exception {
+        
+        IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject( "testAppendToSDF" );
+        try {
+            project.create( new NullProgressMonitor() );
+            project.open( new NullProgressMonitor() );
+            final ICDKMolecule propane  = cdk.fromSMILES("CCC");
+            
+            ICDKMolecule ethane  = cdk.fromSMILES("CC");
+            String path = "/testAppendToSDF/testSaveSDF" + propane.hashCode() + ".mol";
+            cdk.saveSDFile( path, new ArrayList() {{add(propane);}} );
+            
+            assertEquals(1, cdk.loadMolecules(path).size());
+            
+            cdk.appendToSDF( path, ethane );
+            
+            List<ICDKMolecule> molecules = cdk.loadMolecules(path);
+            assertEquals( "CCC",
+                          cdk.calculateSMILES( molecules.get( 0 ) ) );
+            
+            assertEquals( "CC",
+                          cdk.calculateSMILES( molecules.get(1) ) );
+        }
+        finally {
+            project.delete( true, new NullProgressMonitor() );
+        }
     }
 
     @Test

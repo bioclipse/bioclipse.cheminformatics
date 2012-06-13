@@ -1186,5 +1186,14 @@ public interface ICDKManager extends IBioclipseManager {
     public List<List<IMolecule>> randomSplit2parts(List<IMolecule> mols_in, double firstRatio);
 
     public List<ICDKMolecule> loadSMILESFile( IFile file,
-                                              IProgressMonitor monitor );    
+                                              IProgressMonitor monitor );
+
+    @Recorded
+    @PublishedMethod(
+         params="String sdFile, ICDKMolecule molecule",
+         methodSummary="Append a molecule at the end of a given sd file."
+    )
+    public void appendToSDF( String sdFile, ICDKMolecule molecule ) throws BioclipseException;
+    
+    public void appendToSDF( IFile sdFile, ICDKMolecule molecule ) throws BioclipseException;
 }
