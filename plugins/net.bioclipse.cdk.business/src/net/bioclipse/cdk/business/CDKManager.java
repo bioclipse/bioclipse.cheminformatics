@@ -982,7 +982,7 @@ public class CDKManager implements IBioclipseManager {
               return new CDKMolecule(mol);
           }
           catch (InvalidSmilesException e) {
-              throw new BioclipseException("SMILES string is invalid", e);
+              throw new BioclipseException("SMILES string is invalid. Error message said: " + e.getMessage(), e);
           }
       }
 
