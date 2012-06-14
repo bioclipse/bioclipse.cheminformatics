@@ -38,6 +38,12 @@
                icon="icons/benzene.gif"
                name="net.bioclipse.browser.pubchem">
          </scraper>
+         <scraper
+               class="net.bioclipse.pubchem.scraper.DrugBankScraper"
+               id="net.bioclipse.browser.drugbank"
+               icon="icons/benzene.gif"
+               name="net.bioclipse.browser.drugbank">
+         </scraper>
    </extension>
 
 
