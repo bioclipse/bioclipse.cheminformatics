@@ -65,8 +65,9 @@ public class PubChemScraper implements IBrowserScraper {
             //http://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=4594
             //so extract from URL
             return extractMultipleMolecules(url);
+        } else {
+        	System.out.println("Not a PubChem page.");
         }
-        System.out.println("Not a PubChem page.");
 
         return null;
     }
