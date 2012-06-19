@@ -1113,7 +1113,7 @@ public class CDKManager implements IBioclipseManager {
         
         if (isSMILESFile(file)) {
             return new IteratingBioclipseSMILESReader(
-                           file.getContents(),
+                           file,
                            SilentChemObjectBuilder.getInstance(),
                            monitor );
         }
@@ -1138,17 +1138,43 @@ public class CDKManager implements IBioclipseManager {
         BufferedReader reader;
         String separator;
         String[] headers;
+        private int lines;
+        private int readLines;
+        private long before = System.currentTimeMillis();
 
-        public IteratingBioclipseSMILESReader( InputStream contents,
+        public IteratingBioclipseSMILESReader( IFile file,
                                                IChemObjectBuilder instance,
                                                IProgressMonitor monitor) {
     
-            this.contents = contents;
             this.moleculeBuilder = instance;
             this.monitor = monitor;
+            try {
+                contents = file.getContents();
+            } catch ( CoreException e1 ) {
+                e1.printStackTrace();
+            }
             this.reader = new BufferedReader(
                               new InputStreamReader(
                                   new BufferedInputStream(contents) ) );
+            lines = 0;
+            try {
+                while (reader.readLine() != null) {
+                    lines++;
+                }
+                
+            } catch ( IOException e ) {
+                throw new RuntimeException(e);
+            }
+            
+            try {
+                contents = file.getContents();
+            } catch ( CoreException e1 ) {
+                e1.printStackTrace();
+            }
+            this.reader = new BufferedReader(
+                              new InputStreamReader(
+                                  new BufferedInputStream(contents) ) );
+            
             String firstLine = null;
             try {
                 firstLine = reader.readLine();
@@ -1213,6 +1239,18 @@ public class CDKManager implements IBioclipseManager {
             } 
             catch ( IOException e ) {
                 LogUtils.debugTrace( logger, e );
+            }
+            ++readLines;
+            if ( lines > 10 && readLines % 10 == 0) {
+                monitor.subTask( 
+                    "Read molecule: " + readLines + "/" + lines 
+                    + " (" + TimeCalculator.generateTimeRemainEst( 
+                                 before, readLines, lines ) + ")" );
+                synchronized ( monitor ) {
+                    if ( monitor.isCanceled() ) {
+                        throw new OperationCanceledException();
+                    }
+                }
             }
             return mol;
         }
