@@ -819,7 +819,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 atom.setAtomTypeName(null);
                 atom.setHybridization(null);
                 atom.setImplicitHydrogenCount(0);
-                atom.setFlag(CDKConstants.ISAROMATIC, false);
+                // atom.setFlag(CDKConstants.ISAROMATIC, false);
             }
             for (IBond bond : container.bonds())
                 bond.setFlag(CDKConstants.ISAROMATIC, false);
