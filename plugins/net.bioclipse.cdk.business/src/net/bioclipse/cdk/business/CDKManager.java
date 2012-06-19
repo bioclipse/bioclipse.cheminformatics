@@ -28,6 +28,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,6 +37,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -146,6 +148,7 @@ import org.openscience.cdk.nonotify.NNChemFile;
 import org.openscience.cdk.nonotify.NNMolecule;
 import org.openscience.cdk.nonotify.NNMoleculeSet;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.similarity.Tanimoto;
 import org.openscience.cdk.smiles.DeduceBondSystemTool;
 import org.openscience.cdk.smiles.SmilesGenerator;
@@ -160,12 +163,17 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
 import org.xmlcml.cml.element.CMLAtomType;
 
+import sun.tools.tree.ThisExpression;
+
 /**
  * The manager class for CDK. Contains CDK related methods.
  *
  * @author olas, jonalv
  */
 public class CDKManager implements IBioclipseManager {
+
+    
+    
 
     private static final Logger logger = Logger.getLogger(CDKManager.class);
 
@@ -1050,14 +1058,68 @@ public class CDKManager implements IBioclipseManager {
         );
     }
 
+    private boolean isSMILESFile( IFile file ) {
+        
+        if ( !Arrays.asList( SMILESFormat.getInstance().getNameExtensions() )
+                    .contains( file.getFileExtension() ) ) {
+            return false;
+        }
+            
+        try {
+            BufferedReader buf 
+                = new BufferedReader(
+                      new InputStreamReader(
+                          new BufferedInputStream( file.getContents() )));
+            
+            String separator = determineSeparator( buf.readLine() );
+            /*
+             *  First line is either header or SMILES anything is ok. Let's 
+             *  check next line.
+             */
+            String secondLine = buf.readLine();
+            
+            if ( separator == null ) {
+                try {
+                    fromSMILES(secondLine);
+                } catch ( BioclipseException e ) {
+                    // It was not SMILES so it can't be a SMILES file
+                    return false;
+                }
+            }
+            else {
+                try {
+                    fromSMILES( secondLine.split( separator )[0] );
+                }
+                catch ( BioclipseException e ) {
+                    // It was not SMILES so it can't be a SMILES file
+                    return false;
+                } 
+            }
+            /*
+             * We have managed to read a SMILES where we expect a SMILES so 
+             * let's assume this is a SMILES file.
+             */
+            return true;
+        } catch ( CoreException e ) {
+            LogUtils.debugTrace( logger, e );
+        } catch ( IOException e ) {
+            LogUtils.debugTrace( logger, e );
+        }
+        
+        return false;
+    }
+    
     public Iterator<ICDKMolecule>
           createMoleculeIterator( IFile file, IProgressMonitor monitor)
               throws CoreException, IOException, BioclipseException {
 
         IChemFormat format = determineIChemFormat(file);
-        if (format == SMILESFormat.getInstance()) {
-            return null;
-            //TODO: Implement IteratingBioclipseSMILESReader
+        
+        if (isSMILESFile(file)) {
+            return new IteratingBioclipseSMILESReader(
+                           file.getContents(),
+                           SilentChemObjectBuilder.getInstance(),
+                           monitor );
         }
         else if (format == null) {
             throw new BioclipseException("Unsupported format for file: " + file.getName());
@@ -1065,11 +1127,134 @@ public class CDKManager implements IBioclipseManager {
 
         return new IteratingBioclipseMDLReader(
                 file.getContents(),
-                NoNotificationChemObjectBuilder.getInstance(),
+                SilentChemObjectBuilder.getInstance(),
                 monitor );
-      }
+    }
+    
+    
+    public class IteratingBioclipseSMILESReader 
+           implements Iterator<ICDKMolecule> {
+        
+        InputStream contents;
+        IChemObjectBuilder moleculeBuilder;
+        IProgressMonitor monitor;
+        ICDKMolecule cache = null;
+        BufferedReader reader;
+        String separator;
+        String[] headers;
 
-      static class IteratingBioclipseMDLReader
+        public IteratingBioclipseSMILESReader( InputStream contents,
+                                               IChemObjectBuilder instance,
+                                               IProgressMonitor monitor) {
+    
+            this.contents = contents;
+            this.moleculeBuilder = instance;
+            this.monitor = monitor;
+            this.reader = new BufferedReader(
+                              new InputStreamReader(
+                                  new BufferedInputStream(contents) ) );
+            String firstLine = null;
+            try {
+                firstLine = reader.readLine();
+            } 
+            catch ( IOException e ) {
+                throw new RuntimeException("Could not read file", e);
+            }
+            separator = determineSeparator(firstLine);
+            
+            // Assume first line is header
+            if ( separator == null) {
+                // no separator so assuming only a SMILES string on each row
+                headers = new String[] {"smiles"};
+            }
+            else {
+                 headers = firstLine.split(separator);
+            }
+            
+            // Confirm first line seems to be headers
+            try {
+                ICDKMolecule mol 
+                    = fromSMILES( headers.length == 1 ? firstLine 
+                                                      : headers[0] );
+                // first line not headers. Now handle any properties.
+                String[] values = headers;
+                int cols = headers.length;
+                if ( cols >= 1 ) { headers[0] = "smiles"; }
+                if ( cols >= 2 ) { headers[1] = "identifier"; }
+                if ( cols >= 3 ) {
+                    for ( int i = 2 ; i < cols ; i++ ) {
+                        headers[i] = "p"+i;
+                    }
+                }
+                for ( int i = 1 ; i<values.length ; i++ ) {
+                    mol.setProperty( headers[i], values[i] );
+                }
+                cache = mol;
+            }
+            catch (BioclipseException e) {
+                // Well it's not a SMILES so assume it is headers
+            }
+        }
+        
+        private ICDKMolecule getNext() {
+            ICDKMolecule mol = null;
+            try {
+                String line = reader.readLine();
+                if ( line == null ) { return null; }
+                if (separator != null) {
+                    String[] cols = line.split( separator );
+                    mol = fromSMILES( cols[0] );
+                    for ( int i = 1 ; i<cols.length ; i++ ) {
+                        mol.setProperty( headers[i], cols[i] );
+                    }
+                }
+                else {
+                    mol = fromSMILES( line );
+                }
+            }
+            catch (BioclipseException e) {
+                throw new RuntimeException(e.getMessage(), e);
+            } 
+            catch ( IOException e ) {
+                LogUtils.debugTrace( logger, e );
+            }
+            return mol;
+        }
+    
+        @Override
+        public boolean hasNext() {
+            if ( cache != null ) {
+                return true;
+            }
+            cache = getNext();
+            return cache != null;
+        }
+    
+        @Override
+        public ICDKMolecule next() {
+            ICDKMolecule result;
+            if ( cache != null ) {
+                result = cache;
+                cache = null;
+            }
+            else {
+                result = getNext();
+                if (result == null) {
+                    throw new NoSuchElementException();
+                }
+            }
+            return result;
+        }
+    
+        @Override
+        public void remove() {
+    
+            throw new UnsupportedOperationException("Remove is not supported");
+        }
+    
+    }
+
+    static class IteratingBioclipseMDLReader
              implements Iterator<ICDKMolecule> {
 
           IteratingMDLReader reader;

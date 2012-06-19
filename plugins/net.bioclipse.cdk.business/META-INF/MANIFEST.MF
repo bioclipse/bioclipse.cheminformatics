@@ -40,7 +40,8 @@ Require-Bundle: org.openscience.cdk.io,
  org.openscience.cdk.fingerprint,
  net.bioclipse.inchi,
  net.bioclipse.ui.business,
- net.sf.cglib
+ net.sf.cglib,
+ org.openscience.cdk.silent;bundle-version="1.4.10"
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.cdk.business,
  net.bioclipse.cdk.domain,

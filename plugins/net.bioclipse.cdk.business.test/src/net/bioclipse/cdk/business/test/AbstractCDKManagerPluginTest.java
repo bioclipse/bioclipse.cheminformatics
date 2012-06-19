@@ -581,6 +581,29 @@ public abstract class AbstractCDKManagerPluginTest {
 
         assertEquals( 2, molecules.size() );
     }
+    
+    @Test
+    public void testCreatingMoleculeIteratorSMILES()
+                throws CoreException,
+                       URISyntaxException, MalformedURLException, IOException,
+                       BioclipseException {
+
+        URI uri = getClass().getResource("/testFiles/testsmi2sdf.smi").toURI();
+        URL url = FileLocator.toFileURL(uri.toURL());
+        String path=url.getFile();
+
+        List<ICDKMolecule> molecules = new ArrayList<ICDKMolecule>();
+
+        for ( Iterator<net.bioclipse.cdk.domain.ICDKMolecule> iterator
+                    = cdk.createMoleculeIterator(path);
+              iterator.hasNext(); ) {
+                molecules.add( iterator.next() );
+        }
+
+        assertEquals( 8, molecules.size() );
+        assertEquals( 10, molecules.get(0).getAtomContainer()
+                                          .getProperties().size() );
+    }
 
     @Test
     public void testFingerPrintMatch() throws BioclipseException {
