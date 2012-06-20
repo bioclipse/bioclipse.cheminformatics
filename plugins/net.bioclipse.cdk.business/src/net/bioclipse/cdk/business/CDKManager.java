@@ -149,6 +149,7 @@ import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.similarity.Tanimoto;
 import org.openscience.cdk.smiles.DeduceBondSystemTool;
+import org.openscience.cdk.smiles.FixBondOrdersTool;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
@@ -969,6 +970,8 @@ public class CDKManager implements IBioclipseManager {
           }
       }
 
+      private FixBondOrdersTool fbot = new FixBondOrdersTool();
+      
       /**
        * Create molecule from SMILES.
        *
@@ -980,14 +983,19 @@ public class CDKManager implements IBioclipseManager {
           SmilesParser parser
               = new SmilesParser( DefaultChemObjectBuilder.getInstance() );
 
+          org.openscience.cdk.interfaces.IMolecule molecule;
           try {
-              org.openscience.cdk.interfaces.IMolecule mol
-                  = parser.parseSmiles(smilesDescription);
-              return new CDKMolecule(mol);
+              molecule = parser.parseSmiles(smilesDescription);
           }
           catch (InvalidSmilesException e) {
               throw new BioclipseException("SMILES string is invalid. Error message said: " + e.getMessage(), e);
           }
+          try {
+        	  fbot.kekuliseAromaticRings(molecule);
+          } catch (CDKException exception) {
+        	  logger.warn("Could not figure out the double bond positions: " + exception.getMessage());
+          }
+          return new CDKMolecule(molecule);
       }
 
       /**
