@@ -15,6 +15,7 @@ import net.bioclipse.cdk.logging.BioclipseLoggingTool;
 import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.openscience.cdk.tools.LoggingToolFactory;
 import org.osgi.framework.BundleContext;
@@ -42,6 +43,10 @@ public class Activator extends AbstractUIPlugin {
      */
     public Activator() {
     	logger.info("Registering the BioclipseLoggingTool...");
+    }
+
+    public static ImageDescriptor getImageDescriptor(String path) {
+        return imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
 
     /*
