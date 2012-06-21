@@ -28,6 +28,7 @@ import net.bioclipse.inchi.business.IInChIManager;
 import nu.xom.Element;
 
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
@@ -56,6 +57,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
 
     private String name;
     private IAtomContainer atomContainer;
+	private Object icon;
 
     // cached properties
     public static final String FINGERPRINT_KEY = "net.bioclipse.fingerprint";
@@ -251,7 +253,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     
     @Override
     public Object getAdapter( Class adapter ) {
-    
+
         if (adapter == IMolecule.class){
             return this;
         }
