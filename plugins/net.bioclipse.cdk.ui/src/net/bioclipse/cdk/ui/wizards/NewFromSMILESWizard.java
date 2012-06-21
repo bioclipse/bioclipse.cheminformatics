@@ -114,10 +114,11 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
         				    	}
         				    	Thread.sleep(1000);
         				    }
+                            mol = new CDKMolecule( future.get() );
         				} catch(Exception e) {
         					logger.warn("Aromaticity detection failed du to "+e.getMessage());
+                            mol = new CDKMolecule( cdkMol );
         				}
-        				mol = new CDKMolecule(cdkMol);
         				progress.setWorkRemaining(50);
         				progress.subTask("Generating coordinates");
         				progress.worked(25);
