@@ -7,6 +7,8 @@ import net.bioclipse.core.util.LogUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IAdapterFactory;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
 
 @SuppressWarnings("unchecked")
 public class CDKAdapterFactory implements IAdapterFactory {
@@ -34,11 +36,16 @@ public class CDKAdapterFactory implements IAdapterFactory {
         }
         if(molecule !=null &&adapterType.isAssignableFrom( molecule.getClass()))
             return molecule;
+
+        if(adapterType.isAssignableFrom(ImageDescriptor.class)) {
+                return Activator.getImageDescriptor( "icons/benzene.gif" );
+        }
+
         return null;
     }
 
     public Class[] getAdapterList() {
 
-        return new Class[] { ICDKMolecule.class };
+        return new Class[] { ICDKMolecule.class,ImageDescriptor.class };
     }
 }

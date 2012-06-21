@@ -254,12 +254,6 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     @Override
     public Object getAdapter( Class adapter ) {
 
-        if (Image.class .equals( adapter )){
-            if (icon==null)
-                icon=Activator.getImageDescriptor( "icons/benzene.gif" ).createImage();
-            return icon;
-        }
-
         if (adapter == IMolecule.class){
             return this;
         }
