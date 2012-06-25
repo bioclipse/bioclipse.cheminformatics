@@ -1301,6 +1301,7 @@ public class CDKManager implements IBioclipseManager {
 
           IteratingMDLReader reader;
           IProgressMonitor monitor = new NullProgressMonitor();
+          FixBondOrdersTool tool = new FixBondOrdersTool();
 
           public IteratingBioclipseMDLReader( InputStream input,
                                               IChemObjectBuilder builder,
@@ -1323,6 +1324,12 @@ public class CDKManager implements IBioclipseManager {
           public ICDKMolecule next() {
               org.openscience.cdk.interfaces.IMolecule cdkMol
                   = (org.openscience.cdk.interfaces.IMolecule) reader.next();
+              try {
+            	  AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(cdkMol);
+	              tool.kekuliseAromaticRings(cdkMol);
+              } catch (CDKException e) {
+            	  logger.debug("Error while searching double bonds..." + e.getMessage());
+              }
               ICDKMolecule bioclipseMol = new CDKMolecule(cdkMol);
               monitor.worked(1);
               return bioclipseMol;
