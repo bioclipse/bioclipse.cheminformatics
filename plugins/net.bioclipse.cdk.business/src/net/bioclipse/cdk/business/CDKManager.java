@@ -2600,7 +2600,7 @@ public class CDKManager implements IBioclipseManager {
               IteratingBioclipseMDLReader reader
                   = new IteratingBioclipseMDLReader(
                             file.getContents(),
-                            DefaultChemObjectBuilder.getInstance(),
+                            SilentChemObjectBuilder.getInstance(),
                             monitor );
               int i = 0;
               List<ICDKMolecule> result=new RecordableList<ICDKMolecule>();
