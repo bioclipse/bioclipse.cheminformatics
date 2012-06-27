@@ -991,7 +991,7 @@ public class CDKManager implements IBioclipseManager {
               throw new BioclipseException("SMILES string is invalid. Error message said: " + e.getMessage(), e);
           }
           try {
-        	  fbot.kekuliseAromaticRings(molecule);
+        	  molecule = fbot.kekuliseAromaticRings(molecule);
           } catch (CDKException exception) {
         	  logger.warn("Could not figure out the double bond positions: " + exception.getMessage());
           }
