@@ -3,6 +3,7 @@ package net.bioclipse.cdk.ui.sdfeditor.business;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -16,10 +17,13 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 
-public class LaunchWizardPage extends AbstractHandler {
+public class LaunchWizardPage extends AbstractHandler implements IHandler{
 
     private ISelection selection;
     
+    
+    public LaunchWizardPage() {
+    }
     
     @Override
     public Object execute( ExecutionEvent event ) throws ExecutionException {
