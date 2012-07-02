@@ -13,12 +13,17 @@ public class PropertiesImportFileHandler {
 
     private IFile sdFile;
     private IFile dataFile;
-    private ArrayList<String> propertiesID, sdFilePropertiesID;
+    private ArrayList<String> propertiesID;
+    private ArrayList<String> sdFilePropertiesID;
     private ArrayList<ArrayList<String>> topValues;
     // The number of rows read in to topValues at initiation 
     private final static int ROWS_IN_TOPVALUES = 5;
     
-    public PropertiesImportFileHandler() {  }
+    public PropertiesImportFileHandler() { 
+        propertiesID = new ArrayList<String>();
+        sdFilePropertiesID = new ArrayList<String>();
+        topValues = new ArrayList<ArrayList<String>>();
+    }
     
     public PropertiesImportFileHandler(IFile sdFile, IFile dataFile) throws FileNotFoundException {
         setSDFile( sdFile );
@@ -39,7 +44,7 @@ public class PropertiesImportFileHandler {
         /* Or it might be better to use the IteratingMDLReader in CDK...*/
         if (!sdFile.exists() || sdFile == null)
             throw new FileNotFoundException ("Can't find the sd-file.");
-        sdFilePropertiesID = new ArrayList<String>();
+//        sdFilePropertiesID = new ArrayList<String>();
         int startPtr, endPtr;
         String nextLine, propName, endMolSequence = "$$$$";      
         Scanner fileScanner = new Scanner(getSDFileContents());
@@ -77,7 +82,7 @@ public class PropertiesImportFileHandler {
     }
     
     public boolean sdFileExists() {
-        return sdFile.exists();   
+        return (sdFile != null);
     }
     
     public ArrayList<String> getPropertiesFromSDFile() {
@@ -90,7 +95,7 @@ public class PropertiesImportFileHandler {
     }
     
     public boolean dataFileExists() {
-        return dataFile.exists();
+        return ( dataFile != null );
     }
     
     public InputStream getDataFileContents() {
@@ -129,6 +134,9 @@ public class PropertiesImportFileHandler {
      * @throws FileNotFoundException 
      */
     public ArrayList<ArrayList<String>> getTopValuesFromDataFile(int numberOfRows) throws FileNotFoundException {
+        if (topValues.isEmpty() || topValues.get( 0 ).isEmpty())
+            return new ArrayList<ArrayList<String>>();
+        
         int rows = topValues.get( 0 ).size();
         if (numberOfRows == rows)
             return topValues;

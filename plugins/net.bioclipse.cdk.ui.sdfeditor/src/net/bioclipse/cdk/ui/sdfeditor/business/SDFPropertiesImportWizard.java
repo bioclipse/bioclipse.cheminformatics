@@ -28,14 +28,14 @@ public class SDFPropertiesImportWizard extends Wizard implements IImportWizard {
 	
 	public SDFPropertiesImportWizard() {
 	    super();
-	    mainPage = new SDFPropertiesImportWizardPage("Import File"); 
+	    mainPage = new SDFPropertiesImportWizardPage("Import File", selection);
+//	    mainPage.init( selection );
 	}
 	
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		setWindowTitle("SDF Properties Import Wizard");
 //		setNeedsProgressMonitor(true);
-//		mainPage = new SDFPropertiesImportWizardPage("Import File",selection);
 		this.selection = selection;
 		mainPage.init( selection );
 	}
@@ -54,10 +54,10 @@ public class SDFPropertiesImportWizard extends Wizard implements IImportWizard {
 		return mainPage.canFlipToNextPage();
 	}
 
-	@Override
-	public void dispose() {
-	    dispose();
-	}
+//	@Override
+//	public void dispose() {
+//	    dispose();
+//	}
 
 	@Override
 	public IWizardPage getNextPage(IWizardPage page) {

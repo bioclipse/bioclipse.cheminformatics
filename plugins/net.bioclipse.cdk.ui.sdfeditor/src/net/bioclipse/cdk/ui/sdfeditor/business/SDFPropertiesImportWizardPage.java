@@ -22,6 +22,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -61,13 +62,13 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	private ArrayList<ArrayList<String>> propertiesData;
 	private ArrayList<String> sdfPropertyList, excludedProperties, headers;
 	private int columns;
-	private PropertiesImportFileHandler fileHandler;
+	private PropertiesImportFileHandler fileHandler = new PropertiesImportFileHandler();
 	
 	protected SDFPropertiesImportWizardPage(String pageName, IStructuredSelection selection) {
 		super(pageName);
 		columns = 0;
 		propertiesData = new ArrayList<ArrayList<String>>();
-		fileHandler = new PropertiesImportFileHandler();
+//		fileHandler = new PropertiesImportFileHandler();
 		setTitle(pageName); //NON-NLS-1
 		setDescription("Import properties to a SDF-file from a txt-file."); 
 		init(selection);
@@ -79,7 +80,8 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 		setDescription("Import properties to a SDF-file from a txt-file."); 
 		columns = 0;
 		propertiesData = new ArrayList<ArrayList<String>>();
-		fileHandler = new PropertiesImportFileHandler();
+//		fileHandler = new PropertiesImportFileHandler();
+//		fileHandler = new PropertiesImportFileHandler();
 	}
 	
 	@Override
@@ -103,15 +105,23 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	 * @return A composite containing the components needed.
 	 */
 	private Composite getFileComposit(Composite parent) {
+	    GridData txtGridData = new GridData();
+	    txtGridData.horizontalAlignment = GridData.FILL;
+	    txtGridData.grabExcessHorizontalSpace = true;
+	    GridData labelGridData = new GridData();
+	    labelGridData.horizontalSpan = 2;
+	    labelGridData.horizontalAlignment = GridData.FILL;
 	    Composite fileComposite = new Composite(parent, SWT.NONE);
 	    fileComposite.setLayout(new GridLayout(2, false));
-        
+	    fileComposite.setLayoutData( txtGridData );
+	    
         // The components for the txt-file...
         Label fromFileLabel = new Label(fileComposite, SWT.NONE);
         fromFileLabel.setText("File with the propertis:");
-        new Label(fileComposite, SWT.NONE);
+        fromFileLabel.setLayoutData( labelGridData );
         fromFileTxt = new Text(fileComposite, SWT.BORDER);
         fromFileTxt.setText("");
+        fromFileTxt.setLayoutData( txtGridData );
         fromFileTxt.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent e) {
@@ -124,27 +134,19 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
             public void widgetSelected(SelectionEvent e) {
                 FileDialog dlg = new FileDialog(mainComposite.getShell(), SWT.OPEN);
                 String pathStr = dlg.open();
-
-                try {
-                    Path path = new Path(pathStr);
-                    IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-                    fileHandler.setDataFile( file );
-                    updatePropertiesData();
-                } catch ( FileNotFoundException e1 ) {
-//                    txtFilePath = "";
-                    // TODO Add a log entry
-                    e1.printStackTrace();
-                }
-                updateComponents();
+                updatePropertiesData(pathStr);
+               
+//                updateComponents();
             }
         });
         
         // The components for the sdf-file...
         Label toFileLabel = new Label(fileComposite, SWT.NONE);
         toFileLabel.setText("SDF-file:");
-        new Label(fileComposite, SWT.NONE);
+        toFileLabel.setLayoutData( labelGridData );
         toFileTxt = new Text(fileComposite, SWT.BORDER);
         toFileTxt.setText("");
+        toFileTxt.setLayoutData( txtGridData );
         toFileTxt.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent e) {
@@ -233,7 +235,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	}
 	
 	protected void init(ISelection selection) {
-		if (!(selection instanceof IStructuredSelection))
+		if (!(selection instanceof IStructuredSelection) || selection.isEmpty())
 			return;
 
 		Iterator itr = ((IStructuredSelection) selection).iterator();
@@ -254,21 +256,30 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 				} else { //if (extention.toLowerCase().equals(".txt")) {
 				    /* FIXME Here I just assumes that if it's not an sdf-file then its 
 				     * the txt-file with properties, that is probably not good...*/
-					try {
-                       fileHandler.setDataFile( file );
-                       updatePropertiesData();
-                    } catch ( FileNotFoundException e ) {
-//                        updateComponents();
-                        // TODO Add a log entry
-                        e.printStackTrace();
-                    }
+//					try {
+//                       fileHandler.setDataFile( file );
+                       updatePropertiesData(file.getFullPath().toOSString());
+//                    } catch ( FileNotFoundException e ) {
+////                        updateComponents();
+//                        // TODO Add a log entry
+//                        e.printStackTrace();
+//                    }
 				} 
 			}
 		}
 	}
 	
 	
-	private void updatePropertiesData() {
+	private void updatePropertiesData(String pathStr) {
+	    try {
+            Path path = new Path(pathStr);
+            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+            fileHandler.setDataFile( file );
+        } catch ( FileNotFoundException e1 ) {
+//            txtFilePath = "";
+            // TODO Add a log entry
+            e1.printStackTrace();
+        }
 	    headers = fileHandler.getPropertiesIDFromDataFile();
 	    try {
             propertiesData = fileHandler.getTopValuesFromDataFile( 5 );
@@ -280,8 +291,17 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	}
 		
 	private Composite getDataComposite(Composite parent) {
-	    columns = propertiesData.size();
-	    int rows = propertiesData.get( 0 ).size();
+	    Boolean noPropertiesData;
+	    int rows;
+	    if (propertiesData.size() == 0){
+	        noPropertiesData = true;
+	        columns = 1;
+	        rows = 3;
+	    } else {
+	        noPropertiesData = false;
+	        columns = propertiesData.size();
+	        rows = propertiesData.get( 0 ).size();
+	    }
 	    String textInDataField;
 	    isExcluded = new boolean[columns];
 	    
@@ -295,7 +315,10 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	    headerLabel.setText( "Name" );
 	    for (int i = 0; i < columns; i++) {
 	        headerText[i] = new Text(view, SWT.READ_ONLY | SWT.BORDER);
-	        headerText[i].setText( propertiesData.get( i ).get( 0 ) );
+	        if (noPropertiesData)
+	            headerText[i].setText( "No data loaded" );
+	        else
+	            headerText[i].setText( propertiesData.get( i ).get( 0 ) );
 	    }
 	    
 	    dataLable = new Label(view, SWT.NONE);
@@ -308,8 +331,11 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	    for (int i = 0; i < columns; i++) {
 	        dataText[i] = new Text(view, SWT.READ_ONLY | SWT.BORDER | SWT.MULTI);
 	        textInDataField =  "";
-	        for (int j = 1; j == rows; j++) {
-	            textInDataField += propertiesData.get( i ).get( j ) + "\n"; 
+	        for (int j = 1; j < rows; j++) {
+	            if (noPropertiesData)
+	                textInDataField += "n/a\n"; 
+	            else
+	                textInDataField += propertiesData.get( i ).get( j ) + "\n"; 
 	        }
 	        dataText[i].setText( textInDataField );
 	    }
@@ -332,15 +358,25 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	        });
 	    }
 	    
-	    view.pack();
-	    updateComponents();
+//	    view.pack();
+//	    updateComponents();
 	    
 	    return view;
+	}
+	
+	private void updateDataCompocite() {
+	    for (int i = 0; i < columns; i++) {
+            if (propertiesData.isEmpty())
+                headerText[i].setText( "No data loaded" );
+            else
+                headerText[i].setText( headers.get( i ) );
+        }
 	}
 	
 	private Composite settingsComposite(Composite parent) {
 	    Composite view = new Composite(parent, SWT.NONE);
 	    view.setLayout( new GridLayout(1, true) );
+	    decideOrder = new Button[2];
 	    
 	    decideOrder[0] = new Button(view, SWT.RADIO);
 	    decideOrder[0].setText("The order is the data file as in the SDF file");
@@ -357,8 +393,11 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	        txtCombo.add( propertiesData.get( i ).get( 0 ) );
 	    new Label(rbComposite, SWT.NONE).setText( " to SDF-property " );
 	    sdfCombo = new Combo(rbComposite, SWT.DROP_DOWN | SWT.BORDER);
-	    for (int i = 0; i < sdfPropertyList.size(); i++)
-            sdfCombo.add( sdfPropertyList.get( i ) );
+	    sdfPropertyList = fileHandler.getPropertiesFromSDFile();
+	    if (sdfPropertyList != null && sdfPropertyList.size() > 0) {
+	        for (int i = 0; i < sdfPropertyList.size(); i++)
+	            sdfCombo.add( sdfPropertyList.get( i ) );
+	    }
 	    
         return view;
 	}
@@ -370,17 +409,30 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
             dataText[i].setEnabled( !isExcluded[i] );
 	    }
 	    
-	    fromFileTxt.setText( fileHandler.getDataFilePath() );
-	    toFileTxt.setText( fileHandler.getSDFilePath() );
+	    if (fileHandler.dataFileExists())
+	        fromFileTxt.setText( fileHandler.getDataFilePath() );
+	    else {
+	        fromFileTxt.setText( "" );//"Add the file with the properties data here" );
+	    }
+//	    fromFileTxt.setSize( 300, 15 );
 	    
-	    txtCombo.removeAll();
-	    for (int i = 0; i < headers.size(); i++)
-	        if (!isExcluded[i])
-	            txtCombo.add( headers.get( i ) );
+	    if (fileHandler.sdFileExists())
+	        toFileTxt.setText( fileHandler.getSDFilePath() );
+	    else {
+	        toFileTxt.setText( "" );//"Add the SD-file here" ); 
+	    }
+	    
+//	    updatePropertiesData();
+	    if (fileHandler.dataFileExists()) {
+	        txtCombo.removeAll();
+	        for (int i = 0; i < headers.size(); i++)
+	            if (!isExcluded[i])
+	                txtCombo.add( headers.get( i ) );
+	    }
 	    sdfCombo.removeAll();
-        for (int i = 0; i < propertiesData.size(); i++)
-            sdfCombo.add( propertiesData.get( i ).get( 0 ) );
-	    
+	    for (int i = 0; i < propertiesData.size(); i++)
+	        sdfCombo.add( propertiesData.get( i ).get( 0 ) );
+
 	    mainComposite.redraw();
 	    mainComposite.update();
 	}
