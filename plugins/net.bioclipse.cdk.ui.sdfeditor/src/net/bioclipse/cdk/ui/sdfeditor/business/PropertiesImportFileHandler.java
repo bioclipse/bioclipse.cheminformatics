@@ -19,22 +19,44 @@ public class PropertiesImportFileHandler {
     // The number of rows read in to topValues at initiation 
     private final static int ROWS_IN_TOPVALUES = 5;
     
+    /**
+     * A constructor to use if non, or only one, of the files are known. 
+     */
     public PropertiesImportFileHandler() { 
         propertiesID = new ArrayList<String>();
         sdFilePropertiesID = new ArrayList<String>();
         topValues = new ArrayList<ArrayList<String>>();
     }
     
+    /**
+     * A constructor to use if both the files are known.
+     * 
+     * @param sdFile The IFile containing the sd-file
+     * @param dataFile The IFile containing the data file
+     * @throws FileNotFoundException Thrown if some, or both, of the files are 
+     *      not found
+     */
     public PropertiesImportFileHandler(IFile sdFile, IFile dataFile) throws FileNotFoundException {
         setSDFile( sdFile );
         setDataFile( dataFile );
     }
     
+    /**
+     * This method load the sd-file.
+     * 
+     * @param dataFile The IFile containing the sd-file
+     * @throws FileNotFoundException Thrown if there's no file found
+     */
     public void setSDFile(IFile sdFile) throws FileNotFoundException {
         this.sdFile = sdFile;
         extractSDFProerties();
     }
     
+    /**
+     * This method read the data in the sd-file.
+     * 
+     * @throws FileNotFoundException If the sd-file isn't found
+     */
     private void extractSDFProerties() throws FileNotFoundException {
         /* FIXME I would love to use this class, but there's three obstacles:
          * - It's hidden so I can't reach it from here
@@ -67,7 +89,12 @@ public class PropertiesImportFileHandler {
                 
         }
     }
-
+    
+    /**
+     * This method opens a stream to the sd-file.
+     * 
+     * @return A stream to the sd-file
+     */
     public InputStream getSDFileContents() {
         String path = sdFile.getFullPath().toOSString(); 
         try {
@@ -77,23 +104,53 @@ public class PropertiesImportFileHandler {
         }
     }
     
+    /**
+     * A method to get the path to the sd-file. If the sd-file isn't loaded it
+     * returns an empty string.
+     * 
+     * @return The path to the sd-file
+     */
     public String getSDFilePath() {
-        return sdFile.getProjectRelativePath().toOSString();
+        if (sdFileExists())
+            return sdFile.getProjectRelativePath().toOSString();
+        else
+            return "";
     }
     
+    /**
+     * To check if the sd-file has been loaded.
+     * 
+     * @return True if the file has been loaded.
+     */
     public boolean sdFileExists() {
         return (sdFile != null);
     }
     
+    /**
+     * Returns the properties of the first molecule in the sd-file.
+     * 
+     * @return The properties in the sd-file
+     */
     public ArrayList<String> getPropertiesFromSDFile() {
         return sdFilePropertiesID;
     }
     
+    /**
+     * This method load the data file.
+     * 
+     * @param dataFile The IFile containing the txt-file
+     * @throws FileNotFoundException Thrown if there's no file found
+     */
     public void setDataFile(IFile dataFile) throws FileNotFoundException {
         this.dataFile = dataFile;
         readProperiesFile( 0, ROWS_IN_TOPVALUES );
     }
     
+    /**
+     * To check if the txt-file with data has been loaded.
+     * 
+     * @return True if the file has been loaded.
+     */
     public boolean dataFileExists() {
         return ( dataFile != null );
     }
@@ -142,11 +199,11 @@ public class PropertiesImportFileHandler {
             return topValues;
         ArrayList<ArrayList<String>> temp = new ArrayList<ArrayList<String>>();
         ArrayList<String> temp2;
-        if (numberOfRows < rows) {
+        if (numberOfRows > rows) {
             for (int j = 0; j < topValues.size(); j++) {
                 temp2 = new ArrayList<String>();
                 temp.add( temp2 );
-                for (int i = 0; i <= numberOfRows; i++) {
+                for (int i = 0; i < numberOfRows; i++) {
                     temp.get( j ).add( topValues.get( j ).get( i ) );
                 }
             }
@@ -156,7 +213,14 @@ public class PropertiesImportFileHandler {
             return topValues;
         }
     }
-     
+    
+    /**
+     * This method reads the data file.
+     *  
+     * @param startRow The row to start read from
+     * @param endRow The last row to read
+     * @throws FileNotFoundException Thrown if the file can't be found
+     */
     private void readProperiesFile(int startRow, int endRow) throws FileNotFoundException {   
         /*
          * Read the first element and add that to an (local) array list and add 

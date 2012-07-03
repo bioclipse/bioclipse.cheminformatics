@@ -28,6 +28,7 @@ public class SDFPropertiesImportWizard extends Wizard implements IImportWizard {
 	
 	public SDFPropertiesImportWizard() {
 	    super();
+	    setWindowTitle("SDF Properties Import Wizard");
 	    mainPage = new SDFPropertiesImportWizardPage("Import File", selection);
 //	    mainPage.init( selection );
 	}

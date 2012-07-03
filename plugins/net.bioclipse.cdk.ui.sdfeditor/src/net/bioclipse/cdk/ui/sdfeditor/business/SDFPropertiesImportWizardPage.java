@@ -43,14 +43,13 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	// An array to exclude data columns
 	private boolean[] isExcluded;
 	
-	Composite mainComposite;
+	private Composite mainComposite, dataComposite, dataFrame;
 	
 	// Components for the file composite
 	private Text fromFileTxt, toFileTxt;
 	private Button fromFileButton, toFileButton;
 	
 	// Components for the data composite
-	private Label headerLabel, dataLable, excludeLable;
 	private Text[] headerText, dataText;
 	private Button[] excludeButtons;
 	
@@ -58,32 +57,41 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	private Button[] decideOrder;
 	private Combo txtCombo, sdfCombo;
 	
-//	private String sdFilePath = "", txtFilePath = "";
 	private ArrayList<ArrayList<String>> propertiesData;
 	private ArrayList<String> sdfPropertyList, excludedProperties, headers;
 	private int columns;
 	private PropertiesImportFileHandler fileHandler = new PropertiesImportFileHandler();
 	
+	/**
+	 * A constructor to use if there's one or several files selected.
+	 * 
+	 * @param pageName The name of the page
+	 * @param selection The selections
+	 */
 	protected SDFPropertiesImportWizardPage(String pageName, IStructuredSelection selection) {
 		super(pageName);
 		columns = 0;
 		propertiesData = new ArrayList<ArrayList<String>>();
-//		fileHandler = new PropertiesImportFileHandler();
 		setTitle(pageName); //NON-NLS-1
 		setDescription("Import properties to a SDF-file from a txt-file."); 
 		init(selection);
 	}
-
+	/**
+	 * A constructor to use if there's no file selected.
+	 * 
+	 * @param pageName The name of the page
+	 */
 	protected SDFPropertiesImportWizardPage(String pageName) {
 		super(pageName);
 		setTitle(pageName); //NON-NLS-1
 		setDescription("Import properties to a SDF-file from a txt-file."); 
 		columns = 0;
 		propertiesData = new ArrayList<ArrayList<String>>();
-//		fileHandler = new PropertiesImportFileHandler();
-//		fileHandler = new PropertiesImportFileHandler();
 	}
 	
+	/**
+	 * The main method for putting all the composites together.
+	 */
 	@Override
 	public void createControl(Composite parent) {
 		// mm, do I need this composite?
@@ -91,7 +99,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 		mainComposite.setLayout(new GridLayout(1, true));
 		
 		getFileComposit( mainComposite );
-		getDataComposite( mainComposite );
+		createDataComposite( mainComposite );
 		settingsComposite( mainComposite );
 		updateComponents();
 		mainComposite.pack();
@@ -135,8 +143,6 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                 FileDialog dlg = new FileDialog(mainComposite.getShell(), SWT.OPEN);
                 String pathStr = dlg.open();
                 updatePropertiesData(pathStr);
-               
-//                updateComponents();
             }
         });
         
@@ -186,24 +192,6 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	}
 	
     /**
-     * A get method for the to get the path to the SD-file, if non exist it 
-     * returns a empty {@link String}.
-     * 
-     * @return The path the the SD-file.
-     */
-//	protected String getSDFilePath() {
-//	    return sdFilePath;
-//	}
-	
-//    protected InputStream getSDFileContents() {
-//        try {
-//            return new FileInputStream(new File(sdFilePath));
-//        } catch (FileNotFoundException e) {
-//            return null;
-//        }
-//    }
-	
-    /**
      * A get method to get the excluded properties, if non of the properties
      * are excluded it returns an empty {@link ArrayList}.
      * 
@@ -213,6 +201,9 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	    return excludedProperties;
 	}
 	
+	/**
+	 * This method check if all necessary fields are filled in.
+	 */
 	protected void updatePageComplite() {    
 		String message = "";
 		boolean complete = true;
@@ -234,11 +225,16 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 		setPageComplete(complete);
 	}
 	
+	/**
+	 * A method used to take care of a selection.
+	 * 
+	 * @param selection The selection
+	 */
 	protected void init(ISelection selection) {
 		if (!(selection instanceof IStructuredSelection) || selection.isEmpty())
 			return;
 
-		Iterator itr = ((IStructuredSelection) selection).iterator();
+		Iterator<?> itr = ((IStructuredSelection) selection).iterator();
 		Object item;
 		IFile file;
 		while (itr.hasNext()) {
@@ -256,27 +252,24 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 				} else { //if (extention.toLowerCase().equals(".txt")) {
 				    /* FIXME Here I just assumes that if it's not an sdf-file then its 
 				     * the txt-file with properties, that is probably not good...*/
-//					try {
-//                       fileHandler.setDataFile( file );
-                       updatePropertiesData(file.getFullPath().toOSString());
-//                    } catch ( FileNotFoundException e ) {
-////                        updateComponents();
-//                        // TODO Add a log entry
-//                        e.printStackTrace();
-//                    }
+				    updatePropertiesData(file.getFullPath().toOSString());
 				} 
 			}
 		}
 	}
 	
-	
+	/**
+	 * This method is the first to be called when a new txt-file whith data is 
+	 * read.
+	 * 
+	 * @param pathStr The path to the txt-file
+	 */
 	private void updatePropertiesData(String pathStr) {
 	    try {
             Path path = new Path(pathStr);
             IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
             fileHandler.setDataFile( file );
         } catch ( FileNotFoundException e1 ) {
-//            txtFilePath = "";
             // TODO Add a log entry
             e1.printStackTrace();
         }
@@ -287,63 +280,98 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
             // TODO Add a log entry or what to do if this happens?
             e.printStackTrace();
         }
+	    
+	    updateDataCompocite();
 	    updateComponents();
 	}
-		
-	private Composite getDataComposite(Composite parent) {
-	    Boolean noPropertiesData;
+	
+	/**
+	 * This method creates the composite that shows (some of) the data in the 
+	 * txt-file with the data that shall be added to the sd-file.
+	 * 
+	 * @param parent The parent composite, i.e. mainComposite
+	 * @return A composite for showing the data in the data file 
+	 */
+	private Composite createDataComposite(Composite parent) {
+	    GridData headerGridData = new GridData();
+        headerGridData.horizontalAlignment = GridData.FILL;
+        headerGridData.grabExcessHorizontalSpace = true;
+	    dataFrame = new Composite( parent, SWT.BORDER );
+        dataFrame.setLayout( new GridLayout( 1, true ) );
+        dataFrame.setLayoutData( headerGridData );
+        
+        updateDataCompocite();
+        
+        return dataFrame;
+	}
+	
+	/**
+	 * Update the components that are related to the properties.
+	 */
+	private void updateDataCompocite() {
 	    int rows;
-	    if (propertiesData.size() == 0){
-	        noPropertiesData = true;
-	        columns = 1;
-	        rows = 3;
-	    } else {
-	        noPropertiesData = false;
-	        columns = propertiesData.size();
-	        rows = propertiesData.get( 0 ).size();
+	    String textInDataField =  "";
+
+        if (fileHandler.dataFileExists()) {
+            headers = fileHandler.getPropertiesIDFromDataFile();
+            try {
+                propertiesData = fileHandler.getTopValuesFromDataFile( 5 );
+            } catch ( FileNotFoundException e ) {
+                e.printStackTrace();
+            }
+            columns = headers.size();
+            rows = propertiesData.get( 0 ).size();
+        }
+        else {
+            columns = 3;
+            rows = 3;
+            headers = new ArrayList<String>();
+            headers.add( "N/A" );
+            headers.add( "N/A" );
+            headers.add( "N/A" );
+            textInDataField = "n/a\nn/a\nn/a\nn/a\nn/a";
+        }
+        if (dataComposite != null)
+            dataComposite.dispose();
+        dataComposite = new Composite( dataFrame, SWT.NONE );
+        dataComposite.setLayout( new GridLayout( columns + 1, true ) );
+       
+        new Label(dataComposite, SWT.NONE).setText( "Name" );
+        GridData headersGridData = new GridData();
+        headersGridData.horizontalAlignment = GridData.FILL;
+        headersGridData.grabExcessHorizontalSpace = true;
+        headersGridData.grabExcessVerticalSpace = true;
+        headerText = new Text[columns]; 
+	    for (int i = 0; i < columns; i++) {
+	        headerText[i] = new Text( dataComposite, SWT.READ_ONLY | SWT.BORDER );
+	        headerText[i].setText( headers.get( i ) );
+	        headerText[i].setLayoutData( headersGridData );
 	    }
-	    String textInDataField;
-	    isExcluded = new boolean[columns];
 	    
-	    headerText = new Text[columns];
+	    new Label(dataComposite, SWT.NONE).setText( "Values" );
+        GridData valuesGridData = new GridData();
+        valuesGridData.horizontalAlignment = GridData.FILL;
+        valuesGridData.grabExcessHorizontalSpace = true;
+        valuesGridData.grabExcessVerticalSpace = true;
 	    dataText = new Text[columns];
-	    excludeButtons = new Button[columns];
-	    Composite view = new Composite(parent, SWT.BORDER);
-	    view.setLayout( new GridLayout(columns + 1, false) );
-	    
-	    headerLabel = new Label(view, SWT.NONE);
-	    headerLabel.setText( "Name" );
 	    for (int i = 0; i < columns; i++) {
-	        headerText[i] = new Text(view, SWT.READ_ONLY | SWT.BORDER);
-	        if (noPropertiesData)
-	            headerText[i].setText( "No data loaded" );
-	        else
-	            headerText[i].setText( propertiesData.get( i ).get( 0 ) );
-	    }
-	    
-	    dataLable = new Label(view, SWT.NONE);
-	    if (rows > 5) {
-	        dataLable.setText( "First five values" );
-	        rows = 5;
-	    } else {
-	        dataLable.setText( "Values" );
-	    }
-	    for (int i = 0; i < columns; i++) {
-	        dataText[i] = new Text(view, SWT.READ_ONLY | SWT.BORDER | SWT.MULTI);
-	        textInDataField =  "";
-	        for (int j = 1; j < rows; j++) {
-	            if (noPropertiesData)
-	                textInDataField += "n/a\n"; 
-	            else
-	                textInDataField += propertiesData.get( i ).get( j ) + "\n"; 
-	        }
+	        dataText[i] = new Text( dataComposite, SWT.READ_ONLY | SWT.BORDER | SWT.MULTI);
+	        dataText[i].setLayoutData( valuesGridData );
+	        if ( textInDataField.isEmpty() )
+	            for (int j = 1; j < rows; j++) {
+	                textInDataField += propertiesData.get( i ).get( j ) + "\n";
+	            }
 	        dataText[i].setText( textInDataField );
-	    }
+	    }    
 	    
-	    excludeLable = new Label(view, SWT.NONE);
-	    excludeLable.setText( "Exclude" );
+	    new Label(dataComposite, SWT.NONE).setText( "Exclude" );
+	    GridData excludeGridData = new GridData();
+	    excludeGridData.horizontalAlignment = GridData.CENTER;
+	    isExcluded = new boolean[columns];
+	    excludeButtons = new Button[columns];
 	    for (int i = 0; i < columns; i++) {
-	        excludeButtons[i] = new Button(view, SWT.CHECK | SWT.CENTER);
+	        excludeButtons[i] = new Button( dataComposite, SWT.CHECK );
+	        excludeButtons[i].setLayoutData( excludeGridData );
 	        excludeButtons[i].addSelectionListener(new SelectionAdapter() {
 	            public void widgetSelected(SelectionEvent e) {
 	                for (int i = 0; i < excludeButtons.length; i++)
@@ -352,34 +380,42 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	                            excludedProperties.add( propertiesData.get( i ).get( 0 ) );
 	                        else
 	                            excludedProperties.remove( propertiesData.get( i ).get( 0 ) );
-	                
+
 	                updateComponents();
 	            }
 	        });
 	    }
+	       
+	    if ( txtCombo != null ) {
+	        txtCombo.removeAll();
+	        for (int i = 0; i < headers.size(); i++)
+	            txtCombo.add( headers.get( i ) );
+	    }
 	    
-//	    view.pack();
-//	    updateComponents();
-	    
-	    return view;
+	    dataComposite.pack();
+	    dataFrame.update();
+	    dataFrame.redraw();
 	}
 	
-	private void updateDataCompocite() {
-	    for (int i = 0; i < columns; i++) {
-            if (propertiesData.isEmpty())
-                headerText[i].setText( "No data loaded" );
-            else
-                headerText[i].setText( headers.get( i ) );
-        }
-	}
-	
+	/**
+	 * This method creates the component containing the two radio-buttons that 
+	 * are used to choose how to add the properties to the sd-file.
+	 * 
+	 * @param parent The parent composite, i.e. mainComposite 
+	 * @return A composite containing the two radio-buttons mention above
+	 */
 	private Composite settingsComposite(Composite parent) {
+        GridData gridData = new GridData();
+        gridData.grabExcessHorizontalSpace = true;
+        gridData.grabExcessVerticalSpace = true;
 	    Composite view = new Composite(parent, SWT.NONE);
 	    view.setLayout( new GridLayout(1, true) );
+	    view.setLayoutData( gridData );
+	    
 	    decideOrder = new Button[2];
 	    
 	    decideOrder[0] = new Button(view, SWT.RADIO);
-	    decideOrder[0].setText("The order is the data file as in the SDF file");
+	    decideOrder[0].setText("The order of the data file is as in the SDF file");
 	    decideOrder[0].setSelection( true );
 	    
 	    Composite rbComposite = new Composite(view, SWT.NONE);
@@ -389,8 +425,8 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         decideOrder[1].setText("Link data by column ");
         decideOrder[1].setSelection( false );
 	    txtCombo = new Combo(rbComposite, SWT.DROP_DOWN | SWT.BORDER);
-	    for (int i = 0; i < propertiesData.size(); i++)
-	        txtCombo.add( propertiesData.get( i ).get( 0 ) );
+	    for (int i = 0; i < headers.size(); i++)
+	        txtCombo.add( headers.get( i ) );
 	    new Label(rbComposite, SWT.NONE).setText( " to SDF-property " );
 	    sdfCombo = new Combo(rbComposite, SWT.DROP_DOWN | SWT.BORDER);
 	    sdfPropertyList = fileHandler.getPropertiesFromSDFile();
@@ -402,6 +438,9 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         return view;
 	}
 	
+	/**
+	 * This method update the different components.
+	 */
 	private void updateComponents() {
 	    for (int i = 0; i < columns; i++) {
             isExcluded[i] = excludeButtons[i].getSelection();
@@ -414,7 +453,6 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	    else {
 	        fromFileTxt.setText( "" );//"Add the file with the properties data here" );
 	    }
-//	    fromFileTxt.setSize( 300, 15 );
 	    
 	    if (fileHandler.sdFileExists())
 	        toFileTxt.setText( fileHandler.getSDFilePath() );
@@ -422,17 +460,10 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	        toFileTxt.setText( "" );//"Add the SD-file here" ); 
 	    }
 	    
-//	    updatePropertiesData();
-	    if (fileHandler.dataFileExists()) {
-	        txtCombo.removeAll();
-	        for (int i = 0; i < headers.size(); i++)
-	            if (!isExcluded[i])
-	                txtCombo.add( headers.get( i ) );
-	    }
 	    sdfCombo.removeAll();
 	    for (int i = 0; i < propertiesData.size(); i++)
 	        sdfCombo.add( propertiesData.get( i ).get( 0 ) );
-
+	    
 	    mainComposite.redraw();
 	    mainComposite.update();
 	}
