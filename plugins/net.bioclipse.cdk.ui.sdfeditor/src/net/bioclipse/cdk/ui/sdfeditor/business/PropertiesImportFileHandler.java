@@ -16,6 +16,7 @@ public class PropertiesImportFileHandler {
     private ArrayList<String> propertiesID;
     private ArrayList<String> sdFilePropertiesID;
     private ArrayList<ArrayList<String>> topValues;
+    private boolean topRowContainsPropName;
     // The number of rows read in to topValues at initiation 
     private final static int ROWS_IN_TOPVALUES = 5;
     
@@ -26,6 +27,7 @@ public class PropertiesImportFileHandler {
         propertiesID = new ArrayList<String>();
         sdFilePropertiesID = new ArrayList<String>();
         topValues = new ArrayList<ArrayList<String>>();
+        topRowContainsPropName = true;
     }
     
     /**
@@ -49,6 +51,7 @@ public class PropertiesImportFileHandler {
      */
     public void setSDFile(IFile sdFile) throws FileNotFoundException {
         this.sdFile = sdFile;
+        sdFilePropertiesID.clear();
         extractSDFProerties();
     }
     
@@ -143,6 +146,8 @@ public class PropertiesImportFileHandler {
      */
     public void setDataFile(IFile dataFile) throws FileNotFoundException {
         this.dataFile = dataFile;
+        propertiesID.clear();
+        topValues.clear();
         readProperiesFile( 0, ROWS_IN_TOPVALUES );
     }
     
@@ -199,7 +204,7 @@ public class PropertiesImportFileHandler {
             return topValues;
         ArrayList<ArrayList<String>> temp = new ArrayList<ArrayList<String>>();
         ArrayList<String> temp2;
-        if (numberOfRows > rows) {
+        if (numberOfRows < rows) {
             for (int j = 0; j < topValues.size(); j++) {
                 temp2 = new ArrayList<String>();                
                 for (int i = 0; i < topValues.get( j ).size(); i++) {
@@ -215,7 +220,9 @@ public class PropertiesImportFileHandler {
     }
     
     /**
-     * This method reads the data file.
+     * This method reads the data file. It assumes that the top row contatins
+     * the names of the properties, If not: After loading the file use the 
+     * method "propertiesNameInDataFile(boolean)".
      *  
      * @param startRow The row to start read from
      * @param endRow The last row to read
@@ -249,19 +256,29 @@ public class PropertiesImportFileHandler {
                 fileScanner.next();
                 row++;
             }
-            
+
             column = 0;
             line = fileScanner.nextLine();
             lineScanner = new Scanner(line);
             lineScanner.useDelimiter("\t"); // Separated by a tab...
             while (lineScanner.hasNext()) {
                 element = lineScanner.next();
-                if (row == 0) {
-                    propertiesID.add( element );
-                } else {   
+                if (topRowContainsPropName) {
+                    if (row == 0) {
+                        propertiesID.add( element );
+                    } else {   
+                        /* If we are reading the first row with data then we create a new ArrayList
+                         *  for each column*/
+                        if (row == 1) {
+                            columns = new ArrayList<String>();
+                            topValues.add( columns );
+                        }
+                        topValues.get( column ).add( element );
+                    }
+                } else {
                     /* If we are reading the first row with data then we create a new ArrayList
                      *  for each column*/
-                    if (row == 1) {
+                    if (row == 0) {
                         columns = new ArrayList<String>();
                         topValues.add( columns );
                     }
@@ -272,7 +289,7 @@ public class PropertiesImportFileHandler {
             row++;
         }
     }
-    
+
     public void meargeFiles() throws FileNotFoundException {
         /* In this case we don't want to remove any properties, so lets send in 
          * an empty ArrayList */
@@ -287,4 +304,46 @@ public class PropertiesImportFileHandler {
                 " does not support this operation yet");
     }
     
+    /**
+     * Use this method to tell the file-handler if the top row of the data file 
+     * contains the names of the properties.
+     * 
+     * @param exists True if the top row contains the properties names
+     */
+    public void propertiesNameInDataFile(boolean exists) {
+        topRowContainsPropName = exists;
+        updatePropertiesLists();
+    }
+    
+    /**
+     * Use this to check whether the top row of the data file is said to 
+     * contain the name of the properties.
+     * 
+     * @return True if the top row is the name of the properties
+     */
+    public boolean isPropertiesNameInDataFile() {
+        return topRowContainsPropName;
+    }
+
+    /**
+     * This method add the top row of topValues to propertiesID (if 
+     * topRowContainsPropName is true) or add the propertiesID to the top row of
+     * the topValues (if topRowContainsPropName is false).
+     */
+    private void updatePropertiesLists() {
+        if(topRowContainsPropName) {
+            // Add the top row of topValues to propertiesID
+            propertiesID.clear();
+            for (int i = 0; i < topValues.size(); i++) {
+                propertiesID.add( topValues.get( i ).remove( 0 ) );
+            }
+        } else {
+            // Add the propertiesID to the top row of the topValues
+            int elements = propertiesID.size();
+            for (int i = 0; i < elements; i++) {
+                // Zero 'cos we remove the element... 
+                topValues.get( i ).add( 0, propertiesID.remove( 0 ) );
+            }
+        }
+    }
 }

@@ -315,26 +315,40 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	private void updateDataCompocite() {
 	    int rows;
 	    String textInDataField = "";
-	    // TODO Adapt to the new combo-box
-        if (fileHandler.dataFileExists()) {
-            headers = fileHandler.getPropertiesIDFromDataFile();
-            try {
-                propertiesData = fileHandler.getTopValuesFromDataFile( 5 );
-            } catch ( FileNotFoundException e ) {
-                e.printStackTrace();
+	    if (fileHandler.dataFileExists()) {
+	        try {
+	            propertiesData = fileHandler.getTopValuesFromDataFile( 5 );
+	        } catch ( FileNotFoundException e ) {
+	            e.printStackTrace();
+	        }
+	        columns = propertiesData.size();
+	        rows = propertiesData.get( 0 ).size();
+	        if (headerCombo == null || !noPropName.getSelection() ) {       
+	            headers = fileHandler.getPropertiesIDFromDataFile();            
+	        } else {
+	            if (headers == null)
+	                headers = new ArrayList<String>();
+	            for ( int i = 0; i < columns; i++ )
+	                headers.add( "" );
+	        }
+
+	    }
+	    else {
+	        columns = 3;
+	        rows = 3;
+            if (headers == null)
+                headers = new ArrayList<String>();
+	        if (headerCombo == null || !noPropName.getSelection() ) {
+	            headers.add( "N/A" );
+	            headers.add( "N/A" );
+	            headers.add( "N/A" );
+	            textInDataField = "n/a\nn/a\nn/a\nn/a\nn/a";
+	        } else {
+                for ( int i = 0; i < columns; i++ )
+                    headers.add( "" );
             }
-            columns = headers.size();
-            rows = propertiesData.get( 0 ).size();
-        }
-        else {
-            columns = 3;
-            rows = 3;
-            headers = new ArrayList<String>();
-            headers.add( "N/A" );
-            headers.add( "N/A" );
-            headers.add( "N/A" );
-            textInDataField = "n/a\nn/a\nn/a\nn/a\nn/a";
-        }
+	    }
+
         if (dataComposite != null)
             dataComposite.dispose();
         dataComposite = new Composite( dataFrame, SWT.NONE );
@@ -350,14 +364,51 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         for (int i = 0; i < columns; i++) {
             if (noPropName != null && noPropName.getSelection()) {
                 headerCombo[i] = new Combo( dataComposite, SWT.DROP_DOWN | SWT.BORDER);
-                // TODO Add listerner
+                headerCombo[i].addSelectionListener( new SelectionListener() {
+                    
+                    @Override
+                    public void widgetSelected( SelectionEvent e ) {
+                        for (int i = 0; i < columns; i++)
+                            if (e.equals( headerCombo[i] ) )
+                                headers.set( i, headerCombo[i].getItem( i ) );
+                    }
+                    
+                    @Override
+                    public void widgetDefaultSelected( SelectionEvent e ) {
+                        for (int i = 0; i < columns; i++)
+                            if (e.equals( headerCombo[i] ) )
+                                headers.set( i, headerCombo[i].getItem( i ) );
+                    }
+                } );
+
                 if (sdfPropertyList != null && sdfPropertyList.size() > 0) {
                     for (int j = 0; j < sdfPropertyList.size(); j++)
                         headerCombo[i].add( sdfPropertyList.get( j ) );
-                }               
+                    if ( columns >= sdfPropertyList.size() ) {
+                        headerCombo[i].select( i );
+                        headers.add( headerCombo[i].getItem( i ) );
+                    } else {
+                        headerCombo[i].select( 0 );
+                        headers.add( headerCombo[i].getItem( 0 ) );
+                    }
+                } else {
+                    // TODO REMOVE! 'cos this is only for testing...
+                    headers.clear();
+                    headers.add( "One" );
+                    headers.add( "Two" );
+                    headers.add( "Three" );
+                    headerCombo[i].clearSelection();
+                    headerCombo[i].add( "One" );
+                    headerCombo[i].add( "Two" );
+                    headerCombo[i].add( "Three" );
+                    headerCombo[i].select( 0 );
+                }
             } else {
                 headerText[i] = new Text( dataComposite, SWT.READ_ONLY | SWT.BORDER );
-                headerText[i].setText( headers.get( i ) );
+                if ( i < headers.size() )
+                    headerText[i].setText( headers.get( i ) );
+                else
+                    headerText[i].setText( "" );
                 headerText[i].setLayoutData( headersGridData );
             }
         }
@@ -373,10 +424,12 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	        dataText[i] = new Text( dataComposite, SWT.READ_ONLY | SWT.BORDER | SWT.MULTI);
 	        dataText[i].setLayoutData( valuesGridData );
 	        if ( textInDataField.isEmpty() )
-	            for (int j = 1; j < rows; j++) {
+	            for (int j = 0; j < rows; j++) {
 	                textInDataField += propertiesData.get( i ).get( j ) + "\n";
 	            }
 	        dataText[i].setText( textInDataField );
+	        if ( fileHandler.dataFileExists() )
+	            textInDataField = "";
 	    }    
 	    
 	    new Label(dataComposite, SWT.NONE).setText( "Exclude" );
@@ -405,6 +458,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	        txtCombo.removeAll();
 	        for (int i = 0; i < headers.size(); i++)
 	            txtCombo.add( headers.get( i ) );
+	        txtCombo.select( 0 );
 	    }
 	    
 	    dataComposite.pack();
@@ -426,21 +480,20 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	    Composite view = new Composite(parent, SWT.NONE);
 	    view.setLayout( new GridLayout(1, true) );
 	    view.setLayoutData( gridData );
-	    
-//	    Composite choosePropName = new Composite(view, SWT.NONE);
-//	    choosePropName.setLayout( new GridLayout(2, false) );
-	    
+	        
 	    noPropName = new Button(view, SWT.CHECK);
 	    noPropName.setText( "There is no properties name in the data file." );
 	    noPropName.addSelectionListener( new SelectionListener() {
             
             @Override
             public void widgetSelected( SelectionEvent e ) {
+                fileHandler.propertiesNameInDataFile( !noPropName.getSelection() );
                 updateDataCompocite();
             }
             
             @Override
             public void widgetDefaultSelected( SelectionEvent e ) {
+                fileHandler.propertiesNameInDataFile( !noPropName.getSelection() );
                 updateDataCompocite();
             }
         } );
@@ -460,6 +513,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	    txtCombo = new Combo(rbComposite, SWT.DROP_DOWN | SWT.BORDER);
 	    for (int i = 0; i < headers.size(); i++)
 	        txtCombo.add( headers.get( i ) );
+	    txtCombo.select( 0 );
 	    new Label(rbComposite, SWT.NONE).setText( " to SDF-property " );
 	    sdfCombo = new Combo(rbComposite, SWT.DROP_DOWN | SWT.BORDER);
 	    sdfPropertyList = fileHandler.getPropertiesFromSDFile();
