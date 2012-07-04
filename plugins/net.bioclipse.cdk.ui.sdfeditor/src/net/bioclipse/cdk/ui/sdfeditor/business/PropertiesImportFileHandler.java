@@ -201,11 +201,11 @@ public class PropertiesImportFileHandler {
         ArrayList<String> temp2;
         if (numberOfRows > rows) {
             for (int j = 0; j < topValues.size(); j++) {
-                temp2 = new ArrayList<String>();
-                temp.add( temp2 );
-                for (int i = 0; i < numberOfRows; i++) {
-                    temp.get( j ).add( topValues.get( j ).get( i ) );
+                temp2 = new ArrayList<String>();                
+                for (int i = 0; i < topValues.get( j ).size(); i++) {
+                    temp2.add( topValues.get( j ).get( i ) );
                 }
+                temp.add( temp2 );
             }
             return temp;
         } else {

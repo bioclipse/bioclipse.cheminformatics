@@ -22,6 +22,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -52,8 +53,10 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	// Components for the data composite
 	private Text[] headerText, dataText;
 	private Button[] excludeButtons;
+	private Combo[] headerCombo;
 	
 	// Components for the settings composite
+	private Button noPropName;
 	private Button[] decideOrder;
 	private Combo txtCombo, sdfCombo;
 	
@@ -76,6 +79,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 		setDescription("Import properties to a SDF-file from a txt-file."); 
 		init(selection);
 	}
+	
 	/**
 	 * A constructor to use if there's no file selected.
 	 * 
@@ -310,8 +314,8 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	 */
 	private void updateDataCompocite() {
 	    int rows;
-	    String textInDataField =  "";
-
+	    String textInDataField = "";
+	    // TODO Adapt to the new combo-box
         if (fileHandler.dataFileExists()) {
             headers = fileHandler.getPropertiesIDFromDataFile();
             try {
@@ -341,12 +345,22 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         headersGridData.horizontalAlignment = GridData.FILL;
         headersGridData.grabExcessHorizontalSpace = true;
         headersGridData.grabExcessVerticalSpace = true;
-        headerText = new Text[columns]; 
-	    for (int i = 0; i < columns; i++) {
-	        headerText[i] = new Text( dataComposite, SWT.READ_ONLY | SWT.BORDER );
-	        headerText[i].setText( headers.get( i ) );
-	        headerText[i].setLayoutData( headersGridData );
-	    }
+        headerText = new Text[columns];
+        headerCombo = new Combo[columns];
+        for (int i = 0; i < columns; i++) {
+            if (noPropName != null && noPropName.getSelection()) {
+                headerCombo[i] = new Combo( dataComposite, SWT.DROP_DOWN | SWT.BORDER);
+                // TODO Add listerner
+                if (sdfPropertyList != null && sdfPropertyList.size() > 0) {
+                    for (int j = 0; j < sdfPropertyList.size(); j++)
+                        headerCombo[i].add( sdfPropertyList.get( j ) );
+                }               
+            } else {
+                headerText[i] = new Text( dataComposite, SWT.READ_ONLY | SWT.BORDER );
+                headerText[i].setText( headers.get( i ) );
+                headerText[i].setLayoutData( headersGridData );
+            }
+        }
 	    
 	    new Label(dataComposite, SWT.NONE).setText( "Values" );
         GridData valuesGridData = new GridData();
@@ -354,7 +368,8 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         valuesGridData.grabExcessHorizontalSpace = true;
         valuesGridData.grabExcessVerticalSpace = true;
 	    dataText = new Text[columns];
-	    for (int i = 0; i < columns; i++) {
+
+	    for (int i = 0; i < columns; i++) {	
 	        dataText[i] = new Text( dataComposite, SWT.READ_ONLY | SWT.BORDER | SWT.MULTI);
 	        dataText[i].setLayoutData( valuesGridData );
 	        if ( textInDataField.isEmpty() )
@@ -411,6 +426,24 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	    Composite view = new Composite(parent, SWT.NONE);
 	    view.setLayout( new GridLayout(1, true) );
 	    view.setLayoutData( gridData );
+	    
+//	    Composite choosePropName = new Composite(view, SWT.NONE);
+//	    choosePropName.setLayout( new GridLayout(2, false) );
+	    
+	    noPropName = new Button(view, SWT.CHECK);
+	    noPropName.setText( "There is no properties name in the data file." );
+	    noPropName.addSelectionListener( new SelectionListener() {
+            
+            @Override
+            public void widgetSelected( SelectionEvent e ) {
+                updateDataCompocite();
+            }
+            
+            @Override
+            public void widgetDefaultSelected( SelectionEvent e ) {
+                updateDataCompocite();
+            }
+        } );
 	    
 	    decideOrder = new Button[2];
 	    
