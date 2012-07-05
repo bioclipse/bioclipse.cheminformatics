@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
@@ -41,10 +42,12 @@ import org.openscience.cdk.io.formats.SDFFormat;
  */
 public class SDFPropertiesImportWizardPage extends WizardPage {
 
+    private Logger logger = Logger.getLogger( this.getClass() );
+    
 	// An array to exclude data columns
 	private boolean[] isExcluded;
 	
-	private Composite mainComposite, dataComposite, dataFrame;
+	private Composite mainComposite, dataComposite, dataFrame, settingsComposite;
 	
 	// Components for the file composite
 	private Text fromFileTxt, toFileTxt;
@@ -104,7 +107,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 		
 		getFileComposit( mainComposite );
 		createDataComposite( mainComposite );
-		settingsComposite( mainComposite );
+		settingsComposite = settingsComposite( mainComposite );
 		updateComponents();
 		mainComposite.pack();
 		setControl( mainComposite );
@@ -175,8 +178,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                     fileHandler.setSDFile( file );
                     sdfPropertyList = fileHandler.getPropertiesFromSDFile();
                 } catch ( FileNotFoundException e1 ) {
-                    // TODO Add a log entry
-                    e1.printStackTrace();
+                    logger.error( e1 );
                 }
                 updateComponents();
             }
@@ -249,8 +251,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 				    try {
                         fileHandler.setSDFile( file );
                     } catch ( FileNotFoundException e ) {
-                        // TODO Add a log entry
-                        e.printStackTrace();
+                        logger.error( e );
                     }
 
 				} else { //if (extention.toLowerCase().equals(".txt")) {
@@ -274,15 +275,13 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
             IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
             fileHandler.setDataFile( file );
         } catch ( FileNotFoundException e1 ) {
-            // TODO Add a log entry
-            e1.printStackTrace();
+            logger.error( e1 );
         }
 	    headers = fileHandler.getPropertiesIDFromDataFile();
 	    try {
             propertiesData = fileHandler.getTopValuesFromDataFile( 5 );
         } catch ( FileNotFoundException e ) {
-            // TODO Add a log entry or what to do if this happens?
-            e.printStackTrace();
+            logger.error( e );
         }
 	    
 	    updateDataCompocite();
@@ -423,7 +422,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	    for (int i = 0; i < columns; i++) {	
 	        dataText[i] = new Text( dataComposite, SWT.READ_ONLY | SWT.BORDER | SWT.MULTI);
 	        dataText[i].setLayoutData( valuesGridData );
-	        if ( textInDataField.isEmpty() )
+	        if ( textInDataField.isEmpty() && fileHandler.dataFileExists() )
 	            for (int j = 0; j < rows; j++) {
 	                textInDataField += propertiesData.get( i ).get( j ) + "\n";
 	            }
@@ -548,9 +547,12 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 	    }
 	    
 	    sdfCombo.removeAll();
-	    for (int i = 0; i < propertiesData.size(); i++)
-	        sdfCombo.add( propertiesData.get( i ).get( 0 ) );
+	    for (int i = 0; i < sdfPropertyList.size(); i++)
+	        sdfCombo.add( sdfPropertyList.get( i ) );
+	    sdfCombo.select( 0 );
+	    sdfCombo.pack();
 	    
+	    settingsComposite.pack();
 	    mainComposite.redraw();
 	    mainComposite.update();
 	}
