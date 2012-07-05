@@ -76,7 +76,7 @@ public class PropertiesImportFileHandler {
          * - The method for adding properties isn't implemented get
          * - The method for saving SDFiles isn't implemented get
          * - The method for getting properties just returns an empty collection,
-         *      i.e. it's not implemented...*/
+         *      I tried to implement the function, but I didn't succeeded... */
 //        if (!sdFile.exists() || sdFile == null)
 //            throw new FileNotFoundException ("Can't find the sd-file.");
 //        MoleculesFromSDF molFrSDF = new MoleculesFromSDF(sdFile);
@@ -86,35 +86,13 @@ public class PropertiesImportFileHandler {
 //        while ( propItr.hasNext() ) 
 //            sdFilePropertiesID.add( propItr.next().toString() );
         
-        /* Or it might be better to use the IteratingMDLReader in CDK...*/       
+        /* This use the IteratingMDLReader in CDK and works*/       
         IteratingMDLReader sdfItr = new IteratingMDLReader( getSDFileContents(), DefaultChemObjectBuilder.getInstance() );
         Map<Object, Object> propertiesMap = sdfItr.next().getProperties();
         Set<Object> propSet = propertiesMap.keySet();
         Iterator<Object> propSetItr = propSet.iterator();
         while (propSetItr.hasNext())
             sdFilePropertiesID.add( propSetItr.next().toString() );
-        
-//        int startPtr, endPtr;
-//        String nextLine, propName, endMolSequence = "$$$$";      
-//        Scanner fileScanner = new Scanner(getSDFileContents());
-//        
-//        while (fileScanner.hasNextLine()) {
-//            nextLine = fileScanner.nextLine();
-//            // Let's just read the properties of the first molecule.
-//            if (nextLine.startsWith( endMolSequence ))
-//                break;
-//            if (nextLine.startsWith( "\u003E" )) {
-//                // We have fond a line with a property
-//                //Lets remove the first ">"
-//                nextLine = nextLine.substring( 1 );
-//                startPtr = nextLine.indexOf( '\u003C' ) + 1;
-//                endPtr = nextLine.indexOf( '\u003E' ) - 1;
-//                propName = nextLine.substring( startPtr, endPtr );
-//                if (!sdFilePropertiesID.contains( propName ))
-//                    sdFilePropertiesID.add( propName );
-//            }
-//                
-//        }
     }
     
     /**
