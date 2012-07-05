@@ -7,6 +7,7 @@
  *******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -29,9 +30,16 @@ public class SDFPropertiesImportWizard extends Wizard implements IImportWizard {
 	public SDFPropertiesImportWizard() {
 	    super();
 	    setWindowTitle("SDF Properties Import Wizard");
-	    mainPage = new SDFPropertiesImportWizardPage("Import File", selection);
-//	    mainPage.init( selection );
+	    mainPage = new SDFPropertiesImportWizardPage("Import File", null);
 	}
+	
+	   public SDFPropertiesImportWizard(IStructuredSelection ssel) {
+	        super();
+	        selection = ssel;
+	        setWindowTitle("SDF Properties Import Wizard");
+	        mainPage = new SDFPropertiesImportWizardPage("Import File", selection);
+//	      mainPage.init( selection );
+	    }
 	
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {

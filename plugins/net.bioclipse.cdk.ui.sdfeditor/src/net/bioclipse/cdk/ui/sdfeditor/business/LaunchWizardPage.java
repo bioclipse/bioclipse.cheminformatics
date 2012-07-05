@@ -1,5 +1,13 @@
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.cdk.business.ICDKManager;
+import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.core.business.BioclipseException;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -15,12 +23,14 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.io.SDFWriter;
 
 
 public class LaunchWizardPage extends AbstractHandler implements IHandler{
 
     private ISelection selection;
-    
+    private IStructuredSelection ssel;
     
     public LaunchWizardPage() {
     }
@@ -28,8 +38,13 @@ public class LaunchWizardPage extends AbstractHandler implements IHandler{
     @Override
     public Object execute( ExecutionEvent event ) throws ExecutionException {
     
-    
-        SDFPropertiesImportWizard wizard = new SDFPropertiesImportWizard();
+        selection = HandlerUtil.getActiveMenuSelection( event );
+        if ( selection instanceof IStructuredSelection ) {
+            ssel = (IStructuredSelection) selection;
+//            System.out.println("Selected: " + ssel.getFirstElement());
+        }
+
+        SDFPropertiesImportWizard wizard = new SDFPropertiesImportWizard(ssel);
         WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
         dialog.open();
         return null;

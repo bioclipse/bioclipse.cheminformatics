@@ -1,8 +1,10 @@
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,11 +14,16 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.logging.FileHandler;
 
+import net.bioclipse.cdk.business.Activator;
+import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.model.MoleculesFromSDF;
+import net.bioclipse.core.business.BioclipseException;
 
 import org.eclipse.core.resources.IFile;
 import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.io.SDFWriter;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
 
 public class PropertiesImportFileHandler {
@@ -105,7 +112,12 @@ public class PropertiesImportFileHandler {
         try {
             return new FileInputStream(new File(path));
         } catch (FileNotFoundException e) {
-            return null;
+            path = sdFile.getLocation().toOSString();
+            try {
+                return new FileInputStream(new File(path));
+            } catch ( FileNotFoundException e1 ) {
+                return null;
+            }
         }
     }
     
@@ -167,7 +179,12 @@ public class PropertiesImportFileHandler {
         try {
             return new FileInputStream(new File(path));
         } catch (FileNotFoundException e) {
-            return null;
+            path = dataFile.getLocation().toOSString();
+            try {
+                return new FileInputStream(new File(path));
+            } catch ( FileNotFoundException e1 ) {
+                return null;
+            }
         }
     }
     
@@ -302,8 +319,30 @@ public class PropertiesImportFileHandler {
         if (!sdFile.exists() || !dataFile.exists())
                 throw new FileNotFoundException ("Can't find one or both files...");
        //TODO Write it... But for this it would be nice if I could use MoleculesFromSDF here...
+        // A hint of how to write to the file, see also notes...
+//        ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
+//        try {
+//            ICDKMolecule mol = cdk.fromSMILES( "cccc" );
+//            mol.getAtomContainer().setProperty( "wee", "how" );
+//            ByteArrayOutputStream out= new ByteArrayOutputStream();
+//            SDFWriter writer = new SDFWriter( out );
+//            writer.write( mol.getAtomContainer() );
+//            writer.close();
+//            System.out.println(out.toString());
+//            
+//            
+//        } catch ( BioclipseException e ) {
+//            e.printStackTrace();
+//        } catch ( CDKException e ) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } catch ( IOException e ) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
         throw new UnsupportedOperationException(this.getClass().getName()+
                 " does not support this operation yet");
+
     }
     
     /**

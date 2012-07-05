@@ -247,7 +247,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 			item = itr.next();
 			if (item instanceof IFile) {
 				file = (IFile) item;
-				if (file instanceof SDFFormat) {
+				if (file.getFileExtension().toLowerCase().equals( "sdf" ) || file.getFileExtension().toLowerCase().equals( "sd" ) ) {
 				    try {
                         fileHandler.setSDFile( file );
                     } catch ( FileNotFoundException e ) {
@@ -257,7 +257,12 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 				} else { //if (extention.toLowerCase().equals(".txt")) {
 				    /* FIXME Here I just assumes that if it's not an sdf-file then its 
 				     * the txt-file with properties, that is probably not good...*/
-				    updatePropertiesData(file.getFullPath().toOSString());
+//				    updatePropertiesData(file.getFullPath().toOSString());
+				    try {
+                        fileHandler.setDataFile( file );
+                    } catch ( FileNotFoundException e ) {
+                        logger.error( e );
+                    }
 				} 
 			}
 		}
