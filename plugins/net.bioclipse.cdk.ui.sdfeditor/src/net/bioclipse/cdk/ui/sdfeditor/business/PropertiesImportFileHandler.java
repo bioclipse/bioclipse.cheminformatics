@@ -1,39 +1,28 @@
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.logging.FileHandler;
-
-import net.bioclipse.cdk.business.Activator;
-import net.bioclipse.cdk.business.ICDKManager;
-import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.ui.model.MoleculesFromSDF;
-import net.bioclipse.core.business.BioclipseException;
 
 import org.eclipse.core.resources.IFile;
 import org.openscience.cdk.DefaultChemObjectBuilder;
-import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.io.SDFWriter;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
 
 public class PropertiesImportFileHandler {
 
     private IFile sdFile;
     private IFile dataFile;
-    private ArrayList<String> propertiesID;
+    private ArrayList<String> propertiesID, choosenPropID;
     private ArrayList<String> sdFilePropertiesID;
     private ArrayList<ArrayList<String>> topValues;
-    private boolean topRowContainsPropName;
+    private boolean topRowContainsPropName, propLinkedBy;
+    private String dataFileLink, sdFileLink;
     // The number of rows read in to topValues at initiation 
     private final static int ROWS_IN_TOPVALUES = 5;
     
@@ -42,9 +31,13 @@ public class PropertiesImportFileHandler {
      */
     public PropertiesImportFileHandler() { 
         propertiesID = new ArrayList<String>();
+        choosenPropID = new ArrayList<String>();
         sdFilePropertiesID = new ArrayList<String>();
         topValues = new ArrayList<ArrayList<String>>();
         topRowContainsPropName = true;
+        sdFileLink = "";
+        dataFileLink = "";
+        propLinkedBy = false;
     }
     
     /**
@@ -98,6 +91,7 @@ public class PropertiesImportFileHandler {
         Map<Object, Object> propertiesMap = sdfItr.next().getProperties();
         Set<Object> propSet = propertiesMap.keySet();
         Iterator<Object> propSetItr = propSet.iterator();
+        sdFilePropertiesID.clear();
         while (propSetItr.hasNext())
             sdFilePropertiesID.add( propSetItr.next().toString() );
     }
@@ -217,8 +211,11 @@ public class PropertiesImportFileHandler {
     public ArrayList<ArrayList<String>> getTopValuesFromDataFile(int numberOfRows) throws FileNotFoundException {
         if (topValues.isEmpty() || topValues.get( 0 ).isEmpty())
             return new ArrayList<ArrayList<String>>();
-        
-        int rows = topValues.get( 0 ).size();
+        int rows;
+        if (topRowContainsPropName)
+            rows = topValues.get( 0 ).size() + 1;
+        else
+            rows = topValues.get( 0 ).size();
         if (numberOfRows == rows)
             return topValues;
         ArrayList<ArrayList<String>> temp = new ArrayList<ArrayList<String>>();
@@ -265,6 +262,9 @@ public class PropertiesImportFileHandler {
             return;
         if (endRow < ROWS_IN_TOPVALUES)
             endRow = ROWS_IN_TOPVALUES;
+        propertiesID.clear();
+        topValues.clear();
+        
         Scanner fileScanner = new Scanner(getDataFileContents());
         Scanner lineScanner;
         ArrayList<String> columns;
@@ -380,11 +380,52 @@ public class PropertiesImportFileHandler {
             }
         } else {
             // Add the propertiesID to the top row of the topValues
-            int elements = propertiesID.size();
+            int elements = topValues.size();
             for (int i = 0; i < elements; i++) {
                 // Zero 'cos we remove the element... 
                 topValues.get( i ).add( 0, propertiesID.remove( 0 ) );
+                if (choosenPropID.size() == i)
+                    choosenPropID.add( i, "" );
             }
         }
+    }
+    
+    /**
+     * This method sets how to add the data in the data file to the sd-file.
+     * 
+     * @param linkedBy Set to true if the properties should be add by linking
+     * @param dataFileProp The property in the data file used in the linking
+     * @param sdFileProp The property in the sd-file used in the linking
+     */
+    public void setLinkProperties(boolean linkedBy, String dataFileProp, String sdFileProp) {
+        if (linkedBy) {
+            propLinkedBy = linkedBy;
+            dataFileLink = dataFileProp;
+            sdFileLink = sdFileProp;
+        } else {
+            propLinkedBy = linkedBy;
+            dataFileLink = "";
+            sdFileLink = "";
+        }
+        System.out.println("propLinkedBy: "+propLinkedBy);
+        System.out.println("dataFileLink: "+dataFileLink);
+        System.out.println("sdFileLink: "+sdFileLink+"\n");
+    }
+    
+    public void setdataFileLink(String dataFileProp) {
+        dataFileLink = dataFileProp;
+        System.out.println("dataFileLink: "+dataFileLink+"\n");
+    }
+    
+    public void setsdFileLink(String sdFileProp) {
+        sdFileLink = sdFileProp;
+        System.out.println("sdFileLink: "+sdFileLink+"\n");
+    }
+    
+    public void addChoosenPropID(int index, String propName) {
+        choosenPropID.add( index, propName );
+        for (int i = 0; i < choosenPropID.size(); i++)
+            System.out.print( choosenPropID.get( i ) + ", " );
+        System.out.println();
     }
 }
