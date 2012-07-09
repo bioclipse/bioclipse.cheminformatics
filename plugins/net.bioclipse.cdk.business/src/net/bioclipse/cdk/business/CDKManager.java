@@ -2022,7 +2022,7 @@ public class CDKManager implements IBioclipseManager {
               throw new IOException("Input was not ready to be read.");
           }
           List<ICDKMolecule> molecules = new ArrayList<ICDKMolecule>();
-          DeduceBondSystemTool bondSystemTool = new DeduceBondSystemTool();
+          FixBondOrdersTool bondOrderTool = new FixBondOrdersTool();
           List<String> lines = new LinkedList<String>();
           for ( String line = breader.readLine() ; 
                 line != null ; 
@@ -2115,7 +2115,7 @@ public class CDKManager implements IBioclipseManager {
                   
                   try {
                       org.openscience.cdk.interfaces.IMolecule newAC 
-                          = bondSystemTool.fixAromaticBondOrders(
+                          = bondOrderTool.kekuliseAromaticRings(
                               (org.openscience.cdk.interfaces.IMolecule)
                               mol.getAtomContainer() );
                       mol = new CDKMolecule(newAC);
