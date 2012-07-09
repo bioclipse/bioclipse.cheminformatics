@@ -19,6 +19,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -48,8 +51,8 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
     private boolean[] isExcluded;
     private boolean dataFileIncludeName =  true;
 
-    private Composite mainComposite, dataComposite, dataFrame, settingsComposite;
-
+    private Composite mainComposite, dataComposite, settingsComposite;
+    private ScrolledComposite dataFrame;
     // Components for the file composite
     private Text fromFileTxt, toFileTxt;
     private Button fromFileButton, toFileButton;
@@ -194,7 +197,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
      */
     @Override
     public boolean canFlipToNextPage() {
-        return (fileHandler.sdFileExists() && fileHandler.dataFileExists());
+        return isPageComplete();
     }
 
     /**
@@ -212,7 +215,8 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
      */
     protected void updatePageComplite() {    
         String message = "";
-        boolean complete = true;
+        boolean complete = true, headersFilledIn = true;
+        int unFilledHeaders = 0;
         if (fromFileTxt.getText().isEmpty()) {
             complete = false;
             message = "Please add the file with the proerties";
@@ -224,6 +228,19 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                 message = "Please add the sd-file";
             complete = false;
         }
+        if (!dataFileIncludeName) {
+            for (int i = 0; i < headerCombo.length; i++) {
+                if (headerCombo[i].getText().isEmpty() && headerCombo[i].isEnabled() ) {
+                    headersFilledIn = false;
+                    unFilledHeaders++;
+                }
+            }
+            if ( !headersFilledIn && message.isEmpty() ) {
+                message = "Please fill in the " + unFilledHeaders + " missing properties names.";
+                complete = false;
+            }
+        }
+          
         if (!complete)
             setErrorMessage(message);
         else
@@ -304,12 +321,13 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         GridData headerGridData = new GridData();
         headerGridData.horizontalAlignment = GridData.FILL;
         headerGridData.grabExcessHorizontalSpace = true;
-        dataFrame = new Composite( parent, SWT.BORDER );
+        
+        dataFrame = new ScrolledComposite( parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL );
         dataFrame.setLayout( new GridLayout( 1, true ) );
         dataFrame.setLayoutData( headerGridData );
-
+        
         updateDataCompocite();
-
+        
         return dataFrame;
     }
 
@@ -327,7 +345,6 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
             } catch ( FileNotFoundException e ) {
                 rows = 0;
                 columns = 0;
-                System.out.println("dfajs");
                 e.printStackTrace();
             }
 
@@ -361,7 +378,8 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
             dataComposite.dispose();
         dataComposite = new Composite( dataFrame, SWT.NONE );
         dataComposite.setLayout( new GridLayout( columns + 1, true ) );
-
+        dataFrame.setContent( dataComposite );
+        
         new Label(dataComposite, SWT.NONE).setText( "Name" );
         GridData headersGridData = new GridData();
         headersGridData.horizontalAlignment = GridData.FILL;
@@ -379,10 +397,24 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                         for (int i = 0; i < columns; i++)
                             if (e.equals( headerCombo[i] ) )
                                 headers.set( i, headerCombo[i].getItem( i ) );
+                        updatePageComplite();
                     }
 
                     @Override
                     public void widgetDefaultSelected( SelectionEvent e ) {  }
+                } );
+                headerCombo[i].addKeyListener( new KeyListener() {
+                    
+                    @Override
+                    public void keyReleased( KeyEvent e ) {
+                        for (int i = 0; i < columns; i++)
+                            if (e.equals( headerCombo[i] ) )
+                                headers.set( i, headerCombo[i].getText() );
+                        updatePageComplite();                   
+                    }
+                    
+                    @Override
+                    public void keyPressed( KeyEvent e ) {  }
                 } );
                 
                 if (sdfPropertyList != null && sdfPropertyList.size() > 0) {
@@ -560,6 +592,8 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         sdfCombo.select( 0 );
         sdfCombo.pack();
 
+        updatePageComplite();
+        
         settingsComposite.pack();
         mainComposite.redraw();
         mainComposite.update();
@@ -579,6 +613,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                 dataFileIncludeName = false;
                 updateDataCompocite();
             }
+            updatePageComplite();
         }
 
         @Override
