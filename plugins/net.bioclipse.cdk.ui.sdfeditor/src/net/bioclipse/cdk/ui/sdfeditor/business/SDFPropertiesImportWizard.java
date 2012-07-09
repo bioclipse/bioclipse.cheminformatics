@@ -101,6 +101,7 @@ public class SDFPropertiesImportWizard extends Wizard implements IImportWizard {
 	@Override
 	public boolean performFinish() {
 		// TODO Write it...
+	    mainPage.meargeFiles();
 		return true;
 	}
 

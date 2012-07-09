@@ -299,6 +299,8 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         } catch ( FileNotFoundException e1 ) {
             logger.error( e1 );
         }
+        if ( headers == null || !headers.isEmpty() )
+            headers.clear();
         headers = fileHandler.getPropertiesIDFromDataFile();
         try {
             propertiesData = fileHandler.getTopValuesFromDataFile( 5 );
@@ -599,6 +601,25 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         mainComposite.update();
     }
 
+    protected void meargeFiles() {
+        ArrayList<String> names = new ArrayList<String>();
+        if ( dataFileIncludeName ) {
+            for ( int i = 0; i < headerText.length; i++ ) {
+                names.add( headerText[i].getText() );
+            }
+        } else {
+            for ( int i = 0; i < headerCombo.length; i++ ) {
+                names.add( headerCombo[i].getText() );
+            }
+        }
+        try {
+            fileHandler.meargeFiles( excludedProperties, names, dataFileIncludeName );
+        } catch ( FileNotFoundException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    
     SelectionListener propNameListener = new SelectionListener() {
 
         @Override

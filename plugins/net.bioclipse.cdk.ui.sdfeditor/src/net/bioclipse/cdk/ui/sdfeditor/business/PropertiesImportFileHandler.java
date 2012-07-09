@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
 
 public class PropertiesImportFileHandler {
@@ -309,15 +310,38 @@ public class PropertiesImportFileHandler {
         }
     }
 
-    public void meargeFiles() throws FileNotFoundException {
+    public void meargeFiles(ArrayList<String> propertiesName, 
+                            boolean propNameInDataFile) throws FileNotFoundException {
         /* In this case we don't want to remove any properties, so lets send in 
          * an empty ArrayList */
-        meargeFiles( new ArrayList<String>() );
+        meargeFiles( new ArrayList<String>(), propertiesName, propNameInDataFile );
     }
     
-    public void meargeFiles(ArrayList<String> exludedProerties) throws FileNotFoundException {
-        if (!sdFile.exists() || !dataFile.exists())
-                throw new FileNotFoundException ("Can't find one or both files...");
+    public void meargeFiles(ArrayList<String> exludedProerties, 
+                            ArrayList<String> propertiesName, 
+                            boolean propNameInDataFile) throws FileNotFoundException {
+//        if (!sdFile.exists() || !dataFile.exists())
+//                throw new FileNotFoundException ("Can't find one or both files...");
+        
+        ArrayList<ArrayList<String>> properties = readAllData( exludedProerties, propertiesName, propNameInDataFile );
+        
+        IteratingMDLReader sdfItr = new IteratingMDLReader( getSDFileContents(), DefaultChemObjectBuilder.getInstance() );
+        int index = 1;
+        while ( sdfItr.hasNext() ||  index < properties.size() ) {   
+          addPropToMol(sdfItr.next(), properties.get( 0 ), properties.get( index ) );
+          index++;
+        }
+        
+//        System.out.println(properties.size() + "x"+ properties.get( 0 ).size());
+//        Iterator<ArrayList<String>> colItr = properties.iterator();
+//        while ( colItr.hasNext() ) {
+//            Iterator<String> eItr = colItr.next().iterator();
+//            while ( eItr.hasNext() ) {
+//                System.out.print( "<"+ eItr.next() + ">\t" );
+//            }
+//            System.out.println();
+//        }
+        
        //TODO Write it... But for this it would be nice if I could use MoleculesFromSDF here...
         // A hint of how to write to the file, see also notes...
 //        ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
@@ -340,9 +364,45 @@ public class PropertiesImportFileHandler {
 //            // TODO Auto-generated catch block
 //            e.printStackTrace();
 //        }
-        throw new UnsupportedOperationException(this.getClass().getName()+
-                " does not support this operation yet");
+//        throw new UnsupportedOperationException(this.getClass().getName()+
+//                " does not support this operation yet");
 
+    }
+    
+    private void addPropToMol( IChemObject mol, ArrayList<String> propNames,
+                               ArrayList<String> propValues) {
+         Iterator<String> namesItr = propNames.iterator();
+         Iterator<String> valueItr = propValues.iterator();
+         while ( namesItr.hasNext() )
+             mol.setProperty( namesItr.next(), valueItr.next() );
+         
+         System.out.println(mol.getProperties().toString());
+        
+    }
+
+    private ArrayList<ArrayList<String>> readAllData(ArrayList<String> exludedProerties, 
+                                                    ArrayList<String> propertiesName, 
+                                                    boolean propNameInDataFile) {
+        ArrayList<ArrayList<String>> properties = new ArrayList<ArrayList<String>>();
+        Scanner fileScanner = new Scanner( getDataFileContents() );
+        Scanner lineScanner;
+        ArrayList<String> columns;
+        
+        if ( !propNameInDataFile ) { 
+            properties.add( propertiesName );
+        }
+        
+        while ( fileScanner.hasNextLine() ) {
+            columns = new ArrayList<String>();
+            lineScanner = new Scanner( fileScanner.nextLine() );
+            lineScanner.useDelimiter( "\t" ); // Separated by a tab...
+            while ( lineScanner.hasNext() ) {
+                columns.add( lineScanner.next() );
+            }
+            properties.add( columns );
+        }
+        
+        return properties;
     }
     
     /**
