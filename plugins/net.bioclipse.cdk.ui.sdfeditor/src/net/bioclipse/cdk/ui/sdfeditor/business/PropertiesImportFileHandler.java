@@ -318,17 +318,17 @@ public class PropertiesImportFileHandler {
     }
     
     public void meargeFiles(ArrayList<String> exludedProerties, 
-                            ArrayList<String> propertiesName, 
+                            ArrayList<String> propertiesName,
                             boolean propNameInDataFile) throws FileNotFoundException {
 //        if (!sdFile.exists() || !dataFile.exists())
 //                throw new FileNotFoundException ("Can't find one or both files...");
-        
+        System.out.println(exludedProerties.toString());
         ArrayList<ArrayList<String>> properties = readAllData( exludedProerties, propertiesName, propNameInDataFile );
         
         IteratingMDLReader sdfItr = new IteratingMDLReader( getSDFileContents(), DefaultChemObjectBuilder.getInstance() );
         int index = 1;
         while ( sdfItr.hasNext() ||  index < properties.size() ) {   
-          addPropToMol(sdfItr.next(), properties.get( 0 ), properties.get( index ) );
+          addPropToMol(sdfItr.next(), properties.get( 0 ), properties.get( index ), exludedProerties );
           index++;
         }
         
@@ -370,16 +370,31 @@ public class PropertiesImportFileHandler {
     }
     
     private void addPropToMol( IChemObject mol, ArrayList<String> propNames,
-                               ArrayList<String> propValues) {
+                               ArrayList<String> propValues, ArrayList<String> exludedProp) {
          Iterator<String> namesItr = propNames.iterator();
-         Iterator<String> valueItr = propValues.iterator();
-         while ( namesItr.hasNext() )
-             mol.setProperty( namesItr.next(), valueItr.next() );
-         
+         Iterator<String> valueItr = propValues.iterator();         
+         String name = "";
+         while ( namesItr.hasNext() ) {
+             name = namesItr.next();
+             if (!exludedProp.contains( name ) )
+                 mol.setProperty( name, valueItr.next() );
+             else
+                 valueItr.next();
+         }   
          System.out.println(mol.getProperties().toString());
         
     }
 
+//    private void linkPropToMol(IChemObject mol, ArrayList<String> propNames,
+//                               ArrayList<String> propValues) {
+//        Iterator<String> namesItr = propNames.iterator();
+//        Iterator<String> valueItr = propValues.iterator();
+//        while ( namesItr.hasNext() )
+//            if ()
+//            mol.setProperty( namesItr.next(), valueItr.next() );
+//        
+//    }
+    
     private ArrayList<ArrayList<String>> readAllData(ArrayList<String> exludedProerties, 
                                                     ArrayList<String> propertiesName, 
                                                     boolean propNameInDataFile) {
@@ -388,10 +403,10 @@ public class PropertiesImportFileHandler {
         Scanner lineScanner;
         ArrayList<String> columns;
         
-        if ( !propNameInDataFile ) { 
-            properties.add( propertiesName );
-        }
-        
+//        if ( !propNameInDataFile ) { 
+//            properties.add( propertiesName );
+//        }
+        // TODO Don't read the excluded properties
         while ( fileScanner.hasNextLine() ) {
             columns = new ArrayList<String>();
             lineScanner = new Scanner( fileScanner.nextLine() );

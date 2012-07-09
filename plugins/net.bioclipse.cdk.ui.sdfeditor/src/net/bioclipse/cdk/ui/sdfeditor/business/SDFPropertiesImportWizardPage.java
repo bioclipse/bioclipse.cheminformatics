@@ -82,6 +82,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         super(pageName);
         columns = 0;
         propertiesData = new ArrayList<ArrayList<String>>();
+        excludedProperties = new ArrayList<String>();
         setTitle(pageName); //NON-NLS-1
         setDescription("Import properties to a SDF-file from a txt-file."); 
         init(selection);
@@ -98,6 +99,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         setDescription("Import properties to a SDF-file from a txt-file."); 
         columns = 0;
         propertiesData = new ArrayList<ArrayList<String>>();
+        excludedProperties = new ArrayList<String>();
     }
 
     /**
@@ -206,7 +208,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
      * 
      * @return An <code>ArrayList</code> with the excluded properties
      */
-    protected ArrayList<String> getExludedProerties() {
+    protected ArrayList<String> getExcludedProerties() {
         return excludedProperties;
     }
 
@@ -482,11 +484,11 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
             excludeButtons[i].addSelectionListener(new SelectionAdapter() {
                 public void widgetSelected(SelectionEvent e) {
                     for (int i = 0; i < excludeButtons.length; i++)
-                        if ( e.equals( excludeButtons[i] ) )
+                        if ( e.getSource().equals( excludeButtons[i] ) )
                             if (excludeButtons[i].getSelection())
-                                excludedProperties.add( propertiesData.get( i ).get( 0 ) );
+                                excludedProperties.add( headers.get( i ) );
                             else
-                                excludedProperties.remove( propertiesData.get( i ).get( 0 ) );
+                                excludedProperties.remove( headers.get( i ) );
 
                     updateComponents();
                 }
