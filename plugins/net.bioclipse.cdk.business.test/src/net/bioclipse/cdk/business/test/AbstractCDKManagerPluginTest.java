@@ -2065,6 +2065,18 @@ public abstract class AbstractCDKManagerPluginTest {
         Assert.assertTrue(fileContent.contains("V2000"));
     }
 
+    @Test public void testGetMDLMolfileStringFromNotAtomTyped() throws Exception {
+        ICDKMolecule mol = cdk.fromSMILES("O=C(CC)[O-].[Na+]");
+        for (IAtom atom : mol.getAtomContainer().atoms()) {
+        	atom.setAtomTypeName(null);
+        }
+
+        String fileContent = cdk.getMDLMolfileString(mol);
+
+        Assert.assertNotNull(fileContent);
+        Assert.assertTrue(fileContent.contains("V2000"));
+    }
+
     @Test public void testCalculateTanimoto_BitSet_BitSet() throws Exception {
         BitSet b1 = new BitSet(5); b1.set(5); b1.set(4);
         BitSet b3 = new BitSet(5); b3.set(3); b3.set(4);
