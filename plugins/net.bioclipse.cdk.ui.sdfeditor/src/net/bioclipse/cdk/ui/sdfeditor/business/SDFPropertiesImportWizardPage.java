@@ -269,6 +269,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                 if (file.getFileExtension().toLowerCase().equals( "sdf" ) || file.getFileExtension().toLowerCase().equals( "sd" ) ) {
                     try {
                         fileHandler.setSDFile( file );
+                        fileHandler.setPathToNewSDFile( file.getLocation().toOSString() );
                     } catch ( FileNotFoundException e ) {
                         logger.error( e );
                     }
@@ -279,6 +280,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                     //				    updatePropertiesData(file.getFullPath().toOSString());
                     try {
                         fileHandler.setDataFile( file );
+                        fileHandler.setPathToNewSDFile( file.getLocation().toOSString() );
                     } catch ( FileNotFoundException e ) {
                         logger.error( e );
                     }
@@ -620,6 +622,8 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        /* TODO Here I would like to update Bioclipse navigator field, so the 
+         * new file becomes visibly. How do I do that? */
     }
     
     SelectionListener propNameListener = new SelectionListener() {

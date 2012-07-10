@@ -1,8 +1,11 @@
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -12,7 +15,10 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IChemObject;
+import org.openscience.cdk.io.SDFWriter;
+import org.openscience.cdk.io.formats.SDFFormat;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
 
 public class PropertiesImportFileHandler {
@@ -23,7 +29,7 @@ public class PropertiesImportFileHandler {
     private ArrayList<String> sdFilePropertiesID;
     private ArrayList<ArrayList<String>> topValues;
     private boolean topRowContainsPropName, propLinkedBy;
-    private String dataFileLink, sdFileLink;
+    private String dataFileLink, sdFileLink, newSDFilePath;
     // The number of rows read in to topValues at initiation 
     private final static int ROWS_IN_TOPVALUES = 5;
     
@@ -322,10 +328,24 @@ public class PropertiesImportFileHandler {
                             boolean propNameInDataFile) throws FileNotFoundException {
 //        if (!sdFile.exists() || !dataFile.exists())
 //                throw new FileNotFoundException ("Can't find one or both files...");
-        System.out.println(exludedProerties.toString());
+//        System.out.println(exludedProerties.toString());
         ArrayList<ArrayList<String>> properties = readAllData( exludedProerties, propertiesName, propNameInDataFile );
         IteratingMDLReader sdfItr = new IteratingMDLReader( getSDFileContents(), DefaultChemObjectBuilder.getInstance() );
-        int index = 1, propIndex = 0;
+        int index = 1, propIndex = 0, index2;
+        
+        /* We can't write to a file we are reading from, so we create an new 
+         * sd-file where we save the data. If the path to where to save the new 
+         * file isn't set we save it where the other sd-file is */
+        if ( newSDFilePath == null || newSDFilePath.isEmpty() )
+            setPathToNewSDFile( sdFile.getLocation().toOSString() );
+        
+        String newFile = sdFile.getName();
+        index2 = newFile.indexOf( "\u002E" ); // the Unicode for for '.'
+        newFile = newSDFilePath + newFile.substring( 0, index2 ) + "\u005Fnew\u002E" + sdFile.getFileExtension();
+        
+        FileOutputStream out = new FileOutputStream(newFile);
+        SDFWriter writer = new SDFWriter( out );
+      
         if (propLinkedBy)
             propIndex = properties.get( 0 ).indexOf( sdFileLink );
         while ( sdfItr.hasNext() ||  index < properties.size() ) {
@@ -341,9 +361,23 @@ public class PropertiesImportFileHandler {
             } else {
                 addPropToMol( mol, properties.get( 0 ), properties.get( index ), exludedProerties );
             }
-          index++;
+            try {
+                writer.write( mol );
+            } catch ( CDKException e ) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            index++;
         }
-        
+        try {
+            writer.close();
+            out.close();
+        } catch ( IOException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+//        System.out.println(out.toString()); 
+         
 //        System.out.println(properties.size() + "x"+ properties.get( 0 ).size());
 //        Iterator<ArrayList<String>> colItr = properties.iterator();
 //        while ( colItr.hasNext() ) {
@@ -394,10 +428,15 @@ public class PropertiesImportFileHandler {
              else
                  valueItr.next();
          }   
-         System.out.println(mol.getProperties().toString());
+//         System.out.println(mol.getProperties().toString());
         
     }
 
+    public void setPathToNewSDFile(String path) {
+        String separator = System.getProperty( "file.separator" );
+        int index = path.lastIndexOf( separator );
+        newSDFilePath = path.substring( 0, index + 1 );
+    }
 //    private void linkPropToMol(IChemObject mol, ArrayList<String> propNames,
 //                               ArrayList<String> propValues) {
 //        Iterator<String> namesItr = propNames.iterator();
@@ -493,25 +532,25 @@ public class PropertiesImportFileHandler {
             dataFileLink = "";
             sdFileLink = "";
         }
-        System.out.println("propLinkedBy: "+propLinkedBy);
-        System.out.println("dataFileLink: "+dataFileLink);
-        System.out.println("sdFileLink: "+sdFileLink+"\n");
+//        System.out.println("propLinkedBy: "+propLinkedBy);
+//        System.out.println("dataFileLink: "+dataFileLink);
+//        System.out.println("sdFileLink: "+sdFileLink+"\n");
     }
     
     public void setdataFileLink(String dataFileProp) {
         dataFileLink = dataFileProp;
-        System.out.println("dataFileLink: "+dataFileLink+"\n");
+//        System.out.println("dataFileLink: "+dataFileLink+"\n");
     }
     
     public void setsdFileLink(String sdFileProp) {
         sdFileLink = sdFileProp;
-        System.out.println("sdFileLink: "+sdFileLink+"\n");
+//        System.out.println("sdFileLink: "+sdFileLink+"\n");
     }
     
     public void addChoosenPropID(int index, String propName) {
         choosenPropID.add( index, propName );
-        for (int i = 0; i < choosenPropID.size(); i++)
-            System.out.print( choosenPropID.get( i ) + ", " );
-        System.out.println();
+//        for (int i = 0; i < choosenPropID.size(); i++)
+//            System.out.print( choosenPropID.get( i ) + ", " );
+//        System.out.println();
     }
 }
