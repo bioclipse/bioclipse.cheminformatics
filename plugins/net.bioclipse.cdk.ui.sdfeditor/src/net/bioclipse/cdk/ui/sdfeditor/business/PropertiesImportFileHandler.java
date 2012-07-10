@@ -324,11 +324,23 @@ public class PropertiesImportFileHandler {
 //                throw new FileNotFoundException ("Can't find one or both files...");
         System.out.println(exludedProerties.toString());
         ArrayList<ArrayList<String>> properties = readAllData( exludedProerties, propertiesName, propNameInDataFile );
-        
         IteratingMDLReader sdfItr = new IteratingMDLReader( getSDFileContents(), DefaultChemObjectBuilder.getInstance() );
-        int index = 1;
-        while ( sdfItr.hasNext() ||  index < properties.size() ) {   
-          addPropToMol(sdfItr.next(), properties.get( 0 ), properties.get( index ), exludedProerties );
+        int index = 1, propIndex = 0;
+        if (propLinkedBy)
+            propIndex = properties.get( 0 ).indexOf( sdFileLink );
+        while ( sdfItr.hasNext() ||  index < properties.size() ) {
+            IChemObject mol = sdfItr.next();
+            if (propLinkedBy) {
+                /* This option only add the properties to the molecules where 
+                 * the linked properties has the same value.*/ 
+                String molProp = mol.getProperty( sdFileLink ).toString();
+                if ( molProp != null && !molProp.isEmpty() ) {
+                    if ( properties.get( index ).get( propIndex ).equals( molProp ) )
+                        addPropToMol( mol, properties.get( 0 ), properties.get( index ), exludedProerties ); 
+                }
+            } else {
+                addPropToMol( mol, properties.get( 0 ), properties.get( index ), exludedProerties );
+            }
           index++;
         }
         
@@ -374,6 +386,7 @@ public class PropertiesImportFileHandler {
          Iterator<String> namesItr = propNames.iterator();
          Iterator<String> valueItr = propValues.iterator();         
          String name = "";
+
          while ( namesItr.hasNext() ) {
              name = namesItr.next();
              if (!exludedProp.contains( name ) )
@@ -415,6 +428,11 @@ public class PropertiesImportFileHandler {
                 columns.add( lineScanner.next() );
             }
             properties.add( columns );
+        }
+        
+        if (propLinkedBy) {
+            int index = properties.get( 0 ).indexOf( dataFileLink );
+            properties.get( 0 ).set( index, sdFileLink );
         }
         
         return properties;
@@ -465,13 +483,6 @@ public class PropertiesImportFileHandler {
         }
     }
     
-    /**
-     * This method sets how to add the data in the data file to the sd-file.
-     * 
-     * @param linkedBy Set to true if the properties should be add by linking
-     * @param dataFileProp The property in the data file used in the linking
-     * @param sdFileProp The property in the sd-file used in the linking
-     */
     public void setLinkProperties(boolean linkedBy, String dataFileProp, String sdFileProp) {
         if (linkedBy) {
             propLinkedBy = linkedBy;
