@@ -4,27 +4,25 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.jface.wizard.Wizard;
 
 /**
- * This wizard let the user import properties from a txt file to a SDF-file.
+ * This class lunches a wizard that let the user import properties from a 
+ * txt-file to a SDF-file. The result is saved in a new sd-file.
  * 
- * @author klas jonsson
+ * @author Klas Jšnsson (klas.joensson@gmail.com)
  *
  */
 public class SDFPropertiesImportWizard extends Wizard implements IImportWizard {
 
 	private SDFPropertiesImportWizardPage mainPage;
-//	private MuliplePropertiesWizardPage propertiesPage;
 	private IStructuredSelection selection;
 	
 	public SDFPropertiesImportWizard() {
@@ -37,8 +35,8 @@ public class SDFPropertiesImportWizard extends Wizard implements IImportWizard {
 	        super();
 	        selection = ssel;
 	        setWindowTitle("SDF Properties Import Wizard");
-	        mainPage = new SDFPropertiesImportWizardPage("Import File", selection);
-//	      mainPage.init( selection );
+	        mainPage = new SDFPropertiesImportWizardPage("Import File",
+	                                                     selection);
 	    }
 	
 	@Override
@@ -52,21 +50,13 @@ public class SDFPropertiesImportWizard extends Wizard implements IImportWizard {
 	@Override
 	public void addPages() {
         super.addPages();
-//        mainPage = new SDFPropertiesImportWizardPage("Import File");
         addPage(mainPage);
-//        addPage(propertiesPage);
-//        mainPage.init( selection );
 	}
 
 	@Override
 	public boolean canFinish() {
 		return mainPage.canFlipToNextPage();
 	}
-
-//	@Override
-//	public void dispose() {
-//	    dispose();
-//	}
 
 	@Override
 	public IWizardPage getNextPage(IWizardPage page) {
@@ -100,7 +90,6 @@ public class SDFPropertiesImportWizard extends Wizard implements IImportWizard {
 
 	@Override
 	public boolean performFinish() {
-		// TODO Write it...
 	    mainPage.meargeFiles();
 		return true;
 	}
