@@ -2954,6 +2954,34 @@ public class CDKManager implements IBioclipseManager {
 
         ICDKMolecule molecule = asCDKMolecule(molecule_in);
 
+        /*
+         * Fix bond orders if one aromatic bond is detected.
+         * FIXME: Replace this when we can detect SINGLE_OR_DOUBLE order.
+         */
+        boolean doFixBondOrders = false;
+        for (IBond bond : molecule.getAtomContainer().bonds()){
+        	if (bond.getFlag(CDKConstants.ISAROMATIC)){
+        		System.out.println("Bond is aromatic");
+        		doFixBondOrders = true;
+        	}
+        }
+        if (doFixBondOrders){
+        	logger.debug("At least one aromatic bond found, " +
+        			"fixing bond orders.");
+        	FixBondOrdersTool fbt = new FixBondOrdersTool();
+        	try {
+				IAtomContainer fixedAC = fbt.kekuliseAromaticRings(
+						(org.openscience.cdk.interfaces.IMolecule) 
+						molecule.getAtomContainer());
+				molecule=new CDKMolecule(fixedAC);
+			} catch (CDKException e) {
+	            logger.error(
+	                    "Error fixing bond orders in MDL serialization. " +
+	                    "Reason: " + e.getMessage(),e);
+	                return null;
+			}
+        }
+
         StringWriter stringWriter = new StringWriter();
         MDLV2000Writer writer = new MDLV2000Writer(stringWriter);
         try {
