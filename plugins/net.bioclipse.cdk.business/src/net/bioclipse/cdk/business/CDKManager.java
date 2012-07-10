@@ -2977,9 +2977,10 @@ public class CDKManager implements IBioclipseManager {
         			"fixing bond orders.");
         	FixBondOrdersTool fbt = new FixBondOrdersTool();
         	try {
-				IAtomContainer fixedAC = fbt.kekuliseAromaticRings(
-						(org.openscience.cdk.interfaces.IMolecule) 
-						molecule.getAtomContainer());
+        		org.openscience.cdk.interfaces.IMolecule cdkMol =
+        			(org.openscience.cdk.interfaces.IMolecule)molecule.getAtomContainer();
+        		AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(cdkMol);
+				IAtomContainer fixedAC = fbt.kekuliseAromaticRings(cdkMol);
 				molecule=new CDKMolecule(fixedAC);
 			} catch (CDKException e) {
 	            logger.error(
