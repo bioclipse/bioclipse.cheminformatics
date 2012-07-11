@@ -328,11 +328,20 @@ public class CDKManager implements IBioclipseManager {
                         // set properties needed for H adding and aromaticity
                         atom.setAtomTypeName(types[i].getAtomTypeName());
                         atom.setHybridization(types[i].getHybridization());
+                        atom.setValency(types[i].getValency());
                         hAdder.addImplicitHydrogens(container, atom);
                     }
                 }
                 // perceive aromaticity
                 CDKHueckelAromaticityDetector.detectAromaticity(container);
+                // add missing double bonds
+                if (!(container instanceof org.openscience.cdk.interfaces.IMolecule)) {
+                	container = container.getBuilder().newInstance(org.openscience.cdk.interfaces.IMolecule.class, container);
+                }
+                FixBondOrdersTool tool = new FixBondOrdersTool();
+                container = tool.kekuliseAromaticRings((org.openscience.cdk.interfaces.IMolecule)container);
+                for (IBond bond : container.bonds()) System.out.println(bond.getOrder());
+                molecule.setAtomContainer(container);
             } catch ( CDKException e ) {
                 e.printStackTrace();
             }
