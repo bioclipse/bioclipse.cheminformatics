@@ -45,6 +45,7 @@ public class PropertiesImportFileHandler {
     private ArrayList<ArrayList<String>> topValues;
     private boolean topRowContainsPropName, propLinkedBy;
     private String dataFileLink, sdFileLink, newSDFilePath;
+    // The row separator for the data in the data file, i.e. a tab.
     private final static String DELIMITER = "\t";
     // The number of rows read in to topValues at initiation 
     private final static int ROWS_IN_TOPVALUES = 5;
@@ -95,22 +96,7 @@ public class PropertiesImportFileHandler {
      * 
      * @throws FileNotFoundException If the sd-file isn't found
      */
-    private void extractSDFProerties() throws FileNotFoundException {
-        /* Here you might use the MoleculesFromSDF, but there's three obstacles:
-         * - The method for adding properties isn't implemented get
-         * - The method for saving SDFiles isn't implemented get
-         * - The method for getting properties just returns an empty collection,
-         *      I tried to implement the function, but I didn't succeeded... */
-//        if (!sdFile.exists() || sdFile == null)
-//            throw new FileNotFoundException ("Can't find the sd-file.");
-//        MoleculesFromSDF molFrSDF = new MoleculesFromSDF(sdFile);
-//        sdFilePropertiesID = new ArrayList<String>();
-//        Collection<Object> properties = molFrSDF.getAvailableProperties();       
-//        Iterator<Object> propItr = properties.iterator();
-//        while ( propItr.hasNext() ) 
-//            sdFilePropertiesID.add( propItr.next().toString() );
-        
-        /* This use the IteratingMDLReader in CDK and works*/       
+    private void extractSDFProerties() throws FileNotFoundException {     
         IteratingMDLReader sdfItr = 
                 new IteratingMDLReader(getSDFileContents(),
                                         DefaultChemObjectBuilder.getInstance());
@@ -208,6 +194,11 @@ public class PropertiesImportFileHandler {
         }
     }
     
+    /**
+     * Returns the path to the data file as a String.
+     * 
+     * @return The path to the data file
+     */
     public String getDataFilePath() {
         return dataFile.getProjectRelativePath().toOSString();
     }
@@ -306,8 +297,8 @@ public class PropertiesImportFileHandler {
 
             column = 0;
             line = fileScanner.nextLine();
-            lineScanner = new Scanner(line);
-            lineScanner.useDelimiter("\t"); // Separated by a tab...
+            lineScanner = new Scanner( line );
+            lineScanner.useDelimiter( DELIMITER ); // Data is separated by a tab
             while (lineScanner.hasNext()) {
                 element = lineScanner.next();
                 if (topRowContainsPropName) {
@@ -358,15 +349,6 @@ public class PropertiesImportFileHandler {
                      propNameInDataFile, null );
     }
     
-    public void meargeFiles(ArrayList<String> exludedProerties, 
-                            ArrayList<String> propertiesName,
-                            boolean propNameInDataFile) 
-                                    throws FileNotFoundException {
-        
-        meargeFiles( exludedProerties, propertiesName, propNameInDataFile, 
-                     null );
-    }
-    
     /** 
      * This method adds the properties from the txt-file to the molecules from
      * the sd-file and save them in a new file. The name of the new file is on
@@ -383,7 +365,32 @@ public class PropertiesImportFileHandler {
      */
     public void meargeFiles(ArrayList<String> exludedProerties, 
                             ArrayList<String> propertiesName,
-                            boolean propNameInDataFile, IProgressMonitor monitor) 
+                            boolean propNameInDataFile) 
+                                    throws FileNotFoundException {
+        
+        meargeFiles( exludedProerties, propertiesName, propNameInDataFile, 
+                     null );
+    }
+    
+    /**
+     This method adds the properties from the txt-file to the molecules from
+     * the sd-file and save them in a new file. The name of the new file is on
+     * the form:<br> 
+     * [name of sd-file]_new.sdf. 
+     * 
+     * @param exludedProerties An ArrayList with the name of the properties that
+     *          has been excluded
+     * @param propertiesName An ArrayList with the name of the properties as 
+     *          Strings
+     * @param propNameInDataFile Set to <code>true</code> if the txt-file with 
+     *          properties contains the names of the properties
+     * @param monitor The progress monitor for this class
+     * @throws FileNotFoundException
+     */
+    public void meargeFiles(ArrayList<String> exludedProerties, 
+                            ArrayList<String> propertiesName,
+                            boolean propNameInDataFile, 
+                            IProgressMonitor monitor) 
                                     throws FileNotFoundException {
         // TODO The method IFile.exixts() seems to always return false.
 //        if ( !sdFile.exists() || !dataFile.exists() )
@@ -392,9 +399,6 @@ public class PropertiesImportFileHandler {
                 throw 
                 new FileNotFoundException("Can't find one or both files...");
         
-//        ArrayList<ArrayList<String>> properties =
-//                readAllData( exludedProerties, propertiesName,
-//                             propNameInDataFile );
         /* TODO This goes thru the hole sd-file and counts the mols, 
          * is it some better way to do this? */
         int molsInSdf = 0;
@@ -405,31 +409,27 @@ public class PropertiesImportFileHandler {
             molsInSdf++;
             sdfMolCounter.next();
         }
+        monitor.beginTask( "Mearging", molsInSdf );
+        int work = 0;
         
         IteratingMDLReader sdfItr = 
                 new IteratingMDLReader(getSDFileContents(), 
                                         DefaultChemObjectBuilder.getInstance());
 
-        
         Scanner fileScanner = new Scanner( getDataFileContents() );
-//        Scanner lineScanner;
+
         ArrayList<String> values, names;
-       
-        monitor.beginTask( "Mearging", molsInSdf );
-        int work = 0;
+ 
         /* We uses the names provided from the wizard, so if the file contains 
          * names we just throw them away... */
         if ( propNameInDataFile && fileScanner.hasNextLine() )
             fileScanner.nextLine();
-//            names = readNextLine( fileScanner.nextLine() );
-//        else
         names = propertiesName;
         
         if (propLinkedBy) {
             int index = names.indexOf( dataFileLink );
             names.set( index, sdFileLink );
         }
-//        int index = 1;
         int propIndex = 0, index2;
         
         /* We can't write to a file we are reading from, so we create an new 
@@ -467,46 +467,10 @@ public class PropertiesImportFileHandler {
             } catch ( CDKException e ) {
                 logger.error( e );
             }
-            // TODO Remove, just for debugging...
-            try {
-                Thread.sleep( 1000 );
-            } catch ( InterruptedException e ) {
-                e.printStackTrace();
-            }
+
             monitor.worked( work++ );
         }
-        
-        // Old while statement below
-//        if (propLinkedBy)
-//            propIndex = properties.get( 0 ).indexOf( sdFileLink );
-//        while ( sdfItr.hasNext() ||  index < properties.size() ) {
-//        // Read the top column with the properties name
-//            IChemObject mol = sdfItr.next();
-//            
-//            if (propLinkedBy) {
-//                /* This option only add the properties to the molecules where 
-//                 * the linked properties has the same value.*/ 
-//                String molProp = mol.getProperty( sdFileLink ).toString();
-//                if ( molProp != null && !molProp.isEmpty() ) {
-//                    if ( properties.get( index ).get( propIndex )
-//                            .equals( molProp ) )
-//                        addPropToMol( mol, properties.get( 0 ),
-//                                      properties.get( index ),
-//                                      exludedProerties ); 
-//                }
-//            } else {
-//                addPropToMol( mol, properties.get( 0 ),
-//                              properties.get( index ), exludedProerties );
-//            }
-//            try {
-//                writer.write( mol );
-//            } catch ( CDKException e ) {
-//                logger.error( e );
-//            }
-//            index++;
-//        }
-        // End old while statement
-        
+ 
         try {
             writer.close();
             out.close();
@@ -545,7 +509,7 @@ public class PropertiesImportFileHandler {
      * This method sets the path to where the new sd-file will be saved. If it 
      * contains a file name that file name is removed.
      * 
-     * @param path The path to where the new sd-file will bew saved
+     * @param path The path to where the new sd-file will be saved
      */
     public void setPathToNewSDFile(String path) {
         String separator = System.getProperty( "file.separator" );
@@ -553,50 +517,10 @@ public class PropertiesImportFileHandler {
         newSDFilePath = path.substring( 0, index + 1 );
     }
     
-    /**
-     * This method read ALL properties from the txt-file. And stores them in an 
-     * matrix made of ArrayLists. The names of the properties are stored in the 
-     * first column of this matrix, and the values in the following.
-     * 
-     * @param exludedProerties An ArrayList with the names of the excluded 
-     *          properties 
-     * @param propertiesName An ArrayList with the names of the properties
-     * @param propNameInDataFile Set to <code>true</code> if the txt-file with 
-     *          properties contains the names of the properties
-     * @return An matrix with the data from the txt-file
-     */
-    // TODO Rewrite so it only reads one line at the time.. done, remove this.
-//    private ArrayList<ArrayList<String>> 
-//     readAllData(ArrayList<String> exludedProerties, 
-//                 ArrayList<String> propertiesName, boolean propNameInDataFile) {
-//        ArrayList<ArrayList<String>> properties = 
-//                new ArrayList<ArrayList<String>>();
-//        Scanner fileScanner = new Scanner( getDataFileContents() );
-//        Scanner lineScanner;
-//        ArrayList<String> columns;
-//        
-//        while ( fileScanner.hasNextLine() ) {
-//            columns = new ArrayList<String>();
-//            lineScanner = new Scanner( fileScanner.nextLine() );
-//            lineScanner.useDelimiter( "\t" ); // Separated by a tab...
-//            while ( lineScanner.hasNext() ) {
-//                columns.add( lineScanner.next() );
-//            }
-//            properties.add( columns );
-//        }
-//        
-//        if (propLinkedBy) {
-//            int index = properties.get( 0 ).indexOf( dataFileLink );
-//            properties.get( 0 ).set( index, sdFileLink );
-//        }
-//        
-//        return properties;
-//    }
-    
     private ArrayList<String> readNextLine(String nextLine) {
         ArrayList<String> properties = new ArrayList<String>(); 
         Scanner lineScanner = new Scanner( nextLine );
-        lineScanner.useDelimiter( DELIMITER ); // Separated by a tab...
+        lineScanner.useDelimiter( DELIMITER ); // Data is separated by a tab
         while ( lineScanner.hasNext() ) {
             properties.add( lineScanner.next() );
         }
@@ -649,6 +573,14 @@ public class PropertiesImportFileHandler {
         }
     }
     
+    /**
+     * This method is used to link between a properties in the data file and one
+     * in the sd-file. Or to unlink them.
+     * 
+     * @param linkedBy <code>True</code> if there's a link
+     * @param dataFileProp The name of the property in the data file
+     * @param sdFileProp The name of the property in the sd-file
+     */
     public void setLinkProperties(boolean linkedBy, String dataFileProp, 
                                   String sdFileProp) {
         if (linkedBy) {
@@ -662,10 +594,22 @@ public class PropertiesImportFileHandler {
         }
     }
     
+    /**
+     * This method is to be able to only chance the name of the linked property
+     * in the data file.
+     * 
+     * @param dataFileProp The name of the property in the data file
+     */
     public void setdataFileLink(String dataFileProp) {
         dataFileLink = dataFileProp;
     }
     
+    /**
+     * This metod is to be able to only chance the name of the linked property
+     * in the Sd-file.
+     * 
+     * @param dataFileProp The name of the property in the sd-file
+     */
     public void setsdFileLink(String sdFileProp) {
         sdFileLink = sdFileProp;
     }

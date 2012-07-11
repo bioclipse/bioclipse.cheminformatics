@@ -8,8 +8,6 @@
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.logging.FileHandler;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
