@@ -44,6 +44,7 @@ public class PropertiesImportFileHandler {
     private ArrayList<ArrayList<String>> topValues;
     private boolean topRowContainsPropName, propLinkedBy;
     private String dataFileLink, sdFileLink, newSDFilePath;
+    private final static String DELIMITER = "\t";
     // The number of rows read in to topValues at initiation 
     private final static int ROWS_IN_TOPVALUES = 5;
     
@@ -379,13 +380,29 @@ public class PropertiesImportFileHandler {
         if ( !sdFileExists() || !dataFileExists() )
                 throw 
                 new FileNotFoundException("Can't find one or both files...");
-        ArrayList<ArrayList<String>> properties =
-                readAllData( exludedProerties, propertiesName,
-                             propNameInDataFile );
+        
+//        ArrayList<ArrayList<String>> properties =
+//                readAllData( exludedProerties, propertiesName,
+//                             propNameInDataFile );
         IteratingMDLReader sdfItr = 
                 new IteratingMDLReader(getSDFileContents(), 
                                         DefaultChemObjectBuilder.getInstance());
-        int index = 1, propIndex = 0, index2;
+        
+        Scanner fileScanner = new Scanner( getDataFileContents() );
+//        Scanner lineScanner;
+        ArrayList<String> values, names;
+        // let's get the properties names
+        if ( propNameInDataFile && fileScanner.hasNextLine() )
+            names = readNextLine( fileScanner.nextLine() );
+        else
+            names = propertiesName;
+        
+        if (propLinkedBy) {
+            int index = names.indexOf( dataFileLink );
+            names.set( index, sdFileLink );
+        }
+//        int index = 1;
+        int propIndex = 0, index2;
         
         /* We can't write to a file we are reading from, so we create an new 
          * sd-file where we save the data. If the path to where to save the new 
@@ -400,33 +417,62 @@ public class PropertiesImportFileHandler {
         
         FileOutputStream out = new FileOutputStream(newFile);
         SDFWriter writer = new SDFWriter( out );
-      
+        IChemObject mol;
         if (propLinkedBy)
-            propIndex = properties.get( 0 ).indexOf( sdFileLink );
-        while ( sdfItr.hasNext() ||  index < properties.size() ) {
-            IChemObject mol = sdfItr.next();
+            propIndex = names.indexOf( sdFileLink );
+        while ( sdfItr.hasNext() ||  fileScanner.hasNextLine() ) {
+            mol = sdfItr.next();
+            values = readNextLine( fileScanner.nextLine() );
             if (propLinkedBy) {
                 /* This option only add the properties to the molecules where 
                  * the linked properties has the same value.*/ 
                 String molProp = mol.getProperty( sdFileLink ).toString();
                 if ( molProp != null && !molProp.isEmpty() ) {
-                    if ( properties.get( index ).get( propIndex )
-                            .equals( molProp ) )
-                        addPropToMol( mol, properties.get( 0 ),
-                                      properties.get( index ),
-                                      exludedProerties ); 
+                    if ( values.get( propIndex ).equals( molProp ) )
+                        addPropToMol( mol, names, values, exludedProerties );
                 }
             } else {
-                addPropToMol( mol, properties.get( 0 ),
-                              properties.get( index ), exludedProerties );
+                addPropToMol( mol, names, values, exludedProerties );
             }
             try {
                 writer.write( mol );
             } catch ( CDKException e ) {
                 logger.error( e );
             }
-            index++;
+            
         }
+        
+        // Old while statement below
+//        if (propLinkedBy)
+//            propIndex = properties.get( 0 ).indexOf( sdFileLink );
+//        while ( sdfItr.hasNext() ||  index < properties.size() ) {
+//        // Read the top column with the properties name
+//            IChemObject mol = sdfItr.next();
+//            
+//            if (propLinkedBy) {
+//                /* This option only add the properties to the molecules where 
+//                 * the linked properties has the same value.*/ 
+//                String molProp = mol.getProperty( sdFileLink ).toString();
+//                if ( molProp != null && !molProp.isEmpty() ) {
+//                    if ( properties.get( index ).get( propIndex )
+//                            .equals( molProp ) )
+//                        addPropToMol( mol, properties.get( 0 ),
+//                                      properties.get( index ),
+//                                      exludedProerties ); 
+//                }
+//            } else {
+//                addPropToMol( mol, properties.get( 0 ),
+//                              properties.get( index ), exludedProerties );
+//            }
+//            try {
+//                writer.write( mol );
+//            } catch ( CDKException e ) {
+//                logger.error( e );
+//            }
+//            index++;
+//        }
+        // End old while statement
+        
         try {
             writer.close();
             out.close();
@@ -485,30 +531,40 @@ public class PropertiesImportFileHandler {
      *          properties contains the names of the properties
      * @return An matrix with the data from the txt-file
      */
-    // TODO Rewrite so it only reads one line at the time...
-    private ArrayList<ArrayList<String>> 
-     readAllData(ArrayList<String> exludedProerties, 
-                 ArrayList<String> propertiesName, boolean propNameInDataFile) {
-        ArrayList<ArrayList<String>> properties = 
-                new ArrayList<ArrayList<String>>();
-        Scanner fileScanner = new Scanner( getDataFileContents() );
-        Scanner lineScanner;
-        ArrayList<String> columns;
-        
-        // TODO Don't read the excluded properties
-        while ( fileScanner.hasNextLine() ) {
-            columns = new ArrayList<String>();
-            lineScanner = new Scanner( fileScanner.nextLine() );
-            lineScanner.useDelimiter( "\t" ); // Separated by a tab...
-            while ( lineScanner.hasNext() ) {
-                columns.add( lineScanner.next() );
-            }
-            properties.add( columns );
-        }
-        
-        if (propLinkedBy) {
-            int index = properties.get( 0 ).indexOf( dataFileLink );
-            properties.get( 0 ).set( index, sdFileLink );
+    // TODO Rewrite so it only reads one line at the time.. done, remove this.
+//    private ArrayList<ArrayList<String>> 
+//     readAllData(ArrayList<String> exludedProerties, 
+//                 ArrayList<String> propertiesName, boolean propNameInDataFile) {
+//        ArrayList<ArrayList<String>> properties = 
+//                new ArrayList<ArrayList<String>>();
+//        Scanner fileScanner = new Scanner( getDataFileContents() );
+//        Scanner lineScanner;
+//        ArrayList<String> columns;
+//        
+//        while ( fileScanner.hasNextLine() ) {
+//            columns = new ArrayList<String>();
+//            lineScanner = new Scanner( fileScanner.nextLine() );
+//            lineScanner.useDelimiter( "\t" ); // Separated by a tab...
+//            while ( lineScanner.hasNext() ) {
+//                columns.add( lineScanner.next() );
+//            }
+//            properties.add( columns );
+//        }
+//        
+//        if (propLinkedBy) {
+//            int index = properties.get( 0 ).indexOf( dataFileLink );
+//            properties.get( 0 ).set( index, sdFileLink );
+//        }
+//        
+//        return properties;
+//    }
+    
+    private ArrayList<String> readNextLine(String nextLine) {
+        ArrayList<String> properties = new ArrayList<String>(); 
+        Scanner lineScanner = new Scanner( nextLine );
+        lineScanner.useDelimiter( DELIMITER ); // Separated by a tab...
+        while ( lineScanner.hasNext() ) {
+            properties.add( lineScanner.next() );
         }
         
         return properties;
