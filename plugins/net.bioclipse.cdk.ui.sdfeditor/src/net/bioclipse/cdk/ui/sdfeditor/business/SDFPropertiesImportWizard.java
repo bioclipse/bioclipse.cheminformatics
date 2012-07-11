@@ -7,6 +7,12 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.FileHandler;
+
+import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.ui.IImportWizard;
@@ -21,28 +27,31 @@ import org.eclipse.jface.wizard.Wizard;
  *
  */
 public class SDFPropertiesImportWizard extends Wizard implements IImportWizard {
-
+    
+    private Logger logger = Logger.getLogger( this.getClass() );
 	private SDFPropertiesImportWizardPage mainPage;
 	private IStructuredSelection selection;
 	
 	public SDFPropertiesImportWizard() {
 	    super();
+	    setNeedsProgressMonitor(true);
 	    setWindowTitle("SDF Properties Import Wizard");
 	    mainPage = new SDFPropertiesImportWizardPage("Import File", null);
 	}
 	
-	   public SDFPropertiesImportWizard(IStructuredSelection ssel) {
-	        super();
-	        selection = ssel;
-	        setWindowTitle("SDF Properties Import Wizard");
-	        mainPage = new SDFPropertiesImportWizardPage("Import File",
-	                                                     selection);
-	    }
-	
+	public SDFPropertiesImportWizard(IStructuredSelection ssel) {
+	    super();
+	    setNeedsProgressMonitor(true);
+	    selection = ssel;
+	    setWindowTitle("SDF Properties Import Wizard");
+	    mainPage = new SDFPropertiesImportWizardPage("Import File",
+	                                                 selection);
+	}
+
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		setWindowTitle("SDF Properties Import Wizard");
-//		setNeedsProgressMonitor(true);
+		setNeedsProgressMonitor(true);
 		this.selection = selection;
 		mainPage.init( selection );
 	}
@@ -90,8 +99,27 @@ public class SDFPropertiesImportWizard extends Wizard implements IImportWizard {
 
 	@Override
 	public boolean performFinish() {
-	    mainPage.meargeFiles();
-		return true;
+	    mainPage.updateNameArray();
+	    try {
+            getContainer().run( true, true, new IRunnableWithProgress() {
+                
+                @Override
+                public void run( IProgressMonitor monitor )
+                        throws InvocationTargetException, InterruptedException {
+                    
+                    mainPage.meargeFiles(monitor);
+                    
+                }
+            } );
+        } catch ( InvocationTargetException e ) {
+            logger.error( e );
+            return false;
+        } catch ( InterruptedException e ) {
+            logger.error( e );
+            return false;
+        }
+		
+	    return true;
 	}
 
 }

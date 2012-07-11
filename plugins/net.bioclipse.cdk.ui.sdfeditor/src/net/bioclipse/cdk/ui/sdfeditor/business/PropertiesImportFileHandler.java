@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IChemObject;
@@ -354,7 +355,16 @@ public class PropertiesImportFileHandler {
         /* In this case we don't want to remove any properties, so lets send in 
          * an empty ArrayList */
         meargeFiles( new ArrayList<String>(), propertiesName,
-                     propNameInDataFile );
+                     propNameInDataFile, null );
+    }
+    
+    public void meargeFiles(ArrayList<String> exludedProerties, 
+                            ArrayList<String> propertiesName,
+                            boolean propNameInDataFile) 
+                                    throws FileNotFoundException {
+        
+        meargeFiles( exludedProerties, propertiesName, propNameInDataFile, 
+                     null );
     }
     
     /** 
@@ -373,10 +383,11 @@ public class PropertiesImportFileHandler {
      */
     public void meargeFiles(ArrayList<String> exludedProerties, 
                             ArrayList<String> propertiesName,
-                            boolean propNameInDataFile) 
+                            boolean propNameInDataFile, IProgressMonitor monitor) 
                                     throws FileNotFoundException {
         // TODO The method IFile.exixts() seems to always return false.
 //        if ( !sdFile.exists() || !dataFile.exists() )
+        
         if ( !sdFileExists() || !dataFileExists() )
                 throw 
                 new FileNotFoundException("Can't find one or both files...");
@@ -384,18 +395,35 @@ public class PropertiesImportFileHandler {
 //        ArrayList<ArrayList<String>> properties =
 //                readAllData( exludedProerties, propertiesName,
 //                             propNameInDataFile );
+        /* TODO This goes thru the hole sd-file and counts the mols, 
+         * is it some better way to do this? */
+        int molsInSdf = 0;
+        IteratingMDLReader sdfMolCounter = 
+                new IteratingMDLReader(getSDFileContents(), 
+                                        DefaultChemObjectBuilder.getInstance());
+        while (sdfMolCounter.hasNext()) {
+            molsInSdf++;
+            sdfMolCounter.next();
+        }
+        
         IteratingMDLReader sdfItr = 
                 new IteratingMDLReader(getSDFileContents(), 
                                         DefaultChemObjectBuilder.getInstance());
+
         
         Scanner fileScanner = new Scanner( getDataFileContents() );
 //        Scanner lineScanner;
         ArrayList<String> values, names;
-        // let's get the properties names
+       
+        monitor.beginTask( "Mearging", molsInSdf );
+        int work = 0;
+        /* We uses the names provided from the wizard, so if the file contains 
+         * names we just throw them away... */
         if ( propNameInDataFile && fileScanner.hasNextLine() )
-            names = readNextLine( fileScanner.nextLine() );
-        else
-            names = propertiesName;
+            fileScanner.nextLine();
+//            names = readNextLine( fileScanner.nextLine() );
+//        else
+        names = propertiesName;
         
         if (propLinkedBy) {
             int index = names.indexOf( dataFileLink );
@@ -439,7 +467,13 @@ public class PropertiesImportFileHandler {
             } catch ( CDKException e ) {
                 logger.error( e );
             }
-            
+            // TODO Remove, just for debugging...
+            try {
+                Thread.sleep( 1000 );
+            } catch ( InterruptedException e ) {
+                e.printStackTrace();
+            }
+            monitor.worked( work++ );
         }
         
         // Old while statement below
@@ -479,7 +513,7 @@ public class PropertiesImportFileHandler {
         } catch ( IOException e ) {
             logger.error( e );
         }
-
+        monitor.done();
     }
     
     /**

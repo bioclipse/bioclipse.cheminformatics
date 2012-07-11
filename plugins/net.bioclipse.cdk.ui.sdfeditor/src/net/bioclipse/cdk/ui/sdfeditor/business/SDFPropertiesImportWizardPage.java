@@ -8,13 +8,21 @@
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import javax.swing.ProgressMonitor;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.*;
@@ -35,6 +43,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -46,7 +55,8 @@ import org.eclipse.swt.widgets.Text;
 public class SDFPropertiesImportWizardPage extends WizardPage {
 
     private Logger logger = Logger.getLogger( this.getClass() );
-
+    private IProgressMonitor monitor;
+    
     // An array to exclude data columns
     private boolean[] isExcluded;
     private boolean dataFileIncludeName =  true;
@@ -69,7 +79,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
     private Combo txtCombo, sdfCombo;
 
     private ArrayList<ArrayList<String>> propertiesData;
-    private ArrayList<String> sdfPropertyList, excludedProperties, headers;
+    private ArrayList<String> sdfPropertyList, excludedProperties, headers, names;
     private int columns;
     
     private PropertiesImportFileHandler fileHandler = 
@@ -622,11 +632,33 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
     }
     
     /**
-     * This method initialize the the prosess of adding the properties from the 
+     * This method initialize the the process of adding the properties from the 
      * txt-file to the sd-file.
      */
-    protected void meargeFiles() {
-        ArrayList<String> names = new ArrayList<String>();
+    protected void meargeFiles(IProgressMonitor monitor) {
+//        monitor.beginTask( "Mearging", 100 );
+//        ArrayList<String> names = new ArrayList<String>();
+//        if ( dataFileIncludeName ) {
+//            for ( int i = 0; i < headerText.length; i++ ) {
+//                names.add( headerText[i].getText() );
+//            }
+//        } else {
+//            for ( int i = 0; i < headerCombo.length; i++ ) {
+//                names.add( headerCombo[i].getText() );
+//            }
+//        }
+        try {
+            fileHandler.meargeFiles( excludedProperties, names, dataFileIncludeName, monitor );
+        } catch ( FileNotFoundException e ) {
+            logger.error( e );
+        }
+        /* TODO Here I would like to update Bioclipse navigator field, so the 
+         * new file becomes visibly. How do I do that? */
+//        monitor.done();
+    }
+    
+    public void updateNameArray() {
+        names = new ArrayList<String>();
         if ( dataFileIncludeName ) {
             for ( int i = 0; i < headerText.length; i++ ) {
                 names.add( headerText[i].getText() );
@@ -635,14 +667,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
             for ( int i = 0; i < headerCombo.length; i++ ) {
                 names.add( headerCombo[i].getText() );
             }
-        }
-        try {
-            fileHandler.meargeFiles( excludedProperties, names, dataFileIncludeName );
-        } catch ( FileNotFoundException e ) {
-            logger.error( e );
-        }
-        /* TODO Here I would like to update Bioclipse navigator field, so the 
-         * new file becomes visibly. How do I do that? */
+        }  
     }
     
     /**
@@ -707,6 +732,32 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 
         @Override
         public void widgetDefaultSelected( SelectionEvent e ) {  }
+        
+    };
+    
+    private Job mearge = new Job("Mearging files") {
+
+        @Override
+        protected IStatus run( IProgressMonitor monitor ) {
+            ArrayList<String> names = new ArrayList<String>();
+            if ( dataFileIncludeName ) {
+                for ( int i = 0; i < headerText.length; i++ ) {
+                    names.add( headerText[i].getText() );
+                }
+            } else {
+                for ( int i = 0; i < headerCombo.length; i++ ) {
+                    names.add( headerCombo[i].getText() );
+                }
+            }
+            try {
+                fileHandler.meargeFiles( excludedProperties, names, dataFileIncludeName, monitor );
+            } catch ( FileNotFoundException e ) {
+                logger.error( e );
+            }
+            /* TODO Here I would like to update Bioclipse navigator field, so the 
+             * new file becomes visibly. How do I do that? */
+            return Status.OK_STATUS;
+        }
         
     };
     
