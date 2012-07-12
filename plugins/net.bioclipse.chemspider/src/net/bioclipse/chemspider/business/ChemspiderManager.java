@@ -312,6 +312,11 @@ public class ChemspiderManager implements IBioclipseManager {
 		} catch (RemoteException e1) {
 			e1.printStackTrace();
 		}
+		
+		if (info.length!=results.length){
+			logger.warn("Chemspider results and extendedinfo do not have same " +
+					"size: info=" + info.length + " and results=" + results.length);
+		}
 
 		for (int i = 0; i< results.length; i++){
 			int crid = results[i];
@@ -325,7 +330,7 @@ public class ChemspiderManager implements IBioclipseManager {
 				//Set properties on mol from Chemspider info
 				ICDKMolecule cdkmol = cdk.asCDKMolecule(csmol);
 
-				if (info!=null && info[i]!=null){
+				if (info!=null && i<info.length && info[i]!=null){
 					cdkmol.setProperty("chemspider.commonname", info[i].getCommonName());
 					cdkmol.setProperty("chemspider.inchi", info[i].getInChI());
 					cdkmol.setProperty("chemspider.inchikey", info[i].getInChIKey());
