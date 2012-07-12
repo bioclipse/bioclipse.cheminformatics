@@ -50,6 +50,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
     // An array to exclude data columns
     private boolean[] isExcluded;
     private boolean dataFileIncludeName =  true;
+    private ArrayList<String> excludedProperties;
     
     private Composite mainComposite, dataComposite, settingsComposite;
     private ScrolledComposite dataFrame;
@@ -69,8 +70,8 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
     private Combo txtCombo, sdfCombo;
 
     private ArrayList<ArrayList<String>> propertiesData;
-    private ArrayList<String> sdfPropertyList, excludedProperties, headers, 
-        names;
+    private ArrayList<String> sdfPropertyList, headers, names;
+
     private int columns;
     
     private PropertiesImportFileHandler fileHandler = 
@@ -593,8 +594,12 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
     private void updateComponents() {
         for (int i = 0; i < columns; i++) {
             isExcluded[i] = excludeButtons[i].getSelection();
-            headerText[i].setEnabled( !isExcluded[i] ); 
-            dataText[i].setEnabled( !isExcluded[i] );
+            if (dataFileIncludeName) {
+                headerText[i].setEnabled( !isExcluded[i] ); 
+            } else {
+                headerCombo[i].setEnabled( !isExcluded[i] );
+            }
+            dataText[i].setEnabled( !isExcluded[i] );   
         }
 
         if (fileHandler.dataFileExists())
@@ -628,7 +633,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
      */
     protected void meargeFiles(IProgressMonitor monitor) {
         try {
-            fileHandler.meargeFiles( excludedProperties, names, dataFileIncludeName, monitor );
+            fileHandler.meargeFiles( isExcluded, names, dataFileIncludeName, monitor );
         } catch ( FileNotFoundException e ) {
             logger.error( e );
         }

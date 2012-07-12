@@ -345,7 +345,7 @@ public class PropertiesImportFileHandler {
                                     throws FileNotFoundException {
         /* In this case we don't want to remove any properties, so lets send in 
          * an empty ArrayList */
-        meargeFiles( new ArrayList<String>(), propertiesName,
+        meargeFiles( new boolean[0], propertiesName,
                      propNameInDataFile, null );
     }
     
@@ -355,7 +355,7 @@ public class PropertiesImportFileHandler {
      * the form:<br> 
      * [name of sd-file]_new.sdf. 
      * 
-     * @param exludedProerties An ArrayList with the name of the properties that
+     * @param excludedProerties An ArrayList with the name of the properties that
      *          has been excluded
      * @param propertiesName An ArrayList with the name of the properties as 
      *          Strings
@@ -363,12 +363,12 @@ public class PropertiesImportFileHandler {
      *          properties contains the names of the properties
      * @throws FileNotFoundException
      */
-    public void meargeFiles(ArrayList<String> exludedProerties, 
+    public void meargeFiles(boolean[] excludedProerties, 
                             ArrayList<String> propertiesName,
                             boolean propNameInDataFile) 
                                     throws FileNotFoundException {
         
-        meargeFiles( exludedProerties, propertiesName, propNameInDataFile, 
+        meargeFiles( excludedProerties, propertiesName, propNameInDataFile, 
                      null );
     }
     
@@ -378,7 +378,7 @@ public class PropertiesImportFileHandler {
      * the form:<br> 
      * [name of sd-file]_new.sdf. 
      * 
-     * @param exludedProerties An ArrayList with the name of the properties that
+     * @param excludedProerties An ArrayList with the name of the properties that
      *          has been excluded
      * @param propertiesName An ArrayList with the name of the properties as 
      *          Strings
@@ -387,7 +387,7 @@ public class PropertiesImportFileHandler {
      * @param monitor The progress monitor for this class
      * @throws FileNotFoundException
      */
-    public void meargeFiles(ArrayList<String> exludedProerties, 
+    public void meargeFiles(boolean[] excludedProerties, 
                             ArrayList<String> propertiesName,
                             boolean propNameInDataFile, 
                             IProgressMonitor monitor) 
@@ -448,7 +448,7 @@ public class PropertiesImportFileHandler {
         IChemObject mol;
         if (propLinkedBy)
             propIndex = names.indexOf( sdFileLink );
-        while ( sdfItr.hasNext() ||  fileScanner.hasNextLine() ) {
+        while ( sdfItr.hasNext() && fileScanner.hasNextLine() ) {
             mol = sdfItr.next();
             values = readNextLine( fileScanner.nextLine() );
             if (propLinkedBy) {
@@ -457,10 +457,10 @@ public class PropertiesImportFileHandler {
                 String molProp = mol.getProperty( sdFileLink ).toString();
                 if ( molProp != null && !molProp.isEmpty() ) {
                     if ( values.get( propIndex ).equals( molProp ) )
-                        addPropToMol( mol, names, values, exludedProerties );
+                        addPropToMol( mol, names, values, excludedProerties );
                 }
             } else {
-                addPropToMol( mol, names, values, exludedProerties );
+                addPropToMol( mol, names, values, excludedProerties );
             }
             try {
                 writer.write( mol );
@@ -490,17 +490,19 @@ public class PropertiesImportFileHandler {
      */
     private void addPropToMol( IChemObject mol, ArrayList<String> propNames,
                                ArrayList<String> propValues, 
-                               ArrayList<String> exludedProp) {
+                               boolean[] excludedProp) {
          Iterator<String> namesItr = propNames.iterator();
          Iterator<String> valueItr = propValues.iterator();         
          String name = "";
-
+         int index = 0;
+         
          while ( namesItr.hasNext() ) {
              name = namesItr.next();
-             if (!exludedProp.contains( name ) )
+             if (!(excludedProp.length == 0) && !excludedProp[index] )
                  mol.setProperty( name, valueItr.next() );
              else
                  valueItr.next();
+             index++;
          }   
         
     }
