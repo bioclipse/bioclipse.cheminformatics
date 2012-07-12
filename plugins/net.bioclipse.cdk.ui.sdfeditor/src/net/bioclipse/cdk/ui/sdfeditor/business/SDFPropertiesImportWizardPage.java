@@ -544,11 +544,11 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         propName.setLayout( new GridLayout( 1, true) );
         noPropName = new Button[2];
         noPropName[0] = new Button(propName, SWT.RADIO);
-        noPropName[0].setText("Data file includes properties name in row one.");
+        noPropName[0].setText("Data file includes properties name in row one");
         noPropName[0].setSelection( true );
         noPropName[0].addSelectionListener( propNameListener );
         noPropName[1] = new Button(propName, SWT.RADIO);
-        noPropName[1].setText( "Data file does not includes properties name." );
+        noPropName[1].setText( "Data file does not includes properties name" );
         noPropName[1].addSelectionListener( propNameListener );
 
         Group dataConn = new Group(view, SWT.SHADOW_ETCHED_OUT);
@@ -556,7 +556,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         dataConn.setLayout( new GridLayout(4, false) );
         decideOrder = new Button[2];
         decideOrder[0] = new Button(dataConn, SWT.RADIO);
-        decideOrder[0].setText( "The order of the data file is as in the SDF " +
+        decideOrder[0].setText( "The order of the data file is as in the SD-" +
         		"file" );
         decideOrder[0].setSelection( true );
         GridData decideOrder0 = new GridData();
@@ -575,7 +575,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
             txtCombo.add( headers.get( i ) );
         txtCombo.select( 0 );
         txtCombo.addSelectionListener( dataConnListener );
-        new Label(dataConn, SWT.NONE).setText( " to SDF-property " );
+        new Label(dataConn, SWT.NONE).setText( " to the SD file property " );
         sdfCombo = new Combo(dataConn, SWT.DROP_DOWN | SWT.BORDER | 
                              SWT.READ_ONLY);
         sdfPropertyList = fileHandler.getPropertiesFromSDFile();
