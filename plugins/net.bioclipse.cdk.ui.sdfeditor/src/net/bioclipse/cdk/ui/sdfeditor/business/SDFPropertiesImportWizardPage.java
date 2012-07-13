@@ -318,8 +318,6 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         } catch ( FileNotFoundException e1 ) {
             logger.error( e1 );
         }
-        if ( headers == null || !headers.isEmpty() )
-            headers.clear();
         headers = fileHandler.getPropertiesIDFromDataFile();
         try {
             propertiesData = fileHandler.getTopValuesFromDataFile( 5 );
@@ -595,9 +593,13 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         for (int i = 0; i < columns; i++) {
             isExcluded[i] = excludeButtons[i].getSelection();
             if (dataFileIncludeName) {
-                headerText[i].setEnabled( !isExcluded[i] ); 
+                headerText[i].setEnabled( !isExcluded[i] );
+                headerText[i].setText( headers.get( i ) );
             } else {
                 headerCombo[i].setEnabled( !isExcluded[i] );
+                headerCombo[i].removeAll();
+                for ( int j =0; j < headers.size(); j++ )
+                    headerCombo[i].add( headers.get( j ) );
             }
             dataText[i].setEnabled( !isExcluded[i] );   
         }

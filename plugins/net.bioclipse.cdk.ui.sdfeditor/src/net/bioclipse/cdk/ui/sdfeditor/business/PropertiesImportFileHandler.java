@@ -166,8 +166,8 @@ public class PropertiesImportFileHandler {
      */
     public void setDataFile(IFile dataFile) throws FileNotFoundException {
         this.dataFile = dataFile;
-        propertiesID.clear();
-        topValues.clear();
+//        propertiesID.clear();
+//        topValues.clear();
         readProperiesFile( 0, ROWS_IN_TOPVALUES );
     }
     
