@@ -415,62 +415,73 @@ public class PropertiesImportFileHandler {
         IteratingMDLReader sdfItr = 
                 new IteratingMDLReader(getSDFileContents(), 
                                         DefaultChemObjectBuilder.getInstance());
-
-        Scanner fileScanner = new Scanner( getDataFileContents() );
-
+        Scanner fileScanner;
         ArrayList<String> values, names;
- 
-        /* We uses the names provided from the wizard, so if the file contains 
-         * names we just throw them away... */
-        if ( propNameInDataFile && fileScanner.hasNextLine() )
-            fileScanner.nextLine();
         names = propertiesName;
-        
-        if (propLinkedBy) {
-            int index = names.indexOf( dataFileLink );
-            names.set( index, sdFileLink );
-        }
-        int propIndex = 0, index2;
+        int index;
         
         /* We can't write to a file we are reading from, so we create an new 
          * sd-file where we save the data. If the path to where to save the new 
          * file isn't set we save it where the other sd-file is */
         if ( newSDFilePath == null || newSDFilePath.isEmpty() )
-            setPathToNewSDFile( sdFile.getLocation().toOSString() );
-        
+            setPathToNewSDFile( sdFile.getLocation().toOSString() );       
         String newFile = sdFile.getName();
-        index2 = newFile.indexOf( "\u002E" ); // the Unicode for for '.'
-        newFile = newSDFilePath + newFile.substring( 0, index2 ) +
+        index = newFile.indexOf( "\u002E" ); // the Unicode for for '.'
+        newFile = newSDFilePath + newFile.substring( 0, index ) +
                 "\u005Fnew\u002E" + sdFile.getFileExtension();
         
         FileOutputStream out = new FileOutputStream(newFile);
         SDFWriter writer = new SDFWriter( out );
         IChemObject mol;
-        if (propLinkedBy)
-            propIndex = names.indexOf( sdFileLink );
-        while ( sdfItr.hasNext() && fileScanner.hasNextLine() ) {
-            mol = sdfItr.next();
-            values = readNextLine( fileScanner.nextLine() );
-            if (propLinkedBy) {
-                /* This option only add the properties to the molecules where 
-                 * the linked properties has the same value.*/ 
+        
+        if (propLinkedBy) {
+            /* This option only add the properties to the molecules where 
+             * the linked properties has the same value.*/
+            index = names.indexOf( dataFileLink );
+            names.set( index, sdFileLink );
+            while ( sdfItr.hasNext() ) {
+                mol = sdfItr.next();
                 String molProp = mol.getProperty( sdFileLink ).toString();
+                /* If this molecule don't have a property with this name
+                 * there's no need to do any more with this molecule*/
                 if ( molProp != null && !molProp.isEmpty() ) {
-                    if ( values.get( propIndex ).equals( molProp ) )
-                        addPropToMol( mol, names, values, excludedProerties );
+                    fileScanner = new Scanner( getDataFileContents() );
+                    while ( fileScanner.hasNext() ) {
+                        values = readNextLine( fileScanner.nextLine() );
+                        if ( values.get( index ).equals( molProp ) ) {
+                            addPropToMol(mol, names, values, excludedProerties);
+                            break;
+                        }
+                    }
+                    fileScanner.close();
                 }
-            } else {
-                addPropToMol( mol, names, values, excludedProerties );
-            }
-            try {
-                writer.write( mol );
-            } catch ( CDKException e ) {
-                logger.error( e );
-            }
+                try {
+                    writer.write( mol );
+                } catch ( CDKException e ) {
+                    logger.error( e );
+                }
 
-            monitor.worked( work++ );
+                monitor.worked( work++ );
+            }
+        } else {
+            fileScanner = new Scanner( getDataFileContents() );
+            /* We uses the names provided from the wizard, so if the file 
+             * contains names we just throw them away... */
+            if ( propNameInDataFile && fileScanner.hasNextLine() )
+                fileScanner.nextLine();
+            while ( sdfItr.hasNext() && fileScanner.hasNextLine() ) {
+                mol = sdfItr.next();
+                values = readNextLine( fileScanner.nextLine() );
+                addPropToMol( mol, names, values, excludedProerties );
+                try {
+                    writer.write( mol );
+                } catch ( CDKException e ) {
+                    logger.error( e );
+                }
+
+                monitor.worked( work++ );
+            }
         }
- 
         try {
             writer.close();
             out.close();
