@@ -17,7 +17,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.AbstractHandler;
@@ -30,8 +32,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
@@ -44,6 +48,8 @@ import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.core.util.TimeCalculator;
+import net.bioclipse.ui.business.IUIManager;
 
 /**
  * A handler that can convert SMILES files into SDFiles.
@@ -61,6 +67,9 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 
 	//Possible separators
 	private static final String[] POSSIBLE_SEPARATORS=new String[]{",","\t"," "};
+	
+    private final IUIManager ui = net.bioclipse.ui.business.Activator
+                                     .getDefault().getUIManager();
 
 	
 	@Override
@@ -79,58 +88,94 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 			throw new ExecutionException("Selection is not a SMILES file");
 
 		final IFile file = (IFile) obj;
-		
+		final String newPath = file.getFullPath().toOSString()
+                                   .replace(".smi", ".sdf"); 
+		if ( ui.fileExists( newPath ) ) {
+            if ( !MessageDialog.openConfirm( 
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                          .getShell(),
+                "SD-file already exists, confirm overwrite",
+                "A file with the same name but the sdf file ending " +
+                "already exists. Okey to overwrite it?" ) ) {
+               return null;
+            }
+		}
 		
 		Job job=new Job("Converting SMILES to SDF"){
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				List<ICDKMolecule> mols;
-				monitor.beginTask("Converting SMILES", 10);
+				monitor.beginTask("Converting SMILES", 100);
 				ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
-				try {
-					mols = cdk.loadSMILESFile( 
-					           file, 
-					           new SubProgressMonitor(monitor, 9) );
-					if ( monitor.isCanceled()) {
-					    return Status.CANCEL_STATUS;
-					}
-				} catch (Exception e) {
-					LogUtils.handleException(e, logger, 
-							net.bioclipse.cdk.ui.Activator.PLUGIN_ID);
-					monitor.done();
-					return new Status(IStatus.ERROR, 
-							net.bioclipse.cdk.ui.Activator.PLUGIN_ID, 
-							"Failed to convert file. " +
-							" Cause: " + e.getMessage());
-				} 
 				
-				if (mols==null || mols.size()<=0)
-					return new Status(IStatus.ERROR, 
-							net.bioclipse.cdk.ui.Activator.PLUGIN_ID, 
-							"Error, no molecules to save. ");
-				
-				//Create output filename
-				String newPath = file.getFullPath().toOSString()
-									.replace(".smi", ".sdf");
-				
-				
-				
-//				debugAromaticity(mols.get(0));
-
-				try {
-					monitor.subTask("Saving SDFile");
-					monitor.worked(1);
-					cdk.saveSDFile(newPath, mols);
-				} catch (Exception e) {
-					LogUtils.handleException(e, logger, 
-							net.bioclipse.cdk.ui.Activator.PLUGIN_ID);
-					return new Status(IStatus.ERROR, 
-							net.bioclipse.cdk.ui.Activator.PLUGIN_ID, 
-							"Failed to write resulting " +
-							"SD file. Cause: " + e.getMessage());
+				int count = 0;
+				Scanner s;
+                try {
+                    s = new Scanner( file.getContents() );
+                } catch ( CoreException e ) {
+                    LogUtils.handleException( e, logger, 
+                            "net.bioclipse.cdk.ui" );
+                    return new Status(IStatus.ERROR, 
+                                      net.bioclipse.cdk.ui.Activator.PLUGIN_ID, 
+                                      "Error, failed to read file.");
+                }
+				while ( s.hasNextLine() ) {
+				    s.nextLine();
+				    count++;
 				}
+				
+				Iterator<ICDKMolecule> iterator = null;
+                
+				try {
+                    iterator = cdk.createMoleculeIterator(file);
+                } 
+                catch ( Exception e ) {
+                    LogUtils.handleException( e, logger, 
+                                              "net.bioclipse.cdk.ui" );
+                    return new Status(IStatus.ERROR, 
+                                      net.bioclipse.cdk.ui.Activator.PLUGIN_ID, 
+                                      "Error, failed to read file.");
+                }
 
+                //Create output filename
+                   
+
+                if ( ui.fileExists( newPath ) ) {
+                    ui.remove(newPath);
+                }
+				monitor.beginTask( "Converting file", count );
+				long timestamp = System.currentTimeMillis();
+				long before = timestamp;
+				int current = 0;
+				int last = 0;
+		        while ( iterator.hasNext() ) {
+		            try {
+                        cdk.appendToSDF(newPath, iterator.next());
+                    } catch ( BioclipseException e ) {
+                        LogUtils.handleException( e, logger, 
+                                                  "net.bioclipse.cdk.ui" );
+                        return new Status(
+                            IStatus.ERROR, 
+                            net.bioclipse.cdk.ui.Activator.PLUGIN_ID, 
+                            "Error, failed to write to file.");
+                    }
+		            current++;
+		            if (System.currentTimeMillis() - timestamp > 1000) {
+		                monitor.subTask( "Done: " + current + "/" + count 
+		                    + " (" + TimeCalculator.generateTimeRemainEst( 
+		                                 before, current, count ) + " )" );
+		                monitor.worked( current - last );
+		                last = current;
+		                synchronized ( monitor ) {
+        		                if ( monitor.isCanceled() ) {
+        		                    return Status.CANCEL_STATUS;
+        		                }
+                        }
+		                timestamp = System.currentTimeMillis();
+		            }
+		        }
+				
 				monitor.done();
 				logger.debug("Wrote file" + newPath);
 				return Status.OK_STATUS;
