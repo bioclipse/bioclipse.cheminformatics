@@ -27,6 +27,13 @@
                type="net.bioclipse.cdk.domain.MoleculesIndexEditorInput">
          </adapter>
       </factory>
+      <factory
+            adaptableType="net.bioclipse.cdk.domain.ICDKMolecule"
+            class="net.bioclipse.cdk.domain.CDKAdapterFactory">
+         <adapter
+               type="org.eclipse.jface.resource.ImageDescriptor">
+         </adapter>
+      </factory>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">

@@ -149,6 +149,7 @@ import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.similarity.Tanimoto;
 import org.openscience.cdk.smiles.DeduceBondSystemTool;
+import org.openscience.cdk.smiles.FixBondOrdersTool;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
@@ -327,11 +328,20 @@ public class CDKManager implements IBioclipseManager {
                         // set properties needed for H adding and aromaticity
                         atom.setAtomTypeName(types[i].getAtomTypeName());
                         atom.setHybridization(types[i].getHybridization());
+                        atom.setValency(types[i].getValency());
                         hAdder.addImplicitHydrogens(container, atom);
                     }
                 }
                 // perceive aromaticity
                 CDKHueckelAromaticityDetector.detectAromaticity(container);
+                // add missing double bonds
+                if (!(container instanceof org.openscience.cdk.interfaces.IMolecule)) {
+                	container = container.getBuilder().newInstance(org.openscience.cdk.interfaces.IMolecule.class, container);
+                }
+                FixBondOrdersTool tool = new FixBondOrdersTool();
+                container = tool.kekuliseAromaticRings((org.openscience.cdk.interfaces.IMolecule)container);
+                for (IBond bond : container.bonds()) System.out.println(bond.getOrder());
+                molecule.setAtomContainer(container);
             } catch ( CDKException e ) {
                 e.printStackTrace();
             }
@@ -969,6 +979,8 @@ public class CDKManager implements IBioclipseManager {
           }
       }
 
+      private FixBondOrdersTool fbot = new FixBondOrdersTool();
+      
       /**
        * Create molecule from SMILES.
        *
@@ -980,14 +992,19 @@ public class CDKManager implements IBioclipseManager {
           SmilesParser parser
               = new SmilesParser( DefaultChemObjectBuilder.getInstance() );
 
+          org.openscience.cdk.interfaces.IMolecule molecule;
           try {
-              org.openscience.cdk.interfaces.IMolecule mol
-                  = parser.parseSmiles(smilesDescription);
-              return new CDKMolecule(mol);
+              molecule = parser.parseSmiles(smilesDescription);
           }
           catch (InvalidSmilesException e) {
               throw new BioclipseException("SMILES string is invalid. Error message said: " + e.getMessage(), e);
           }
+          try {
+        	  molecule = fbot.kekuliseAromaticRings(molecule);
+          } catch (CDKException exception) {
+        	  logger.warn("Could not figure out the double bond positions: " + exception.getMessage());
+          }
+          return new CDKMolecule(molecule);
       }
 
       /**
@@ -1293,6 +1310,7 @@ public class CDKManager implements IBioclipseManager {
 
           IteratingMDLReader reader;
           IProgressMonitor monitor = new NullProgressMonitor();
+          FixBondOrdersTool tool = new FixBondOrdersTool();
 
           public IteratingBioclipseMDLReader( InputStream input,
                                               IChemObjectBuilder builder,
@@ -1315,6 +1333,12 @@ public class CDKManager implements IBioclipseManager {
           public ICDKMolecule next() {
               org.openscience.cdk.interfaces.IMolecule cdkMol
                   = (org.openscience.cdk.interfaces.IMolecule) reader.next();
+              try {
+            	  AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(cdkMol);
+	              tool.kekuliseAromaticRings(cdkMol);
+              } catch (CDKException e) {
+            	  logger.debug("Error while searching double bonds..." + e.getMessage());
+              }
               ICDKMolecule bioclipseMol = new CDKMolecule(cdkMol);
               monitor.worked(1);
               return bioclipseMol;
@@ -2014,7 +2038,7 @@ public class CDKManager implements IBioclipseManager {
               throw new IOException("Input was not ready to be read.");
           }
           List<ICDKMolecule> molecules = new ArrayList<ICDKMolecule>();
-          DeduceBondSystemTool bondSystemTool = new DeduceBondSystemTool();
+          FixBondOrdersTool bondOrderTool = new FixBondOrdersTool();
           List<String> lines = new LinkedList<String>();
           for ( String line = breader.readLine() ; 
                 line != null ; 
@@ -2107,7 +2131,7 @@ public class CDKManager implements IBioclipseManager {
                   
                   try {
                       org.openscience.cdk.interfaces.IMolecule newAC 
-                          = bondSystemTool.fixAromaticBondOrders(
+                          = bondOrderTool.kekuliseAromaticRings(
                               (org.openscience.cdk.interfaces.IMolecule)
                               mol.getAtomContainer() );
                       mol = new CDKMolecule(newAC);
@@ -2585,7 +2609,7 @@ public class CDKManager implements IBioclipseManager {
               IteratingBioclipseMDLReader reader
                   = new IteratingBioclipseMDLReader(
                             file.getContents(),
-                            DefaultChemObjectBuilder.getInstance(),
+                            SilentChemObjectBuilder.getInstance(),
                             monitor );
               int i = 0;
               List<ICDKMolecule> result=new RecordableList<ICDKMolecule>();
@@ -2945,6 +2969,35 @@ public class CDKManager implements IBioclipseManager {
     public String getMDLMolfileString(IMolecule molecule_in) throws BioclipseException {
 
         ICDKMolecule molecule = asCDKMolecule(molecule_in);
+
+        /*
+         * Fix bond orders if one aromatic bond is detected.
+         * FIXME: Replace this when we can detect SINGLE_OR_DOUBLE order.
+         */
+        boolean doFixBondOrders = false;
+        for (IBond bond : molecule.getAtomContainer().bonds()){
+        	if (bond.getFlag(CDKConstants.ISAROMATIC)){
+        		System.out.println("Bond is aromatic");
+        		doFixBondOrders = true;
+        	}
+        }
+        if (doFixBondOrders){
+        	logger.debug("At least one aromatic bond found, " +
+        			"fixing bond orders.");
+        	FixBondOrdersTool fbt = new FixBondOrdersTool();
+        	try {
+        		org.openscience.cdk.interfaces.IMolecule cdkMol =
+        			(org.openscience.cdk.interfaces.IMolecule)molecule.getAtomContainer();
+        		AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(cdkMol);
+				IAtomContainer fixedAC = fbt.kekuliseAromaticRings(cdkMol);
+				molecule=new CDKMolecule(fixedAC);
+			} catch (CDKException e) {
+	            logger.error(
+	                    "Error fixing bond orders in MDL serialization. " +
+	                    "Reason: " + e.getMessage(),e);
+	                return null;
+			}
+        }
 
         StringWriter stringWriter = new StringWriter();
         MDLV2000Writer writer = new MDLV2000Writer(stringWriter);

@@ -32,14 +32,11 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
-import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IMoleculeSet;
-import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
-import org.openscience.cdk.smiles.DeduceBondSystemTool;
+import org.openscience.cdk.smiles.FixBondOrdersTool;
 
 public class NewFromSMILESWizard extends BasicNewResourceWizard {
 
@@ -89,22 +86,22 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
         			ICDKManager cdk = net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
         			progress.subTask("Generating molecule");
         			ICDKMolecule mol = cdk.fromSMILES(getSMILES());
-        			IMoleculeSet containers =partitionIntoMolecules(mol.getAtomContainer());
+        			IMoleculeSet containers = partitionIntoMolecules(mol.getAtomContainer());
         			progress.worked(50);
         			for (IAtomContainer container : containers.molecules()) {
         				// ok, try to do something smart (tm) with SMILES input:
         				//   try to resolve bond orders
-        				final DeduceBondSystemTool tool = new DeduceBondSystemTool();
-        				final org.openscience.cdk.interfaces.IMolecule cdkMol =
-        						asCDKMolecule(container);
+        				final FixBondOrdersTool tool = new FixBondOrdersTool();
+        				final IMolecule cdkMol = asCDKMolecule(container);
         				try{
         					progress.setWorkRemaining(150);
         					FutureTask<IMolecule> future =
         						       new FutureTask<IMolecule>(new Callable<IMolecule>() {
         						         public IMolecule call() throws CDKException{
-        						        	 return tool.fixAromaticBondOrders(cdkMol);
+        						        	 IMolecule betterMol = tool.kekuliseAromaticRings(cdkMol);
+        						        	 return betterMol;
         						       }});
-        					progress.subTask("Deducing aromaticity");
+        					progress.subTask("Finding double bonds");
         				    executor.execute(future);
         				    while(!future.isDone()) {
         				    	progress.worked(1);
@@ -114,30 +111,15 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
         				    	}
         				    	Thread.sleep(1000);
         				    }
+                            mol = new CDKMolecule( future.get() );
         				} catch(Exception e) {
-        					logger.warn("Aromaticity detection failed du to "+e.getMessage());
+        					logger.warn("Aromaticity detection failed due to "+e.getMessage());
+                            mol = new CDKMolecule( cdkMol );
         				}
-        				mol = new CDKMolecule(cdkMol);
         				progress.setWorkRemaining(50);
         				progress.subTask("Generating coordinates");
         				progress.worked(25);
         				mol = cdk.generate2dCoordinates(mol);
-        				progress.subTask("Preforming atom type matching");
-        				CDKAtomTypeMatcher matcher = CDKAtomTypeMatcher.getInstance(
-        						NoNotificationChemObjectBuilder.getInstance()
-        						);
-        				IAtomType[] types = matcher.findMatchingAtomType(
-            			mol.getAtomContainer()
-        						);
-        				progress.setWorkRemaining(types.length);
-        				for (int i=0; i<types.length; i++) {
-        					progress.worked(1);
-        					if (types[i] != null) {
-        						mol.getAtomContainer().getAtom(i).setAtomTypeName(
-            					types[i].getAtomTypeName()
-        								);
-        					}
-        				}
         				net.bioclipse.ui.business.Activator.getDefault().getUIManager()
         					.open(mol, "net.bioclipse.cdk.ui.editors.jchempaint.cml");
         			}
