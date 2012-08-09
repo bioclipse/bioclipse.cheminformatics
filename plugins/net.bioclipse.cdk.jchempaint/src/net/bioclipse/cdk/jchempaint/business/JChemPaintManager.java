@@ -783,6 +783,7 @@ public class JChemPaintManager implements IBioclipseManager {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
             IChemModelRelay relay = editor.getControllerHub();
+            relay.updateImplicitHydrogenCounts();
             IChemModel model = relay.getIChemModel();
             List<IAtomContainer> containers =
                 ChemModelManipulator.getAllAtomContainers(model);

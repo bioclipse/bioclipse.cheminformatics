@@ -881,15 +881,6 @@
        </separator>
        <command
              commandId="net.bioclipse.cdk.jchempaint.manager.action"
-             label="Update Implicit Hydrogens"
-             style="push">
-          <parameter
-                name="jcp.manager.method"
-                value="updateImplicitHydrogenCounts">
-          </parameter>
-       </command>
-       <command
-             commandId="net.bioclipse.cdk.jchempaint.manager.action"
              label="Add Explicit Hydrogens"
              style="push">
           <parameter
