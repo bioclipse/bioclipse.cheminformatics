@@ -57,7 +57,7 @@ public class SWTMouseEventRelay implements  Listener {
                 mouseMove( event );
                 break;
             case SWT.MouseWheel:
-                mouseScrolled( event );
+                //mouseScrolled( event ); // Disabled in favor for listener in jcpeditorwidget
                 break;
             default:
                 logger.debug( "Event("+ event.type + ") not supportet" );
@@ -111,7 +111,7 @@ public class SWTMouseEventRelay implements  Listener {
         return event.button == mouseButton && (event.stateMask & key)!=0;
     }
 
-    public void mouseMove(Event event) {
+    private void mouseMove(Event event) {
         if(isDragging){
 
             if(checkState( event, 0, SWT.SHIFT )) {
@@ -129,15 +129,15 @@ public class SWTMouseEventRelay implements  Listener {
             relay.mouseMove(event.x, event.y);
     }
 
-    public void mouseScrolled(Event e) {
+    private void mouseScrolled(Event e) {
 
-//        int clicks = e.count;
-//        if (clicks > 0) {
-//            relay.mouseWheelMovedBackward(0);
-//        } else if(clicks<0){
-//            relay.mouseWheelMovedForward(0);
-//        }
-//        e.doit = false;
+        int clicks = e.count;
+        if (clicks > 0) {
+            relay.mouseWheelMovedBackward(0);
+        } else if(clicks<0){
+            relay.mouseWheelMovedForward(0);
+        }
+        e.doit = false;
     }
 
 }
