@@ -75,6 +75,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
@@ -102,6 +103,7 @@ import org.openscience.cdk.renderer.IRenderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Scale;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.ZoomFactor;
 import org.openscience.cdk.renderer.generators.ExternalHighlightGenerator;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HighlightAtomShapeFilled;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HoverOverColor;
@@ -467,53 +469,26 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         for(int event:EVENTS) {
             addListener( event, relay );
         }
-    }
-
-    private void setupScrollbars() {
-        final ScrollBar hBar = getHorizontalBar();
-        hBar.setEnabled(true);
-        hBar.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent event) {
-                ScrollBar bar = (ScrollBar) event.widget;
-                int d = bar.getSelection();
-                Rectangle rect = getDiagramBounds();
-                int dx = -d - rect.x;
-//                switch(event.detail) {
-//                    case SWT.PAGE_DOWN: dx = -12;break;
-//                    case SWT.PAGE_UP: dx = 12;break;
-//                }
-                setIsScrolling(true);
-                origin = new Point(origin.x+dx,origin.y);
-                scroll(rect.x+dx, rect.y, rect.x, rect.y, rect.width, rect.height, false);
-                getRenderer().shiftDrawCenter( dx, 0 );
-                setIsScrolling(false);
-                JChemPaintEditorWidget.this.redraw();
-                update();
-            }
-        });
-
-        final ScrollBar vBar = getVerticalBar();
-        vBar.setEnabled(true);
-        vBar.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent event) {
-                ScrollBar bar = (ScrollBar) event.widget;
-                int d = bar.getSelection();
-                Rectangle rect = getDiagramBounds();
-                //if(true)return;
-                int dy = -d - rect.y;
-//                switch(event.detail) {
-//                    case SWT.PAGE_DOWN: dy = -12;break;
-//                    case SWT.PAGE_UP: dy = 12;break;
-//                    case SWT.DRAG: break;
-//                }
-                setIsScrolling(true);
-                origin = new Point(origin.x,origin.y+dy);
-                scroll(rect.x, rect.y+dy, rect.x, rect.y, rect.width, rect.height, false);
-                getRenderer().shiftDrawCenter( 0, dy);
-                setIsScrolling(false);
-                update();
-            }
-        });
+        
+        Listener listener = new Listener() {
+			
+			@Override
+			public void handleEvent(Event event) {
+				switch(event.type) {
+				case SWT.MouseWheel:
+					currentMagnification = magnification;
+					magnification = (float) (currentMagnification * (1-event.count*.01));
+					if(magnification<=0) magnification=0.001f;
+					getRenderer().setZoom(magnification);
+					resizeControl();
+					JChemPaintEditorWidget.this.redraw();
+					logger.debug("Mouse zoom");
+					break;
+				}
+				
+			}
+		};
+		addListener(SWT.MouseWheel, listener);
     }
 
     @Override
@@ -533,6 +508,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         }
     }
 
+    /** Gets the diagram bounds in screen-space.
+     * 
+     */
     private Rectangle getDiagramBounds() {
         java.awt.Rectangle r =
             getRenderer().calculateDiagramBounds(hub.getIChemModel());
@@ -948,7 +926,54 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         operationHistory.add((IUndoableOperation)undoredo);
     }
 
-    private void resizeControl() {
+    private void setupScrollbars() {
+	        final ScrollBar hBar = getHorizontalBar();
+	        hBar.setEnabled(true);
+	        hBar.addSelectionListener(new SelectionAdapter() {
+	            public void widgetSelected(SelectionEvent event) {
+	                ScrollBar bar = (ScrollBar) event.widget;
+	                int d = bar.getSelection();
+	                Rectangle rect = getDiagramBounds();
+	                int dx = -d - rect.x;
+	                switch(event.detail) {
+	                    case SWT.PAGE_DOWN:logger.debug("PAGE_DOWN");System.out.println("DSFDFSDFSDFSD");break;
+	                    case SWT.PAGE_UP: logger.debug("PAGE_UP");System.out.println("DSFDFSDFSDFSD");break;
+	                }
+	                setIsScrolling(true);
+	                origin = new Point(origin.x+dx,origin.y);
+	                scroll(rect.x+dx, rect.y, rect.x, rect.y, rect.width, rect.height, false);
+	                getRenderer().shiftDrawCenter( dx, 0 );
+	                setIsScrolling(false);
+	                JChemPaintEditorWidget.this.redraw();
+	                update();
+	            }
+	        });
+	
+	        final ScrollBar vBar = getVerticalBar();
+	        vBar.setEnabled(true);
+	        vBar.addSelectionListener(new SelectionAdapter() {
+	            public void widgetSelected(SelectionEvent event) {
+	                ScrollBar bar = (ScrollBar) event.widget;
+	                int d = bar.getSelection();
+	                Rectangle rect = getDiagramBounds();
+	                //if(true)return;
+	                int dy = -d - rect.y;
+	//                switch(event.detail) {
+	//                    case SWT.PAGE_DOWN: dy = -12;break;
+	//                    case SWT.PAGE_UP: dy = 12;break;
+	//                    case SWT.DRAG: break;
+	//                }
+	                setIsScrolling(true);
+	                origin = new Point(origin.x,origin.y+dy);
+	                scroll(rect.x, rect.y+dy, rect.x, rect.y, rect.width, rect.height, false);
+	                getRenderer().shiftDrawCenter( 0, dy);
+	                setIsScrolling(false);
+	                update();
+	            }
+	        });
+	    }
+
+	private void resizeControl() {
         final ScrollBar hBar = getHorizontalBar();
         final ScrollBar vBar = getVerticalBar();
 
@@ -960,27 +985,40 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         hBar.setMaximum (diagram.width);
         vBar.setMaximum (diagram.height);
+        
         hBar.setThumb (Math.min (diagram.width, client.width));
         vBar.setThumb (Math.min (diagram.height, client.height));
+        
         int hPage = diagram.width - client.width;
         int vPage = diagram.height - client.height;
+        
         int hSelection = hBar.getSelection ();
         int vSelection = vBar.getSelection ();
-        if (hSelection >= hPage) {
-          if (hPage <= 0) hSelection = 0;// negative width fits in should center
-          xVal = -hSelection+client.width/2-diagram.width/2;
-        }
-        if (vSelection >= vPage) {
-          if (vPage <= 0) vSelection = 0;
-          yVal = -vSelection + client.height/2-diagram.height/2;
-        }
-        int dx = xVal!=null?xVal-diagram.x:0;
-        int dy = yVal!=null?yVal-diagram.y:0;
-
-        if(dx!=0 || dy!=0) {
-            getRenderer().shiftDrawCenter( dx, dy);
-            origin = new Point(origin.x+dx,origin.y+dy);
-        }
+        
+        double zoom = getRenderer2DModel().get(ZoomFactor.class);
+        double scale = getRenderer2DModel().get(Scale.class);
+        Point2d drawCenter = getRenderer().getDrawCenter();
+        hSelection = (int) (drawCenter.x - (diagram.width/2f));
+        vSelection = (int) (drawCenter.y - (diagram.height/2.f));
+        
+        hBar.setSelection(hSelection);
+        vBar.setSelection(vSelection);
+        
+//        if (hSelection >= hPage) {
+//          if (hPage <= 0) hSelection = 0;// negative width fits in should center
+//          xVal = -hSelection+client.width/2-diagram.width/2;
+//        }
+//        if (vSelection >= vPage) {
+//          if (vPage <= 0) vSelection = 0;
+//          yVal = -vSelection + client.height/2-diagram.height/2;
+//        }
+//        int dx = xVal!=null?xVal-diagram.x:0;
+//        int dy = yVal!=null?yVal-diagram.y:0;
+//
+//        if(dx!=0 || dy!=0) {
+//            getRenderer().shiftDrawCenter( dx, dy);
+//            origin = new Point(origin.x+dx,origin.y+dy);
+//        }
     }
 
     public void addDropSupport(int operations, Transfer[] transferTypes,
