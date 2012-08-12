@@ -107,6 +107,7 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
         				    	progress.worked(1);
         				    	if(progress.isCanceled()) {
         				    		future.cancel(true);
+                                    tool.setInterrupted( true );
         				    		throw new OperationCanceledException();
         				    	}
         				    	Thread.sleep(1000);
