@@ -919,7 +919,7 @@
           </command>
           <command
                 commandId="net.bioclipse.cdk.jchempaint.selectPart"
-                label="Selecte Part"
+                label="Select Part"
                 style="push">
              <visibleWhen
                    checkEnabled="false">
