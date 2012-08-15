@@ -487,6 +487,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 					resizeControl();
 //					JChemPaintEditorWidget.this.redraw();
 //					logger.debug("Mouse zoom");
+					event.doit = false;
 					break;
 				}
 				
