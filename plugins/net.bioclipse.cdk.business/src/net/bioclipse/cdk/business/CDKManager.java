@@ -154,6 +154,7 @@ import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 import org.openscience.cdk.smiles.smarts.parser.TokenMgrError;
+import org.openscience.cdk.tautomers.InChITautomerGenerator;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
@@ -3158,6 +3159,33 @@ public class CDKManager implements IBioclipseManager {
         monitor.done();
 
         return results;
+    }
+
+    public List<ICDKMolecule> getTautomers(IMolecule molecule, IProgressMonitor monitor)
+    throws BioclipseException {
+    	if (monitor == null) monitor = new NullProgressMonitor();
+
+    	monitor.beginTask("Generating tautomers...", 100); // we won't get more than that, I guess
+    	InChITautomerGenerator tautomerGenerator = new InChITautomerGenerator();
+    	monitor.worked(1); // a bonus point for just starting
+
+    	ICDKMolecule cdkMol = asCDKMolecule(molecule);
+    	try {
+			List<IAtomContainer> tautomers = tautomerGenerator.getTautomers(cdkMol.getAtomContainer());
+	    	List<ICDKMolecule> tautomerList = new ArrayList<ICDKMolecule>();
+
+	    	for (IAtomContainer tautomer : tautomers) {
+	    		tautomerList.add(newMolecule(tautomer));
+	    		monitor.worked(1);
+	    	}
+	    	monitor.done();
+	    	return tautomerList;
+		} catch (Exception exception) {
+			throw new BioclipseException(
+				"Error while generating tautomers: " + exception.getMessage(),
+				exception
+			);
+		}
     }
 
     /**

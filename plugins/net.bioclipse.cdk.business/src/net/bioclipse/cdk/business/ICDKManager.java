@@ -1196,4 +1196,11 @@ public interface ICDKManager extends IBioclipseManager {
     public void appendToSDF( String sdFile, ICDKMolecule molecule ) throws BioclipseException;
     
     public void appendToSDF( IFile sdFile, ICDKMolecule molecule ) throws BioclipseException;
+
+    @Recorded
+    @PublishedMethod(
+         params="IMolecule molecule",
+         methodSummary="Generates a list of tautomers."
+    )
+    public List<ICDKMolecule> getTautomers(IMolecule molecule) throws BioclipseException;
 }
