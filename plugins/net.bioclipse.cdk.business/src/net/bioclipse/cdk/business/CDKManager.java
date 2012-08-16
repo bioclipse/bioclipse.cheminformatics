@@ -3175,6 +3175,7 @@ public class CDKManager implements IBioclipseManager {
 	    	List<ICDKMolecule> tautomerList = new ArrayList<ICDKMolecule>();
 
 	    	for (IAtomContainer tautomer : tautomers) {
+	    		if(monitor.isCanceled()) throw new OperationCanceledException();
 	    		tautomerList.add(newMolecule(tautomer));
 	    		monitor.worked(1);
 	    	}
