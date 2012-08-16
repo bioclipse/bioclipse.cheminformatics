@@ -87,6 +87,50 @@ public class InChIManager implements IBioclipseManager {
         }
     }
 
+    public void generate( IMolecule molecule, String options,
+            IReturner<InChI> returner,
+            IProgressMonitor monitor) 
+    throws Exception {
+    	monitor.beginTask("Calculating InChI", IProgressMonitor.UNKNOWN);
+    	// return early if InChI library could not be loaded
+    	if (!isAvailable()) {
+    		returner.completeReturn(InChI.FAILED_TO_CALCULATE);
+    		return;
+    	}
+
+    	Object adapted = molecule.getAdapter(IAtomContainer.class);
+    	if (adapted != null) {
+    		IAtomContainer container = (IAtomContainer)adapted;
+    		IAtomContainer clone = (IAtomContainer)container.clone();
+    		// remove aromaticity flags
+    		for (IAtom atom : clone.atoms())
+    			atom.setFlag(CDKConstants.ISAROMATIC, false);
+    		for (IBond bond : clone.bonds())
+    			bond.setFlag(CDKConstants.ISAROMATIC, false);
+    		InChIGenerator gen = factory.getInChIGenerator(clone, options);
+    		INCHI_RET status = gen.getReturnStatus();
+    		if(monitor.isCanceled())
+    			throw new OperationCanceledException();
+    		if (status == INCHI_RET.OKAY ||
+    				status == INCHI_RET.WARNING) {
+    			monitor.done();
+    			InChI inchi = new InChI();
+    			inchi.setValue(gen.getInchi());
+    			inchi.setKey(gen.getInchiKey());
+    			returner.completeReturn( inchi );
+    		} else {
+    			throw new InvalidParameterException(
+    					"Error while generating InChI (" + status + "): " +
+    							gen.getMessage()
+    					);
+    		}
+    	} else {
+    		throw new InvalidParameterException(
+    				"Given molecule must be a CDKMolecule"
+    				);
+    	}
+    }
+
     public String load() {
         if (factory == null) {
             try {

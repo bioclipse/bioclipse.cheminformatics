@@ -10,6 +10,8 @@
  ******************************************************************************/
 package net.bioclipse.inchi.business;
 
+import java.util.List;
+
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
@@ -36,6 +38,17 @@ public interface IInChIManager extends IBioclipseManager {
     @TestMethods("testGenerate")
     public InChI generate(IMolecule molecule) throws Exception;
     public BioclipseJob<InChI> generate(IMolecule molecule,
+            BioclipseJobUpdateHook<InChI> h );
+
+    @Recorded
+    @PublishedMethod(
+        params = "IMolecule molecule, String options",
+        methodSummary = "Generates the InChI and InChIKey for the " +
+        		"given molecule, using the given options. This options String consists of " +
+        		"one or more, space-delimited options, such as FixedH.")
+    @TestMethods("testGenerateWithOptions")
+    public InChI generate(IMolecule molecule, String options) throws Exception;
+    public BioclipseJob<InChI> generate(IMolecule molecule, String options,
             BioclipseJobUpdateHook<InChI> h );
 
     @Recorded

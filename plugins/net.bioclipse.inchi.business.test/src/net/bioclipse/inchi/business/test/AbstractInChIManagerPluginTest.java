@@ -40,6 +40,15 @@ public abstract class AbstractInChIManagerPluginTest {
     }
 
     @Test
+    public void testGenerateWithOptions() throws Exception {
+        IMolecule mol = cdk.fromSMILES("OC=O");
+        Assert.assertNotNull("Input structure is unexpectedly null", mol);
+        InChI inchiObj = inchi.generate(mol, "FixedH");
+        Assert.assertNotNull(inchiObj);
+        Assert.assertEquals("InChI=1/CH2O2/c2-1-3/h1H,(H,2,3)/f/h2H", inchiObj.getValue());
+    }
+
+    @Test
     public void testGenerateNoStereo() throws Exception {
         IMolecule mol = cdk.fromSMILES("ClC(Br)(F)(O)");
         Assert.assertNotNull("Input structure is unexpectedly null", mol);
