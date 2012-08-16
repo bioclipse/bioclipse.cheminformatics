@@ -12,6 +12,8 @@
 package net.bioclipse.inchi.business;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
@@ -19,6 +21,7 @@ import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.inchi.InChI;
 import net.bioclipse.jobs.IReturner;
 import net.bioclipse.managers.business.IBioclipseManager;
+import net.sf.jniinchi.INCHI_OPTION;
 import net.sf.jniinchi.INCHI_RET;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -131,6 +134,14 @@ public class InChIManager implements IBioclipseManager {
     	}
     }
 
+    public List<String> options() {
+    	List<String> options = new ArrayList<String>();
+    	for (INCHI_OPTION option : INCHI_OPTION.values()) {
+    		options.add("" + option);
+    	}
+    	return options;
+    }
+    
     public String load() {
         if (factory == null) {
             try {

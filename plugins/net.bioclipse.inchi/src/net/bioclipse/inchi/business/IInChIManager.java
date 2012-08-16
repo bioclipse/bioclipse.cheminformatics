@@ -53,6 +53,12 @@ public interface IInChIManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
+        methodSummary = "Returns a list of InChI generation options.")
+    @TestMethods("testOptions")
+    public List<String> options();
+
+    @Recorded
+    @PublishedMethod(
         methodSummary = "Loads the InChI library.")
     public String load();
 

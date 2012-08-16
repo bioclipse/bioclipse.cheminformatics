@@ -10,6 +10,8 @@
  ******************************************************************************/
 package net.bioclipse.inchi.business.test;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Ignore;
 
@@ -71,4 +73,13 @@ public abstract class AbstractInChIManagerPluginTest {
             key.getKey()
         );
     }
+
+    @Test
+    public void testOptions() throws Exception {
+        List<String> options = inchi.options();
+        Assert.assertNotNull(options);
+        Assert.assertNotSame(0, options.size()); // at least one option
+        Assert.assertTrue(options.contains("FixedH"));
+    }
+
 }
