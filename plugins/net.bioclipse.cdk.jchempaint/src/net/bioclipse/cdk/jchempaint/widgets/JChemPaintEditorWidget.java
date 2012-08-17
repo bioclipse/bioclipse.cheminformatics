@@ -1000,7 +1000,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
         if (vSelection >= vPage) {
           if (vPage <= 0)
-            vSelection = diagram.y;
+            vSelection = 0;
           yVal = -vSelection + client.height/2-diagram.height/2;
         }
 
