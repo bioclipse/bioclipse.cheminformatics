@@ -46,7 +46,7 @@ public class PropertyOrder implements Callable<Object> {
     public Object call() throws Exception {
 
         ICDKMolecule molecule = model.getMoleculeAt( row );
-
+        if(molecule==null) return "NA";
         if(propertyName == null) return calculateCoordinates( molecule );
 
         Object property =  molecule.getProperty( propertyName, Property.USE_CACHED );

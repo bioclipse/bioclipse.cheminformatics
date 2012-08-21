@@ -146,22 +146,12 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
                     mol = new CDKMolecule((IAtomContainer)chemObj);
                     setLastRead( index, mol );
                     readProperties( mol );
-                } catch ( CoreException e ) {
+                } catch ( Throwable e ) {
                     logger.warn( "Failed to read record "+index);
                     LogUtils.debugTrace( logger, e );
                     setLastRead( index, null );
                     return null;
-                } catch ( IOException e ) {
-                    logger.warn( "Failed to read record "+index);
-                    LogUtils.debugTrace( logger, e );
-                    setLastRead( index, null );
-                    return null;
-                } catch ( CDKException e ) {
-                    logger.warn( "Failed to read record "+index);
-                    LogUtils.debugTrace( logger, e );
-                    setLastRead( index, null );
-                    return null;
-                }
+                } 
             }
 
             sanatizeMDLV2000MolFileInput(mol);
