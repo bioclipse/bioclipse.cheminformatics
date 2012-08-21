@@ -19,7 +19,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.openscience.cdk.fingerprint.Fingerprinter;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.nonotify.NNAtomContainer;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 
 /**
  * @author arvid
@@ -31,7 +31,7 @@ public class CDKFingerPrintPropertyCalculator implements IPropertyCalculator<Bit
 
         Fingerprinter fp=new Fingerprinter();
         try {
-            IAtomContainer ac = new NNAtomContainer(molecule.getAtomContainer());
+            IAtomContainer ac = SilentChemObjectBuilder.getInstance().newInstance(IAtomContainer.class, molecule.getAtomContainer());
             BitSet fingerprint=fp.getFingerprint(ac);
             return fingerprint;
         } catch (Throwable e) {
