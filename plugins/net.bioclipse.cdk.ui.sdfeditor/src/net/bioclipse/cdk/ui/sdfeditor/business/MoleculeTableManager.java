@@ -224,8 +224,10 @@ public class MoleculeTableManager implements IBioclipseManager {
             for(IPropertyCalculator<?> calculator:calculators) {
                 calculateProgress.subTask( String.format( "%d/%d", prop++,
                                                           calculators.length) );
-                model.setPropertyFor( i, calculator.getPropertyName(),
-                             calculator.calculate( model.getMoleculeAt( i ) ) );
+                Object property = calculator.calculate(model.getMoleculeAt(i));
+                if(property!= null) {
+                	model.setPropertyFor( i, calculator.getPropertyName(),property);
+                }
                 calculateProgress.worked( 100 );
                 if(progress.isCanceled())
                     throw new OperationCanceledException();
