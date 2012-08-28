@@ -481,7 +481,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 				switch(event.type) {
 				case SWT.MouseWheel:
 					currentMagnification = magnification;
-					magnification = (float) (currentMagnification * (1-event.count*.01));
+					magnification = (float) (currentMagnification * (1-event.count*-.01));
 					if(magnification<=0) magnification=0.001f;
 					getRenderer().setZoom(magnification);
 					resizeControl();

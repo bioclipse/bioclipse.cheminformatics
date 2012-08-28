@@ -558,9 +558,8 @@ public class MoleculeTableManager implements IBioclipseManager {
                                                  loopProgress.newChild( 5 ) );
                 }else {
                     target.create( convertToByteArrayIs( writer ),
-                                                           false,
+                                                           IResource.FORCE | IResource.HIDDEN,
                                                  loopProgress.newChild( 4 ) );
-                    target.setHidden( true );
                     target.getParent().refreshLocal( IResource.DEPTH_INFINITE ,
                                                    loopProgress.newChild( 1));
                 }
@@ -600,7 +599,7 @@ public class MoleculeTableManager implements IBioclipseManager {
         } catch ( CoreException e1 ) {
             logger.warn( "Could not rename original" );
             throw new BioclipseException( "Failed to create new index: "
-                                          + e1.getMessage());
+                                          + e1.getMessage(),e1);
         }
         progress.done();
     }
