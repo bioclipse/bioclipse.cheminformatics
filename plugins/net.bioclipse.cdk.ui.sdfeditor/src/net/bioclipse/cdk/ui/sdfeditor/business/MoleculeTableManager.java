@@ -363,7 +363,7 @@ public class MoleculeTableManager implements IBioclipseManager {
             }
             }catch(Exception e) {
                 LogUtils.debugTrace( logger, e );
-                throw new BioclipseException("Faild to save file: "+
+                throw new BioclipseException("Failed to save file: "+
                                              e.getMessage());
             }
             if ( loopProgress.isCanceled() ) {
