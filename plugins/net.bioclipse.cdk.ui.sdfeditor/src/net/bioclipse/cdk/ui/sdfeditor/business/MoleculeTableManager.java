@@ -37,6 +37,7 @@ import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.core.util.TimeCalculator;
 import net.bioclipse.jobs.IReturner;
 import net.bioclipse.managers.business.IBioclipseManager;
 
@@ -506,9 +507,11 @@ public class MoleculeTableManager implements IBioclipseManager {
 
         IFile target = null;
         SubMonitor loopProgress = progress.newChild( 8000 );
-        loopProgress.setWorkRemaining( model.getNumberOfMolecules()*20 );
+        int numberOfMolecules = model.getNumberOfMolecules();
+        loopProgress.setWorkRemaining( numberOfMolecules*20 );
         loopProgress.subTask( "Writing to file" );
-        for(int i = 0;i<model.getNumberOfMolecules();i++ ) {
+        long startTime = System.currentTimeMillis();
+        for(int i = 0;i<numberOfMolecules;i++ ) {
             //loopProgress.setWorkRemaining( (model.getNumberOfMolecules()-i) );
             StringWriter writer = new StringWriter();
             IChemObjectWriter chemWriter = new SDFWriter(writer);
@@ -526,6 +529,11 @@ public class MoleculeTableManager implements IBioclipseManager {
                 mol.setProperties( ac.getProperties() );
             }
             loopProgress.worked( 5 );
+            loopProgress.setTaskName( 
+                "Done " + i + "/" + numberOfMolecules 
+                + " (" + TimeCalculator.generateTimeRemainEst( 
+                            startTime, i+1, numberOfMolecules ) 
+                + ")" );
             calculateProperties( molecule, calculators, new IReturner<Void>() {
                 public void completeReturn( Void object ) {
                 }
@@ -585,7 +593,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                            e.getMessage()!=null?e.getMessage():"");
             }
             loopProgress.subTask( String.format( "%d/%d", i,
-                                               model.getNumberOfMolecules() ) );
+                                               numberOfMolecules ) );
         }
         progress.setWorkRemaining( 1000 );
 
