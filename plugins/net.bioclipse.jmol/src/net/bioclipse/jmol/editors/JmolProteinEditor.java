@@ -44,8 +44,6 @@ import javax.vecmath.Point3f;
 
 import net.bioclipse.core.IResourcePathTransformer;
 import net.bioclipse.core.ResourcePathTransformer;
-import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jmol.Activator;
 import net.bioclipse.jmol.model.IJmolMolecule;
@@ -481,9 +479,6 @@ public class JmolProteinEditor extends EditorPart
             String val = (String) input.getAdapter( String.class );
             if(val != null) return val;
             
-            IMolecule mol = (IMolecule) input.getAdapter( IMolecule.class );
-            if(mol!=null) return mol.toCML();
-
             if ((input instanceof IFileEditorInput) && 
                     ((IFileEditorInput)input).getFile().exists()) {
                 return readFile( ((IFileEditorInput)input)
@@ -509,9 +504,6 @@ public class JmolProteinEditor extends EditorPart
             // TODO Auto-generated catch block
             LogUtils.debugTrace(logger, e);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            LogUtils.debugTrace(logger, e);
-        } catch ( BioclipseException e ) {
             // TODO Auto-generated catch block
             LogUtils.debugTrace(logger, e);
         }
@@ -969,49 +961,6 @@ public class JmolProteinEditor extends EditorPart
         runScript( "frame all" );
     }
     
-    /**
-     * @param mol {@link IMolecule} to show
-     * @param toAppend append molecule or load
-     */
-    private void showMolecule(IMolecule mol, Boolean toAppend) {
-      File    tempFile = null;
-      Scanner scanner = null;
-      
-      try {
-        scanner = new Scanner(mol.toCML());          
-        tempFile = createMolecularFile(scanner);
-      }
-      catch (Exception e) {
-          throw new RuntimeException("Exception when creating temp file", e);
-      }
-      finally
-      {
-        scanner.close();
-      }
-      
-      if(toAppend == true)
-        runScript("load append " + tempFile.getAbsolutePath());
-      else
-        runScript("load " + tempFile.getAbsolutePath());
-        
-      runScript("frame all");
-    }
-    
-    /**
-     * @param mol {@link IMolecule} to append
-     */
-    public void append(IMolecule mol) {
-      showMolecule(mol, true);
-    }
-    
-    /**
-     * Show the molecule, the previous one will be erased
-     * @param mol {@link IMolecule} to load 
-     */
-    public void loadMolecule(IMolecule mol) {
-      showMolecule(mol, false);
-    }
-
     @Override
     public boolean isDirty() {
       // TODO Auto-generated method stub
