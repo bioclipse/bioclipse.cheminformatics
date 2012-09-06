@@ -42,6 +42,7 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IBond.Order;
+import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
@@ -356,6 +357,17 @@ public class JChemPaintManager implements IBioclipseManager {
         if (editor != null) {
             monitor.beginTask( "Cleaning up of structure", IProgressMonitor.UNKNOWN );
             IChemModelRelay relay = editor.getControllerHub();
+            // Removes empty atomcontainers
+            // This is a dirty fix until we can work on a single atom container instead of a ChemModel
+            List<IAtomContainer> toRemove = new ArrayList<IAtomContainer>();
+            IMoleculeSet mSet = relay.getIChemModel().getMoleculeSet();
+            for(IAtomContainer ac:mSet.molecules()) {
+            	if(ac.getAtomCount()==0)
+            		toRemove.add(ac);
+            }
+            for(IAtomContainer ac:toRemove) {
+            	mSet.removeAtomContainer(ac);
+            }
             try{
                 relay.cleanup();
             } catch (NullPointerException e) {
