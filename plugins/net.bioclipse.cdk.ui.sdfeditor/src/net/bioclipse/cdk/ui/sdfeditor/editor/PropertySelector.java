@@ -100,13 +100,13 @@ public class PropertySelector extends Composite{
 
         final Button generatorButton = new Button(parent, SWT.CHECK);
         generatorButton.setLayoutData( new GridData(SWT.FILL,SWT.BOTTOM,true,false) );
-        generatorButton.setText( "Use external generators" );
-        generatorButton.setSelection( useGenerators);
+        generatorButton.setText( "Disable visualization ( eg. Metaprint2D, DS)" );
+        generatorButton.setSelection( !useGenerators);
 
         generatorButton.addSelectionListener( new SelectionAdapter() {
             @Override
             public void widgetSelected( SelectionEvent e ) {
-                useGenerators = generatorButton.getSelection();
+                useGenerators = !generatorButton.getSelection();
             }
         });
 
