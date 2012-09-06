@@ -162,7 +162,7 @@
         </command>
         <command
               commandId="net.bioclipse.cdk.ui.sdfeditor.addProperty"
-              label="CDK Fingerprint"
+              label="CDK Fingerprint (Fingerprinter)"
               style="push">
            <parameter
                  name="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
