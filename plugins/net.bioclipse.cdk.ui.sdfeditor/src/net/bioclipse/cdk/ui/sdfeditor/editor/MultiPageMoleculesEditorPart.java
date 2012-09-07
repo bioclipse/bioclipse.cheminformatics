@@ -64,6 +64,7 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.openscience.cdk.Mapping;
+import org.openscience.cdk.renderer.IRenderer;
 
 public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                                                     ISelectionListener,
@@ -329,6 +330,8 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                        moleculesPage.getContentProvider();
                ps.setInitialData( contentProvider.getProperties(),
                                   contentProvider.getAvailableProperties());
+               boolean useEx = moleculesPage.getMolTableViewer().cellPainter.isUseExtensionGenerators();
+               ps.setUseGenerators(useEx);
                break;
            case JCP:
                updateJCPPage();

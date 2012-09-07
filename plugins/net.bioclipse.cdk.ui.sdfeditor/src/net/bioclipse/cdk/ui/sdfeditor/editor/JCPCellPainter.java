@@ -72,7 +72,7 @@ import org.openscience.cdk.renderer.generators.RingGenerator;
 public class JCPCellPainter extends BackgroundPainter {
     public Logger logger = Logger.getLogger(JCPCellPainter.class );
 
-    private AtomContainerRenderer renderer;
+    AtomContainerRenderer renderer;
     private ChoiceGenerator extensionGenerator;
 
     private  IRenderer2DConfigurator renderer2DConfigurator;
@@ -222,7 +222,7 @@ public class JCPCellPainter extends BackgroundPainter {
 
     public boolean isUseExtensionGenerators() {
 
-        return useExtensionGenerators;
+        return extensionGenerator.getUse();
     }
 
     public void setUseExtensionGenerators( boolean useExtensionGenerators ) {
