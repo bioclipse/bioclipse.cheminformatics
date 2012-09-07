@@ -37,6 +37,7 @@ import org.eclipse.ui.part.Page;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.renderer.IRenderer;
 import org.openscience.cdk.renderer.generators.IGenerator;
 
 
@@ -57,9 +58,8 @@ public class GeneratorsView extends PageBookView {
 
     @Override
     protected PageRec doCreatePage( final IWorkbenchPart part ) {
-        final JChemPaintEditor editor = (JChemPaintEditor) part;
-        final List<IGenerator<IChemModel>> generators =
-        	editor.getWidget().getRenderer().getGenerators();
+    	IRenderer renderer = (IRenderer) part.getAdapter(IRenderer.class);
+        final List<IGenerator> generators = (List<IGenerator>)renderer.getGenerators();
 
         Page page = new Page() {
 
@@ -101,7 +101,9 @@ public class GeneratorsView extends PageBookView {
                          Object element = event.getElement();
                          if(element instanceof ChoiceGenerator) {
                              ((ChoiceGenerator)element).setUse( event.getChecked());
-                             editor.update();
+                             if(part instanceof JChemPaintEditor) {
+                            	 ((JChemPaintEditor)part).update();
+                             }
                          }
                     }
                  });
@@ -208,16 +210,23 @@ public class GeneratorsView extends PageBookView {
         IWorkbenchPage page = getSite().getPage();
         if (page != null) {
             IEditorPart part = page.getActiveEditor();
-            if(part != null && part.getSite().getId()
-                    .startsWith( "net.bioclipse.cdk.ui.editors.jchempaint" ))
-            return page.getActiveEditor();
+            if(part != null && isImportant(part))
+            return part;
         }
         return null;
     }
 
     @Override
     protected boolean isImportant( IWorkbenchPart part ) {
-        return part.getSite().getId().startsWith( "net.bioclipse.cdk.ui.editors.jchempaint" );
+    	String[] ids = new String[] {
+    		"net.bioclipse.cdk.ui.editors.jchempaint",
+    		"net.bioclipse.cdk.ui.sdfeditor"
+    	};
+    	String partId = part.getSite().getId();
+    	for(String id:ids) {
+    		if(partId.startsWith(id)) return true;
+    	}
+        return false;
     }
 
 }

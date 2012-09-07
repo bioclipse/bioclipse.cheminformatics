@@ -89,6 +89,8 @@ import org.eclipse.ui.part.PluginTransferData;
 import org.eclipse.ui.part.EditorInputTransfer.EditorInputData;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.renderer.AtomContainerRenderer;
+import org.openscience.cdk.renderer.IRenderer;
 
 public class MoleculesEditor extends EditorPart implements
         //ISelectionProvider,
@@ -650,6 +652,8 @@ public class MoleculesEditor extends EditorPart implements
                     outlinePage.setInput( (IMoleculesEditorModel) model );
             }
             return outlinePage;
+        } else if( adapter.isAssignableFrom(AtomContainerRenderer.class)) {
+        	return getMolTableViewer().cellPainter.renderer;
         }
         return super.getAdapter( adapter );
     }

@@ -106,6 +106,7 @@ import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.IResourceFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
+import org.openscience.cdk.renderer.ChemModelRenderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
 import org.openscience.cdk.renderer.generators.IGenerator;
@@ -587,6 +588,9 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
         }
         if( adapter.isAssignableFrom(ICDKMolecule.class)) {
             return getCDKMolecule();
+        }
+        if( adapter.isAssignableFrom(ChemModelRenderer.class)){
+        	return getWidget().getRenderer();
         }
         return super.getAdapter( adapter );
     }
