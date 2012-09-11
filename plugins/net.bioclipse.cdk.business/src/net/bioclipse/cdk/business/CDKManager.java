@@ -341,7 +341,7 @@ public class CDKManager implements IBioclipseManager {
                 }
                 FixBondOrdersTool tool = new FixBondOrdersTool();
                 container = tool.kekuliseAromaticRings((org.openscience.cdk.interfaces.IMolecule)container);
-                for (IBond bond : container.bonds()) System.out.println(bond.getOrder());
+                //for (IBond bond : container.bonds()) System.out.println(bond.getOrder());
                 molecule.setAtomContainer(container);
             } catch ( CDKException e ) {
                 e.printStackTrace();
@@ -395,7 +395,7 @@ public class CDKManager implements IBioclipseManager {
 
         try {
              monitor.beginTask("Reading file", ticks);
-             System.out.println( "no formats supported: "
+             logger.debug( "number of formats supported: "
                                  + readerFactory.getFormats().size() );
              ISimpleChemObjectReader reader = null;
 
@@ -443,7 +443,7 @@ public class CDKManager implements IBioclipseManager {
 
              // Store the chemFormat used for the reader
              IChemFormat chemFormat = (IChemFormat)reader.getFormat();
-             System.out.println( "Read CDK chemfile with format: "
+             logger.info("Read CDK chemfile with format: "
                                  + chemFormat.getFormatName() );
 
              List<IAtomContainer> atomContainersList
@@ -452,7 +452,7 @@ public class CDKManager implements IBioclipseManager {
              int nuMols = atomContainersList.size();
              int currentMolecule = 0;
 
-             System.out.println( "This file contained: "
+             logger.info( "This file contained: "
                                  + nuMols + " molecules" );
 
              for (int i = 0; i < atomContainersList.size(); i++) {
