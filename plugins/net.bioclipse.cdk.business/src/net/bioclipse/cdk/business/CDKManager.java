@@ -2598,11 +2598,10 @@ public class CDKManager implements IBioclipseManager {
       }
 
       public List<ICDKMolecule> extractFromSDFile( IFile file, int startenty,
-                                                int endentry )
+                                                int endentry , IProgressMonitor monitor)
                                                 throws BioclipseException,
                                                 InvocationTargetException {
 
-          IProgressMonitor monitor = new NullProgressMonitor();
           int ticks = 10000;
 
           try {
