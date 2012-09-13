@@ -199,7 +199,7 @@
            locationURI="popup:net.bioclipse.chemoinformatics.popup.convert?after=additions">
 		    <command
 		    	commandId="net.bioclipse.cdk.ui.handlers.convertSMILEStoSDF"
-		    	label="Convert SMILES to SDF"
+		    	label="to SDF"
 		        icon="icons/molecule2D.png">
 		      	<visibleWhen>
 		      	
