@@ -39,10 +39,12 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.progress.IProgressConstants;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.smiles.DeduceBondSystemTool;
+import org.openscience.cdk.smiles.FixBondOrdersTool;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
@@ -145,22 +147,39 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
                     ui.remove(output);
                 }
 				monitor.beginTask( "Converting file", count );
+				FixBondOrdersTool bondOrderTool = new FixBondOrdersTool();
 				long timestamp = System.currentTimeMillis();
 				long before = timestamp;
 				int current = 0;
 				int last = 0;
+
+				int failedCount= 0;
 		        while ( iterator.hasNext() ) {
 		            try {
-                        cdk.appendToSDF(newPath, iterator.next());
+		            	ICDKMolecule mol = iterator.next();
+		            	boolean filterout = false;
+		            	for(IAtom atom:mol.getAtomContainer().atoms()) {
+		            		if( atom.getAtomTypeName()==null ||
+		            		    atom.getAtomTypeName().equals("X")){
+		            			filterout = true;
+		            		}
+		            	}
+		            	if(!filterout) {
+		            	IMolecule newAC =
+		            		bondOrderTool.kekuliseAromaticRings((IMolecule) mol.getAtomContainer());
+		            	mol = new CDKMolecule(newAC);
+                        cdk.appendToSDF(output, mol);
+		            	} else{
+		            		++failedCount;
+		            	}
                     } catch ( BioclipseException e ) {
-                        LogUtils.handleException( e, logger, 
-                                                  "net.bioclipse.cdk.ui" );
-                        return new Status(
-                            IStatus.ERROR, 
-                            net.bioclipse.cdk.ui.Activator.PLUGIN_ID, 
-                            "Error, failed to write to file.");
+                    	++failedCount;
+                    	logger.error(e.getMessage(),e);
                     }
-		            current++;
+		            catch (CDKException e) {
+		            	++failedCount;
+		            	logger.warn("Could not deduce bond orders");
+		            }	            current++;
 		            if (System.currentTimeMillis() - timestamp > 1000) {
 		                monitor.subTask( "Done: " + current + "/" + count 
 		                    + " (" + TimeCalculator.generateTimeRemainEst( 
@@ -175,11 +194,15 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 		                timestamp = System.currentTimeMillis();
 		            }
 		        }
-				
-				monitor.done();
-				logger.debug("Wrote file" + newPath);
-				return Status.OK_STATUS;
 
+				monitor.done();
+				logger.debug("Wrote file" + output);
+				if(failedCount!=0){
+					setProperty(IProgressConstants.KEEP_PROPERTY, true);
+				}
+
+				return new Status(IStatus.OK,net.bioclipse.cdk.ui.Activator.PLUGIN_ID,
+						"Failed to convert "+failedCount+" molecules");
 			}};
 			job.setUser(true);
 			job.schedule();
