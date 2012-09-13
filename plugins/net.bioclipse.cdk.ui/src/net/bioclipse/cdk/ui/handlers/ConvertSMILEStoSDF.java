@@ -26,7 +26,9 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -87,10 +89,12 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 		if (!(obj instanceof IFile)) 
 			throw new ExecutionException("Selection is not a SMILES file");
 
-		final IFile file = (IFile) obj;
-		final String newPath = file.getFullPath().toOSString()
-                                   .replace(".smi", ".sdf"); 
-		if ( ui.fileExists( newPath ) ) {
+		final IFile input = (IFile) obj;
+
+		IPath outPath = input.getFullPath().removeFileExtension().addFileExtension("sdf");
+
+		final IFile output = ResourcesPlugin.getWorkspace().getRoot().getFile(outPath);
+		if ( ui.fileExists( output ) ) {
             if ( !MessageDialog.openConfirm( 
                 PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                           .getShell(),
@@ -101,18 +105,17 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
             }
 		}
 		
-		Job job=new Job("Converting SMILES to SDF"){
+		Job job=new Job("Converting "+input.getFullPath().toPortableString()+" to SDF"){
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				List<ICDKMolecule> mols;
 				monitor.beginTask("Converting SMILES", 100);
 				ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
 				
 				int count = 0;
 				Scanner s;
                 try {
-                    s = new Scanner( file.getContents() );
+                    s = new Scanner( input.getContents() );
                 } catch ( CoreException e ) {
                     LogUtils.handleException( e, logger, 
                             "net.bioclipse.cdk.ui" );
@@ -128,7 +131,7 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 				Iterator<ICDKMolecule> iterator = null;
                 
 				try {
-                    iterator = cdk.createMoleculeIterator(file);
+                    iterator = cdk.createMoleculeIterator(input);
                 } 
                 catch ( Exception e ) {
                     LogUtils.handleException( e, logger, 
@@ -138,11 +141,8 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
                                       "Error, failed to read file.");
                 }
 
-                //Create output filename
-                   
-
-                if ( ui.fileExists( newPath ) ) {
-                    ui.remove(newPath);
+                if ( ui.fileExists( output ) ) {
+                    ui.remove(output);
                 }
 				monitor.beginTask( "Converting file", count );
 				long timestamp = System.currentTimeMillis();
