@@ -505,6 +505,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 //    	JChemPaintEditorWidget.this.getRenderer().setDrawCenter((double)(origin.x+rect.width/2d), (double)(origin.y+rect.height/2d));
     	//srenderer.setZoom(magnification);
 //    	renderer.setRotation(Math.toRadians(rotation));
+    	try{
         if ( isScrolling ) {
             //renderer.repaint( visitor );
         	renderer.paint(model, visitor);
@@ -512,6 +513,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             Rectangle2D bounds = adaptRectangle(getClientArea());
             renderer.paint( model, visitor);// ,bounds,false);
         }
+    	} catch (Exception e) {
+    		logger.error(e.getMessage());
+    	}
     }
 
     /** Gets the diagram bounds in screen-space.

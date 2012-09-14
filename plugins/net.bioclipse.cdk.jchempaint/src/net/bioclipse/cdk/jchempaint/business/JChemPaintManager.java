@@ -25,6 +25,7 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.managers.business.IBioclipseManager;
 import net.bioclipse.scripting.ui.Activator;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -76,6 +77,7 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
  */
 public class JChemPaintManager implements IBioclipseManager {
 
+	private Logger logger = Logger.getLogger(JChemPaintManager.class);
     /** Not to be used by manager method directly, but is just needed for the syncRun() call. */
     private JChemPaintEditor jcpEditor;
 
@@ -379,7 +381,11 @@ public class JChemPaintManager implements IBioclipseManager {
             }
             PlatformUI.getWorkbench().getDisplay().syncExec( new Runnable() {
                 public void run() {
+                	try{
                     editor.getWidget().reset();
+                	} catch (Exception e) {
+                		logger.error(e.getMessage());
+                	}
                 }
             });
             monitor.done();
