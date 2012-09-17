@@ -12,7 +12,7 @@
        title="Step 1: Install sample data">
         <description>
              In this cheat sheet we need some molecules. A package called "Sample Data" have some, so If you haven't installed it, now is a good time to do it. 
-             This is done via the menu <b>Help > Install Sample Data</b>
+             This is done via the menu <b>Install > Samples...</b> and then choose "Sample Data Feature".
         </description>
         
     </item>
