@@ -44,12 +44,13 @@
       <description>
 
 		Gists are versioned scripts available from http://gist.github.com.
-		You can find scripts for Bioclipse on Delicious, http://delicious.com/tag/bioclipse+gist.
-
+		You can find scripts for Bioclipse on Diigo, http://www.diigo.com/user/chemblaics/bioclipse&#37;20gist.<br/>
+		There are also some scripts on MyExperiment.org that can be useful:<br/>
+        http://www.myexperiment.org/workflows?filter=TYPE_ID&#37;28&#37;2251&#37;22&#37;29
       </description>
       <command
             required="false"
-            serialization="org.eclipse.ui.browser.openBrowser(url=http://delicious.com/tag/bioclipse+gist )"/>
+            serialization="org.eclipse.ui.browser.openBrowser(url=http://www.diigo.com/user/chemblaics/bioclipse gist )"/> 
    </item>
 
    <item
