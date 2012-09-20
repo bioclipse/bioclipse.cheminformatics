@@ -288,7 +288,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                             atomType= atomType.replaceFirst(  "^[^\\.]+\\.","" );
                         return String.format( "%s%d, [%s]",
                                               atom.getSymbol(),
-                                              num,
+                                              num+1,
                                               atomType);
                     }else {
                         String text = rmodel.getToolTipText( atom );
