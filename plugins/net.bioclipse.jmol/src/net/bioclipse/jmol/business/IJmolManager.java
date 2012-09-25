@@ -27,7 +27,8 @@ import org.eclipse.core.runtime.CoreException;
 
 @TestClasses("net.bioclipse.jmol.test.JmolManagerTest")
 @PublishedClass(
-    value="This manager contains methods for controlling jmol",
+    value="This manager contains methods for controlling jmol, the 3D " +
+    		  "molecular visualizator",
     doi="10.1038/npre.2007.50.1"
 )
 public interface IJmolManager extends IBioclipseManager{
@@ -70,7 +71,9 @@ public interface IJmolManager extends IBioclipseManager{
     public void load(IMolecule file) throws BioclipseException;
     
     @Recorded
-    @PublishedMethod( methodSummary = "Export as image to path",
+    @PublishedMethod( methodSummary = "Export as png image to path. Give " +
+    		                              ".png ending filename to be able to " +
+    		                              "open the snapshot in Bioclipse.",
                       params = "String filepath" )
     public void snapshot(String filepath);
 
