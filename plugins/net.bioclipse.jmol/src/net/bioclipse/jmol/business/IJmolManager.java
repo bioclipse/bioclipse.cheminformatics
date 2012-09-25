@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2008 The Bioclipse Project and others.
+ * Copyright (c) 2008-2012 The Bioclipse Project and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Ola Spjuth
+ *     Ola Spjuth, Jonathan Alvarsson, Egon Willighagen
  *     
  ******************************************************************************/
 package net.bioclipse.jmol.business;
@@ -27,8 +27,8 @@ import org.eclipse.core.runtime.CoreException;
 
 @TestClasses("net.bioclipse.jmol.test.JmolManagerTest")
 @PublishedClass(
-    value="This manager contains methods for controlling jmol, the 3D " +
-    		  "molecular visualizator",
+    value="This manager contains methods for controlling Jmol, the 3D " +
+    		  "molecular visualizer",
     doi="10.1038/npre.2007.50.1"
 )
 public interface IJmolManager extends IBioclipseManager{
@@ -48,7 +48,7 @@ public interface IJmolManager extends IBioclipseManager{
 
     
     /**
-     * Load jmoo with a file
+     * Load Jmol with a file
      * @param path Path to file, relative workspace
      * @throws CoreException 
      */
@@ -78,18 +78,18 @@ public interface IJmolManager extends IBioclipseManager{
     public void snapshot(String filepath);
 
     /**
-     * Runs "spin on" in jmol
+     * Runs "spin on" in Jmol
      */
     @Recorded
-    @PublishedMethod( methodSummary = "Causes active jmol to " +
+    @PublishedMethod( methodSummary = "Causes active Jmol to " +
     		                              "spin molecule")
     public void spinOn();
     
     /**
-     * Runs "spin off" in jmol
+     * Runs "spin off" in Jmol
      */
     @Recorded
-    @PublishedMethod( methodSummary = "Causes active jmol to stop " +
+    @PublishedMethod( methodSummary = "Causes active Jmol to stop " +
     		                              "spinning molecule" )
     public void spinOff();
 
@@ -112,7 +112,7 @@ public interface IJmolManager extends IBioclipseManager{
     
     /**
      * Append a file to the open editor, effectively opening multiple files 
-     * on top of eachother.
+     * on top of each other.
      * 
      * @param file to be appended
      */
@@ -125,7 +125,7 @@ public interface IJmolManager extends IBioclipseManager{
     
     /**
      * Append a file to the open editor, effectively opening multiple files 
-     * on top of eachother.
+     * on top of each other.
      * 
      * @param file to be appended
      */
