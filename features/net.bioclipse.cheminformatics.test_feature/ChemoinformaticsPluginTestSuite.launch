@@ -43,7 +43,6 @@
 <setEntry value="org.eclipse.equinox.p2.extras.feature:default"/>
 <setEntry value="org.eclipse.equinox.p2.rcp.feature:default"/>
 <setEntry value="org.eclipse.equinox.p2.user.ui:default"/>
-<setEntry value="org.eclipse.rcp:default"/>
 </setAttribute>
 <booleanAttribute key="show_selected_only" value="true"/>
 <booleanAttribute key="tracing" value="false"/>
