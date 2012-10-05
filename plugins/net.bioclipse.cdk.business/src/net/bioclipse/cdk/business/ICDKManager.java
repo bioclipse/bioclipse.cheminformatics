@@ -14,6 +14,7 @@
 package net.bioclipse.cdk.business;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.BitSet;
 import java.util.Collection;
@@ -224,6 +225,11 @@ public interface ICDKManager extends IBioclipseManager {
         loadMolecules( IFile file,
                        BioclipseUIJob<List<ICDKMolecule>> uiJob );
 
+    public List<ICDKMolecule> loadMolecules( InputStream contents,
+            IChemFormat format,
+            IProgressMonitor monitor ) throws BioclipseException,
+            								  CoreException,
+            								  IOException;
     /**
      * Save a molecule in same format as loaded to same filename, if exists
      * @param mol The molecule to save
