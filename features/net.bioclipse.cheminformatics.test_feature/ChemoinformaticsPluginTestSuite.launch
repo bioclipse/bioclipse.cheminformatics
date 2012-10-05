@@ -38,7 +38,6 @@
 <setEntry value="net.bioclipse.chemoinformatics_feature:default"/>
 <setEntry value="net.bioclipse.core.tests_feature:default"/>
 <setEntry value="net.bioclipse.core_feature:default"/>
-<setEntry value="net.bioclipse.platform_feature:default"/>
 <setEntry value="org.eclipse.equinox.p2.core.feature:default"/>
 <setEntry value="org.eclipse.equinox.p2.extras.feature:default"/>
 <setEntry value="org.eclipse.equinox.p2.rcp.feature:default"/>
