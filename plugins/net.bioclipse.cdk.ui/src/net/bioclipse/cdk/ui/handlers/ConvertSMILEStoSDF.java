@@ -10,15 +10,7 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.handlers;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Scanner;
 
 import org.apache.log4j.Logger;
@@ -32,7 +24,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -40,11 +31,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.progress.IProgressConstants;
-import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.smiles.DeduceBondSystemTool;
-import org.openscience.cdk.smiles.FixBondOrdersTool;
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.tools.AtomTypeAwareSaturationChecker;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
@@ -147,7 +136,8 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
                     ui.remove(output);
                 }
 				monitor.beginTask( "Converting file", count );
-				FixBondOrdersTool bondOrderTool = new FixBondOrdersTool();
+				AtomTypeAwareSaturationChecker ataSatChecker = new AtomTypeAwareSaturationChecker();
+//				FixBondOrdersTool bondOrderTool = new FixBondOrdersTool();
 				long timestamp = System.currentTimeMillis();
 				long before = timestamp;
 				int current = 0;
@@ -165,8 +155,9 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 		            		}
 		            	}
 		            	if(!filterout) {
-		            	IMolecule newAC =
-		            		bondOrderTool.kekuliseAromaticRings((IMolecule) mol.getAtomContainer());
+//		            	IMolecule newAC =
+//		            		bondOrderTool.kekuliseAromaticRings((IMolecule) mol.getAtomContainer());
+		            	IAtomContainer newAC = mol.getAtomContainer();
 		            	mol = new CDKMolecule(newAC);
                         cdk.appendToSDF(output, mol);
 		            	} else{
@@ -176,10 +167,11 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
                     	++failedCount;
                     	logger.error(e.getMessage(),e);
                     }
-		            catch (CDKException e) {
-		            	++failedCount;
-		            	logger.warn("Could not deduce bond orders");
-		            }	            current++;
+//		            catch (CDKException e) {
+//		            	++failedCount;
+//		            	logger.warn("Could not deduce bond orders");
+//		            }	            
+		            current++;
 		            if (System.currentTimeMillis() - timestamp > 1000) {
 		                monitor.subTask( "Done: " + current + "/" + count 
 		                    + " (" + TimeCalculator.generateTimeRemainEst( 

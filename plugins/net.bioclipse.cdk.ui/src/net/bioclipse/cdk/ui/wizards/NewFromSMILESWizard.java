@@ -36,7 +36,7 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IMoleculeSet;
-import org.openscience.cdk.smiles.FixBondOrdersTool;
+import org.openscience.cdk.tools.AtomTypeAwareSaturationChecker;
 
 public class NewFromSMILESWizard extends BasicNewResourceWizard {
 
@@ -91,15 +91,18 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
         			for (IAtomContainer container : containers.molecules()) {
         				// ok, try to do something smart (tm) with SMILES input:
         				//   try to resolve bond orders
-        				final FixBondOrdersTool tool = new FixBondOrdersTool();
+        			    final AtomTypeAwareSaturationChecker ataSatChecker = new AtomTypeAwareSaturationChecker();
+//        				final FixBondOrdersTool tool = new FixBondOrdersTool();
         				final IMolecule cdkMol = asCDKMolecule(container);
         				try{
         					progress.setWorkRemaining(150);
         					FutureTask<IMolecule> future =
         						       new FutureTask<IMolecule>(new Callable<IMolecule>() {
         						         public IMolecule call() throws CDKException{
-        						        	 IMolecule betterMol = tool.kekuliseAromaticRings(cdkMol);
-        						        	 return betterMol;
+//        						        	 IMolecule betterMol = tool.kekuliseAromaticRings(cdkMol);
+        						        	 IMolecule betterMol = cdkMol;
+        						        	 ataSatChecker.decideBondOrder( betterMol );
+        						        	 return betterMol;			        	 
         						       }});
         					progress.subTask("Finding double bonds");
         				    executor.execute(future);
@@ -107,7 +110,7 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
         				    	progress.worked(1);
         				    	if(progress.isCanceled()) {
         				    		future.cancel(true);
-                                    tool.setInterrupted( true );
+//                                    tool.setInterrupted( true );
         				    		throw new OperationCanceledException();
         				    	}
         				    	Thread.sleep(1000);
