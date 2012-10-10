@@ -339,6 +339,7 @@ public class CDKManager implements IBioclipseManager {
                 	container = container.getBuilder().newInstance(org.openscience.cdk.interfaces.IMolecule.class, container);
                 }
                 AtomTypeAwareSaturationChecker ataSatChecker = new AtomTypeAwareSaturationChecker();
+                AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( container );
                 ataSatChecker.decideBondOrder( container );
 //                FixBondOrdersTool tool = new FixBondOrdersTool();
 //                container = tool.kekuliseAromaticRings((org.openscience.cdk.interfaces.IMolecule)container);
@@ -1003,6 +1004,7 @@ public class CDKManager implements IBioclipseManager {
               throw new BioclipseException("SMILES string is invalid. Error message said: " + e.getMessage(), e);
           }
           try {
+              AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( molecule );
               ataSatChecker.decideBondOrder( molecule );
 //        	  molecule = fbot.kekuliseAromaticRings(molecule);
           } catch (CDKException exception) {
@@ -1339,7 +1341,7 @@ public class CDKManager implements IBioclipseManager {
               org.openscience.cdk.interfaces.IMolecule cdkMol
                   = (org.openscience.cdk.interfaces.IMolecule) reader.next();
               try {
-            	  AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(cdkMol);
+            	  AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( cdkMol );
             	  ataSatChecker.decideBondOrder( cdkMol );
 //	              tool.kekuliseAromaticRings(cdkMol);
               } catch (CDKException e) {
@@ -2144,6 +2146,7 @@ public class CDKManager implements IBioclipseManager {
                       org.openscience.cdk.interfaces.IMolecule newAC = 
                               (org.openscience.cdk.interfaces.IMolecule) 
                               mol.getAtomContainer();
+                      AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( newAC );
                       ataSatChecker.decideBondOrder( newAC );
                       mol = new CDKMolecule(newAC);
                   } 
@@ -2999,7 +3002,7 @@ public class CDKManager implements IBioclipseManager {
         	try {
         		org.openscience.cdk.interfaces.IMolecule cdkMol =
         			(org.openscience.cdk.interfaces.IMolecule)molecule.getAtomContainer();
-        		AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(cdkMol);
+        		AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( cdkMol );
 //				IAtomContainer fixedAC = fbt.kekuliseAromaticRings(cdkMol);				
 //				molecule=new CDKMolecule(fixedAC);
 				ataSatChecker.decideBondOrder( cdkMol );

@@ -31,9 +31,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.progress.IProgressConstants;
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.tools.AtomTypeAwareSaturationChecker;
+import org.openscience.cdk.tools.SaturationChecker;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
@@ -158,6 +161,8 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 //		            	IMolecule newAC =
 //		            		bondOrderTool.kekuliseAromaticRings((IMolecule) mol.getAtomContainer());
 		            	IAtomContainer newAC = mol.getAtomContainer();
+		            	AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( newAC );
+		            	ataSatChecker.decideBondOrder( newAC );
 		            	mol = new CDKMolecule(newAC);
                         cdk.appendToSDF(output, mol);
 		            	} else{
@@ -166,11 +171,10 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
                     } catch ( BioclipseException e ) {
                     	++failedCount;
                     	logger.error(e.getMessage(),e);
-                    }
-//		            catch (CDKException e) {
-//		            	++failedCount;
-//		            	logger.warn("Could not deduce bond orders");
-//		            }	            
+                    } catch (CDKException e) {
+		            	++failedCount;
+		            	logger.warn("Could not deduce bond orders");
+		            }	            
 		            current++;
 		            if (System.currentTimeMillis() - timestamp > 1000) {
 		                monitor.subTask( "Done: " + current + "/" + count 

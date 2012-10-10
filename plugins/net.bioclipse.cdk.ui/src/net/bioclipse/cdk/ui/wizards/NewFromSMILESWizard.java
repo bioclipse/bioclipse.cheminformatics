@@ -37,6 +37,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.tools.AtomTypeAwareSaturationChecker;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 public class NewFromSMILESWizard extends BasicNewResourceWizard {
 
@@ -101,6 +102,7 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
         						         public IMolecule call() throws CDKException{
 //        						        	 IMolecule betterMol = tool.kekuliseAromaticRings(cdkMol);
         						        	 IMolecule betterMol = cdkMol;
+        						        	 AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( betterMol );
         						        	 ataSatChecker.decideBondOrder( betterMol );
         						        	 return betterMol;			        	 
         						       }});
