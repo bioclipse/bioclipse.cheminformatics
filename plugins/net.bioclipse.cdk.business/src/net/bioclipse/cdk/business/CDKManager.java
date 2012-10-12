@@ -2656,7 +2656,7 @@ public class CDKManager implements IBioclipseManager {
             missingHCount += calculateMissingHydrogens( m.getAtomContainer(),
                                                         atom );
         }
-
+        
         if (missingHCount > 0) {
             mf.addIsotope( m.getAtomContainer().getBuilder()
                            .newInstance(IIsotope.class, Elements.HYDROGEN),
@@ -2686,10 +2686,12 @@ public class CDKManager implements IBioclipseManager {
 
             if (type.getFormalNeighbourCount() == CDKConstants.UNSET)
               return 0;
-
+            
+            Integer at = atom.getImplicitHydrogenCount();
+            at = at != null ? at : 0;
             // very simply counting:
             // each missing explicit neighbor is a missing hydrogen
-            return type.getFormalNeighbourCount()
+            return type.getFormalNeighbourCount() - at
                    - container.getConnectedAtomsCount(atom);
         }
         catch ( CDKException e ) {
