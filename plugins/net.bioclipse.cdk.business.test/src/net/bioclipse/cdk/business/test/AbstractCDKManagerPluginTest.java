@@ -550,6 +550,14 @@ public abstract class AbstractCDKManagerPluginTest {
         assertTrue(smiles.contains("[Si]"));
     }
 
+    @Test 
+    public void testBug3394() throws BioclipseException {
+    	try {
+    	cdk.fromSMILES("OCC1OC(O)C(O)C(Op2(OC3C(O)C(O)OC(CO)C3O)np(OC4C(O)C(O)OC(CO)C4O)(OC5C(O)C(O)OC(CO)C5O)np(OC6C(O)C(O)OC(CO)C6O)(OC7C(O)C(O)OC(CO)C7O)n2)C1O");
+    	} catch (RuntimeException e) {
+    		Assert.fail("Failed with exception");
+    	}
+    }
     @Test
     public void testCreateMoleculeFromSMILES() throws BioclipseException {
 
