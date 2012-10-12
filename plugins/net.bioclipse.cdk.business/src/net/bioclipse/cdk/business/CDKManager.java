@@ -1009,8 +1009,8 @@ public class CDKManager implements IBioclipseManager {
 //        	  molecule = fbot.kekuliseAromaticRings(molecule);
           } catch (CDKException exception) {
         	  logger.warn("Could not figure out the double bond positions: " + exception.getMessage());
-//          } catch (NullPointerException npe) {
-//        	  throw new BioclipseException("Could not create molecule from: "+smilesDescription);
+          } catch (NullPointerException npe) {
+        	  throw new BioclipseException("Could not create molecule from: "+smilesDescription);
           }
           return new CDKMolecule(molecule);
       }
