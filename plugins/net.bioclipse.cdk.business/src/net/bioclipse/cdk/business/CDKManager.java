@@ -2026,7 +2026,7 @@ public class CDKManager implements IBioclipseManager {
        * @return a String separator, or null if none found
        */
       private static String determineSeparator(String line) {
-          String[] POSSIBLE_SEPARATORS=new String[]{",","\t"," "};
+          String[] POSSIBLE_SEPARATORS=new String[]{";",",","\\s+"};
           for (int i = 0; i< POSSIBLE_SEPARATORS.length; i++){
               String[] splits = line.split(POSSIBLE_SEPARATORS[i]);
               if (splits.length>1)
