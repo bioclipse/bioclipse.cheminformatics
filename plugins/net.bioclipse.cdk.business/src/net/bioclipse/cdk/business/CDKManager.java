@@ -1010,7 +1010,7 @@ public class CDKManager implements IBioclipseManager {
           } catch (CDKException exception) {
         	  logger.warn("Could not figure out the double bond positions: " + exception.getMessage());
           } catch (NullPointerException npe) {
-        	  throw new BioclipseException("Could not create molecule from: "+smilesDescription);
+        	  throw new IllegalStateException("Could not create molecule from: "+smilesDescription,npe);
           }
           return new CDKMolecule(molecule);
       }
