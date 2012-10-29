@@ -2048,7 +2048,7 @@ public class CDKManager implements IBioclipseManager {
           BufferedReader breader = new BufferedReader(reader);
 
           if ( !breader.ready() ) {
-              throw new IOException("Input was not ready to be read.");
+              throw new IOException("SMILES file is empty or it is not ready to be read");
           }
           List<ICDKMolecule> molecules = new ArrayList<ICDKMolecule>();
           AtomTypeAwareSaturationChecker ataSatChecker = new AtomTypeAwareSaturationChecker();
