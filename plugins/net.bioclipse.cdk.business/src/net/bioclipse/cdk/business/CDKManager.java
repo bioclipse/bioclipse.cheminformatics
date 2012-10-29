@@ -1251,7 +1251,7 @@ public class CDKManager implements IBioclipseManager {
                 errorLine = line;
                 if ( line == null ) { return null; }
                 if (separator != null) {
-                    String[] cols = line.split( separator );
+                    String[] cols = line.split( separator ,-1);
                     mol = fromSMILES( cols[0] );
                     for ( int i = 1 ; i<cols.length ; i++ ) {
                         mol.setProperty( headers[i], cols[i] );
@@ -2127,7 +2127,7 @@ public class CDKManager implements IBioclipseManager {
                   if (monitor.isCanceled())
                       return null;
                   
-                  String[] parts = headers.length > 1 ? line.split(separator) 
+                  String[] parts = headers.length > 1 ? line.split(separator,-1) 
                                                       : new String[] {line};
                   
                   //Assert header is same size as data
