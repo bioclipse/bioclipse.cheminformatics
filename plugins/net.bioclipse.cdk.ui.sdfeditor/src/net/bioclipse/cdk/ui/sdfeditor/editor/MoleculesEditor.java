@@ -14,7 +14,11 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import static net.bioclipse.cdk.ui.sdfeditor.Activator.STRUCTURE_COLUMN_WIDTH;
 
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +39,7 @@ import net.bioclipse.cdk.ui.views.IFileMoleculesEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
@@ -91,6 +96,8 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.AtomContainerRenderer;
 import org.openscience.cdk.renderer.IRenderer;
+
+import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 
 public class MoleculesEditor extends EditorPart implements
         //ISelectionProvider,
@@ -430,21 +437,33 @@ public class MoleculesEditor extends EditorPart implements
                 }catch ( CoreException e) {
                     contentDescr = null;
                 }
+                final IFile inputFile = file;
                 if(contentDescr != null && isKindOf( contentDescr.getContentType(),
                              "net.bioclipse.contenttypes.smi" )) {
                     try {
                         cdkManager.loadSMILESFile( file,
                                                    new BioclipseUIJob<List<ICDKMolecule>>() {
-
                             @Override
                             public void runInUI() {
-                                final List<ICDKMolecule> list = getReturnValue();
-
+                                List<ICDKMolecule> list = getReturnValue();
+                                if(list == null || list.isEmpty()) {
+                                	list = new ArrayList<ICDKMolecule>();
+                                }
                                 // FIXME there should be a IMoleculesEditorModel content provider
-                                setInput( new ListMoleculesEditorModel( list ));
+                                setInput( new ListMoleculesEditorModelWithResource( list ,inputFile));
                           }
 
                       } );
+                    }catch (RuntimeException e) {
+                    	logger.warn("could not read smi file",e);
+                    	if(e.getCause() instanceof IOException) {
+                    		Display.getDefault().asyncExec(new Runnable() {
+                            	@Override
+                            	public void run() {
+                                    setInput( new ListMoleculesEditorModelWithResource( new ArrayList<ICDKMolecule>() ,inputFile));
+                            	}
+                            });
+                    	}
                     }catch(IOException e) {
                         LogUtils.debugTrace( logger, e );
                     } catch ( CoreException e ) {
@@ -657,4 +676,75 @@ public class MoleculesEditor extends EditorPart implements
         }
         return super.getAdapter( adapter );
     }
+}
+
+class ListMoleculesEditorModelWithResource extends ListMoleculesEditorModel {
+    private Logger logger = Logger.getLogger(ListMoleculesEditorModelWithResource.class);
+	IFile inputFile;
+	public ListMoleculesEditorModelWithResource(List<ICDKMolecule> list,IFile file) {
+		super(list);
+		inputFile = file;
+	}
+	private String generateHeader(List<String> keys) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("SMILES");
+		for (String key : keys) {
+			builder.append(';');
+			builder.append(key);
+		}
+		return builder.toString();
+	}
+
+	private String generateLine(ICDKMolecule molecule, List<String> keys)
+			throws BioclipseException {
+		StringBuilder builder = new StringBuilder();
+		builder.append(molecule.toSMILES());
+		for (String key : keys) {
+			Object val = molecule.getProperty(key,
+					IMolecule.Property.USE_CACHED_OR_CALCULATED);
+			builder.append(';');
+			if(val!=null)
+				builder.append(val.toString());
+		}
+		return builder.toString();
+	}
+
+	@Override
+	public void save() {
+		try {
+			StringWriter sWriter = new StringWriter();
+			BufferedWriter writer = new BufferedWriter(sWriter);
+			List<String> keys = new ArrayList<String>();
+			for (Object p : getAvailableProperties()) {
+				keys.add(p.toString());
+			}
+			keys.remove("net.bioclipse.cdk.domain.property.SMILES");
+			writer.write(generateHeader(keys));
+			writer.append('\n');
+			for (int i = 0; i < getNumberOfMolecules(); i++) {
+				ICDKMolecule mol = getMoleculeAt(i);
+				try {
+					writer.append(generateLine(mol, keys));
+					writer.append('\n');
+				} catch (BioclipseException e) {
+					logger.error("Could not save molecule at position "
+							+ (i + 1));
+				}
+			}
+			writer.flush();
+			ByteArrayInputStream bis = new ByteArrayInputStream(sWriter
+					.toString().getBytes());
+			inputFile.setContents(bis, true, true, null);
+		} catch (IOException e) {
+			LogUtils.handleException(e, logger,
+					"net.bioclipse.cdk.ui.sdfeditor");
+			throw new RuntimeException("Faild to save " + inputFile.getName(),
+					e);
+		} catch (CoreException e) {
+			LogUtils.handleException(e, logger,
+					"net.bioclipse.cdk.ui.sdfeditor");
+			throw new RuntimeException("Faild to save " + inputFile.getName(),
+					e);
+		}
+	}
 }
