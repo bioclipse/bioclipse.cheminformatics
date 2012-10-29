@@ -117,7 +117,8 @@ public class MolTableSelection implements IStructuredSelection, IAdaptable{
     private List<ICDKMolecule> toListG() {
         List<ICDKMolecule> molecules = new ArrayList<ICDKMolecule>(selection.length);
         for(int i:selection) {
-            molecules.add( model.getMoleculeAt( i ) );
+        	if(i > 0 && i< model.getNumberOfMolecules())
+        		molecules.add( model.getMoleculeAt( i ) );
         }
         return molecules;
     }
