@@ -1192,7 +1192,8 @@ public interface ICDKManager extends IBioclipseManager {
     public List<List<IMolecule>> randomSplit2parts(List<IMolecule> mols_in, double firstRatio);
 
     public List<ICDKMolecule> loadSMILESFile( IFile file,
-                                              IProgressMonitor monitor );
+                                              IProgressMonitor monitor ) 
+                                              throws CoreException, IOException;
 
     @Recorded
     @PublishedMethod(
