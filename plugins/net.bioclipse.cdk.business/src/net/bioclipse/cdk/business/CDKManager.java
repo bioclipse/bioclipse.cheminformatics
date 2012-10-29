@@ -1245,8 +1245,10 @@ public class CDKManager implements IBioclipseManager {
         
         private ICDKMolecule getNext() {
             ICDKMolecule mol = null;
+            String errorLine = null;
             try {
                 String line = reader.readLine();
+                errorLine = line;
                 if ( line == null ) { return null; }
                 if (separator != null) {
                     String[] cols = line.split( separator );
@@ -1260,7 +1262,8 @@ public class CDKManager implements IBioclipseManager {
                 }
             }
             catch (BioclipseException e) {
-                throw new RuntimeException(e.getMessage(), e);
+                throw new RuntimeException("Error reading SMILES on line "+
+                		(readLines+2)+": \""+errorLine+"\" "+e.getMessage(), e);
             } 
             catch ( IOException e ) {
                 LogUtils.debugTrace( logger, e );
