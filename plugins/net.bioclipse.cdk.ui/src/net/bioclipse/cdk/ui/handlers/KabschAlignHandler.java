@@ -12,15 +12,17 @@ package net.bioclipse.cdk.ui.handlers;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.jobs.BioclipseUIJob;
 import net.bioclipse.ui.business.IUIManager;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -44,7 +46,7 @@ public class KabschAlignHandler extends AbstractHandler {
         if (!sel.isEmpty() && sel instanceof IStructuredSelection ) {
             IStructuredSelection ssel = (IStructuredSelection)sel;
             ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
-            IUIManager ui = net.bioclipse.ui.business.Activator.getDefault().
+            final IUIManager ui = net.bioclipse.ui.business.Activator.getDefault().
                 getUIManager();
             List<IMolecule> molecules = new ArrayList<IMolecule>(ssel.size());
             for (Object file : ssel.toList())
@@ -57,8 +59,18 @@ public class KabschAlignHandler extends AbstractHandler {
                 List<ICDKMolecule> aligned = cdk.kabsch(molecules);
                 List<IMolecule> alignedMols = new ArrayList<IMolecule>();
                 for (IMolecule mol : aligned) alignedMols.add(mol);
-                cdk.saveSDFile(path, alignedMols);
-                ui.open(path, "net.bioclipse.jmol.editors.JmolEditor");
+                cdk.saveSDFile(file, alignedMols, new BioclipseUIJob<Void>() {
+					@Override
+					public void runInUI() {
+						try {
+							ui.open(file, "net.bioclipse.jmol.editors.JmolEditor");
+						} catch (BioclipseException e) {
+							LogUtils.handleException( e, 
+									 Logger.getLogger(KabschAlignHandler.class),
+									 "net.bioclipse.cdk.ui");
+						}
+					}
+				});
             } catch (BioclipseException cause) {
                 throw new ExecutionException(
                     "Error while calculating RMSD matrix...",
