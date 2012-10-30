@@ -25,6 +25,10 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PlatformUI;
@@ -45,9 +49,10 @@ public class KabschAlignHandler extends AbstractHandler {
             List<IMolecule> molecules = new ArrayList<IMolecule>(ssel.size());
             for (Object file : ssel.toList())
                 molecules.add(cdk.loadMolecule((IFile)file));
-            String path = "/Virtual/aligned.sdf";
-            while (ui.fileExists(path))
-                path = "/Virtual/aligned" + UUID.randomUUID() + ".sdf";
+
+            IPath path = new Path("/Virtual/aligned.sdf");
+            path = handleCollision(path, ResourcesPlugin.getWorkspace());
+            final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
             try {
                 List<ICDKMolecule> aligned = cdk.kabsch(molecules);
                 List<IMolecule> alignedMols = new ArrayList<IMolecule>();
@@ -68,4 +73,27 @@ public class KabschAlignHandler extends AbstractHandler {
         }
         return null;
     }
+
+    static IPath handleCollision(IPath originalName,IWorkspace workspace) {
+    		int counter = 1;
+    		String resourceName = originalName.removeFileExtension().lastSegment();
+    		IPath leadupSegment = originalName.removeLastSegments(1);
+
+    		while (true) {
+    			String nameSegment;
+
+    			if (counter > 1) {
+    				nameSegment = resourceName+Integer.toString(counter);
+    			} else {
+    				nameSegment = resourceName;
+    			}
+    			IPath pathToTry = leadupSegment.append(nameSegment).addFileExtension(originalName.getFileExtension());
+
+    			if (!workspace.getRoot().exists(pathToTry)) {
+    				return pathToTry;
+    			}
+
+    			counter++;
+    		}
+    	}
 }
