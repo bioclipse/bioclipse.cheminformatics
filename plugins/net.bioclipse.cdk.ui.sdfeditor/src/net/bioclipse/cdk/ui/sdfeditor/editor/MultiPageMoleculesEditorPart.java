@@ -208,6 +208,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         }else {
             model.save();
             jcpPage.getWidget().setDirty( false );
+            this.moleculesPage.setDirty( false );
             setDirty( false );
         }
     }
