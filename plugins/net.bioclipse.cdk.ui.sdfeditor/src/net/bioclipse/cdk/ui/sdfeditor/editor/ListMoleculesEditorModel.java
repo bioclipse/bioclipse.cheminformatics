@@ -18,7 +18,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
@@ -101,8 +104,16 @@ public class ListMoleculesEditorModel implements IMoleculesEditorModel,
     }
 
     public Collection<Object> getAvailableProperties() {
-        if(!molecules.isEmpty())
-            return molecules.get(0).getAtomContainer().getProperties().keySet();
+    	Set<Object> props = new HashSet<Object>();
+        if(!molecules.isEmpty()) {
+        	if(molecules.size() < 100) {
+        		for(ICDKMolecule mol:molecules) {
+        			props.addAll(mol.getAtomContainer().getProperties().keySet());
+        		}
+        	} else
+        		props.addAll(molecules.get(0).getAtomContainer().getProperties().keySet());
+        	return props;
+        }
         return Collections.emptyList();
     }
 
