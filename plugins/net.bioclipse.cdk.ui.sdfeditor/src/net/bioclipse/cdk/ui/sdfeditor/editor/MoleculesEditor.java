@@ -397,12 +397,13 @@ public class MoleculesEditor extends EditorPart implements
     private void insert(ICDKMolecule... molecules) {
         int[] selection = molTableViewer.getSelectedRows();
         int first = selection.length!=0?selection[0]:-1;
-        Object input = molTableViewer.getInput();
+        IMoleculesEditorModel input = molTableViewer.getInput();
         if(input instanceof IFileMoleculesEditorModel && first!=-1)
             ((IFileMoleculesEditorModel)input).insert( first, molecules );
         else
-            ((IMoleculesEditorModel)input).instert( molecules );
+            input.instert( molecules );
         setDirty( true );
+        outlinePage.setInput( input);
         refresh();
     }
 
