@@ -17,12 +17,17 @@ import java.util.List;
 
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
+import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.inchi.InChI;
 import net.bioclipse.jobs.IReturner;
 import net.bioclipse.managers.business.IBioclipseManager;
+import net.sf.jniinchi.INCHI_KEY_STATUS;
 import net.sf.jniinchi.INCHI_OPTION;
 import net.sf.jniinchi.INCHI_RET;
+import net.sf.jniinchi.INCHI_STATUS;
+import net.sf.jniinchi.JniInchiException;
+import net.sf.jniinchi.JniInchiWrapper;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -163,6 +168,45 @@ public class InChIManager implements IBioclipseManager {
         methodSummary = "Returns true if the InChI library could be loaded.")
     public boolean isLoaded() {
     	return isLoaded;
+    }
+
+    public boolean checkKey(String inchikey) throws BioclipseException {
+    	INCHI_KEY_STATUS status;
+		try {
+			status = JniInchiWrapper.checkInchiKey(inchikey);
+		} catch (JniInchiException exception) {
+			throw new BioclipseException("Error while validating the inchi: " + exception.getMessage(), exception);
+		}
+    	if (status == INCHI_KEY_STATUS.VALID_STANDARD || status == INCHI_KEY_STATUS.VALID_NON_STANDARD)
+    		return true;
+    	// everything else is false
+    	return false;
+    }
+
+    public boolean check(String inchi) throws BioclipseException {
+    	INCHI_STATUS status;
+		try {
+			status = JniInchiWrapper.checkInchi(inchi, false);
+		} catch (JniInchiException exception) {
+			throw new BioclipseException("Error while validating the inchi: " + exception.getMessage(), exception);
+		}
+    	if (status == INCHI_STATUS.VALID_STANDARD || status == INCHI_STATUS.VALID_NON_STANDARD)
+    		return true;
+    	// everything else is false
+    	return false;
+    }
+
+    public boolean checkStrict(String inchi) throws BioclipseException {
+    	INCHI_STATUS status;
+		try {
+			status = JniInchiWrapper.checkInchi(inchi, true);
+		} catch (JniInchiException exception) {
+			throw new BioclipseException("Error while validating the inchi: " + exception.getMessage(), exception);
+		}
+    	if (status == INCHI_STATUS.VALID_STANDARD || status == INCHI_STATUS.VALID_NON_STANDARD)
+    		return true;
+    	// everything else is false
+    	return false;
     }
 
     public boolean isAvailable() {

@@ -17,6 +17,7 @@ import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
 import net.bioclipse.core.TestClasses;
 import net.bioclipse.core.TestMethods;
+import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.inchi.InChI;
 import net.bioclipse.jobs.BioclipseJob;
@@ -56,6 +57,27 @@ public interface IInChIManager extends IBioclipseManager {
         methodSummary = "Returns a list of InChI generation options.")
     @TestMethods("testOptions")
     public List<String> options();
+
+    @Recorded
+    @PublishedMethod(
+        methodSummary = "Checks the validity of an InChIKey.",
+        params="String inchikey"
+    )
+    public boolean checkKey(String inchikey) throws BioclipseException;
+
+    @Recorded
+    @PublishedMethod(
+        methodSummary = "Checks the validity of an InChI (loose).",
+        params="String inchi"
+    )
+    public boolean check(String inchi) throws BioclipseException;
+
+    @Recorded
+    @PublishedMethod(
+        methodSummary = "Checks the validity of an InChI (strict).",
+        params="String inchi"
+    )
+    public boolean checkStrict(String inchi) throws BioclipseException;
 
     @Recorded
     @PublishedMethod(
