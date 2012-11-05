@@ -12,7 +12,8 @@
        title="Step 1: Install sample data">
         <description>
              In this cheat sheet we need some molecules. A package called "Sample Data" have some, so If you haven't installed it, now is a good time to do it. 
-             This is done via the menu <b>Install > Samples...</b> and then choose "Sample Data Feature".
+             This is done via the menu <b>File > New... </b> and then choose <b>New Sample Data Project</b> in the Data-folder.<br/><br/>
+             If you don't find it, then you need to install the <b>Sample Data Feature</b> first. This is done in the wizard found under <b>Install > Data...</b>
         </description>
         
     </item>
