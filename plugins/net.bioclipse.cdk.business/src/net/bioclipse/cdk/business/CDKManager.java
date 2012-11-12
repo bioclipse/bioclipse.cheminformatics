@@ -1215,7 +1215,7 @@ public class CDKManager implements IBioclipseManager {
                 headers = new String[] {"smiles"};
             }
             else {
-                 headers = firstLine.split(separator);
+                 headers = firstLine.split(separator,-1);
             }
             
             // Confirm first line seems to be headers
@@ -2086,7 +2086,7 @@ public class CDKManager implements IBioclipseManager {
                   headers = new String[] {"smiles"};
               }
               else {
-                   headers = firstLine.split(separator);
+                   headers = firstLine.split(separator,-1);
               }
               
               
