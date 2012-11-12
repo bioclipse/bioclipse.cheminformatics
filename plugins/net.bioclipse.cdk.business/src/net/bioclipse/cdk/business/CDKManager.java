@@ -2104,7 +2104,10 @@ public class CDKManager implements IBioclipseManager {
               if (!haveHeaders) {
                   lines.add( 0, firstLine );
                   if ( headers.length != 1 ) {
-                      headers = new String[] {"smiles", "identifier"};
+                	  headers = new String[headers.length];
+                	  headers[0] = "SMILES";
+                	  for(int i=1; i < headers.length;i++)
+                		  headers[i] = "property" + i;
                   }
               }
               
