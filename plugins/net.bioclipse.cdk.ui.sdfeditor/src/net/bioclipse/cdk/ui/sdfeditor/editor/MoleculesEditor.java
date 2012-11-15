@@ -403,7 +403,9 @@ public class MoleculesEditor extends EditorPart implements
         else
             input.instert( molecules );
         setDirty( true );
-        outlinePage.setInput( input);
+        if(outlinePage!=null) {
+        	outlinePage.setInput( input);
+        }
         refresh();
     }
 
