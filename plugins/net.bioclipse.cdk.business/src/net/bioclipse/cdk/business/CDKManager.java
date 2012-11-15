@@ -335,11 +335,7 @@ public class CDKManager implements IBioclipseManager {
                 // perceive aromaticity
                 CDKHueckelAromaticityDetector.detectAromaticity(container);
                 // add missing double bonds
-                if (!(container instanceof org.openscience.cdk.interfaces.IMolecule)) {
-                	container = container.getBuilder().newInstance(org.openscience.cdk.interfaces.IMolecule.class, container);
-                }
                 AtomTypeAwareSaturationChecker ataSatChecker = new AtomTypeAwareSaturationChecker();
-                AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( container );
                 ataSatChecker.decideBondOrder( container );
 //                FixBondOrdersTool tool = new FixBondOrdersTool();
 //                container = tool.kekuliseAromaticRings((org.openscience.cdk.interfaces.IMolecule)container);
