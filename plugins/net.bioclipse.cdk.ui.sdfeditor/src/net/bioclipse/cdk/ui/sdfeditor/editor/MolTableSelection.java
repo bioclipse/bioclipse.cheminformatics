@@ -13,28 +13,41 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 
+import org.eclipse.core.expressions.IIterable;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.views.properties.IPropertySource2;
 
-public class MolTableSelection implements IStructuredSelection, IAdaptable{
+public class MolTableSelection implements IStructuredSelection, IIterable,IAdaptable{
 
     IMoleculesEditorModel model;
-    int[] selection;
+    List<Integer> selection;
     IPropertySource2 propertySource;
 
     public MolTableSelection(int[] selection,IMoleculesEditorModel model) {
-        this.selection = selection;
+        this.selection = new ArrayList<Integer>(selection.length);
+        for(int i:selection) {
+        	this.selection.add(i);
+        }
         this.model = model;
+        List<Integer> sel = new LinkedList<Integer>(this.selection);
+        for(Iterator<Integer> iter=sel.iterator();iter.hasNext();) {
+        	int index = iter.next();
+        	if(index > model.getNumberOfMolecules()) {
+        		iter.remove();
+        	}
+        }
+        this.selection = new ArrayList<Integer>(sel);
     }
 
     public boolean isEmpty() {
-        return selection.length==0;
+        return selection.size()==0;
     }
 
     @SuppressWarnings("unchecked")
@@ -44,11 +57,11 @@ public class MolTableSelection implements IStructuredSelection, IAdaptable{
             final IMoleculesEditorModel editorModel = new IMoleculesEditorModel() {
 
                 public ICDKMolecule getMoleculeAt( int index ) {
-                    return model.getMoleculeAt( selection[index] );
+                		return model.getMoleculeAt( selection.get(index) );
                 }
 
                 public int getNumberOfMolecules() {
-                    return selection.length;
+                    return selection.size();
                 }
 
                 public void markDirty( int index,
@@ -85,7 +98,7 @@ public class MolTableSelection implements IStructuredSelection, IAdaptable{
     }
 
     public Object getFirstElement() {
-        return model.getMoleculeAt( selection[0] );
+        return model.getMoleculeAt( selection.get(0) );
     }
 
     public Iterator<ICDKMolecule> iterator() {
@@ -93,11 +106,11 @@ public class MolTableSelection implements IStructuredSelection, IAdaptable{
             int index = 0;
             
             public boolean hasNext() {
-                return index + 1 < selection.length;
+                return index + 1 < selection.size();
             }
 
             public ICDKMolecule next() {
-                return model.getMoleculeAt( selection[++index] );
+                return model.getMoleculeAt( selection.get(index++) );
             }
 
             public void remove() {
@@ -107,7 +120,7 @@ public class MolTableSelection implements IStructuredSelection, IAdaptable{
     }
 
     public int size() {
-        return selection.length;
+        return selection.size();
     }
 
     public Object[] toArray() {
@@ -115,7 +128,7 @@ public class MolTableSelection implements IStructuredSelection, IAdaptable{
     }
 
     private List<ICDKMolecule> toListG() {
-        List<ICDKMolecule> molecules = new ArrayList<ICDKMolecule>(selection.length);
+        List<ICDKMolecule> molecules = new ArrayList<ICDKMolecule>(selection.size());
         for(int i:selection) {
         	if(i > 0 && i< model.getNumberOfMolecules())
         		molecules.add( model.getMoleculeAt( i ) );
