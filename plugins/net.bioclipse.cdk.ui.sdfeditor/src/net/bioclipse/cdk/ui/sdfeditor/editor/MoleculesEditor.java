@@ -234,7 +234,7 @@ public class MoleculesEditor extends EditorPart implements
                 if(widget instanceof NatTable) {
                     NatTable table = ((NatTable)widget);
                     LabelStack regionLabels = table.getRegionLabelsByXY(event.x, event.y);
-                    if(regionLabels.hasLabel(GridRegion.BODY)) {
+                    if(regionLabels!= null && regionLabels.hasLabel(GridRegion.BODY)) {
                         start = new Point(event.x,event.y);
                         return;
                     }

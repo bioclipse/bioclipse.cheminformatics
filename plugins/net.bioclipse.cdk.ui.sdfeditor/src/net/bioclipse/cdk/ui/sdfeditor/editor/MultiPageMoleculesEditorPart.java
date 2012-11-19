@@ -257,8 +257,12 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
             if(model instanceof SDFIndexEditorModel) {
                 model = new MappingEditorModel( model );
             }
-            mpmep.moleculesPage.getMolTableViewer().setInput( model );
-            mpmep.moleculesPage.getMolTableViewer().refresh();
+            MoleculeTableViewer molTableViewer = mpmep.moleculesPage.getMolTableViewer();
+            if(molTableViewer.getControl() == null || molTableViewer.getControl().isDisposed()) {
+            	return;
+            }
+			molTableViewer.setInput( model );
+            molTableViewer.refresh();
 
             IResource origin = model.getResource();
             if(origin !=null)
