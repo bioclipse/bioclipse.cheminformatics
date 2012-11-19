@@ -57,6 +57,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -185,9 +187,14 @@ public class MoleculesEditor extends EditorPart implements
     public void createPartControl( Composite parent ) {
 
         MenuManager headerMgr = new MenuManager("Molecuels table","net.bioclipse.cdk.ui.sdfeditor.column.menu");
-        headerMgr.add( new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-        MenuManager bodyMgr = new MenuManager("Molecuels table","net.bioclipse.cdk.ui.sdfeditor.menu");
-        bodyMgr.add( new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+        MenuManager bodyMgr = new MenuManager("net.bioclipse.cdk.ui.sdfeditor.menu","net.bioclipse.cdk.ui.sdfeditor.menu");
+        headerMgr.setRemoveAllWhenShown(true);
+        bodyMgr.setRemoveAllWhenShown(true);
+        bodyMgr.addMenuListener(new IMenuListener() {
+            public void menuAboutToShow(IMenuManager manager) {
+                manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+            }
+        });
 
         molTableViewer = new MoleculeTableViewer(parent,SWT.NONE, headerMgr,bodyMgr);
 
