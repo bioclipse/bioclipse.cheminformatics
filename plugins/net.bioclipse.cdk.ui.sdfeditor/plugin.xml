@@ -263,6 +263,19 @@
             </and>
         </visibleWhen>
      </command>
+     <separator
+           name="net.bioclipse.cdk.ui.sdfeditor.edit"
+           visible="true">
+     </separator>
+     <command
+           commandId="org.eclipse.ui.edit.delete"
+           label="Delete"
+           style="push">
+     </command>
+     <separator
+           name="net.bioclipse.cdk.ui.sdfeditor.extractors"
+           visible="true">
+     </separator>
      <command
            commandId="net.bioclipse.cdk.moltable.extract"
            label="Extract Molecules"
@@ -304,7 +317,11 @@
                  </or>
               </iterate>
         </visibleWhen>
-     </command> </menuContribution>
+     </command>
+     <separator
+           name="net.bioclipse.cdk.ui.sdfeditor.extra"
+           visible="true">
+     </separator> </menuContribution>
 	</extension>
  <extension
        point="net.bioclipse.scripting.contribution">
@@ -411,5 +428,44 @@
           id="net.bioclipse.cdk.ui.sdfeditor.preferencePage"
           name="Mol Table Preferences">
     </page>
+ </extension>
+ <extension
+       point="org.eclipse.ui.handlers">
+    <handler
+          class="net.bioclipse.cdk.ui.sdfeditor.handlers.RemoveMolecules"
+          commandId="org.eclipse.ui.edit.delete">
+       <activeWhen>
+          <iterate
+                operator="or">
+             <or>
+                <instanceof
+                      value="net.bioclipse.cdk.domain.ICDKMolecule">
+                </instanceof>
+                <instanceof
+                      value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
+                </instanceof>
+                <instanceof
+                      value="net.bioclipse.cdk.ui.sdfeditor.editor.MolTableSelection">
+                </instanceof>
+             </or>
+          </iterate>
+       </activeWhen>
+       <enabledWhen>
+          <iterate
+                operator="or">
+             <or>
+                <instanceof
+                      value="net.bioclipse.cdk.domain.ICDKMolecule">
+                </instanceof>
+                <instanceof
+                      value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
+                </instanceof>
+                <instanceof
+                      value="net.bioclipse.cdk.ui.sdfeditor.editor.MolTableSelection">
+                </instanceof>
+             </or>
+          </iterate>
+       </enabledWhen>
+    </handler>
  </extension>
 </plugin>
