@@ -11,8 +11,11 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.periodictable;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import net.bioclipse.cdk.domain.CDKChemObject;
 
@@ -52,8 +55,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.part.ViewPart;
 import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.Element;
+import org.openscience.cdk.config.IsotopeFactory;
+import org.openscience.cdk.interfaces.IElement;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.periodictable.PeriodicTable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -63,12 +70,16 @@ import org.openscience.cdk.tools.periodictable.PeriodicTable;
 @SuppressWarnings("serial")
 public class PeriodicTableView extends ViewPart implements ISelectionProvider{
 
-    String[] elements;
+    private static final Logger logger = LoggerFactory.getLogger( PeriodicTableView.class );
+
+    final int[] atomicNumbers;
+    Inset inset = new Inset();
+
     ColorAWTtoSWTConverter colorConverter;
 
     Canvas canvas;
 
-    CDKChemObject<Element> selection;
+    CDKChemObject<IElement> selection;
 
     ListenerList listeners = new ListenerList();
     ISelection theSelection = StructuredSelection.EMPTY;
@@ -91,7 +102,7 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
     static final Map<String,java.awt.Color> stateColorMap = new HashMap<String, java.awt.Color>(){
         {
             put("Gas",java.awt.Color.GREEN);
-            put("Synthetic",java.awt.Color.RED);
+            put("Synthetic",new java.awt.Color(0xEEEEEE));
             put("Liquid",java.awt.Color.BLUE);
             put("Solid",java.awt.Color.BLACK);
 
@@ -102,16 +113,25 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
     private Font font;
 
 
+    public PeriodicTableView() {
+        SortedSet<Integer> candidates = new TreeSet<Integer>();
+        for(int i=1;i<1000;i++) {
+            if( null != PeriodicTable.getSymbol( i )) {
+                candidates.add( i );
+            }
+        }
+        atomicNumbers = new int[candidates.size()];
+        int i = 0;
+        for(int number:candidates) {
+            atomicNumbers[i++] = number;
+        }
+    }
+
     /* (non-Javadoc)
      * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
      */
     @Override
     public void createPartControl( Composite parent ) {
-
-        elements = new String[PeriodicTable.getElementCount()];
-        for(int i=1;i<elements.length;i++) {
-            elements[i] = PeriodicTable.getSymbol( i );
-        }
 
         canvas = new Canvas(parent,SWT.NONE);
         canvas.setBackground( canvas.getDisplay().getSystemColor( SWT.COLOR_WHITE ) ) ;
@@ -172,16 +192,17 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
     private String checkHit(Point p) {
         Rectangle rect = new Rectangle(0,0,extent.x,extent.y);
 
-               for(String s:elements) {
-                   Point gP = getGroupPeriodFor( s );
-                   if(gP == null) continue;
+        for(int number: atomicNumbers) {
+            String symbol = PeriodicTable.getSymbol( number );
+            Point gp = getGroupPeriodFor( symbol );
+            if( gp == null) continue;
 
-                   rect.x = gP.x;
-                   rect.y = gP.y;
+            rect.x = gp.x;
+            rect.y = gp.y;
 
-                   if(rect.contains( p )) return s;
-               }
-               return null;
+            if(rect.contains( p )) return symbol;
+        }
+        return null;
     }
 
     private void initSelection() {
@@ -192,11 +213,16 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
 
                String s = checkHit( new Point(e.x,e.y) );
                if(s!=null) {
-
-                   Element element = new Element(s);
-                   element.setProperty( CDKConstants.TITLE, PeriodicTable.getName( s ));
-                   selection = new CDKChemObject<Element>(element);
-                   setSelection( new StructuredSelection(selection) );
+                   try {
+                       IsotopeFactory isf;
+                       isf = IsotopeFactory.getInstance(SilentChemObjectBuilder.getInstance());
+                       IElement element = isf.getElement( s );
+                       element.setProperty( CDKConstants.TITLE, PeriodicTable.getName( s ));
+                       selection = new CDKChemObject<IElement>(element);
+                       setSelection( new StructuredSelection(selection) );
+                   } catch (IOException ex) {
+                       logger.error("Could not get element from atomic symbol",ex);
+                   }
                }else {
                    selection = null;
                    setSelection(  StructuredSelection.EMPTY );
@@ -209,14 +235,22 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
 
     protected void resizeControl(ControlEvent event) {
         Rectangle clientArea = canvas.getClientArea();
-        int rowHeight = (int) Math.round(clientArea.height/9.5);
-        int columnWidth = (int) Math.round( clientArea.width/18d);
+        int width = clientArea.width-1;
+        int height = clientArea.height-1;
+        int rowHeight = (int) Math.floor(height/9.5);
+        int columnWidth = (int) Math.floor( width/18d);
+
+        int xExtra = (int)(( width-columnWidth*18)/2d);
+        int yExtra = (int)(( height-rowHeight*9.5)/2d);
+        inset.left = inset.right = xExtra;
+        inset.top = inset.bottom = yExtra;
+
         extent = new Point(columnWidth,rowHeight);
         if(font !=null && !font.isDisposed()) {
             Font newFont = font;
             font.dispose();
             FontData fd = newFont.getFontData()[0];
-            fd.setHeight( (int) (.50 * canvas.getClientArea().width/18d) );
+            fd.setHeight( (int) (.50 * width/18d) );
             font = new Font(canvas.getDisplay(),fd);
         }
 
@@ -225,25 +259,28 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
     private Point getGroupPeriodFor(String symbol) {
         Integer gTmp = PeriodicTable.getGroup( symbol );
         Integer pTmp = PeriodicTable.getPeriod(symbol);
+        if(symbol.equals( "Ds" )) {
+            gTmp = 10;
+            pTmp = 7;
+        }
         double group,period;
 
-        if(gTmp != null && pTmp != null) {
+        if(gTmp != null && pTmp != null && !(symbol.equals( "La" ) || symbol.equals( "Ac" ))) {
             group = gTmp;
             period = pTmp;
-//        Out-commented pending bug 1013
-//        }
-//        else if(pTmp != null){
-//            int atomNumber = getAtomicNumber( symbol );
-//            if(atomNumber<90) {
-//                group = 4+atomNumber-58;
-//            }else
-//                group = 4+atomNumber-90;
-//            period = pTmp + 2.5;
+        }
+        else if(pTmp != null){
+            int atomNumber = PeriodicTable.getAtomicNumber( symbol );
+            if(atomNumber<89) {
+                group = 4+atomNumber-58;
+            }else
+                group = 4+atomNumber-90;
+            period = pTmp + 2.5;
         }else {
             return null;
         }
-        int x = (int) ((group-1)*extent.x);
-        int y = (int) ((period-1)*extent.y);
+        int x = (int) ((group-1)*extent.x)+inset.left;
+        int y = (int) ((period-1)*extent.y)+inset.top;
 
         return new Point(x,y);
     }
@@ -255,12 +292,11 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
         if(font!=null)
             gc.setFont( font );
 
-        for(String symbol: elements) {
-
+        for(int number:atomicNumbers) {
+            String symbol = PeriodicTable.getSymbol( number );
             Point gP = getGroupPeriodFor( symbol );
             if(gP == null)
                 continue;
-
             String ser = PeriodicTable.getChemicalSeries( symbol );
             String state = PeriodicTable.getPhase( symbol );
 
@@ -272,7 +308,8 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
                 gc.setBackground( colorConverter.toSWTColor( color ) );
                 gc.fillRectangle( x,y , extent.x, extent.y );
             }
-            gc.setForeground( colorConverter.toSWTColor( stateColorMap.get( state ) ) );
+            //gc.setForeground( colorConverter.toSWTColor( stateColorMap.get( state ) ) );
+            gc.setForeground( gc.getDevice().getSystemColor( SWT.COLOR_BLACK ) );
             Point ext2 = gc.textExtent( symbol );
             int width   = extent.x-ext2.x;
             int height = extent.y-ext2.y;
@@ -390,4 +427,12 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
         dragSource.setTransfer(transferTypes);
         dragSource.addDragListener(listener);
       }
+}
+
+class Inset {
+    int left,right,top,bottom;
+
+    public Inset() {
+        left=right=top=bottom=2;
+    }
 }
