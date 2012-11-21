@@ -108,6 +108,11 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
     @Override
     public void createPartControl( Composite parent ) {
 
+        elements = new String[PeriodicTable.getElementCount()];
+        for(int i=1;i<elements.length;i++) {
+            elements[i] = PeriodicTable.getSymbol( i );
+        }
+
         canvas = new Canvas(parent,SWT.NONE);
         canvas.setBackground( canvas.getDisplay().getSystemColor( SWT.COLOR_WHITE ) ) ;
         colorConverter = new ColorAWTtoSWTConverter(canvas.getDisplay());
