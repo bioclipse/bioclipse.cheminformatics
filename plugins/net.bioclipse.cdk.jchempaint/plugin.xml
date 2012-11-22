@@ -208,6 +208,11 @@
           id="net.bioclipse.cdk.jchempaint.snapshot"
           name="Snapshot">
     </command>
+    <command
+          defaultHandler="net.bioclipse.cdk.jchempaint.handlers.AddOtherAtom"
+          id="net.bioclipse.cdk.jchempaint.command.addOther"
+          name="Add Other">
+    </command>
  </extension>
  <extension
        point="org.eclipse.core.expressions.propertyTesters">
@@ -813,6 +818,11 @@
                 </parameter>
              </command>
           </menu>
+          <command
+                commandId="net.bioclipse.cdk.jchempaint.command.addOther"
+                label="Other..."
+                style="push">
+          </command>
           <visibleWhen
                 checkEnabled="false">
              <reference
