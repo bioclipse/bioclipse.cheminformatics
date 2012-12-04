@@ -2453,10 +2453,6 @@ public class CDKManager implements IBioclipseManager {
               IProgressMonitor monitor)
                   throws BioclipseException, InvocationTargetException {
 
-          if ( file.exists() )
-              throw new BioclipseException("File " + file.getName()
-                                           + " already exists");
-
           if (monitor == null) {
               monitor = new NullProgressMonitor();
           }
