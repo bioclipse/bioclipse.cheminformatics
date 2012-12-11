@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDK UI Tests Plug-in
 Bundle-SymbolicName: net.bioclipse.cdk.ui.tests
-Bundle-Version: 2.5.0.qualifier
+Bundle-Version: 2.6.0.qualifier
 Bundle-Activator: net.bioclipse.cdk.ui.tests.Activator
 Bundle-Vendor: The Bioclipse Team
 Require-Bundle: org.eclipse.core.runtime,
