@@ -51,15 +51,7 @@ public class OpenJCPHandler extends AbstractHandler implements IHandler {
         if(sel instanceof IStructuredSelection) {
             Object o = ((IStructuredSelection)sel).getFirstElement();
             if(o instanceof IBioObject) {
-                try {
-                    ui.open( (IBioObject )o);
-                } catch ( BioclipseException e ) {
-                    logging(e);
-                } catch ( CoreException e ) {
-                    logging(e);
-                } catch ( IOException e ) {
-                    logging(e);
-                }
+                ui.open( (IBioObject )o);
             }
         }
         return null;

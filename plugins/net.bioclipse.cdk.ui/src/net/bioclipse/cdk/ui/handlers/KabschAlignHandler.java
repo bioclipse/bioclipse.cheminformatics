@@ -62,13 +62,7 @@ public class KabschAlignHandler extends AbstractHandler {
                 cdk.saveSDFile(file, alignedMols, new BioclipseUIJob<Void>() {
 					@Override
 					public void runInUI() {
-						try {
 							ui.open(file, "net.bioclipse.jmol.editors.JmolEditor");
-						} catch (BioclipseException e) {
-							LogUtils.handleException( e, 
-									 Logger.getLogger(KabschAlignHandler.class),
-									 "net.bioclipse.cdk.ui");
-						}
 					}
 				});
             } catch (BioclipseException cause) {
