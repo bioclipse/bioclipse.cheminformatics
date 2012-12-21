@@ -2,7 +2,7 @@
 <feature
       id="net.bioclipse.cdk_feature"
       label="Bioclipse CDK Feature"
-      version="2.6.0.qualifier"
+      version="2.6.0.vqualifier"
       provider-name="The Bioclipse Team"
       plugin="net.bioclipse.cdk.debug">
 

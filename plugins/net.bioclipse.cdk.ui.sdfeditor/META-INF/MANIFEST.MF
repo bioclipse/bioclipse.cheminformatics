@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SDFEditor
 Bundle-SymbolicName: net.bioclipse.cdk.ui.sdfeditor;singleton:=true
-Bundle-Version: 2.6.0.qualifier
+Bundle-Version: 2.6.0.vqualifier
 Bundle-Activator: net.bioclipse.cdk.ui.sdfeditor.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

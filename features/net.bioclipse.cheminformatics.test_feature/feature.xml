@@ -2,7 +2,7 @@
 <feature
       id="net.bioclipse.cheminformatics.test_feature"
       label="Bioclipse Cheminformatics Test Feature"
-      version="2.5.0.qualifier"
+      version="2.6.0.vqualifier"
       provider-name="The Bioclipse Team"
       plugin="net.bioclipse.cdk.debug">
 
