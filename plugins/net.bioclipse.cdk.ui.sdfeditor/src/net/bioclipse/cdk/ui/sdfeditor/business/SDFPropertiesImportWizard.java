@@ -20,7 +20,7 @@ import org.eclipse.jface.wizard.Wizard;
 
 /**
  * This class lunches a wizard that let the user import properties from a 
- * txt-file to a SDF-file. The result is saved in a new sd-file.
+ * txt- or csv-file to a SDF-file. The result is saved in a new sd-file.
  * 
  * @author Klas Jšnsson (klas.joensson@gmail.com)
  *

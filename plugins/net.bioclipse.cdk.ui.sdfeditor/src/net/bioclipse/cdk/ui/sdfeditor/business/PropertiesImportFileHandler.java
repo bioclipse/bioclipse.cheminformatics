@@ -12,8 +12,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -28,6 +30,10 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.io.SDFWriter;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
+
+import com.sun.tools.internal.xjc.model.CValuePropertyInfo;
+
+import au.com.bytecode.opencsv.CSVReader;
 
 /**
  * This class handle the different things that concerns reading and writing to 
@@ -44,7 +50,7 @@ public class PropertiesImportFileHandler {
     private ArrayList<String> propertiesID, choosenPropID;
     private ArrayList<String> sdFilePropertiesID;
     private ArrayList<ArrayList<String>> topValues;
-    private boolean topRowContainsPropName, propLinkedBy;
+    private boolean topRowContainsPropName, propLinkedBy, dataInCSVFile;
     private String dataFileLink, sdFileLink, newSDFilePath;
     // The row separator for the data in the data file, i.e. a tab.
     private final static String DELIMITER = "\t";
@@ -162,14 +168,20 @@ public class PropertiesImportFileHandler {
     /**
      * This method load the data file.
      * 
-     * @param dataFile The IFile containing the txt-file
+     * @param dataFile The IFile containing the txt- or csv-file
      * @throws FileNotFoundException Thrown if there's no file found
      */
     public void setDataFile(IFile dataFile) throws FileNotFoundException {
         this.dataFile = dataFile;
 //        propertiesID.clear();
 //        topValues.clear();
-        readProperiesFile( 0, ROWS_IN_TOPVALUES );
+        if (dataFile.getFileExtension().toLowerCase().matches( "csv" )) {
+            dataInCSVFile = true;
+            readFromCSV( 0, ROWS_IN_TOPVALUES );
+        } else {
+            dataInCSVFile = false;
+            readProperiesFile( 0, ROWS_IN_TOPVALUES );
+        }
     }
     
     /**
@@ -255,7 +267,7 @@ public class PropertiesImportFileHandler {
     }
     
     /**
-     * This method reads the data file. It assumes that the top row contatins
+     * This method reads the data file. It assumes that the top row contains
      * the names of the properties, If not: After loading the file use the 
      * method "propertiesNameInDataFile(boolean)".
      *  
@@ -326,6 +338,98 @@ public class PropertiesImportFileHandler {
                 column++;
             }
             row++;
+        }
+    }
+    
+    /**
+     * To be used if the data is in a csv-file
+     * @param startRow The row to start reading from, 0 is considered as the 
+     * first row in a file.
+     * @param endRow The last row to be read, set to -1 to read all rows in the 
+     * file.
+     * @throws FileNotFoundException 
+     */
+    private void readFromCSV(int startRow, int endRow) throws FileNotFoundException { 
+        String filePath = dataFile.getFullPath().toString();
+        CSVReader csvReader = new  CSVReader( new FileReader( filePath ) );
+        String[] nextRow;
+        propertiesID.clear();
+        topValues.clear();
+        
+        int rowNumber = 0;
+        
+        if (startRow != 0)
+            for (int i = 0; i < startRow; i++)
+                try {
+                    csvReader.readNext();
+                } catch ( IOException e ) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    return;
+                }
+        
+        if (endRow == -1) {
+            while (true) {
+                try {
+                    nextRow = csvReader.readNext();
+                    for (int i = 0; i < nextRow.length; i++) {
+                        if (topRowContainsPropName) {
+                            if (rowNumber == 0)
+                               propertiesID.add( nextRow[i] );
+                            else {
+                                if (rowNumber == 1)
+                                    topValues.add( new ArrayList<String>() );
+                                topValues.get( i ).add( nextRow[i] );
+                            }
+                        } else {
+                            if (rowNumber == 0)
+                                topValues.add( new ArrayList<String>() );
+                            topValues.get( i ).add( nextRow[i] );
+                        }
+                    }
+                    rowNumber++;
+                } catch ( IOException e ) {
+                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+                    /* It seams that this is the only way to know that we 
+                     * reached the end of the file */
+                    break;
+                }
+                
+            }
+        } else {
+            for (int j=0;j<endRow;j++) {
+                try {
+                    nextRow = csvReader.readNext();
+                    for (int i = 0; i < nextRow.length; i++) {
+                        if (topRowContainsPropName) {
+                            if (j == 0)
+                               propertiesID.add( nextRow[i] );
+                            else {
+                                if (j == 1)
+                                    topValues.add( new ArrayList<String>() );
+                                topValues.get( i ).add( nextRow[i] );
+                            }
+                        } else {
+                            if (j == 0)
+                                topValues.add( new ArrayList<String>() );
+                            topValues.get( i ).add( nextRow[i] ); 
+                        }
+                    }
+                } catch ( IOException e ) {
+//                    e.printStackTrace();
+                    /* It seams that this is the only way to know that we 
+                     * reached the end of the file */
+                    break;
+                }  
+            }
+        }
+        
+        try {
+            csvReader.close();
+        } catch ( IOException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
     
@@ -446,15 +550,39 @@ public class PropertiesImportFileHandler {
                 /* If this molecule don't have a property with this name
                  * there's no need to do any more with this molecule*/
                 if ( molProp != null && !molProp.isEmpty() ) {
-                    fileScanner = new Scanner( getDataFileContents() );
-                    while ( fileScanner.hasNext() ) {
-                        values = readNextLine( fileScanner.nextLine() );
-                        if ( values.get( index ).equals( molProp ) ) {
-                            addPropToMol(mol, names, values, excludedProerties);
+                    if (dataInCSVFile) {
+                        String filePath = dataFile.getFullPath().toString();
+                        CSVReader csvReader = new CSVReader( new FileReader( filePath ) );
+                        try {
+                            String[] nextRow = csvReader.readNext();
+                            values = new ArrayList<String>();
+                            for (String value:nextRow)
+                                values.add( value );
+                            mol = sdfItr.next();
+                            addPropToMol( mol, names, values, excludedProerties );
+                        } catch ( IOException e ) {
+                            /* It seams that this is the only way to know that we 
+                             * reached the end of the file */
+                            // e.printStackTrace();
+                            try {
+                                csvReader.close();
+                            } catch ( IOException e1 ) {
+                                // TODO Auto-generated catch block
+                                e1.printStackTrace();
+                            }
                             break;
                         }
+                    } else {
+                        fileScanner = new Scanner( getDataFileContents() );
+                        while ( fileScanner.hasNext() ) {
+                            values = readNextLine( fileScanner.nextLine() );
+                            if ( values.get( index ).equals( molProp ) ) {
+                                addPropToMol(mol, names, values, excludedProerties);
+                                break;
+                            }
+                        }
+                        fileScanner.close();
                     }
-                    fileScanner.close();
                 }
                 try {
                     writer.write( mol );
@@ -465,22 +593,52 @@ public class PropertiesImportFileHandler {
                 monitor.worked( work++ );
             }
         } else {
-            fileScanner = new Scanner( getDataFileContents() );
-            /* We uses the names provided from the wizard, so if the file 
-             * contains names we just throw them away... */
-            if ( propNameInDataFile && fileScanner.hasNextLine() )
-                fileScanner.nextLine();
-            while ( sdfItr.hasNext() && fileScanner.hasNextLine() ) {
-                mol = sdfItr.next();
-                values = readNextLine( fileScanner.nextLine() );
-                addPropToMol( mol, names, values, excludedProerties );
-                try {
-                    writer.write( mol );
-                } catch ( CDKException e ) {
-                    logger.error( e );
+            if (dataInCSVFile) {
+                String filePath = dataFile.getFullPath().toString();
+                CSVReader csvReader = new CSVReader( new FileReader( filePath ) );
+                while (sdfItr.hasNext()) {
+                    try {
+                        String[] nextRow = csvReader.readNext();
+                        values = new ArrayList<String>();
+                        for (String value:nextRow)
+                            values.add( value );
+                        mol = sdfItr.next();
+                        addPropToMol( mol, names, values, excludedProerties );
+                        writer.write( mol );
+                    } catch ( IOException e ) {
+                        /* It seams that this is the only way to know that we 
+                         * reached the end of the file */
+                        // e.printStackTrace();
+                        try {
+                            csvReader.close();
+                        } catch ( IOException e1 ) {
+                            // TODO Auto-generated catch block
+                            e1.printStackTrace();
+                        }
+                        break;
+                    } catch ( CDKException e ) {
+                        logger.error( e );
+                    }
+                    monitor.worked( work++ );
                 }
+            } else {
+                fileScanner = new Scanner( getDataFileContents() );
+                /* We uses the names provided from the wizard, so if the file 
+                 * contains names we just throw them away... */
+                if ( propNameInDataFile && fileScanner.hasNextLine() )
+                    fileScanner.nextLine();
+                while ( sdfItr.hasNext() && fileScanner.hasNextLine() ) {
+                    mol = sdfItr.next();
+                    values = readNextLine( fileScanner.nextLine() );
+                    addPropToMol( mol, names, values, excludedProerties );
+                    try {
+                        writer.write( mol );
+                    } catch ( CDKException e ) {
+                        logger.error( e );
+                    }
 
-                monitor.worked( work++ );
+                    monitor.worked( work++ );
+                }
             }
         }
         try {

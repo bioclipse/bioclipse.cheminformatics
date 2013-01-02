@@ -43,5 +43,6 @@ Import-Package: net.bioclipse.inchi.business,
 Export-Package: net.bioclipse.cdk.ui.sdfeditor,
  net.bioclipse.cdk.ui.sdfeditor.business,
  net.bioclipse.cdk.ui.sdfeditor.editor
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ jars/opencsv-1.8.jar
 Bundle-Vendor: The Bioclipse Team
