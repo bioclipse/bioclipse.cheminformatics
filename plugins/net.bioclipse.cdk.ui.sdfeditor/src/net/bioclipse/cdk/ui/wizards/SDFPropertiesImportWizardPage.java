@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *    
  ******************************************************************************/
-package net.bioclipse.cdk.ui.sdfeditor.business;
+package net.bioclipse.cdk.ui.wizards;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
