@@ -12,7 +12,6 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.standard,
  org.openscience.cdk.render,
  org.openscience.cdk.data,
- org.openscience.cdk.nonotify,
  org.openscience.cdk.sdg,
  org.openscience.cdk.smiles,
  net.bioclipse.ui,
@@ -29,7 +28,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.expressions,
  net.bioclipse.chemoinformatics,
  net.bioclipse.ui.business,
- org.openscience.cdk.extra
+ org.openscience.cdk.extra,
+ org.openscience.cdk.silent
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.log4j
 Export-Package: net.bioclipse.cdk.ui.filters,

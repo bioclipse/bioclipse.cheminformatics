@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.openscience.cdk.exception.InvalidSmilesException;
-import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesParser;
 
 public class SMILESInputWizardPage extends WizardPage {
@@ -59,7 +59,7 @@ public class SMILESInputWizardPage extends WizardPage {
         String smiles = field.getText();
         if (smiles.length() != 0) {
             SmilesParser parser = new SmilesParser(
-                NoNotificationChemObjectBuilder.getInstance()
+                SilentChemObjectBuilder.getInstance()
             );
             try {
                 parser.parseSmiles(smiles);
