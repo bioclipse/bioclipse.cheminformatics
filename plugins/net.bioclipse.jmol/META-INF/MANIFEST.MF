@@ -19,7 +19,8 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.scripting.ui,
  net.bioclipse.ui.business,
  org.springframework.osgi.aopalliance.osgi,
- javax.vecmath
+ javax.vecmath,
+ net.bioclipse.cdk.business
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  jars/Jmol.jar
