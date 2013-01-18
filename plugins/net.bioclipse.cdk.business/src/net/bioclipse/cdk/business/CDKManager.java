@@ -2670,10 +2670,9 @@ public class CDKManager implements IBioclipseManager {
                                                 throws BioclipseException,
                                                 InvocationTargetException {
 
-          int ticks = 10000;
 
           try {
-              monitor.beginTask( "Writing file", ticks );
+              monitor.beginTask( "Writing file",(endentry-startenty)*10 );
               IteratingBioclipseMDLReader reader
                   = new IteratingBioclipseMDLReader(
                             file.getContents(),
@@ -2682,14 +2681,15 @@ public class CDKManager implements IBioclipseManager {
               int i = 0;
               List<ICDKMolecule> result=new RecordableList<ICDKMolecule>();
               while (reader.hasNext()) {
+                  ICDKMolecule molecule = reader.next();
                   if (i>=startenty && i<=endentry) {
-                      result.add( reader.next() );
+                      result.add( molecule );
+                      monitor.worked( 10 );
                   }
                   i++;
                   if(i>endentry)
                       break;
               }
-              monitor.worked(ticks);
               return result;
           }
           catch (Exception e) {
