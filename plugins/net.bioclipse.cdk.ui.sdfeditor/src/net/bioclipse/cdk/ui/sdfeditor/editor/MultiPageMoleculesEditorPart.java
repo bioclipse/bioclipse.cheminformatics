@@ -17,18 +17,19 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cdk.domain.MoleculesIndexEditorInput;
-import net.bioclipse.cdk.domain.SDFElement;
 import net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor;
 import net.bioclipse.cdk.ui.sdfeditor.Activator;
 import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator;
 import net.bioclipse.cdk.ui.sdfeditor.business.MappingEditorModel;
 import net.bioclipse.cdk.ui.sdfeditor.business.SDFIndexEditorModel;
+import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer.MolTableElement;
 import net.bioclipse.cdk.ui.sdfeditor.handlers.CalculatePropertyHandler;
 import net.bioclipse.cdk.ui.views.IFileMoleculesEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.CMLMolecule;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jmol.editors.JmolEditor;
 import net.bioclipse.jobs.BioclipseUIJob;
@@ -63,8 +64,8 @@ import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.MultiPageEditorPart;
-import org.openscience.cdk.Mapping;
-import org.openscience.cdk.renderer.IRenderer;
+import org.eclipse.ui.part.Page;
+import org.slf4j.LoggerFactory;
 
 public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                                                     ISelectionListener,
@@ -109,6 +110,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
             int i;
             for(Pages page:new Pages[]{ Pages.Molecules,
                                         Pages.JCP,
+//                                        Pages.Jmol,
                                         Pages.Headers,
                                         }) {
                 switch(page) {
@@ -171,6 +173,32 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                         pageOrder.put( i, page );
                         setPageText( i, "Single Molecule" );
                         break;
+                    case Jmol:
+                        i = addPage( jmolPage = new JmolEditor(),
+                                        new IEditorInput() {
+
+                            public boolean exists() {
+                                return false;
+                            }
+                            public ImageDescriptor getImageDescriptor() {
+                                return null;
+                            }
+                            public String getName() {
+                                return null;
+                            }
+                            public IPersistableElement getPersistable() {
+                                return null;
+                            }
+                            public String getToolTipText() {
+                                return null;
+                            }
+                            @SuppressWarnings("unchecked")
+                            public Object getAdapter( Class adapter ) {
+                                return null;
+                            }
+                        });
+                        pageOrder.put( i, page );
+                        setPageText(i,"3D View");
                 }
             }
 
@@ -342,6 +370,9 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                updateJCPPage();
                jcpActivation = contextService.activateContext( JCP_CONTEXT );
                break;
+           case Jmol:
+               updateJmolPage();
+               break;
        }
 
        lastPage = pageOrder.get(newPageIndex);
@@ -389,9 +420,11 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         ISelection selection = moleculesPage.getSelection();
         if(selection instanceof IStructuredSelection) {
            Object element = ((IStructuredSelection)selection).getFirstElement();
-           if(element instanceof SDFElement) {
-               jmolPage.setDataInput(  (IEditorInput) ((SDFElement) element)
-                              .getAdapter( MoleculesIndexEditorInput.class ) );
+           if(element instanceof MolTableElement) {
+               final ICDKMolecule mol = ((MolTableElement)element).adaptTo( ICDKMolecule.class );
+                IEditorInput input;
+                input = new CDKMoleculeEditorInput( mol );
+                jmolPage.setDataInput(input);
            }
         }
     }
@@ -404,6 +437,43 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
 //                updateJmolPage();
 //            if(pageOrder.get(getActivePage() ) == Pages.JCP)
 //                updateJCPPage();
+        } else if(part == this && selection instanceof IStructuredSelection){
+            Object elem = ((IStructuredSelection) selection).getFirstElement();
+            if(elem instanceof MolTableElement) {
+                final ICDKMolecule mol = ((MolTableElement)elem).adaptTo( ICDKMolecule.class );
+                ICDKManager cdk = net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
+                try {
+                    if(cdk.has3d( mol )) {
+                        // show page
+                        if(!pageOrder.values().contains( Pages.Jmol )){
+                            int i = addPage( jmolPage = new JmolEditor(),
+                                            new CDKMoleculeEditorInput(mol){
+                                @Override
+                                public Object getAdapter( Class adapter ) {
+                                    return super.getAdapter( adapter );
+                                }
+                            });
+                            pageOrder.put( i, Pages.Jmol );
+                            setPageText( i, "3D" );
+                        }
+                    } else {
+                        //hide page
+                        if(pageOrder.values().contains( Pages.Jmol )) {
+                            for(Integer i : pageOrder.keySet()) {
+                                if(pageOrder.get( i ).equals( Pages.Jmol )) {
+                                    removePage( i );
+                                    pageOrder.remove( i );
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                } catch ( BioclipseException e) {
+                    // This space is intentionally left blank
+                } catch ( PartInitException e ) {
+                    logger.error( "Could not create 3d page",e );
+                }
+            }
         }
     }
 
@@ -503,4 +573,58 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         return false;
     }
 
+}
+
+class CDKMoleculeEditorInput implements IEditorInput {
+    org.slf4j.Logger logger = LoggerFactory.getLogger( CDKMoleculeEditorInput.class );
+    ICDKMolecule molecule;
+    
+    
+    public CDKMoleculeEditorInput(ICDKMolecule mol) {
+        molecule = mol;
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public Object getAdapter( Class adapter ) {
+        if(adapter.isAssignableFrom( CMLMolecule.class )) {
+            try {
+                return new CMLMolecule(molecule.toCML());
+            } catch ( BioclipseException e ) {
+                logger.warn( "Could not convert molecule to CML" );
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean exists() {
+        return false;
+    }
+
+    @Override
+    public ImageDescriptor getImageDescriptor() {
+        return ImageDescriptor.getMissingImageDescriptor();
+    }
+
+    @Override
+    public String getName() {
+        String name = molecule.getName();
+        if(name==null || name.isEmpty()) {
+            ICDKManager cdk = net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
+            name = cdk.molecularFormula( molecule );
+        }
+        return name==null?"":name;
+    }
+
+    @Override
+    public IPersistableElement getPersistable() {
+        return null;
+    }
+
+    @Override
+    public String getToolTipText() {
+        return "";
+    }
+    
 }
