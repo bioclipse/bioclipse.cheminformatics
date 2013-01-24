@@ -10,24 +10,39 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.wizards;
 
+import static org.openscience.cdk.graph.ConnectivityChecker.isConnected;
+import static org.openscience.cdk.graph.ConnectivityChecker.partitionIntoMolecules;
+import static org.openscience.cdk.tools.manipulator.AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.Activator;
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.ui.business.IUIManager;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
-import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
-import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IMoleculeSet;
-import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
-import org.openscience.cdk.smiles.DeduceBondSystemTool;
+import org.openscience.cdk.tools.AtomTypeAwareSaturationChecker;
 
 public class NewFromSMILESWizard extends BasicNewResourceWizard {
 
@@ -66,49 +81,94 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
         setNeedsProgressMonitor(true);
     }
 
-    public boolean performFinish() {
-        //Open editor with content (String) as content
-        ICDKManager cdk = net.bioclipse.cdk.business.Activator.getDefault().getJavaCDKManager();
-        try {
-            ICDKMolecule mol = cdk.fromSMILES(getSMILES());
-            IMoleculeSet containers =
-            	ConnectivityChecker.partitionIntoMolecules(mol.getAtomContainer()
-            );
-            for (IAtomContainer container : containers.molecules()) {
-            	// ok, try to do something smart (tm) with SMILES input:
-            	//   try to resolve bond orders
-            	DeduceBondSystemTool tool = new DeduceBondSystemTool();
-            	org.openscience.cdk.interfaces.IMolecule cdkMol =
-            		asCDKMolecule(container);
-            	cdkMol = tool.fixAromaticBondOrders(cdkMol);
-            	mol = new CDKMolecule(cdkMol);
-
-            	mol = cdk.generate2dCoordinates(mol);
-            	CDKAtomTypeMatcher matcher = CDKAtomTypeMatcher.getInstance(
-            			NoNotificationChemObjectBuilder.getInstance()
-            	);
-            	IAtomType[] types = matcher.findMatchingAtomType(
-            			mol.getAtomContainer()
-            	);
-            	for (int i=0; i<types.length; i++) {
-            		if (types[i] != null) {
-            			mol.getAtomContainer().getAtom(i).setAtomTypeName(
-            					types[i].getAtomTypeName()
-            			);
-            		}
-            	}
-            	net.bioclipse.ui.business.Activator.getDefault().getUIManager()
-            		.open(mol, "net.bioclipse.cdk.ui.editors.jchempaint.cml");
+    private void doFinish(SubMonitor progress) throws Exception{
+        ICDKManager cdk = net.bioclipse.cdk.business.Activator.getDefault()
+                        .getJavaCDKManager();
+        IUIManager ui = net.bioclipse.ui.business.Activator.getDefault()
+                        .getUIManager();
+        ICDKMolecule mol = cdk.fromSMILES( getSMILES() );
+        List<ICDKMolecule> molecules;
+        if ( !isConnected( mol.getAtomContainer() ) ) {
+            IMoleculeSet containers = partitionIntoMolecules( mol
+                            .getAtomContainer() );
+            final AtomTypeAwareSaturationChecker ataSatChecker = new AtomTypeAwareSaturationChecker();
+            molecules = new ArrayList<ICDKMolecule>( containers.getAtomContainerCount() );
+            SubMonitor child = progress.newChild( containers.getAtomContainerCount() );
+            for ( IAtomContainer container : containers.molecules() ) {
+                final IMolecule betterMol = asCDKMolecule( container );
+                percieveAtomTypesAndConfigureAtoms( betterMol );
+                ataSatChecker.decideBondOrder( betterMol );
+                molecules.add( new CDKMolecule( betterMol ) );
+                child.worked( 1 );
             }
-        } catch (Exception e) {
-            LogUtils.handleException(
-                e, logger,
-                Activator.PLUGIN_ID
-            );
+        } else {
+            molecules = new ArrayList<ICDKMolecule>( 1 );
+            molecules.add( mol );
+        }
+
+        progress.setWorkRemaining( molecules.size() );
+        for ( ICDKMolecule molecule : molecules ) {
+            // cdk.generate2dCoordinates(molecule);
+            progress.worked( 1 );
+            ui.open( molecule, "net.bioclipse.cdk.ui.editors.jchempaint.cml" );
+        }
+    }
+    public boolean performFinish() {
+
+        // Open editor with content (String) as content
+        IRunnableWithProgress job = new IRunnableWithProgress() {
+
+            public void run( IProgressMonitor monitor ) {
+
+                final SubMonitor progress = SubMonitor.convert( monitor );
+                progress.beginTask( "Creating molecule from SMILES", 200 );
+                Executor executor = Executors.newSingleThreadExecutor();
+
+                try {
+                    progress.subTask( "Generating molecule" );
+                    FutureTask<Void> future = new FutureTask<Void>(
+                      new Callable<Void>() {
+
+                          @Override
+                          public Void call() throws Exception {
+                              doFinish( progress );
+                              return null;
+                          }
+                      } );
+                    executor.execute( future );
+                    waitForFuture( future, progress );
+                    try {
+                        future.get();
+                    } catch (ExecutionException e) {
+                        LogUtils.handleException( e, logger ,Activator.PLUGIN_ID);
+                    }
+                } catch ( InterruptedException e ) {
+                    LogUtils.handleException( e, logger, Activator.PLUGIN_ID );
+                } finally {
+                }
+            }
+        };
+        try {
+            getContainer().run( true, true, job );
+        } catch ( InvocationTargetException e ) {
+            LogUtils.handleException( e, logger, Activator.PLUGIN_ID );
+        } catch ( InterruptedException e ) {
+            LogUtils.handleException( e, logger, Activator.PLUGIN_ID );
         }
         return true;
     }
 
+    private void waitForFuture( Future<Void> future, IProgressMonitor progress )
+                                                  throws InterruptedException {
+        while ( !future.isDone() ) {
+            progress.worked( 1 );
+            if ( progress.isCanceled() ) {
+                future.cancel( true );
+                throw new OperationCanceledException();
+            }
+            Thread.sleep( 1000 );
+        }
+    }
     /**
      * Converts (if needed) a CDK {@link IAtomContainer} into a CDK
      * {@link IMolecule}.

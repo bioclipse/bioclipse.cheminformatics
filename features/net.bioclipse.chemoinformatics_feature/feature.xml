@@ -2,7 +2,7 @@
 <feature
       id="net.bioclipse.chemoinformatics_feature"
       label="Bioclipse Chemoinformatics"
-      version="2.5.0.qualifier"
+      version="2.6.0.vqualifier"
       provider-name="The Bioclipse Team"
       plugin="net.bioclipse.chemoinformatics">
 
@@ -11,7 +11,7 @@
    </description>
 
    <copyright>
-      Copyright (c) 2008 The Bioclipse Project Team and others.
+      Copyright (c) 2008-2012 The Bioclipse Project Team and others.
 All rights reserved.
    </copyright>
 
@@ -27,7 +27,74 @@ The Eclipse Public License accompanies this distribution, and is available at ht
    </url>
 
    <requires>
-      <import feature="net.bioclipse.core_feature"/>
+      <import plugin="org.openscience.cdk.io"/>
+      <import plugin="org.openscience.cdk.core"/>
+      <import plugin="org.openscience.cdk.standard"/>
+      <import plugin="org.openscience.cdk.data"/>
+      <import plugin="org.openscience.cdk.extra"/>
+      <import plugin="org.openscience.cdk.interfaces"/>
+      <import plugin="org.openscience.cdk.libiocml"/>
+      <import plugin="org.openscience.cdk.libiomd"/>
+      <import plugin="org.openscience.cdk.valencycheck"/>
+      <import plugin="org.openscience.cdk.builder3d"/>
+      <import plugin="org.openscience.cdk.nonotify"/>
+      <import plugin="org.openscience.cdk.sdg"/>
+      <import plugin="org.openscience.cdk.smiles"/>
+      <import plugin="org.openscience.cdk.smarts"/>
+      <import plugin="org.openscience.cdk.pdb"/>
+      <import plugin="org.openscience.cdk.pcore"/>
+      <import plugin="org.openscience.cdk.ioformats"/>
+      <import plugin="org.openscience.cdk.isomorphism" version="1.4.0" match="greaterOrEqual"/>
+      <import plugin="javax.vecmath" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="net.bioclipse.core"/>
+      <import plugin="net.bioclipse.scripting"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="net.bioclipse.ui"/>
+      <import plugin="org.springframework.bundle.spring.aop"/>
+      <import plugin="org.springframework.osgi.aopalliance.osgi"/>
+      <import plugin="org.openscience.cdk.formula"/>
+      <import plugin="org.openscience.cdk.fingerprint"/>
+      <import plugin="net.bioclipse.ui.business"/>
+      <import plugin="net.sf.cglib"/>
+      <import plugin="com.springsource.nu.xom"/>
+      <import plugin="log4j.over.slf4j"/>
+      <import plugin="org.openscience.cdk.render"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.navigator"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.core.expressions"/>
+      <import plugin="org.eclipse.ui.views.properties.tabbed"/>
+      <import plugin="net.bioclipse.scripting.ui"/>
+      <import plugin="org.eclipse.core.filebuffers"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.xmlpull.xpp3"/>
+      <import plugin="org.openscience.cdk.control"/>
+      <import plugin="org.openscience.cdk.renderextra" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="org.openscience.cdk.renderbasic" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="org.openscience.cdk.controlbasic" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="org.openscience.cdk.controlextra" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="org.openscience.cdk.rendercontrol" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="net.bioclipse.ioformats"/>
+      <import plugin="org.openscience.cdk.cip"/>
+      <import plugin="org.openscience.cdk.annotation"/>
+      <import plugin="org.eclipse.core.commands"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.openscience.cdk.renderswt"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="com.springsource.javax.mail"/>
+      <import plugin="org.apache.commons.codec"/>
+      <import plugin="org.openscience.cdk.inchi"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="net.bioclipse.browser.business"/>
+      <import plugin="jcl.over.slf4j"/>
+      <import feature="org.eclipse.rcp" version="3.7.1" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -50,322 +117,6 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.atomtype"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.builder3d"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.charges"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.control"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.data"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.datadebug"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.dict"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.diff"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.extra"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.fingerprint"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.forcefield"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.formula"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.inchi"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.interfaces"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.io"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.ionpot"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.isomorphism"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.libiocml"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.libiomd"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.nonotify"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.pcore"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.pdb"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.pdbcml"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.qm"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.qsar"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.qsaratomic"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.qsarbond"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.qsarcml"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.qsarionpot"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.qsarmolecular"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.qsarprotein"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.reaction"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.render"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.sdg"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.smarts"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.smiles"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.standard"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.structgen"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.valencycheck"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.vecmath"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.3pq.jgrapht"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.jama"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.omegahat.sjava"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.rosuda.jri"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.xmlpull.xpp3"
-         download-size="0"
-         install-size="0"
-         version="0.4.0"/>
 
    <plugin
          id="net.bioclipse.cml"
@@ -396,49 +147,7 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          unpack="false"/>
 
    <plugin
-         id="net.bioclipse.org.cmlxom"
-         download-size="0"
-         install-size="0"
-         version="2.5.0.b1"
-         unpack="false"/>
-
-   <plugin
          id="net.bioclipse.cdk.ui.sdfeditor"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.annotation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.ioformats"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ui.console"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.runtime.compatibility.auth"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.variables"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -466,105 +175,7 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          unpack="false"/>
 
    <plugin
-         id="org.openscience.cdk.controlawt"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.controlbasic"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.controlextra"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.renderawt"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.renderbasic"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.rendercontrol"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.renderextra"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="net.sourceforge.nattable.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.lang"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openscience.cdk.renderswt"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.springsource.nu.xom"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="net.bioclipse.chemspider"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="net.bioclipse.ioformats"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="net.bioclipse.jnati"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="net.bioclipse.sea36.util.config"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -585,13 +196,6 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          unpack="false"/>
 
    <plugin
-         id="org.openscience.cdk.cip"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="net.sf.jni-inchi"
          download-size="0"
          install-size="0"
@@ -599,23 +203,45 @@ The Eclipse Public License accompanies this distribution, and is available at ht
          unpack="false"/>
 
    <plugin
-         id="log4j.over.slf4j"
+         id="net.sourceforge.nattable.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.openscience.cdk.signature"
+         id="org.apache.commons.lang"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="signatures"
+         id="jnati-core"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.bioclipse.org.cmlxom"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.xmlpull.xpp3"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.bioclipse.cdk.ui.periodictable"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>

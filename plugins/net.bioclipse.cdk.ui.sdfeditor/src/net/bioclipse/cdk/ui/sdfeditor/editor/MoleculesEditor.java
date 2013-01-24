@@ -14,7 +14,11 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import static net.bioclipse.cdk.ui.sdfeditor.Activator.STRUCTURE_COLUMN_WIDTH;
 
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +39,7 @@ import net.bioclipse.cdk.ui.views.IFileMoleculesEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
@@ -52,6 +57,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -89,6 +96,10 @@ import org.eclipse.ui.part.PluginTransferData;
 import org.eclipse.ui.part.EditorInputTransfer.EditorInputData;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.renderer.AtomContainerRenderer;
+import org.openscience.cdk.renderer.IRenderer;
+
+import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 
 public class MoleculesEditor extends EditorPart implements
         //ISelectionProvider,
@@ -176,9 +187,14 @@ public class MoleculesEditor extends EditorPart implements
     public void createPartControl( Composite parent ) {
 
         MenuManager headerMgr = new MenuManager("Molecuels table","net.bioclipse.cdk.ui.sdfeditor.column.menu");
-        headerMgr.add( new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-        MenuManager bodyMgr = new MenuManager("Molecuels table","net.bioclipse.cdk.ui.sdfeditor.menu");
-        bodyMgr.add( new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+        MenuManager bodyMgr = new MenuManager("net.bioclipse.cdk.ui.sdfeditor.menu","net.bioclipse.cdk.ui.sdfeditor.menu");
+        headerMgr.setRemoveAllWhenShown(true);
+        bodyMgr.setRemoveAllWhenShown(true);
+        bodyMgr.addMenuListener(new IMenuListener() {
+            public void menuAboutToShow(IMenuManager manager) {
+                manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+            }
+        });
 
         molTableViewer = new MoleculeTableViewer(parent,SWT.NONE, headerMgr,bodyMgr);
 
@@ -225,7 +241,7 @@ public class MoleculesEditor extends EditorPart implements
                 if(widget instanceof NatTable) {
                     NatTable table = ((NatTable)widget);
                     LabelStack regionLabels = table.getRegionLabelsByXY(event.x, event.y);
-                    if(regionLabels.hasLabel(GridRegion.BODY)) {
+                    if(regionLabels!= null && regionLabels.hasLabel(GridRegion.BODY)) {
                         start = new Point(event.x,event.y);
                         return;
                     }
@@ -388,12 +404,15 @@ public class MoleculesEditor extends EditorPart implements
     private void insert(ICDKMolecule... molecules) {
         int[] selection = molTableViewer.getSelectedRows();
         int first = selection.length!=0?selection[0]:-1;
-        Object input = molTableViewer.getInput();
+        IMoleculesEditorModel input = molTableViewer.getInput();
         if(input instanceof IFileMoleculesEditorModel && first!=-1)
             ((IFileMoleculesEditorModel)input).insert( first, molecules );
         else
-            ((IMoleculesEditorModel)input).instert( molecules );
+            input.instert( molecules );
         setDirty( true );
+        if(outlinePage!=null) {
+        	outlinePage.setInput( input);
+        }
         refresh();
     }
 
@@ -428,21 +447,33 @@ public class MoleculesEditor extends EditorPart implements
                 }catch ( CoreException e) {
                     contentDescr = null;
                 }
+                final IFile inputFile = file;
                 if(contentDescr != null && isKindOf( contentDescr.getContentType(),
                              "net.bioclipse.contenttypes.smi" )) {
                     try {
                         cdkManager.loadSMILESFile( file,
                                                    new BioclipseUIJob<List<ICDKMolecule>>() {
-
                             @Override
                             public void runInUI() {
-                                final List<ICDKMolecule> list = getReturnValue();
-
+                                List<ICDKMolecule> list = getReturnValue();
+                                if(list == null || list.isEmpty()) {
+                                	list = new ArrayList<ICDKMolecule>();
+                                }
                                 // FIXME there should be a IMoleculesEditorModel content provider
-                                setInput( new ListMoleculesEditorModel( list ));
+                                setInput( new ListMoleculesEditorModelWithResource( list ,inputFile));
                           }
 
                       } );
+                    }catch (RuntimeException e) {
+                    	logger.warn("could not read smi file",e);
+                    	if(e.getCause() instanceof IOException) {
+                    		Display.getDefault().asyncExec(new Runnable() {
+                            	@Override
+                            	public void run() {
+                                    setInput( new ListMoleculesEditorModelWithResource( new ArrayList<ICDKMolecule>() ,inputFile));
+                            	}
+                            });
+                    	}
                     }catch(IOException e) {
                         LogUtils.debugTrace( logger, e );
                     } catch ( CoreException e ) {
@@ -650,7 +681,80 @@ public class MoleculesEditor extends EditorPart implements
                     outlinePage.setInput( (IMoleculesEditorModel) model );
             }
             return outlinePage;
+        } else if( adapter.isAssignableFrom(AtomContainerRenderer.class)) {
+        	return getMolTableViewer().cellPainter.renderer;
         }
         return super.getAdapter( adapter );
     }
+}
+
+class ListMoleculesEditorModelWithResource extends ListMoleculesEditorModel {
+    private Logger logger = Logger.getLogger(ListMoleculesEditorModelWithResource.class);
+	IFile inputFile;
+	public ListMoleculesEditorModelWithResource(List<ICDKMolecule> list,IFile file) {
+		super(list);
+		inputFile = file;
+	}
+	private String generateHeader(List<String> keys) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("SMILES");
+		for (String key : keys) {
+			builder.append(';');
+			builder.append(key);
+		}
+		return builder.toString();
+	}
+
+	private String generateLine(ICDKMolecule molecule, List<String> keys)
+			throws BioclipseException {
+		StringBuilder builder = new StringBuilder();
+		builder.append(molecule.toSMILES());
+		for (String key : keys) {
+			Object val = molecule.getProperty(key,
+					IMolecule.Property.USE_CACHED_OR_CALCULATED);
+			builder.append(';');
+			if(val!=null)
+				builder.append(val.toString());
+		}
+		return builder.toString();
+	}
+
+	@Override
+	public void save() {
+		try {
+			StringWriter sWriter = new StringWriter();
+			BufferedWriter writer = new BufferedWriter(sWriter);
+			List<String> keys = new ArrayList<String>();
+			for (Object p : getAvailableProperties()) {
+				keys.add(p.toString());
+			}
+			keys.remove("net.bioclipse.cdk.domain.property.SMILES");
+			writer.write(generateHeader(keys));
+			writer.append('\n');
+			for (int i = 0; i < getNumberOfMolecules(); i++) {
+				ICDKMolecule mol = getMoleculeAt(i);
+				try {
+					writer.append(generateLine(mol, keys));
+					writer.append('\n');
+				} catch (BioclipseException e) {
+					logger.error("Could not save molecule at position "
+							+ (i + 1));
+				}
+			}
+			writer.flush();
+			ByteArrayInputStream bis = new ByteArrayInputStream(sWriter
+					.toString().getBytes());
+			inputFile.setContents(bis, true, true, null);
+		} catch (IOException e) {
+			LogUtils.handleException(e, logger,
+					"net.bioclipse.cdk.ui.sdfeditor");
+			throw new RuntimeException("Faild to save " + inputFile.getName(),
+					e);
+		} catch (CoreException e) {
+			LogUtils.handleException(e, logger,
+					"net.bioclipse.cdk.ui.sdfeditor");
+			throw new RuntimeException("Faild to save " + inputFile.getName(),
+					e);
+		}
+	}
 }

@@ -6,6 +6,9 @@
 	<dependencies>
 	   <dependency name="org.xmlpull.xpp3" componentType="osgi.bundle" />
 	   <dependency name="org.eclipse.wst.web_core.feature" componentType="eclipse.feature"/>
+	   <dependency name="org.eclipse.rcp" componentType="eclipse.feature"/>
+	   <dependency name="com.springsource.nu.xom" componentType="osgi.bundle"/>
+	   <dependency name="log4j.over.slf4j" componentType="osgi.bundle"/>
 	</dependencies>
 	<generators>
 		<!-- Place your Generators here -->

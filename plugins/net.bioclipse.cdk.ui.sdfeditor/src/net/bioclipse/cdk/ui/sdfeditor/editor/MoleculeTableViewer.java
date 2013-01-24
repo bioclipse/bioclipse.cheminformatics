@@ -463,4 +463,8 @@ public class MoleculeTableViewer extends ContentViewer {
             dblClickHook.run();
         }
     }
+    @Override
+    public IMoleculesEditorModel getInput() {
+    	return (IMoleculesEditorModel) super.getInput();
+    }
 }

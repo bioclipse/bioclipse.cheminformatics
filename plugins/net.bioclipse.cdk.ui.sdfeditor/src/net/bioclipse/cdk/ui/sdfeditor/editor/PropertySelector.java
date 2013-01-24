@@ -44,6 +44,7 @@ public class PropertySelector extends Composite{
 
     Button removeAll;
     Button addAll;
+	private Button generatorButton;
 
     private void createControl(Composite parent) {
 
@@ -98,15 +99,15 @@ public class PropertySelector extends Composite{
         gridData.heightHint = 20;
         comp.setLayoutData( gridData );
 
-        final Button generatorButton = new Button(parent, SWT.CHECK);
+        generatorButton = new Button(parent, SWT.CHECK);
         generatorButton.setLayoutData( new GridData(SWT.FILL,SWT.BOTTOM,true,false) );
-        generatorButton.setText( "Use external generators" );
-        generatorButton.setSelection( useGenerators);
+        generatorButton.setText( "Disable visualization ( eg. Metaprint2D, DS)" );
+        generatorButton.setSelection( !useGenerators);
 
         generatorButton.addSelectionListener( new SelectionAdapter() {
             @Override
             public void widgetSelected( SelectionEvent e ) {
-                useGenerators = generatorButton.getSelection();
+                useGenerators = !generatorButton.getSelection();
             }
         });
 
@@ -316,5 +317,9 @@ public class PropertySelector extends Composite{
         return useGenerators;
     }
 
+    public void setUseGenerators(boolean value) {
+    	useGenerators = value;
+    	generatorButton.setSelection(!useGenerators);
+    }
 
 }

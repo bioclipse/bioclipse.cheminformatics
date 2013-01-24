@@ -64,6 +64,7 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.openscience.cdk.Mapping;
+import org.openscience.cdk.renderer.IRenderer;
 
 public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                                                     ISelectionListener,
@@ -207,6 +208,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         }else {
             model.save();
             jcpPage.getWidget().setDirty( false );
+            this.moleculesPage.setDirty( false );
             setDirty( false );
         }
     }
@@ -255,8 +257,12 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
             if(model instanceof SDFIndexEditorModel) {
                 model = new MappingEditorModel( model );
             }
-            mpmep.moleculesPage.getMolTableViewer().setInput( model );
-            mpmep.moleculesPage.getMolTableViewer().refresh();
+            MoleculeTableViewer molTableViewer = mpmep.moleculesPage.getMolTableViewer();
+            if(molTableViewer.getControl() == null || molTableViewer.getControl().isDisposed()) {
+            	return;
+            }
+			molTableViewer.setInput( model );
+            molTableViewer.refresh();
 
             IResource origin = model.getResource();
             if(origin !=null)
@@ -329,6 +335,8 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                        moleculesPage.getContentProvider();
                ps.setInitialData( contentProvider.getProperties(),
                                   contentProvider.getAvailableProperties());
+               boolean useEx = moleculesPage.getMolTableViewer().cellPainter.isUseExtensionGenerators();
+               ps.setUseGenerators(useEx);
                break;
            case JCP:
                updateJCPPage();

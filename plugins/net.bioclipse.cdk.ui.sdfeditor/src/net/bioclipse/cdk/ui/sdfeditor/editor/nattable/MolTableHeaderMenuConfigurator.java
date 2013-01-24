@@ -18,11 +18,15 @@ import net.sourceforge.nattable.ui.binding.UiBindingRegistry;
 import net.sourceforge.nattable.ui.matcher.MouseEventMatcher;
 import net.sourceforge.nattable.ui.menu.PopupMenuAction;
 
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IWorkbenchActionConstants;
 
 
 /**
@@ -35,11 +39,19 @@ public class MolTableHeaderMenuConfigurator extends AbstractUiBindingConfigurati
     
     public MolTableHeaderMenuConfigurator(final NatTable natTable,MenuManager menuManager) {
 
-        PopupMenuBuilder columnBuilder = new PopupMenuBuilder( natTable )
+        final PopupMenuBuilder columnBuilder = new PopupMenuBuilder( natTable )
                                 .autoResizeColumnMenuItemProvider()
                                 .hideColumnMenuItemProvider()
                                 .add( showAllColumnMenuItemProvider() );
         menuManager.add( columnBuilder );
+        menuManager.addMenuListener(new IMenuListener() {
+
+			@Override
+			public void menuAboutToShow(IMenuManager manager) {
+				manager.add(columnBuilder);
+				manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+			}
+		});
 
         colHeaderMenu = menuManager.createContextMenu( natTable );
         

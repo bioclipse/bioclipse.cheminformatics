@@ -59,13 +59,8 @@ public class NewMoleculeWizard extends Wizard implements INewWizard {
         ICDKMolecule mol = new CDKMolecule(
         	DefaultChemObjectBuilder.getInstance().newInstance(IMolecule.class)
         );
-        try {
-            Activator.getDefault().getUIManager().open( mol, 
+        Activator.getDefault().getUIManager().open( mol, 
                                 "net.bioclipse.cdk.ui.editors.jchempaint.cml" );
-        } catch ( BioclipseException e ) {
-            LogUtils.handleException( e, logger, 
-                     net.bioclipse.cdk.jchempaint.Activator.PLUGIN_ID );
-        }
         return true;
     }
 }

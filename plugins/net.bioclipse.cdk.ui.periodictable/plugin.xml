@@ -7,7 +7,7 @@
             category="net.bioclipse.chemoinformatics.views.category"
             class="net.bioclipse.cdk.ui.periodictable.PeriodicTableView"
             icon="periodictable.png"
-            id="net.bioclipse.cdk.ui.periodictable.view1"
+            id="net.bioclipse.cdk.ui.periodictable.view"
             name="Periodic Table"
             restorable="true">
       </view>

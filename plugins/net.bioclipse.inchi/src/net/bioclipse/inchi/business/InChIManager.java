@@ -12,14 +12,22 @@
 package net.bioclipse.inchi.business;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
+import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.inchi.InChI;
 import net.bioclipse.jobs.IReturner;
 import net.bioclipse.managers.business.IBioclipseManager;
+import net.sf.jniinchi.INCHI_KEY_STATUS;
+import net.sf.jniinchi.INCHI_OPTION;
 import net.sf.jniinchi.INCHI_RET;
+import net.sf.jniinchi.INCHI_STATUS;
+import net.sf.jniinchi.JniInchiException;
+import net.sf.jniinchi.JniInchiWrapper;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -87,6 +95,58 @@ public class InChIManager implements IBioclipseManager {
         }
     }
 
+    public void generate( IMolecule molecule, String options,
+            IReturner<InChI> returner,
+            IProgressMonitor monitor) 
+    throws Exception {
+    	monitor.beginTask("Calculating InChI", IProgressMonitor.UNKNOWN);
+    	// return early if InChI library could not be loaded
+    	if (!isAvailable()) {
+    		returner.completeReturn(InChI.FAILED_TO_CALCULATE);
+    		return;
+    	}
+
+    	Object adapted = molecule.getAdapter(IAtomContainer.class);
+    	if (adapted != null) {
+    		IAtomContainer container = (IAtomContainer)adapted;
+    		IAtomContainer clone = (IAtomContainer)container.clone();
+    		// remove aromaticity flags
+    		for (IAtom atom : clone.atoms())
+    			atom.setFlag(CDKConstants.ISAROMATIC, false);
+    		for (IBond bond : clone.bonds())
+    			bond.setFlag(CDKConstants.ISAROMATIC, false);
+    		InChIGenerator gen = factory.getInChIGenerator(clone, options);
+    		INCHI_RET status = gen.getReturnStatus();
+    		if(monitor.isCanceled())
+    			throw new OperationCanceledException();
+    		if (status == INCHI_RET.OKAY ||
+    				status == INCHI_RET.WARNING) {
+    			monitor.done();
+    			InChI inchi = new InChI();
+    			inchi.setValue(gen.getInchi());
+    			inchi.setKey(gen.getInchiKey());
+    			returner.completeReturn( inchi );
+    		} else {
+    			throw new InvalidParameterException(
+    					"Error while generating InChI (" + status + "): " +
+    							gen.getMessage()
+    					);
+    		}
+    	} else {
+    		throw new InvalidParameterException(
+    				"Given molecule must be a CDKMolecule"
+    				);
+    	}
+    }
+
+    public List<String> options() {
+    	List<String> options = new ArrayList<String>();
+    	for (INCHI_OPTION option : INCHI_OPTION.values()) {
+    		options.add("" + option);
+    	}
+    	return options;
+    }
+    
     public String load() {
         if (factory == null) {
             try {
@@ -108,6 +168,45 @@ public class InChIManager implements IBioclipseManager {
         methodSummary = "Returns true if the InChI library could be loaded.")
     public boolean isLoaded() {
     	return isLoaded;
+    }
+
+    public boolean checkKey(String inchikey) throws BioclipseException {
+    	INCHI_KEY_STATUS status;
+		try {
+			status = JniInchiWrapper.checkInchiKey(inchikey);
+		} catch (JniInchiException exception) {
+			throw new BioclipseException("Error while validating the inchi: " + exception.getMessage(), exception);
+		}
+    	if (status == INCHI_KEY_STATUS.VALID_STANDARD || status == INCHI_KEY_STATUS.VALID_NON_STANDARD)
+    		return true;
+    	// everything else is false
+    	return false;
+    }
+
+    public boolean check(String inchi) throws BioclipseException {
+    	INCHI_STATUS status;
+		try {
+			status = JniInchiWrapper.checkInchi(inchi, false);
+		} catch (JniInchiException exception) {
+			throw new BioclipseException("Error while validating the inchi: " + exception.getMessage(), exception);
+		}
+    	if (status == INCHI_STATUS.VALID_STANDARD || status == INCHI_STATUS.VALID_NON_STANDARD)
+    		return true;
+    	// everything else is false
+    	return false;
+    }
+
+    public boolean checkStrict(String inchi) throws BioclipseException {
+    	INCHI_STATUS status;
+		try {
+			status = JniInchiWrapper.checkInchi(inchi, true);
+		} catch (JniInchiException exception) {
+			throw new BioclipseException("Error while validating the inchi: " + exception.getMessage(), exception);
+		}
+    	if (status == INCHI_STATUS.VALID_STANDARD || status == INCHI_STATUS.VALID_NON_STANDARD)
+    		return true;
+    	// everything else is false
+    	return false;
     }
 
     public boolean isAvailable() {

@@ -22,8 +22,10 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
+import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 
 /**
  * Manager for the JChemPaintEditor scripting language.
@@ -64,6 +66,11 @@ public interface IJChemPaintManager extends IBioclipseManager {
                        		           " are shown." )
     public void setShowExplicitHydrogens(boolean explicitHydrogens);
     
+    @PublishedMethod ( methodSummary = "Gets the scale paramterer.")
+    public double getScale();
+    
+    @PublishedMethod( params = "double new scale", methodSummary="Sets a new scale")
+    public void setScale(double scale);
     @Recorded
     @PublishedMethod ( params = "boolean implicitHydrogens",
                        methodSummary = "Sets whether implicit hydrogens are " +

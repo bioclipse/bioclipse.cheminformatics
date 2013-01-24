@@ -65,14 +65,15 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.GestureEvent;
+import org.eclipse.swt.events.GestureListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
@@ -96,19 +97,20 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.interfaces.IReactionSet;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
-import org.openscience.cdk.renderer.ChemModelRenderer;
+import org.openscience.cdk.renderer.IRenderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Scale;
 import org.openscience.cdk.renderer.generators.ExternalHighlightGenerator;
-import org.openscience.cdk.renderer.generators.IGenerator;
-import org.openscience.cdk.renderer.generators.MergeAtomsGenerator;
-import org.openscience.cdk.renderer.generators.SelectAtomGenerator;
-import org.openscience.cdk.renderer.generators.SelectBondGenerator;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HighlightAtomShapeFilled;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HoverOverColor;
 import org.openscience.cdk.renderer.generators.HighlightBondGenerator.HighlightBondShapeFilled;
+import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.MergeAtomsGenerator;
+import org.openscience.cdk.renderer.generators.SelectAtomGenerator;
 import org.openscience.cdk.renderer.generators.SelectAtomGenerator.SelectionAtomColor;
 import org.openscience.cdk.renderer.generators.SelectAtomGenerator.SelectionRadius;
+import org.openscience.cdk.renderer.generators.SelectBondGenerator;
 import org.openscience.cdk.renderer.generators.SelectBondGenerator.SelectionBondColor;
 import org.openscience.cdk.renderer.selection.AbstractSelection;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
@@ -286,7 +288,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                             atomType= atomType.replaceFirst(  "^[^\\.]+\\.","" );
                         return String.format( "%s%d, [%s]",
                                               atom.getSymbol(),
-                                              num,
+                                              num+1,
                                               atomType);
                     }else {
                         String text = rmodel.getToolTipText( atom );
@@ -309,9 +311,64 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         prefListener = new GenerateLabelPrefChangedLisener( this );
         Activator.getDefault().getPreferenceStore().addPropertyChangeListener( prefListener );
         addUndoRedoListener();
+        doGestureListener();
     }
 
-    private void addUndoRedoListener() {
+    private double rotation,currentRotation;
+    private float magnification = 1.0f, currentMagnification;
+    private Point origin=new Point(0,0),size;
+    private void doGestureListener() {
+    	this.setTouchEnabled(false);
+    	GestureListener gl = new GestureListener() {
+			public void gesture(GestureEvent ge) {
+				if (ge.detail == SWT.GESTURE_BEGIN) {
+					currentRotation = rotation;
+					currentMagnification = magnification;
+				}
+
+				if (ge.detail == SWT.GESTURE_ROTATE) {
+					rotation = currentRotation - ge.rotation;
+					JChemPaintEditorWidget.this.redraw();
+				}
+				
+				if (ge.detail == SWT.GESTURE_MAGNIFY) {
+					magnification = (float) (currentMagnification * ge.magnification);
+					if(magnification<=0) magnification=0.001f;
+					getRenderer().setZoom(magnification);
+					resizeControl();
+					JChemPaintEditorWidget.this.redraw();
+				}
+
+				if (ge.detail == SWT.GESTURE_SWIPE) {
+					// xDirection and yDirection indicate direction for GESTURE_SWIPE.
+					// For this example, just move in that direction to demonstrate it's working.
+					origin.x += ge.xDirection * 50;
+					origin.y += ge.yDirection * 50;
+					updateDrawCenter();
+					JChemPaintEditorWidget.this.redraw();
+				}
+
+				if (ge.detail == SWT.GESTURE_PAN) {
+					origin.x += ge.xDirection;
+					origin.y += ge.yDirection;
+					updateDrawCenter();
+					JChemPaintEditorWidget.this.redraw();
+				}
+				
+				if (ge.detail == SWT.GESTURE_END) {
+					
+				}		
+			}
+			
+			private void updateDrawCenter() {
+				Rectangle rect = JChemPaintEditorWidget.this.getClientArea();
+				JChemPaintEditorWidget.this.getRenderer().setDrawCenter(origin.x+rect.width/2f, origin.y+rect.height/2f);
+			}
+		};
+		addGestureListener(gl);
+	}
+
+	private void addUndoRedoListener() {
         operationHistory.addOperationHistoryListener(new IOperationHistoryListener() {
 
             public void historyNotification(OperationHistoryEvent event) {
@@ -416,55 +473,54 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         for(int event:EVENTS) {
             addListener( event, relay );
         }
-    }
-
-    private void setupScrollbars() {
-        final ScrollBar hBar = getHorizontalBar();
-        hBar.setEnabled(true);
-        hBar.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent event) {
-                ScrollBar bar = (ScrollBar) event.widget;
-                int d = bar.getSelection();
-                Rectangle rect = getDiagramBounds();
-                int dx = -d - rect.x;
-                setIsScrolling(true);
-                scroll(-d, rect.y, rect.x, rect.y, rect.width, rect.height, false);
-                getRenderer().shiftDrawCenter( dx, 0 );
-                setIsScrolling(false);
-                update();
-            }
-        });
-
-        final ScrollBar vBar = getVerticalBar();
-        vBar.setEnabled(true);
-        vBar.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent event) {
-                ScrollBar bar = (ScrollBar) event.widget;
-                int d = bar.getSelection();
-                Rectangle rect = getDiagramBounds();
-                int dy = -d - rect.y;
-                setIsScrolling(true);
-                scroll(rect.x, -d, rect.x, rect.y, rect.width, rect.height, false);
-                getRenderer().shiftDrawCenter( 0, dy);
-                setIsScrolling(false);
-                update();
-            }
-        });
+        
+        Listener listener = new Listener() {
+			
+			@Override
+			public void handleEvent(Event event) {
+				switch(event.type) {
+				case SWT.MouseWheel:
+					currentMagnification = magnification;
+					magnification = (float) (currentMagnification * (1-event.count*-.01));
+					if(magnification<=0) magnification=0.001f;
+					getRenderer().setZoom(magnification);
+					resizeControl();
+//					JChemPaintEditorWidget.this.redraw();
+//					logger.debug("Mouse zoom");
+					event.doit = false;
+					break;
+				}
+				
+			}
+		};
+		addListener(SWT.MouseWheel, listener);
     }
 
     @Override
     protected void paint( IDrawVisitor visitor ) {
 
-    	ChemModelRenderer renderer = getRenderer();
-
+    	IRenderer<IChemModel> renderer = getRenderer();
+    	renderer.setZoom(magnification);
+    	Rectangle rect = getClientArea();
+//    	JChemPaintEditorWidget.this.getRenderer().setDrawCenter((double)(origin.x+rect.width/2d), (double)(origin.y+rect.height/2d));
+    	//srenderer.setZoom(magnification);
+//    	renderer.setRotation(Math.toRadians(rotation));
+    	try{
         if ( isScrolling ) {
-            renderer.repaint( visitor );
+            //renderer.repaint( visitor );
+        	renderer.paint(model, visitor);
         } else {
             Rectangle2D bounds = adaptRectangle(getClientArea());
-            renderer.paint( model, visitor ,bounds,false);
+            renderer.paint( model, visitor);// ,bounds,false);
         }
+    	} catch (Exception e) {
+    		logger.error(e.getMessage());
+    	}
     }
 
+    /** Gets the diagram bounds in screen-space.
+     * 
+     */
     private Rectangle getDiagramBounds() {
         java.awt.Rectangle r =
             getRenderer().calculateDiagramBounds(hub.getIChemModel());
@@ -513,6 +569,8 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                                                               clientRect.width,
                                                               clientRect.height);
             getRenderer().setup( hub.getIChemModel(), rect );
+            if(ChemModelManipulator.getAtomCount(hub.getIChemModel())<2)
+            	getRenderer2DModel().set(Scale.class,28d);
             resizeControl();
         }
     }
@@ -749,7 +807,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 atom.setAtomTypeName(null);
                 atom.setHybridization(null);
                 atom.setImplicitHydrogenCount(0);
-                atom.setFlag(CDKConstants.ISAROMATIC, false);
+                // atom.setFlag(CDKConstants.ISAROMATIC, false);
             }
             for (IBond bond : container.bonds())
                 bond.setFlag(CDKConstants.ISAROMATIC, false);
@@ -878,37 +936,85 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         operationHistory.add((IUndoableOperation)undoredo);
     }
 
-    private void resizeControl() {
+    private void setupScrollbars() {
+	        final ScrollBar hBar = getHorizontalBar();
+	        hBar.setEnabled(true);
+	        
+	        hBar.addListener(SWT.Selection, new Listener() {
+	            public void handleEvent(Event event) {
+	                int hSelection = hBar.getSelection();
+	                Rectangle diagram = getDiagramBounds();
+	                int destX = -hSelection - diagram.x;
+	                setIsScrolling(true);
+
+	                scroll(-hSelection, diagram.y, diagram.x, diagram.y, diagram.width, diagram.height, false);
+	                getRenderer().shiftDrawCenter( destX,0);
+
+	                setIsScrolling(false);
+	                update();
+	                JChemPaintEditorWidget.this.redraw();
+	            }
+	        });
+	
+	        final ScrollBar vBar = getVerticalBar();
+	        vBar.setEnabled(true);
+	        vBar.addListener(SWT.Selection, new Listener() {
+	            public void handleEvent(Event event) {
+	            	int vSelection = vBar.getSelection();
+	            	Rectangle rect = getDiagramBounds();
+	                int destY = -vSelection - rect.y;
+	                setIsScrolling(true);
+
+	                scroll(rect.x, -vSelection, rect.x, rect.y, rect.width, rect.height, false);
+	                getRenderer().shiftDrawCenter( 0, destY);
+
+	                setIsScrolling(false);
+	                update();
+	                JChemPaintEditorWidget.this.redraw();
+	            }
+	        });
+	    }
+
+	private void resizeControl() {
         final ScrollBar hBar = getHorizontalBar();
         final ScrollBar vBar = getVerticalBar();
 
-        Integer xVal=null,
-                yVal=null;
-
-        Rectangle rect = getDiagramBounds();
+        Rectangle diagram = getDiagramBounds();
         Rectangle client = getClientArea();
 
-        hBar.setMaximum (rect.width);
-        vBar.setMaximum (rect.height);
-        hBar.setThumb (Math.min (rect.width, client.width));
-        vBar.setThumb (Math.min (rect.height, client.height));
-        int hPage = rect.width - client.width;
-        int vPage = rect.height - client.height;
+        hBar.setMaximum (diagram.width);
+        vBar.setMaximum (diagram.height);
+
+        hBar.setThumb (Math.min (diagram.width, client.width));
+        vBar.setThumb (Math.min (diagram.height, client.height));
+        int hPage = diagram.width - client.width;
+        int vPage = diagram.height - client.height;
+
         int hSelection = hBar.getSelection ();
         int vSelection = vBar.getSelection ();
+
+        Integer xVal,yVal;
+        xVal=yVal=null;
+
         if (hSelection >= hPage) {
-          if (hPage <= 0) hSelection = 0;// negative width fits in should center
-          xVal = -hSelection+client.width/2-rect.width/2;
+          if (hPage <= 0)
+            hSelection = 0;
+          xVal = -hSelection+client.width/2-diagram.width/2;
         }
+
         if (vSelection >= vPage) {
-          if (vPage <= 0) vSelection = 0;
-          yVal = -vSelection + client.height/2-rect.height/2;
+          if (vPage <= 0)
+            vSelection = 0;
+          yVal = -vSelection + client.height/2-diagram.height/2;
         }
-        int dx = xVal!=null?xVal-rect.x:0;
-        int dy = yVal!=null?yVal-rect.y:0;
+
+        int dx = xVal!=null?xVal-diagram.x:0;
+        int dy = yVal!=null?yVal-diagram.y:0;
 
         if(dx!=0 || dy!=0)
             getRenderer().shiftDrawCenter( dx, dy);
+
+        JChemPaintEditorWidget.this.redraw();
     }
 
     public void addDropSupport(int operations, Transfer[] transferTypes,
@@ -923,12 +1029,15 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
     public ICDKMolecule getMolecule() {
         ICDKMolecule model = super.getMolecule();
         if(model == null) return null;
-        IAtomContainer modelContainer = model.getAtomContainer();
-        modelContainer.removeAllElements();
         IChemModel chemModel = getControllerHub().getIChemModel();
-        for(IAtomContainer aContainer:ChemModelManipulator
-                                        .getAllAtomContainers( chemModel )) {
-            modelContainer.add( aContainer );
+        List<IAtomContainer> modelAtomContainers = ChemModelManipulator
+                .getAllAtomContainers( chemModel );
+        IAtomContainer modelContainer = model.getAtomContainer();
+        if( !modelAtomContainers.contains(modelContainer)) {
+        	modelContainer.removeAllElements();
+        	for(IAtomContainer aContainer:modelAtomContainers) {
+        		modelContainer.add( aContainer );
+        	}
         }
         return model;
     }

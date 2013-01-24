@@ -128,6 +128,11 @@
               id="net.bioclipse.cdk.molTable.column.remove"
               name="Remove Column">
         </command>
+        <command
+              defaultHandler="net.bioclipse.cdk.ui.sdfeditor.business.LaunchWizardPage"
+              id="net.bioclipse.cdk.ui.sdfeditor.command.ImportProperties"
+              name="Import Properties">
+        </command>
   	</extension>
 
 	<extension
@@ -157,7 +162,7 @@
         </command>
         <command
               commandId="net.bioclipse.cdk.ui.sdfeditor.addProperty"
-              label="CDK Fingerprint"
+              label="CDK Fingerprint (Fingerprinter)"
               style="push">
            <parameter
                  name="net.bioclipse.cdk.ui.sdfeditor.calculatorId"
@@ -192,6 +197,38 @@
 			   		</iterate>
 		        </visibleWhen>
 	       </command>
+      <command
+            commandId="net.bioclipse.cdk.ui.sdfeditor.command.ImportProperties"
+            label="Add Properties from file..."
+            style="push">
+         <visibleWhen>
+            <iterate
+                  ifEmpty="false"
+                  operator="and">
+               <adapt
+                     type="org.eclipse.core.resources.IResource">
+                  <or>
+                     <test
+                           property="org.eclipse.core.resources.contentTypeId"
+                           value="net.bioclipse.contenttypes.sdf">
+                     </test>
+                     <test
+                           property="org.eclipse.core.resources.contentTypeId"
+                           value="net.bioclipse.contenttypes.sdf0d">
+                     </test>
+                     <test
+                           property="org.eclipse.core.resources.contentTypeId"
+                           value="net.bioclipse.contenttypes.sdf2d">
+                     </test>
+                     <test
+                           property="org.eclipse.core.resources.contentTypeId"
+                           value="net.bioclipse.contenttypes.sdf3d">
+                     </test>
+                  </or>
+               </adapt>
+            </iterate>
+         </visibleWhen>
+      </command>
 		</menuContribution>
   <menuContribution
         locationURI="popup:net.bioclipse.cdk.ui.sdfeditor.column.menu?after=additions">
@@ -226,6 +263,19 @@
             </and>
         </visibleWhen>
      </command>
+     <separator
+           name="net.bioclipse.cdk.ui.sdfeditor.edit"
+           visible="true">
+     </separator>
+     <command
+           commandId="org.eclipse.ui.edit.delete"
+           label="Delete"
+           style="push">
+     </command>
+     <separator
+           name="net.bioclipse.cdk.ui.sdfeditor.extractors"
+           visible="true">
+     </separator>
      <command
            commandId="net.bioclipse.cdk.moltable.extract"
            label="Extract Molecules"
@@ -267,7 +317,11 @@
                  </or>
               </iterate>
         </visibleWhen>
-     </command>  </menuContribution>
+     </command>
+     <separator
+           name="net.bioclipse.cdk.ui.sdfeditor.extra"
+           visible="true">
+     </separator> </menuContribution>
 	</extension>
  <extension
        point="net.bioclipse.scripting.contribution">
@@ -374,5 +428,44 @@
           id="net.bioclipse.cdk.ui.sdfeditor.preferencePage"
           name="Mol Table Preferences">
     </page>
+ </extension>
+ <extension
+       point="org.eclipse.ui.handlers">
+    <handler
+          class="net.bioclipse.cdk.ui.sdfeditor.handlers.RemoveMolecules"
+          commandId="org.eclipse.ui.edit.delete">
+       <activeWhen>
+          <iterate
+                operator="or">
+             <or>
+                <instanceof
+                      value="net.bioclipse.cdk.domain.ICDKMolecule">
+                </instanceof>
+                <instanceof
+                      value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
+                </instanceof>
+                <instanceof
+                      value="net.bioclipse.cdk.ui.sdfeditor.editor.MolTableSelection">
+                </instanceof>
+             </or>
+          </iterate>
+       </activeWhen>
+       <enabledWhen>
+          <iterate
+                operator="or">
+             <or>
+                <instanceof
+                      value="net.bioclipse.cdk.domain.ICDKMolecule">
+                </instanceof>
+                <instanceof
+                      value="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
+                </instanceof>
+                <instanceof
+                      value="net.bioclipse.cdk.ui.sdfeditor.editor.MolTableSelection">
+                </instanceof>
+             </or>
+          </iterate>
+       </enabledWhen>
+    </handler>
  </extension>
 </plugin>

@@ -17,7 +17,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(value=Suite.class)
 @SuiteClasses({
     JavaScriptValidateCMLManagerPluginTest.class,
-    JavaValidateCMLManagerPluginTest.class
+    JavaValidateCMLManagerPluginTest.class,
+    ContentTypesPluginTest.class
 })
 public class AllValidateCMLManagerPluginTest {
 

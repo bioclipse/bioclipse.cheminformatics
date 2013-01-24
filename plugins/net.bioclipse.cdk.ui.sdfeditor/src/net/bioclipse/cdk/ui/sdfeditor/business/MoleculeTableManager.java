@@ -37,6 +37,7 @@ import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.core.util.TimeCalculator;
 import net.bioclipse.jobs.IReturner;
 import net.bioclipse.managers.business.IBioclipseManager;
 
@@ -48,6 +49,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubMonitor;
 import org.openscience.cdk.Molecule;
@@ -82,7 +84,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                                 IProgressMonitor monitor ) {
 
         returner.completeReturn(
-                  new SDFIndexEditorModel(createIndex( file, monitor ) ) );
+                  new SDFIndexEditorModel(createIndex( file, monitor ), monitor ) );
 
     }
 
@@ -223,8 +225,10 @@ public class MoleculeTableManager implements IBioclipseManager {
             for(IPropertyCalculator<?> calculator:calculators) {
                 calculateProgress.subTask( String.format( "%d/%d", prop++,
                                                           calculators.length) );
-                model.setPropertyFor( i, calculator.getPropertyName(),
-                             calculator.calculate( model.getMoleculeAt( i ) ) );
+                Object property = calculator.calculate(model.getMoleculeAt(i));
+                if(property!= null) {
+                	model.setPropertyFor( i, calculator.getPropertyName(),property);
+                }
                 calculateProgress.worked( 100 );
                 if(progress.isCanceled())
                     throw new OperationCanceledException();
@@ -360,7 +364,7 @@ public class MoleculeTableManager implements IBioclipseManager {
             }
             }catch(Exception e) {
                 LogUtils.debugTrace( logger, e );
-                throw new BioclipseException("Faild to save file: "+
+                throw new BioclipseException("Failed to save file: "+
                                              e.getMessage());
             }
             if ( loopProgress.isCanceled() ) {
@@ -381,7 +385,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                   SDFileIndex index=
                  createIndex( file, subMonitor.newChild( 1000 ) );
                   if(index!=null) {
-                      sdfModel = new SDFIndexEditorModel(index);
+                      sdfModel = new SDFIndexEditorModel(index, new NullProgressMonitor());
                   }else
                      throw new BioclipseException("Failed to create new index");
          } catch ( CoreException e1 ) {
@@ -499,13 +503,15 @@ public class MoleculeTableManager implements IBioclipseManager {
         }
 
         SDFileIndex index = createIndex( file, progress.newChild( 1000 ) );
-        SDFIndexEditorModel model = new SDFIndexEditorModel(index);
+        SDFIndexEditorModel model = new SDFIndexEditorModel(index, new NullProgressMonitor());
 
         IFile target = null;
         SubMonitor loopProgress = progress.newChild( 8000 );
-        loopProgress.setWorkRemaining( model.getNumberOfMolecules()*20 );
+        int numberOfMolecules = model.getNumberOfMolecules();
+        loopProgress.setWorkRemaining( numberOfMolecules*20 );
         loopProgress.subTask( "Writing to file" );
-        for(int i = 0;i<model.getNumberOfMolecules();i++ ) {
+        long startTime = System.currentTimeMillis();
+        for(int i = 0;i<numberOfMolecules;i++ ) {
             //loopProgress.setWorkRemaining( (model.getNumberOfMolecules()-i) );
             StringWriter writer = new StringWriter();
             IChemObjectWriter chemWriter = new SDFWriter(writer);
@@ -523,6 +529,11 @@ public class MoleculeTableManager implements IBioclipseManager {
                 mol.setProperties( ac.getProperties() );
             }
             loopProgress.worked( 5 );
+            loopProgress.setTaskName( 
+                "Done " + i + "/" + numberOfMolecules 
+                + " (" + TimeCalculator.generateTimeRemainEst( 
+                            startTime, i+1, numberOfMolecules ) 
+                + ")" );
             calculateProperties( molecule, calculators, new IReturner<Void>() {
                 public void completeReturn( Void object ) {
                 }
@@ -555,9 +566,8 @@ public class MoleculeTableManager implements IBioclipseManager {
                                                  loopProgress.newChild( 5 ) );
                 }else {
                     target.create( convertToByteArrayIs( writer ),
-                                                           false,
+                                                           IResource.FORCE | IResource.HIDDEN,
                                                  loopProgress.newChild( 4 ) );
-                    target.setHidden( true );
                     target.getParent().refreshLocal( IResource.DEPTH_INFINITE ,
                                                    loopProgress.newChild( 1));
                 }
@@ -583,7 +593,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                            e.getMessage()!=null?e.getMessage():"");
             }
             loopProgress.subTask( String.format( "%d/%d", i,
-                                               model.getNumberOfMolecules() ) );
+                                               numberOfMolecules ) );
         }
         progress.setWorkRemaining( 1000 );
 
@@ -597,7 +607,7 @@ public class MoleculeTableManager implements IBioclipseManager {
         } catch ( CoreException e1 ) {
             logger.warn( "Could not rename original" );
             throw new BioclipseException( "Failed to create new index: "
-                                          + e1.getMessage());
+                                          + e1.getMessage(),e1);
         }
         progress.done();
     }

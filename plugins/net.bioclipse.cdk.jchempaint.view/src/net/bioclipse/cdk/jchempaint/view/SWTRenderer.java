@@ -100,14 +100,20 @@ public class SWTRenderer implements IDrawVisitor{
         return model;
     }
 
+    @Deprecated
     private int transformX(double x) {
         return (int) transform( x, 1 )[0];
     }
 
+    @Deprecated
     private int transformY(double y) {
         return (int) transform( 1, y )[1];
     }
 
+    private Point transformXY(double x, double y) {
+    	double[] vals = transform(x,y);
+    	return new Point((int)(vals[0]+.5),(int)(vals[1]+.5));
+    }
     private double[] transform(double x, double y) {
         double [] result = new double[2];
         transform.transform( new double[] {x,y}, 0, result, 0, 1 );
@@ -140,18 +146,19 @@ public class SWTRenderer implements IDrawVisitor{
         int radius = scaleX(element.radius);
         int diameter = scaleX(element.radius * 2);
 
+        Point p = transformXY(element.xCoord,element.yCoord);
         if (element.fill) {
             setBackground(element.color);
 
-            gc.fillOval(transformX(element.x) - radius,
-                        transformY(element.y) - radius,
+            gc.fillOval(p.x - radius,
+                        p.y - radius,
                         diameter,
                         diameter );
         } else {
             setForeground(element.color);
 
-            gc.drawOval(transformX(element.x) - radius,
-                        transformY(element.y) - radius,
+            gc.drawOval(p.x - radius,
+                        p.y - radius,
                         diameter,
                         diameter );
         }
@@ -185,14 +192,14 @@ public class SWTRenderer implements IDrawVisitor{
     private void drawWedge(WedgeLineElement wedge) {
 
         Vector2d normal =
-            new Vector2d(wedge.y1 - wedge.y2, wedge.x2 - wedge.x1);
+            new Vector2d(wedge.firstPointY - wedge.secondPointY, wedge.secondPointX - wedge.firstPointX);
         normal.normalize();
         normal.scale(model.getParameter(WedgeWidth.class).getValue() /
         		     model.getParameter(Scale.class).getValue());
 
         // make the triangle corners
-        Point2d vertexA = new Point2d(wedge.x1, wedge.y1);
-        Point2d vertexB = new Point2d(wedge.x2, wedge.y2);
+        Point2d vertexA = new Point2d(wedge.firstPointX, wedge.firstPointY);
+        Point2d vertexB = new Point2d(wedge.secondPointX, wedge.secondPointY);
         Point2d vertexC = new Point2d(vertexB);
         vertexB.add(normal);
         vertexC.sub(normal);
@@ -261,8 +268,8 @@ public class SWTRenderer implements IDrawVisitor{
 
     private void drawLine(LineElement element) {
         Path path = new Path(gc.getDevice());
-        double[] p1=transform( element.x1, element.y1 );
-        double[] p2=transform( element.x2, element.y2 );
+        double[] p1=transform( element.firstPointX, element.firstPointY );
+        double[] p2=transform( element.secondPointX, element.secondPointY );
         path.moveTo( (float)p1[0], (float)p1[1] );
         path.lineTo( (float)p2[0], (float)p2[1] );
         gc.drawPath( path );
@@ -281,22 +288,22 @@ public class SWTRenderer implements IDrawVisitor{
 
     public void visit(ArrowElement element) {
         Path path = new Path(gc.getDevice());
-        double[] a=transform( element.x1, element.y1 );
-        double[] b=transform( element.x2, element.y2 );
+        double[] a=transform( element.startX, element.startY );
+        double[] b=transform( element.endX, element.endY );
         path.moveTo((float)a[0], (float)a[1]);
         path.lineTo((float)b[0], (float)b[1]);
         double aW = model.getParameter(ArrowHeadWidth.class).getValue()
             / model.getParameter(Scale.class).getValue();
         if (element.direction) {
-            double[] c = transform( element.x1 - aW, element.y1 - aW );
-            double[] d = transform( element.x1 - aW, element.y1 + aW );
+            double[] c = transform( element.startX - aW, element.startY - aW );
+            double[] d = transform( element.startX - aW, element.startY + aW );
             path.moveTo((float)a[0], (float)a[1]);
             path.lineTo((float)c[0], (float)c[1]);
             path.lineTo((float)a[0], (float)a[1]);
             path.lineTo((float)d[0], (float)d[1]);
         } else {
-            double[] c = transform( element.x2 + aW, element.y2 - aW );
-            double[] d = transform( element.x2 + aW, element.y2 + aW );
+            double[] c = transform( element.endX + aW, element.endY - aW );
+            double[] d = transform( element.endX + aW, element.endY + aW );
             path.moveTo((float)a[0], (float)a[1]);
             path.lineTo((float)c[0], (float)c[1]);
             path.lineTo((float)a[0], (float)a[1]);
@@ -307,8 +314,9 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void visit( TextElement element ) {
-        int x = transformX(element.xCoord);
-        int y = transformY(element.yCoord);
+    	Point p = transformXY(element.xCoord,element.yCoord);
+        int x = p.x;
+        int y = p.y;
         String text = element.text;
 
         gc.setFont(getFont());
@@ -323,8 +331,9 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void visit( TextGroupElement element ) {
-        int x = transformX(element.xCoord);
-        int y = transformY(element.yCoord);
+    	Point p = transformXY(element.xCoord,element.yCoord);
+        int x = p.x;
+        int y = p.y;
         String text = element.text;
 
         gc.setFont(getFont());
@@ -339,8 +348,9 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void visit(AtomSymbolElement element) {
-        int x = transformX( element.xCoord);
-        int y = transformY( element.yCoord);
+    	Point p = transformXY(element.xCoord,element.yCoord);
+        int x = p.x;
+        int y = p.y;
 
         String text = element.text;
 
@@ -440,12 +450,12 @@ public class SWTRenderer implements IDrawVisitor{
         if (element.filled) {
             setBackground(element.color);
             gc.fillRectangle(
-                    transformX(element.x), transformY(element.y),
+                    transformX(element.xCoord), transformY(element.yCoord),
                     scaleX(element.width), scaleY(element.height));
         } else {
             setForeground( element.color );
             gc.drawRectangle(
-                    transformX(element.x), transformY(element.y),
+                    transformX(element.xCoord), transformY(element.yCoord),
                     scaleX(element.width), scaleY(element.height));
         }
     }

@@ -12,7 +12,6 @@
 package net.bioclipse.jmol.views.outline;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -45,6 +44,8 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.CollapseAllHandler;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
@@ -76,6 +77,8 @@ public class JmolContentOutlinePage
     private org.jmol.viewer.Viewer jmolViewer;
     private IEditorPart part;
     private TreeViewer treeViewer;
+
+    private CollapseAllHandler     collapseAllHandler;
 
     class JmolOutlineContentProvider 
         implements IStructuredContentProvider, 
@@ -213,8 +216,18 @@ public class JmolContentOutlinePage
                 // Not interested in this
             }
         });
+        makeActions();
     }
 
+    protected void makeActions() {
+
+        IHandlerService service =
+                        (IHandlerService) getSite()
+                                        .getService( IHandlerService.class );
+        collapseAllHandler = new CollapseAllHandler( treeViewer );
+        service.activateHandler( "net.bioclipse.jmol.collapseAll",
+                                 collapseAllHandler );
+    }
     public void updateTreeViewerModel() {
         
         ModelSet modelSet = jmolViewer.getModelSet();

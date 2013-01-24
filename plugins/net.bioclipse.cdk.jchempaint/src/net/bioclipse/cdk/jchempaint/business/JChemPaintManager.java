@@ -25,6 +25,7 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.managers.business.IBioclipseManager;
 import net.bioclipse.scripting.ui.Activator;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -42,6 +43,7 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IBond.Order;
+import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
@@ -55,10 +57,12 @@ import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondWidth;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.WedgeWidth;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.FitToScreen;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Scale;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.ZoomFactor;
 import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HighlightAtomDistance;
 import org.openscience.cdk.renderer.generators.HighlightBondGenerator.HighlightBondDistance;
+import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 import org.openscience.cdk.renderer.generators.RingGenerator.CDKStyleAromaticity;
 import org.openscience.cdk.renderer.generators.RingGenerator.RingProportion;
 import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
@@ -73,6 +77,7 @@ import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
  */
 public class JChemPaintManager implements IBioclipseManager {
 
+	private Logger logger = Logger.getLogger(JChemPaintManager.class);
     /** Not to be used by manager method directly, but is just needed for the syncRun() call. */
     private JChemPaintEditor jcpEditor;
 
@@ -354,6 +359,17 @@ public class JChemPaintManager implements IBioclipseManager {
         if (editor != null) {
             monitor.beginTask( "Cleaning up of structure", IProgressMonitor.UNKNOWN );
             IChemModelRelay relay = editor.getControllerHub();
+            // Removes empty atomcontainers
+            // This is a dirty fix until we can work on a single atom container instead of a ChemModel
+            List<IAtomContainer> toRemove = new ArrayList<IAtomContainer>();
+            IMoleculeSet mSet = relay.getIChemModel().getMoleculeSet();
+            for(IAtomContainer ac:mSet.molecules()) {
+            	if(ac.getAtomCount()==0)
+            		toRemove.add(ac);
+            }
+            for(IAtomContainer ac:toRemove) {
+            	mSet.removeAtomContainer(ac);
+            }
             try{
                 relay.cleanup();
             } catch (NullPointerException e) {
@@ -365,7 +381,11 @@ public class JChemPaintManager implements IBioclipseManager {
             }
             PlatformUI.getWorkbench().getDisplay().syncExec( new Runnable() {
                 public void run() {
+                	try{
                     editor.getWidget().reset();
+                	} catch (Exception e) {
+                		logger.error(e.getMessage());
+                	}
                 }
             });
             monitor.done();
@@ -683,6 +703,14 @@ public class JChemPaintManager implements IBioclipseManager {
             return false;
         }
     }
+    
+    public double getScale() {
+    	return this.getRendererModel().get(Scale.class);
+    }
+    
+    public void setScale(double scale) {
+    	this.getRendererModel().set(Scale.class,scale);
+    }
 
     public boolean getShowAromaticityInCDKStyle() {
         RendererModel model = this.getRendererModel();
@@ -773,6 +801,7 @@ public class JChemPaintManager implements IBioclipseManager {
         JChemPaintEditor editor = findActiveEditor();
         if (editor != null) {
             IChemModelRelay relay = editor.getControllerHub();
+            relay.updateImplicitHydrogenCounts();
             IChemModel model = relay.getIChemModel();
             List<IAtomContainer> containers =
                 ChemModelManipulator.getAllAtomContainers(model);

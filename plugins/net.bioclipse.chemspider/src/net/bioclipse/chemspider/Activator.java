@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010  Egon Willighagen <egon.willighagen@gmail.com>
+ * Copyright (c) 2010  Egon Willighagen <egon.willighagen@gmail.com> & Ola Spjuth
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -26,6 +26,9 @@ public class Activator extends AbstractUIPlugin {
 
     private static final Logger logger = Logger.getLogger(Activator.class);
 
+	public static final String PREF_SECURITY_TOKEN = "chemspider.security.preference";
+	public static final String PREF_SERVER_ENDPOINT = "chemspider.server.endpoint";
+
     // The shared instance
     private static Activator plugin;
 
@@ -39,6 +42,13 @@ public class Activator extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
+        
+        //Set default prefs
+        Activator.getDefault().getPreferenceStore().setDefault(Activator.PREF_SECURITY_TOKEN, "");
+
+        Activator.getDefault().getPreferenceStore().setDefault(Activator.PREF_SERVER_ENDPOINT, 
+        												"http://cs.dev.rsc-us.org/Search.asmx");
+
         javaFinderTracker
             = new ServiceTracker( context,
                                   IJavaChemspiderManager.class.getName(),
@@ -89,7 +99,7 @@ public class Activator extends AbstractUIPlugin {
         IJavaScriptChemspiderManager manager = null;
         try {
             manager = (IJavaScriptChemspiderManager)
-                      jsFinderTracker.waitForService(1000*10);
+                      jsFinderTracker.waitForService(2000*10);
         }
         catch (InterruptedException e) {
             throw new IllegalStateException(

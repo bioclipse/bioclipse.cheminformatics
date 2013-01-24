@@ -59,6 +59,7 @@ public class JCPOutlinePage extends ContentOutlinePage
 
         Tree tree = treeViewer.getTree();
         MenuManager menuMgr = new MenuManager();
+        menuMgr.add( new GroupMarker( "edits" ) );
         menuMgr.add( new GroupMarker( IWorkbenchActionConstants.MB_ADDITIONS ) );
         getSite().registerContextMenu("net.bioclipse.cdk.ui.editors.jchempaint",
                                       menuMgr, treeViewer );

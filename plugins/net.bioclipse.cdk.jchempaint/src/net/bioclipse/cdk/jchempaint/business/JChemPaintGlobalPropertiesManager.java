@@ -124,7 +124,8 @@ public class JChemPaintGlobalPropertiesManager implements IBioclipseManager {
     	ICommandService service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
       Map filter = new HashMap();
       filter.put(IServiceScopes.WINDOW_SCOPE, PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-      service.refreshElements("net.bioclipse.cdk.jchempaint.preference.atomNumbers", filter);
+      if(filter.get(IServiceScopes.WINDOW_SCOPE)!=null)
+    	  service.refreshElements("net.bioclipse.cdk.jchempaint.preference.atomNumbers", filter);
     }
 
     public void applyGlobalProperties() throws BioclipseException {

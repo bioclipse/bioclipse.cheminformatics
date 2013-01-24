@@ -106,9 +106,10 @@ import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.IResourceFormat;
 import org.openscience.cdk.io.formats.MDLV2000Format;
+import org.openscience.cdk.renderer.ChemModelRenderer;
 import org.openscience.cdk.renderer.RendererModel;
-import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
+import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.selection.AbstractSelection;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.selection.MultiSelection;
@@ -120,6 +121,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
 
     private Logger logger = Logger.getLogger(JChemPaintEditor.class);
 
+    public static final String     contextMenuId               = "net.bioclipse.cdk.ui.editors.jchempaint";
     public static final String STRUCUTRE_CHANGED_EVENT="structure_changed";
     public static final String MODEL_LOADED = "net.bioclipse.jchempaint.load.model";
 
@@ -169,12 +171,13 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
                 IAtomContainer container = model.getAtomContainer();
                 if (GeometryTools.has3DCoordinates(container) &&
                     GeometryTools.has2DCoordinates(container)) {
-                    boolean agreedWithInfoLoss = MessageDialog.openQuestion(
-                        this.getSite().getShell(),
-                        chemFormat.getFormatName(),
-                        "This file format cannot save 3D and 2D coordinates. " +
-                        "Do you want to save only 2D?"
-                    );
+            		boolean agreedWithInfoLoss = MessageDialog.openConfirm(
+            				this.getSite().getShell(),
+            				"WARNING",
+            				"When saving 2D coordinates to MDL molfile the 3D coordinates will be lost.\n\n" +
+            				"If you want to save both 2D and 3D try another file format (e.g CML) via the \"Save as...\" menu.\n\n" +
+            				"Click OK if you want to save 2D coordinates?"
+					);
                     if (!agreedWithInfoLoss) return;
                 }
 
@@ -213,6 +216,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
         List<IResourceFormat> formats = new ArrayList<IResourceFormat>();
         formats.add(CMLFormat.getInstance());
         formats.add(MDLV2000Format.getInstance());
+        net.bioclipse.core.Activator.getVirtualProject();
         SaveAsDialog saveAsDialog = new SaveAsDialog(
             this.getSite().getShell(), formats
         );
@@ -237,6 +241,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
             if (format instanceof MDLV2000Format) {
                 Properties properties = new Properties();
                 properties.setProperty("ForceWriteAs2DCoordinates", "true");
+                properties.setProperty("WriteAromaticBondTypes", "true");
                 Activator.getDefault().getJavaCDKManager().saveMolecule(
                     model, file, format, true, properties
                 );
@@ -432,10 +437,9 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
 
     private void createMenu() {
 
-        MenuManager menuMgr = new MenuManager();
-        menuMgr.add( new GroupMarker( IWorkbenchActionConstants.MB_ADDITIONS ) );
-        getSite().registerContextMenu("net.bioclipse.cdk.ui.editors.jchempaint",
-                                      menuMgr, widget );
+        MenuManager menuMgr = new MenuManager( contextMenuId, contextMenuId );
+        menuMgr.setRemoveAllWhenShown(true);
+        getSite().registerContextMenu( contextMenuId, menuMgr, widget );
 
         menu = menuMgr.createContextMenu( widget );
         widget.setMenu( menu );
@@ -557,17 +561,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
     }
 
     public ICDKMolecule getCDKMolecule() {
-        ICDKMolecule model = widget.getMolecule();
-        if(model == null) return null;
-        IAtomContainer modelContainer = model.getAtomContainer();
-        modelContainer.removeAllElements();
-        IChemModel chemModel = getControllerHub().getIChemModel();
-        for(IAtomContainer aContainer:ChemModelManipulator
-                                        .getAllAtomContainers( chemModel )) {
-            modelContainer.add( aContainer );
-        }
-
-        return model;
+        return widget.getMolecule();
     }
 
     public void setMoleculeProperty(Object key,Object value) {
@@ -594,6 +588,9 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
         }
         if( adapter.isAssignableFrom(ICDKMolecule.class)) {
             return getCDKMolecule();
+        }
+        if( adapter.isAssignableFrom(ChemModelRenderer.class)){
+        	return getWidget().getRenderer();
         }
         return super.getAdapter( adapter );
     }

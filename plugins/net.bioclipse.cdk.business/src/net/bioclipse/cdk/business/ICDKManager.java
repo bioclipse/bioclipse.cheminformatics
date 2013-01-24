@@ -14,6 +14,7 @@
 package net.bioclipse.cdk.business;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.BitSet;
 import java.util.Collection;
@@ -224,6 +225,11 @@ public interface ICDKManager extends IBioclipseManager {
         loadMolecules( IFile file,
                        BioclipseUIJob<List<ICDKMolecule>> uiJob );
 
+    public List<ICDKMolecule> loadMolecules( InputStream contents,
+            IChemFormat format,
+            IProgressMonitor monitor ) throws BioclipseException,
+            								  CoreException,
+            								  IOException;
     /**
      * Save a molecule in same format as loaded to same filename, if exists
      * @param mol The molecule to save
@@ -901,6 +907,13 @@ public interface ICDKManager extends IBioclipseManager {
                            throws BioclipseException, InvocationTargetException;
 
     @Recorded
+    @TestMethods("testExtractFromSDFile_IFile_int_int")
+    public List<ICDKMolecule> extractFromSDFile( IFile file,
+                                                 int startentry,
+                                                 int endentry,
+                                                 IProgressMonitor monitor)
+                           throws BioclipseException, InvocationTargetException;
+    @Recorded
     @PublishedMethod(
         params = "String file, int startentry, int endentry",
         methodSummary = "Extracts a number of entries from an sd file. " +
@@ -1176,7 +1189,25 @@ public interface ICDKManager extends IBioclipseManager {
     @PublishedMethod(
          params="List<IMolecule> mols, double firstRatio",
          methodSummary="Split a list of molecules in 2 parts by a ratio.")
-    public List<List<IMolecule>> randomSplit2parts(List<IMolecule> mols_in, double firstRatio);    
+    public List<List<IMolecule>> randomSplit2parts(List<IMolecule> mols_in, double firstRatio);
 
+    public List<ICDKMolecule> loadSMILESFile( IFile file,
+                                              IProgressMonitor monitor ) 
+                                              throws CoreException, IOException;
+
+    @Recorded
+    @PublishedMethod(
+         params="String sdFile, ICDKMolecule molecule",
+         methodSummary="Append a molecule at the end of a given sd file."
+    )
+    public void appendToSDF( String sdFile, ICDKMolecule molecule ) throws BioclipseException;
     
+    public void appendToSDF( IFile sdFile, ICDKMolecule molecule ) throws BioclipseException;
+
+    @Recorded
+    @PublishedMethod(
+         params="IMolecule molecule",
+         methodSummary="Generates a list of tautomers."
+    )
+    public List<ICDKMolecule> getTautomers(IMolecule molecule) throws BioclipseException;
 }

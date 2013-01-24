@@ -10,6 +10,8 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.describer;
 
+import org.apache.log4j.Logger;
+
 import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -40,8 +42,11 @@ public class JCPEditorDescriber implements IBioObjectDescriber {
                 //TODO: Move to JmolEditorDescriber in that plugin
                 else if (cdk.has3d( cdkmol )){
                     return "net.bioclipse.jmol.editors.JmolEditor";
+                } else {
+                	return "net.bioclipse.cdk.ui.editors.jchempaint";
                 }
             } catch ( BioclipseException e ) {
+            	Logger.getLogger(JCPEditorDescriber.class).error("Failed with matching BioObject to editor",e);
             }
         }
 

@@ -10,4 +10,13 @@
       </scriptContribution>
    </extension>
 
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="net.bioclipse.chemspider.ui.ChemspiderPreferencePage"
+            id="net.bioclipse.chemspider.prefs"
+            name="Chemspider">
+      </page>
+   </extension>
+
 </plugin>

@@ -199,7 +199,7 @@
            locationURI="popup:net.bioclipse.chemoinformatics.popup.convert?after=additions">
 		    <command
 		    	commandId="net.bioclipse.cdk.ui.handlers.convertSMILEStoSDF"
-		    	label="Convert SMILES to SDF"
+		    	label="to SDF"
 		        icon="icons/molecule2D.png">
 		      	<visibleWhen>
 		      	
@@ -550,17 +550,6 @@
    </extension>
 
 
-   <extension
-         point="org.eclipse.ui.views">
-      <view
-            category="net.bioclipse.chemoinformatics.views.category"
-            class="net.bioclipse.cdk.ui.views.PeriodicTableView"
-            icon="icons/periodictable.png"
-            id="net.bioclipse.cdk.ui.views.periodictable"
-            name="Periodic Table"
-            restorable="true">
-      </view>
-   </extension>
 
     <extension point="org.eclipse.ui.perspectiveExtensions"> 
         <perspectiveExtension 

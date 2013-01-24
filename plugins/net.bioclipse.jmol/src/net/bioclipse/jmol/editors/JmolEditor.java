@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,6 +70,7 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -490,10 +492,10 @@ public class JmolEditor extends EditorPart
                                                      .getFile().getContents());
             }
             if ( input instanceof IPathEditorInput) {
-                IFile file = transformer
-                                    .transform( ((IPathEditorInput)input)
-                                    .getPath().toOSString());
-                return readFile( file.getContents() );
+            	IPath path = ((IPathEditorInput)input).getPath();
+            	File file = path.toFile();
+
+                return readFile( new FileInputStream(file) );
             }
             if( input instanceof IURIEditorInput) {
                 URI uri = ((IURIEditorInput)input).getURI();

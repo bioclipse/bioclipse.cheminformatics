@@ -2,14 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: InChI plugin
 Bundle-SymbolicName: net.bioclipse.inchi;singleton:=true
-Bundle-Version: 2.5.0.qualifier
+Bundle-Version: 2.6.0.vqualifier
 Bundle-Activator: net.bioclipse.inchi.business.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  net.bioclipse.core,
  org.openscience.cdk.core,
  org.openscience.cdk.interfaces,
- org.openscience.cdk.inchi
+ org.openscience.cdk.inchi,
+ org.openscience.cdk.smiles
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.inchi.business,
  net.bioclipse.inchi.ui,
@@ -18,3 +19,4 @@ Bundle-Vendor: The Bioclipse Team
 Bundle-ClassPath: .
 Import-Package: net.sf.jniinchi,
  org.apache.log4j
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

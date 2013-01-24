@@ -16,11 +16,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.Platform;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.io.FormatFactory;
@@ -67,7 +69,8 @@ public class CDKManagerHelper {
      */
     public static void registerAllFormats(FormatFactory fac) {
         try {
-            InputStream iStream = org.openscience.cdk.ioformats.Activator.class.getResourceAsStream("/io-formats.set");
+        	URL file = Platform.getBundle("org.openscience.cdk.ioformats").getResource("io-formats.set");
+            InputStream iStream =  file.openStream();//org.openscience.cdk.ioformats.Activator.class.getResourceAsStream("/io-formats.set");
             BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
             int formatCount = 0;
             while (reader.ready()) {
@@ -75,7 +78,7 @@ public class CDKManagerHelper {
                 String formatName = reader.readLine();
                 formatCount++;
                 try {
-                    Class formatClass = org.openscience.cdk.io.Activator.class.getClassLoader().loadClass(formatName);
+                    Class formatClass = Platform.getBundle("org.openscience.cdk.io").loadClass(formatName);//org.openscience.cdk.io.Activator.class.getClassLoader().loadClass(formatName);
                     Method getinstanceMethod = formatClass.getMethod("getInstance", new Class[0]);
                     Object format = getinstanceMethod.invoke( null,
                                                               new Object[0]);

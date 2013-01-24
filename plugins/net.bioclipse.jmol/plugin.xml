@@ -142,6 +142,10 @@
             description="Run the Jmol script in the activeeditor"
             name="Run Script">
       </command>
+      <command
+            id="net.bioclipse.jmol.collapseAll"
+            name="Collapse All">
+      </command>
 
 </extension>
 
@@ -695,6 +699,24 @@
                   visible="false">
             </separator>
          </toolbar>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.views.ContentOutline?after=additions">
+         <command
+               commandId="net.bioclipse.jmol.collapseAll"
+               icon="platform:/plugin/org.eclipse.ui/icons/full/elcl16/collapseall.gif"
+               label="Collapse All"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="activeEditorId">
+                  <equals
+                        value="net.bioclipse.jmol.editors.JmolEditor">
+                  </equals>
+               </with>
+            </visibleWhen>
+         </command>
       </menuContribution>
 
 </extension>

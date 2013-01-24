@@ -56,9 +56,7 @@ public class RSGenerator implements IGenerator<IAtomContainer> {
 		offset.scale( 1/model.getParameter(Scale.class).getValue() );
 
 		Iterable<IStereoElement> stereoElements = container.stereoElements();
-		System.out.println("Creating R,S stereo");
 		for (IStereoElement stereo : stereoElements) {
-			System.out.println("Stereo: " + stereo);
 			if (stereo instanceof ITetrahedralChirality) {
 				ITetrahedralChirality l4Chiral = (ITetrahedralChirality)stereo;
 				CIP_CHIRALITY chirality = CIPTool.getCIPChirality(container, l4Chiral);

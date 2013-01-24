@@ -201,6 +201,9 @@
 		<menu label="Filter"
 			  id="net.bioclipse.chemoinformatics.popup.filter">
 		</menu>
+		<menu label="Generate Dataset"
+			  id="net.bioclipse.chemoinformatics.popup.dataset">
+		</menu>
       </menuContribution>
  </extension>
 

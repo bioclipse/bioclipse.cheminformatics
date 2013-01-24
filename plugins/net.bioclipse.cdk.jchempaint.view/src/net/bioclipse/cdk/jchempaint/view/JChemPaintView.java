@@ -165,10 +165,6 @@ public class JChemPaintView extends ViewPart
 
             public void partHidden( IWorkbenchPartReference partRef ) {
 
-                IWorkbenchPart part = partRef.getPart( false );
-                if ( part instanceof IEditorPart ) {
-                    setAtomContainer( null );
-                }
             }
 
             public void partActivated( IWorkbenchPartReference partRef ) {
@@ -180,7 +176,10 @@ public class JChemPaintView extends ViewPart
             }
 
             public void partClosed( IWorkbenchPartReference partRef ) {
-
+                IWorkbenchPart part = partRef.getPart( false );
+                if ( part instanceof IEditorPart ) {
+                    setAtomContainer( null );
+                }
             }
 
             public void partDeactivated( IWorkbenchPartReference partRef ) {

@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -180,13 +181,14 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
                     Display.getDefault().asyncExec( new Runnable() {
 
                         public void run() {
-                            PropertySheet p
-                                = (PropertySheet)
-                                  PlatformUI.getWorkbench()
-                                            .getActiveWorkbenchWindow()
+
+                            IWorkbenchWindow workbenchWindow = PlatformUI
+                                            .getWorkbench()
+                                            .getActiveWorkbenchWindow();
+                            if(workbenchWindow==null) return;
+                            PropertySheet p = (PropertySheet) workbenchWindow
                                             .getActivePage()
-                                            .findView(
-                                      "org.eclipse.ui.views.PropertySheet" );
+                                            .findView( "org.eclipse.ui.views.PropertySheet" );
                             if(p != null) {
                                 //The page might be a TabbedPropertySheetPage
                                 //in the future but we ignore it for now

@@ -2,7 +2,7 @@
 <feature
       id="net.bioclipse.cheminformatics.test_feature"
       label="Bioclipse Cheminformatics Test Feature"
-      version="2.5.0.qualifier"
+      version="2.6.0.vqualifier"
       provider-name="The Bioclipse Team"
       plugin="net.bioclipse.cdk.debug">
 
@@ -27,11 +27,17 @@ The Eclipse Public License accompanies this distribution, and is available at ht
       <discovery label="The CDK Homepage" url="http://cdk.sf.net"/>
    </url>
 
-   <requires>
-      <import feature="net.bioclipse.chemoinformatics_feature"/>
-      <import feature="net.bioclipse.core.tests_feature"/>
-      <import feature="net.bioclipse.core_feature"/>
-   </requires>
+   <includes
+         id="net.bioclipse.platform_feature"
+         version="0.0.0"/>
+
+   <includes
+         id="net.bioclipse.core_feature"
+         version="0.0.0"/>
+
+   <includes
+         id="net.bioclipse.chemoinformatics_feature"
+         version="0.0.0"/>
 
    <plugin
          id="net.bioclipse.cdk.business.test"
@@ -98,6 +104,20 @@ The Eclipse Public License accompanies this distribution, and is available at ht
 
    <plugin
          id="net.bioclipse.chemoinformatics.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.bioclipse.cml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.bioclipse.org.cmlxom"
          download-size="0"
          install-size="0"
          version="0.0.0"
