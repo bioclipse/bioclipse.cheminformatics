@@ -15,7 +15,7 @@ import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.config.AtomTypeFactory;
 import org.openscience.cdk.config.IsotopeFactory;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
-import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.periodictable.PeriodicTable;
 
 /**
@@ -30,7 +30,7 @@ public class CDKInitializer implements Runnable {
 		// set up IsotopeFactories
 		try {
 			IsotopeFactory.getInstance(
-				NoNotificationChemObjectBuilder.getInstance()
+				SilentChemObjectBuilder.getInstance()
 			);
 		} catch (IOException e) {
 			// do not care about the exception right now
@@ -49,7 +49,7 @@ public class CDKInitializer implements Runnable {
 		// Load the CDK atom type lists
 		AtomTypeFactory.getInstance(
 			"org/openscience/cdk/dict/data/cdk-atom-types.owl",
-			NoNotificationChemObjectBuilder.getInstance()
+			SilentChemObjectBuilder.getInstance()
 		);
 		AtomTypeFactory.getInstance(
 			"org/openscience/cdk/dict/data/cdk-atom-types.owl",
