@@ -13,6 +13,12 @@
  ******************************************************************************/
 package net.bioclipse.cdk.business;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -41,6 +47,8 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
+
 import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -61,6 +69,8 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -68,6 +78,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.content.IContentDescription;
@@ -146,6 +157,13 @@ import org.openscience.cdk.nonotify.NNChemFile;
 import org.openscience.cdk.nonotify.NNMolecule;
 import org.openscience.cdk.nonotify.NNMoleculeSet;
 import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
+import org.openscience.cdk.renderer.AtomContainerRenderer;
+import org.openscience.cdk.renderer.font.AWTFontManager;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
+import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.visitor.AWTDrawVisitor;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.similarity.Tanimoto;
 import org.openscience.cdk.smiles.SmilesGenerator;
@@ -976,6 +994,44 @@ public class CDKManager implements IBioclipseManager {
               throw new IllegalArgumentException("Multiple molecules can only " +
                 "be serialized in SDF or CML.");
           }
+      }
+     
+      public void generateImage(IMolecule molecule, String path) throws Exception { 
+          generateImage(molecule, path, 600, 600);
+      }
+      
+      public void generateImage(IMolecule molecule, String path, int width, int height) throws Exception {            
+          ICDKMolecule mol;  
+          if (!has2d( molecule )) {
+                List<IMolecule> molecules = new ArrayList<IMolecule>();
+                molecules.add( molecule );
+                IProgressMonitor monitor = new NullProgressMonitor();
+                mol = generate2dCoordinates( molecules, monitor ).get( 0 );
+            } else
+                mol = asCDKMolecule( molecule ); 
+            
+            generateImage(mol.getAtomContainer(), path, width, height);
+      }
+      
+      private void generateImage(IAtomContainer molecule, String path, int width, int height) throws IOException {        
+          Rectangle drawArea = new Rectangle(0, 0, width, height);
+          Image image = new BufferedImage( width, height, BufferedImage.TYPE_INT_RGB );
+          List<IGenerator<IAtomContainer>> generators = new ArrayList<IGenerator<IAtomContainer>>();
+          generators.add( new BasicSceneGenerator() );
+          generators.add( new BasicBondGenerator() );
+          generators.add( new BasicAtomGenerator() );
+          AtomContainerRenderer renderer = new AtomContainerRenderer( generators, new AWTFontManager() );          
+          renderer.setup( molecule, drawArea );
+          Graphics2D g2 = (Graphics2D) image.getGraphics();
+          g2.setColor( Color.WHITE );
+          g2.fillRect( 0, 0, width, height );
+          renderer.paint( molecule, new AWTDrawVisitor( g2 ) );
+          IWorkspace workspace = ResourcesPlugin.getWorkspace();
+          IWorkspaceRoot root = workspace.getRoot();
+          IPath ipath=new Path(path);
+          IFile file=root.getFile( ipath );
+          String fullPath = file.getLocation().toOSString();
+          ImageIO.write( (RenderedImage) image, "PNG", new File(fullPath) );
       }
       
       private AtomTypeAwareSaturationChecker ataSatChecker = new AtomTypeAwareSaturationChecker();

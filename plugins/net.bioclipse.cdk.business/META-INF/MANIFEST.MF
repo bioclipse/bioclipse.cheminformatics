@@ -41,8 +41,10 @@ Require-Bundle: org.openscience.cdk.io,
  net.bioclipse.inchi,
  net.bioclipse.ui.business,
  net.sf.cglib,
- org.openscience.cdk.silent;bundle-version="1.4.10",
- org.openscience.cdk.tautomer
+ org.openscience.cdk.silent,
+ org.openscience.cdk.tautomer,
+ org.openscience.cdk.renderbasic,
+ org.openscience.cdk.renderawt
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.cdk.business,
  net.bioclipse.cdk.domain,
