@@ -33,7 +33,7 @@ public class CMLAdapterFactory implements IAdapterFactory {
         Object molecule = null;
         if ( adaptableObject instanceof CMLMolecule) {
             CMLMolecule mol = (CMLMolecule) adaptableObject;
-            if ( adapterType.equals( CMLMolecule.class ) ) {
+            if ( adapterType.equals( ICDKMolecule.class ) ) {
                 try {
                     molecule = Activator.getDefault()
                             .getJavaCDKManager().fromCml( mol.toCML() );
@@ -54,7 +54,7 @@ public class CMLAdapterFactory implements IAdapterFactory {
 
     @Override
     public Class[] getAdapterList() {
-        return new Class[] { CMLMolecule.class };
+        return new Class[] { ICDKMolecule.class };
     }
 
 }

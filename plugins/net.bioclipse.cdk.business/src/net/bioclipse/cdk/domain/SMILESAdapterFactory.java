@@ -31,7 +31,7 @@ public class SMILESAdapterFactory implements IAdapterFactory {
         Object molecule = null;
         if ( adaptableObject instanceof SMILESMolecule ) {
             SMILESMolecule mol = (SMILESMolecule) adaptableObject;
-            if (adapterType.equals( SMILESMolecule.class )) {
+            if (adapterType.equals( ICDKMolecule.class )) {
                 try {
                     molecule = Activator.getDefault()
                             .getJavaCDKManager().fromSMILES( mol.toSMILES() );
@@ -50,7 +50,7 @@ public class SMILESAdapterFactory implements IAdapterFactory {
 
     @Override
     public Class[] getAdapterList() {
-        return new Class[] { SMILESMolecule.class };
+        return new Class[] { ICDKMolecule.class };
     }
 
 }
