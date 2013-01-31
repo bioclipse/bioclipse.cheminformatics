@@ -34,6 +34,20 @@
                type="org.eclipse.jface.resource.ImageDescriptor">
          </adapter>
       </factory>
+      <factory
+            adaptableType="net.bioclipse.core.domain.SMILESMolecule"
+            class="net.bioclipse.cdk.domain.SMILESAdapterFactory">
+         <adapter
+               type="net.bioclipse.cdk.domain.ICDKMolecule">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="net.bioclipse.core.domain.CMLMolecule"
+            class="net.bioclipse.cdk.domain.CMLAdapterFactory">
+         <adapter
+               type="net.bioclipse.cdk.domain.ICDKMolecule">
+         </adapter>
+      </factory>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
