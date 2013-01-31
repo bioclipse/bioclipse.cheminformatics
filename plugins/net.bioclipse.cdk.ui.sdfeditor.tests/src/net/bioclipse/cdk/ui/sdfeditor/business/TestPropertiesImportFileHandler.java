@@ -11,6 +11,8 @@ package net.bioclipse.cdk.ui.sdfeditor.business;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import net.bioclipse.cdk.ui.wizards.PropertiesImportFileHandler;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
