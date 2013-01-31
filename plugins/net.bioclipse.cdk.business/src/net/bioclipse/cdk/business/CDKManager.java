@@ -156,7 +156,6 @@ import org.openscience.cdk.nonotify.NNAtomContainer;
 import org.openscience.cdk.nonotify.NNChemFile;
 import org.openscience.cdk.nonotify.NNMolecule;
 import org.openscience.cdk.nonotify.NNMoleculeSet;
-import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.renderer.AtomContainerRenderer;
 import org.openscience.cdk.renderer.font.AWTFontManager;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
@@ -1427,7 +1426,7 @@ public class CDKManager implements IBioclipseManager {
           try {
               return new IteratingBioclipseMDLConformerReader(
                              file.getContents(),
-                             NoNotificationChemObjectBuilder.getInstance(),
+                             SilentChemObjectBuilder.getInstance(),
                              monitor );
           }
           catch (CoreException e) {

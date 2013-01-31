@@ -26,7 +26,7 @@ import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.io.CMLWriter;
-import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 
 public class CDKMoleculeTransfer extends ByteArrayTransfer{
@@ -67,7 +67,7 @@ public class CDKMoleculeTransfer extends ByteArrayTransfer{
     }
 
     private IChemObjectBuilder getBuilder() {
-        return NoNotificationChemObjectBuilder.getInstance();
+        return SilentChemObjectBuilder.getInstance();
     }
 
     protected ICDKMolecule[] fromByteArray(byte[] bytes) {

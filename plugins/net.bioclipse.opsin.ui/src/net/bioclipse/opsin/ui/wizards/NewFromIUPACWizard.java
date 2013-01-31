@@ -21,7 +21,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.interfaces.IAtomType;
-import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 
 public class NewFromIUPACWizard extends BasicNewResourceWizard {
 
@@ -68,7 +68,7 @@ public class NewFromIUPACWizard extends BasicNewResourceWizard {
             ICDKMolecule mol = opsin.parseIUPACName(getIUPAC());
             mol = cdk.generate2dCoordinates(mol);
             CDKAtomTypeMatcher matcher = CDKAtomTypeMatcher.getInstance(
-            	NoNotificationChemObjectBuilder.getInstance()
+            	SilentChemObjectBuilder.getInstance()
             );
             IAtomType[] types = matcher.findMatchingAtomType(
             	mol.getAtomContainer()
