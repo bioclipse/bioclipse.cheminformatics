@@ -13,10 +13,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide,
  net.bioclipse.cdk.business,
  org.openscience.cdk.core,
- org.openscience.cdk.nonotify,
  org.openscience.cdk.interfaces,
  net.bioclipse.ui.business,
- org.eclipse.core.resources
+ org.eclipse.core.resources,
+ org.openscience.cdk.silent
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.log4j
 Export-Package: net.bioclipse.opsin.ui.wizards
