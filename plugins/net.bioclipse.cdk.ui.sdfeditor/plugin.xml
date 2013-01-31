@@ -129,7 +129,7 @@
               name="Remove Column">
         </command>
         <command
-              defaultHandler="net.bioclipse.cdk.ui.sdfeditor.business.LaunchWizardPage"
+              defaultHandler="net.bioclipse.cdk.ui.wizards.LaunchWizardPage"
               id="net.bioclipse.cdk.ui.sdfeditor.command.ImportProperties"
               name="Import Properties">
         </command>

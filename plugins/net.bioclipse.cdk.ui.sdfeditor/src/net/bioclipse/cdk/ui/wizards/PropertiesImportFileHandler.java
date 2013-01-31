@@ -6,12 +6,13 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *    
  ******************************************************************************/
-package net.bioclipse.cdk.ui.sdfeditor.business;
+package net.bioclipse.cdk.ui.wizards;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -28,10 +29,12 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.io.SDFWriter;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
+import au.com.bytecode.opencsv.CSVReader;
 
 /**
- * This class handle the different things that concerns reading and writing to 
- * the txt- and the sd-file.
+ * This class handle the different things that concerns reading from / writing
+ *  to the data-file (the file that contains the properties to be added to the 
+ *  sd-file, e.g. a txt- or csv-file) and the sd-file.
  * 
  * @author Klas Jšnsson (klas.joensson@gmail.com)
  *
@@ -50,6 +53,7 @@ public class PropertiesImportFileHandler {
     private final static String DELIMITER = "\t";
     // The number of rows read in to topValues at initiation 
     private final static int ROWS_IN_TOPVALUES = 5;
+    private DataFileFormart dataFileFormart;
     
     /**
      * A constructor to use if non, or only one, of the files are known. 
@@ -63,6 +67,22 @@ public class PropertiesImportFileHandler {
         sdFileLink = "";
         dataFileLink = "";
         propLinkedBy = false;
+        dataFileFormart = DataFileFormart.NO_FILE_SELECTED;
+    }
+    
+    /**
+     * An enumeration of the supported formats of the data file.
+     * TXT is a simple txt-file with the values separated by a tab
+     * CSV is a file with standard csv-file, i.e. with comma separated values
+     * NO_FILE_SELECTED is used if there's no data file selected
+     * 
+     * @author klasjonsson
+     *
+     */
+    private enum DataFileFormart {
+        TXT,
+        CSV,
+        NO_FILE_SELECTED
     }
     
     /**
@@ -162,23 +182,27 @@ public class PropertiesImportFileHandler {
     /**
      * This method load the data file.
      * 
-     * @param dataFile The IFile containing the txt-file
+     * @param dataFile The IFile containing the data-file
      * @throws FileNotFoundException Thrown if there's no file found
      */
     public void setDataFile(IFile dataFile) throws FileNotFoundException {
         this.dataFile = dataFile;
-//        propertiesID.clear();
-//        topValues.clear();
-        readProperiesFile( 0, ROWS_IN_TOPVALUES );
+        if (dataFile.getFileExtension().toLowerCase().matches( "csv" )) {
+            dataFileFormart = DataFileFormart.CSV;
+            readFromCSV( 0, ROWS_IN_TOPVALUES );
+        } else {
+            dataFileFormart = DataFileFormart.TXT;
+            readFromTXT( 0, ROWS_IN_TOPVALUES );
+        }
     }
     
     /**
-     * To check if the txt-file with data has been loaded.
+     * To check if the data-file with data has been loaded.
      * 
      * @return True if the file has been loaded.
      */
     public boolean dataFileExists() {
-        return ( dataFile != null );
+        return ( dataFileFormart != DataFileFormart.NO_FILE_SELECTED );
     }
     
     public InputStream getDataFileContents() {
@@ -249,13 +273,31 @@ public class PropertiesImportFileHandler {
             }
             return temp;
         } else {
-            readProperiesFile( rows, numberOfRows );
+            switch (dataFileFormart) {
+                case TXT:    
+                    readFromTXT( rows, numberOfRows );
+                    break;
+                    
+                case CSV:
+                    readFromCSV( rows, numberOfRows  );
+                    break;
+                    
+                case NO_FILE_SELECTED:
+                    topValues.clear();
+                    break;
+                    
+                default:
+                    throw new FileNotFoundException( "Support of enlargement" +
+                    		" of the loaded values for data when using " +
+                    		dataFileFormart + " needs to be implemented." );
+            }
+            
             return topValues;
         }
     }
     
     /**
-     * This method reads the data file. It assumes that the top row contatins
+     * This method reads the txt-file. It assumes that the top row contains
      * the names of the properties, If not: After loading the file use the 
      * method "propertiesNameInDataFile(boolean)".
      *  
@@ -263,7 +305,7 @@ public class PropertiesImportFileHandler {
      * @param endRow The last row to read
      * @throws FileNotFoundException Thrown if the file can't be found
      */
-    private void readProperiesFile(int startRow, int endRow) 
+    private void readFromTXT(int startRow, int endRow) 
             throws FileNotFoundException {   
         /*
          * Read the first element and add that to an (local) array list and add 
@@ -329,15 +371,103 @@ public class PropertiesImportFileHandler {
         }
     }
     
+    /**
+     * To be used if the data is in a csv-file
+     * @param startRow The row to start reading from, 0 is considered as the 
+     * first row in a file.
+     * @param endRow The last row to be read, set to -1 to read all rows in the 
+     * file.
+     * @throws FileNotFoundException 
+     */
+    private void readFromCSV(int startRow, int endRow) 
+            throws FileNotFoundException { 
+        String filePath = dataFile.getFullPath().toString();
+        CSVReader csvReader = new  CSVReader( new FileReader( filePath ) );
+        String[] nextRow;
+        propertiesID.clear();
+        topValues.clear();
+        
+        int rowNumber = 0;
+        
+        if (startRow != 0)
+            for (int i = 0; i < startRow; i++)
+                try {
+                    csvReader.readNext();
+                } catch ( IOException e ) {
+                    logger.error( e.getMessage() );
+                    return;
+                }
+        
+        if (endRow == -1) {
+            while (true) {
+                try {
+                    nextRow = csvReader.readNext();
+                    for (int i = 0; i < nextRow.length; i++) {
+                        if (topRowContainsPropName) {
+                            if (rowNumber == 0)
+                               propertiesID.add( nextRow[i] );
+                            else {
+                                if (rowNumber == 1)
+                                    topValues.add( new ArrayList<String>() );
+                                topValues.get( i ).add( nextRow[i] );
+                            }
+                        } else {
+                            if (rowNumber == 0)
+                                topValues.add( new ArrayList<String>() );
+                            topValues.get( i ).add( nextRow[i] );
+                        }
+                    }
+                    rowNumber++;
+                } catch ( IOException e ) {
+                    /* It seams that this is the only way to know that we 
+                     * reached the end of the file */
+                    break;
+                }
+                
+            }
+        } else {
+            for (int j=0;j<endRow;j++) {
+                try {
+                    nextRow = csvReader.readNext();
+                    for (int i = 0; i < nextRow.length; i++) {
+                        if (topRowContainsPropName) {
+                            if (j == 0)
+                               propertiesID.add( nextRow[i] );
+                            else {
+                                if (j == 1)
+                                    topValues.add( new ArrayList<String>() );
+                                topValues.get( i ).add( nextRow[i] );
+                            }
+                        } else {
+                            if (j == 0)
+                                topValues.add( new ArrayList<String>() );
+                            topValues.get( i ).add( nextRow[i] ); 
+                        }
+                    }
+                } catch ( IOException e ) {
+                    /* It seams that this is the only way to know that we 
+                     * reached the end of the file */
+                    break;
+                }  
+            }
+        }
+        
+        try {
+            csvReader.close();
+        } catch ( IOException e ) {
+            logger.error( e.getMessage() );
+        }
+    }
+    
     /** 
-     * This method adds the properties from the txt-file to the molecules from
+     * This method adds the properties from the data-file to the molecules from
      * the sd-file and save them in a new file. The name of the new file is on
      * the form:<br> 
      * [name of sd-file]_new.sdf. 
      * 
      * @param propertiesName An ArrayList with the name of the properties as 
      *          Strings
-     * @param propNameInDataFile Set to <code>true</code> if the txt-file with 
+     * @param propNameInDataFile Set to <code>true</code> if the data-file with 
      *          properties contains the names of the properties
      * @throws FileNotFoundException
      */
@@ -351,16 +481,16 @@ public class PropertiesImportFileHandler {
     }
     
     /** 
-     * This method adds the properties from the txt-file to the molecules from
+     * This method adds the properties from the data-file to the molecules from
      * the sd-file and save them in a new file. The name of the new file is on
      * the form:<br> 
      * [name of sd-file]_new.sdf. 
      * 
-     * @param excludedProerties An ArrayList with the name of the properties that
-     *          has been excluded
+     * @param excludedProerties An ArrayList with the name of the properties 
+     *          that has been excluded
      * @param propertiesName An ArrayList with the name of the properties as 
      *          Strings
-     * @param propNameInDataFile Set to <code>true</code> if the txt-file with 
+     * @param propNameInDataFile Set to <code>true</code> if the data-file with 
      *          properties contains the names of the properties
      * @throws FileNotFoundException
      */
@@ -374,16 +504,16 @@ public class PropertiesImportFileHandler {
     }
     
     /**
-     This method adds the properties from the txt-file to the molecules from
+     This method adds the properties from the data-file to the molecules from
      * the sd-file and save them in a new file. The name of the new file is on
      * the form:<br> 
      * [name of sd-file]_new.sdf. 
      * 
-     * @param excludedProerties An ArrayList with the name of the properties that
-     *          has been excluded
+     * @param excludedProerties An ArrayList with the name of the properties 
+     *          that has been excluded
      * @param propertiesName An ArrayList with the name of the properties as 
      *          Strings
-     * @param propNameInDataFile Set to <code>true</code> if the txt-file with 
+     * @param propNameInDataFile Set to <code>true</code> if the data-file with 
      *          properties contains the names of the properties
      * @param monitor The progress monitor for this class
      * @throws FileNotFoundException
@@ -393,8 +523,6 @@ public class PropertiesImportFileHandler {
                             boolean propNameInDataFile, 
                             IProgressMonitor monitor) 
                                     throws FileNotFoundException {
-        // TODO The method IFile.exixts() seems to always return false.
-//        if ( !sdFile.exists() || !dataFile.exists() )
         
         if ( !sdFileExists() || !dataFileExists() )
                 throw 
@@ -446,41 +574,123 @@ public class PropertiesImportFileHandler {
                 /* If this molecule don't have a property with this name
                  * there's no need to do any more with this molecule*/
                 if ( molProp != null && !molProp.isEmpty() ) {
-                    fileScanner = new Scanner( getDataFileContents() );
-                    while ( fileScanner.hasNext() ) {
-                        values = readNextLine( fileScanner.nextLine() );
-                        if ( values.get( index ).equals( molProp ) ) {
-                            addPropToMol(mol, names, values, excludedProerties);
+                    switch (dataFileFormart) {
+                        case CSV:
+                            String filePath = dataFile.getFullPath().toString();
+                            CSVReader csvReader = 
+                                    new CSVReader( new FileReader( filePath ) );
+                            try {
+                                String[] nextRow = csvReader.readNext();
+                                values = new ArrayList<String>();
+                                for (String value:nextRow)
+                                    values.add( value );
+                                mol = sdfItr.next();
+                                if ( values.get( index ).equals( molProp ) ) {
+                                    addPropToMol( mol, names, values, 
+                                                  excludedProerties );
+                                    break;
+                                }
+                            } catch ( IOException e ) {
+                                /* It seams that this is the only way to know 
+                                 * that we reached the end of the file */
+                                try {
+                                    csvReader.close();
+                                } catch ( IOException e1 ) {
+                                    logger.error( e1.getMessage() );
+                                }
+                                break;
+                            }
                             break;
-                        }
+
+                        case TXT:
+                            fileScanner = new Scanner( getDataFileContents() );
+                            while ( fileScanner.hasNext() ) {
+                                values = readNextLine( fileScanner.nextLine() );
+                                if ( values.get( index ).equals( molProp ) ) {
+                                    addPropToMol(mol, names, values, 
+                                                 excludedProerties);
+                                    break;
+                                }
+                            }
+                            fileScanner.close();
+                            break;
+                        case NO_FILE_SELECTED:
+                            /* It shouldn't end up here, 'cos the file has to be 
+                             * selected before it starts to merge */
+                            throw new FileNotFoundException("Can't find the " +
+                            		"data-file");
+
+                        default:
+                            logger.debug( "Support for "+dataFileFormart+" " +
+                            		"needs to be implemented when the " +
+                            		"properties are linked by some value." );
+                            break;
                     }
-                    fileScanner.close();
                 }
                 try {
                     writer.write( mol );
                 } catch ( CDKException e ) {
-                    logger.error( e );
+                    logger.error( e.getMessage() );
                 }
 
                 monitor.worked( work++ );
             }
         } else {
-            fileScanner = new Scanner( getDataFileContents() );
-            /* We uses the names provided from the wizard, so if the file 
-             * contains names we just throw them away... */
-            if ( propNameInDataFile && fileScanner.hasNextLine() )
-                fileScanner.nextLine();
-            while ( sdfItr.hasNext() && fileScanner.hasNextLine() ) {
-                mol = sdfItr.next();
-                values = readNextLine( fileScanner.nextLine() );
-                addPropToMol( mol, names, values, excludedProerties );
-                try {
-                    writer.write( mol );
-                } catch ( CDKException e ) {
-                    logger.error( e );
+            switch (dataFileFormart) {
+                case CSV:
+                String filePath = dataFile.getFullPath().toString();
+                CSVReader csvReader = new CSVReader( new FileReader(filePath) );
+                while (sdfItr.hasNext()) {
+                    try {
+                        String[] nextRow = csvReader.readNext();
+                        values = new ArrayList<String>();
+                        for (String value:nextRow)
+                            values.add( value );
+                        mol = sdfItr.next();
+                        addPropToMol( mol, names, values, excludedProerties );
+                        writer.write( mol );
+                    } catch ( IOException e ) {
+                        /* It seams that this is the only way to know that we 
+                         * reached the end of the file */
+                        try {
+                            csvReader.close();
+                        } catch ( IOException e1 ) {
+                            logger.error( e1.getMessage() );
+                        }
+                        break;
+                    } catch ( CDKException e ) {
+                        logger.error( e.getMessage() );
+                    }
+                    monitor.worked( work++ );
                 }
-
-                monitor.worked( work++ );
+                case TXT:
+                    fileScanner = new Scanner( getDataFileContents() );
+                    /* We uses the names provided from the wizard, so if the 
+                     * file contains names we just throw them away... */
+                    if ( propNameInDataFile && fileScanner.hasNextLine() )
+                        fileScanner.nextLine();
+                    while ( sdfItr.hasNext() && fileScanner.hasNextLine() ) {
+                        mol = sdfItr.next();
+                        values = readNextLine( fileScanner.nextLine() );
+                        addPropToMol( mol, names, values, excludedProerties );
+                        try {
+                            writer.write( mol );
+                        } catch ( CDKException e ) {
+                            logger.error( e.getMessage() );
+                        }
+                        monitor.worked( work++ );
+                    }
+                    break;
+                    
+                case NO_FILE_SELECTED:
+                    /* It shouldn't end up here, 'cos the file has to be 
+                     * selected before it starts to merge */
+                    throw new FileNotFoundException("Can't find the data-file");
+                    
+                default:
+                    logger.debug( "Support for "+dataFileFormart+" " +
+                            "needs to be implemented for unlinked properties");
+                    break;
             }
         }
         try {

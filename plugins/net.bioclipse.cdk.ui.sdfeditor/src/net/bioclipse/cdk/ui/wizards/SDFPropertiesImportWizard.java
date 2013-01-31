@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *    
  ******************************************************************************/
-package net.bioclipse.cdk.ui.sdfeditor.business;
+package net.bioclipse.cdk.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 import org.apache.log4j.Logger;
@@ -20,7 +20,7 @@ import org.eclipse.jface.wizard.Wizard;
 
 /**
  * This class lunches a wizard that let the user import properties from a 
- * txt-file to a SDF-file. The result is saved in a new sd-file.
+ * txt- or csv-file to a SDF-file. The result is saved in a new sd-file.
  * 
  * @author Klas Jšnsson (klas.joensson@gmail.com)
  *

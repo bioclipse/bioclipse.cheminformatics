@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *    
  ******************************************************************************/
-package net.bioclipse.cdk.ui.sdfeditor.business;
+package net.bioclipse.cdk.ui.wizards;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -91,7 +91,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         propertiesData = new ArrayList<ArrayList<String>>();
         excludedProperties = new ArrayList<String>();
         setTitle(pageName); //NON-NLS-1
-        setDescription("Import properties to a SDF-file from a txt-file."); 
+        setDescription("Import properties to a SDF-file from a txt- or csv-file."); 
         init(selection);
     }
 
@@ -103,7 +103,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
     protected SDFPropertiesImportWizardPage(String pageName) {
         super(pageName);
         setTitle(pageName); //NON-NLS-1
-        setDescription("Import properties to a SDF-file from a txt-file."); 
+        setDescription("Import properties to a SDF-file from a txt- or csv-file."); 
         columns = 0;
         propertiesData = new ArrayList<ArrayList<String>>();
         excludedProperties = new ArrayList<String>();
@@ -306,7 +306,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
     }
 
     /**
-     * This method is the first to be called when a new txt-file whith data is 
+     * This method is the first to be called when a new txt-file with data is 
      * read.
      * 
      * @param pathStr The path to the txt-file
