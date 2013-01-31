@@ -13,6 +13,8 @@ package net.bioclipse.jmol.business;
 
 import java.util.List;
 
+import net.bioclipse.cdk.business.CDKManager;
+import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
@@ -34,7 +36,9 @@ import org.eclipse.ui.PlatformUI;
 public class JmolManager implements IBioclipseManager {
 
     private JmolEditor jmolEditor;
-
+    private ICDKManager cdk = net.bioclipse.cdk.business.Activator
+            .getDefault().getJavaCDKManager();
+    
     public String getManagerName() {
         return "jmol";
     }
@@ -63,9 +67,16 @@ public class JmolManager implements IBioclipseManager {
     }
 
     public void load(IMolecule molecule) throws BioclipseException {
-        net.bioclipse.ui.business.Activator.getDefault().getUIManager().open(
-            molecule, "net.bioclipse.jmol.editors.JmolEditor"
-        );
+        if (!cdk.has2d( molecule ) || !cdk.has3d( molecule )){
+            try {
+                cdk.generate2dCoordinates( molecule );
+            } catch ( Exception e ) {
+               throw new BioclipseException( "Can't load molecule: "+e.getMessage() );
+            }
+        }
+        net.bioclipse.ui.business.Activator.
+         getDefault().getUIManager().
+          open( molecule, "net.bioclipse.jmol.editors.JmolEditor");
     }
 
     /**
