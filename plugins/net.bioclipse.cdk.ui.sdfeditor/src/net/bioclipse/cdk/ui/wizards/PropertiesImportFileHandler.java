@@ -51,8 +51,9 @@ public class PropertiesImportFileHandler {
     private String dataFileLink, sdFileLink, newSDFilePath;
     // The row separator for the data in the data file, i.e. a tab.
     private final static String DELIMITER = "\t";
-    // The number of rows read in to topValues at initiation 
+    // The number of rows read into topValues at initiation 
     private final static int ROWS_IN_TOPVALUES = 5;
+    private boolean hasFoundLastRowInFile = false;
     private DataFileFormart dataFileFormart;
     
     /**
@@ -187,6 +188,7 @@ public class PropertiesImportFileHandler {
      */
     public void setDataFile(IFile dataFile) throws FileNotFoundException {
         this.dataFile = dataFile;
+        hasFoundLastRowInFile = false;
         if (dataFile.getFileExtension().toLowerCase().matches( "csv" )) {
             dataFileFormart = DataFileFormart.CSV;
             readFromCSV( 0, ROWS_IN_TOPVALUES );
@@ -254,6 +256,9 @@ public class PropertiesImportFileHandler {
      getTopValuesFromDataFile(int numberOfRows) throws FileNotFoundException {
         if (topValues.isEmpty() || topValues.get( 0 ).isEmpty())
             return new ArrayList<ArrayList<String>>();
+        if (hasFoundLastRowInFile)
+            return topValues;
+        
         int rows;
         if (topRowContainsPropName)
             rows = topValues.get( 0 ).size() + 1;
@@ -369,6 +374,9 @@ public class PropertiesImportFileHandler {
             }
             row++;
         }
+        
+        if (row<endRow)
+            hasFoundLastRowInFile = true;
     }
     
     /**
@@ -429,20 +437,25 @@ public class PropertiesImportFileHandler {
             for (int j=0;j<endRow;j++) {
                 try {
                     nextRow = csvReader.readNext();
-                    for (int i = 0; i < nextRow.length; i++) {
-                        if (topRowContainsPropName) {
-                            if (j == 0)
-                               propertiesID.add( nextRow[i] );
-                            else {
-                                if (j == 1)
+                    if (nextRow != null) {
+                        for (int i = 0; i < nextRow.length; i++) {
+                            if (topRowContainsPropName) {
+                                if (j == 0)
+                                    propertiesID.add( nextRow[i] );
+                                else {
+                                    if (j == 1)
+                                        topValues.add( new ArrayList<String>() );
+                                    topValues.get( i ).add( nextRow[i] );
+                                }
+                            } else {
+                                if (j == 0)
                                     topValues.add( new ArrayList<String>() );
-                                topValues.get( i ).add( nextRow[i] );
+                                topValues.get( i ).add( nextRow[i] ); 
                             }
-                        } else {
-                            if (j == 0)
-                                topValues.add( new ArrayList<String>() );
-                            topValues.get( i ).add( nextRow[i] ); 
                         }
+                    } else {
+                        hasFoundLastRowInFile = true;
+                        break;
                     }
                 } catch ( IOException e ) {
                     /* It seams that this is the only way to know that we 
