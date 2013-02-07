@@ -661,12 +661,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                     if(GenerateLabelPrefChangedLisener.showGeneratedLabel())
                         add( Message.GENERATED );
                 }else {
-                    IAtomContainer oldAC = atomContainer;
-                    atomContainer = atomContainer.getBuilder()
-                    .newInstance(IAtomContainer.class, atomContainer );
-                    atomContainer.setProperties( new HashMap<Object, Object>(
-                            oldAC.getProperties()) );
-                    setDirty( oldAC.getFlag( 7 ) );
                 }
                 setAtomContainer(atomContainer);
             }
