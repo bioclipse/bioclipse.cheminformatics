@@ -17,38 +17,6 @@
    </extension>
 
 
-   <extension
-         point="org.eclipse.ui.navigator.navigatorContent">
-      <navigatorContent
-            contentProvider="net.bioclipse.cdk.ui.views.MoleculeContentProvider"
-            id="net.bioclipse.cdk.ui.views.MoleculeContent"
-            labelProvider="net.bioclipse.cdk.ui.views.MoleculeLabelProvider"
-            name="Molecule Content">
-            <commonSorter
-                  class="net.bioclipse.cdk.ui.SDFElementSorter">
-            </commonSorter>
-         <triggerPoints>
-         <or>
-         <and>
-            <instanceof value="org.eclipse.core.resources.IResource"/>
-            <or>
-            <test
-            	forcePluginActivation="true"
-            	property="org.eclipse.core.resources.extension"
-            	value="sdf"/>
-            <test
-                  forcePluginActivation="true"
-                  property="org.eclipse.core.resources.extension"
-                  value="smi">
-            </test>
-            </or>
-         </and>
-         <instanceof value="net.bioclipse.cdk.ui.model.IMoleculesFromFile" />
-         <instanceof value="net.bioclipse.cdk.domain.SDFElement" />
-         </or>
-         </triggerPoints>
-      </navigatorContent>
-   </extension>
 
 <!-- Add MoleculeContent to expand molecules with CDK -->
 <!-- Commented untill all bugs blocking bug 766 have been solved
@@ -505,16 +473,6 @@
          	primary="true"/>
 	</extension>
 
- <extension
-       point="org.eclipse.core.runtime.adapters">
-    <factory
-          adaptableType="org.eclipse.ui.IEditorInput"
-          class="net.bioclipse.cdk.ui.MoleculesEditorModelAdapterFactory">
-       <adapter
-             type="net.bioclipse.cdk.ui.views.IMoleculesEditorModel">
-       </adapter>
-    </factory>
- </extension>
  
     <extension point="org.eclipse.ui.newWizards">
       <wizard
