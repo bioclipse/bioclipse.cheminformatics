@@ -70,6 +70,11 @@ public class MolTableSelection implements IStructuredSelection, IIterable,IAdapt
                     throw new UnsupportedOperationException();
 
                 }
+                
+                @Override
+                public boolean isDirty( int index ) {
+                    throw new UnsupportedOperationException();
+                }
 
                 public void save() {
                     throw new UnsupportedOperationException();

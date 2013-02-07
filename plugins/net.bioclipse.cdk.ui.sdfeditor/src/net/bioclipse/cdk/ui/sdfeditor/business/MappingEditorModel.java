@@ -75,6 +75,11 @@ public class MappingEditorModel implements IFileMoleculesEditorModel {
     public void markDirty( int index, ICDKMolecule moleculeToSave ) {
         model.markDirty( mappingIndex.get( index ), moleculeToSave );
     }
+    
+    @Override
+    public boolean isDirty( int index ) {
+        return model.isDirty( mappingIndex.get( index ));
+    }
 
     public void save() {
        throw new UnsupportedOperationException( "Use MolTable manager to save "+
