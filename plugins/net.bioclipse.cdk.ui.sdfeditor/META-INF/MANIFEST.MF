@@ -39,7 +39,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.expressions
 Bundle-ActivationPolicy: lazy
 Import-Package: net.bioclipse.inchi.business,
- org.apache.log4j
+ org.apache.log4j,
+ org.slf4j
 Export-Package: net.bioclipse.cdk.ui.sdfeditor,
  net.bioclipse.cdk.ui.sdfeditor.business,
  net.bioclipse.cdk.ui.sdfeditor.editor,

@@ -651,6 +651,7 @@ public class MoleculesEditor extends EditorPart implements
 
     public void refresh() {
 
+        getMolTableViewer().setInput( getModel() );
         molTableViewer.refresh();
     }
 
