@@ -18,7 +18,7 @@
           	<action
 			pluginId="net.bioclipse.scripting.ui"
 			class="net.bioclipse.scripting.ui.actions.ScriptAction"
-			param1="res=gist.download(95779); ui.openFiles(res); js.executeFile(&quot;Gists/95779_DNA-isosurface-Jmol.js&quot;);"/>
+			param1="res=gist.download(95779); ui.openFiles(res); js.execute(res);"/>
       
    </item>
    
@@ -33,7 +33,7 @@
           	<action
 			pluginId="net.bioclipse.scripting.ui"
 			class="net.bioclipse.scripting.ui.actions.ScriptAction"
-			param1="res=gist.download(95790); ui.openFiles(res); js.executeFile(&quot;Gists/95790_Multiple-mol-manipulation.js&quot;);"/>
+			param1="res=gist.download(95790); ui.openFiles(res); js.execute(res);"/>
       
    </item>
    
@@ -48,7 +48,7 @@
           	<action
 			pluginId="net.bioclipse.scripting.ui"
 			class="net.bioclipse.scripting.ui.actions.ScriptAction"
-			param1="res=gist.download(95755); ui.openFiles(res); js.executeFile(&quot;Gists/95755_gencoords.js&quot;);"/>
+			param1="res=gist.download(95755); ui.openFiles(res); js.execute(res);"/>
       
    </item>
    
@@ -63,7 +63,7 @@
           	<action
 			pluginId="net.bioclipse.scripting.ui"
 			class="net.bioclipse.scripting.ui.actions.ScriptAction"
-			param1="res=gist.download(96594); ui.openFiles(res); js.executeFile(&quot;Gists/96594_buildMolecule.js&quot;);"/>
+			param1="res=gist.download(96594); ui.openFiles(res); js.execute(res);"/>
       
    </item>
 </cheatsheet>
