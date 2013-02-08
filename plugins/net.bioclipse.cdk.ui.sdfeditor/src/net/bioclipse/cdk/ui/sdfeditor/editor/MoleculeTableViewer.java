@@ -325,6 +325,21 @@ public class MoleculeTableViewer extends ContentViewer {
         }
 
         @SuppressWarnings("unchecked")
+        public <T> T adaptTo(Class<T> adapter) {
+            if(adapter.isAssignableFrom( ICDKMolecule.class )) {
+              return (T) model.getMoleculeAt( index ); 
+            }
+            if(adapter.isAssignableFrom( IPropertySource.class )) {
+                ICDKMolecule mol = model.getMoleculeAt( index );
+                if(mol != null && pSource == null) {
+                    pSource = new CDKMoleculePropertySource( mol );
+                }
+                return (T)pSource;
+            }
+            return (T) Platform.getAdapterManager().getAdapter(this, adapter);
+        }
+        
+        @SuppressWarnings("unchecked")
         public Object getAdapter( Class adapter ) {
 
             if(adapter.isAssignableFrom( ICDKMolecule.class )) {

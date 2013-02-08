@@ -151,6 +151,7 @@ public class MoleculeTableContentProvider implements
                 properties.add(iter.next());
         }
         updateHeaders();
+        moleculeProperties.clear();
 
 //        NatTable table = this.viewer.table;
 //        if ( model instanceof ISortable ) {
