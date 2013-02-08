@@ -209,7 +209,6 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
      */
     public void markDirty( int index, ICDKMolecule moleculeToSave ) {
         assert(moleculeToSave!=null);
-        moleculeToSave.getAtomContainer().setFlag( 7, true );
         edited.put( index, moleculeToSave );
         Collection<IPropertyCalculator<?>> propCalcs = retriveCalculatorContributions();
 
@@ -219,6 +218,11 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
             if(o!=null)
                 setPropertyFor( index, key, o );
         }
+    }
+    
+    @Override
+    public boolean isDirty( int index ) {
+        return edited.containsKey( index );
     }
 
     public void save() {
