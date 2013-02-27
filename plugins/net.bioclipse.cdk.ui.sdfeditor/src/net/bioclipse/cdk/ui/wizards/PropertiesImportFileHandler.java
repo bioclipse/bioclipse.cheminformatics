@@ -531,7 +531,7 @@ public class PropertiesImportFileHandler {
      * @param monitor The progress monitor for this class
      * @throws FileNotFoundException
      */
-    public void meargeFiles(boolean[] excludedProerties, 
+    public void meargeFiles(boolean[] includedProerties, 
                             ArrayList<String> propertiesName,
                             boolean propNameInDataFile, 
                             IProgressMonitor monitor) 
@@ -600,7 +600,7 @@ public class PropertiesImportFileHandler {
                                 mol = sdfItr.next();
                                 if ( values.get( index ).equals( molProp ) ) {
                                     addPropToMol( mol, names, values, 
-                                                  excludedProerties );
+                                                  includedProerties );
                                     break;
                                 }
                             } catch ( IOException e ) {
@@ -621,7 +621,7 @@ public class PropertiesImportFileHandler {
                                 values = readNextLine( fileScanner.nextLine() );
                                 if ( values.get( index ).equals( molProp ) ) {
                                     addPropToMol(mol, names, values, 
-                                                 excludedProerties);
+                                                 includedProerties);
                                     break;
                                 }
                             }
@@ -660,7 +660,7 @@ public class PropertiesImportFileHandler {
                         for (String value:nextRow)
                             values.add( value );
                         mol = sdfItr.next();
-                        addPropToMol( mol, names, values, excludedProerties );
+                        addPropToMol( mol, names, values, includedProerties );
                         writer.write( mol );
                     } catch ( IOException e ) {
                         /* It seams that this is the only way to know that we 
@@ -685,7 +685,7 @@ public class PropertiesImportFileHandler {
                     while ( sdfItr.hasNext() && fileScanner.hasNextLine() ) {
                         mol = sdfItr.next();
                         values = readNextLine( fileScanner.nextLine() );
-                        addPropToMol( mol, names, values, excludedProerties );
+                        addPropToMol( mol, names, values, includedProerties );
                         try {
                             writer.write( mol );
                         } catch ( CDKException e ) {
@@ -725,7 +725,7 @@ public class PropertiesImportFileHandler {
      */
     private void addPropToMol( IChemObject mol, ArrayList<String> propNames,
                                ArrayList<String> propValues, 
-                               boolean[] excludedProp) {
+                               boolean[] includedProp) {
          Iterator<String> namesItr = propNames.iterator();
          Iterator<String> valueItr = propValues.iterator();         
          String name = "";
@@ -733,7 +733,7 @@ public class PropertiesImportFileHandler {
          
          while ( namesItr.hasNext() ) {
              name = namesItr.next();
-             if (!(excludedProp.length == 0) && !excludedProp[index] )
+             if (!(includedProp.length == 0) && includedProp[index] )
                  mol.setProperty( name, valueItr.next() );
              else
                  valueItr.next();

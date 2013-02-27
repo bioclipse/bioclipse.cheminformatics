@@ -49,7 +49,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
     private Logger logger = Logger.getLogger( this.getClass() );
     
     // An array to exclude data columns
-    private boolean[] isExcluded;
+    private boolean[] isIncluded;
     private boolean dataFileIncludeName =  true;
     private ArrayList<String> excludedProperties;
     
@@ -62,7 +62,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 
     // Components for the data composite
     private Text[] headerText, dataText;
-    private Button[] excludeButtons;
+    private Button[] includeButtons;
     private Combo[] headerCombo;
 
     // Components for the settings composite
@@ -489,23 +489,23 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                 textInDataField = "";
         }    
 
-        new Label(dataComposite, SWT.NONE).setText( "Exclude" );
+        new Label(dataComposite, SWT.NONE).setText( "Include" );
         GridData excludeGridData = new GridData();
         excludeGridData.horizontalAlignment = GridData.CENTER;
-        isExcluded = new boolean[columns];
-        excludeButtons = new Button[columns];
+        isIncluded = new boolean[columns];
+        includeButtons = new Button[columns];
         for (int i = 0; i < columns; i++) {
-            excludeButtons[i] = new Button( dataComposite, SWT.CHECK );
-            excludeButtons[i].setLayoutData( excludeGridData );
-            excludeButtons[i].addSelectionListener(new SelectionAdapter() {
+            includeButtons[i] = new Button( dataComposite, SWT.CHECK );
+            includeButtons[i].setLayoutData( excludeGridData );
+            includeButtons[i].setSelection( true );
+            includeButtons[i].addSelectionListener(new SelectionAdapter() {
                 public void widgetSelected(SelectionEvent e) {
-                    for (int i = 0; i < excludeButtons.length; i++)
-                        if ( e.getSource().equals( excludeButtons[i] ) )
-                            if (excludeButtons[i].getSelection())
-                                excludedProperties.add( headers.get( i ) );
-                            else
+                    for (int i = 0; i < includeButtons.length; i++)
+                        if ( e.getSource().equals( includeButtons[i] ) )
+                            if (includeButtons[i].getSelection())
                                 excludedProperties.remove( headers.get( i ) );
-
+                            else     
+                                excludedProperties.add( headers.get( i ) );
                     updateComponents();
                 }
             });
@@ -592,17 +592,18 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
      */
     private void updateComponents() {
         for (int i = 0; i < columns; i++) {
-            isExcluded[i] = excludeButtons[i].getSelection();
+            // included 
+            isIncluded[i] = includeButtons[i].getSelection();
             if (dataFileIncludeName) {
-                headerText[i].setEnabled( !isExcluded[i] );
+                headerText[i].setEnabled( isIncluded[i] );
                 headerText[i].setText( headers.get( i ) );
             } else {
-                headerCombo[i].setEnabled( !isExcluded[i] );
+                headerCombo[i].setEnabled( isIncluded[i] );
                 headerCombo[i].removeAll();
                 for ( int j =0; j < headers.size(); j++ )
                     headerCombo[i].add( headers.get( j ) );
             }
-            dataText[i].setEnabled( !isExcluded[i] );   
+            dataText[i].setEnabled( isIncluded[i] );   
         }
 
         if (fileHandler.dataFileExists())
@@ -636,7 +637,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
      */
     protected void meargeFiles(IProgressMonitor monitor) {
         try {
-            fileHandler.meargeFiles( isExcluded, names, dataFileIncludeName, monitor );
+            fileHandler.meargeFiles( isIncluded, names, dataFileIncludeName, monitor );
         } catch ( FileNotFoundException e ) {
             logger.error( e );
         }
