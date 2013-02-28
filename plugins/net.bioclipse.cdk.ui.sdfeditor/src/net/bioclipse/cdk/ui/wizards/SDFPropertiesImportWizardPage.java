@@ -156,7 +156,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         toFileTxt.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent e) {
-                updatePageComplite();   
+                updatePageComplite();
             }   
         });
         toFileButton = new Button(fileComposite, SWT.PUSH);
@@ -176,6 +176,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                     logger.error( e1 );
                 }
                 updateComponents();
+                updateErrorMessage();
             }
         });
 
@@ -189,7 +190,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         fromFileTxt.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent e) {
-                updatePageComplite();   
+                updatePageComplite();
             }   
         });
         fromFileButton = new Button(fileComposite, SWT.PUSH);
@@ -200,6 +201,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                                                 SWT.OPEN);
                 String pathStr = dlg.open();
                 updatePropertiesData(pathStr);
+                updateErrorMessage();
             }
         });
         
@@ -230,43 +232,61 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
      * This method check if all necessary fields are filled in.
      */
     protected void updatePageComplite() {    
-        String message = "";
-        boolean complete = true, headersFilledIn = true;
-        int unFilledHeaders = 0;
+        boolean complete = true;
         if (fromFileTxt.getText().isEmpty()) {
-            complete = false;
-            message = "Please add the file with the proerties";
-        }
+            complete = false;        }
         if (toFileTxt.getText().isEmpty()) {
-            if (!complete)
-                message += " and the sd-file";
-            else
-                message = "Please add the sd-file";
             complete = false;
         }
         if (!dataFileIncludeName) {
             for (int i = 0; i < headerCombo.length; i++) {
                 if (headerCombo[i].getText().isEmpty() && headerCombo[i]
                         .isEnabled() ) {
-                    headersFilledIn = false;
-                    unFilledHeaders++;
+                    complete = false;
                 }
             }
-            if ( !headersFilledIn && message.isEmpty() ) {
-                message = "Please fill in the " + unFilledHeaders + 
-                        " missing properties names.";
-                complete = false;
-            }
         }
-          
-        if (!complete)
-            setErrorMessage(message);
-        else
-            setErrorMessage(null);
-        
+                 
         setPageComplete(complete);
     }
 
+    private void updateErrorMessage() {
+        if (isPageComplete())
+            setErrorMessage(null);
+        else {
+            String message = "";
+            if (fromFileTxt.getText().isEmpty()) {
+                message = "Please add the file with the proerties";
+
+            }
+            if (toFileTxt.getText().isEmpty()) {
+                if (fromFileTxt.getText().isEmpty())
+                    message += " and the sd-file";
+                else
+                    message = "Please add the sd-file";
+            }
+            boolean headersFilledIn = true;
+            int unFilledHeaders = 0;
+            if (!dataFileIncludeName) {
+                if (!dataFileIncludeName) {
+                    for (int i = 0; i < headerCombo.length; i++) {
+                        if (headerCombo[i].getText().isEmpty() && headerCombo[i]
+                                .isEnabled() ) {
+                            headersFilledIn = false;
+                            unFilledHeaders++;
+                        }
+                    }
+                    if ( !headersFilledIn && message.isEmpty() ) {
+                        message = "Please fill in the " + unFilledHeaders + 
+                                " missing properties names.";
+                    }
+                }
+            }
+            setErrorMessage(message);
+        }
+
+    }
+    
     /**
      * A method used to take care of a selection.
      * 
@@ -332,6 +352,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 
         updateDataCompocite();
         updateComponents();
+//        updateErrorMessage();
     }
 
     /**
@@ -410,7 +431,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         if (dataComposite != null)
             dataComposite.dispose();
         dataComposite = new Composite( dataFrame, SWT.NONE | SWT.FILL);
-        GridLayout dataGridLayout = new GridLayout( columns + 1, false );
+        GridLayout dataGridLayout = new GridLayout( columns + 1, true );
         dataComposite.setLayout( dataGridLayout );
         GridData dataGridData = new GridData(GridData.FILL_HORIZONTAL);
         dataGridData.horizontalAlignment = SWT.FILL;
@@ -439,6 +460,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                             if (e.equals( headerCombo[i] ) )
                                 headers.set( i, headerCombo[i].getItem( i ) );
                         updatePageComplite();
+                        updateErrorMessage();
                     }
 
                     @Override
@@ -452,7 +474,8 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                         for (int i = 0; i < columns; i++)
                             if (e.equals( headerCombo[i] ) )
                                 headers.set( i, headerCombo[i].getText() );
-                        updatePageComplite();                   
+                        updatePageComplite();
+                        updateErrorMessage();
                     }
                     
                     @Override
@@ -476,6 +499,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                     headers.clear();
                     headerCombo[i].clearSelection();
                 }
+                headerCombo[i].setLayoutData( headersGridData );
             } else {
                 headerText[i] = new Text( dataComposite, SWT.READ_ONLY | 
                                           SWT.BORDER );
@@ -516,7 +540,6 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         for (int i = 0; i < columns; i++) {
             includeButtons[i] = new Button( dataComposite, SWT.CHECK );
             includeButtons[i].setLayoutData( excludeGridData );
-            System.out.println("fromFileTxt: "+fileHandler.dataFileExists());
             includeButtons[i].setSelection( fileHandler.dataFileExists() );
             includeButtons[i].addSelectionListener(new SelectionAdapter() {
                 public void widgetSelected(SelectionEvent e) {
@@ -729,7 +752,9 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                 dataFileIncludeName = false;
                 updateDataCompocite();
             }
+            updateComponentSize();
             updatePageComplite();
+            updateErrorMessage();
         }
 
         @Override
@@ -767,6 +792,10 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                                            .getItem( sdfCombo
                                                      .getSelectionIndex() ) );
             }
+            updateComponentSize();
+            updatePageComplite();
+            updateErrorMessage();
+            
         }
 
         @Override
