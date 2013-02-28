@@ -397,10 +397,10 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
             if (headers == null)
                 headers = new ArrayList<String>();
             if (headerCombo == null || dataFileIncludeName ) {
-                headers.add( "N/A" );
-                headers.add( "N/A" );
-                headers.add( "N/A" );
-                textInDataField = "n/a\nn/a\nn/a\nn/a\nn/a";
+                headers.add( " " );
+                headers.add( " " );
+                headers.add( " " );
+                textInDataField = " \n \n \n \n \n ";
             } else {
                 for ( int i = 0; i < columns; i++ )
                     headers.add( "" );
@@ -412,7 +412,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         dataComposite = new Composite( dataFrame, SWT.NONE | SWT.FILL);
         GridLayout dataGridLayout = new GridLayout( columns + 1, false );
         dataComposite.setLayout( dataGridLayout );
-        GridData dataGridData = new GridData(GridData.FILL_BOTH);
+        GridData dataGridData = new GridData(GridData.FILL_HORIZONTAL);
         dataGridData.horizontalAlignment = SWT.FILL;
         dataGridData.grabExcessHorizontalSpace = true;  
         dataGridData.widthHint = dataFrame.getBounds().width;
@@ -489,7 +489,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 
         new Label(dataComposite, SWT.NONE).setText( "Values" );
         GridData valuesGridData = new GridData();
-        valuesGridData.horizontalAlignment = GridData.FILL;
+        valuesGridData.horizontalAlignment = SWT.FILL;
         valuesGridData.grabExcessHorizontalSpace = true;
         valuesGridData.grabExcessVerticalSpace = true;
         dataText = new Text[columns];
@@ -516,7 +516,8 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         for (int i = 0; i < columns; i++) {
             includeButtons[i] = new Button( dataComposite, SWT.CHECK );
             includeButtons[i].setLayoutData( excludeGridData );
-            includeButtons[i].setSelection( true );
+            System.out.println("fromFileTxt: "+fileHandler.dataFileExists());
+            includeButtons[i].setSelection( fileHandler.dataFileExists() );
             includeButtons[i].addSelectionListener(new SelectionAdapter() {
                 public void widgetSelected(SelectionEvent e) {
                     for (int i = 0; i < includeButtons.length; i++)
