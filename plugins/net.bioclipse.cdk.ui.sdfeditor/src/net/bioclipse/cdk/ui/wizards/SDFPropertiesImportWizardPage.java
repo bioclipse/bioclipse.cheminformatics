@@ -21,6 +21,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
@@ -28,6 +30,8 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -339,14 +343,22 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
      */
     private Composite createDataComposite(Composite parent) {
         GridData headerGridData = new GridData();
-        headerGridData.horizontalAlignment = GridData.FILL;
+        headerGridData.horizontalAlignment = SWT.FILL;
         headerGridData.grabExcessHorizontalSpace = true;
-        
+       
         dataFrame = new ScrolledComposite( parent, SWT.BORDER | SWT.V_SCROLL |
                                            SWT.H_SCROLL );
-        dataFrame.setLayout( new GridLayout( 1, true ) );
         dataFrame.setLayoutData( headerGridData );
-        
+        dataFrame.addControlListener( new ControlListener() {
+            
+            @Override
+            public void controlResized( ControlEvent e ) {
+                    updateComponentSize();
+            }
+            
+            @Override
+            public void controlMoved( ControlEvent e ) {          }
+        } );
         updateDataCompocite();
         
         return dataFrame;
@@ -394,11 +406,18 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                     headers.add( "" );
             }
         }
-
+        
         if (dataComposite != null)
             dataComposite.dispose();
-        dataComposite = new Composite( dataFrame, SWT.NONE );
-        dataComposite.setLayout( new GridLayout( columns + 1, true ) );
+        dataComposite = new Composite( dataFrame, SWT.NONE | SWT.FILL);
+        GridLayout dataGridLayout = new GridLayout( columns + 1, false );
+        dataComposite.setLayout( dataGridLayout );
+        GridData dataGridData = new GridData(GridData.FILL_BOTH);
+        dataGridData.horizontalAlignment = SWT.FILL;
+        dataGridData.grabExcessHorizontalSpace = true;  
+        dataGridData.widthHint = dataFrame.getBounds().width;
+        dataComposite.setLayoutData( dataGridData );
+       
         dataFrame.setContent( dataComposite );
         
         new Label(dataComposite, SWT.NONE).setText( "Name" );
@@ -452,8 +471,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                         headerCombo[i].select( 0 );
                         headers.add( headerCombo[i].getItem( 0 ) );
                     }
-                } 
-                else {
+                } else {
                     // It should not end-up here
                     headers.clear();
                     headerCombo[i].clearSelection();
@@ -488,7 +506,8 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
             if ( fileHandler.dataFileExists() )
                 textInDataField = "";
         }    
-
+        dataComposite.redraw();
+        
         new Label(dataComposite, SWT.NONE).setText( "Include" );
         GridData excludeGridData = new GridData();
         excludeGridData.horizontalAlignment = GridData.CENTER;
@@ -592,7 +611,6 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
      */
     private void updateComponents() {
         for (int i = 0; i < columns; i++) {
-            // included 
             isIncluded[i] = includeButtons[i].getSelection();
             if (dataFileIncludeName) {
                 headerText[i].setEnabled( isIncluded[i] );
@@ -603,7 +621,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                 for ( int j =0; j < headers.size(); j++ )
                     headerCombo[i].add( headers.get( j ) );
             }
-            dataText[i].setEnabled( isIncluded[i] );   
+            dataText[i].setEnabled( isIncluded[i] );               
         }
 
         if (fileHandler.dataFileExists())
@@ -625,10 +643,42 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         sdfCombo.pack();
 
         updatePageComplite();
-        
+        updateComponentSize();
         settingsComposite.pack();
         mainComposite.redraw();
         mainComposite.update();
+    }
+    
+    private void updateComponentSize() {
+        if (dataComposite != null) {
+            int width = dataFrame.getBounds().width/(columns+1);
+            Point size;
+            for (int i = 0; i < columns; i++) {
+                if (dataFileIncludeName) {
+                    size = headerText[i].getSize();
+                    size.x = width;
+                    headerText[i].setSize( size );
+                } else {
+                    size = headerCombo[i].getSize();
+                    size.x = width;
+                    headerCombo[i].setSize( size );
+                }
+                size = dataText[i].getSize();
+                size.x = width;
+                dataText[i].setSize( size );  
+            }
+            Object obj = dataComposite.getLayoutData();
+            if (obj instanceof GridData) {
+                GridData gl = (GridData) obj;
+                width = dataFrame.getBounds().width;
+                gl.widthHint = width;
+                dataComposite.setLayoutData( gl );
+
+                Rectangle rect = dataComposite.getBounds();
+                rect.width = width;
+                dataComposite.setBounds( rect );
+            }
+        }
     }
     
     /**
