@@ -1105,10 +1105,11 @@ public class CDKManager implements IBioclipseManager {
 
           org.openscience.cdk.interfaces.IMolecule molecule;
           try {
-              molecule = parser.parseSmiles(smilesDescription);
+            molecule = parser.parseSmiles( smilesDescription.trim() );
           }
           catch (InvalidSmilesException e) {
-              throw new BioclipseException("SMILES string is invalid. Error message said: " + e.getMessage(), e);
+            String message = "SMILES string is invalid. Error message said: ";
+            throw new BioclipseException( message + e.getMessage(), e );
           }
           try {
               AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( molecule );
