@@ -559,7 +559,7 @@ public class SmartsMatchingView extends ViewPart implements IPartListener,
                 }
             }
         } catch ( BioclipseException e ) {
-            logger.equals("Error matching smiles: " + e.getMessage() );
+            logger.error( "Error matching smiles: " + e.getMessage() );
         }
 
 
