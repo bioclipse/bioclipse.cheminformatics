@@ -456,8 +456,9 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
 
                     @Override
                     public void widgetSelected( SelectionEvent e ) {
+                        Object source = e.getSource();
                         for (int i = 0; i < columns; i++)
-                            if (e.equals( headerCombo[i] ) )
+                            if (source.equals( headerCombo[i] ) )
                                 headers.set( i, headerCombo[i].getItem( i ) );
                         updatePageComplite();
                         updateErrorMessage();
@@ -471,8 +472,9 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                     
                     @Override
                     public void keyReleased( KeyEvent e ) {
+                        Object source = e.getSource();
                         for (int i = 0; i < columns; i++)
-                            if (e.equals( headerCombo[i] ) )
+                            if (source.equals( headerCombo[i] ) )
                                 headers.set( i, headerCombo[i].getText() );
                         updatePageComplite();
                         updateErrorMessage();
