@@ -13,7 +13,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
@@ -714,11 +716,12 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
     protected void meargeFiles(IProgressMonitor monitor) {
         try {
             fileHandler.meargeFiles( isIncluded, names, dataFileIncludeName, monitor );
+            ResourcesPlugin.getWorkspace().getRoot().refreshLocal( IResource.DEPTH_INFINITE, null );
         } catch ( FileNotFoundException e ) {
             logger.error( e );
+        } catch ( CoreException e ) {
+          logger.error( "Could not update the navigator: "+e.getMessage() );
         }
-        /* TODO Here I would like to update Bioclipse navigator field, so the 
-         * new file becomes visibly. How do I do that? */
     }
     
     public void updateNameArray() {
