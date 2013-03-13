@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.internal.UIPlugin;
 
 /**
  * The main page of the SDF properties wizard.
@@ -167,6 +168,9 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
             public void widgetSelected(SelectionEvent e) {
                 FileDialog dlg = new FileDialog(mainComposite.getShell(), 
                                                 SWT.OPEN);
+                String workspacePath = ResourcesPlugin.getWorkspace().getRoot().
+                        getLocation().toOSString();
+                dlg.setFilterPath( workspacePath );
                 String pathStr = dlg.open();
                 try {
                     Path path = new Path(pathStr);
@@ -201,6 +205,9 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
             public void widgetSelected(SelectionEvent e) {
                 FileDialog dlg = new FileDialog(mainComposite.getShell(),
                                                 SWT.OPEN);
+                String workspacePath = ResourcesPlugin.getWorkspace().getRoot().
+                        getLocation().toOSString();
+                dlg.setFilterPath( workspacePath );
                 String pathStr = dlg.open();
                 updatePropertiesData(pathStr);
                 updateErrorMessage();
