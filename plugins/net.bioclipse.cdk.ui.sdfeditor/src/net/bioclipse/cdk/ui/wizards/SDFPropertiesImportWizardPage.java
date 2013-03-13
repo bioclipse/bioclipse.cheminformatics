@@ -754,6 +754,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                 dataFileIncludeName = false;
                 updateDataCompocite();
             }
+            updateComponents();
             updateComponentSize();
             updatePageComplite();
             updateErrorMessage();
