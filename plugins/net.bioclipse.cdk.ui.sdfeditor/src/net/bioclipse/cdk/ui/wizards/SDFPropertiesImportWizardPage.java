@@ -345,6 +345,9 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
      * @param pathStr The path to the txt-file
      */
     private void updatePropertiesData(String pathStr) {
+        if (pathStr == null)
+            return;
+        
         try {
             Path path = new Path(pathStr);
             IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
