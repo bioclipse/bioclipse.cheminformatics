@@ -154,7 +154,6 @@ import org.openscience.cdk.isomorphism.mcss.RMap;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.libio.cml.ICMLCustomizer;
 import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
-import org.openscience.cdk.nonotify.NNAtomContainer;
 import org.openscience.cdk.nonotify.NNChemFile;
 import org.openscience.cdk.nonotify.NNMolecule;
 import org.openscience.cdk.nonotify.NNMoleculeSet;
@@ -213,7 +212,8 @@ public class CDKManager implements IBioclipseManager {
     }
 
     public ICDKMolecule newMolecule() {
-        return new CDKMolecule(new NNAtomContainer());
+        IChemObjectBuilder scob = SilentChemObjectBuilder.getInstance();       
+        return new CDKMolecule( scob.newInstance( IAtomContainer.class ) );
     }
 
     public ICDKMolecule newMolecule(IAtomContainer atomContainer) {
@@ -1589,7 +1589,9 @@ public class CDKManager implements IBioclipseManager {
               int i = 1;
               for (List<RMap> substruct : substructures) {
                   // convert the RMap into an IAtomContainer
-                  IAtomContainer match = new NNAtomContainer();
+                  IChemObjectBuilder scob = 
+                          SilentChemObjectBuilder.getInstance();                  
+                  IAtomContainer match = scob.newInstance(AtomContainer.class);
                   for (RMap mapping : substruct) {
                       IBond bond = originalContainer.getBond(mapping.getId1());
                       for (IAtom atom : bond.atoms()) match.addAtom(atom);
