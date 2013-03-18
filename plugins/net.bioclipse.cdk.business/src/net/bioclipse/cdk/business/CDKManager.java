@@ -154,7 +154,6 @@ import org.openscience.cdk.isomorphism.mcss.RMap;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.libio.cml.ICMLCustomizer;
 import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
-import org.openscience.cdk.nonotify.NNMoleculeSet;
 import org.openscience.cdk.renderer.AtomContainerRenderer;
 import org.openscience.cdk.renderer.font.AWTFontManager;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
@@ -227,7 +226,8 @@ public class CDKManager implements IBioclipseManager {
     }
 
     public IMoleculeSet asSet(List<ICDKMolecule> list) {
-        IMoleculeSet set = new NNMoleculeSet();
+        IChemObjectBuilder scob = SilentChemObjectBuilder.getInstance();
+        IMoleculeSet set = scob.newInstance( MoleculeSet.class );
         for (ICDKMolecule mol : list)
             set.addAtomContainer(mol.getAtomContainer());
         return set;
