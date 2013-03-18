@@ -154,7 +154,6 @@ import org.openscience.cdk.isomorphism.mcss.RMap;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.libio.cml.ICMLCustomizer;
 import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
-import org.openscience.cdk.nonotify.NNMolecule;
 import org.openscience.cdk.nonotify.NNMoleculeSet;
 import org.openscience.cdk.renderer.AtomContainerRenderer;
 import org.openscience.cdk.renderer.font.AWTFontManager;
@@ -333,16 +332,19 @@ public class CDKManager implements IBioclipseManager {
 
         // Read file
         try {
+            IChemObjectBuilder scob = 
+                    SilentChemObjectBuilder.getInstance(); 
             if (reader.accepts(ChemFile.class)) {
-                IChemObjectBuilder scob = 
-                        SilentChemObjectBuilder.getInstance();  
+                 
                 IChemFile chemFile =
                     (IChemFile) reader.read(scob.newInstance( ChemFile.class ));
                 atomContainersList =
                     ChemFileManipulator.getAllAtomContainers(chemFile);
             } else if (reader.accepts(Molecule.class)) {
                 atomContainersList.add(
-                                       (NNMolecule) reader.read(new NNMolecule())
+                                       (IAtomContainer) reader
+                                       .read(scob
+                                              .newInstance(AtomContainer.class))
                 );
             } else {
                 throw new RuntimeException("Failed to read file.");
