@@ -1582,7 +1582,7 @@ public class CDKManager implements IBioclipseManager {
               List<List<RMap>> substructures = UniversalIsomorphismTester
               .getSubgraphMaps(molecule.getAtomContainer(),
                                substructure.getAtomContainer());
-              int i = 1;
+ 
               for (List<RMap> substruct : substructures) {
                   // convert the RMap into an IAtomContainer
                   IChemObjectBuilder scob = 
