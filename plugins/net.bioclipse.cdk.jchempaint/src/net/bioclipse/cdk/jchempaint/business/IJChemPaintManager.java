@@ -22,10 +22,8 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
-import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 
 /**
  * Manager for the JChemPaintEditor scripting language.
@@ -421,5 +419,21 @@ public interface IJChemPaintManager extends IBioclipseManager {
     		                           "connected to the selected element",
                        params = "IChemObject element")
     public void selectPart(IChemObject element);
+    
+    @Recorded
+    @PublishedMethod(
+    	methodSummary="Selects the atoms identified by the numbers. The first atom has index 1." +
+    		"The atomIndices String is a comma separated list of atom indices.",
+    	params="String atomIndices"
+    )
+    public void selectAtoms(String atomIndices);
+
+    @Recorded
+    @PublishedMethod(
+    	methodSummary="Selects the bonds identified by the numbers. The first bond has index 1." +
+    		"The bondIndices String is a comma separated list of bond indices.",
+    	params="String atomIndices"
+    )
+    public void selectBonds(String bondIndices);
 
 }
