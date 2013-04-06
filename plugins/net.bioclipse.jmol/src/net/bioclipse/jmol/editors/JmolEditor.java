@@ -112,7 +112,8 @@ public class JmolEditor extends EditorPart
                         implements IResourceChangeListener, 
                                    IAdaptable, 
                                    ISelectionListener, 
-                                   ISelectionProvider {
+                                   ISelectionProvider,
+                                   IJmolEditor {
 
     public static final String EDITOR_ID 
         = "net.bioclipse.jmol.editors.JmolEditor";
