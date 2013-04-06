@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Jmol Script Tutorial
+Bundle-SymbolicName: net.bioclipse.jmol.tutorial;singleton:=true
+Bundle-Version: 2.5.0.qualifier
+Bundle-Vendor: Department of Bioinformatics - BiGCaT, Maastricht University
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.ui
+Require-Bundle: org.eclipse.ui.ide
+Export-Package: net.bioclipse.jmol.tutorial
+Bundle-ClassPath: .

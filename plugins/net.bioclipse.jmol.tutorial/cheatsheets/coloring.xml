@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="Coloring Atoms">
+	<intro>
+		<description>
+			This cheatsheet will show the various ways to color atoms.
+			<br /><br />
+			In each step, "Click to perform" will run the discussed Jmol Script.
+		</description>
+	</intro>
+
+	<item skip="false"
+		title="A demo structure">
+		<description>
+			As a demonstration, we will start with the amino acid lysine.
+			Mind you, because a few libraries will have to be loaded, this step may take a few seconds.
+			Additionally, keep the editor open: all scripts will be run on the active editor.
+		</description>
+		<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="ui.open(cdk.generate3dCoordinates(opsin.parseIUPACName(&quot;lysine&quot;)))"/>
+    </item>
+	<item skip="false"
+		title="Colors">
+		<description>
+			Jmol is aware of the names of colors: black, white, red, green, blue, yellow, pink, cyan,
+			brown, etc. In total Jmol knows about over 140 different color names. This way, we can
+			color all atoms green:
+			<br /><b>select all; color green</b>
+		</description>
+		<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="jmol.run(&quot;select all; color green&quot;)"/>
+    </item>
+	<item skip="false"
+		title="Colors in RGB">
+		<description>
+			These color names are converted into RGB value, but we may use those directly as well:
+			<br /><b>select all; color [255,0,255]</b>
+		</description>
+		<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="jmol.run(&quot;select all; color [255,0,255]&quot;)"/>
+    </item>
+	<item skip="false"
+		title="CPK Colors">
+		<description>
+			The default atom colors reflect the elements. The CPK coloring scheme is based on physical model kits
+			developed by Corey, Pauling, and Koltun.
+			<br /><b>select all; color cpk</b>
+		</description>
+		<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="jmol.run(&quot;select all; color cpk&quot;)"/>
+    </item>
+ </cheatsheet>
