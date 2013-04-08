@@ -13,12 +13,12 @@ package net.bioclipse.jmol.business;
 
 import java.util.List;
 
-import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.business.ICDKManager;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.jmol.Activator;
+import net.bioclipse.jmol.editors.IJmolEditor;
 import net.bioclipse.jmol.editors.JmolEditor;
 import net.bioclipse.jmol.model.IJmolMolecule;
 import net.bioclipse.jmol.views.JmolConsoleView;
@@ -35,7 +35,7 @@ import org.eclipse.ui.PlatformUI;
 
 public class JmolManager implements IBioclipseManager {
 
-    private JmolEditor jmolEditor;
+    private IJmolEditor jmolEditor;
     private ICDKManager cdk = net.bioclipse.cdk.business.Activator
             .getDefault().getJavaCDKManager();
     
@@ -50,7 +50,7 @@ public class JmolManager implements IBioclipseManager {
                 "Script parameter cannot be empty" );
 
         //Run script in editor
-        JmolEditor editor = findActiveJmolEditor();
+        IJmolEditor editor = findActiveJmolEditor();
         if (editor == null) {
             throw new IllegalStateException(
                 "Could not find any Jmol editor to run the script in" );
@@ -82,7 +82,7 @@ public class JmolManager implements IBioclipseManager {
     /**
      * @return Active editor or null if not instance of JmolEditor
      */
-    private JmolEditor findActiveJmolEditor() {
+    private IJmolEditor findActiveJmolEditor() {
 
         final Display display = PlatformUI.getWorkbench().getDisplay();
         setActiveJmolEditor(null);
@@ -94,8 +94,10 @@ public class JmolManager implements IBioclipseManager {
                                 .getActivePage()
                                 .getActiveEditor();
                 
-                if (activeEditor instanceof JmolEditor) {
-                    setActiveJmolEditor( (JmolEditor)activeEditor );
+                if (activeEditor instanceof IJmolEditor) {
+                    setActiveJmolEditor( (IJmolEditor)activeEditor );
+                } else {
+                	System.out.println("Found a non-JmolEditor: " + activeEditor.getClass().getName());
                 }
             }
         });
@@ -116,7 +118,7 @@ public class JmolManager implements IBioclipseManager {
         }
     }
 
-    protected void setActiveJmolEditor( JmolEditor activeEditor ) {
+    protected void setActiveJmolEditor( IJmolEditor activeEditor ) {
         jmolEditor = activeEditor;
     }
 
@@ -144,13 +146,13 @@ public class JmolManager implements IBioclipseManager {
     }
     
     public boolean selectionIsEmpty() {
-        JmolEditor editor = findActiveJmolEditor();
+    	IJmolEditor editor = findActiveJmolEditor();
         return editor.getSelection() == null 
             || editor.getSelection().isEmpty();
     }
 
     public void run( String script ) {
-        run( script, false );
+        run( script, true );
     }
 
     public void append( IFile file ) {
@@ -162,7 +164,10 @@ public class JmolManager implements IBioclipseManager {
     }
 
     public void append(IMolecule molecule) {
-        findActiveJmolEditor().append(molecule);
+        IJmolEditor editor = findActiveJmolEditor();
+        if (editor != null && editor instanceof JmolEditor) {
+          ((JmolEditor)editor).append(molecule);
+        }
     }
 
 }
