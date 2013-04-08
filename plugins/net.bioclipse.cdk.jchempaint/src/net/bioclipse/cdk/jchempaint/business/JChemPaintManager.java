@@ -13,8 +13,10 @@
 package net.bioclipse.cdk.jchempaint.business;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.vecmath.Point2d;
 
@@ -70,6 +72,7 @@ import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.selection.LinkedSelection;
 import org.openscience.cdk.renderer.selection.LogicalSelection;
 import org.openscience.cdk.renderer.selection.LogicalSelection.Type;
+import org.openscience.cdk.renderer.selection.MultiSelection;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 /**
@@ -134,6 +137,48 @@ public class JChemPaintManager implements IBioclipseManager {
                 }
             }
         });
+    }
+
+    public void selectAtoms(String atomIndices) throws BioclipseException {
+    	String[] strIndices = atomIndices.split(",");
+    	int[] atomIntices = new int[strIndices.length];
+    	for (int i=0; i<strIndices.length; i++) {
+    		atomIntices[i] = Integer.parseInt(strIndices[i].trim());
+    	}
+        JChemPaintEditor editor = findActiveEditor();
+        if (editor != null) {
+            RendererModel model = editor.getControllerHub().getRenderModel();
+        	IAtomContainer atomContainer = getModel().getAtomContainer();
+        	Set<IAtom> newSelection = new HashSet<IAtom>();
+    	    for (int number : atomIntices) {
+    	        newSelection.add( atomContainer.getAtom(number-1));
+    	    }
+    	    model.setSelection(new MultiSelection<IAtom>(newSelection));
+        } else {
+            say("No opened JChemPaint editor");
+        }
+        updateView();
+    }
+
+    public void selectBonds(String bondIndices) throws BioclipseException {
+    	String[] strIndices = bondIndices.split(",");
+    	int[] bondIntices = new int[strIndices.length];
+    	for (int i=0; i<strIndices.length; i++) {
+    		bondIntices[i] = Integer.parseInt(strIndices[i].trim());
+    	}
+        JChemPaintEditor editor = findActiveEditor();
+        if (editor != null) {
+            RendererModel model = editor.getControllerHub().getRenderModel();
+        	IAtomContainer atomContainer = getModel().getAtomContainer();
+        	Set<IBond> newSelection = new HashSet<IBond>();
+    	    for (int number : bondIntices) {
+    	        newSelection.add( atomContainer.getBond(number-1));
+    	    }
+    	    model.setSelection(new MultiSelection<IBond>(newSelection));
+        } else {
+            say("No opened JChemPaint editor");
+        }
+        updateView();
     }
 
     public ICDKMolecule getModel() throws BioclipseException {
