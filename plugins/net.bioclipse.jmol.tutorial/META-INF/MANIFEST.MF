@@ -7,5 +7,4 @@ Bundle-Vendor: Department of Bioinformatics - BiGCaT, Maastricht University
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.ui
 Require-Bundle: org.eclipse.ui.ide
-Export-Package: net.bioclipse.jmol.tutorial
 Bundle-ClassPath: .
