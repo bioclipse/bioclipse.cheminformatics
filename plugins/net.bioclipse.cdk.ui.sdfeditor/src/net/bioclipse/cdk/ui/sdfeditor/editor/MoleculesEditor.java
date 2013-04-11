@@ -16,11 +16,11 @@ import static net.bioclipse.cdk.ui.sdfeditor.Activator.STRUCTURE_COLUMN_WIDTH;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
@@ -99,9 +99,6 @@ import org.eclipse.ui.part.PluginTransferData;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.AtomContainerRenderer;
-import org.openscience.cdk.renderer.IRenderer;
-
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 
 public class MoleculesEditor extends EditorPart implements
         //ISelectionProvider,
@@ -121,7 +118,9 @@ public class MoleculesEditor extends EditorPart implements
     private boolean dirty;
 
     private MolTableOutline outlinePage;
-
+    
+    private List<ISelectionListener> listeners = new ArrayList<ISelectionListener>();
+    
     private IPropertyChangeListener propertyListener = new IPropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent event) {
             if (event.getProperty().equals(STRUCTURE_COLUMN_WIDTH)) {
@@ -585,9 +584,12 @@ public class MoleculesEditor extends EditorPart implements
 //            reactOnSelection( (IStructuredSelection) selection );
         //viewer.setSelection( selection );
     }
-
+    
     public ISelection getSelection() {
-            return molTableViewer.getSelection();
+        ISelection sel = molTableViewer.getSelection();
+        for (ISelectionListener l:listeners)
+            l.selectionChanged( this, sel );
+        return sel;
     }
 
     private ISelection getSelectedRows() {
@@ -703,6 +705,16 @@ public class MoleculesEditor extends EditorPart implements
         }
         return super.getAdapter( adapter );
     }
+    
+    public void addListener(ISelectionListener listener) {
+        if (!listeners.contains( listener ))
+            listeners.add( listener );
+    }
+    
+    public void removeListener(ISelectionListener listener) {
+        if (listeners.contains( listener ))
+            listeners.remove( listener );
+    }
 }
 
 class ListMoleculesEditorModelWithResource extends ListMoleculesEditorModel {
@@ -774,4 +786,5 @@ class ListMoleculesEditorModelWithResource extends ListMoleculesEditorModel {
 					e);
 		}
 	}
+	
 }
