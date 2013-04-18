@@ -155,6 +155,14 @@ public class JmolManager implements IBioclipseManager {
         run( script, true );
     }
 
+    public void select( String selection ) {
+        run( "select " + selection );
+    }
+
+    public void color( String color ) {
+        run( "color " + color );
+    }
+
     public void append( IFile file ) {
        findActiveJmolEditor().append(file);
     }
