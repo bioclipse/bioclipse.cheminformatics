@@ -158,7 +158,7 @@ public class ListMoleculesEditorModel implements IMoleculesEditorModel,
     public Collection<Object> getAvailableProperties() {
     	Set<Object> props = new HashSet<Object>();
         if(!molecules.isEmpty()) {
-            List<ListElement> mols = molecules.subList( 0, Math.max(molecules.size(),100) );
+            List<ListElement> mols = molecules.subList( 0, Math.min(molecules.size(),100) );
             for(ListElement m:mols) {
                 ICDKMolecule mol = m.getMolecule();
                 props.addAll(mol.getAtomContainer().getProperties().keySet());
