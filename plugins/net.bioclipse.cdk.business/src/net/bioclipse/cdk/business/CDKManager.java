@@ -154,10 +154,6 @@ import org.openscience.cdk.isomorphism.mcss.RMap;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.libio.cml.ICMLCustomizer;
 import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
-import org.openscience.cdk.nonotify.NNAtomContainer;
-import org.openscience.cdk.nonotify.NNChemFile;
-import org.openscience.cdk.nonotify.NNMolecule;
-import org.openscience.cdk.nonotify.NNMoleculeSet;
 import org.openscience.cdk.renderer.AtomContainerRenderer;
 import org.openscience.cdk.renderer.font.AWTFontManager;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
@@ -213,7 +209,8 @@ public class CDKManager implements IBioclipseManager {
     }
 
     public ICDKMolecule newMolecule() {
-        return new CDKMolecule(new NNAtomContainer());
+        IChemObjectBuilder scob = SilentChemObjectBuilder.getInstance();       
+        return new CDKMolecule( scob.newInstance( IAtomContainer.class ) );
     }
 
     public ICDKMolecule newMolecule(IAtomContainer atomContainer) {
@@ -229,7 +226,8 @@ public class CDKManager implements IBioclipseManager {
     }
 
     public IMoleculeSet asSet(List<ICDKMolecule> list) {
-        IMoleculeSet set = new NNMoleculeSet();
+        IChemObjectBuilder scob = SilentChemObjectBuilder.getInstance();
+        IMoleculeSet set = scob.newInstance( IMoleculeSet.class );
         for (ICDKMolecule mol : list)
             set.addAtomContainer(mol.getAtomContainer());
         return set;
@@ -334,15 +332,17 @@ public class CDKManager implements IBioclipseManager {
 
         // Read file
         try {
+            IChemObjectBuilder scob = 
+                    SilentChemObjectBuilder.getInstance(); 
             if (reader.accepts(ChemFile.class)) {
+                 
                 IChemFile chemFile =
-                    (IChemFile) reader.read(new NNChemFile());
+                    (IChemFile) reader.read(scob.newInstance( IChemFile.class ));
                 atomContainersList =
                     ChemFileManipulator.getAllAtomContainers(chemFile);
             } else if (reader.accepts(Molecule.class)) {
-                atomContainersList.add(
-                                       (NNMolecule) reader.read(new NNMolecule())
-                );
+                atomContainersList.add( reader.read( scob
+                                .newInstance( IAtomContainer.class ) ) );
             } else {
                 throw new RuntimeException("Failed to read file.");
             }
@@ -1589,7 +1589,9 @@ public class CDKManager implements IBioclipseManager {
               int i = 1;
               for (List<RMap> substruct : substructures) {
                   // convert the RMap into an IAtomContainer
-                  IAtomContainer match = new NNAtomContainer();
+                  IChemObjectBuilder scob = 
+                          SilentChemObjectBuilder.getInstance();                  
+                IAtomContainer match = scob.newInstance( IAtomContainer.class );
                   for (RMap mapping : substruct) {
                       IBond bond = originalContainer.getBond(mapping.getId1());
                       for (IAtom atom : bond.atoms()) match.addAtom(atom);
