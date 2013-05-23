@@ -227,7 +227,7 @@ public class CDKManager implements IBioclipseManager {
 
     public IMoleculeSet asSet(List<ICDKMolecule> list) {
         IChemObjectBuilder scob = SilentChemObjectBuilder.getInstance();
-        IMoleculeSet set = scob.newInstance( MoleculeSet.class );
+        IMoleculeSet set = scob.newInstance( IMoleculeSet.class );
         for (ICDKMolecule mol : list)
             set.addAtomContainer(mol.getAtomContainer());
         return set;
@@ -337,15 +337,12 @@ public class CDKManager implements IBioclipseManager {
             if (reader.accepts(ChemFile.class)) {
                  
                 IChemFile chemFile =
-                    (IChemFile) reader.read(scob.newInstance( ChemFile.class ));
+                    (IChemFile) reader.read(scob.newInstance( IChemFile.class ));
                 atomContainersList =
                     ChemFileManipulator.getAllAtomContainers(chemFile);
             } else if (reader.accepts(Molecule.class)) {
-                atomContainersList.add(
-                                       (IAtomContainer) reader
-                                       .read(scob
-                                              .newInstance(AtomContainer.class))
-                );
+                atomContainersList.add( reader.read( scob
+                                .newInstance( IAtomContainer.class ) ) );
             } else {
                 throw new RuntimeException("Failed to read file.");
             }
@@ -1594,7 +1591,7 @@ public class CDKManager implements IBioclipseManager {
                   // convert the RMap into an IAtomContainer
                   IChemObjectBuilder scob = 
                           SilentChemObjectBuilder.getInstance();                  
-                  IAtomContainer match = scob.newInstance(AtomContainer.class);
+                IAtomContainer match = scob.newInstance( IAtomContainer.class );
                   for (RMap mapping : substruct) {
                       IBond bond = originalContainer.getBond(mapping.getId1());
                       for (IAtom atom : bond.atoms()) match.addAtom(atom);
