@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cspec xmlns="http://www.eclipse.org/buckminster/CSpec-1.0" name="net.bioclipse.cheminformatics_releng" componentType="buckminster" version="2.6.1">
+    <dependencies>
+        <dependency name="net.bioclipse.chemoinformatics_site" componentType="eclipse.feature" versionDesignator="0.0.1"/>
+        <dependency name="com.springsource.javax.mail" componentType="osgi.bundle"/>
+        <dependency name="org.slf4j.api" componentType="osgi.bundle"/>
+        <dependency name="javax.wsdl" componentType="osgi.bundle"/>
+        <dependency name="jcl.over.slf4j" componentType="osgi.bundle"/>
+        <dependency name="net.bioclipse.core_feature" componentType="eclipse.feature"/>
+        <!--
+        <dependency name="log4j.over.slf4j" componentType="osgi.bundle"/>
+        -->
+    </dependencies>
+    <actions>
+      <public name="site.mirror.p2" actor="p2SiteMirror">
+        <prerequisites>
+          <attribute name="site.p2" alias="site"/>
+        </prerequisites>
+        <products base="${bioclipse.mirror}/${bioclipse.mirror.name}" upToDatePolicy="ACTOR" />
+      </public>
+    </actions>
+    <groups>
+        <public name="site.p2">
+            <attribute name="site.p2" component="net.bioclipse.chemoinformatics_site"/>
+        </public>
+    </groups>
+</cspec>
