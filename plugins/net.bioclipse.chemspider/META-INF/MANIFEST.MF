@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Bioclipse ChemSpider Integration
 Bundle-SymbolicName: net.bioclipse.chemspider; singleton:=true
-Bundle-Version: 2.6.0.vqualifier
+Bundle-Version: 2.6.1.qualifier
 Bundle-Activator: net.bioclipse.chemspider.Activator
 Bundle-Vendor: The Bioclipse Project
 Export-Package: com.chemspider.www,
