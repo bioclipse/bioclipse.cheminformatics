@@ -172,6 +172,7 @@ import org.openscience.cdk.tools.AtomTypeAwareSaturationChecker;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
+import org.openscience.cdk.tools.manipulator.BondManipulator;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
@@ -1114,12 +1115,16 @@ public class CDKManager implements IBioclipseManager {
           try {
               AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( molecule );
               ataSatChecker.decideBondOrder( molecule );
-//        	  molecule = fbot.kekuliseAromaticRings(molecule);
+              AtomContainerManipulator.clearAtomConfigurations( molecule );
+              AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( molecule );
+              CDKHueckelAromaticityDetector.detectAromaticity(molecule);
+
           } catch (CDKException exception) {
         	  logger.warn("Could not figure out the double bond positions: " + exception.getMessage());
           } catch (NullPointerException npe) {
         	  throw new IllegalStateException("Could not create molecule from: "+smilesDescription,npe);
-          }
+          } 
+          
           return new CDKMolecule(molecule);
       }
 
