@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="Atom Expressions">
+	<intro>
+		<description>
+			This cheatsheet describes how atoms can be selected in Jmol. The 'select' command
+			will be used, but all that follows this command is called an 'atom expression'.
+			Other commands also use these expressions.
+			<br /><br />
+			In each step, "Click to perform" will run the discussed Jmol Script.
+		</description>
+	</intro>
+
+	<item skip="false"
+		title="A demo structure">
+		<description>
+			As a demonstration, we will start with the amino acid lysine.
+			Mind you, because a few libraries will have to be loaded, this step may take a few seconds.
+			Additionally, keep the editor open: all scripts will be run on the active editor.
+		</description>
+		<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="ui.open(cdk.generate3dCoordinates(opsin.parseIUPACName(&quot;lysine&quot;)))"/>
+    </item>
+	<item skip="false"
+		title="Selecting all atoms">
+		<description>
+			Selecting all atoms is trivial, and is done with:
+			<br /><b>select all</b>
+		</description>
+		<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="jmol.run(&quot;select all&quot;)"/>
+    </item>
+	<item skip="false"
+		title="Unselecting all atoms">
+		<description>
+			Selecting no atoms at all, is done with:
+			<br /><b>select none</b>
+		</description>
+		<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="jmol.run(&quot;select none&quot;)"/>
+    </item>
+	<item skip="false"
+		title="Selecting elements">
+		<description>
+			Selecting atoms by element can be done too. For example, selecting all hydrogens can be done with:
+			<br /><b>select hydrogen</b>
+		</description>
+		<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="jmol.run(&quot;select hydrogen&quot;)"/>
+    </item>
+	<item skip="false"
+		title="Selecting elements by symbol">
+		<description>
+			If you prefer to use the element symbol, you simply prepend the symbol with an underscore.
+			Selecting all oxygens is thus done with:
+			<br /><b>select _O</b>
+		</description>
+		<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="jmol.run(&quot;select _O&quot;)"/>
+    </item>
+	<item skip="false"
+		title="Selecting with atom numbers">
+		<description>
+			The internal data model of Jmol has all atoms numbers. We can therefore also use
+			the atom numbers to select atoms:
+			<br /><b>select atomNo=12</b>
+		</description>
+		<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="jmol.run(&quot;select atomNo=12&quot;)"/>
+    </item>
+	<item skip="false"
+		title="Selecting with atom number ranges">
+		<description>
+			Or a range of atom numbers:
+			<br /><b>select atomNo > 5 and atomNo &lt; 10</b>
+		</description>
+		<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="jmol.run(&quot;select atomNo > 5 and atomNo &lt; 10&quot;)"/>
+    </item>
+	<!-- item skip="false"
+		title="Mixing expressions: and">
+		<description>
+			The previous example introduced the "and" operation to combine expressions
+			to larger expressions. This can be used in many ways, for example, to select
+			all nitrogens and oxygens:
+			<br /><b>select nitrogen and oxygen</b>
+			But more about this in a separate cheatsheet.
+		</description>
+		<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="jmol.run(&quot;select nitrogen and oxygen&quot;)"/>
+    </item -->
+	<!-- item skip="false"
+		title="Selecting substructures">
+		<description>
+			Using the SMILES line notations, we can also have Jmol select substructure in a convenient way
+			using the substructure command.
+			For example, to highlight all acid groups:
+			<br /><b>select substructure(&quot;O=CO&quot;)</b>
+			<br /><br />
+			A full description of SMILES it outside the scope of this tutorial, and the reader
+			can find more information on it at http://opensmiles.org/.
+		</description>
+		<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="jmol.run(&quot;select substructure(&quot;O=CO&quot;))"/>
+    </item -->
+	<item skip="false"
+		title="Connected atoms">
+		<description>
+			Another method available for use when selecting atoms, is the <i>connected</i> method.
+			This method allows us to select atoms (covalently) bonded to, for example, oxygens:
+			<br /><b>select connected(oxygen)</b>
+		</description>
+		<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="jmol.run(&quot;select connected(oxygen)&quot;)"/>
+    </item>
+	<item skip="false"
+		title="Nearby atoms">
+		<description>
+			If we want to select nearby atoms, also those that are not bonded, we can
+			use the <i>within</i> method:
+			<br /><b>select within(3.0, oxygen)</b>
+			<br /><br />
+			This selects all atoms within 3 &#197;nstr&#246;m.
+		</description>
+		<action
+			pluginId="net.bioclipse.scripting.ui"
+			class="net.bioclipse.scripting.ui.actions.ScriptAction"
+			param1="jmol.run(&quot;select within(3.0, oxygen)&quot;)"/>
+    </item>
+ </cheatsheet>

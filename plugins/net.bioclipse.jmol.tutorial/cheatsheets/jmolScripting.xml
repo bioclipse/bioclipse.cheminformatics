@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compositeCheatsheet name="Jmol Script Tutorial">
+   <taskGroup kind="set" name="Jmol Script Tutorial" skip="false">
+      <intro>
+         <b>Introduction</b>
+This cheatsheet walks through the scripting language. It is based on Angel Herraez' book
+"How to use Jmol to study and present molecular structures".
+      </intro>
+      <onCompletion>
+         <b>Conclusion</b>
+This is a collection of tutorials for scripting Jmol in Bioclipse.<br/><br/>
+Comments and suggestions are welcome to &lt;egon.willighagen(AT)gmail.com&gt;
+      </onCompletion>
+      <task kind="cheatsheet" name="Atom Expressions" skip="true">
+         <intro>
+            <b>Introduction</b><br/>
+This cheat sheet shows how atoms can be selected in Jmol.
+         </intro>
+         <onCompletion>
+            <b>Conclusion</b><br/>
+Selecting atoms is the start of changing the default visualization.
+         </onCompletion>
+         <param name="path" value="selecting.xml">
+         </param>
+      </task>
+      <task kind="cheatsheet" name="Coloring Atoms" skip="true">
+         <intro>
+            <b>Introduction</b><br/>
+Using the knowledge from the atom expression cheat sheet, we can use this to change the colors used to depict atoms.
+         </intro>
+         <onCompletion>
+            <b>Conclusion</b><br/>
+Coloring atoms differently from the default is an excellent way to highlight part of the structure.
+         </onCompletion>
+         <param name="path" value="coloring.xml">
+         </param>
+      </task>
+   </taskGroup>
+</compositeCheatsheet>
+
