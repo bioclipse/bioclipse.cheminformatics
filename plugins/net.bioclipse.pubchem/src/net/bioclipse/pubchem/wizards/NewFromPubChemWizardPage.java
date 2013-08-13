@@ -62,10 +62,6 @@ public class NewFromPubChemWizardPage extends WizardPage {
 		checkForCompletion();
 	}
 	
-	public static Object createObject(String className)	throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-		return Class.forName(className).newInstance();	
-	}
-
 	/**
 	 * If page not complete, set error messages
 	 */
