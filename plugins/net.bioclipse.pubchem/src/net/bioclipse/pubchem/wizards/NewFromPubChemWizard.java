@@ -91,7 +91,7 @@ public class NewFromPubChemWizard extends BasicNewResourceWizard {
 	            final IFolder resultsFolder;
 	            try {
                     resultsFolder = getResultsFolder(
-                        query.replace(' ', '_'),
+                        query.replace(' ', '_').replace( '/', '_' ),
                         monitor
                     );
                     resultsFolder.create(true, true, monitor);
