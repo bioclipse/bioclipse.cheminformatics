@@ -35,11 +35,12 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.managers.business.IBioclipseManager;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.chemspider.www.MassSpecAPIStub.ExtendedCompoundInfo;
 
@@ -52,7 +53,7 @@ public class ChemspiderManager implements IBioclipseManager {
 
     private final ICDKManager   cdk    = Activator.getDefault()
                                                             .getJavaCDKManager();
-	private static final Logger logger = Logger.getLogger(ChemspiderManager.class);
+    private static final Logger logger = LoggerFactory.getLogger( ChemspiderManager.class );
 
 	/**
 	 * Gives a short one word name of the manager used as variable name when

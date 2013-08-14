@@ -14,7 +14,6 @@ package net.bioclipse.chemspider.ui;
 import java.net.URL;
 
 import net.bioclipse.chemspider.Activator;
-import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
@@ -26,6 +25,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -33,7 +34,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ChemspiderPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage{
 
-    private static final Logger logger = Logger.getLogger(ChemspiderPreferencePage.class);
+    private static final Logger logger = LoggerFactory.getLogger( ChemspiderPreferencePage.class );
     
     public void init(IWorkbench workbench) {
         //Initialize the preference store we wish to use
@@ -58,12 +59,10 @@ public class ChemspiderPreferencePage extends FieldEditorPreferencePage implemen
                     openURL(new URL("http://www.chemspider.com/AboutServices.aspx"));
                 } 
                 catch (PartInitException ex) {
-                    logger.error( ex );
-                    ex.printStackTrace();
+                    logger.error( ex.getMessage(), ex );
                 } 
                 catch (MalformedURLException ex) {
-                    logger.error( ex );
-                    ex.printStackTrace();
+                    logger.error( ex.getMessage(), ex );
                 }
     	    }
         } );

@@ -14,17 +14,18 @@ import net.bioclipse.chemspider.business.IChemspiderManager;
 import net.bioclipse.chemspider.business.IJavaChemspiderManager;
 import net.bioclipse.chemspider.business.IJavaScriptChemspiderManager;
 
-import org.apache.log4j.Logger;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractUIPlugin {
 
-    private static final Logger logger = Logger.getLogger(Activator.class);
+    private static final Logger logger = LoggerFactory.getLogger(Activator.class);
 
 	public static final String PREF_SECURITY_TOKEN = "chemspider.security.preference";
 	public static final String PREF_SERVER_ENDPOINT = "chemspider.server.endpoint";
