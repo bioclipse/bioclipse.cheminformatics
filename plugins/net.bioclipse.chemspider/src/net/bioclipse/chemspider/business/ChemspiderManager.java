@@ -50,7 +50,8 @@ import com.chemspider.www.MassSpecAPIStub.ExtendedCompoundInfo;
  */
 public class ChemspiderManager implements IBioclipseManager {
 
-	private static final ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
+    private final ICDKManager   cdk    = Activator.getDefault()
+                                                            .getJavaCDKManager();
 	private static final Logger logger = Logger.getLogger(ChemspiderManager.class);
 
 	/**
