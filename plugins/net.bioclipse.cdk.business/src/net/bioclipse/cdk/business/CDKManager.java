@@ -343,7 +343,7 @@ public class CDKManager implements IBioclipseManager {
                     ChemFileManipulator.getAllAtomContainers(chemFile);
             } else if (reader.accepts(Molecule.class)) {
                 atomContainersList.add( reader.read( scob
-                                .newInstance( IAtomContainer.class ) ) );
+                                                .newInstance( org.openscience.cdk.interfaces.IMolecule.class ) ) );
             } else {
                 throw new RuntimeException("Failed to read file.");
             }
