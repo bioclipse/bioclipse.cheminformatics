@@ -24,11 +24,12 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.io.SDFWriter;
 import org.openscience.cdk.io.iterator.IteratingMDLReader;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
+
 import au.com.bytecode.opencsv.CSVReader;
 
 /**
@@ -121,7 +122,7 @@ public class PropertiesImportFileHandler {
     private void extractSDFProerties() throws FileNotFoundException {     
         IteratingMDLReader sdfItr = 
                 new IteratingMDLReader(getSDFileContents(),
-                                        DefaultChemObjectBuilder.getInstance());
+                                        SilentChemObjectBuilder.getInstance());
         Map<Object, Object> propertiesMap = sdfItr.next().getProperties();
         Set<Object> propSet = propertiesMap.keySet();
         Iterator<Object> propSetItr = propSet.iterator();
@@ -546,7 +547,7 @@ public class PropertiesImportFileHandler {
         int molsInSdf = 0;
         IteratingMDLReader sdfMolCounter = 
                 new IteratingMDLReader(getSDFileContents(), 
-                                        DefaultChemObjectBuilder.getInstance());
+                                        SilentChemObjectBuilder.getInstance());
         while (sdfMolCounter.hasNext()) {
             molsInSdf++;
             sdfMolCounter.next();
@@ -556,7 +557,7 @@ public class PropertiesImportFileHandler {
         
         IteratingMDLReader sdfItr = 
                 new IteratingMDLReader(getSDFileContents(), 
-                                        DefaultChemObjectBuilder.getInstance());
+                                       SilentChemObjectBuilder.getInstance());
         Scanner fileScanner;
         ArrayList<String> values, names;
         names = propertiesName;

@@ -1101,7 +1101,7 @@ public class CDKManager implements IBioclipseManager {
                           throws BioclipseException {
 
           SmilesParser parser
-              = new SmilesParser( DefaultChemObjectBuilder.getInstance() );
+              = new SmilesParser( SilentChemObjectBuilder.getInstance() );
           parser.setPreservingAromaticity( true );
           
           org.openscience.cdk.interfaces.IMolecule molecule;
@@ -2656,7 +2656,7 @@ public class CDKManager implements IBioclipseManager {
               createSDFileIndex( file, monitor );
               molList = new RecordableList<ICDKMolecule>();
 
-              IChemObjectBuilder builder = DefaultChemObjectBuilder
+            IChemObjectBuilder builder = SilentChemObjectBuilder
               .getInstance();
               RandomAccessSDFReader reader;
               IPath location = file.getLocation();

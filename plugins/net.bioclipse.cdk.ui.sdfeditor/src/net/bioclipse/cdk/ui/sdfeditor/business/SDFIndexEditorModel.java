@@ -62,6 +62,7 @@ import org.openscience.cdk.interfaces.IChemSequence;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.MDLV2000Reader;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.smiles.DeduceBondSystemTool;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 
@@ -103,7 +104,7 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
         molProps = new HashMap<Integer, Map<String,Object>>();
         propertyList = new HashMap<String, Class<?>>();
         chemReader = new MDLV2000Reader();
-        builder = DefaultChemObjectBuilder.getInstance();
+        builder = SilentChemObjectBuilder.getInstance();
         calculators = new TreeMap<String, IPropertyCalculator<?>>();
         Collection<IPropertyCalculator<?>> calcs = retriveCalculatorContributions();
         for(IPropertyCalculator<?> p:calcs) {
