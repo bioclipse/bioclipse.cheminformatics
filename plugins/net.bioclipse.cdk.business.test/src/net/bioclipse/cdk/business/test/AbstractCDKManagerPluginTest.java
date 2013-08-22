@@ -1324,10 +1324,10 @@ public abstract class AbstractCDKManagerPluginTest {
         assertEquals(seq.getChemModelCount(), 1);
         org.openscience.cdk.interfaces.IChemModel model = seq.getChemModel(0);
         assertNotNull(model);
-        assertEquals(model.getMoleculeSet().getMoleculeCount(), 1);
+        assertEquals( model.getMoleculeSet().getAtomContainerCount(), 1 );
 
         // test the molecule
-        org.openscience.cdk.interfaces.IMolecule mol = model.getMoleculeSet().getMolecule(0);
+        IAtomContainer mol = model.getMoleculeSet().getAtomContainer( 0 );
         assertNotNull(mol);
         assertEquals(38, mol.getAtomCount());
         assertEquals(48, mol.getBondCount());

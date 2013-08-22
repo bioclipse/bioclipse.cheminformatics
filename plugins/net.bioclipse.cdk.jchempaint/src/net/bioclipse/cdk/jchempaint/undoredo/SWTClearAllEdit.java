@@ -19,8 +19,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.openscience.cdk.controller.undoredo.ClearAllEdit;
+import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.interfaces.IChemModel;
-import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.interfaces.IReactionSet;
 
 /**
@@ -30,7 +30,7 @@ public class SWTClearAllEdit extends ClearAllEdit implements IUndoableOperation 
 
     private IUndoContext context;
 
-    public SWTClearAllEdit(IChemModel chemModel, IMoleculeSet som,
+    public SWTClearAllEdit(IChemModel chemModel, IAtomContainerSet som,
             IReactionSet sor, String type, IUndoContext context) {
 
         super( chemModel, som, sor, type );

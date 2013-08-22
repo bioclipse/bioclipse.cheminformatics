@@ -204,7 +204,7 @@ public class SWTRenderer implements IDrawVisitor{
         vertexB.add(normal);
         vertexC.sub(normal);
 
-        if (wedge.isDashed)
+        if ( wedge.type == WedgeLineElement.TYPE.DASHED )
             drawDashedWedge( vertexA, vertexB, vertexC);
         else
             drawFilledWedge(vertexA, vertexB, vertexC);

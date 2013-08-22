@@ -119,7 +119,7 @@ import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 public class JChemPaintEditorWidget extends JChemPaintWidget
-    implements ISelectionProvider, IViewEventRelay, IUndoListener {
+    implements ISelectionProvider, IViewEventRelay, IUndoListener{
 
     Logger logger = Logger.getLogger( JChemPaintEditorWidget.class );
 

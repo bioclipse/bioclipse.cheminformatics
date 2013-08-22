@@ -56,13 +56,14 @@ import org.eclipse.ui.part.ViewPart;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.ChemModel;
 import org.openscience.cdk.ChemSequence;
-import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.pharmacophore.PharmacophoreBond;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 
 //import quicktime.app.image.Redrawable;
 
@@ -665,11 +666,11 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                         for (int i=0; i<chemFile.getChemSequence( 0 ).getChemModelCount();i++){
                             IChemModel cm1=chemFile.getChemSequence( 0 ).getChemModel( i );
                             IChemModel cm2=collectedModels.get( i );
-                            String title1=(String) cm1.getMoleculeSet().getMolecule( 0 ).getProperty( "cdk:Title" );
-                            String title2=(String) cm2.getMoleculeSet().getMolecule( 0 ).getProperty( "cdk:Title" );
+                            String title1=(String) cm1.getMoleculeSet().getAtomContainer( 0 ).getProperty( "cdk:Title" );
+                            String title2=(String) cm2.getMoleculeSet().getAtomContainer( 0 ).getProperty( "cdk:Title" );
                             
                             //If all titles are same, we conclude the chemmodels are similar
-                            if (title1!=null && title1!=null){
+                            if (title1!=null && title2!=null){
                             	if (!(title1.equals(title2))){
                             		similar=false;
                             	}
@@ -837,7 +838,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
     private void addAtomContainer( List<ChemModel> models, IAtomContainer ac ) {
 
         //Create a MolSet to hold the molecule
-        MoleculeSet ms=new MoleculeSet();
+        IAtomContainerSet ms=SilentChemObjectBuilder.getInstance().newInstance(IAtomContainerSet.class);
         ms.addAtomContainer( ac );
 
         //Create a ChemModel to hold the MolSet

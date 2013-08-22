@@ -24,10 +24,10 @@ import org.openscience.cdk.controller.undoredo.IUndoRedoFactory;
 import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IElectronContainer;
-import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.interfaces.IReactionSet;
 import org.openscience.cdk.interfaces.IBond.Order;
 
@@ -77,7 +77,8 @@ public class SWTUndoRedoFactory implements IUndoRedoFactory {
     }
 
     public IUndoRedoable getClearAllEdit( IChemModel chemModel,
-                                          IMoleculeSet som, IReactionSet sor,
+                                          IAtomContainerSet som,
+                                          IReactionSet sor,
                                           String type ) {
         return new SWTClearAllEdit(chemModel, som, sor, type, this.context);
     }
@@ -158,7 +159,9 @@ public class SWTUndoRedoFactory implements IUndoRedoFactory {
     }
 
     public IUndoRedoable getLoadNewModelEdit(IChemModel chemModel,
-            IMoleculeSet oldsom, IReactionSet oldsor, IMoleculeSet newsom,
+                                              IAtomContainerSet oldsom,
+                                              IReactionSet oldsor,
+                                              IAtomContainerSet newsom,
             IReactionSet newsor, String type) {
 
         return new SWTLoadNewModelEdit(chemModel,oldsom,oldsor,newsom,newsor,type,this.context);

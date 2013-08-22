@@ -16,7 +16,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.actions.ActionDelegate;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.smiles.SmilesGenerator;
 
 public class CreateSmilesAction extends ActionDelegate{
@@ -51,14 +50,9 @@ public class CreateSmilesAction extends ActionDelegate{
             System.out.println("No AtomContainer loaded.");
             return;
         }
-        else if (!(ac instanceof IMolecule)) {
-            System.out.println("AC is not IMolecule.");
-            return;
-        }
-        IMolecule imol = (IMolecule) ac;
         SmilesGenerator gen=new SmilesGenerator();
         try{
-            String smiles=gen.createSMILES(imol);
+            String smiles = gen.createSMILES( ac );
             System.out.println("SMILES is: " + smiles);
         }catch (Exception e){
             System.out.println("General exception when generate SMILES, originating in CDK. ");

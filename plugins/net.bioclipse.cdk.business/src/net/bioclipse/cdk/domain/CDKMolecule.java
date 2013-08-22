@@ -34,6 +34,7 @@ import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.fingerprint.Fingerprinter;
+import org.openscience.cdk.fingerprint.IBitFingerprint;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -106,9 +107,9 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         IAtomContainer container = getAtomContainer();
 
         //Operate on a clone with removed hydrogens
-        org.openscience.cdk.interfaces.IMolecule hydrogenlessClone =
+        IAtomContainer hydrogenlessClone =
             container.getBuilder().newInstance(
-            	org.openscience.cdk.interfaces.IMolecule.class,
+            	IAtomContainer.class,
                 AtomContainerManipulator.removeHydrogens(container)
             );
 
@@ -236,7 +237,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         
         Fingerprinter fp=new Fingerprinter();
         try {
-            BitSet fingerprint=fp.getFingerprint(getAtomContainer());
+            BitSet fingerprint = fp.getBitFingerprint( getAtomContainer() ).asBitSet();
             setProperty( FINGERPRINT_KEY, fingerprint );
             return fingerprint;
         } catch (Exception e) {

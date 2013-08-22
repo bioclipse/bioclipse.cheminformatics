@@ -18,6 +18,7 @@ import net.bioclipse.cdk.ui.sdfeditor.business.IPropertyCalculator;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.openscience.cdk.fingerprint.Fingerprinter;
+import org.openscience.cdk.fingerprint.IBitFingerprint;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 
@@ -32,8 +33,8 @@ public class CDKFingerPrintPropertyCalculator implements IPropertyCalculator<Bit
         Fingerprinter fp=new Fingerprinter();
         try {
             IAtomContainer ac = SilentChemObjectBuilder.getInstance().newInstance(IAtomContainer.class, molecule.getAtomContainer());
-            BitSet fingerprint=fp.getFingerprint(ac);
-            return fingerprint;
+            IBitFingerprint fingerprint = fp.getBitFingerprint( ac );
+            return fingerprint.asBitSet();
         } catch (Throwable e) {
         	Logger.getLogger( CDKFingerPrintPropertyCalculator.class ).warn(
                      "Could not create fingerprint: "

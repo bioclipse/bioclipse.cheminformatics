@@ -91,8 +91,6 @@ import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.ChemModel;
 import org.openscience.cdk.ConformerContainer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
-import org.openscience.cdk.Molecule;
-import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.config.Elements;
@@ -114,7 +112,6 @@ import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IIsotope;
 import org.openscience.cdk.interfaces.IMolecularFormula;
-import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.FormatFactory;
 import org.openscience.cdk.io.IChemObjectReaderErrorHandler;
@@ -141,7 +138,7 @@ import org.openscience.cdk.io.formats.RGroupQueryFormat;
 import org.openscience.cdk.io.formats.SDFFormat;
 import org.openscience.cdk.io.formats.SMILESFormat;
 import org.openscience.cdk.io.iterator.IteratingMDLConformerReader;
-import org.openscience.cdk.io.iterator.IteratingMDLReader;
+import org.openscience.cdk.io.iterator.IteratingSDFReader;
 import org.openscience.cdk.io.listener.PropertiesListener;
 import org.openscience.cdk.io.random.RandomAccessReader;
 import org.openscience.cdk.io.random.RandomAccessSDFReader;
@@ -217,17 +214,17 @@ public class CDKManager implements IBioclipseManager {
         return new CDKMolecule(atomContainer);
     }
 
-    public List<ICDKMolecule> asList(IMoleculeSet set) {
+    public List<ICDKMolecule> asList( IAtomContainerSet set ) {
         List<ICDKMolecule> result = new RecordableList<ICDKMolecule>();
-        for (IAtomContainer mol : set.molecules()) {
+        for ( IAtomContainer mol : set.atomContainers() ) {
             result.add(newMolecule(mol));
         }
         return result;
     }
 
-    public IMoleculeSet asSet(List<ICDKMolecule> list) {
+    public IAtomContainerSet asSet( List<ICDKMolecule> list ) {
         IChemObjectBuilder scob = SilentChemObjectBuilder.getInstance();
-        IMoleculeSet set = scob.newInstance( IMoleculeSet.class );
+        IAtomContainerSet set = scob.newInstance( IAtomContainerSet.class );
         for (ICDKMolecule mol : list)
             set.addAtomContainer(mol.getAtomContainer());
         return set;
@@ -340,9 +337,9 @@ public class CDKManager implements IBioclipseManager {
                     (IChemFile) reader.read(scob.newInstance( IChemFile.class ));
                 atomContainersList =
                     ChemFileManipulator.getAllAtomContainers(chemFile);
-            } else if (reader.accepts(Molecule.class)) {
+            } else if ( reader.accepts( IAtomContainer.class ) ) {
                 atomContainersList.add( reader.read( scob
-                                                .newInstance( org.openscience.cdk.interfaces.IMolecule.class ) ) );
+                                .newInstance( IAtomContainer.class ) ) );
             } else {
                 throw new RuntimeException("Failed to read file.");
             }
@@ -528,15 +525,8 @@ public class CDKManager implements IBioclipseManager {
 
              for (int i = 0; i < atomContainersList.size(); i++) {
 
-                IAtomContainer ac = null;
-                Object obj = atomContainersList.get(i);
+                IAtomContainer ac = atomContainersList.get( i );
 
-                if (obj instanceof org.openscience.cdk.interfaces.IMolecule) {
-                    ac = (org.openscience.cdk.interfaces.IMolecule) obj;
-                }
-                else if (obj instanceof IAtomContainer) {
-                    ac = (IAtomContainer) obj;
-                }
 
                 CDKMolecule mol = new CDKMolecule(ac);
 
@@ -546,10 +536,9 @@ public class CDKManager implements IBioclipseManager {
                 String moleculeName = molecularFormula( mol );
                 // If there's a CDK property TITLE (read from input), use that
                 // as name
-                if (ac instanceof org.openscience.cdk.interfaces.IMolecule) {
+                if ( ac instanceof IAtomContainer ) {
 
-                    org.openscience.cdk.interfaces.IMolecule imol
-                        = (org.openscience.cdk.interfaces.IMolecule) ac;
+                    IAtomContainer imol = ac;
 
                     String molName
                         = (String)
@@ -615,20 +604,13 @@ public class CDKManager implements IBioclipseManager {
         try {
             IAtomContainer cdkMol = mol.getAtomContainer();
 
-        // Create the SMILES
-        SmilesGenerator generator = new SmilesGenerator(true);
+            // Create the SMILES
+            SmilesGenerator generator = new SmilesGenerator( true );
 
-        // Operate on a clone with removed hydrogens
-        cdkMol = AtomContainerManipulator.removeHydrogens(cdkMol);
-        org.openscience.cdk.interfaces.IMolecule newMol;
-        if (org.openscience.cdk.interfaces.IMolecule.class.isAssignableFrom(
-            cdkMol.getClass())) {
-            newMol = (org.openscience.cdk.interfaces.IMolecule)cdkMol;
-        } else {
-            newMol = cdkMol.getBuilder().newInstance(
-                org.openscience.cdk.interfaces.IMolecule.class, cdkMol);
-        }
-        result = generator.createSMILES( newMol );
+            // Operate on a clone with removed hydrogens
+            cdkMol = AtomContainerManipulator.removeHydrogens( cdkMol );
+
+            result = generator.createSMILES( cdkMol );
         }catch (Exception e) {
             logger.warn( "Failed to generate SMILES",e);
             return;
@@ -747,8 +729,8 @@ public class CDKManager implements IBioclipseManager {
                     set.addAtomContainer((IAtomContainer)model);
                     chemWriter.write(set);
                 } else if (chemWriter.accepts(ChemModel.class)) {
-                    IMoleculeSet set =
-                        model.getBuilder().newInstance(IMoleculeSet.class);
+                    IAtomContainerSet set =
+                        model.getBuilder().newInstance(IAtomContainerSet.class);
                     set.addAtomContainer((IAtomContainer)model);
                     IChemModel chemModel = model.getBuilder().newInstance(
                         IChemModel.class);
@@ -764,9 +746,9 @@ public class CDKManager implements IBioclipseManager {
             } else if (model instanceof IChemModel) {
                 if (chemWriter.accepts(ChemModel.class)) {
                     chemWriter.write(model);
-                } else if (chemWriter.accepts(MoleculeSet.class)){
-                    IMoleculeSet list =
-                        model.getBuilder().newInstance(IMoleculeSet.class);
+                } else if (chemWriter.accepts(IAtomContainerSet.class)){
+                    IAtomContainerSet list =
+                        model.getBuilder().newInstance(IAtomContainerSet.class);
                     for (IAtomContainer container :
                         ChemModelManipulator.getAllAtomContainers(
                             (IChemModel)model)
@@ -774,10 +756,10 @@ public class CDKManager implements IBioclipseManager {
                         list.addAtomContainer(container);
                     }
                     chemWriter.write(list);
-                } else if (chemWriter.accepts(Molecule.class)){
-                    org.openscience.cdk.interfaces.IMolecule smashedContainer =
+                } else if (chemWriter.accepts(IAtomContainer.class)){
+                    IAtomContainer smashedContainer =
                         model.getBuilder().newInstance(
-                            org.openscience.cdk.interfaces.IMolecule.class);
+                            IAtomContainer.class);
                     for (IAtomContainer container :
                         ChemModelManipulator.getAllAtomContainers(
                             (IChemModel)model)
@@ -1021,26 +1003,12 @@ public class CDKManager implements IBioclipseManager {
 
               IChemModel chemModel = new ChemModel();
               chemModel.setMoleculeSet(
-                  chemModel.getBuilder().newInstance(IMoleculeSet.class)
+                  chemModel.getBuilder().newInstance(IAtomContainerSet.class)
               );
               for (IMolecule mol : molecules) {
 
-                  ICDKMolecule cdkmol = asCDKMolecule(mol);
-                  org.openscience.cdk.interfaces.IMolecule imol = null;
-
-                  if (cdkmol.getAtomContainer() instanceof
-                          org.openscience.cdk.interfaces.IMolecule) {
-                      imol = (org.openscience.cdk.interfaces.IMolecule)
-                             cdkmol.getAtomContainer();
-                  }
-                  else {
-                      imol = new Molecule( cdkmol.getAtomContainer() );
-                      //Properties are lost in this CDK operation, so copy them
-                      imol.setProperties( cdkmol.getAtomContainer()
-                                                .getProperties() );
-                  }
-
-                  chemModel.getMoleculeSet().addMolecule(imol);
+                ICDKMolecule cdkmol = asCDKMolecule( mol );
+                chemModel.getMoleculeSet().addAtomContainer( cdkmol.getAtomContainer() );
               }
 
               this.save(chemModel, target, filetype, null, null);
@@ -1102,9 +1070,8 @@ public class CDKManager implements IBioclipseManager {
 
           SmilesParser parser
               = new SmilesParser( SilentChemObjectBuilder.getInstance() );
-          parser.setPreservingAromaticity( true );
-          
-          org.openscience.cdk.interfaces.IMolecule molecule;
+		parser.setPreservingAromaticity( true );
+        IAtomContainer molecule;
           try {
             molecule = parser.parseSmiles( smilesDescription.trim() );
           }
@@ -1429,7 +1396,7 @@ public class CDKManager implements IBioclipseManager {
     static class IteratingBioclipseMDLReader
              implements Iterator<ICDKMolecule> {
 
-          IteratingMDLReader reader;
+          IteratingSDFReader reader;
           IProgressMonitor monitor = new NullProgressMonitor();
           AtomTypeAwareSaturationChecker ataSatChecker = new AtomTypeAwareSaturationChecker();
 //          FixBondOrdersTool tool = new FixBondOrdersTool();
@@ -1437,7 +1404,7 @@ public class CDKManager implements IBioclipseManager {
           public IteratingBioclipseMDLReader( InputStream input,
                                               IChemObjectBuilder builder,
                                               IProgressMonitor monitor ) {
-              reader = new IteratingMDLReader(input, builder);
+              reader = new IteratingSDFReader(input, builder);
               if (monitor != null) {
                   this.monitor = monitor;
               }
@@ -1453,8 +1420,7 @@ public class CDKManager implements IBioclipseManager {
           }
 
           public ICDKMolecule next() {
-              org.openscience.cdk.interfaces.IMolecule cdkMol
-                  = (org.openscience.cdk.interfaces.IMolecule) reader.next();
+              IAtomContainer cdkMol = reader.next();
               try {
             	  AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( cdkMol );
             	  ataSatChecker.decideBondOrder( cdkMol );
@@ -1541,7 +1507,7 @@ public class CDKManager implements IBioclipseManager {
       public boolean subStructureMatches( ICDKMolecule molecule,
                                           ICDKMolecule subStructure ) {
           try {
-              return UniversalIsomorphismTester.isSubgraph(
+              return new UniversalIsomorphismTester().isSubgraph(
                        molecule.getAtomContainer(),
                        subStructure.getAtomContainer() );
           }
@@ -1585,7 +1551,7 @@ public class CDKManager implements IBioclipseManager {
           List<IAtomContainer> uniqueMatches = new ArrayList<IAtomContainer>();
           try {
               // get all matches, which may include duplicates
-              List<List<RMap>> substructures = UniversalIsomorphismTester
+            List<List<RMap>> substructures = new UniversalIsomorphismTester()
               .getSubgraphMaps(molecule.getAtomContainer(),
                                substructure.getAtomContainer());
               int i = 1;
@@ -1605,7 +1571,7 @@ public class CDKManager implements IBioclipseManager {
                       QueryAtomContainer matchQuery = createQueryContainer(
                           match
                       );
-                      if (UniversalIsomorphismTester.isIsomorph(
+                      if (new UniversalIsomorphismTester().isIsomorph(
                               mol, matchQuery))
                           foundEquivalentSubstructure = true;
                   }
@@ -1644,7 +1610,7 @@ public class CDKManager implements IBioclipseManager {
 
       private static QueryAtomContainer createQueryContainer(
           IAtomContainer container) {
-          QueryAtomContainer queryContainer = new QueryAtomContainer();
+          QueryAtomContainer queryContainer = new QueryAtomContainer(SilentChemObjectBuilder.getInstance());
           for (int i = 0; i < container.getAtomCount(); i++) {
               queryContainer.addAtom(
                  new AtomIDQueryAtom(container.getAtom(i).getID())
@@ -1656,13 +1622,14 @@ public class CDKManager implements IBioclipseManager {
               int index1 = container.getAtomNumber(bond.getAtom(0));
               int index2 = container.getAtomNumber(bond.getAtom(1));
               if (bond.getFlag(CDKConstants.ISAROMATIC)) {
-                  queryContainer.addBond(new AromaticQueryBond((IQueryAtom) queryContainer.getAtom(index1),
-                                        (IQueryAtom) queryContainer.getAtom(index2),
-                                        IBond.Order.SINGLE));
+                queryContainer.addBond( new AromaticQueryBond(
+                    (IQueryAtom) queryContainer.getAtom( index1 ),
+                    (IQueryAtom) queryContainer.getAtom( index2 ),
+                    IBond.Order.SINGLE, SilentChemObjectBuilder.getInstance() ) );
               } else {
                   queryContainer.addBond(new OrderQueryBond((IQueryAtom) queryContainer.getAtom(index1),
                                         (IQueryAtom) queryContainer.getAtom(index2),
-                                        bond.getOrder()));
+                                        bond.getOrder(),SilentChemObjectBuilder.getInstance()));
               }
           }
           return queryContainer;
@@ -1671,7 +1638,7 @@ public class CDKManager implements IBioclipseManager {
       public boolean areIsomorphic( ICDKMolecule molecule,
                                     ICDKMolecule subStructure ) {
           try {
-              return UniversalIsomorphismTester.isIsomorph(
+              return new UniversalIsomorphismTester().isIsomorph(
                          molecule.getAtomContainer(),
                          subStructure.getAtomContainer() );
           }
@@ -1714,12 +1681,8 @@ public class CDKManager implements IBioclipseManager {
 
           SMARTSQueryTool querytool;
 
-          try {
-              querytool = new SMARTSQueryTool(smarts);
-          }
-          catch (CDKException e) {
-              throw new BioclipseException("Could not parse SMARTS query", e);
-          }
+        querytool = new SMARTSQueryTool( smarts,
+            SilentChemObjectBuilder.getInstance() );
 
           try {
               return querytool.matches(molecule.getAtomContainer());
@@ -1737,11 +1700,9 @@ public class CDKManager implements IBioclipseManager {
 
       public boolean isValidSmarts(String smarts){
         try {
-            new SMARTSQueryTool(smarts);
+            new SMARTSQueryTool(smarts,SilentChemObjectBuilder.getInstance());
             return true;
-        } catch (CDKException e) {
-            return false;
-        } catch (TokenMgrError error) {
+        } catch ( IllegalArgumentException error ) {
             return false;
         }
 
@@ -1753,12 +1714,7 @@ public class CDKManager implements IBioclipseManager {
 
           SMARTSQueryTool querytool;
 
-          try {
-              querytool = new SMARTSQueryTool(smarts);
-          }
-          catch (CDKException e) {
-              throw new BioclipseException("Could not parse SMARTS query", e);
-          }
+          querytool = new SMARTSQueryTool(smarts,SilentChemObjectBuilder.getInstance());
 
           try {
               IAtomContainer ac=molecule.getAtomContainer();
@@ -2078,16 +2034,15 @@ public class CDKManager implements IBioclipseManager {
                 cdkmol = asCDKMolecule(molecule);
             }
 
-            IMoleculeSet mols
+            IAtomContainerSet mols
                 = ConnectivityChecker.partitionIntoMolecules(
                       cdkmol.getAtomContainer() );
 
             StructureDiagramGenerator sdg = new StructureDiagramGenerator();
 
-            for ( IAtomContainer mol : mols.molecules() ) {
+            for ( IAtomContainer mol : mols.atomContainers() ) {
                 sdg.setMolecule( cdkmol.getAtomContainer()
-                     .getBuilder().newInstance(
-                          org.openscience.cdk.interfaces.IMolecule.class, mol)
+                     .getBuilder().newInstance( IAtomContainer.class, mol)
                 );
                 sdg.generateCoordinates();
                 IAtomContainer molWithCoords = sdg.getMolecule();
@@ -2263,9 +2218,7 @@ public class CDKManager implements IBioclipseManager {
 //                          = bondOrderTool.kekuliseAromaticRings(
 //                              (org.openscience.cdk.interfaces.IMolecule)
 //                              mol.getAtomContainer() );
-                      org.openscience.cdk.interfaces.IMolecule newAC = 
-                              (org.openscience.cdk.interfaces.IMolecule) 
-                              mol.getAtomContainer();
+                    IAtomContainer newAC = mol.getAtomContainer();
                       AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( newAC );
                       ataSatChecker.decideBondOrder( newAC );
                       mol = new CDKMolecule(newAC);
@@ -2377,19 +2330,17 @@ public class CDKManager implements IBioclipseManager {
             } catch ( CDKException e ) {
                 throw new BioclipseException(e.getMessage());
             }
-            IMoleculeSet mols = ConnectivityChecker.partitionIntoMolecules(
+            IAtomContainerSet mols = ConnectivityChecker.partitionIntoMolecules(
                                     cdkmol.getAtomContainer() );
 
-            org.openscience.cdk.interfaces.IMolecule newmolecule
+            IAtomContainer newmolecule
                 = cdkmol.getAtomContainer().getBuilder().newInstance(
-                        org.openscience.cdk.interfaces.IMolecule.class
+                        IAtomContainer.class
                     );
 
-            for ( IAtomContainer mol : mols.molecules() ) {
+            for ( IAtomContainer mol : mols.atomContainers() ) {
                 try{
-                  org.openscience.cdk.interfaces.IMolecule ac
-                      = mb3d.generate3DCoordinates(
-                            (org.openscience.cdk.interfaces.IMolecule)mol, false);
+                    IAtomContainer ac = mb3d.generate3DCoordinates( mol, false );
                   newmolecule.add(ac);
                 }catch(NoSuchAtomTypeException ex){
                     throw new BioclipseException(ex.getMessage()+", molecule number "+i, ex);
@@ -2934,7 +2885,7 @@ public class CDKManager implements IBioclipseManager {
             todealwith = asCDKMolecule( molecule ).getAtomContainer();
         }
 
-        IMoleculeSet set = ConnectivityChecker.partitionIntoMolecules(todealwith);
+        IAtomContainerSet set = ConnectivityChecker.partitionIntoMolecules(todealwith);
         List<IAtomContainer> result = new ArrayList<IAtomContainer>();
         for (IAtomContainer container : set.atomContainers()) {
             result.add(container);
@@ -3118,8 +3069,7 @@ public class CDKManager implements IBioclipseManager {
         	AtomTypeAwareSaturationChecker ataSatChecker = new AtomTypeAwareSaturationChecker();
 //        	FixBondOrdersTool fbt = new FixBondOrdersTool();
         	try {
-        		org.openscience.cdk.interfaces.IMolecule cdkMol =
-        			(org.openscience.cdk.interfaces.IMolecule)molecule.getAtomContainer();
+                IAtomContainer cdkMol = molecule.getAtomContainer();
         		AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( cdkMol );
 //				IAtomContainer fixedAC = fbt.kekuliseAromaticRings(cdkMol);				
 //				molecule=new CDKMolecule(fixedAC);
@@ -3223,7 +3173,7 @@ public class CDKManager implements IBioclipseManager {
             ICDKMolecule followupMolecule = asCDKMolecule(mol);
             counter++;
             try {
-                mcss = UniversalIsomorphismTester.getOverlaps(
+                mcss = new UniversalIsomorphismTester().getOverlaps(
                     mcss, followupMolecule.getAtomContainer()
                 ).get(0);
                 monitor.worked(1);

@@ -40,8 +40,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.interfaces.IMoleculeSet;
+import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.tools.AtomTypeAwareSaturationChecker;
 
 public class NewFromSMILESWizard extends BasicNewResourceWizard {
@@ -89,16 +88,15 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
         ICDKMolecule mol = cdk.fromSMILES( getSMILES() );
         List<ICDKMolecule> molecules;
         if ( !isConnected( mol.getAtomContainer() ) ) {
-            IMoleculeSet containers = partitionIntoMolecules( mol
+            IAtomContainerSet containers = partitionIntoMolecules( mol
                             .getAtomContainer() );
             final AtomTypeAwareSaturationChecker ataSatChecker = new AtomTypeAwareSaturationChecker();
             molecules = new ArrayList<ICDKMolecule>( containers.getAtomContainerCount() );
             SubMonitor child = progress.newChild( containers.getAtomContainerCount() );
-            for ( IAtomContainer container : containers.molecules() ) {
-                final IMolecule betterMol = asCDKMolecule( container );
-                percieveAtomTypesAndConfigureAtoms( betterMol );
-                ataSatChecker.decideBondOrder( betterMol );
-                molecules.add( new CDKMolecule( betterMol ) );
+            for ( IAtomContainer container : containers.atomContainers() ) {
+                percieveAtomTypesAndConfigureAtoms( container );
+                ataSatChecker.decideBondOrder( container );
+                molecules.add( new CDKMolecule( container ) );
                 child.worked( 1 );
             }
         } else {
@@ -169,18 +167,5 @@ public class NewFromSMILESWizard extends BasicNewResourceWizard {
             Thread.sleep( 1000 );
         }
     }
-    /**
-     * Converts (if needed) a CDK {@link IAtomContainer} into a CDK
-     * {@link IMolecule}.
-     */
-	private org.openscience.cdk.interfaces.IMolecule
-	    asCDKMolecule(IAtomContainer container) {
-		if (container instanceof org.openscience.cdk.interfaces.IMolecule)
-			return (org.openscience.cdk.interfaces.IMolecule)container;
-
-		return container.getBuilder().newInstance(
-			org.openscience.cdk.interfaces.IMolecule.class, container
-		);
-	}
     
 }

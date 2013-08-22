@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.io.SDFWriter;
-import org.openscience.cdk.io.iterator.IteratingMDLReader;
+import org.openscience.cdk.io.iterator.IteratingSDFReader;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -120,8 +120,8 @@ public class PropertiesImportFileHandler {
      * @throws FileNotFoundException If the sd-file isn't found
      */
     private void extractSDFProerties() throws FileNotFoundException {     
-        IteratingMDLReader sdfItr = 
-                new IteratingMDLReader(getSDFileContents(),
+        IteratingSDFReader sdfItr = 
+                new IteratingSDFReader(getSDFileContents(),
                                         SilentChemObjectBuilder.getInstance());
         Map<Object, Object> propertiesMap = sdfItr.next().getProperties();
         Set<Object> propSet = propertiesMap.keySet();
@@ -545,8 +545,8 @@ public class PropertiesImportFileHandler {
         /* TODO This goes thru the hole sd-file and counts the mols, 
          * is it some better way to do this? */
         int molsInSdf = 0;
-        IteratingMDLReader sdfMolCounter = 
-                new IteratingMDLReader(getSDFileContents(), 
+        IteratingSDFReader sdfMolCounter = new IteratingSDFReader(
+            getSDFileContents(),
                                         SilentChemObjectBuilder.getInstance());
         while (sdfMolCounter.hasNext()) {
             molsInSdf++;
@@ -555,8 +555,8 @@ public class PropertiesImportFileHandler {
         monitor.beginTask( "Mearging", molsInSdf );
         int work = 0;
         
-        IteratingMDLReader sdfItr = 
-                new IteratingMDLReader(getSDFileContents(), 
+        IteratingSDFReader sdfItr = new IteratingSDFReader(
+            getSDFileContents(),
                                        SilentChemObjectBuilder.getInstance());
         Scanner fileScanner;
         ArrayList<String> values, names;

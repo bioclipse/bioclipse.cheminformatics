@@ -59,7 +59,6 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IChemSequence;
-import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.MDLV2000Reader;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
@@ -149,8 +148,8 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
                     StringReader reader = new StringReader(input.getRecord( index ));
                     chemReader.setReader( reader );
                     IChemObject chemObj = processContent();
-                    assert( chemObj instanceof IMolecule);
-                    IMolecule cdkMolecule = (IMolecule)chemObj;
+                    assert (chemObj instanceof IAtomContainer);
+                    IAtomContainer cdkMolecule = (IAtomContainer) chemObj;
                     sanatizeMDLV2000MolFileInput(cdkMolecule);
                     if(input.isBondOrder4){
                         boolean deduceBondOrder = false;
@@ -256,7 +255,8 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
         if (co instanceof IChemFile) {
             for(IChemSequence chemSeq:((IChemFile) co).chemSequences()) {
                 for(IChemModel chemModel:chemSeq.chemModels()) {
-                  for(IAtomContainer ac:chemModel.getMoleculeSet().molecules()) {
+                    for ( IAtomContainer ac : chemModel.getMoleculeSet()
+                                    .atomContainers() ) {
                       co = ac;
                       break;
                     }
@@ -433,7 +433,7 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
         return input.isBondOrder4;
     }
 
-    private IMolecule deduceBondOrder(IMolecule ac) {
+    private IAtomContainer deduceBondOrder( IAtomContainer ac ) {
         DeduceBondSystemTool tool = new DeduceBondSystemTool();
         try {
             logger.debug("Deduceing bond orders");

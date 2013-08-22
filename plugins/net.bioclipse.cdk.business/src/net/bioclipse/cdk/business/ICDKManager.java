@@ -42,8 +42,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.content.IContentType;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.interfaces.IChemModel;
-import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.formats.IChemFormat;
 
 @PublishedClass(
@@ -82,7 +82,7 @@ public interface ICDKManager extends IBioclipseManager {
         methodSummary="Converts a CDK IMoleculeSet object into a " +
         		"List<ICDKMolecule>."
     )
-    public List<ICDKMolecule> asList(IMoleculeSet set);
+    public List<ICDKMolecule> asList( IAtomContainerSet set );
 
     @Recorded
     @PublishedMethod(
@@ -90,7 +90,7 @@ public interface ICDKManager extends IBioclipseManager {
         methodSummary="Converts a Bioclipse List<ICDKMolecule> list into a " +
         		"CDK IMoleculeSet."
     )
-    public IMoleculeSet asSet(List<ICDKMolecule> list);
+    public IAtomContainerSet asSet( List<ICDKMolecule> list );
 
     /**
      * Create a CDKMolecule from SMILES
