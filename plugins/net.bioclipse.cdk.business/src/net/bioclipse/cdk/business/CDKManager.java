@@ -1102,7 +1102,8 @@ public class CDKManager implements IBioclipseManager {
 
           SmilesParser parser
               = new SmilesParser( DefaultChemObjectBuilder.getInstance() );
-
+          parser.setPreservingAromaticity( true );
+          
           org.openscience.cdk.interfaces.IMolecule molecule;
           try {
             molecule = parser.parseSmiles( smilesDescription.trim() );
