@@ -38,6 +38,7 @@ public class LWPubchemMolecule extends BioObject implements IMolecule{
     private String cml;
     private String smiles;
     private Image icon;
+    private ImageDescriptor imageDescriptor;
     
     
     public LWPubchemMolecule(Integer CID) {
@@ -141,10 +142,17 @@ public class LWPubchemMolecule extends BioObject implements IMolecule{
      */
     @Override
     public Object getAdapter( Class adapter ) {
-        if (Image.class .equals( adapter )){
-            if (icon==null)
-                icon=Activator.getImageDescriptor( "icons/benzene.gif" ).createImage();
-            return icon;
+
+        if ( adapter.isAssignableFrom( ImageDescriptor.class ) || adapter
+                             .equals( Image.class ) ) {
+            if ( imageDescriptor == null )
+                imageDescriptor = Activator
+                                .getImageDescriptor( "icons/benzene.gif" );
+            if ( adapter.equals( Image.class ) ) {
+                return imageDescriptor.createImage();
+            } else {
+                return imageDescriptor;
+            }
         }
 
         if (adapter == ICDKMolecule.class){
