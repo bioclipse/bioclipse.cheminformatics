@@ -15,6 +15,8 @@ import java.util.List;
 
 import net.bioclipse.core.PublishedMethod;
 import net.bioclipse.core.Recorded;
+import net.bioclipse.core.TestClasses;
+import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.jobs.BioclipseJob;
@@ -25,6 +27,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+@TestClasses("net.bioclipse.pubchem.tests.AbstractPubChemManagerPluginTest")
 public interface IPubChemManager extends IBioclipseManager {
 
     @Recorded
@@ -67,6 +70,7 @@ public interface IPubChemManager extends IBioclipseManager {
         methodSummary = "Loads the PubChem Compound XML with the given " +
                 "compound identifier into a IMolecule."
     )
+    @TestMethods("testDownload")
     public IMolecule download(Integer cid)
         throws IOException, BioclipseException, CoreException;
 
@@ -76,6 +80,7 @@ public interface IPubChemManager extends IBioclipseManager {
         methodSummary = "Loads the PubChem Compound 3D MDL molfile with the " +
         		"given compound identifier into a IMolecule."
     )
+    @TestMethods("testDownload3d")
     public IMolecule download3d(Integer cid)
         throws IOException, BioclipseException, CoreException;
 
@@ -85,6 +90,7 @@ public interface IPubChemManager extends IBioclipseManager {
         methodSummary = "Loads the PubChem Compound XML with the given " +
                 "compound identifier into a String."
     )
+    @TestMethods("testDownloadAsString")
     public String downloadAsString(Integer cid)
         throws IOException, BioclipseException, CoreException;
 
@@ -94,6 +100,7 @@ public interface IPubChemManager extends IBioclipseManager {
         methodSummary = "Loads the PubChem Compound 3D MDL molfile with the " +
                 "given compound identifier into a String."
     )
+    @TestMethods("testDownload3DAsString")
     public String download3dAsString(Integer cid)
         throws IOException, BioclipseException, CoreException;
 
