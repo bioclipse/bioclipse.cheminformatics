@@ -10,12 +10,10 @@
  ******************************************************************************/
 package net.bioclipse.pubchem.business;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -105,42 +103,17 @@ public class PubChemManager implements IBioclipseManager {
         }
         if (monitor == null) monitor = new NullProgressMonitor();
 
-        monitor.subTask("Downloading CID " + cid);
-        StringBuffer fileContent = new StringBuffer(); 
-        try {                
-            String efetch = PUBCHEMRDF_URL_BASE + "CID" + cid ;
-            monitor.subTask("Downloading from " + efetch);
-            URL rawURL = new URL(efetch);
-            URLConnection rawConn = rawURL.openConnection();
-            
-            BufferedReader reader = new BufferedReader(
-                new InputStreamReader(rawConn.getInputStream())
-            );
-            String line = reader.readLine();
-            while (line != null && !monitor.isCanceled()) {
-                fileContent.append(line).append('\n');
-                line = reader.readLine();
-            }
-            reader.close();
-            monitor.worked(1);
-        } catch (PatternSyntaxException exception) {
-            exception.printStackTrace();
-            throw new BioclipseException("Invalid Pattern.", exception);
-        } catch (MalformedURLException exception) {
-            exception.printStackTrace();
-            throw new BioclipseException("Invalid URL.", exception);
-        }
-        if (monitor.isCanceled()) return null;
-        String molString = fileContent.toString();
-        
-        if (target.exists()) {
+        String downloadURI = PUBCHEMRDF_URL_BASE + "CID" + cid;
+    	String rdfString = downloadAsString(downloadURI, "application/rdf+xml", monitor);        
+
+    	if (target.exists()) {
             target.setContents(
-                new ByteArrayInputStream(molString.getBytes()),
+                new ByteArrayInputStream(rdfString.getBytes()),
                 true, false, null
             );
         } else {
             target.create(
-                new ByteArrayInputStream(molString.getBytes()),
+                new ByteArrayInputStream(rdfString.getBytes()),
                 false, null
             );
         }
