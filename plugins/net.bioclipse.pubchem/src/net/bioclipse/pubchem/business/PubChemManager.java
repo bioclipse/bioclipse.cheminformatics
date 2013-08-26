@@ -98,9 +98,8 @@ public class PubChemManager implements IBioclipseManager {
         return target;
     }
 
-    public IFile loadCompoundRDF(int cid, IFile target,
-            IProgressMonitor monitor, String type)
-            throws IOException, BioclipseException, CoreException {        
+    public IFile loadCompoundRDF(int cid, IFile target, IProgressMonitor monitor)
+    		throws IOException, BioclipseException, CoreException {        
         if (target == null) {
             throw new BioclipseException("Cannot save to a NULL file.");
         }
