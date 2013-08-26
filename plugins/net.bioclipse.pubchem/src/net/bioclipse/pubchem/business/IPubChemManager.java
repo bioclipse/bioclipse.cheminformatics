@@ -33,9 +33,9 @@ public interface IPubChemManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
-        params = "int PubChem Compound ID, String path to save the content too", 
+        params = "int cid, String target", 
         methodSummary = "Loads the PubChem Compound XML with the given number" +
-        		"to the given path"
+        		"to the given path."
     )
     @TestMethods("testLoadCompound")
     public String loadCompound(int cid, String target)
@@ -51,7 +51,7 @@ public interface IPubChemManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
-        params = "int PubChem Compound ID, String path to save the content too",
+        params = "int cid, String target",
         methodSummary = "Loads the PubChem Compound 3D MDL molfile with the" +
             " given number to the given path"
     )
@@ -156,7 +156,7 @@ public interface IPubChemManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
-        params = "String query against PubChem", 
+        params = "String query", 
         methodSummary = "Returns a List of matching compound CIDs."
     )
     @TestMethods("testSearch")
