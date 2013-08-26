@@ -22,6 +22,7 @@ import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.managers.business.IBioclipseManager;
+import net.bioclipse.rdf.business.IRDFStore;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -66,6 +67,23 @@ public interface IPubChemManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
+        params = "int PubChem Compound ID, String path to save the content too",
+        methodSummary = "Loads the RDF document of the PubChem Compound with the" +
+            " given number to the given path."
+    )
+    public String loadCompoundRDF(int cid, String target)
+        throws IOException, BioclipseException, CoreException;
+
+    public IFile loadCompoundRDF(int cid, IFile target, IProgressMonitor monitor )
+        throws IOException, BioclipseException, CoreException;
+
+    public BioclipseJob<IFile> loadCompoundRDF(int cid, 
+                                            IFile target, 
+                                            BioclipseJobUpdateHook<IFile> hook )
+        throws IOException, BioclipseException, CoreException;
+
+    @Recorded
+    @PublishedMethod(
         params = "Integer cid", 
         methodSummary = "Loads the PubChem Compound XML with the given " +
                 "compound identifier into a IMolecule."
@@ -82,6 +100,15 @@ public interface IPubChemManager extends IBioclipseManager {
     )
     @TestMethods("testDownload3d")
     public IMolecule download3d(Integer cid)
+        throws IOException, BioclipseException, CoreException;
+
+    @Recorded
+    @PublishedMethod(
+        params = "Integer cid, IRDFStore store", 
+        methodSummary = "Loads the PubChem Compound RDF with the " +
+        		"given compound identifier into the given RDF store."
+    )
+    public IRDFStore downloadRDF(Integer cid, IRDFStore store)
         throws IOException, BioclipseException, CoreException;
 
     @Recorded

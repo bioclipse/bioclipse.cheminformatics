@@ -11,6 +11,8 @@ package net.bioclipse.pubchem.tests;
 
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.pubchem.business.IPubChemManager;
+import net.bioclipse.rdf.business.IRDFStore;
+import net.bioclipse.rdf.business.RDFManager;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -43,6 +45,17 @@ public abstract class AbstractPubChemManagerPluginTest {
     public void testDownload3d() throws Exception {
         IMolecule molecule = pubchem.download3d(3107);
         Assert.assertNotNull(molecule);
+    }
+
+    @Test
+    public void testDownloadRDF() throws Exception {
+    	RDFManager rdf = new RDFManager();
+        IRDFStore store = rdf.createInMemoryStore(); 
+        pubchem.downloadRDF(3107, store);
+        String turtle = rdf.asTurtle(store);
+        Assert.assertNotNull(turtle);
+        Assert.assertNotSame(0, turtle.length());
+        Assert.assertTrue(turtle.contains("3107"));
     }
 
 }

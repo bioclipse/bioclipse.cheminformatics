@@ -12,7 +12,9 @@ package net.bioclipse.pubchem.business;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -27,12 +29,16 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.domain.RecordableList;
 import net.bioclipse.managers.business.IBioclipseManager;
+import net.bioclipse.rdf.business.IRDFStore;
+import net.bioclipse.rdf.business.RDFManager;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Nodes;
 import nu.xom.ParsingException;
 import nu.xom.ValidityException;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -42,10 +48,12 @@ public class PubChemManager implements IBioclipseManager {
 
     private final static String EUTILS_URL_BASE = "http://www.ncbi.nlm.nih.gov/entrez/eutils";
     private final static String PUBCHEM_URL_BASE = "http://pubchem.ncbi.nlm.nih.gov/";
+    private final static String PUBCHEMRDF_URL_BASE = "http://rdf.ncbi.nlm.nih.gov/pubchem/compound/";
 
     private final static String TOOL = "bioclipse.net";
     
     private static final CDKManager cdk = new CDKManager();
+    private static final RDFManager rdf = new RDFManager();
 
     public String getManagerName() {
         return "pubchem";
@@ -73,6 +81,58 @@ public class PubChemManager implements IBioclipseManager {
         }
 
         String molString = downloadAsString(cid, type, monitor);
+        
+        if (target.exists()) {
+            target.setContents(
+                new ByteArrayInputStream(molString.getBytes()),
+                true, false, null
+            );
+        } else {
+            target.create(
+                new ByteArrayInputStream(molString.getBytes()),
+                false, null
+            );
+        }
+        
+        monitor.done();
+        return target;
+    }
+
+    public IFile loadCompoundRDF(int cid, IFile target,
+            IProgressMonitor monitor, String type)
+            throws IOException, BioclipseException, CoreException {        
+        if (target == null) {
+            throw new BioclipseException("Cannot save to a NULL file.");
+        }
+        if (monitor == null) monitor = new NullProgressMonitor();
+
+        monitor.subTask("Downloading CID " + cid);
+        StringBuffer fileContent = new StringBuffer(); 
+        try {                
+            String efetch = PUBCHEMRDF_URL_BASE + "CID" + cid ;
+            monitor.subTask("Downloading from " + efetch);
+            URL rawURL = new URL(efetch);
+            URLConnection rawConn = rawURL.openConnection();
+            
+            BufferedReader reader = new BufferedReader(
+                new InputStreamReader(rawConn.getInputStream())
+            );
+            String line = reader.readLine();
+            while (line != null && !monitor.isCanceled()) {
+                fileContent.append(line).append('\n');
+                line = reader.readLine();
+            }
+            reader.close();
+            monitor.worked(1);
+        } catch (PatternSyntaxException exception) {
+            exception.printStackTrace();
+            throw new BioclipseException("Invalid Pattern.", exception);
+        } catch (MalformedURLException exception) {
+            exception.printStackTrace();
+            throw new BioclipseException("Invalid URL.", exception);
+        }
+        if (monitor.isCanceled()) return null;
+        String molString = fileContent.toString();
         
         if (target.exists()) {
             target.setContents(
@@ -187,23 +247,37 @@ public class PubChemManager implements IBioclipseManager {
         if (monitor == null) monitor = new NullProgressMonitor();
         
         monitor.subTask("Downloading CID " + cid);
-        StringBuffer fileContent = new StringBuffer(); 
+    	String efetch = PUBCHEM_URL_BASE + "summary/summary.cgi?cid=" +
+                cid + "&disopt=" + type;
+    	return downloadAsString(efetch, null, monitor);
+    }
+    
+    private String downloadAsString(String URL, String accepts, IProgressMonitor monitor)
+            throws IOException, BioclipseException, CoreException {
+        if (monitor == null) monitor = new NullProgressMonitor();
+        
+        String fileContent = ""; 
         try {                
-            String efetch = PUBCHEM_URL_BASE + "summary/summary.cgi?cid=" +
-                            cid + "&disopt=" + type;
-            monitor.subTask("Downloading from " + efetch);
-            URL rawURL = new URL(efetch);
-            URLConnection rawConn = rawURL.openConnection();
-            
-            BufferedReader reader = new BufferedReader(
-                new InputStreamReader(rawConn.getInputStream())
-            );
-            String line = reader.readLine();
-            while (line != null && !monitor.isCanceled()) {
-                fileContent.append(line).append('\n');
-                line = reader.readLine();
-            }
-            reader.close();
+            monitor.subTask("Downloading from " + URL);
+            HttpClient client = new HttpClient();
+			GetMethod method = new GetMethod(URL);
+			if (accepts != null) {
+				method.setRequestHeader("Accept", accepts);
+				method.setRequestHeader("Content-Type", accepts);
+			}
+			client.executeMethod(method);
+
+			InputStream responseStream = method.getResponseBodyAsStream();
+			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+			int nRead;
+			byte[] data = new byte[16384];
+			while ((nRead = responseStream.read(data, 0, data.length)) != -1) {
+			  buffer.write(data, 0, nRead);
+			}
+			buffer.flush();
+			responseStream.close();
+			method.releaseConnection();
+			fileContent = new String(buffer.toByteArray());
             monitor.worked(1);
         } catch (PatternSyntaxException exception) {
             exception.printStackTrace();
@@ -212,7 +286,7 @@ public class PubChemManager implements IBioclipseManager {
             exception.printStackTrace();
             throw new BioclipseException("Invalid URL.", exception);
         }
-        return fileContent.toString();
+        return fileContent;
     }
 
     public String downloadAsString(Integer cid, IProgressMonitor monitor)
@@ -259,4 +333,14 @@ public class PubChemManager implements IBioclipseManager {
         return results;
     }
 
+    public IRDFStore downloadRDF(Integer cid, IRDFStore store,
+    		IProgressMonitor monitor)
+    				throws IOException, BioclipseException, CoreException {
+    	if (monitor == null) monitor = new NullProgressMonitor();
+
+    	String downloadURI = PUBCHEMRDF_URL_BASE + "CID" + cid;
+    	String rdfContent = downloadAsString(downloadURI, "application/rdf+xml", monitor);
+    	rdf.importFromString(store, rdfContent, "RDF/XML", monitor);
+    	return store;
+    }
 }
