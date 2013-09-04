@@ -13,7 +13,9 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.ui,
  net.bioclipse.ui.business,
  net.bioclipse.cdk.business,
- net.bioclipse.browser.business
+ net.bioclipse.browser.business,
+ org.apache.commons.httpclient;bundle-version="3.1.0",
+ net.bioclipse.rdf
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Export-Package: net.bioclipse.pubchem,
