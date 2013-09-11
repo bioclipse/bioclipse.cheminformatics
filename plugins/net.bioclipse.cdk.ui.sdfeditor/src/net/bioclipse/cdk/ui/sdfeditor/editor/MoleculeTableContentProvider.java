@@ -150,7 +150,7 @@ public class MoleculeTableContentProvider implements
             if ( iter.hasNext() ) {
                 Object o = iter.next();
                 if ( o instanceof String )
-                    properties.add( iter.next() );
+                    properties.add( o );
             }
         }
         updateHeaders();
