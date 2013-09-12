@@ -499,7 +499,7 @@ public class MoleculesEditor extends EditorPart implements
                                        boolean accept = MessageDialog.open( MessageDialog.QUESTION,
                                                                             shell,
                                                                             "Deduce bond order",
-                                                                            "Bond order 4 is not supported. Should we try to deduce bond order?",
+                                                                                                                            "Bioclipse has detected that the SDFile contains bonds with bond order 4. While not in the original SDF standard, bond order 4 is commonly used to specify aromaticity.\n\nWould you like Bioclipse to try to deduce bond orders for the molecules?",
                                                                             SWT.SHEET);
                                        if(!accept) {
                                            MoleculesEditor editor = MoleculesEditor.this;
