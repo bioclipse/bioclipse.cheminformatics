@@ -40,7 +40,6 @@ import net.bioclipse.managers.business.IBioclipseManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.content.IContentType;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
@@ -448,6 +447,33 @@ public interface ICDKManager extends IBioclipseManager {
                       Properties writerProperties)
     	          throws BioclipseException, CoreException;
 
+    /**
+     * Generate and saves an image of a molecule in a file specified by path.
+     * If the file exists it gets overwritten.
+     *  
+     * @param mol The molecule that should be on the image
+     * @param path The path to the image including the image-name
+     */
+    @PublishedMethod (params = "IMolecule molecule, String filename",
+                      methodSummary = "Saves an image of a molecule in a file" )
+    public void generateImage(IMolecule mol, String path);
+    
+    /**
+     * Generate and saves an image with a specified width and height of a 
+     * molecule in a file specified by path.
+     * If the file exists it gets overwritten.
+     *  
+     * @param mol The molecule that should be on the image
+     * @param path The path to the image including the image-name
+     * @param width The width of the image
+     * @param height The height of the image
+     */
+    @PublishedMethod (params = "IMolecule molecule, String filename, int " +
+    		                "with, int height",
+                      methodSummary = "Saves an image with a specified width " +
+                      		"and height of a molecule in a file" )
+    public void generateImage(IMolecule mol, String path, int width, int height);
+    
     /**
      * Calculate SMILES string for an IMolecule
      * @param molecule
@@ -1146,7 +1172,7 @@ public interface ICDKManager extends IBioclipseManager {
     
     @Recorded
     @PublishedMethod(
-         params="molecules List of molecules",
+         params="List<IMolecule> molecules",
          methodSummary="Determines the Maximal Common SubStructure (MCSS) for" +
              " the list of molecules."
     )
@@ -1156,7 +1182,7 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
-         params="molecules List of molecules",
+         params="List<IMolecule> molecules",
          methodSummary="Aligns the molecular geometries to the first molecule " +
              "based on their MCSS."
     )

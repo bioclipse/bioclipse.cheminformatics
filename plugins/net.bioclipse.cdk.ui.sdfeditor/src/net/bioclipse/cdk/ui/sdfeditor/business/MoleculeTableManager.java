@@ -17,8 +17,13 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.MappedByteBuffer;
 import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -60,7 +65,7 @@ import org.openscience.cdk.io.SDFWriter;
 
 
 public class MoleculeTableManager implements IBioclipseManager {
-
+    private static long MEGA_BYTE = 1048576;// = 20^2
     Logger logger = Logger.getLogger( MoleculeTableManager.class );
 
     public String getManagerName() {
@@ -109,13 +114,12 @@ public class MoleculeTableManager implements IBioclipseManager {
 
         long tStart = System.nanoTime();
         List<Long> values = new LinkedList<Long>();
-        List<Long> propPos = new LinkedList<Long>();
+        List<Long> propPos = new ArrayList<Long>();
         Map<Integer,List<Long>> propMap = new HashMap<Integer, List<Long>>();
+        boolean bondOrder4 = false;
         int num = 0;
         long pos = 0;
         long start = 0;
-        int work = 0;
-
         long workBits = 0;
 
         try {
@@ -123,9 +127,12 @@ public class MoleculeTableManager implements IBioclipseManager {
                 IFileStore store = EFS.getStore( file.getLocationURI() );
                 is = store.openInputStream( EFS.NONE, progress.newChild( 10 ) );
             ReadableByteChannel fc = Channels.newChannel( is );
-            ByteBuffer byteBuffer = ByteBuffer.allocateDirect( 200 );
+            FileChannel fileChannel = null;
+            if(fc instanceof FileChannel) fileChannel = (FileChannel) fc;
+            ByteBuffer byteBuffer = ByteBuffer.allocateDirect( (int) (2*MEGA_BYTE) );
             int dollarCount = 0;
             boolean firstInLine = true;
+
             int bytesRead = 0;
             int c;
             while( bytesRead >=0) {
@@ -139,30 +146,33 @@ public class MoleculeTableManager implements IBioclipseManager {
                     if( c == '\n') {
                         firstInLine = true;
                         if(dollarCount==4) {
-                            work = (int) start;
                             start = pos;
+                            {
+                                long s = values.isEmpty()?0:values.get( values.size()-1 );
+                                long stop = start;
 
+                                bondOrder4 = bondOrder4 || checkEntry( fileChannel,s,stop );
+                            }
                             propMap.put(num,propPos);
-                            propPos= new  LinkedList<Long>();
+                            propPos= new  ArrayList<Long>(propPos.size());
 
                             num++;
                             values.add( start );
                             dollarCount = 0;
                             // progress code
-                            if(workBits/1048576 >0) {
-                                progress.worked( (int) (workBits/1048576) );
-                                progress.setWorkRemaining( (int) ((size-pos)/1048576) );
-                                workBits =0;
+                            if( (pos-workBits) >>> 20 >0) {
+                                progress.worked( (int) ((pos-workBits) >>> 20) );
+                                progress.setWorkRemaining( (int) ((size-pos)>>>20) );
+                                workBits = pos;
                             }
-                            workBits += pos-work;
                             if(size >-1) {
                                 progress.subTask(
                                    String.format( "Read: %dMB\\%dMB",
-                                   pos/(1048576),size/(1048576)));
+                                   pos>>>20,size>>>20));
                             }else {
                                 progress.subTask(
                                    String.format( "Read: %dMB",
-                                   pos/(1048576)));
+                                   pos>>>20));
                             }
                             if ( progress.isCanceled() ) {
                                 throw new OperationCanceledException();
@@ -181,6 +191,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                 }
             }
 
+            values.get( values.size()-1 );
             if( (pos-start)>3) {
                 values.add(pos);
                 num++;
@@ -200,7 +211,31 @@ public class MoleculeTableManager implements IBioclipseManager {
                           "createSDFIndex took %d to complete",
                           (int)((System.nanoTime()-tStart)/1e6)) );
         progress.done();
-       return new SDFileIndex(file,values,propMap);
+       return new SDFileIndex(file,values,propMap,bondOrder4);
+    }
+
+    static Charset charset = Charset.forName( "UTF-8" );
+    static CharsetDecoder decoder = charset.newDecoder();
+    static Pattern linePattern = Pattern.compile(".*\r?\n");
+    static Pattern pattern = Pattern.compile("\\s*\\d+\\s+\\d+\\s+(\\d+)(?:\\s+\\d+){4}\\s*\\r?\\n");
+    boolean checkBondOrder(CharBuffer cb) {
+        Matcher lm = linePattern.matcher(cb);
+        Matcher pm = null;
+        while( lm.find()) {
+          CharSequence cs = lm.group();
+          if(pm == null) pm = pattern.matcher(cs);
+          else pm.reset(cs);
+          if(pm.matches()) {
+              String m = pm.group(1);
+              return m.equals( "4" );
+          }
+        }
+        return false;
+    }
+    boolean checkEntry(FileChannel fc,long start,long stop) throws IOException{
+        MappedByteBuffer bytes = fc.map(FileChannel.MapMode.READ_ONLY,start,stop-start);
+        CharBuffer cb = decoder.decode(bytes);
+        return checkBondOrder(cb);
     }
 
     public void calculateProperty( IMoleculesEditorModel model,

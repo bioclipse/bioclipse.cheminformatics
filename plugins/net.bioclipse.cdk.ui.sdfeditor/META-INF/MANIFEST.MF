@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SDFEditor
 Bundle-SymbolicName: net.bioclipse.cdk.ui.sdfeditor;singleton:=true
-Bundle-Version: 2.6.0.vqualifier
+Bundle-Version: 2.6.1.qualifier
 Bundle-Activator: net.bioclipse.cdk.ui.sdfeditor.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -36,12 +36,17 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.renderswt,
  org.openscience.cdk.extra,
  org.openscience.cdk.silent,
- org.eclipse.core.expressions
+ org.eclipse.core.expressions,
+ org.openscience.cdk.extra,
+ org.openscience.cdk.smiles
 Bundle-ActivationPolicy: lazy
 Import-Package: net.bioclipse.inchi.business,
- org.apache.log4j
+ org.apache.log4j,
+ org.slf4j
 Export-Package: net.bioclipse.cdk.ui.sdfeditor,
  net.bioclipse.cdk.ui.sdfeditor.business,
- net.bioclipse.cdk.ui.sdfeditor.editor
-Bundle-ClassPath: .
+ net.bioclipse.cdk.ui.sdfeditor.editor,
+ net.bioclipse.cdk.ui.wizards
+Bundle-ClassPath: .,
+ jars/opencsv-1.8.jar
 Bundle-Vendor: The Bioclipse Team

@@ -60,6 +60,7 @@ import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -82,6 +83,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -90,10 +92,10 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorInputTransfer;
+import org.eclipse.ui.part.EditorInputTransfer.EditorInputData;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.PluginTransfer;
 import org.eclipse.ui.part.PluginTransferData;
-import org.eclipse.ui.part.EditorInputTransfer.EditorInputData;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.AtomContainerRenderer;
@@ -492,6 +494,20 @@ public class MoleculesEditor extends EditorPart implements
                             indexJob = null;
                             Display.getDefault().asyncExec( new Runnable() {
                                public void run() {
+                                   if(sdfModel.isBondOrder4()) {
+                                       Shell shell = Display.getDefault().getActiveShell();
+                                       boolean accept = MessageDialog.open( MessageDialog.QUESTION,
+                                                                            shell,
+                                                                            "Deduce bond order",
+                                                                                                                            "Bioclipse has detected that the SDFile contains bonds with bond order 4. While not in the original SDF standard, bond order 4 is commonly used to specify aromaticity.\n\nWould you like Bioclipse to try to deduce bond orders for the molecules?",
+                                                                            SWT.SHEET);
+                                       if(!accept) {
+                                           MoleculesEditor editor = MoleculesEditor.this;
+                                           IEditorPart toBeClosed = editor.getSite().getPage().getActiveEditor();
+                                           editor.getSite().getPage().closeEditor( toBeClosed, false );
+                                           return;
+                                       }
+                                   }
                                    setInput( new MappingEditorModel( sdfModel ) );
                                };
                             });
@@ -651,6 +667,7 @@ public class MoleculesEditor extends EditorPart implements
 
     public void refresh() {
 
+        getMolTableViewer().setInput( getModel() );
         molTableViewer.refresh();
     }
 

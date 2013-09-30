@@ -2,7 +2,7 @@
 <feature
       id="net.bioclipse.chemoinformatics_feature"
       label="Bioclipse Chemoinformatics"
-      version="2.6.0.vqualifier"
+      version="2.6.1.qualifier"
       provider-name="The Bioclipse Team"
       plugin="net.bioclipse.chemoinformatics">
 
@@ -21,10 +21,6 @@ All rights reserved.
 This feature and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 + exception, putting no constraints on choice of backend and/or license for creating plugins for Bioclipse; it is totally open for both open source plugins as well as commercial. The exception allows GPL plugins to be written and run in any combination with EPL licensed plugins, addressing incompatibility between the EPL and the GPL v.2.
 The Eclipse Public License accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
    </license>
-
-   <url>
-      <update label="Bioclipse2 update site" url="http://update2.bioclipse.net"/>
-   </url>
 
    <requires>
       <import plugin="org.openscience.cdk.io"/>

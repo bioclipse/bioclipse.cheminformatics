@@ -31,30 +31,65 @@ import net.bioclipse.core.domain.IMolecule.Property;
 
 public class ListMoleculesEditorModel implements IMoleculesEditorModel,
                 ISortable {
-
-    List<ICDKMolecule> molecules;
-    List<ICDKMolecule> source;
-
+    static class ListElement implements Comparable<ListElement>{
+        static ListElement newElement(int index,ICDKMolecule mol) {
+            return new ListElement(index,mol,false);
+        }
+        static ListElement changeElement(ListElement element,ICDKMolecule mol) {
+            return new ListElement(element.index,mol,true);
+        }
+        
+        int index;
+        ICDKMolecule mol;
+        boolean dirty;
+        
+        private ListElement(int index,ICDKMolecule mol,boolean dirty) {
+            this.index = index;
+            this.mol = mol;
+            this.dirty = dirty;
+        }
+        
+        public boolean isDirty() { return dirty;}
+        public ICDKMolecule getMolecule() {
+            return mol;
+        }
+        
+        @Override
+        public int compareTo( ListElement arg0 ) {
+            return arg0.index - index;
+        }
+    }
+    
+    final List<ListElement> molecules;
+    
     Comparator<ICDKMolecule> comparator= null;
     boolean dirty = false;
 
     public ListMoleculesEditorModel(List<ICDKMolecule> molecuels) {
-        this.source = molecuels;
-        this.molecules = source;
+        this.molecules = new ArrayList<ListElement>(molecuels.size());
+        int index = 0;
+        for(ICDKMolecule mol: molecuels) {
+            this.molecules.add( ListElement.newElement(index,mol) );
+            
+        }
     }
 
     public ICDKMolecule getMoleculeAt( int index ) {
-        if(index < molecules.size())
-            return molecules.get( index );
+        if(index < molecules.size() || index >= 0)
+            return molecules.get( index ).getMolecule();
         else
-            return null;
+            return null;// index out of bounds
     }
 
     public int getNumberOfMolecules() { return molecules.size(); }
 
     public void markDirty( int index, ICDKMolecule moleculeToSave ) {
-        molecules.set( index, moleculeToSave );
-        dirty= true;
+        molecules.set( index, ListElement.changeElement( molecules.get( index ), moleculeToSave ) );
+        dirty=true;
+    }
+    
+    public boolean isDirty(int index) {
+        return molecules.get( index ).isDirty();
     }
 
     public void save() {
@@ -64,7 +99,7 @@ public class ListMoleculesEditorModel implements IMoleculesEditorModel,
 
     public void setSortingProperties(final List<SortProperty<?>> properties ) {
         if(properties.isEmpty()) {
-            molecules = source;
+            Collections.sort( molecules);
             comparator = null;
             return;
         }
@@ -98,20 +133,36 @@ public class ListMoleculesEditorModel implements IMoleculesEditorModel,
 
     private void sort() {
         if(comparator!=null) {
-            molecules = new ArrayList<ICDKMolecule>(source);
-            Collections.sort( molecules, comparator );
+            Collections.sort( molecules, wrapComparator( comparator ) );
         }
+    }
+    
+    static private <T extends Comparator<? super ICDKMolecule>> ListElementComparator<T> wrapComparator(T comparator) {
+        return new ListElementComparator<T>( comparator );
+    }
+    static class ListElementComparator<T extends Comparator<? super ICDKMolecule>> implements Comparator<ListElement> {
+        
+        final T comparator;
+        
+        public ListElementComparator(T comparator) {
+            this.comparator = comparator;
+        }
+
+        @Override
+        public int compare( ListElement o1, ListElement o2 ) {
+            return comparator.compare( o1.getMolecule(), o2.getMolecule() );
+        }
+        
     }
 
     public Collection<Object> getAvailableProperties() {
     	Set<Object> props = new HashSet<Object>();
         if(!molecules.isEmpty()) {
-        	if(molecules.size() < 100) {
-        		for(ICDKMolecule mol:molecules) {
-        			props.addAll(mol.getAtomContainer().getProperties().keySet());
-        		}
-        	} else
-        		props.addAll(molecules.get(0).getAtomContainer().getProperties().keySet());
+            List<ListElement> mols = molecules.subList( 0, Math.min(molecules.size(),100) );
+            for(ListElement m:mols) {
+                ICDKMolecule mol = m.getMolecule();
+                props.addAll(mol.getAtomContainer().getProperties().keySet());
+            }
         	return props;
         }
         return Collections.emptyList();
@@ -119,17 +170,21 @@ public class ListMoleculesEditorModel implements IMoleculesEditorModel,
 
     public <T> void setPropertyFor( int moleculeIndex, String property, T value ) {
 
-        molecules.get( moleculeIndex ).setProperty( property, value );
+        molecules.get( moleculeIndex ).getMolecule().setProperty( property, value );
 
     }
 
     public void instert( ICDKMolecule... molecules ) {
-        source.addAll( Arrays.asList( molecules ));
+        List<ListElement> elements = new ArrayList<ListElement>(molecules.length);
+        int molCount = this.molecules.size();
+        for(int i = 0;i < molecules.length;i++) {
+            elements.add( ListElement.newElement( molCount + i, molecules[i] ) );
+        }
+        this.molecules.addAll( elements);
         sort();
     }
 
     public void delete( int index ) {
-        ICDKMolecule mol = molecules.remove( index );
-        source.remove( mol );
+        ListElement mol = molecules.remove( index );
     }
 }

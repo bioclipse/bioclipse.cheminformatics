@@ -37,7 +37,7 @@ public class LWPubchemMolecule extends BioObject implements IMolecule{
     private Integer CID;
     private String cml;
     private String smiles;
-    private Image icon;
+    private ImageDescriptor imageDescriptor;
     
     
     public LWPubchemMolecule(Integer CID) {
@@ -116,19 +116,31 @@ public class LWPubchemMolecule extends BioObject implements IMolecule{
     }
 
     
-    /**
-     * Objects are equal if they have same CID
-     */
+    @Override
+    public int hashCode() {
+
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((CID == null) ? 0 : CID.hashCode());
+        return result;
+    }
+
     @Override
     public boolean equals( Object obj ) {
-        
-        if ( obj instanceof LWPubchemMolecule ) {
-            LWPubchemMolecule cmp = (LWPubchemMolecule) obj;
-            if (cmp.getCID().equals( getCID()))
-                return true;
-        }
 
-        return false;
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        LWPubchemMolecule other = (LWPubchemMolecule) obj;
+        if ( CID == null ) {
+            if ( other.CID != null )
+                return false;
+        } else if ( !CID.equals( other.CID ) )
+            return false;
+        return true;
     }
     
     @Override
@@ -141,10 +153,17 @@ public class LWPubchemMolecule extends BioObject implements IMolecule{
      */
     @Override
     public Object getAdapter( Class adapter ) {
-        if (Image.class .equals( adapter )){
-            if (icon==null)
-                icon=Activator.getImageDescriptor( "icons/benzene.gif" ).createImage();
-            return icon;
+
+        if ( adapter.isAssignableFrom( ImageDescriptor.class ) || adapter
+                             .equals( Image.class ) ) {
+            if ( imageDescriptor == null )
+                imageDescriptor = Activator
+                                .getImageDescriptor( "icons/benzene.gif" );
+            if ( adapter.equals( Image.class ) ) {
+                return imageDescriptor.createImage();
+            } else {
+                return imageDescriptor;
+            }
         }
 
         if (adapter == ICDKMolecule.class){

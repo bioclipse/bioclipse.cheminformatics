@@ -54,6 +54,41 @@ import org.openscience.cdk.interfaces.IChemObject;
 
 public class CDKMoleculePropertySource extends BioObjectPropertySource {
 
+    private static final class PropertyViewNotifier extends JobChangeAdapter {
+
+        @Override
+        public void done( IJobChangeEvent event ) {
+            Display.getDefault().asyncExec( new Runnable() {
+
+                public void run() {
+
+                    IWorkbenchWindow workbenchWindow = workbenchWindow();
+                    if(workbenchWindow==null) return;
+                    PropertySheet p = (PropertySheet) workbenchWindow
+                                    .getActivePage()
+                                    .findView( "org.eclipse.ui.views.PropertySheet" );
+                    if(p != null) {
+                        //The page might be a TabbedPropertySheetPage
+                        //in the future but we ignore it for now
+                        if ( p.getCurrentPage()
+                                instanceof
+                                PropertySheetPage ) {
+                            PropertySheetPage pp
+                            = (PropertySheetPage) p.getCurrentPage();
+
+                            pp.refresh();
+                        }
+                    }
+                }
+            });
+        }
+
+        private IWorkbenchWindow workbenchWindow() {
+
+            return PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        }
+    }
+
     protected static Map<ICDKMolecule, BioclipseJob> inchiJobs
         = new HashMap<ICDKMolecule, BioclipseJob>();
     protected static Map<ICDKMolecule, BioclipseJob> smilesJobs
@@ -158,7 +193,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         // check if we want to calculate new InChI / SMILES
         boolean allOK = true;
     	try {
-			IAtomContainer container = (IAtomContainer)item.getAtomContainer().clone();
+            IAtomContainer container = item.getAtomContainer().clone();
 			String result = ensureFullAtomTyping(container);
 			if (result == null || result.length() > 0)
 				allOK = false;
@@ -175,36 +210,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
                     return Status.OK_STATUS;
                 }
             };
-            j.addJobChangeListener( new JobChangeAdapter() {
-                @Override
-                public void done( IJobChangeEvent event ) {
-                    Display.getDefault().asyncExec( new Runnable() {
-
-                        public void run() {
-
-                            IWorkbenchWindow workbenchWindow = PlatformUI
-                                            .getWorkbench()
-                                            .getActiveWorkbenchWindow();
-                            if(workbenchWindow==null) return;
-                            PropertySheet p = (PropertySheet) workbenchWindow
-                                            .getActivePage()
-                                            .findView( "org.eclipse.ui.views.PropertySheet" );
-                            if(p != null) {
-                                //The page might be a TabbedPropertySheetPage
-                                //in the future but we ignore it for now
-                                if ( p.getCurrentPage()
-                                        instanceof
-                                        PropertySheetPage ) {
-                                    PropertySheetPage pp
-                                    = (PropertySheetPage) p.getCurrentPage();
-
-                                    pp.refresh();
-                                }
-                            }
-                        }
-                    });
-                }
-            });
+            j.addJobChangeListener( new PropertyViewNotifier());
             j.schedule();
             return;
 		}
@@ -235,35 +241,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
                     return Status.OK_STATUS;
                 }
             };
-            j.addJobChangeListener( new JobChangeAdapter() {
-                @Override
-                public void done( IJobChangeEvent event ) {
-                    Display.getDefault().asyncExec( new Runnable() {
-
-                        public void run() {
-                            PropertySheet p
-                                = (PropertySheet)
-                                  PlatformUI.getWorkbench()
-                                            .getActiveWorkbenchWindow()
-                                            .getActivePage()
-                                            .findView(
-                                      "org.eclipse.ui.views.PropertySheet" );
-                            if(p != null) {
-                                //The page might be a TabbedPropertySheetPage
-                                //in the future but we ignore it for now
-                                if ( p.getCurrentPage()
-                                        instanceof
-                                        PropertySheetPage ) {
-                                    PropertySheetPage pp
-                                    = (PropertySheetPage) p.getCurrentPage();
-
-                                    pp.refresh();
-                                }
-                            }
-                        }
-                    });
-                }
-            });
+            j.addJobChangeListener( new PropertyViewNotifier());
             j.schedule();
         }
 
@@ -274,8 +252,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
                 protected IStatus run( IProgressMonitor monitor ) {
                     try {
                         String s = cdk.calculateSMILES( smilesClone );
-                        item.setProperty( PROPERTY_SMILES,
-                                          s );
+                        item.setProperty( PROPERTY_SMILES, s );
                     }
                     catch ( Exception e ) {
                         LogUtils.debugTrace( logger, e );
@@ -285,36 +262,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
                     return Status.OK_STATUS;
                 }
             };
-            j.addJobChangeListener( new JobChangeAdapter() {
-                @Override
-                public void done( IJobChangeEvent event ) {
-                    Display.getDefault().asyncExec( new Runnable() {
-
-                        public void run() {
-                            PropertySheet p
-                                = (PropertySheet)
-                                  PlatformUI.getWorkbench()
-                                            .getActiveWorkbenchWindow()
-                                            .getActivePage()
-                                            .findView(
-                                      "org.eclipse.ui.views.PropertySheet" );
-                            if(p != null) {
-                                //The page might be a TabbedPropertySheetPage
-                                //in the future but we ignore it for now
-                                if ( p.getCurrentPage()
-                                        instanceof
-                                     PropertySheetPage ) {
-
-                                    PropertySheetPage pp
-                                    = (PropertySheetPage) p.getCurrentPage();
-
-                                    pp.refresh();
-                                }
-                            }
-                        }
-                    });
-                }
-            });
+            j.addJobChangeListener( new PropertyViewNotifier() );
             j.schedule();
         }
     }

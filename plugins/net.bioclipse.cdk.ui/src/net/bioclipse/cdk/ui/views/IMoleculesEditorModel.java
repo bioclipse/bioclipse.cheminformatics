@@ -26,6 +26,8 @@ public interface IMoleculesEditorModel {
     public int getNumberOfMolecules();
 
     public void markDirty(int index,ICDKMolecule moleculeToSave);
+    
+    public boolean isDirty(int index);
 
     public void save();
 

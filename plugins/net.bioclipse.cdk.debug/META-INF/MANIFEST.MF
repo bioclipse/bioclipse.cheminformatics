@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDK Extras
 Bundle-SymbolicName: net.bioclipse.cdk.debug;singleton:=true
-Bundle-Version: 2.6.0.vqualifier
+Bundle-Version: 2.6.1.qualifier
 Bundle-Activator: net.bioclipse.cdkdebug.Activator
 Import-Package: org.apache.log4j,
  org.eclipse.core.resources
@@ -19,9 +19,9 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.ioformats,
  org.openscience.cdk.io,
  org.openscience.cdk.libiocml,
- org.openscience.cdk.nonotify,
  net.bioclipse.cdk.business,
- net.bioclipse.scripting.ui
+ net.bioclipse.scripting.ui,
+ org.openscience.cdk.silent
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.cdkdebug,
  net.bioclipse.cdkdebug.business

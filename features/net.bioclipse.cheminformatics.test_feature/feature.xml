@@ -22,11 +22,6 @@ This feature and the accompanying materials are made available under the terms o
 The Eclipse Public License accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
    </license>
 
-   <url>
-      <update label="Bioclipse Update Site" url="http://update2.bioclipse.net"/>
-      <discovery label="The CDK Homepage" url="http://cdk.sf.net"/>
-   </url>
-
    <includes
          id="net.bioclipse.platform_feature"
          version="0.0.0"/>
@@ -118,6 +113,13 @@ The Eclipse Public License accompanies this distribution, and is available at ht
 
    <plugin
          id="net.bioclipse.org.cmlxom"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.bioclipse.opsin.test"
          download-size="0"
          install-size="0"
          version="0.0.0"

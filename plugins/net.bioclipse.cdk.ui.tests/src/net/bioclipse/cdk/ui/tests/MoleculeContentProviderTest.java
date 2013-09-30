@@ -17,7 +17,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.bioclipse.cdk.ui.views.MoleculeContentProvider;
 import net.bioclipse.core.domain.IMolecule;
 
 import org.eclipse.core.resources.IFile;
@@ -31,63 +30,6 @@ import org.eclipse.core.runtime.Path;
 import org.junit.Test;
 
 public class MoleculeContentProviderTest {
-
-
-    @Test
-    public void testGetChildren() throws CoreException, IOException {
-
-        //Create WS with data
-        Map<String, IFile> files =createWorkspaceWithData();
-
-        //Create ContentProvider to test
-        MoleculeContentProvider provider=new MoleculeContentProvider();
-
-        //New file to test, contains one molecule
-        //================
-        IFile gbkFile=files.get("sar.sdf");
-        assertNotNull(gbkFile);
-        
-        Object[] obj=provider.getChildren(gbkFile);
-        assertNotNull(obj);
-        assertEquals(1, obj.length);
-        assertTrue(obj[0] instanceof IMolecule);
-
-        //New file to test
-        //================
-        gbkFile=files.get("iterconftest.sdf");
-        assertNotNull(gbkFile);
-        
-        obj=provider.getChildren(gbkFile);
-        assertNotNull(obj);
-        assertEquals(39, obj.length);
-        assertTrue(obj[0] instanceof IMolecule);
-        assertTrue(obj[1] instanceof IMolecule);
-        assertTrue(obj[2] instanceof IMolecule);
-        assertTrue(obj[3] instanceof IMolecule);
-        //...
-
-        //New file to test
-        //================
-        IFile fastaFile=files.get("0037.cml");
-        assertNotNull(fastaFile);
-        
-        obj=provider.getChildren(fastaFile);
-        assertNotNull(obj);
-        assertEquals(1, obj.length);
-        assertTrue(obj[0] instanceof IMolecule);
-
-        //New file to test
-        //================
-        IFile malFile=files.get("mal.sdf");
-        assertNotNull(malFile);
-        
-        obj=provider.getChildren(malFile);
-        assertNotNull(obj);
-        assertEquals(3, obj.length);
-
-    }
-
-
 
     /**
      * Supporting method, not a Test

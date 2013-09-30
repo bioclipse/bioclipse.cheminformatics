@@ -13,6 +13,12 @@
  ******************************************************************************/
 package net.bioclipse.cdk.business;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -41,6 +47,8 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
+
 import net.bioclipse.cdk.domain.CDKConformer;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
@@ -60,7 +68,10 @@ import nu.xom.Element;
 import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -68,6 +79,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.content.IContentDescription;
@@ -105,6 +117,7 @@ import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.FormatFactory;
+import org.openscience.cdk.io.IChemObjectReaderErrorHandler;
 import org.openscience.cdk.io.IChemObjectWriter;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.MDLV2000Writer;
@@ -141,11 +154,13 @@ import org.openscience.cdk.isomorphism.mcss.RMap;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.libio.cml.ICMLCustomizer;
 import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
-import org.openscience.cdk.nonotify.NNAtomContainer;
-import org.openscience.cdk.nonotify.NNChemFile;
-import org.openscience.cdk.nonotify.NNMolecule;
-import org.openscience.cdk.nonotify.NNMoleculeSet;
-import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
+import org.openscience.cdk.renderer.AtomContainerRenderer;
+import org.openscience.cdk.renderer.font.AWTFontManager;
+import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
+import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.visitor.AWTDrawVisitor;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.similarity.Tanimoto;
 import org.openscience.cdk.smiles.SmilesGenerator;
@@ -194,7 +209,8 @@ public class CDKManager implements IBioclipseManager {
     }
 
     public ICDKMolecule newMolecule() {
-        return new CDKMolecule(new NNAtomContainer());
+        IChemObjectBuilder scob = SilentChemObjectBuilder.getInstance();       
+        return new CDKMolecule( scob.newInstance( IAtomContainer.class ) );
     }
 
     public ICDKMolecule newMolecule(IAtomContainer atomContainer) {
@@ -210,18 +226,71 @@ public class CDKManager implements IBioclipseManager {
     }
 
     public IMoleculeSet asSet(List<ICDKMolecule> list) {
-        IMoleculeSet set = new NNMoleculeSet();
+        IChemObjectBuilder scob = SilentChemObjectBuilder.getInstance();
+        IMoleculeSet set = scob.newInstance( IMoleculeSet.class );
         for (ICDKMolecule mol : list)
             set.addAtomContainer(mol.getAtomContainer());
         return set;
     }
 
+    class MarkerErrorHandler implements IChemObjectReaderErrorHandler {
+    	
+    	private IFile file;
+    	
+		public MarkerErrorHandler(IFile file) {
+			this.file = file;
+		}
+
+		@Override
+		public void handleError(String message, int row, int colStart,
+				int colEnd, Exception exception) {
+			createMarker(message, row, colStart, colEnd);
+		}
+		
+		@Override
+		public void handleError(String message, int row, int colStart,
+				int colEnd) {
+			createMarker(message, row, colStart, colEnd);
+		}
+		
+		@Override
+		public void handleError(String message, Exception exception) {
+			createMarker(message, null, null, null);
+		}
+		
+		@Override
+		public void handleError(String message) {
+			createMarker(message, null, null, null);
+		}
+		
+		private void createMarker(String message, Integer row,
+				Integer colStart, Integer colEnd) {
+			try {
+				IMarker m = this.file.createMarker(IMarker.PROBLEM);
+				if (row != null)
+					m.setAttribute(IMarker.LINE_NUMBER, row);
+				m.setAttribute(IMarker.MESSAGE, message);
+				m.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+				m.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+				if (colStart != null)
+					m.setAttribute(IMarker.CHAR_START, colStart);
+				if (colEnd != null)
+					m.setAttribute(IMarker.CHAR_END, colEnd);
+			} catch (CoreException exception) {
+				logger.error("Failed to create a marker", exception);
+			}
+		}
+	};
+
     public ICDKMolecule loadMolecule(IFile file, IProgressMonitor monitor)
                         throws IOException, BioclipseException, CoreException {
 
+    	IChemObjectReaderErrorHandler handler =
+    		new MarkerErrorHandler(file);
         IChemFormat format = determineIChemFormat(file);
+        file.deleteMarkers(null, true, 10);
         ICDKMolecule loadedMol = loadMolecule( file.getContents(),
-                                               format,
+                                               format, handler,
                                                monitor
         );
         loadedMol.setResource(file);
@@ -231,6 +300,7 @@ public class CDKManager implements IBioclipseManager {
 
     public ICDKMolecule loadMolecule( InputStream instream,
                                       IChemFormat format,
+                                      IChemObjectReaderErrorHandler handler,
                                       IProgressMonitor monitor )
                         throws BioclipseException, IOException {
 
@@ -240,6 +310,7 @@ public class CDKManager implements IBioclipseManager {
 
         // Create the reader
         ISimpleChemObjectReader reader = readerFactory.createReader(format);
+        if (handler != null) reader.setErrorHandler(handler);
         if (reader == null) {
             throw new BioclipseException("Could not create reader in CDK.");
         }
@@ -261,15 +332,17 @@ public class CDKManager implements IBioclipseManager {
 
         // Read file
         try {
+            IChemObjectBuilder scob = 
+                    SilentChemObjectBuilder.getInstance(); 
             if (reader.accepts(ChemFile.class)) {
+                 
                 IChemFile chemFile =
-                    (IChemFile) reader.read(new NNChemFile());
+                    (IChemFile) reader.read(scob.newInstance( IChemFile.class ));
                 atomContainersList =
                     ChemFileManipulator.getAllAtomContainers(chemFile);
             } else if (reader.accepts(Molecule.class)) {
-                atomContainersList.add(
-                                       (NNMolecule) reader.read(new NNMolecule())
-                );
+                atomContainersList.add( reader.read( scob
+                                                .newInstance( org.openscience.cdk.interfaces.IMolecule.class ) ) );
             } else {
                 throw new RuntimeException("Failed to read file.");
             }
@@ -977,6 +1050,44 @@ public class CDKManager implements IBioclipseManager {
                 "be serialized in SDF or CML.");
           }
       }
+     
+      public void generateImage(IMolecule molecule, String path) throws Exception { 
+          generateImage(molecule, path, 600, 600);
+      }
+      
+      public void generateImage(IMolecule molecule, String path, int width, int height) throws Exception {            
+          ICDKMolecule mol;  
+          if (!has2d( molecule )) {
+                List<IMolecule> molecules = new ArrayList<IMolecule>();
+                molecules.add( molecule );
+                IProgressMonitor monitor = new NullProgressMonitor();
+                mol = generate2dCoordinates( molecules, monitor ).get( 0 );
+            } else
+                mol = asCDKMolecule( molecule ); 
+            
+            generateImage(mol.getAtomContainer(), path, width, height);
+      }
+      
+      private void generateImage(IAtomContainer molecule, String path, int width, int height) throws IOException {        
+          Rectangle drawArea = new Rectangle(0, 0, width, height);
+          Image image = new BufferedImage( width, height, BufferedImage.TYPE_INT_RGB );
+          List<IGenerator<IAtomContainer>> generators = new ArrayList<IGenerator<IAtomContainer>>();
+          generators.add( new BasicSceneGenerator() );
+          generators.add( new BasicBondGenerator() );
+          generators.add( new BasicAtomGenerator() );
+          AtomContainerRenderer renderer = new AtomContainerRenderer( generators, new AWTFontManager() );          
+          renderer.setup( molecule, drawArea );
+          Graphics2D g2 = (Graphics2D) image.getGraphics();
+          g2.setColor( Color.WHITE );
+          g2.fillRect( 0, 0, width, height );
+          renderer.paint( molecule, new AWTDrawVisitor( g2 ) );
+          IWorkspace workspace = ResourcesPlugin.getWorkspace();
+          IWorkspaceRoot root = workspace.getRoot();
+          IPath ipath=new Path(path);
+          IFile file=root.getFile( ipath );
+          String fullPath = file.getLocation().toOSString();
+          ImageIO.write( (RenderedImage) image, "PNG", new File(fullPath) );
+      }
       
       private AtomTypeAwareSaturationChecker ataSatChecker = new AtomTypeAwareSaturationChecker();
 //      private FixBondOrdersTool fbot = new FixBondOrdersTool();
@@ -990,24 +1101,27 @@ public class CDKManager implements IBioclipseManager {
                           throws BioclipseException {
 
           SmilesParser parser
-              = new SmilesParser( DefaultChemObjectBuilder.getInstance() );
-
+              = new SmilesParser( SilentChemObjectBuilder.getInstance() );
+          parser.setPreservingAromaticity( true );
+          
           org.openscience.cdk.interfaces.IMolecule molecule;
           try {
-              molecule = parser.parseSmiles(smilesDescription);
+            molecule = parser.parseSmiles( smilesDescription.trim() );
           }
           catch (InvalidSmilesException e) {
-              throw new BioclipseException("SMILES string is invalid. Error message said: " + e.getMessage(), e);
+            String message = "SMILES string is invalid. Error message said: ";
+            throw new BioclipseException( message + e.getMessage(), e );
           }
           try {
               AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( molecule );
+              CDKHueckelAromaticityDetector.detectAromaticity(molecule);
               ataSatChecker.decideBondOrder( molecule );
-//        	  molecule = fbot.kekuliseAromaticRings(molecule);
           } catch (CDKException exception) {
         	  logger.warn("Could not figure out the double bond positions: " + exception.getMessage());
           } catch (NullPointerException npe) {
         	  throw new IllegalStateException("Could not create molecule from: "+smilesDescription,npe);
-          }
+          } 
+          
           return new CDKMolecule(molecule);
       }
 
@@ -1027,7 +1141,7 @@ public class CDKManager implements IBioclipseManager {
               = new ByteArrayInputStream( molstring.getBytes() );
 
           return loadMolecule( (InputStream)bais,
-                               (IChemFormat)CMLFormat.getInstance(),
+                               (IChemFormat)CMLFormat.getInstance(), null,
                                new NullProgressMonitor() );
       }
 
@@ -1047,7 +1161,7 @@ public class CDKManager implements IBioclipseManager {
         System.out.println("Format: " + format);
         return loadMolecule(
             new ByteArrayInputStream(molstring.getBytes()),
-            format,
+            format, null,
             new NullProgressMonitor()
         );
     }
@@ -1371,7 +1485,7 @@ public class CDKManager implements IBioclipseManager {
           try {
               return new IteratingBioclipseMDLConformerReader(
                              file.getContents(),
-                             NoNotificationChemObjectBuilder.getInstance(),
+                             SilentChemObjectBuilder.getInstance(),
                              monitor );
           }
           catch (CoreException e) {
@@ -1477,7 +1591,9 @@ public class CDKManager implements IBioclipseManager {
               int i = 1;
               for (List<RMap> substruct : substructures) {
                   // convert the RMap into an IAtomContainer
-                  IAtomContainer match = new NNAtomContainer();
+                  IChemObjectBuilder scob = 
+                          SilentChemObjectBuilder.getInstance();                  
+                IAtomContainer match = scob.newInstance( IAtomContainer.class );
                   for (RMap mapping : substruct) {
                       IBond bond = originalContainer.getBond(mapping.getId1());
                       for (IAtom atom : bond.atoms()) match.addAtom(atom);
@@ -2540,7 +2656,7 @@ public class CDKManager implements IBioclipseManager {
               createSDFileIndex( file, monitor );
               molList = new RecordableList<ICDKMolecule>();
 
-              IChemObjectBuilder builder = DefaultChemObjectBuilder
+            IChemObjectBuilder builder = SilentChemObjectBuilder
               .getInstance();
               RandomAccessSDFReader reader;
               IPath location = file.getLocation();
@@ -2615,10 +2731,9 @@ public class CDKManager implements IBioclipseManager {
                                                 throws BioclipseException,
                                                 InvocationTargetException {
 
-          int ticks = 10000;
 
           try {
-              monitor.beginTask( "Writing file", ticks );
+              monitor.beginTask( "Writing file",(endentry-startenty)*10 );
               IteratingBioclipseMDLReader reader
                   = new IteratingBioclipseMDLReader(
                             file.getContents(),
@@ -2627,14 +2742,15 @@ public class CDKManager implements IBioclipseManager {
               int i = 0;
               List<ICDKMolecule> result=new RecordableList<ICDKMolecule>();
               while (reader.hasNext()) {
+                  ICDKMolecule molecule = reader.next();
                   if (i>=startenty && i<=endentry) {
-                      result.add( reader.next() );
+                      result.add( molecule );
+                      monitor.worked( 10 );
                   }
                   i++;
                   if(i>endentry)
                       break;
               }
-              monitor.worked(ticks);
               return result;
           }
           catch (Exception e) {

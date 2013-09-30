@@ -39,6 +39,32 @@ public interface IJmolManager extends IBioclipseManager{
      * @param script The script command to run
      */
     @PublishedMethod(
+        methodSummary = "Execute a select command with the given String as a " +
+            "selection in the active Jmol editor.",
+        params = "String selection"
+    )
+    @Recorded
+    public void select(String selection);
+
+    /**
+     * Execute a script in Jmol. If editor active, run script there. 
+     * In the future, if JmolView active, there too.
+     * @param script The script command to run
+     */
+    @PublishedMethod(
+        methodSummary = "Color the active selection with the given String as a " +
+            "color in the active Jmol editor.",
+        params = "String color"
+    )
+    @Recorded
+    public void color(String color);
+    
+    /**
+     * Execute a script in Jmol. If editor active, run script there. 
+     * In the future, if JmolView active, there too.
+     * @param script The script command to run
+     */
+    @PublishedMethod(
         methodSummary = "Execute the given String as a " +
             "script in the active Jmol editor.",
         params = "String script"
@@ -46,7 +72,6 @@ public interface IJmolManager extends IBioclipseManager{
     @Recorded
     public void run(String script);
 
-    
     /**
      * Load Jmol with a file
      * @param path Path to file, relative workspace

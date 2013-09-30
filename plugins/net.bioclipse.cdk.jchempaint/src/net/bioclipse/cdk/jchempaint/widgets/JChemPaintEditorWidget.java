@@ -96,7 +96,6 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.interfaces.IReactionSet;
-import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.renderer.IRenderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
@@ -115,6 +114,7 @@ import org.openscience.cdk.renderer.generators.SelectBondGenerator.SelectionBond
 import org.openscience.cdk.renderer.selection.AbstractSelection;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
@@ -397,7 +397,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 
     private void setupControllerHub( ) {
         IChemModel chemModel =
-            NoNotificationChemObjectBuilder.getInstance()
+                SilentChemObjectBuilder.getInstance()
             	.newInstance(IChemModel.class);
 
         c2dm = new ControllerModel();
@@ -661,17 +661,11 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                     if(GenerateLabelPrefChangedLisener.showGeneratedLabel())
                         add( Message.GENERATED );
                 }else {
-                    IAtomContainer oldAC = atomContainer;
-                    atomContainer = atomContainer.getBuilder()
-                    .newInstance(IAtomContainer.class, atomContainer );
-                    atomContainer.setProperties( new HashMap<Object, Object>(
-                            oldAC.getProperties()) );
-                    setDirty( oldAC.getFlag( 7 ) );
                 }
                 setAtomContainer(atomContainer);
             }
             else {
-                IChemModel model = NoNotificationChemObjectBuilder.getInstance()
+                IChemModel model = SilentChemObjectBuilder.getInstance()
                 .newInstance(IChemModel.class);
                 source = null;
                 setModel( model );

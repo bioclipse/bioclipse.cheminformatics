@@ -9,7 +9,17 @@
             id="net.bioclipse.opsin.ui.wizards.NewFromIUPACWizard"
             icon="icons/molecule3D.png"
             name="Molecule from IUPAC name">
+            preferredPerspectives="net.bioclipse.chemoinformatics.ChemoinformaticsPerspective">
       </wizard>
    </extension>
+    <extension
+          point="org.eclipse.ui.perspectiveExtensions">
+       <perspectiveExtension
+             targetID="net.bioclipse.chemoinformatics.ChemoinformaticsPerspective">
+          <newWizardShortcut
+                id="net.bioclipse.opsin.ui.wizards.NewFromIUPACWizard">
+          </newWizardShortcut>
+       </perspectiveExtension>
+    </extension>
 
 </plugin>

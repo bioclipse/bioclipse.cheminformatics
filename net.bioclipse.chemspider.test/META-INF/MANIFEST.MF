@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Chemspider Test
 Bundle-SymbolicName: net.bioclipse.chemspider.test
-Bundle-Version: 0.1.1
+Bundle-Version: 2.6.1.qualifier
 Bundle-Vendor: bioclipse.net
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

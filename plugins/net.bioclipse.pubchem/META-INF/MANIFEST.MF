@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PubChem Plug-in
 Bundle-SymbolicName: net.bioclipse.pubchem;singleton:=true
-Bundle-Version: 2.6.0.vqualifier
+Bundle-Version: 2.6.1.qualifier
 Bundle-Activator: net.bioclipse.pubchem.Activator
 Bundle-Vendor: Bioclipse Team
 Require-Bundle: org.eclipse.ui,
@@ -13,7 +13,9 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.ui,
  net.bioclipse.ui.business,
  net.bioclipse.cdk.business,
- net.bioclipse.browser.business
+ net.bioclipse.browser.business,
+ org.apache.commons.httpclient;bundle-version="3.1.0",
+ net.bioclipse.rdf
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Export-Package: net.bioclipse.pubchem,

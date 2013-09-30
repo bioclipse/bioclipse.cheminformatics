@@ -34,14 +34,21 @@ public class SDFileIndex {
 
       List<Long> filePos;
       Map<Integer,List<Long>> propertiesPos;
+      boolean isBondOrder4 = false;
 
       SDFileIndex(final IFile file,final List<Long> filePos) {
-          this(file,filePos,null);
+          this(file,filePos,null,false);
       }
 
       SDFileIndex( final IFile file,
                    final List<Long> filePos,
                    Map<Integer,List<Long>> propPos) {
+          this(file,filePos,propPos,false);
+      }
+      SDFileIndex( final IFile file,
+                   final List<Long> filePos,
+                   Map<Integer,List<Long>> propPos,
+                   boolean bondOrder4) {
           this.file = file;
           this.filePos=new ArrayList<Long>(filePos);
           this.filePos.add( 0, 0l );
@@ -49,6 +56,7 @@ public class SDFileIndex {
               this.propertiesPos = propPos;
           else
               propertiesPos = Collections.emptyMap();
+          this.isBondOrder4 = bondOrder4;
       }
       public IFile file() {
           return file;

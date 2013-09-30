@@ -112,7 +112,8 @@ public class JmolEditor extends EditorPart
                         implements IResourceChangeListener, 
                                    IAdaptable, 
                                    ISelectionListener, 
-                                   ISelectionProvider {
+                                   ISelectionProvider,
+                                   IJmolEditor {
 
     public static final String EDITOR_ID 
         = "net.bioclipse.jmol.editors.JmolEditor";
@@ -900,7 +901,16 @@ public class JmolEditor extends EditorPart
     }
     
     public void setDataInput(IEditorInput input){  
-        String data = (String) input.getAdapter( String.class );
+        String data;
+        data = (String) input.getAdapter( String.class );
+        if(data == null) {
+            try {
+                data = ((net.bioclipse.core.domain.CMLMolecule) 
+       input.getAdapter(net.bioclipse.core.domain.CMLMolecule.class)).toCML();
+            } catch ( BioclipseException e ) {
+                logger.warn( "Could not adapt input to CML" );
+            }
+        }
         if(jmolPanel != null && data != null) {
             jmolPanel.getViewer().openStringInline( data );
         }

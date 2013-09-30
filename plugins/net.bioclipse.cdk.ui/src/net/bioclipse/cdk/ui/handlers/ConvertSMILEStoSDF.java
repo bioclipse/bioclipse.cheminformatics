@@ -62,7 +62,7 @@ public class ConvertSMILEStoSDF extends AbstractHandler{
 		Logger.getLogger(ConvertSMILEStoSDF.class);
 
 	//Possible separators
-	private static final String[] POSSIBLE_SEPARATORS=new String[]{",","\t"," "};
+	private static final String[] POSSIBLE_SEPARATORS=new String[]{",","\t"," ",";"};
 	
     private final IUIManager ui = net.bioclipse.ui.business.Activator
                                      .getDefault().getUIManager();

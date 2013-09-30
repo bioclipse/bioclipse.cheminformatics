@@ -12,10 +12,14 @@ package net.bioclipse.cdk.ui.sdfeditor.business;
 
 import static org.junit.Assert.assertEquals;
 
+import java.nio.CharBuffer;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
+
 
 
 /**
@@ -23,6 +27,8 @@ import org.junit.Test;
  *
  */
 public class MolTableTest {
+
+    private static Logger logger = Logger.getLogger( MolTableTest.class );
 
     @Test
     public void encodeCSVTest() {
@@ -45,5 +51,20 @@ public class MolTableTest {
             assertEquals( testPairs.get( test ), result );
         }
         
+    }
+
+    public static String bondOrderLine = "  1  2  4  0  0  0  0\r\n";
+    public static String bondOrderLine2 = "  13  2  2  0  0  0  0\n";
+
+    @Test
+    public void detetectBondOrder4OfLine() {
+        MoleculeTableManager moltable = new MoleculeTableManager();
+        CharBuffer buffer;
+        buffer = CharBuffer.wrap( bondOrderLine );
+        logger.info(buffer.toString());
+        System.out.println(buffer.toString());
+        Assert.assertTrue( moltable.checkBondOrder( buffer ));
+        buffer = CharBuffer.wrap( bondOrderLine2 );
+        Assert.assertFalse( moltable.checkBondOrder( buffer ));
     }
 }

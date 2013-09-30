@@ -43,7 +43,7 @@ import org.openscience.cdk.io.ReaderFactory;
 import org.openscience.cdk.io.WriterFactory;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.setting.IOSetting;
-import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.diff.AtomContainerDiff;
 import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
 
@@ -63,7 +63,7 @@ public class CDKDebugManager implements IBioclipseManager {
 //            = org.openscience.cdk.atomtype.Activator.class.getResourceAsStream(
 //                "/org/openscience/cdk/dict/data/sybyl-atom-types.owl");
         factory = AtomTypeFactory.getInstance( iStream, "owl",
-            NoNotificationChemObjectBuilder.getInstance()
+                                               SilentChemObjectBuilder.getInstance()
         );
     	} catch (IOException e) {
     		logger.error("Could not get sybyl-atom-types.owl file",e);
