@@ -12,8 +12,9 @@ package net.bioclipse.chemspider;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.bioclipse.core.business.BioclipseException;
 
@@ -52,7 +53,7 @@ import com.chemspider.www.SearchStub.SubstructureSearchOptions;
  */
 public class ChemspiderWSHelper {
 
-	private static final Logger logger = Logger.getLogger(ChemspiderWSHelper.class);
+	private static final Logger logger = LoggerFactory.getLogger(ChemspiderWSHelper.class);
 
 	//Get token and server endpoint from preference
 	public static final String endpoint = Activator.getDefault().

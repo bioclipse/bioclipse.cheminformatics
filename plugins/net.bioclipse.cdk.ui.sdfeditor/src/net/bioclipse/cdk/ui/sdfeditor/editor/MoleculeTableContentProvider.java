@@ -147,8 +147,11 @@ public class MoleculeTableContentProvider implements
         properties.clear();
         Iterator<Object> iter = getAvailableProperties().iterator();
         for(int i=0;i<NUMBER_OF_PROPERTIES;i++) {
-            if(iter.hasNext())
-                properties.add(iter.next());
+            if ( iter.hasNext() ) {
+                Object o = iter.next();
+                if ( o instanceof String )
+                    properties.add( o );
+            }
         }
         updateHeaders();
         moleculeProperties.clear();
@@ -273,7 +276,7 @@ public class MoleculeTableContentProvider implements
         }
         if ( executorService == null ) initExecutorService();
 
-        String propertyName = col==0?null:(String) properties.get( i );
+        String propertyName = col == 0 ? null : properties.get( i ).toString();
         String propertyKey = PropertyOrder.createPropertyKey( propertyName, 
                                                               row);
         Future<Object> p = moleculeProperties.get( propertyKey );
@@ -306,6 +309,8 @@ public class MoleculeTableContentProvider implements
                 }
             }
         }
+        if ( p == null )
+            return "[Not suported]";
         return "[ Loading... ]";
     }
     

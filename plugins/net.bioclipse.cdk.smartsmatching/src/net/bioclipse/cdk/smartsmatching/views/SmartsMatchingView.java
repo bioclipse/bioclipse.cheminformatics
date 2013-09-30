@@ -715,6 +715,9 @@ public class SmartsMatchingView extends ViewPart implements IPartListener,
 
        //Unregister listening on parts
        getSite().getWorkbenchWindow().getPartService().removePartListener(this);
+        IContextService contextService = (IContextService) PlatformUI
+                        .getWorkbench().getService( IContextService.class );
+        contextService.removeContextManagerListener( this );
        super.dispose();
     }
 

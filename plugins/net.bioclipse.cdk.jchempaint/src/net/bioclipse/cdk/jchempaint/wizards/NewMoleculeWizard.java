@@ -21,8 +21,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 
 /**
  * Creates a new molecule and opens it in JChemPaint.
@@ -57,7 +57,7 @@ public class NewMoleculeWizard extends Wizard implements INewWizard {
     public boolean performFinish() {
       //Open editor with content (String) as content
         ICDKMolecule mol = new CDKMolecule(
-        	DefaultChemObjectBuilder.getInstance().newInstance(IMolecule.class)
+        	SilentChemObjectBuilder.getInstance().newInstance(IMolecule.class)
         );
         Activator.getDefault().getUIManager().open( mol, 
                                 "net.bioclipse.cdk.ui.editors.jchempaint.cml" );

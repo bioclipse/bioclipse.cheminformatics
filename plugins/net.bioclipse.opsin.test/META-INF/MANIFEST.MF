@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OPSIN Test Plug-in
+Bundle-SymbolicName: net.bioclipse.opsin.test
+Bundle-Version: 2.6.0.vqualifier
+Bundle-Activator: net.bioclipse.opsin.test.Activator
+Bundle-Vendor: The Bioclipse Team
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ net.bioclipse.core,
+ org.eclipse.core.resources,
+ net.bioclipse.core.tests;bundle-version="0.1.0",
+ net.bioclipse.cdk.business,
+ org.openscience.cdk.io,
+ org.openscience.cdk.interfaces,
+ org.openscience.cdk.core,
+ org.openscience.cdk.diff,
+ org.openscience.cdk.extra,
+ org.openscience.cdk.ioformats,
+ net.bioclipse.ui,
+ net.bioclipse.opsin
+Bundle-ActivationPolicy: lazy
+Export-Package: net.bioclipse.opsin.test
+Import-Package: org.junit,
+ org.junit.runner,
+ org.junit.runners

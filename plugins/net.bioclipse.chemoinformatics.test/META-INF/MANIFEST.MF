@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Chemoinformatics Test Plug-in
 Bundle-SymbolicName: net.bioclipse.chemoinformatics.test
-Bundle-Version: 2.6.0.vqualifier
+Bundle-Version: 2.6.1.qualifier
 Bundle-Activator: net.bioclipse.chemoinformatics.test.Activator
 Bundle-Vendor: The Bioclipse Team
 Require-Bundle: org.eclipse.ui,
@@ -20,7 +20,8 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.cdk.debug.test,
  net.bioclipse.cml,
  net.bioclipse.org.cmlxom,
- com.springsource.nu.xom
+ com.springsource.nu.xom,
+ net.bioclipse.opsin.test;bundle-version="2.6.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.chemoinformatics.test,
  net.bioclipse.chemoinformatics.test.feature

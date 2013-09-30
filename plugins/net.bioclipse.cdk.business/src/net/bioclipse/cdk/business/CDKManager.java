@@ -172,7 +172,6 @@ import org.openscience.cdk.tools.AtomTypeAwareSaturationChecker;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
-import org.openscience.cdk.tools.manipulator.BondManipulator;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
@@ -1102,8 +1101,9 @@ public class CDKManager implements IBioclipseManager {
                           throws BioclipseException {
 
           SmilesParser parser
-              = new SmilesParser( DefaultChemObjectBuilder.getInstance() );
-
+              = new SmilesParser( SilentChemObjectBuilder.getInstance() );
+          parser.setPreservingAromaticity( true );
+          
           org.openscience.cdk.interfaces.IMolecule molecule;
           try {
             molecule = parser.parseSmiles( smilesDescription.trim() );
@@ -1114,11 +1114,8 @@ public class CDKManager implements IBioclipseManager {
           }
           try {
               AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( molecule );
-              ataSatChecker.decideBondOrder( molecule );
-              AtomContainerManipulator.clearAtomConfigurations( molecule );
-              AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( molecule );
               CDKHueckelAromaticityDetector.detectAromaticity(molecule);
-
+              ataSatChecker.decideBondOrder( molecule );
           } catch (CDKException exception) {
         	  logger.warn("Could not figure out the double bond positions: " + exception.getMessage());
           } catch (NullPointerException npe) {
@@ -2659,7 +2656,7 @@ public class CDKManager implements IBioclipseManager {
               createSDFileIndex( file, monitor );
               molList = new RecordableList<ICDKMolecule>();
 
-              IChemObjectBuilder builder = DefaultChemObjectBuilder
+            IChemObjectBuilder builder = SilentChemObjectBuilder
               .getInstance();
               RandomAccessSDFReader reader;
               IPath location = file.getLocation();

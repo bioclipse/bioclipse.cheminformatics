@@ -14,6 +14,7 @@ import net.bioclipse.cdk.AllCDKBusinessPluginTestSuite;
 import net.bioclipse.cdk.debug.test.AllCDKDebugManagerPluginTests;
 import net.bioclipse.cml.tests.AllValidateCMLManagerPluginTest;
 import net.bioclipse.inchi.business.test.AllInChIManagerPluginTests;
+import net.bioclipse.opsin.test.AllOpsinManagerPluginTests;
 import net.bioclipse.pubchem.tests.AllPubChemManagerPluginTests;
 
 import org.junit.runner.RunWith;
@@ -31,6 +32,7 @@ import org.junit.runners.Suite.SuiteClasses;
     AllPubChemManagerPluginTests.class,
     AllInChIManagerPluginTests.class,
     AllValidateCMLManagerPluginTest.class,
-    AllCDKDebugManagerPluginTests.class
+    AllCDKDebugManagerPluginTests.class,
+    AllOpsinManagerPluginTests.class
 })
 public class AllFeaturePluginTest {}

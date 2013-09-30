@@ -24,6 +24,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -550,13 +552,16 @@ public abstract class AbstractCDKManagerPluginTest {
         assertTrue(smiles.contains("[Si]"));
     }
 
-    @Test 
-    public void testBug3394() throws BioclipseException {
-    	try {
-    	cdk.fromSMILES("OCC1OC(O)C(O)C(Op2(OC3C(O)C(O)OC(CO)C3O)np(OC4C(O)C(O)OC(CO)C4O)(OC5C(O)C(O)OC(CO)C5O)np(OC6C(O)C(O)OC(CO)C6O)(OC7C(O)C(O)OC(CO)C7O)n2)C1O");
-    	} catch (RuntimeException e) {
-    		Assert.fail("Failed with exception");
-    	}
+    @Test
+    public void testBug3394() throws BioclipseException, RuntimeException {
+
+        try {
+            cdk.fromSMILES("OCC1OC(O)C(O)C(Op2(OC3C(O)C(O)OC(CO)C3O)np(OC4C(O)C(O)OC(CO)C4O)(OC5C(O)C(O)OC(CO)C5O)np(OC6C(O)C(O)OC(CO)C6O)(OC7C(O)C(O)OC(CO)C7O)n2)C1O");
+        } catch ( RuntimeException e ) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace( new PrintWriter( sw ) );
+            fail( sw.toString() );
+        }
     }
     @Test
     public void testCreateMoleculeFromSMILES() throws BioclipseException {
@@ -1421,8 +1426,12 @@ public abstract class AbstractCDKManagerPluginTest {
             
             ICDKMolecule ethane  = cdk.fromSMILES("CC");
             String path = "/testAppendToSDF/testSaveSDF" + propane.hashCode() + ".mol";
+            IFile file = project.getFile( path );
             cdk.saveSDFile( path, new ArrayList() {{add(propane);}} );
-            
+            int i = 100;
+            while ( i-- > 0 && !file.exists() ) {
+                Thread.sleep( 50 );
+            }
             assertEquals(1, cdk.loadMolecules(path).size());
             
             cdk.appendToSDF( path, ethane );
