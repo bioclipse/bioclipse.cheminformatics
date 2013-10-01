@@ -903,12 +903,17 @@ public class CDKManager implements IBioclipseManager {
             return (IChemFormat)MDLV2000Format.getInstance();
         }
         for (IChemFormat aFormat : formatsFactory.getFormats()) {
+            try {
             if (aFormat == MDLFormat.getInstance()) {
                 // never match this one: it's outdated and != MDLV2000Format
             } else if (aFormat == RGroupQueryFormat.getInstance()) {
                 // Bioclipse does not support such files yet
             } else if (file.endsWith("."+aFormat.getPreferredNameExtension())) {
                 return aFormat;
+            }
+            } catch ( Exception e ) {
+                logger.warn( "Could not get extension for format " + aFormat
+                                             .getClass().getName() );
             }
         }
         return null;
