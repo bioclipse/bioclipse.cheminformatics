@@ -51,12 +51,12 @@ public class PropertiesImportFileHandler {
     private boolean topRowContainsPropName, propLinkedBy;
     private String dataFileLink, sdFileLink, newSDFilePath;
     // The row separator for the data in the data file, i.e. a tab.
-    private final static String DELIMITER = "\t";
+    private static String DELIMITER = "\t";
     // The number of rows read into topValues at initiation 
     private final static int ROWS_IN_TOPVALUES = 5;
     private boolean hasFoundLastRowInFile = false;
     private DataFileFormart dataFileFormart;
-    
+    private boolean hasBothRowAndColHeaders = false;
     /**
      * A constructor to use if non, or only one, of the files are known. 
      */
@@ -190,12 +190,19 @@ public class PropertiesImportFileHandler {
     public void setDataFile(IFile dataFile) throws FileNotFoundException {
         this.dataFile = dataFile;
         hasFoundLastRowInFile = false;
-        if (dataFile.getFileExtension().toLowerCase().matches( "csv" )) {
-            dataFileFormart = DataFileFormart.CSV;
-            readFromCSV( 0, ROWS_IN_TOPVALUES );
-        } else {
-            dataFileFormart = DataFileFormart.TXT;
-            readFromTXT( 0, ROWS_IN_TOPVALUES );
+        Scanner fileScanner = new Scanner(getDataFileContents());
+        int colsOnFirstRow  = decideColumnSeparator( fileScanner.nextLine() );
+        int colsOnSecondRow  = decideColumnSeparator( fileScanner.nextLine() );
+        hasBothRowAndColHeaders = (colsOnSecondRow-colsOnFirstRow == 1);
+        switch (dataFileFormart) {
+            case TXT:
+                readFromTXT( 0, ROWS_IN_TOPVALUES );
+                break;
+            case CSV:
+                readFromCSV( 0, ROWS_IN_TOPVALUES );
+                break;
+            case NO_FILE_SELECTED:
+                throw new FileNotFoundException("There is no file selected.");
         }
     }
     
@@ -352,7 +359,11 @@ public class PropertiesImportFileHandler {
                 element = lineScanner.next();
                 if (topRowContainsPropName) {
                     if (row == 0) {
-                        propertiesID.add( element );
+                        if (column == 0 && hasBothRowAndColHeaders) {
+                            propertiesID.add( "" );
+                            propertiesID.add( element );
+                        } else
+                            propertiesID.add( element );
                     } else {   
                         /* If we are reading the first row with data then we 
                          * create a new ArrayList for each column*/
@@ -368,8 +379,12 @@ public class PropertiesImportFileHandler {
                     if (row == 0) {
                         columns = new ArrayList<String>();
                         topValues.add( columns );
-                    }
-                    topValues.get( column ).add( element );
+                        if (column == 0 && hasBothRowAndColHeaders)
+                            topValues.get( column ).add( "" );
+                        else
+                            topValues.get( column ).add( element );
+                    } else
+                        topValues.get( column ).add( element );
                 }
                 column++;
             }
@@ -407,6 +422,7 @@ public class PropertiesImportFileHandler {
                     return;
                 }
         
+        boolean noTopLeftElement = hasBothRowAndColHeaders;
         if (endRow == -1) {
             while (true) {
                 try {
@@ -414,16 +430,28 @@ public class PropertiesImportFileHandler {
                     for (int i = 0; i < nextRow.length; i++) {
                         if (topRowContainsPropName) {
                             if (rowNumber == 0)
-                               propertiesID.add( nextRow[i] );
+                                if (noTopLeftElement) {
+                                    propertiesID.add( "" );
+                                    i--;
+                                    noTopLeftElement = false;
+                                } else
+                                    propertiesID.add( nextRow[i] );
                             else {
                                 if (rowNumber == 1)
                                     topValues.add( new ArrayList<String>() );
                                 topValues.get( i ).add( nextRow[i] );
                             }
                         } else {
-                            if (rowNumber == 0)
+                            if (rowNumber == 0) {
                                 topValues.add( new ArrayList<String>() );
-                            topValues.get( i ).add( nextRow[i] );
+                                if (noTopLeftElement) {
+                                    topValues.get( i ).add( "" );
+                                    i--;
+                                    noTopLeftElement = false;
+                                } else
+                                    topValues.get( i+1 ).add( nextRow[i] );
+                            } else
+                                topValues.get( i ).add( nextRow[i] );
                         }
                     }
                     rowNumber++;
@@ -861,5 +889,55 @@ public class PropertiesImportFileHandler {
      */
     public void addChoosenPropID(int index, String propName) {
         choosenPropID.add( index, propName );
+    }
+    
+    /**
+     * This method tries to decide what separator that was used in the source.
+     * 
+     * @param testStr A <code>String</code> for testing, e.g. the top row in the
+     *         source.  
+     * @return The number of columns.
+     */
+    private int decideColumnSeparator(String testStr) {
+        
+        int matrixCols = testDelimiter( testStr, "\t" );
+
+        if (matrixCols<=1) {
+            // Only one column? let's see if the values are whitespace-separated
+            matrixCols = testDelimiter( testStr, "\\s+" );
+
+            if (matrixCols<=1) {
+                // Only one column? let's see if the values are comma-separated
+                matrixCols=testDelimiter( testStr, ",|,\\s+" );
+
+                if (matrixCols<=1) {
+                    // Probably only one column, let's use tab as delimiter
+                    DELIMITER = "\t";
+                }
+            }
+        }
+        
+        if (DELIMITER.contains( "," ))
+            dataFileFormart = DataFileFormart.CSV;
+        else
+            dataFileFormart = DataFileFormart.TXT;
+ 
+        return matrixCols;
+    }
+    
+    private int testDelimiter(String testStr, String delimiter) {
+        int matrixCols = 0;
+        DELIMITER = delimiter;
+        Scanner testScanner = new Scanner( testStr ).useDelimiter( DELIMITER ); 
+
+        //Determine number of columns
+        while( testScanner.hasNext() )
+        {
+            testScanner.next();
+            matrixCols++;
+        }
+        testScanner.close();
+        
+        return matrixCols;
     }
 }
