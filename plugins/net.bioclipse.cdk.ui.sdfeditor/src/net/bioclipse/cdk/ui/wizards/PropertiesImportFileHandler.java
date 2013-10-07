@@ -57,6 +57,9 @@ public class PropertiesImportFileHandler {
     private boolean hasFoundLastRowInFile = false;
     private DataFileFormart dataFileFormart;
     private boolean hasBothRowAndColHeaders = false;
+    // This array contains the delimiters that this class can handle.
+    private String[] delimiters = {"\t", ",|,\\s+", ";|;\\s+", "\\s+",};
+    
     /**
      * A constructor to use if non, or only one, of the files are known. 
      */
@@ -900,23 +903,19 @@ public class PropertiesImportFileHandler {
      */
     private int decideColumnSeparator(String testStr) {
         
-        int matrixCols = testDelimiter( testStr, "\t" );
+        int matrixCols = 0;
 
-        if (matrixCols<=1) {
-            // Only one column? let's see if the values are whitespace-separated
-            matrixCols = testDelimiter( testStr, "\\s+" );
-
-            if (matrixCols<=1) {
-                // Only one column? let's see if the values are comma-separated
-                matrixCols=testDelimiter( testStr, ",|,\\s+" );
-
-                if (matrixCols<=1) {
-                    // Probably only one column, let's use tab as delimiter
-                    DELIMITER = "\t";
-                }
-            }
+        for (int i=0;i<delimiters.length;i++) {
+            matrixCols = testDelimiter( testStr, delimiters[i] );
+            if (matrixCols > 1)
+                break;
         }
-        
+        if (matrixCols <= 1) {
+            // Probably only one column, let's use tab as delimiter
+            DELIMITER = "\t";
+            matrixCols = 1;
+        }
+
         if (DELIMITER.contains( "," ))
             dataFileFormart = DataFileFormart.CSV;
         else
