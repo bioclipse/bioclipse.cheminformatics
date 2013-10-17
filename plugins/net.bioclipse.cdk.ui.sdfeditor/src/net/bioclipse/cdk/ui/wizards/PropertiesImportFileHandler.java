@@ -51,14 +51,14 @@ public class PropertiesImportFileHandler {
     private boolean topRowContainsPropName, propLinkedBy;
     private String dataFileLink, sdFileLink, newSDFilePath;
     // The row separator for the data in the data file, i.e. a tab.
-    private static String DELIMITER = "\t";
+    private String DELIMITER = "\t";
     // The number of rows read into topValues at initiation 
     private final static int ROWS_IN_TOPVALUES = 5;
     private boolean hasFoundLastRowInFile = false;
     private DataFileFormart dataFileFormart;
     private boolean hasBothRowAndColHeaders = false;
     // This array contains the delimiters that this class can handle.
-    private String[] delimiters = {"\t", ",|,\\s+", ";|;\\s+", "\\s+",};
+    private String[] delimiters = {"\t", ",|,\\s+", ";|;\\s+", "\\s+"};
     
     /**
      * A constructor to use if non, or only one, of the files are known. 
