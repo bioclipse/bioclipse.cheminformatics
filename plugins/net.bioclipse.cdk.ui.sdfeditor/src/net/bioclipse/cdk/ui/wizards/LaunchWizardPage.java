@@ -8,6 +8,11 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.wizards;
 
+import java.awt.Dialog;
+
+import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor;
+import net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -15,6 +20,7 @@ import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -38,13 +44,27 @@ public class LaunchWizardPage extends AbstractHandler implements IHandler{
         selection = HandlerUtil.getActiveMenuSelection( event );
         if ( selection instanceof IStructuredSelection ) {
             ssel = (IStructuredSelection) selection;
+
+            Object obj = ssel.getFirstElement();
+            SDFPropertiesImportWizard wizard = new SDFPropertiesImportWizard(ssel);
+            WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench()
+                                                   .getActiveWorkbenchWindow()
+                                                   .getShell(), wizard);
+            
+            int returnCode = dialog.open();
+            
+            if (returnCode == WizardDialog.OK) {
+                IEditorPart editor = HandlerUtil.getActiveEditor( event );
+                
+                if (editor instanceof MultiPageMoleculesEditorPart) {
+                    MoleculesEditor molEditor = ((MultiPageMoleculesEditorPart) editor).getMoleculesPage();
+                    molEditor.refresh();
+                    molEditor.setDirty( true );
+                }
+            }
         }
 
-        SDFPropertiesImportWizard wizard = new SDFPropertiesImportWizard(ssel);
-        WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench()
-                                               .getActiveWorkbenchWindow()
-                                               .getShell(), wizard);
-        dialog.open();
+        
         return null;
     }
 
