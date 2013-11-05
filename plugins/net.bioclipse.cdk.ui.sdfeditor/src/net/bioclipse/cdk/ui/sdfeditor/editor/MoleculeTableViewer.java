@@ -506,9 +506,5 @@ public class MoleculeTableViewer extends ContentViewer {
     public IMoleculesEditorModel getInput() {
     	return (IMoleculesEditorModel) super.getInput();
     }
-    
-    protected Object getData(int col, int row) {
-        return getDataProvider().getDataValue( col, row );
-    }
- 
+     
 }
