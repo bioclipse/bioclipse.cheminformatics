@@ -21,8 +21,6 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.domain.props.BioObjectPropertySource;
 import net.bioclipse.core.util.LogUtils;
-import net.bioclipse.inchi.InChI;
-import net.bioclipse.inchi.business.IInChIManager;
 import net.bioclipse.jobs.BioclipseJob;
 
 import org.apache.log4j.Logger;
@@ -89,10 +87,8 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         }
     }
 
-    protected static Map<ICDKMolecule, BioclipseJob> inchiJobs
-        = new HashMap<ICDKMolecule, BioclipseJob>();
-    protected static Map<ICDKMolecule, BioclipseJob> smilesJobs
-        = new HashMap<ICDKMolecule, BioclipseJob>();
+    protected static Map<ICDKMolecule, BioclipseJob<String>> smilesJobs
+        = new HashMap<ICDKMolecule, BioclipseJob<String>>();
 
     private static final String PREFIX = "net.bioclipse.cdk.domain.property.";
     protected static final String PROPERTY_HAS2D = PREFIX + "Has 2D Coords";
@@ -101,8 +97,6 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
     protected static final String PROPERTY_FORMULA = PREFIX + "Molecular Formula";
     protected static final String PROPERTY_MASS = PREFIX + "Molecular Mass";
     protected static final String PROPERTY_SMILES = PREFIX + "SMILES";
-    protected static final String PROPERTY_INCHI = PREFIX + "InChI";
-    protected static final String PROPERTY_INCHIKEY = PREFIX + "InChIKey";
 
     private static final Logger logger
         = Logger.getLogger( CDKMoleculePropertySource.class );
@@ -121,10 +115,6 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
             new TextPropertyDescriptor(PROPERTY_MASS,PROPERTY_MASS.substring(PREFIX.length()))},
         { PROPERTY_SMILES,
             new TextPropertyDescriptor(PROPERTY_SMILES,PROPERTY_SMILES.substring(PREFIX.length()))},
-        { PROPERTY_INCHI,
-            new TextPropertyDescriptor(PROPERTY_INCHI,PROPERTY_INCHI.substring(PREFIX.length()))},
-        { PROPERTY_INCHIKEY,
-            new TextPropertyDescriptor(PROPERTY_INCHIKEY,PROPERTY_INCHIKEY.substring(PREFIX.length()))}
     };
 
     private ICDKMolecule cdkMol;
@@ -143,13 +133,11 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
             createPropertiesJobs(item);
         }
         else {
-           cdkValueMap.put( PROPERTY_INCHI,    "Failed to calculate" );
-           cdkValueMap.put( PROPERTY_INCHIKEY, "Failed to calculate" );
            cdkValueMap.put( PROPERTY_SMILES,   "Failed to calculate" );
         }
     }
 
-	private String ensureFullAtomTyping(IAtomContainer hydrogenlessClone) {
+    public static String ensureFullAtomTyping( IAtomContainer hydrogenlessClone ) {
 		// Do atom typing, and if atom typing did not work for all atoms,
         // throw a BioclipseException.
         // First, reset atom types
@@ -174,18 +162,16 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         return "";
 	}
 
-	private void createPropertiesJobs(final ICDKMolecule item) {
+    private void createPropertiesJobs( final ICDKMolecule item ) {
 
         final ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
-        final IInChIManager inchi = net.bioclipse.inchi.business.Activator
-                                       .getDefault().getJavaInChIManager();
 
         // clear previous jobs
-        BioclipseJob inchiJobToBeCancelled  = inchiJobs.remove(  item );
-        BioclipseJob smilesJobToBeCancelled = smilesJobs.remove( item );
-        if ( inchiJobToBeCancelled != null ) {
-            inchiJobToBeCancelled.cancel();
-        }
+        // BioclipseJob inchiJobToBeCancelled = inchiJobs.remove( item );
+        BioclipseJob<String> smilesJobToBeCancelled = smilesJobs.remove( item );
+        // if ( inchiJobToBeCancelled != null ) {
+        // inchiJobToBeCancelled.cancel();
+        // }
         if ( smilesJobToBeCancelled != null ) {
             smilesJobToBeCancelled.cancel();
         }
@@ -205,7 +191,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
                 @Override
                 protected IStatus run( IProgressMonitor monitor ) {
                 	String msg = "Incorrect Structure.";
-                	item.setProperty( CDKMolecule.INCHI_OBJECT, msg );
+                    // item.setProperty( CDKMolecule.INCHI_OBJECT, msg );
                 	item.setProperty( PROPERTY_SMILES, msg );
                     return Status.OK_STATUS;
                 }
@@ -215,34 +201,14 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
             return;
 		}
         
-        final ICDKMolecule inchiClone;
+        // final ICDKMolecule inchiClone;
         final ICDKMolecule smilesClone;
         try {
-            inchiClone  = cdk.clone( item );
+            // inchiClone = cdk.clone( item );
             smilesClone = cdk.clone( item );
         }
         catch ( BioclipseException e ) {
             throw new RuntimeException(e);
-        }
-
-        if (item.getProperty( CDKMolecule.INCHI_OBJECT, Property.USE_CACHED ) == null) {
-            Job j = new Job("Calculating inchi for properties view") {
-                @Override
-                protected IStatus run( IProgressMonitor monitor ) {
-                    try {
-                        item.setProperty( CDKMolecule.INCHI_OBJECT,
-                                          inchi.generate( inchiClone ) );
-                    }
-                    catch ( Exception e ) {
-                        LogUtils.debugTrace( logger, e );
-                        item.setProperty( CDKMolecule.INCHI_OBJECT,
-                                          InChI.FAILED_TO_CALCULATE );
-                    }
-                    return Status.OK_STATUS;
-                }
-            };
-            j.addJobChangeListener( new PropertyViewNotifier());
-            j.schedule();
         }
 
         if (item.getProperty( PROPERTY_SMILES, Property.USE_CACHED ) == null ) {
@@ -318,28 +284,6 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
             (smiles == null) ? "Calculating..." : smiles
         );
 
-        String inchi = null;
-        try {
-            inchi = cdkMol.getInChI(Property.USE_CACHED);
-        } catch ( BioclipseException e ) {
-            e.printStackTrace();
-        }
-        valueMap.put(
-            PROPERTY_INCHI,
-            (inchi == null || inchi.length() == 0) ? "Calculating..." : inchi
-        );
-        String inchikey = null;
-        try {
-            inchikey = cdkMol.getInChIKey(Property.USE_CACHED);
-        } catch ( BioclipseException e ) {
-            e.printStackTrace();
-        }
-        valueMap.put(
-            PROPERTY_INCHIKEY,
-            (inchikey == null || inchikey.length() == 0) ? "Calculating..."
-                                                         : inchikey
-        );
-
         // IChemObject.getProperties()
         Map<Object,Object> objectProps = item.getAtomContainer().getProperties();
         for (Object propKey : objectProps.keySet()) {
@@ -390,44 +334,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
 
     public Object getPropertyValue(Object id) {
 
-        if (id.equals( PROPERTY_INCHI ) || id.equals( PROPERTY_INCHIKEY )){
-            Object property
-                = cdkMol.getProperty( CDKMolecule.INCHI_OBJECT,
-                                      Property.USE_CACHED );
-            if ( property == null ) {
-                return null;
-            }
-            if ( property instanceof InChI ) {
-                InChI inchi = (InChI)property;
-                if ( id.equals( PROPERTY_INCHI ) )
-                    return inchi.getValue();
-                else
-                    return inchi.getKey();
-            }
-            if ( id.equals( PROPERTY_INCHI ) ) {
-                if ( property instanceof String ) {
-                    return property;
-                }
-                /* Okey we have an object claiming to keep an InChi value but it
-                 * is not an InChi and it is not a String. All I can think of
-                 * doing is hoping it at least has a good toString method.
-                 */
-                return property.toString();
-            }
-            if ( id.equals( PROPERTY_INCHIKEY ) ) {
-                if ( property instanceof String ) {
-                    return property;
-                }
-                /* Okey we have an object claiming to keep an InChiKey but it
-                 * is not an InChi and it is not a String. All I can think of
-                 * doing is hoping it at least has a good toString method.
-                 */
-                return property.toString();
-            }
-            //Give up, we can't provide that property.
-            return null;
-        }
-        else if (id.equals( PROPERTY_SMILES))
+        if (id.equals( PROPERTY_SMILES))
             return cdkMol.getProperty(PROPERTY_SMILES ,
                                       Property.USE_CACHED );
 
