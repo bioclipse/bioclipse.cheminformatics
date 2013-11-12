@@ -514,7 +514,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             renderer.paint( model, visitor);// ,bounds,false);
         }
     	} catch (Exception e) {
-    		logger.error(e.getMessage());
+            logger.error( e.getMessage(), e );
     	}
     }
 

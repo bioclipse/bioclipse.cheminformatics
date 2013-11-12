@@ -3,7 +3,8 @@ Bundle-SymbolicName: net.bioclipse.cdk.jchempaint.view;singleton:=true
 Bundle-Version: 2.6.1.qualifier
 Bundle-Name: JChemPaintView
 Bundle-ManifestVersion: 2
-Export-Package: net.bioclipse.cdk.jchempaint.view
+Export-Package: net.bioclipse.cdk.jchempaint.rendering,
+ net.bioclipse.cdk.jchempaint.view
 Import-Package: org.apache.log4j
 Bundle-Vendor: The Bioclipse Team
 Bundle-ActivationPolicy: lazy

@@ -13,11 +13,17 @@ package net.bioclipse.cdk.jchempaint.view;
 import java.awt.geom.AffineTransform;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
+
+import net.bioclipse.cdk.jchempaint.rendering.Renderer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
@@ -48,6 +54,11 @@ import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Scale;
 import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;
 import org.openscience.cdk.renderer.generators.ReactionSceneGenerator.ArrowHeadWidth;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.launch.Framework;
 
 public class SWTRenderer implements IDrawVisitor{
 
@@ -441,6 +452,7 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void visitDefault(IRenderingElement element) {
+    	if(!visitOSGi(element))
         logger.debug("No visitor method implemented for : "
                 + element.getClass());
     }
@@ -534,8 +546,35 @@ public class SWTRenderer implements IDrawVisitor{
                 cl = cl.getSuperclass();
             }
         }
-        logger.debug( "Encounter Object class" );
         return null;
+    }
+
+    /**
+     * Tries to look up a renderer in the OSGi registry.
+     * 
+     * @param element
+     * @return true if the element was rendered with a service
+     */
+    private boolean visitOSGi(IRenderingElement element) {
+    	BundleContext context = FrameworkUtil.getBundle(SWTRenderer.class).getBundleContext();
+    	try {
+			Collection<ServiceReference<Renderer>> sRefs = context.getServiceReferences(Renderer.class, null);
+			List<Renderer> renderers = new ArrayList<Renderer>();
+			for(ServiceReference<Renderer> sRef:sRefs) {
+				Renderer rer = context.getService(sRef);
+				if(rer!=null)
+					renderers.add(rer);
+			}
+			for(Renderer r:renderers) {
+				if(r.accepts(element)) {
+					r.visit(gc,transform,model, element);
+					return true;
+				}
+			}
+		} catch (InvalidSyntaxException e) {
+			logger.warn("Could not lookup renderer", e);
+		}
+    	return false;
     }
 
     public void setFontManager( IFontManager fontManager ) {
