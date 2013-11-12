@@ -43,7 +43,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.internal.UIPlugin;
 
 /**
  * The main page of the SDF properties wizard.
@@ -470,8 +469,15 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                     public void widgetSelected( SelectionEvent e ) {
                         Object source = e.getSource();
                         for (int i = 0; i < columns; i++)
-                            if (source.equals( headerCombo[i] ) )
-                                headers.set( i, headerCombo[i].getItem( i ) );
+                            if (source.equals( headerCombo[i] ) ) {
+                                headers.set( i, headerCombo[i]
+                                        .getItem( headerCombo[i]
+                                                .getSelectionIndex() ) );
+                                txtCombo.setItem( i, headerCombo[i]
+                                         .getItem( headerCombo[i]
+                                                .getSelectionIndex() ) );
+                            }
+                        
                         updatePageComplite();
                         updateErrorMessage();
                     }
@@ -485,9 +491,19 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                     @Override
                     public void keyReleased( KeyEvent e ) {
                         Object source = e.getSource();
+
                         for (int i = 0; i < columns; i++)
-                            if (source.equals( headerCombo[i] ) )
-                                headers.set( i, headerCombo[i].getText() );
+                            if (source.equals( headerCombo[i] ) ) {
+                                if (headers.size() > i) {
+                                    headers.set( i, headerCombo[i].getText() );
+                                    txtCombo.setItem( i, headerCombo[i]
+                                                            .getText() );
+                                } else {
+                                    headers.add( headerCombo[i].getText() );
+                                    txtCombo.add( headerCombo[i].getText() ); 
+                                }
+                            }
+                        settingsComposite.redraw();
                         updatePageComplite();
                         updateErrorMessage();
                     }
@@ -497,22 +513,17 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                     
                 } );
                 
-                if (sdfPropertyList != null && sdfPropertyList.size() > 0) {
+                if (sdfPropertyList != null && sdfPropertyList.size() > 0) {                                     
                     headerCombo[i].add( "" );
                     for (int j = 0; j < sdfPropertyList.size(); j++)
                         headerCombo[i].add( sdfPropertyList.get( j ) );
-                    if ( columns >= sdfPropertyList.size() ) {
-                        headerCombo[i].select( i );
-                        headers.add( headerCombo[i].getItem( i ) );
-                    } else {
-                        headerCombo[i].select( 0 );
-                        headers.add( headerCombo[i].getItem( 0 ) );
-                    }
+                    headerCombo[i].select( 0 );
                 } else {
                     // It should not end-up here
                     headers.clear();
                     headerCombo[i].clearSelection();
                 }
+                headerCombo[i].setListVisible(true);
                 headerCombo[i].setLayoutData( headersGridData );
             } else {
                 headerText[i] = new Text( dataComposite, SWT.READ_ONLY | 
@@ -656,8 +667,8 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
             } else {
                 headerCombo[i].setEnabled( isIncluded[i] );
                 headerCombo[i].removeAll();
-                for ( int j =0; j < headers.size(); j++ )
-                    headerCombo[i].add( headers.get( j ) );
+                for ( int j =0; j < sdfPropertyList.size(); j++ )
+                    headerCombo[i].add( sdfPropertyList.get( j ) );
             }
             dataText[i].setEnabled( isIncluded[i] );               
         }
@@ -725,8 +736,10 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
      */
     protected void meargeFiles(IProgressMonitor monitor) {
         try {
-            fileHandler.meargeFiles( isIncluded, names, dataFileIncludeName, monitor );
-            ResourcesPlugin.getWorkspace().getRoot().refreshLocal( IResource.DEPTH_INFINITE, null );
+            fileHandler.meargeFiles( isIncluded, names, 
+                                     dataFileIncludeName, monitor );
+            ResourcesPlugin.getWorkspace().getRoot()
+                .refreshLocal( IResource.DEPTH_INFINITE, null );
         } catch ( FileNotFoundException e ) {
             logger.error( e );
         } catch ( CoreException e ) {
@@ -767,7 +780,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                 dataFileIncludeName = false;
                 updateDataCompocite();
             }
-            updateComponents();
+//            updateComponents();
             updateComponentSize();
             updatePageComplite();
             updateErrorMessage();
