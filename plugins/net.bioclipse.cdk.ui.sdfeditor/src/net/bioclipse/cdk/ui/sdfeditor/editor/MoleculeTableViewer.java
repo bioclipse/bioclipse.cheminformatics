@@ -12,6 +12,7 @@ package net.bioclipse.cdk.ui.sdfeditor.editor;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -44,6 +45,7 @@ import net.sourceforge.nattable.grid.layer.GridLayer;
 import net.sourceforge.nattable.layer.AbstractLayer;
 import net.sourceforge.nattable.layer.DataLayer;
 import net.sourceforge.nattable.layer.ILayerListener;
+import net.sourceforge.nattable.layer.LabelStack;
 import net.sourceforge.nattable.layer.cell.AggregrateConfigLabelAccumulator;
 import net.sourceforge.nattable.layer.cell.BodyOverrideConfigLabelAccumulator;
 import net.sourceforge.nattable.layer.cell.ColumnOverrideLabelAccumulator;
@@ -356,6 +358,10 @@ public class MoleculeTableViewer extends ContentViewer {
             }
             return Platform.getAdapterManager().getAdapter(this, adapter);
         }
+        
+        public int getIndex() {
+            return index;
+        }
     }
 
     @Override
@@ -368,13 +374,26 @@ public class MoleculeTableViewer extends ContentViewer {
                 currentSelected = -1;
                 return StructuredSelection.EMPTY;
             }
-
+            
+            int [] selCols = getSelectedColumns();
+            
             Range first = selectedSet.iterator().next();
             currentSelected = first.start;
 
             IMoleculesEditorModel model;
             if(getInput() instanceof IMoleculesEditorModel) {
                 model = (IMoleculesEditorModel) getInput();
+                Object[] properties = model.getAvailableProperties().toArray();
+                List<String> selProp = new ArrayList<String>(selCols.length);               
+                int propIndex;
+                for(int i=0;i<selCols.length;i++) {
+                    propIndex = bodyLayer.getSelectionLayer().getColumnIndexByPosition( selCols[i] );
+                    if (propIndex == 0)
+                        selProp.add( "2D-structure" );
+                    else {
+                        selProp.add( properties[propIndex-1].toString() );
+                    }
+                }
 
                 if(selectedSet.size()==1 && first.end-first.start == 1) {
                     return new StructuredSelection(
@@ -387,7 +406,7 @@ public class MoleculeTableViewer extends ContentViewer {
                     Collections.sort( ints );
                     int[] values = new int[ints.size()];
                     for(int i=0;i<values.length;i++) values[i]=ints.get( i );
-                    return new MolTableSelection( values, model);
+                    return new MolTableSelection( values, model, selProp);
                 }
             }
         }
@@ -444,8 +463,13 @@ public class MoleculeTableViewer extends ContentViewer {
 
     @Override
     public void setSelection( ISelection selection, boolean reveal ) {
-
-        // TODO Auto-generated method stub
+        if (selection instanceof MolTableSelection) {
+            MolTableSelection mts = (MolTableSelection) selection;
+            bodyLayer.getSelectionLayer().clear();
+            Iterator<Integer> itr = mts.selection.iterator();
+            while (itr.hasNext())
+                bodyLayer.getSelectionLayer().selectRow( 0, itr.next()-1, false, true );
+        }
 
     }
 
@@ -466,7 +490,7 @@ public class MoleculeTableViewer extends ContentViewer {
 
 
     public int getFirstSelected() {
-
+        
         return currentSelected;
     }
 
@@ -482,4 +506,5 @@ public class MoleculeTableViewer extends ContentViewer {
     public IMoleculesEditorModel getInput() {
     	return (IMoleculesEditorModel) super.getInput();
     }
+     
 }

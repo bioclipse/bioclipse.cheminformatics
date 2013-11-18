@@ -29,8 +29,9 @@ public class MolTableSelection implements IStructuredSelection, IIterable,IAdapt
     IMoleculesEditorModel model;
     List<Integer> selection;
     IPropertySource2 propertySource;
-
-    public MolTableSelection(int[] selection,IMoleculesEditorModel model) {
+    List<String> propertyNames;
+    
+    public MolTableSelection(int[] selection,IMoleculesEditorModel model, List<String> propertyNames ) {
         this.selection = new ArrayList<Integer>(selection.length);
         for(int i:selection) {
         	this.selection.add(i);
@@ -44,6 +45,7 @@ public class MolTableSelection implements IStructuredSelection, IIterable,IAdapt
         	}
         }
         this.selection = new ArrayList<Integer>(sel);
+        this.propertyNames = propertyNames;
     }
 
     public boolean isEmpty() {
@@ -144,5 +146,13 @@ public class MolTableSelection implements IStructuredSelection, IIterable,IAdapt
     @SuppressWarnings("unchecked")
     public List toList() {
         return toListG();
+    }
+    
+    public List<Integer> getSelectedRows() {
+        return selection;
+    }
+    
+    public List<String> getPropertyNames() {
+        return propertyNames;
     }
 }
