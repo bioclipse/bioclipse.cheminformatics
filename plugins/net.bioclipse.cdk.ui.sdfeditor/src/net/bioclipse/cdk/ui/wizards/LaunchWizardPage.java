@@ -8,8 +8,6 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.wizards;
 
-import java.awt.Dialog;
-
 import net.bioclipse.cdk.ui.sdfeditor.editor.MoleculesEditor;
 import net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart;
 
