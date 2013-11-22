@@ -17,9 +17,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+
+import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+import net.bioclipse.core.domain.IMolecule.Property;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -587,8 +592,7 @@ public class PropertiesImportFileHandler {
         int work = 0;
         
         IteratingSDFReader sdfItr = new IteratingSDFReader(
-            getSDFileContents(),
-                                       SilentChemObjectBuilder.getInstance());
+            getSDFileContents(), SilentChemObjectBuilder.getInstance());
         Scanner fileScanner;
         ArrayList<String> values, names;
         names = propertiesName;
@@ -607,7 +611,7 @@ public class PropertiesImportFileHandler {
         FileOutputStream out = new FileOutputStream(newFile);
         SDFWriter writer = new SDFWriter( out );
         IChemObject mol;
-        
+
         if (propLinkedBy) {
             /* This option only add the properties to the molecules where 
              * the linked properties has the same value.*/
@@ -747,6 +751,81 @@ public class PropertiesImportFileHandler {
         monitor.done();
     }
     
+    protected void addPropertiesToMolTable(boolean[] includedProerties, 
+                                             ArrayList<String> propertiesName,
+                                             boolean propNameInDataFile, 
+                                             IProgressMonitor monitor,
+                                             IMoleculesEditorModel model,
+                                             List<ICDKMolecule> selMols) 
+                                                     throws FileNotFoundException {
+        
+        ArrayList<String> values;
+        int index = 0, work = 0;
+        int numberOfMolecules = model.getNumberOfMolecules();
+        Scanner fileScanner;
+        
+        switch (dataFileFormart) {
+            case CSV:
+                String filePath = dataFile.getFullPath().toString();
+                CSVReader csvReader = 
+                        new CSVReader( new FileReader(filePath) );
+                String[] nextRow;
+                for (index = 0;index<numberOfMolecules;index++) {
+                    try {                      
+                        nextRow = csvReader.readNext();
+                        if (index == 0 && propNameInDataFile)
+                            nextRow = csvReader.readNext();
+
+                        values = new ArrayList<String>();
+                        for (String value:nextRow)
+                            values.add( value );
+                        
+                        addPropToMolTable( model, propertiesName, values, 
+                                           includedProerties, index, selMols );
+
+                    } catch ( IOException e ) {
+                        /* It seams that this is the only way to know that we 
+                         * reached the end of the file */
+                        try {
+                            csvReader.close();
+                        } catch ( IOException e1 ) {
+                            logger.error( e1.getMessage() );
+                        }
+                        break;
+                    }
+                    monitor.worked( work++ );
+                }
+                break;
+
+            case TXT:
+                fileScanner = new Scanner( getDataFileContents() );
+                /* We uses the names provided from the wizard, so if the 
+                 * file contains names we just throw them away... */
+                if ( propNameInDataFile && fileScanner.hasNextLine() )
+                    fileScanner.nextLine();
+                while ( fileScanner.hasNextLine() && index < numberOfMolecules) {
+                    values = readNextLine( fileScanner.nextLine() );
+                    addPropToMolTable( model, propertiesName, values, 
+                                       includedProerties, index, selMols );
+                    index++;
+                }
+                fileScanner.close();
+                break;
+
+            case NO_FILE_SELECTED:
+                /* It shouldn't end up here, 'cos the file has to be 
+                 * selected before it starts to merge */
+                throw new FileNotFoundException("Can't find the data-file");
+
+            default:
+                logger.debug( "Support for "+dataFileFormart+" " +
+                        "needs to be implemented for unlinked properties");
+                break;
+        }
+
+        
+    }
+    
     /**
      * This method do the work with adding the properties to a molecule.
      * 
@@ -774,6 +853,47 @@ public class PropertiesImportFileHandler {
         
     }
 
+    private void addPropToMolTable(IMoleculesEditorModel model, 
+                                   ArrayList<String> propNames,
+                                   ArrayList<String> propValues, 
+                                   boolean[] includedProp, int molIndex,
+                                   List<ICDKMolecule> selMols) {
+        
+        Iterator<String> namesItr = propNames.iterator();
+        Iterator<String> valueItr = propValues.iterator();         
+        String name = "";
+        int propIndex = 0;
+        ICDKMolecule mol;
+        
+        if (propLinkedBy) {
+            int index = propNames.indexOf( sdFileLink );    
+            for (int i=0;i<model.getNumberOfMolecules();i++) {
+                mol = model.getMoleculeAt( i );
+                Object molProp = mol.getProperty( sdFileLink, 
+                                            Property.USE_CACHED_OR_CALCULATED );
+                if (propValues.get( index ).equals( molProp.toString() )) {
+                    molIndex = i;
+                    break;
+                }
+            }
+        }
+        
+        mol = model.getMoleculeAt( molIndex );
+        if (selMols.isEmpty() || selMols.contains( mol )) {
+            while ( namesItr.hasNext() ) {
+                name = namesItr.next();
+
+                if (!(includedProp.length == 0) && includedProp[propIndex] ) {
+                    Object value = valueItr.next();
+                    mol.setProperty( name, value );
+                    model.setPropertyFor( molIndex, name, value );
+                } else
+                    valueItr.next();
+                propIndex++;
+            }                       
+        }
+    }                          
+    
     /**
      * This method sets the path to where the new sd-file will be saved. If it 
      * contains a file name that file name is removed.
