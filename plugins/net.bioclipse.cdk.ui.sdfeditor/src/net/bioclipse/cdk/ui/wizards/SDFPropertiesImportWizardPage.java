@@ -10,6 +10,7 @@ package net.bioclipse.cdk.ui.wizards;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -333,7 +334,13 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                 for (int i=0;i<numberOfMolecules;i++) {
                     rows[i] = i;
                 }
-                selection = new MolTableSelection( rows, model2 );
+                
+                List<String> properties = new ArrayList<String>();
+                Collection<Object> prop = model2.getAvailableProperties();
+                for (Object obj:prop)
+                    properties.add( obj.toString() );
+                
+                selection = new MolTableSelection( rows, model2, properties );
                 
             } else
                 return;
