@@ -28,6 +28,8 @@ import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.MolTableHeaderMenuConfigur
 import net.bioclipse.cdk.ui.sdfeditor.editor.nattable.RowHeaderLayerStack;
 import net.bioclipse.cdk.ui.sdfeditor.editor.painter.JmolCellPainter;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+import net.bioclipse.model.ChartSelection;
+import net.bioclipse.model.PlotPointData;
 import net.sourceforge.nattable.NatTable;
 import net.sourceforge.nattable.config.AbstractUiBindingConfiguration;
 import net.sourceforge.nattable.config.CellConfigAttributes;
@@ -469,8 +471,14 @@ public class MoleculeTableViewer extends ContentViewer {
             Iterator<Integer> itr = mts.selection.iterator();
             while (itr.hasNext())
                 bodyLayer.getSelectionLayer().selectRow( 0, itr.next()-1, false, true );
+        } else if (selection instanceof ChartSelection) {
+            ChartSelection chartSel = (ChartSelection) selection;
+            bodyLayer.getSelectionLayer().clear();
+            Iterator<PlotPointData> selItr = chartSel.iterator();
+            while (selItr.hasNext()) {
+                bodyLayer.getSelectionLayer().selectRow( 0, selItr.next().getRowNumber()-1, false, true );
+            }
         }
-
     }
 
      IRenderer2DConfigurator getRenderer2DConfigurator() {

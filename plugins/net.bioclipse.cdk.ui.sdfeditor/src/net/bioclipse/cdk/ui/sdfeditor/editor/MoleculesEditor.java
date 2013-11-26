@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
@@ -37,6 +38,8 @@ import net.bioclipse.cdk.ui.sdfeditor.business.SDFIndexEditorModel;
 import net.bioclipse.cdk.ui.sdfeditor.business.SDFileIndex;
 import net.bioclipse.cdk.ui.views.IFileMoleculesEditorModel;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+import net.bioclipse.chart.ChartConstants;
+import net.bioclipse.chart.IChartDescriptor;
 import net.bioclipse.core.ResourcePathTransformer;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule;
@@ -44,6 +47,8 @@ import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.BioclipseJob;
 import net.bioclipse.jobs.BioclipseJobUpdateHook;
 import net.bioclipse.jobs.BioclipseUIJob;
+import net.bioclipse.model.ChartSelection;
+import net.bioclipse.model.PlotPointData;
 import net.sourceforge.nattable.NatTable;
 import net.sourceforge.nattable.grid.GridRegion;
 import net.sourceforge.nattable.layer.LabelStack;
@@ -551,14 +556,7 @@ public class MoleculesEditor extends EditorPart implements
     }
 
     void reactOnSelection( ISelection selection ) {
-
-        //if ( element instanceof ICDKMolecule )
-//            if (((IStructuredSelection)viewer.getSelection()).toList()
-//                                            .containsAll( selection.toList() ))
-//                return;
-//            else
-//        if(viewer != null)
-//                setSelectedRows(selection);
+        molTableViewer.setSelection( selection );
     }
 
     @Override

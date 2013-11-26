@@ -37,9 +37,12 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.silent,
  org.eclipse.core.expressions,
  org.openscience.cdk.extra,
- org.openscience.cdk.smiles
+ org.openscience.cdk.smiles,
+ net.bioclipse.chart
 Bundle-ActivationPolicy: lazy
-Import-Package: net.bioclipse.inchi.business,
+Import-Package: net.bioclipse.chart,
+ net.bioclipse.chart.ui.business,
+ net.bioclipse.inchi.business,
  org.apache.log4j,
  org.eclipse.ui.views.properties.tabbed,
  org.slf4j
