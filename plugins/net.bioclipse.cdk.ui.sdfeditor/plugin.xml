@@ -133,6 +133,11 @@
               id="net.bioclipse.cdk.ui.sdfeditor.command.ImportProperties"
               name="Import Properties">
         </command>
+        <command
+              defaultHandler="net.bioclipse.cdk.ui.plot.ChartFromSDF"
+              id="net.bioclipse.chart.ui.chartFromSDF"
+              name="To chart">
+        </command>
   	</extension>
 
 	<extension
@@ -214,6 +219,11 @@
          <command
                commandId="net.bioclipse.cdk.molTable.column.remove"
                label="Remove Property"
+               style="push">
+         </command>
+         <command
+               commandId="net.bioclipse.chart.ui.chartFromSDF"
+               label="Plot column"
                style="push">
          </command>
   </menuContribution>
@@ -300,7 +310,12 @@
      <separator
            name="net.bioclipse.cdk.ui.sdfeditor.extra"
            visible="true">
-     </separator> </menuContribution>
+     </separator>
+     <command
+           commandId="net.bioclipse.chart.ui.chartFromSDF"
+           label="Plot column"
+           style="push">
+     </command> </menuContribution>
 	</extension>
  <extension
        point="net.bioclipse.scripting.contribution">
