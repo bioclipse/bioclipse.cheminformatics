@@ -91,6 +91,8 @@ The Eclipse Public License accompanies this distribution, and is available at ht
       <import plugin="net.bioclipse.browser.business"/>
       <import plugin="jcl.over.slf4j"/>
       <import feature="org.eclipse.rcp" version="3.7.1" match="greaterOrEqual"/>
+      <import plugin="net.bioclipse.chart"/>
+      <import plugin="net.bioclipse.chart.ui"/>
    </requires>
 
    <plugin
