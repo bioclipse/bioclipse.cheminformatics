@@ -37,13 +37,16 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Random;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -3349,5 +3352,83 @@ public class CDKManager implements IBioclipseManager {
         return retList;
     }
     
+    public void convertSDFtoSMILESFile( IFile sdfFile, 
+                                        IProgressMonitor monitor ) 
+                throws Exception, BioclipseException {
+        SubMonitor progress = SubMonitor.convert( monitor );
+        progress.beginTask( "Converting SDF to SMILES file", 100 );
+        Iterator<ICDKMolecule> iterator 
+            = createMoleculeIterator(sdfFile, new NullProgressMonitor() );
+        Set<String> properties = new LinkedHashSet<String>();
+        int count = 0;
+        progress.subTask( "Counting SDF entries and properties..." );
+        while (iterator.hasNext()) {
+            ICDKMolecule mol = iterator.next();
+            for ( Object o : mol.getAtomContainer().getProperties().keySet() ) {
+                properties.add( o.toString() );
+            }
+            count++;
+        }
+        progress.worked( 10 );
         
+        IPath outPath = sdfFile.getFullPath().removeFileExtension().addFileExtension("smi");
+        IFile outfile = ResourcesPlugin.getWorkspace().getRoot().getFile( outPath );
+        if (outfile.exists()) {
+            outfile.delete(true, progress.newChild( 1 ));
+        }
+        progress.worked( 5 );
+        
+        // Write the properties line of the SMILES file
+        int propertyCount = 0;
+        StringBuilder builder = new StringBuilder();
+        builder.append( "SMILES\t" );
+        for ( String property : properties ) {
+            if (++propertyCount == 1) {
+                builder.append( property );
+            }
+            else {
+                builder.append("\t" + property);
+            }
+            if ( monitor.isCanceled() ) {
+                throw new OperationCanceledException();
+            }
+        }
+        builder.append( "\n" );
+        outfile.create( 
+            new ByteArrayInputStream( builder.toString().getBytes() ),
+            IFile.FORCE, 
+            progress.newChild( 5 ) );
+        
+        progress.subTask( "Writing SMILES..." );
+        progress.setWorkRemaining(count);
+        // Write the SMILES lines
+        iterator = createMoleculeIterator(sdfFile, new NullProgressMonitor() );
+        int written = 0;
+        long startTime = System.currentTimeMillis();
+        while (iterator.hasNext()) {
+            ICDKMolecule mol = iterator.next();
+            
+            StringBuilder output = new StringBuilder();
+            output.append( mol.toSMILES() );
+            for (String property : properties) {
+                Object propertyValue 
+                    = mol.getAtomContainer().getProperties().get(property);
+                output.append( "\t" );
+                output.append( 
+                    (propertyValue == null ? "" 
+                                           : propertyValue.toString() ) );
+            }
+            output.append( "\n" );
+            outfile.appendContents( 
+                new ByteArrayInputStream( output.toString().getBytes() ), 
+                IFile.FORCE, 
+                progress.newChild( 0 ) );
+            if ( monitor.isCanceled() ) {
+                throw new OperationCanceledException();
+            }
+            progress.worked( 1 );
+            progress.subTask( "Writing SMILES... (" +
+                TimeCalculator.generateTimeRemainEst( startTime, ++written, count ) +")" );
+        }
+    }
 }

@@ -1236,4 +1236,14 @@ public interface ICDKManager extends IBioclipseManager {
          methodSummary="Generates a list of tautomers."
     )
     public List<ICDKMolecule> getTautomers(IMolecule molecule) throws BioclipseException;
+    
+    
+    @Recorded
+    @PublishedMethod(
+        params="String sdfFilename",
+        methodSummary="Create a SMILES file from an SDF file. Any existing " +
+        		          ".smi file with the same name will be overwritten."
+    )
+    public void convertSDFtoSMILESFile(String sdfFilename);
+    public void convertSDFtoSMILESFile(IFile sdffile);
 }
