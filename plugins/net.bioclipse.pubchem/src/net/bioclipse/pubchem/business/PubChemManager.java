@@ -44,7 +44,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 public class PubChemManager implements IBioclipseManager {
 
-    private final static String EUTILS_URL_BASE = "http://www.ncbi.nlm.nih.gov/entrez/eutils";
+    private final static String EUTILS_URL_BASE = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils";
     private final static String PUBCHEM_URL_BASE = "http://pubchem.ncbi.nlm.nih.gov/";
     private final static String PUBCHEMRDF_URL_BASE = "http://rdf.ncbi.nlm.nih.gov/pubchem/compound/";
 
