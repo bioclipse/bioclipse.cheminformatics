@@ -2,6 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension-point id="net.bioclipse.cdk.propertyCalculator" name="PropertyCalculator" schema="schema/net.bioclipse.cdk.propertyCalculator.exsd"/>
+   <extension-point id="net.bioclipse.cdk.ui.sdfeditor.plotParameter" name="Plot Parameter" schema="schema/net.bioclipse.cdk.ui.sdfeditor.plotParameter.exsd"/>
    <extension
          point="org.eclipse.ui.editors">
       <editor
@@ -137,6 +138,11 @@
               defaultHandler="net.bioclipse.cdk.ui.plot.ChartFromSDF"
               id="net.bioclipse.chart.ui.chartFromSDF"
               name="To chart">
+           <commandParameter
+                 id="net.bioclipse.cdk.ui.sdfeditor.plotType"
+                 name="Plot type"
+                 optional="false">
+           </commandParameter>
         </command>
   	</extension>
 
@@ -221,11 +227,54 @@
                label="Remove Property"
                style="push">
          </command>
-         <command
+         <!--command
                commandId="net.bioclipse.chart.ui.chartFromSDF"
                label="Plot column"
                style="push">
-         </command>
+            <parameter
+                  name="net.bioclipse.cdk.ui.sdfeditor.plotType"
+                  value="ScatterPlot">
+            </parameter>
+         </command-->
+         <menu
+               label="Plot">
+            <command
+                  commandId="net.bioclipse.chart.ui.chartFromSDF"
+                  label="Scatter Plot"
+                  style="push">
+               <parameter
+                     name="net.bioclipse.cdk.ui.sdfeditor.plotType"
+                     value="ScatterPlot">
+               </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.chart.ui.chartFromSDF"
+                  label="Histogram"
+                  style="push">
+               <parameter
+                     name="net.bioclipse.cdk.ui.sdfeditor.plotType"
+                     value="Histogram">
+               </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.chart.ui.chartFromSDF"
+                  label="Line Plot"
+                  style="push">
+               <parameter
+                     name="net.bioclipse.cdk.ui.sdfeditor.plotType"
+                     value="LinePlot">
+               </parameter>
+            </command>
+            <command
+                  commandId="net.bioclipse.chart.ui.chartFromSDF"
+                  label="Box Plot"
+                  style="push">
+               <parameter
+                     name="net.bioclipse.cdk.ui.sdfeditor.plotType"
+                     value="BoxPlot">
+               </parameter>
+            </command>
+         </menu>
   </menuContribution>
   <menuContribution
         locationURI="popup:net.bioclipse.cdk.ui.sdfeditor.menu?before=additions">
@@ -311,11 +360,50 @@
            name="net.bioclipse.cdk.ui.sdfeditor.extra"
            visible="true">
      </separator>
-     <command
+     <!--command
            commandId="net.bioclipse.chart.ui.chartFromSDF"
            label="Plot column"
            style="push">
-     </command> </menuContribution>
+     </command-->
+     <menu
+           label="Plot">
+        <command
+              commandId="net.bioclipse.chart.ui.chartFromSDF"
+              label="Scatter Plot"
+              style="push">
+           <parameter
+                 name="net.bioclipse.cdk.ui.sdfeditor.plotType"
+                 value="ScatterPlot">
+           </parameter>
+        </command>
+        <command
+              commandId="net.bioclipse.chart.ui.chartFromSDF"
+              label="Histogram"
+              style="push">
+           <parameter
+                 name="net.bioclipse.cdk.ui.sdfeditor.plotType"
+                 value="Histogram">
+           </parameter>
+        </command>
+        <command
+              commandId="net.bioclipse.chart.ui.chartFromSDF"
+              label="Line Plot"
+              style="push">
+           <parameter
+                 name="net.bioclipse.cdk.ui.sdfeditor.plotType"
+                 value="LinePlot">
+           </parameter>
+        </command>
+        <command
+              commandId="net.bioclipse.chart.ui.chartFromSDF"
+              label="Box Plot"
+              style="push">
+           <parameter
+                 name="net.bioclipse.cdk.ui.sdfeditor.plotType"
+                 value="BoxPlot">
+           </parameter>
+        </command>
+     </menu> </menuContribution>
 	</extension>
  <extension
        point="net.bioclipse.scripting.contribution">

@@ -11,6 +11,7 @@
 
 package net.bioclipse.cdk.ui.sdfeditor;
 
+import net.bioclipse.cdk.smilesURL.SmilesProtocol;
 import net.bioclipse.cdk.ui.sdfeditor.business.IJSMoleculeTableManager;
 import net.bioclipse.cdk.ui.sdfeditor.business.IMoleculeTableManager;
 
@@ -23,19 +24,20 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class Activator extends AbstractUIPlugin {
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "net.bioclipse.cdk.ui.sdfeditor";
-	public static final String STRUCTURE_COLUMN_WIDTH="STRUCTURE_COLUMN_WIDTH";
+    // The plug-in ID
+    public static final String PLUGIN_ID = "net.bioclipse.cdk.ui.sdfeditor";
+    public static final String STRUCTURE_COLUMN_WIDTH="STRUCTURE_COLUMN_WIDTH";
 
-	// The shared instance
-	private static Activator plugin;
+    // The shared instance
+    private static Activator plugin;
 
-	private ServiceTracker finderTracker;
-  private ServiceTracker jsFinderTracker;
-
-	/**
-	 * The constructor
-	 */
+    private ServiceTracker finderTracker;
+    private ServiceTracker jsFinderTracker;
+    private SmilesProtocol sp;
+    
+    /**
+     * The constructor
+     */
 	public Activator() {
 	}
 
@@ -55,6 +57,9 @@ public class Activator extends AbstractUIPlugin {
                                           IJSMoleculeTableManager.class.getName(),
                                           null );
 		jsFinderTracker.open();
+		
+		sp = new SmilesProtocol();
+		sp.start( context );
 	}
 
 	/*
@@ -63,6 +68,7 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
+		sp.stop( context );
 		super.stop(context);
 	}
 

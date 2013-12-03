@@ -22,12 +22,15 @@ import net.bioclipse.cdk.domain.CDKChemObject;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget.Message;
+import net.bioclipse.chart.IChartDescriptor;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.AtomIndexSelection;
 import net.bioclipse.core.domain.IChemicalSelection;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.jobs.BioclipseUIJob;
+import net.bioclipse.model.ChartSelection;
+import net.bioclipse.model.PlotPointData;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
@@ -60,6 +63,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
@@ -83,7 +87,8 @@ public class JChemPaintView extends ViewPart
     implements ISelectionListener, ISelectionProvider {
 
     public static final String VIEW_ID="net.bioclipse.cdk.ui.view.Java2DRendererView";
-
+    public static final String CHART_VIEW_ID="net.bioclipse.plugins.views.ChartView";
+    
     private static final Logger logger = Logger.getLogger(JChemPaintView.class);
 
     private JChemPaintWidget canvasView;
@@ -258,9 +263,24 @@ public class JChemPaintView extends ViewPart
                     return;
                 }
             }
+        } else if ( part instanceof IViewPart ) {
+            if ( ((IViewPart) part).getSite().getId().equals( CHART_VIEW_ID ) ){
+                if( selection instanceof ChartSelection ) {
+                    ChartSelection cSel = (ChartSelection) selection;
+                    IChartDescriptor cd = cSel.getDescriptor();
+                    Object obj = cSel.getFirstElement();
+                    if (obj instanceof PlotPointData) {
+                        int index = ((PlotPointData) obj).getRowNumber();
+                        ICDKMolecule mol = cd.getAdapter(index-1, 
+                                                         ICDKMolecule.class );
+                        if (mol != null)
+                            setAtomContainer( mol.getAtomContainer() );
+                    }                        
+                }
+            }
         }
         Display.getDefault().syncExec( new Runnable() {
-            
+
             public void run() {
                 reactOnSelection( selection );
             }
