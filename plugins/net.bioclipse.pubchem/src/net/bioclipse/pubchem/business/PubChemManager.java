@@ -44,7 +44,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 public class PubChemManager implements IBioclipseManager {
 
-    private final static String EUTILS_URL_BASE = "http://www.ncbi.nlm.nih.gov/entrez/eutils";
+    private final static String EUTILS_URL_BASE = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils";
     private final static String PUBCHEM_URL_BASE = "http://pubchem.ncbi.nlm.nih.gov/";
     private final static String PUBCHEMRDF_URL_BASE = "http://rdf.ncbi.nlm.nih.gov/pubchem/compound/";
 
@@ -139,6 +139,7 @@ public class PubChemManager implements IBioclipseManager {
         if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
+        int max = 50;
 
         List<Integer> results = new ArrayList<Integer>();
         monitor.beginTask("Searching PubChem for '" + query + "'...", 1);
@@ -147,7 +148,7 @@ public class PubChemManager implements IBioclipseManager {
         query = replaceSpaces(query);
 
         String esearch = EUTILS_URL_BASE + "/esearch.fcgi?" +
-            "db=" + db + "&retmax=50&usehistory=y&tool=" + TOOL + "&term=" + query;
+            "db=" + db + "&retmax=" + max + "&usehistory=y&tool=" + TOOL + "&term=" + query;
 
         System.out.println("URL: " + esearch);
         URL queryURL = new URL(esearch);
@@ -168,10 +169,7 @@ public class PubChemManager implements IBioclipseManager {
 
             Nodes cidNodes = doc.query("/eSearchResult/IdList/Id");
 
-            int max = cidNodes.size();
-            if (max > 15) max = 15;
-
-            for (int cidCount=0; cidCount<max; cidCount++) {
+            for (int cidCount=0; cidCount<cidNodes.size(); cidCount++) {
                 String cidStr = cidNodes.get(cidCount).getValue();
                 int cid = Integer.parseInt(cidStr);
                 results.add(cid);
