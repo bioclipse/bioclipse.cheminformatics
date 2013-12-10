@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>Bioclipse Help</title>
+	<link rel="stylesheet" href="../../PRODUCT_PLUGIN/narrow_book.css" type="text/css">
+</head>
+
+<body>
+<h1>Plot from the Molecules Table Editor</h1>
+From a selection of some or all values from one or more columns there is possibly to make a plot of those values. This by right clicking on the selection and then choosing <b>Plot</b> and then select the wanted plot type in the submenu.<br><br>
+<h2>Plot one column</h2>
+If selecting all or only some values from one column and choosing to plot them, they will be plotted in respect to the row they are on. I.e. the x-axis will hold the row number of the values and the y-axis the values. The label on the x-axis will be "Row number" and on the y-axes the name of the column that contains the values. If a value in a cell isn't a number, then it will not be plotted. This means that if non of the values that is selected ar non-numbers the plot will be empty.<br>
+<h3>The 2D-structure column</h3>
+The column that displays the 2D-structure has been given a special roll in the plotting. Selecting some or all in this column will calculate and plot the mass of the molecule. The name of the axis that corresponds to this column is "Molecular mass". Because the values are calculated just before they are plotted, it might take some time if the are manny and/or lage structures.<br>
+<h2>Plot two columns</h2>
+If the values from two different columns are selected they will be plotted in respect to each other. Where the values of the column to the left will be on the x-axis and the one to the right on the y-axis. So by moving the columns in respect to each other its possibly to decide which columns values that are to be on  which axis. The labels on the axis will corresponds to the name of the name of column the values are from.<br>
+<h2>Plot several columns</h2>
+Plotting values from more than two columns is only supported by the histogram and box plot alternatives for the moment.<br>
+If several columns are selected and plotted as a histogram Bioclipse will take all values in those columns and divide them into a specific number of bins. The number of bins used is decided from the number of values in the selected columns.<br>
+For the box plot alternative, each column will become a box and the name of the column will be printed below it's box. For example, if three columns are selected then the box plot will have three boxes.<br>
+If values from more than two columns are selected for making a scatter or line plot only the values from the left-most column will be used and then plotted in respect to the row they are on, just as for selection in a single column.<br>
+
+<h2>Selections</h2>
+For more information about how the chart view works can be found <a href="../../net.bioclipse.statistics/html/ChartViewHelp.html">here</a>. However, below are some notes about selections in the chart when plotted from the Molecules Table Editor. Observe that selections does not work in histograms and box plots.<br>
+When some values has been plotted then a selection in the plot will high-light the corresponding row(s) in the Molecules Table Editor. And the other way around, a selection in the Molecules Table Editor will high-light the corresponding point(s) in the plot. Observe that if the SD-file in the Molecules Table Editor are closed and then reopen the chart will not recognize it as the source for the plotted data, and therefor the interaction will not work.<br>
+<h3>Selections in the Chart</h3>
+Except for high-lighting in the corresponding rows a selection in the chart will show information about the selections in the properties view. Where it is located depends on the settings, but most likely it is below the Molecules Table Editor. If the view not open then it's possibly to open it via the menu <b>Window > Show view > Others... > properties view</b>.<br>
+When selecting one point is selected the properties view will show the x-value of the point together with the label of the x-axis, and the y-value together with its label. If two or more values are selected the properties view will show (from the top row and down) the average value of the points, maximum value along the points, the minmum value and the number of points selected. In both the cases the properties view will show the name of file (source) that the plotted values are from. Observe that the labels of values are sorted in the alphabetic order, here-since the order of the vales when one point is selected will depend on the x- and y-labels of the chart.
+<h3>Selections in the Molecules Table Editor</h3>
+When making a selection in the Molecules Table Editor the properties view will show information about the molecule on the selected row. E.g. if the SD-file contains 2D- and/or 3D-coordinates, the properties etc. If several rows are selected it will show this information for the molecule, of the selected, that has the lowers row number, i.e. the molecules on the upper-most row of the selected. 
+</body>
+</html>

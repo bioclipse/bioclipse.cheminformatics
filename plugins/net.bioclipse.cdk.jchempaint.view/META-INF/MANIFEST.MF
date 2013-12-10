@@ -29,4 +29,5 @@ Require-Bundle: javax.vecmath,
  org.openscience.cdk.rendercontrol,
  org.openscience.cdk.libiocml,
  org.openscience.cdk.renderswt,
- org.openscience.cdk.silent
+ org.openscience.cdk.silent,
+ net.bioclipse.chart;bundle-version="2.6.2"

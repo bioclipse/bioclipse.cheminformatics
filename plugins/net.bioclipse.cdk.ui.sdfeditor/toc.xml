@@ -4,6 +4,8 @@
 <toc label="Molecules Table">
 	<topic label="The Molecules Table Editor" href="html/MolTableEditor.html"/> 
 	<topic label="SD-Files functionality" href="html/sdf_functionality.html"/>
-	<topic label="Add properties to SD-files" href="html/addPropHelp.html"/>
- <anchor id="mtePlotting"/> 
+	<topic href="html/addPropHelp.html" label="Add properties to SD-files">
+ </topic>
+ <topic href="html/plotFrMolTableEditor.html" label="Plot from Molecules Table Editor">
+ </topic>
 </toc>
