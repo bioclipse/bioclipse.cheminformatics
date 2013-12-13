@@ -31,15 +31,20 @@ import net.bioclipse.chart.ui.business.IJavaChartManager;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.model.ChartDescriptor;
+import net.bioclipse.model.JFreeChartTab;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.internal.UIPlugin;
+import org.eclipse.ui.views.IViewDescriptor;
 
 /**
  * This class abstracts (selected) data from the MolTableViewer and presents it
@@ -214,7 +219,7 @@ public class ChartFromSDF extends AbstractHandler {
                         if (yLabel.equals( MOL_STRUCTURE_COLUMN )) 
                             yLabel = ChartConstants.MOL_MASS;
 
-                        title = xLabel + " against " + yLabel;
+                        title = yLabel + " against " + xLabel;
                     } else {
                         xLabel = ChartConstants.ROW_NUMBER;
                         yLabel = selectedProerties.get( 0 );
@@ -295,9 +300,22 @@ public class ChartFromSDF extends AbstractHandler {
                             public <T> T getAdapter( int index, Class<T> clazz ) {
                                 if (clazz == ICDKMolecule.class) {
                                     IEditorPart editor = this.getSource();
-                                    if (editor instanceof MoleculesEditor)
-                                        return (T) ((MoleculesEditor) editor).getModel().
+                                    if (editor instanceof MoleculesEditor) {
+                                        ICDKMolecule mol = ((MoleculesEditor) editor).getModel().
                                                 getMoleculeAt( index );
+                                        
+                                        try {
+                                            if (!cdk.has2d( mol ))
+                                                mol = cdk.generate2dCoordinates( mol );
+                                        } catch ( BioclipseException e ) {
+                                            logger.error( "Could not see if the molecule have 2D-coordinates: "+e.getMessage() );
+                                        } catch ( Exception e ) {
+                                            logger.error( "Could not generate 2D coordianates: "+e.getMessage() );
+                                            return null;
+                                        }
+                                        
+                                        return (T) mol;
+                                    }
                                 }
 
                                 return null;
@@ -316,6 +334,7 @@ public class ChartFromSDF extends AbstractHandler {
                                 }
                                 StringBuilder toolTip = new StringBuilder("<html><body><img src=\"smiles:");
                                 toolTip.append( smiles );
+                                                                
                                 toolTip.append( "\" ></body></html>");
                                 
                                 return toolTip.toString();

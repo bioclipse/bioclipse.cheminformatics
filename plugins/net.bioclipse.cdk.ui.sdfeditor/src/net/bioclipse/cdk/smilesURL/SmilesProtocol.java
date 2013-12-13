@@ -22,6 +22,7 @@ import net.bioclipse.chart.ChartUtils;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.managers.business.IBioclipseManager;
 
+import org.apache.log4j.Logger;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -34,7 +35,7 @@ import org.osgi.service.url.URLStreamHandlerService;
 
 public class SmilesProtocol extends AbstractURLStreamHandlerService implements
         BundleActivator {
-
+    
     @Override
     public void start( BundleContext context ) throws Exception {
         Hashtable<String, String[]> properties = 
@@ -56,7 +57,16 @@ public class SmilesProtocol extends AbstractURLStreamHandlerService implements
     public static ICDKMolecule smilesToMolecule(String smiles) 
             throws BioclipseException {
         ICDKManager cdk = getManager( IJavaCDKManager.class );
-        return cdk.fromSMILES( smiles );
+        ICDKMolecule mol = cdk.fromSMILES( smiles );
+        if (!cdk.has2d( mol ))
+            try {
+                mol = cdk.generate2dCoordinates( mol );
+            } catch ( Exception e ) {
+               System.out.println("Could not generate 2D coordinates for the " +
+               		"tooltip molecule:"+e.getMessage());
+            }
+        
+        return mol;
     }
        
     public static <T extends IBioclipseManager> T getManager(Class<T> clazz) {
