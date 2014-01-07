@@ -11,7 +11,6 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +28,7 @@ import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculeUtils;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IFileMoleculesEditorModel;
+import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.core.util.TimeCalculator;
@@ -45,7 +45,6 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
@@ -122,6 +121,17 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
         return input.file();
     }
 
+    public String getRecord(int index) throws BioclipseException {
+    	try {
+			return input.getRecord(index);
+		} catch (Exception exception) {
+			throw new BioclipseException(
+				"Error while getting a SDF record: " + exception.getMessage(),
+				exception
+			);
+		}
+    }
+    
     public boolean isDirty() {
         return dirty || edited.size()!=0;
     }
