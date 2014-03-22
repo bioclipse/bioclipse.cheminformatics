@@ -722,7 +722,12 @@ public abstract class AbstractCDKManagerPluginTest {
 
     }
 
-
+    @Test
+    public void testIsValidCAS() throws Exception {
+    	Assert.assertTrue(cdk.isValidCAS("50-00-0"));
+    	Assert.assertFalse(cdk.isValidCAS("50--0"));
+    	Assert.assertFalse(cdk.isValidCAS("no"));
+    }
 
     @Test
     public void testLoadConformers() throws BioclipseException, IOException, URISyntaxException {

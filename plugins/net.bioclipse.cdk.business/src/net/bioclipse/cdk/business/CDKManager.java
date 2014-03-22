@@ -37,7 +37,6 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -93,7 +92,6 @@ import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.ChemModel;
 import org.openscience.cdk.ConformerContainer;
-import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.config.Elements;
@@ -104,6 +102,7 @@ import org.openscience.cdk.fingerprint.FingerprinterTool;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.geometry.alignment.KabschAlignment;
 import org.openscience.cdk.graph.ConnectivityChecker;
+import org.openscience.cdk.index.CASNumber;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomContainerSet;
@@ -166,7 +165,6 @@ import org.openscience.cdk.similarity.Tanimoto;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
-import org.openscience.cdk.smiles.smarts.parser.TokenMgrError;
 import org.openscience.cdk.tautomers.InChITautomerGenerator;
 import org.openscience.cdk.tools.AtomTypeAwareSaturationChecker;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
@@ -1714,6 +1712,10 @@ public class CDKManager implements IBioclipseManager {
             return false;
         }
 
+      }
+
+      public boolean isValidCAS(String number){
+          return CASNumber.isValid(number);
       }
 
       public List<IAtomContainer> getSmartsMatches(ICDKMolecule molecule,
