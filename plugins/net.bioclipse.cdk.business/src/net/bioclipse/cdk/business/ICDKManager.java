@@ -1017,6 +1017,13 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
+         params = "String number",
+         methodSummary = "Determines if the given CAS registry number is valid." )
+    @TestMethods("testIsValidCAS")
+    boolean isValidCAS( String number );
+
+    @Recorded
+    @PublishedMethod(
          params = "ICDKMolecule molecule, String SMARTS",
          methodSummary = "Query a molecule for a SMARTS string and return a " +
              "list of IAtomContainers with the matches." )
