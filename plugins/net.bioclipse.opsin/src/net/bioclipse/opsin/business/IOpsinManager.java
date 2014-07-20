@@ -13,6 +13,8 @@ package net.bioclipse.opsin.business;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.PublishedClass;
 import net.bioclipse.core.PublishedMethod;
+import net.bioclipse.core.TestClasses;
+import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.managers.business.IBioclipseManager;
 
@@ -21,12 +23,15 @@ import net.bioclipse.managers.business.IBioclipseManager;
     		"chemical structures.",
     doi="10.1021/ci100384d"
 )
+@TestClasses("net.bioclipse.opsin.test.APITest," +
+    "net.bioclipse.opsin.test.AbstractOpsinManagerPluginTest")
 public interface IOpsinManager extends IBioclipseManager {
 
 	@PublishedMethod(
 		params="String iupacName",
 		methodSummary="Converts an IUPAC name into a chemical structure"
 	)
+	@TestMethods("testParseIUPACName")
 	public ICDKMolecule parseIUPACName(String iupacName) 
 	                    throws BioclipseException;
 
@@ -34,6 +39,7 @@ public interface IOpsinManager extends IBioclipseManager {
 		params="String iupacName",
 		methodSummary="Converts an IUPAC name into a CML document"
 	)
+	@TestMethods("testParseIUPACNameAsCML")
 	public String parseIUPACNameAsCML(String iupacName) 
 	              throws BioclipseException;
 
