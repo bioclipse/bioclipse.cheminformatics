@@ -1034,7 +1034,7 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
-         params = "IMolecule molecule: atom container to fragmentate",
+         params = "IMolecule molecule",
          methodSummary = "Splits up an atom container into a List of " +
          		"IAtomContainer's with fully connected molecules")
     @TestMethods("testSMARTSonFile")
@@ -1051,8 +1051,7 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
-         params = "IMolecule molecule: molecule to calculate the total formal" +
-         		      " charge for.",
+         params = "IMolecule molecule",
          methodSummary = "Calculates the total formal charge.")
     @TestMethods("testSMARTSonFile")
     public int totalFormalCharge(IMolecule molecule)
