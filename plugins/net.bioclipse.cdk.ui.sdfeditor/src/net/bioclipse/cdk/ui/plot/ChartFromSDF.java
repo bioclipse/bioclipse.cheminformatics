@@ -62,8 +62,7 @@ public class ChartFromSDF extends AbstractHandler {
      * selected the mass of the molecule will be calculated. */ 
     private final static String MOL_STRUCTURE_COLUMN = "2D-structure";
     protected static final String PARAMETER_ID = "net.bioclipse.cdk.ui.sdfeditor.plotType";
-    private IChartManager chart = 
-            ChartUtils.getManager( IJavaChartManager.class );
+
     
     @Override
     public Object execute( ExecutionEvent event ) throws ExecutionException {
@@ -348,7 +347,8 @@ public class ChartFromSDF extends AbstractHandler {
                         };
                 }
 
-                chart.plot( descriptor );
+                ChartUtils.getManager( IJavaChartManager.class )
+                                .plot( descriptor );
 
             }
         }
