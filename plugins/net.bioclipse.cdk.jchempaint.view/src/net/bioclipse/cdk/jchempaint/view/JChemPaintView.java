@@ -92,7 +92,6 @@ public class JChemPaintView extends ViewPart
     private static final Logger logger = Logger.getLogger(JChemPaintView.class);
 
     private JChemPaintWidget canvasView;
-    private ChoiceGenerator extensionGenerator;
     private IPartListener2 partListener;
     private IAtomContainer ac;
 
@@ -115,10 +114,9 @@ public class JChemPaintView extends ViewPart
         canvasView = new JChemPaintWidget(parent, SWT.NONE ) {
             @Override
             protected List<IGenerator<IAtomContainer>> createGenerators() {
-                List<IGenerator<IAtomContainer>> genList =
-                	new ArrayList<IGenerator<IAtomContainer>>();
-                genList.add(extensionGenerator
-                            =ChoiceGenerator.getGeneratorsFromExtensionPoint());
+
+                List<IGenerator<IAtomContainer>> genList = new ArrayList<IGenerator<IAtomContainer>>();
+                genList.add(extensionGenerator=ChoiceGenerator.getGeneratorsFromExtensionPoint());
                 genList.addAll( super.createGenerators() );
                 return genList;
             }
@@ -447,7 +445,8 @@ public class JChemPaintView extends ViewPart
     }
 
     public void showExternalGenerators(boolean show) {
-        extensionGenerator.setUse( show );
+
+        canvasView.setUseExtensionGenerators( show );
         canvasView.redraw();
     }
 
