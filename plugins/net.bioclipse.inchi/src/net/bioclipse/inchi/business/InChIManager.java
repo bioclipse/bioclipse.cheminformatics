@@ -53,13 +53,18 @@ public class InChIManager implements IBioclipseManager {
 
     public void generate( IMolecule molecule, 
                           IReturner<InChI> returner,
-                          IProgressMonitor monitor) 
-                throws Exception {
+                          IProgressMonitor monitor)
+    throws Exception {
+        returner.completeReturn(generate(molecule, monitor));
+    }
+
+    public InChI generate( IMolecule molecule,
+                           IProgressMonitor monitor)
+    throws Exception {
     	monitor.beginTask("Calculating InChI", IProgressMonitor.UNKNOWN);
     	// return early if InChI library could not be loaded
     	if (!isAvailable()) {
-    		returner.completeReturn(InChI.FAILED_TO_CALCULATE);
-    		return;
+            return InChI.FAILED_TO_CALCULATE;
     	}
     	
     	Object adapted = molecule.getAdapter(IAtomContainer.class);
@@ -81,7 +86,7 @@ public class InChIManager implements IBioclipseManager {
             	InChI inchi = new InChI();
             	inchi.setValue(gen.getInchi());
             	inchi.setKey(gen.getInchiKey());
-            	returner.completeReturn( inchi );
+                return inchi ;
             } else {
             	throw new InvalidParameterException(
             			"Error while generating InChI (" + status + "): " +
@@ -99,11 +104,16 @@ public class InChIManager implements IBioclipseManager {
             IReturner<InChI> returner,
             IProgressMonitor monitor) 
     throws Exception {
+        returner.completeReturn(generate(molecule, options, monitor));
+    }
+
+    public InChI generate( IMolecule molecule, String options,
+            IProgressMonitor monitor)
+    throws Exception {
     	monitor.beginTask("Calculating InChI", IProgressMonitor.UNKNOWN);
     	// return early if InChI library could not be loaded
     	if (!isAvailable()) {
-    		returner.completeReturn(InChI.FAILED_TO_CALCULATE);
-    		return;
+            return InChI.FAILED_TO_CALCULATE;
     	}
 
     	Object adapted = molecule.getAdapter(IAtomContainer.class);
@@ -125,7 +135,7 @@ public class InChIManager implements IBioclipseManager {
     			InChI inchi = new InChI();
     			inchi.setValue(gen.getInchi());
     			inchi.setKey(gen.getInchiKey());
-    			returner.completeReturn( inchi );
+                return inchi;
     		} else {
     			throw new InvalidParameterException(
     					"Error while generating InChI (" + status + "): " +
