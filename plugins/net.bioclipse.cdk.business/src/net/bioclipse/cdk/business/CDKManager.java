@@ -308,10 +308,15 @@ public class CDKManager implements IBioclipseManager {
 
         // Create the reader
         ISimpleChemObjectReader reader = readerFactory.createReader(format);
-        if (handler != null) reader.setErrorHandler(handler);
         if (reader == null) {
-            throw new BioclipseException("Could not create reader in CDK.");
+            String message = "Could not create reader in CDK.";
+            if ( format == null ) {
+                message = "Unsupported file format in CDK";
+            }
+            throw new BioclipseException( message );
         }
+        if ( handler != null )
+            reader.setErrorHandler( handler );
 
         try {
             reader.setReader(instream);
