@@ -178,7 +178,8 @@ public class JChemPaintWidget extends Canvas {
         List<IGenerator<IAtomContainer>> generatorList =
         	new ArrayList<IGenerator<IAtomContainer>>();
 
-        generatorList.addAll(ChoiceGenerator.getGeneratorsFromExtension());
+        // generatorList.addAll(ChoiceGenerator.getGeneratorsFromExtension());
+
         if(extensionGenerator!=null) extensionGenerator.setUse( true );
         // This generator can be used for debugging partitioning problems
         //generatorList.add( new AtomContainerBoundsGenerator() );

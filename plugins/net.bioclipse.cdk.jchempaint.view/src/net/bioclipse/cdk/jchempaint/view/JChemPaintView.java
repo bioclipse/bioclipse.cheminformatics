@@ -258,6 +258,7 @@ public class JChemPaintView extends ViewPart
                 if(ac!=null) {
                     canvasView.remove( Message.GENERATED );
                     setAtomContainer( ac );
+                    showExternalGenerators( false );
                     return;
                 }
             }
@@ -281,6 +282,7 @@ public class JChemPaintView extends ViewPart
 
             public void run() {
                 reactOnSelection( selection );
+                showExternalGenerators( false );
             }
         });
     }
