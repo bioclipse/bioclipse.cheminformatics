@@ -65,11 +65,13 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.Page;
+import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.slf4j.LoggerFactory;
 
 public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
                                                     ISelectionListener,
-                                                    IResourceChangeListener{
+                                                    IResourceChangeListener,
+                                                    ITabbedPropertySheetPageContributor{
 
     Logger logger = Logger.getLogger( MultiPageMoleculesEditorPart.class );
 
@@ -577,6 +579,12 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
         if (getActiveEditor() instanceof JChemPaintEditor)
             return true;
         return false;
+    }
+
+    @Override
+    public String getContributorId() {
+
+        return getSite().getId();
     }
 
 }
