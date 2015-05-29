@@ -1301,6 +1301,7 @@
         </propertySection>
         <propertySection
               class="org.eclipse.ui.views.properties.tabbed.AdvancedPropertySection"
+              enablesFor="1"
               id="molecule.generalSection"
               tab="molecule.general">
            <input
@@ -1308,6 +1309,9 @@
            </input>
            <input
                  type="net.bioclipse.cdk.domain.ICDKMolecule">
+           </input>
+           <input
+                 type="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
            </input>
         </propertySection>
      </propertySections>

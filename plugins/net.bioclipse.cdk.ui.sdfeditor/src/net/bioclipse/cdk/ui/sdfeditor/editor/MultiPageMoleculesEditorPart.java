@@ -589,7 +589,7 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
     @Override
     public String getContributorId() {
 
-        return getSite().getId();
+        return "net.bioclipse.cdk.jchempaint.editor";
     }
 
 }

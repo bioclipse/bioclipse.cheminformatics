@@ -102,7 +102,9 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.PluginTransfer;
 import org.eclipse.ui.part.PluginTransferData;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.AtomContainerRenderer;
 import org.openscience.cdk.renderer.IRenderer;
@@ -699,6 +701,8 @@ public class MoleculesEditor extends EditorPart implements
             return outlinePage;
         } else if( adapter.isAssignableFrom(AtomContainerRenderer.class)) {
         	return getMolTableViewer().cellPainter.renderer;
+        } else if ( adapter.isAssignableFrom( IPropertySheetPage.class ) ) {
+            return new TabbedPropertySheetPage( this );
         }
         return super.getAdapter( adapter );
     }
@@ -706,7 +710,7 @@ public class MoleculesEditor extends EditorPart implements
     @Override
     public String getContributorId() {
 
-        return getSite().getId();
+        return "net.bioclipse.cdk.jchempaint.editor";
     }
 }
 
