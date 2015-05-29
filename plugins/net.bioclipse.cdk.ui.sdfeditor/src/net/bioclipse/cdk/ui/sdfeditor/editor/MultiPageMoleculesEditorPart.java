@@ -65,7 +65,9 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.Page;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.slf4j.LoggerFactory;
 
 public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
@@ -569,6 +571,9 @@ public class MultiPageMoleculesEditorPart extends MultiPageEditorPart implements
             return moleculesPage;
         if(adapter.equals( JChemPaintEditor.class ))
             return jcpPage;
+        if ( adapter.isAssignableFrom( IPropertySheetPage.class ) ) {
+            return new TabbedPropertySheetPage( this );
+        }
         return super.getAdapter( adapter );
     }
 
