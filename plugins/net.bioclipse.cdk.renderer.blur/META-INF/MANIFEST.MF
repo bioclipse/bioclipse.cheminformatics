@@ -12,6 +12,7 @@ Import-Package: javax.vecmath,
  org.openscience.cdk.interfaces;version="1.5.13",
  org.openscience.cdk.renderer;version="1.5.13",
  org.openscience.cdk.renderer.elements;version="1.5.13"
-Service-Component: OSGI-INF/atomHighlighterRenderer.xml
+Service-Component: OSGI-INF/atomHighlighterRenderer.xml,
+ OSGI-INF/awtblurrenderer.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
