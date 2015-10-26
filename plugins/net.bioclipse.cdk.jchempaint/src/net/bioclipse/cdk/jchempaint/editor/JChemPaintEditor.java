@@ -99,7 +99,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.controller.IControllerModel;
-import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.geometry.GeometryUtil;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -173,8 +173,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
             if (chemFormat == MDLV2000Format.getInstance()) {
                 // check for loss of information
                 IAtomContainer container = model.getAtomContainer();
-                if (GeometryTools.has3DCoordinates(container) &&
-                    GeometryTools.has2DCoordinates(container)) {
+                if (GeometryUtil.has3DCoordinates(container) &&
+                    GeometryUtil.has2DCoordinates(container)) {
             		boolean agreedWithInfoLoss = MessageDialog.openConfirm(
             				this.getSite().getShell(),
             				"WARNING",
@@ -331,7 +331,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
                     @Override
                     public void runInUI() {
                         ICDKMolecule model = getReturnValue();
-                        int x2d = GeometryTools.has2DCoordinatesNew(
+                        int x2d = GeometryUtil.has2DCoordinatesNew(
                                                      model.getAtomContainer() );
                         x2d = 2;
                         if(x2d <2 ) {

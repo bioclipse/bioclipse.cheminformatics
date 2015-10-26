@@ -56,7 +56,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.ChemModel;
 import org.openscience.cdk.ChemSequence;
-import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.geometry.GeometryUtil;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomContainerSet;
@@ -638,7 +638,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
                     IAtomContainer ac=cdkMol.getAtomContainer();
 
                     //Only add if have 3D coords
-                    if (GeometryTools.has3DCoordinates(ac)){
+                    if (GeometryUtil.has3DCoordinates(ac)){
                         addAtomContainer(collectedModels, ac);
                     }
                 }
@@ -737,7 +737,7 @@ public class JmolView extends ViewPart implements ISelectionListener, ISelection
 //                }
 //                //Only add if have 3D coords
 //                IAtomContainer ac=cdkmol.getAtomContainer();
-//                if (GeometryTools.has3DCoordinates(ac)){
+//                if (GeometryUtil.has3DCoordinates(ac)){
 //                    addAtomContainer( displayedModels, ac );
 //                }
             }

@@ -43,7 +43,7 @@ import org.eclipse.ui.views.properties.PropertySheetPage;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.geometry.GeometryUtil;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
@@ -240,12 +240,12 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         HashMap<String, Object> valueMap = new HashMap<String, Object>();
         valueMap.put(
             PROPERTY_HAS2D,
-            GeometryTools.has2DCoordinates(item.getAtomContainer()) ?
+            GeometryUtil.has2DCoordinates(item.getAtomContainer()) ?
                 "yes" : "no"
         );
         valueMap.put(
             PROPERTY_HAS3D,
-            GeometryTools.has3DCoordinates(item.getAtomContainer()) ?
+            GeometryUtil.has3DCoordinates(item.getAtomContainer()) ?
                 "yes" : "no"
         );
         ICDKManager cdk = Activator.getDefault().getJavaCDKManager();

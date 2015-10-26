@@ -73,7 +73,7 @@ import org.eclipse.ui.part.PluginTransfer;
 import org.eclipse.ui.part.PluginTransferData;
 import org.eclipse.ui.part.ViewPart;
 import org.openscience.cdk.AtomContainer;
-import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.geometry.GeometryUtil;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.renderer.generators.IGenerator;
@@ -305,7 +305,7 @@ public class JChemPaintView extends ViewPart
             return;
         }
 
-        if( GeometryTools.has2DCoordinatesNew( atomContainer )<2) {
+        if( GeometryUtil.has2DCoordinatesNew( atomContainer )<2) {
             BioclipseUIJob<IMolecule> uiJob = new BioclipseUIJob<IMolecule>() {
                 @Override
                 public void runInUI() {

@@ -13,12 +13,13 @@
 package net.bioclipse.cdk.jchempaint.widgets;
 
 import static net.bioclipse.cdk.jchempaint.outline.StructureContentProvider.createCDKChemObject;
-import static org.openscience.cdk.geometry.GeometryTools.has2DCoordinatesNew;
+import static org.openscience.cdk.geometry.GeometryUtil.has2DCoordinatesNew;
 
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 

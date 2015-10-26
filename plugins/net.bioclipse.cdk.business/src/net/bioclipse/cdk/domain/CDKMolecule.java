@@ -35,7 +35,7 @@ import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.fingerprint.Fingerprinter;
 import org.openscience.cdk.fingerprint.IBitFingerprint;
-import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.geometry.GeometryUtil;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
@@ -249,7 +249,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     public boolean has3dCoords() throws BioclipseException {
         if (getAtomContainer()==null) 
             throw new BioclipseException("Atomcontainer is null!");
-        return GeometryTools.has3DCoordinates(getAtomContainer());
+        return GeometryUtil.has3DCoordinates(getAtomContainer());
     }
     
     @Override

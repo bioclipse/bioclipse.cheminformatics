@@ -99,7 +99,7 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.exception.NoSuchAtomTypeException;
 import org.openscience.cdk.fingerprint.FingerprinterTool;
-import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.geometry.GeometryUtil;
 import org.openscience.cdk.geometry.alignment.KabschAlignment;
 import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.index.CASNumber;
@@ -2450,11 +2450,11 @@ public class CDKManager implements IBioclipseManager {
       }
 
       public boolean has2d(IMolecule mol) throws BioclipseException {
-          return GeometryTools.has2DCoordinates(asCDKMolecule(mol).getAtomContainer());
+          return GeometryUtil.has2DCoordinates(asCDKMolecule(mol).getAtomContainer());
       }
 
       public boolean has3d(IMolecule mol) throws BioclipseException {
-          return GeometryTools.has3DCoordinates(asCDKMolecule(mol).getAtomContainer());
+          return GeometryUtil.has3DCoordinates(asCDKMolecule(mol).getAtomContainer());
       }
 
       public void saveCML(ICDKMolecule cml,  String filename)

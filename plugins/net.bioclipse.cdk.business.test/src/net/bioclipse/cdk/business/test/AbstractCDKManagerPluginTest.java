@@ -76,7 +76,7 @@ import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.NoSuchAtomException;
-import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.geometry.GeometryUtil;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
@@ -1336,8 +1336,8 @@ public abstract class AbstractCDKManagerPluginTest {
         assertNotNull(mol);
         assertEquals(38, mol.getAtomCount());
         assertEquals(48, mol.getBondCount());
-        assertTrue(GeometryTools.has3DCoordinates(mol));
-        assertTrue(!GeometryTools.has2DCoordinates(mol));
+        assertTrue(GeometryUtil.has3DCoordinates(mol));
+        assertTrue(!GeometryUtil.has2DCoordinates(mol));
     }
 
 
