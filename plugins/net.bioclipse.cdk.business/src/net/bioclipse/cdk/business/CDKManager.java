@@ -92,7 +92,9 @@ import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.ChemModel;
 import org.openscience.cdk.ConformerContainer;
-import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
+import org.openscience.cdk.graph.Cycles;
+import org.openscience.cdk.aromaticity.Aromaticity;
+import org.openscience.cdk.aromaticity.ElectronDonation;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.config.Elements;
 import org.openscience.cdk.exception.CDKException;
@@ -391,25 +393,13 @@ public class CDKManager implements IBioclipseManager {
     private void sanatizeMDLV2000MolFileInput(CDKMolecule molecule) {
         IAtomContainer container = molecule.getAtomContainer();
         if (container != null && container.getAtomCount() > 0) {
-            CDKHydrogenAdder hAdder =
-                CDKHydrogenAdder.getInstance(container.getBuilder());
-            CDKAtomTypeMatcher matcher =
-                CDKAtomTypeMatcher.getInstance(container.getBuilder());
             try {
                 // perceive atom types
-                IAtomType[] types = matcher.findMatchingAtomType(container);
-                for (int i=0; i<container.getAtomCount(); i++) {
-                    if (types[i] != null) {
-                        IAtom atom = container.getAtom(i);
-                        // set properties needed for H adding and aromaticity
-                        atom.setAtomTypeName(types[i].getAtomTypeName());
-                        atom.setHybridization(types[i].getHybridization());
-                        atom.setValency(types[i].getValency());
-                        hAdder.addImplicitHydrogens(container, atom);
-                    }
-                }
                 // perceive aromaticity
-                CDKHueckelAromaticityDetector.detectAromaticity(container);
+                Aromaticity arom = new Aromaticity(ElectronDonation.cdk(),
+                                                   Cycles.cdkAromaticSet());
+                AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(container); // required for model
+                arom.apply(container);
                 // add missing double bonds
                 AtomTypeAwareSaturationChecker ataSatChecker = new AtomTypeAwareSaturationChecker();
                 ataSatChecker.decideBondOrder( container );
@@ -1091,8 +1081,9 @@ public class CDKManager implements IBioclipseManager {
             throw new BioclipseException( message + e.getMessage(), e );
           }
           try {
+              Aromaticity arom = new Aromaticity(ElectronDonation.cdk(),Cycles.cdkAromaticSet());
               AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( molecule );
-              CDKHueckelAromaticityDetector.detectAromaticity(molecule);
+              arom.apply( molecule);
               ataSatChecker.decideBondOrder( molecule );
           } catch (CDKException exception) {
         	  logger.warn("Could not figure out the double bond positions: " + exception.getMessage());
@@ -2874,8 +2865,9 @@ public class CDKManager implements IBioclipseManager {
             todealwith = asCDKMolecule( mol ).getAtomContainer();
         }
         try{
+            Aromaticity arom = new Aromaticity(ElectronDonation.cdk(),Cycles.cdkAromaticSet());
             AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(todealwith);
-            CDKHueckelAromaticityDetector.detectAromaticity(todealwith);
+            arom.apply( todealwith);
         }catch(CDKException ex){
             throw new BioclipseException("Problems perceiving aromaticity: "+ex.getMessage());
         }

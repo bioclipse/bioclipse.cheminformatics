@@ -19,9 +19,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
-import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
-import org.openscience.cdk.interfaces.IAtomType;
-import org.openscience.cdk.silent.SilentChemObjectBuilder;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 public class NewFromIUPACWizard extends BasicNewResourceWizard {
 
@@ -67,19 +65,9 @@ public class NewFromIUPACWizard extends BasicNewResourceWizard {
         try {
             ICDKMolecule mol = opsin.parseIUPACName(getIUPAC());
             mol = cdk.generate2dCoordinates(mol);
-            CDKAtomTypeMatcher matcher = CDKAtomTypeMatcher.getInstance(
-            	SilentChemObjectBuilder.getInstance()
-            );
-            IAtomType[] types = matcher.findMatchingAtomType(
-            	mol.getAtomContainer()
-            );
-            for (int i=0; i<types.length; i++) {
-            	if (types[i] != null) {
-            		mol.getAtomContainer().getAtom(i).setAtomTypeName(
-            			types[i].getAtomTypeName()
-            		);
-            	}
-            }
+
+            AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( mol.getAtomContainer() );
+            
             net.bioclipse.ui.business.Activator.getDefault().getUIManager()
             	.open(mol, "net.bioclipse.cdk.ui.editors.jchempaint.cml");
         } catch (Exception e) {

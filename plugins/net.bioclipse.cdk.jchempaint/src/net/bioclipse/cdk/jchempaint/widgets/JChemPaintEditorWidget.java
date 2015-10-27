@@ -78,7 +78,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
+import org.openscience.cdk.aromaticity.Aromaticity;
+import org.openscience.cdk.aromaticity.ElectronDonation;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.ControllerModel;
@@ -91,6 +92,7 @@ import org.openscience.cdk.controller.undoredo.IUndoListener;
 import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.controller.undoredo.UndoRedoHandler;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.graph.Cycles;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
@@ -810,16 +812,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 bond.setFlag(CDKConstants.ISAROMATIC, false);
             // determine new information
             try {
-                IAtomType[] types = matcher.findMatchingAtomType(container);
-                for (int i=0; i<container.getAtomCount(); i++) {
-                    IAtom atom = container.getAtom(i);
-                    if (types[i] != null) {
-                        atom.setAtomTypeName(types[i].getAtomTypeName());
-                        atom.setHybridization(types[i].getHybridization());
-                        hAdder.addImplicitHydrogens(container, atom);
-                    }
-                }
-                CDKHueckelAromaticityDetector.detectAromaticity(container);
+                Aromaticity arom = new Aromaticity(ElectronDonation.cdk(),Cycles.cdkAromaticSet());
+                AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( container );
+                arom.apply( container );
             } catch ( CDKException e ) {
                 e.printStackTrace();
             }
