@@ -147,7 +147,7 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         	CDKAtomTypeMatcher.getInstance(hydrogenlessClone.getBuilder());
         IAtomType[] types;
 		try {
-			types = matcher.findMatchingAtomType(hydrogenlessClone);
+            types = matcher.findMatchingAtomTypes( hydrogenlessClone );
 		} catch (CDKException exception) {
 			return "Cannot calculate SMILES: " + exception.getMessage();
 		}
