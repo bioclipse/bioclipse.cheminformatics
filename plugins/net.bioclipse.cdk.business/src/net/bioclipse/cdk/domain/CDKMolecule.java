@@ -116,7 +116,11 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         String result = ensureFullAtomTyping(hydrogenlessClone);
         if (result.length() > 0) return result;
 
-        return new SmilesGenerator(true).createSMILES(hydrogenlessClone);
+        try {
+            return new SmilesGenerator().create( hydrogenlessClone );
+        } catch ( CDKException e ) {
+            throw new BioclipseException( e.getMessage(), e );
+        }
     }
 
 	private String ensureFullAtomTyping(IAtomContainer hydrogenlessClone) {
