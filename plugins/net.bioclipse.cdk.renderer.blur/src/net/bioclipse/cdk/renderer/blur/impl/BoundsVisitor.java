@@ -8,6 +8,7 @@ import java.awt.geom.Rectangle2D;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.IRenderingVisitor;
+import org.openscience.cdk.renderer.elements.MarkedElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
 
 public class BoundsVisitor implements IRenderingVisitor {
@@ -26,6 +27,9 @@ public class BoundsVisitor implements IRenderingVisitor {
                 visit( (OvalElement) element );
             else if ( element instanceof ElementGroup )
                 visit( (ElementGroup) element );
+        else if ( element instanceof MarkedElement ) {
+            visit( ((MarkedElement) element).element() );
+        }
         }
 		public void visit(ElementGroup element) {
             element.visitChildren( this );
