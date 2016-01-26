@@ -16,3 +16,5 @@ Service-Component: OSGI-INF/atomHighlighterRenderer.xml,
  OSGI-INF/awtblurrenderer.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
+ Filters.jar

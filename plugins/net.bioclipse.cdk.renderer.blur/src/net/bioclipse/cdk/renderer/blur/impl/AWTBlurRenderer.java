@@ -7,6 +7,7 @@ import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.util.Arrays;
@@ -18,6 +19,7 @@ import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.visitor.AWTDrawVisitor;
 
+import com.jhlabs.image.GaussianFilter;
 
 public class AWTBlurRenderer implements Renderer<Graphics2D> {
 
@@ -51,24 +53,32 @@ public class AWTBlurRenderer implements Renderer<Graphics2D> {
             renderer.setTransform( transform );
             renderer.visit( element.getNode() );
             gc.dispose();
-            
             int stencilSize = 9;// element.getStencilSize() * 2;
 
 //            float[] kernel = new float[(stencilSize / 3) * (stencilSize / 3)];
 //            Arrays.fill( kernel, 1f );
-             float[] kernel = {
-             0.00f, 0.10f, 0.00f,
-             0.10f, 0.50f, 0.10f,
-             0.00f, 0.10f, 0.00f };
-            ConvolveOp op = new ConvolveOp( new Kernel( stencilSize / 3,
-                stencilSize / 3, kernel ) );
-            BufferedImage blured = op.filter( image, null );
-            blured = op.filter( blured, null );
-            blured = op.filter( blured, null );
+            int kernelSize = 15;
+            float[] matrix = new float[kernelSize * kernelSize];
+            Arrays.fill( matrix, 0.111f );
 
-            originalGC.drawImage( blured, (int) bounds.getX(),
-                                  (int) bounds.getY(), (int) bounds.getWidth(),
-                                  (int) bounds.getHeight(), null );
+             float[] kernel = { 0.111f,0.111f,0.111f,
+                                0.111f,0.111f,0.111f,
+                                0.111f,0.111f,0.111f};
+//                         {
+//             0.00f, 0.10f, 0.00f,
+//             0.10f, 0.50f, 0.10f,
+//             0.00f, 0.10f, 0.00f };
+            ConvolveOp op = new ConvolveOp( new Kernel( kernelSize, kernelSize, matrix ), ConvolveOp.EDGE_ZERO_FILL,
+                null );
+            BufferedImage blured = op.filter( image, null );
+            // blured = op.filter( blured, null );
+            // blured = op.filter( blured, null );
+
+            // originalGC.drawImage( blured, (int) bounds.getX(),
+            // (int) bounds.getY(), (int) bounds.getWidth(),
+            // (int) bounds.getHeight(), null );
+            BufferedImageOp bufferedOp = new GaussianFilter( 17 );
+            originalGC.drawImage( image, bufferedOp, (int) bounds.getX(), (int) bounds.getY() );
         }
         
     }
