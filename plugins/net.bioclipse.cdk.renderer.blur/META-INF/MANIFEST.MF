@@ -4,8 +4,7 @@ Bundle-Name: AtomHighlighter
 Bundle-SymbolicName: net.bioclipse.cdk.renderer.blur
 Bundle-Version: 1.0.1.qualifier
 Export-Package: net.bioclipse.cdk.renderer.blur
-Require-Bundle: org.3pq.jgrapht,
- net.bioclipse.cdk.jchempaint.view
+Require-Bundle: net.bioclipse.cdk.jchempaint.view
 Import-Package: javax.vecmath,
  org.eclipse.swt.graphics,
  org.eclipse.swt.widgets,
