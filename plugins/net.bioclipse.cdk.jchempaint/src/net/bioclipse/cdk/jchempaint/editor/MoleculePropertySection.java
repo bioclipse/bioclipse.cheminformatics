@@ -145,8 +145,9 @@ public class MoleculePropertySection extends AbstractPropertySection {
                             IInChIManager inchi = Activator.getDefault()
                                             .getJavaInChIManager();
                             try {
+                            	InChI inc = inchi.generate( inchiClone ) ;
                                 item.setProperty( CDKMolecule.INCHI_OBJECT,
-                                                  inchi.generate( inchiClone ) );
+                                                  inc);
                             } catch ( Exception e ) {
                                 logger.debug( "Could not calculate InChi", e );
                                 item.setProperty( CDKMolecule.INCHI_OBJECT,
@@ -191,13 +192,19 @@ public class MoleculePropertySection extends AbstractPropertySection {
 //        labelText.removeModifyListener(listener);
         CDKMoleculePropertySource properties = (CDKMoleculePropertySource) molecule
             .getAdapter(IPropertySource.class);
-        Object value = properties
-                        .getPropertyValue( "net.bioclipse.cdk.domain.property.InChI" );
-        inchi.setText( value != null ? value.toString() : "N/A" );
 
-        value = properties
-                        .getPropertyValue( "net.bioclipse.cdk.domain.property.InChIKey" );
-        inchi_key.setText( value != null ? value.toString() : "N/A" );
+        Object value = properties.getPropertyValue(CDKMolecule.INCHI_OBJECT);
+        if(value instanceof InChI ) {
+        	InChI InChi = (InChI) value;
+        	inchi.setText(InChi.getValue());
+        	inchi_key.setText(InChi.getKey());
+        } else {
+        	value = properties.getPropertyValue( "net.bioclipse.cdk.domain.property.InChI" );
+        	inchi.setText( value != null ? value.toString() : "N/A" );
+        	
+        	value = properties.getPropertyValue( "net.bioclipse.cdk.domain.property.InChIKey" );
+        	inchi_key.setText( value != null ? value.toString() : "N/A" );
+        }
         // labelText.addModifyListener(listener);
     }
     

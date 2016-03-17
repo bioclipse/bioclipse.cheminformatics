@@ -337,6 +337,9 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         if (id.equals( PROPERTY_SMILES))
             return cdkMol.getProperty(PROPERTY_SMILES ,
                                       Property.USE_CACHED );
+        if(id.equals(CDKMolecule.INCHI_OBJECT)) {
+        	return cdkMol.getProperty(CDKMolecule.INCHI_OBJECT, Property.USE_CACHED);
+        }
 
         if (cdkValueMap.containsKey(id))
             return cdkValueMap.get(id);

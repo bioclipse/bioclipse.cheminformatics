@@ -20,5 +20,5 @@ Import-Package: javax.vecmath,
  org.eclipse.swt.graphics,
  org.eclipse.swt.widgets
 Service-Component: OSGI-INF/atomHighlighterRenderer.xml
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
