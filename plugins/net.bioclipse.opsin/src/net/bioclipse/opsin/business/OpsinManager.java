@@ -68,7 +68,7 @@ public class OpsinManager implements IBioclipseManager {
 		}
         OpsinResult result = nameToStructure.parseChemicalName(iupacName);
         if (result.getStatus() == OPSIN_RESULT_STATUS.SUCCESS) {
-        	return result.getCml().toXML();
+        	return result.getCml();
         }
         throw new BioclipseException(
         	"Could not parse the IUPAC name (" + iupacName + "), because: " +
