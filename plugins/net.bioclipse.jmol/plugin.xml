@@ -793,7 +793,8 @@
          <view
                id="net.bioclipse.jmol.views.JmolConsoleView"
                minimized="false"
-               relationship="stack">
+               relationship="stack"
+               relative="org.eclipse.ui.views.PropertySheet">
          </view>
          <viewShortcut
                id="net.bioclipse.jmol.views.JmolConsoleView">
