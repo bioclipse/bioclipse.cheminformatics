@@ -40,7 +40,7 @@ import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowEndCarbons;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHydrogens;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondDistance;
-import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondLength;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BondLength;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.WedgeWidth;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
 import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;

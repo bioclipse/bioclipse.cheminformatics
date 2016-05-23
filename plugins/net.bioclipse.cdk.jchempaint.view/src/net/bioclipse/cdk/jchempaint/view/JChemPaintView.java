@@ -78,6 +78,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 /**
@@ -387,7 +388,7 @@ public class JChemPaintView extends ViewPart
                 AtomIndexSelection isel = (AtomIndexSelection) atomSelection;
                 int[] selindices = isel.getSelection();
                 //                        System.out.println("\n** Should highlight these JCP atoms:\n");
-                IAtomContainer selectedMols=new AtomContainer();
+                IAtomContainer selectedMols = SilentChemObjectBuilder.getInstance().newInstance( IAtomContainer.class );
                 for (int i=0; i<selindices.length;i++){
                     selectedMols.addAtom( ac.getAtom( selindices[i] ));
                     //                            System.out.println(i);

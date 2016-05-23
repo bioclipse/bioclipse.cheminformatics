@@ -73,7 +73,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.ChemFile;
+import org.openscience.cdk.silent.ChemFile;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.NoSuchAtomException;
 import org.openscience.cdk.geometry.GeometryUtil;
@@ -1320,7 +1320,7 @@ public abstract class AbstractCDKManagerPluginTest {
         String filename = "testFiles/cs2a.cml";
         InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
         CMLReader reader = new CMLReader(ins);
-        IChemFile chemFile = (IChemFile)reader.read(new org.openscience.cdk.ChemFile());
+        IChemFile chemFile = (IChemFile) reader.read( new ChemFile() );
 
         // test the resulting ChemFile content
         assertNotNull(chemFile);
@@ -1364,7 +1364,7 @@ public abstract class AbstractCDKManagerPluginTest {
             throw new BioclipseException("Could not create reader in CDK.");
         }
 
-        IChemFile chemFile = new org.openscience.cdk.ChemFile();
+        IChemFile chemFile = new ChemFile();
 
         // Do some customizations...
         CDKManagerHelper.customizeReading(reader);

@@ -120,10 +120,12 @@ import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 public class JChemPaintEditorWidget extends JChemPaintWidget
-    implements ISelectionProvider, IViewEventRelay, IUndoListener{
+ implements ISelectionProvider, IViewEventRelay,
+                IUndoListener {
 
     Logger logger = Logger.getLogger( JChemPaintEditorWidget.class );
 

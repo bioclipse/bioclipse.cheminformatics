@@ -2332,7 +2332,7 @@ public class CDKManager implements IBioclipseManager {
 
             ModelBuilder3D mb3d;
             try {
-                mb3d = ModelBuilder3D.getInstance();
+                mb3d = ModelBuilder3D.getInstance( SilentChemObjectBuilder.getInstance() );
             } catch ( CDKException e ) {
                 throw new BioclipseException(e.getMessage());
             }
