@@ -5,7 +5,9 @@ Bundle-Name: JChemPaintView
 Bundle-ManifestVersion: 2
 Export-Package: net.bioclipse.cdk.jchempaint.rendering,
  net.bioclipse.cdk.jchempaint.view
-Import-Package: org.apache.log4j
+Import-Package: net.bioclipse.ioformats,
+ org.apache.log4j,
+ org.openscience.cdk.io;version="1.5.13"
 Bundle-Vendor: The Bioclipse Team
 Bundle-ActivationPolicy: lazy
 Require-Bundle: javax.vecmath,
@@ -30,4 +32,5 @@ Require-Bundle: javax.vecmath,
  org.openscience.cdk.libiocml,
  org.openscience.cdk.renderswt,
  org.openscience.cdk.silent,
- net.bioclipse.chart;bundle-version="2.6.2"
+ net.bioclipse.chart;bundle-version="2.6.2",
+ org.openscience.cdk.io;bundle-version="1.5.13"

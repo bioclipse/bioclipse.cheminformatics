@@ -33,12 +33,11 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.rendercontrol,
  net.sourceforge.nattable.core,
  org.openscience.cdk.renderswt,
- org.openscience.cdk.extra,
  org.openscience.cdk.silent,
  org.eclipse.core.expressions,
- org.openscience.cdk.extra,
  org.openscience.cdk.smiles,
- net.bioclipse.chart
+ net.bioclipse.chart,
+ org.openscience.cdk.valencycheck;bundle-version="1.5.13"
 Bundle-ActivationPolicy: lazy
 Import-Package: net.bioclipse.chart,
  net.bioclipse.chart.ui.business,

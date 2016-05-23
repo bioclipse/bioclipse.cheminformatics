@@ -20,7 +20,6 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.valencycheck;bundle-version="1.4.14",
  org.openscience.cdk.silent;bundle-version="1.4.14",
  org.openscience.cdk.standard;bundle-version="1.4.14",
- org.openscience.cdk.annotation;bundle-version="1.4.14",
  net.sf.jni-inchi;bundle-version="0.8.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.inchi.business.test

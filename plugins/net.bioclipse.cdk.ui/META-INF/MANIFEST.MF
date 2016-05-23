@@ -28,10 +28,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.expressions,
  net.bioclipse.chemoinformatics,
  net.bioclipse.ui.business,
- org.openscience.cdk.extra,
- org.openscience.cdk.silent
+ org.openscience.cdk.silent,
+ org.openscience.cdk.valencycheck;bundle-version="1.5.13"
 Bundle-ActivationPolicy: lazy
-Import-Package: org.apache.log4j
+Import-Package: org.apache.log4j,
+ org.openscience.cdk.io.formats;version="1.5.13"
 Export-Package: net.bioclipse.cdk.ui.filters,
  net.bioclipse.cdk.ui.handlers,
  net.bioclipse.cdk.ui.model,
