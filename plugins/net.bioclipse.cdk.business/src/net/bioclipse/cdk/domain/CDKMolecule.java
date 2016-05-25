@@ -349,7 +349,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
 
     public void setProperty(String propertyKey, Object value) {
         if(value == null)
-            atomContainer.getProperties().remove( propertyKey );
+            atomContainer.removeProperty( propertyKey );
         else
             atomContainer.setProperty( propertyKey, value );
     }

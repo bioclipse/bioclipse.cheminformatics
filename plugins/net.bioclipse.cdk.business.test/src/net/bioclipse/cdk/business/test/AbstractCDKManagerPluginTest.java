@@ -1606,12 +1606,12 @@ public abstract class AbstractCDKManagerPluginTest {
         Assert.assertFalse( cdk.has2d( mol ));
 
         //Prop for Atom 0
-        mol.getAtomContainer().getAtom( 0 ).getProperties().put( "wee", "how" );
+        mol.getAtomContainer().getAtom( 0 ).setProperty( "wee", "how" );
         Assert.assertEquals( "how", mol.getAtomContainer().getAtom( 0 )
                              .getProperties().get( "wee" ) );
 
         //Prop for AtomContainer
-        mol.getAtomContainer().getProperties().put( "wee", "how" );
+        mol.getAtomContainer().setProperty( "wee", "how" );
         Assert.assertEquals( "how", mol.getAtomContainer()
                              .getProperties().get( "wee" ) );
 
