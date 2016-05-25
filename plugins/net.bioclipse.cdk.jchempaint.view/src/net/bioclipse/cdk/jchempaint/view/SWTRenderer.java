@@ -58,7 +58,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.osgi.framework.launch.Framework;
 
 public class SWTRenderer implements IDrawVisitor{
 
