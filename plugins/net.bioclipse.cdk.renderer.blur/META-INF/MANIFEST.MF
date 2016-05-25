@@ -4,21 +4,14 @@ Bundle-Name: AtomHighlighter
 Bundle-SymbolicName: net.bioclipse.cdk.renderer.blur
 Bundle-Version: 1.0.1.qualifier
 Export-Package: net.bioclipse.cdk.renderer.blur
-Require-Bundle: org.openscience.cdk.interfaces,
- org.openscience.cdk.renderbasic,
- org.openscience.cdk.renderawt,
- org.openscience.cdk.silent,
- org.openscience.cdk.smiles,
- org.openscience.cdk.core,
- org.openscience.cdk.standard,
- org.openscience.cdk.sdg,
- org.openscience.cdk.valencycheck,
- org.3pq.jgrapht,
- org.openscience.cdk.render,
+Require-Bundle: org.3pq.jgrapht,
  net.bioclipse.cdk.jchempaint.view
 Import-Package: javax.vecmath,
  org.eclipse.swt.graphics,
- org.eclipse.swt.widgets
+ org.eclipse.swt.widgets,
+ org.openscience.cdk.interfaces;version="1.5.13",
+ org.openscience.cdk.renderer;version="1.5.13",
+ org.openscience.cdk.renderer.elements;version="1.5.13"
 Service-Component: OSGI-INF/atomHighlighterRenderer.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy

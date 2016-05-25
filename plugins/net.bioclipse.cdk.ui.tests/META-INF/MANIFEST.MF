@@ -14,10 +14,10 @@ Require-Bundle: org.eclipse.core.runtime,
  net.bioclipse.ui,
  net.bioclipse.cdk.business,
  net.bioclipse.cdk.ui,
- org.openscience.cdk.interfaces,
  net.bioclipse.core.tests
 Eclipse-LazyStart: true
 Export-Package: net.bioclipse.cdk.ui.tests
 Import-Package: org.junit,
  org.junit.runner,
- org.junit.runners
+ org.junit.runners,
+ org.openscience.cdk.interfaces;version="1.5.13"

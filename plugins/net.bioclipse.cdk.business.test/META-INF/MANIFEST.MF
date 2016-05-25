@@ -12,23 +12,24 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.core,
  org.eclipse.core.resources,
  net.bioclipse.core.tests,
- org.openscience.cdk.interfaces,
- org.openscience.cdk.core,
- org.openscience.cdk.standard,
- org.openscience.cdk.diff,
- org.openscience.cdk.smiles,
- org.openscience.cdk.extra,
- org.openscience.cdk.io,
- org.openscience.cdk.libiocml,
  javax.vecmath,
  net.bioclipse.ui,
- org.openscience.cdk.ioformats,
- net.bioclipse.ui.business,
- org.openscience.cdk.silent;bundle-version="1.5.13"
+ net.bioclipse.ui.business
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.cdk,
  net.bioclipse.cdk.business.test
 Import-Package: org.junit,
  org.junit.runner,
- org.junit.runners
+ org.junit.runners,
+ org.openscience.cdk;version="1.5.13",
+ org.openscience.cdk.exception;version="1.5.13",
+ org.openscience.cdk.geometry;version="1.5.13",
+ org.openscience.cdk.interfaces;version="1.5.13",
+ org.openscience.cdk.io;version="1.5.13",
+ org.openscience.cdk.io.formats;version="1.5.13",
+ org.openscience.cdk.silent;version="1.5.13",
+ org.openscience.cdk.smiles;version="1.5.13",
+ org.openscience.cdk.templates;version="1.5.13",
+ org.openscience.cdk.tools.diff;version="1.5.13",
+ org.openscience.cdk.tools.manipulator;version="1.5.13"
 Bundle-ClassPath: .

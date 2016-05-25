@@ -12,15 +12,13 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.core.tests;bundle-version="0.1.0",
  net.bioclipse.cdk.debug,
  net.bioclipse.cdk.business,
- org.openscience.cdk.io,
- org.openscience.cdk.interfaces,
- org.openscience.cdk.core,
- org.openscience.cdk.diff,
- org.openscience.cdk.extra,
- org.openscience.cdk.ioformats,
  net.bioclipse.ui;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.cdk.debug.test
 Import-Package: org.junit,
  org.junit.runner,
- org.junit.runners
+ org.junit.runners,
+ org.openscience.cdk.exception;version="1.5.13",
+ org.openscience.cdk.interfaces;version="1.5.13",
+ org.openscience.cdk.templates;version="1.5.13",
+ org.openscience.cdk.tools.diff;version="1.5.13"

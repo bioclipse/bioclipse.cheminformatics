@@ -9,13 +9,12 @@ Require-Bundle: org.eclipse.swt,
  org.eclipse.core.runtime,
  org.eclipse.jface,
  org.eclipse.ui,
- org.openscience.cdk.interfaces,
- org.openscience.cdk.render,
  net.bioclipse.cdk.business,
- net.bioclipse.core,
- org.openscience.cdk.standard,
- org.openscience.cdk.core,
- org.openscience.cdk.silent,
- org.openscience.cdk.extra;bundle-version="1.5.13"
+ net.bioclipse.core
 Bundle-Vendor: The Bioclipse Team
-Import-Package: org.slf4j
+Import-Package: org.openscience.cdk;version="1.5.13",
+ org.openscience.cdk.config;version="1.5.13",
+ org.openscience.cdk.interfaces;version="1.5.13",
+ org.openscience.cdk.silent;version="1.5.13",
+ org.openscience.cdk.tools.periodictable;version="1.5.13",
+ org.slf4j

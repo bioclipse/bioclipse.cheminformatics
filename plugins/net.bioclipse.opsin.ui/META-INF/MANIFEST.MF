@@ -12,12 +12,10 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.opsin,
  org.eclipse.ui.ide,
  net.bioclipse.cdk.business,
- org.openscience.cdk.core,
- org.openscience.cdk.interfaces,
  net.bioclipse.ui.business,
- org.eclipse.core.resources,
- org.openscience.cdk.silent,
- org.openscience.cdk.standard;bundle-version="1.5.13"
+ org.eclipse.core.resources
 Bundle-ActivationPolicy: lazy
-Import-Package: org.apache.log4j
+Import-Package: org.apache.log4j,
+ org.openscience.cdk.interfaces;version="1.5.13",
+ org.openscience.cdk.tools.manipulator;version="1.5.13"
 Export-Package: net.bioclipse.opsin.ui.wizards
