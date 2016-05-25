@@ -60,7 +60,7 @@ public class CDKDebugManager implements IBioclipseManager {
     
     static {
     	try {
-    	URL owlURL = Platform.getBundle("org.openscience.cdk.io").getResource("/org/openscience/cdk/dict/data/sybyl-atom-types.owl");
+    	URL owlURL = Platform.getBundle("org.openscience.cdk_bundle").getResource("/org/openscience/cdk/dict/data/sybyl-atom-types.owl");
         InputStream iStream = owlURL.openStream();
 //            = org.openscience.cdk.atomtype.Activator.class.getResourceAsStream(
 //                "/org/openscience/cdk/dict/data/sybyl-atom-types.owl");

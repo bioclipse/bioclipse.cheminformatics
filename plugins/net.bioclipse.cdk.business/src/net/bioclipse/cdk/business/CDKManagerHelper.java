@@ -68,7 +68,7 @@ public class CDKManagerHelper {
      */
     public static void registerAllFormats(FormatFactory fac) {
         try {
-        	URL file = Platform.getBundle("org.openscience.cdk.ioformats").getResource("io-formats.set");
+            URL file = Platform.getBundle( "org.openscience.cdk_bundle" ).getResource( "io-formats.set" );
             InputStream iStream =  file.openStream();//org.openscience.cdk.ioformats.Activator.class.getResourceAsStream("/io-formats.set");
             BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
             int formatCount = 0;
@@ -77,7 +77,7 @@ public class CDKManagerHelper {
                 String formatName = reader.readLine();
                 formatCount++;
                 try {
-                    Class formatClass = Platform.getBundle("org.openscience.cdk.io").loadClass(formatName);//org.openscience.cdk.io.Activator.class.getClassLoader().loadClass(formatName);
+                    Class formatClass = Platform.getBundle( "org.openscience.cdk_bundle" ).loadClass( formatName );// org.openscience.cdk.io.Activator.class.getClassLoader().loadClass(formatName);
                     Method getinstanceMethod = formatClass.getMethod("getInstance", new Class[0]);
                     Object format = getinstanceMethod.invoke( null,
                                                               new Object[0]);
