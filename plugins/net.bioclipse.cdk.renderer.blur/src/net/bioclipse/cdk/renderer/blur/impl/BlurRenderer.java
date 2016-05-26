@@ -18,6 +18,7 @@ import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.IRenderingVisitor;
+import org.openscience.cdk.renderer.elements.MarkedElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
 
 public class BlurRenderer implements Renderer{
@@ -94,6 +95,9 @@ public class BlurRenderer implements Renderer{
                 visit( (OvalElement) element );
             else if ( element instanceof ElementGroup )
                 visit( (ElementGroup) element );
+            else if ( element instanceof MarkedElement ) {
+                visit( ((MarkedElement) element).element() );
+            }
         }
 		public void visit(ElementGroup element) {
             element.visitChildren( this );

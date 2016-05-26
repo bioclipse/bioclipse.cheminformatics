@@ -39,6 +39,7 @@ import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.GeneralPath;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.LineElement;
+import org.openscience.cdk.renderer.elements.MarkedElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
 import org.openscience.cdk.renderer.elements.PathElement;
 import org.openscience.cdk.renderer.elements.RectangleElement;
@@ -448,6 +449,12 @@ public class SWTRenderer implements IDrawVisitor{
 
     public void setTransform(AffineTransform transform) {
         this.transform = transform;
+    }
+    
+    public void visit( MarkedElement element ) {
+
+        // ignore data in element just pass through to contained element
+        element.element().accept( this );
     }
 
     public void visitDefault(IRenderingElement element) {
