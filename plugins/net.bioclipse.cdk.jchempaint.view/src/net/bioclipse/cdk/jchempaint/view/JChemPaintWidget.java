@@ -59,6 +59,7 @@ import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 import org.openscience.cdk.renderer.generators.RadicalGenerator;
 import org.openscience.cdk.renderer.generators.RingGenerator;
+import org.openscience.cdk.renderer.generators.standard.StandardGenerator;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
@@ -184,10 +185,11 @@ public class JChemPaintWidget extends Canvas {
         // This generator can be used for debugging partitioning problems
         //generatorList.add( new AtomContainerBoundsGenerator() );
         generatorList.add(new BasicSceneGenerator());
-        generatorList.add( new RingGenerator() );
-        generatorList.add( new ExtendedAtomGenerator());
-        generatorList.add( new BasicAtomGenerator());
-        generatorList.add( new RadicalGenerator());
+        // generatorList.add( new RingGenerator() );
+        //generatorList.add( new ExtendedAtomGenerator());
+        generatorList.add( new StandardGenerator( java.awt.Font.decode( null ) ) );
+        //generatorList.add( new BasicAtomGenerator());
+        // generatorList.add( new RadicalGenerator());
         generatorList.add( new HighlightAtomGenerator() );
         generatorList.add( new HighlightBondGenerator() );
 

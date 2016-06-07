@@ -19,6 +19,7 @@ Import-Package: net.bioclipse.ioformats,
  org.openscience.cdk.renderer.font,
  org.openscience.cdk.renderer.generators,
  org.openscience.cdk.renderer.generators.parameter;version="1.5.13",
+ org.openscience.cdk.renderer.generators.standard;version="1.5.13",
  org.openscience.cdk.renderer.visitor,
  org.openscience.cdk.silent,
  org.openscience.cdk.tools.manipulator
