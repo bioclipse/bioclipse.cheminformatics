@@ -30,6 +30,8 @@ Import-Package: org.junit,
  org.openscience.cdk.silent;version="1.5.13",
  org.openscience.cdk.smiles;version="1.5.13",
  org.openscience.cdk.templates;version="1.5.13",
+ org.openscience.cdk.tools;version="1.5.13",
  org.openscience.cdk.tools.diff;version="1.5.13",
- org.openscience.cdk.tools.manipulator;version="1.5.13"
+ org.openscience.cdk.tools.manipulator;version="1.5.13",
+ uk.ac.ebi.beam
 Bundle-ClassPath: .
