@@ -31,6 +31,7 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.Activator;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintManager;
+import net.bioclipse.cdk.jchempaint.business.IJavaJChemPaintGlobalPropertiesManager;
 import net.bioclipse.cdk.jchempaint.editor.SWTMouseEventRelay;
 import net.bioclipse.cdk.jchempaint.preferences.GenerateLabelPrefChangedLisener;
 import net.bioclipse.cdk.jchempaint.preferences.PreferenceConstants;
@@ -171,6 +172,12 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         setupScrollbars();
 
         RendererModel rModel = getRenderer().getRenderer2DModel();
+        IJChemPaintGlobalPropertiesManager jcpPropManager = getService( IJavaJChemPaintGlobalPropertiesManager.class );
+        try {
+            jcpPropManager.applyProperties( rModel );
+        } catch ( BioclipseException e1 ) {
+            logger.error( "Failed to apply properties", e1 );
+        }
         // Commented becaus of bug 1100 selectioncolor not good on windows
         //java.awt.Color color = createFromSWT( SWT.COLOR_LIST_SELECTION );
         java.awt.Color color = Color.BLUE;//new java.awt.Color(0xc2deff);
@@ -318,6 +325,11 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         Activator.getDefault().getPreferenceStore().addPropertyChangeListener( prefListener );
         addUndoRedoListener();
         doGestureListener();
+    }
+
+    private <T, S extends T> T getService( Class<S> class1 ) {
+
+        return (T) Activator.getDefault().getJCPPropManager();
     }
 
     private double rotation,currentRotation;
