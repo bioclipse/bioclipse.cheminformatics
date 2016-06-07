@@ -26,6 +26,7 @@ import net.bioclipse.managers.business.IBioclipseManager;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -121,6 +122,8 @@ public class JChemPaintGlobalPropertiesManager implements IBioclipseManager {
     	applyProperty(model, ShowImplicitHydrogens.class, getShowImplicitHydrogens());
     	applyProperty(model, WillDrawAtomNumbers.class, getShowNumbers());
 
+        applyDyanmicProperties( model );
+
     	ICommandService service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
       Map filter = new HashMap();
       filter.put(IServiceScopes.WINDOW_SCOPE, PlatformUI.getWorkbench().getActiveWorkbenchWindow());
@@ -128,11 +131,62 @@ public class JChemPaintGlobalPropertiesManager implements IBioclipseManager {
     	  service.refreshElements("net.bioclipse.cdk.jchempaint.preference.atomNumbers", filter);
     }
 
+    private void applyDyanmicProperties( RendererModel model ) {
+
+        List<IGeneratorParameter<?>> params = model.getRenderingParameters();
+        IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+        for ( IGeneratorParameter<?> param : params ) {
+            String name = param.getClass().getName();
+            Class<IGeneratorParameter<?>> paramType = (Class<IGeneratorParameter<?>>) param.getClass();
+            Class<?> valueType = param.getDefault().getClass();
+            if ( store.contains( name ) ) {
+                if ( valueType.isAssignableFrom( Boolean.class ) ) {
+                    applyDynamicProperty( model, paramType, Boolean.valueOf( store.getBoolean( name ) ) );
+                } else if ( valueType.isAssignableFrom( Double.class ) ) {
+                    applyDynamicProperty( model, paramType, Double.valueOf( store.getDouble( name ) ) );
+                } else if ( valueType.isAssignableFrom( Integer.class ) ) {
+                    applyDynamicProperty( model, paramType, Integer.valueOf( store.getInt( name ) ) );
+                } else if ( valueType.isAssignableFrom( java.awt.Color.class ) ) {
+                    String value = store.getString( name );
+                    try{
+                        String[] vals = value.split( ",", 3 );
+                        int[] cols = new int[3];
+
+                        for ( int i = 0; i < 3; i++ ) {
+                            cols[i] = Integer.parseInt( vals[i] );
+                        }
+                        java.awt.Color color = new java.awt.Color( cols[0], cols[1], cols[2] );
+
+                        applyDynamicProperty( model, paramType, color );
+                    } catch (NumberFormatException ex) {
+                        logger.warn( "Faild to read color preference "+value);
+                    }
+                } else if ( valueType.isAssignableFrom( String.class ) ) {
+                    applyDynamicProperty( model, paramType, store.getString( name ) );
+                } else {
+                    logger.warn( "Can not understand preference type " + valueType );
+                }
+                // model.set(param.getClass(),clazz.cast( obj ))
+            } else {
+                applyDynamicProperty( model, paramType, param.getDefault() );
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void applyDynamicProperty( RendererModel model, Class type, Object value ) {
+
+        if ( value instanceof Double && ((Double) value).isNaN() ) {
+            System.out.println( "NNNNNNNAAAAAAANNNNN" );
+        }
+        applyProperty( model, type, value );
+    }
+
     public void applyGlobalProperties() throws BioclipseException {
         for (final JChemPaintEditor editor : getEditors()) {
             RendererModel model = this.getRendererModel(editor);
-            applyProperties(model);
-            
+            // applyProperties(model);
+            applyDyanmicProperties( model );
             // update the editor's rendering
             PlatformUI.getWorkbench().getDisplay().syncExec( new Runnable() {
                 public void run() {
