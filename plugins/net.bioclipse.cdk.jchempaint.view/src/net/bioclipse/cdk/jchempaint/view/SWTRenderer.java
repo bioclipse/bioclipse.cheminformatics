@@ -30,6 +30,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.LineAttributes;
 import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -614,9 +615,17 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void visit(GeneralPath element) {
+
+        java.awt.Color oldColorFg = getForgroundColor();
+        java.awt.Color oldColorBg = getBackgroundColor();
+        LineAttributes oldStyle = gc.getLineAttributes();
+
         setForeground( element.color );
-        int oldStyle = gc.getLineStyle();
-        gc.setLineStyle( SWT.LINE_DOT );
+        setBackground( element.color );
+        LineAttributes att = new LineAttributes( scaleX( element.stroke ), SWT.CAP_ROUND, SWT.JOIN_ROUND );
+        gc.setLineAttributes( att );
+
+        // gc.setLineStyle( SWT.LINE_DOT );
         Path path = new Path(gc.getDevice());
 
         for(org.openscience.cdk.renderer.elements.path.PathElement e:element.elements) {
@@ -630,9 +639,15 @@ public class SWTRenderer implements IDrawVisitor{
                 case Close: path.close();
             }
         }
-        gc.drawPath( path );
+        if ( element.fill ) {
+            gc.fillPath( path );
+        } else {
+            gc.drawPath( path );
+        }
         path.dispose();
-        gc.setLineStyle( oldStyle );
+        gc.setLineAttributes( oldStyle );
+        setForeground( oldColorFg );
+        setBackground( oldColorBg );
     }
 
     public void visit(IRenderingElement element)  {
