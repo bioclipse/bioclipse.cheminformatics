@@ -266,7 +266,7 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
         }
         double group,period;
 
-        if(gTmp != null && pTmp != null && !(symbol.equals( "La" ) || symbol.equals( "Ac" ))) {
+        if ( (gTmp != null && gTmp > 0) && pTmp != null && !(symbol.equals( "La" ) || symbol.equals( "Ac" )) ) {
             group = gTmp;
             period = pTmp;
         }
