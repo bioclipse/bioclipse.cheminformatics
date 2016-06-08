@@ -4,6 +4,8 @@
 	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0"
 	xmlns="http://www.eclipse.org/buckminster/CSpec-1.0">
 	<dependencies>
+	   <dependency name="org.openscience.cdk_bundle" componentType="osgi.bundle" />
+	   <dependency name="net.bioclipse.cdk.jcp" componentType="osgi.bundle" />
 	   <dependency name="org.xmlpull.xpp3" componentType="osgi.bundle" />
 	   <dependency name="org.eclipse.wst.web_core.feature" componentType="eclipse.feature"/>
 	   <dependency name="org.eclipse.rcp" componentType="eclipse.feature"/>
