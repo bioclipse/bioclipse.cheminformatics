@@ -35,5 +35,5 @@ Require-Bundle: javax.vecmath,
  net.bioclipse.core,
  net.bioclipse.ui.business,
  org.eclipse.core.resources,
- net.bioclipse.chart;bundle-version="2.6.2",
+ net.bioclipse.chart;bundle-version="2.6.2"
 Service-Component: OSGI-INF/awtdrawvisitorfactory.xml
