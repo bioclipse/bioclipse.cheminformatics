@@ -17,5 +17,6 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.log4j,
  org.openscience.cdk.interfaces;version="1.5.13",
+ org.openscience.cdk.tools;version="1.5.13",
  org.openscience.cdk.tools.manipulator;version="1.5.13"
 Export-Package: net.bioclipse.opsin.ui.wizards

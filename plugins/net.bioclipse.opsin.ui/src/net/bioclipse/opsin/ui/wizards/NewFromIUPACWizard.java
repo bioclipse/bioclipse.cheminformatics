@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
+import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 public class NewFromIUPACWizard extends BasicNewResourceWizard {
@@ -67,7 +68,7 @@ public class NewFromIUPACWizard extends BasicNewResourceWizard {
             mol = cdk.generate2dCoordinates(mol);
 
             AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( mol.getAtomContainer() );
-            
+            CDKHydrogenAdder.getInstance( mol.getAtomContainer().getBuilder() ).addImplicitHydrogens( mol.getAtomContainer() );
             net.bioclipse.ui.business.Activator.getDefault().getUIManager()
             	.open(mol, "net.bioclipse.cdk.ui.editors.jchempaint.cml");
         } catch (Exception e) {
