@@ -399,6 +399,7 @@ public class CDKManager implements IBioclipseManager {
                 Aromaticity arom = new Aromaticity(ElectronDonation.cdk(),
                                                    Cycles.cdkAromaticSet());
                 AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(container); // required for model
+                CDKHydrogenAdder.getInstance( container.getBuilder() ).addImplicitHydrogens( container );
                 arom.apply(container);
                 // add missing double bonds
                 AtomTypeAwareSaturationChecker ataSatChecker = new AtomTypeAwareSaturationChecker();
