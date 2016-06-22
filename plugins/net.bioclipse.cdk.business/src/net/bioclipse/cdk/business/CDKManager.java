@@ -387,6 +387,13 @@ public class CDKManager implements IBioclipseManager {
                                    CDKMolecule molecule) {
         if (format == MDLV2000Format.getInstance()) {
             sanatizeMDLV2000MolFileInput(molecule);
+        } else {
+            try {
+                CDKHydrogenAdder.getInstance( molecule.getAtomContainer().getBuilder() )
+                                .addImplicitHydrogens( molecule.getAtomContainer() );
+            } catch ( CDKException e ) {
+                logger.warn( e.getMessage(), e );
+            }
         }
     }
 
