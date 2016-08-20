@@ -288,8 +288,8 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         if(val instanceof InChI) return ((InChI)val).getValue();
         if(urgency==Property.USE_CACHED) return "";
 
-        String result = ensureFullAtomTyping(atomContainer);
-        if (result.length() > 0) return result;
+//        String result = ensureFullAtomTyping(atomContainer);
+//        if (result.length() > 0) return result;
 
         IInChIManager inchi = net.bioclipse.inchi.business.Activator.
             getDefault().getJavaInChIManager();
