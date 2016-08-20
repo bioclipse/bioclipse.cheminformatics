@@ -1065,40 +1065,31 @@ public class CDKManager implements IBioclipseManager {
           String fullPath = file.getLocation().toOSString();
           ImageIO.write( (RenderedImage) image, "PNG", new File(fullPath) );
       }
-      
-      private AtomTypeAwareSaturationChecker ataSatChecker = new AtomTypeAwareSaturationChecker();
-//      private FixBondOrdersTool fbot = new FixBondOrdersTool();
-      
+
       /**
        * Create molecule from SMILES.
        *
        * @throws BioclipseException
        */
       public ICDKMolecule fromSMILES(String smilesDescription)
-                          throws BioclipseException {
-
-          SmilesParser parser
-              = new SmilesParser( SilentChemObjectBuilder.getInstance() );
-		parser.setPreservingAromaticity( true );
-        IAtomContainer molecule;
+              throws BioclipseException {
+          SmilesParser parser = new SmilesParser( SilentChemObjectBuilder.getInstance() );
+          IAtomContainer molecule;
           try {
-            molecule = parser.parseSmiles( smilesDescription.trim() );
-          }
-          catch (InvalidSmilesException e) {
-            String message = "SMILES string is invalid. Error message said: ";
-            throw new BioclipseException( message + e.getMessage(), e );
+              molecule = parser.parseSmiles( smilesDescription.trim() );
+          } catch (InvalidSmilesException e) {
+              String message = "SMILES string is invalid. Error message said: ";
+              throw new BioclipseException( message + e.getMessage(), e );
           }
           try {
               Aromaticity arom = new Aromaticity(ElectronDonation.cdk(),Cycles.cdkAromaticSet());
               AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( molecule );
               arom.apply( molecule);
-              ataSatChecker.decideBondOrder( molecule );
           } catch (CDKException exception) {
-        	  logger.warn("Could not figure out the double bond positions: " + exception.getMessage());
+              logger.warn("Could not figure out the double bond positions: " + exception.getMessage());
           } catch (NullPointerException npe) {
-        	  throw new IllegalStateException("Could not create molecule from: "+smilesDescription,npe);
+              throw new IllegalStateException("Could not create molecule from: " + smilesDescription, npe);
           } 
-          
           return new CDKMolecule(molecule);
       }
 
