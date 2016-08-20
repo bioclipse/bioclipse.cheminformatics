@@ -104,20 +104,8 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
      */
     public String toSMILES() throws BioclipseException {
         if (getAtomContainer() == null) return "";
-        IAtomContainer container = getAtomContainer();
-
-        //Operate on a clone with removed hydrogens
-        IAtomContainer hydrogenlessClone =
-            container.getBuilder().newInstance(
-            	IAtomContainer.class,
-                AtomContainerManipulator.removeHydrogens(container)
-            );
-
-        String result = ensureFullAtomTyping(hydrogenlessClone);
-        if (result.length() > 0) return result;
-
         try {
-            return new SmilesGenerator().create( hydrogenlessClone );
+            return SmilesGenerator.absolute().create( getAtomContainer() );
         } catch ( CDKException e ) {
             throw new BioclipseException( e.getMessage(), e );
         }
