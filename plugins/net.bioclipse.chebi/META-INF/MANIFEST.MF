@@ -15,7 +15,7 @@ Require-Bundle: org.eclipse.ui,
  org.springframework.osgi.aopalliance.osgi,
  org.eclipse.core.resources,
  net.bioclipse.cdk.business
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.apache.log4j
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: libs/libChEBIj-1.0.0.jar,
