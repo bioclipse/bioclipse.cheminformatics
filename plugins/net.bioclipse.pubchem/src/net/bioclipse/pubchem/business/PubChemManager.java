@@ -190,8 +190,13 @@ public class PubChemManager implements IBioclipseManager {
         monitor.beginTask("Downloading Compound from PubChem...", 2);
         String molstring = downloadAsString(cid, monitor);
         if (monitor.isCanceled()) return null;
-        
-        ICDKMolecule molecule = cdk.fromString(molstring);
+        if ( molstring == null || molstring.isEmpty() ) {
+            throw new BioclipseException( "Could not read molecule from" + cid );
+        }
+        org.openscience.cdk.io.formats.IChemFormat format = cdk.getFormat( "PubChemCompoundXMLFormat" );
+        ICDKMolecule molecule = cdk.loadMolecule( new ByteArrayInputStream( molstring.getBytes() ), format, null,
+                                                  new NullProgressMonitor() );
+        // ICDKMolecule molecule = cdk.fromString(molstring);
         monitor.worked(1);
         return molecule;
     }
