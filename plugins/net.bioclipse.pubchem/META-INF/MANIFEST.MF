@@ -15,12 +15,13 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.cdk.business,
  net.bioclipse.browser.business,
  org.apache.commons.httpclient;bundle-version="3.1.0",
- net.bioclipse.rdf
+ net.bioclipse.rdf,
+ org.openscience.cdk.ioformats;bundle-version="1.5.4",
+ org.openscience.cdk.io;bundle-version="1.5.4"
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Export-Package: net.bioclipse.pubchem,
  net.bioclipse.pubchem.business,
  net.bioclipse.pubchem.wizards
 Import-Package: nu.xom;version="1.1.0",
- org.apache.log4j,
- org.openscience.cdk.io.formats
+ org.apache.log4j
