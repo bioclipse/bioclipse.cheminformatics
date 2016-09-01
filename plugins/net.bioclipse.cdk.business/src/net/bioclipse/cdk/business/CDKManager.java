@@ -309,6 +309,10 @@ public class CDKManager implements IBioclipseManager {
         }
 
         // Create the reader
+        // BUGFIX bug 3620 
+        if(format.getFormatName().equals("PubChem Compounds XML")) {
+        	format = getFormat("PubChemCompoundXMLFormat");
+        }
         ISimpleChemObjectReader reader = readerFactory.createReader(format);
         if (reader == null) {
             String message = "Could not create reader in CDK.";
