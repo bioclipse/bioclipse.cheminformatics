@@ -685,7 +685,7 @@ public abstract class AbstractCDKManagerPluginTest {
         AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( bIndole );
         CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance( bIndole.getBuilder() );
         adder.addImplicitHydrogens( bIndole );
-        final String indoleSmiles = SmilesGenerator.unique().create( bIndole );
+        final String indoleSmiles = SmilesGenerator.absolute().create( bIndole );
         ICDKMolecule cdkm = cdk.asCDKMolecule(new MockMolecule(indoleSmiles));
         assertEquals(indoleSmiles,
             cdkm.toSMILES(
@@ -2143,7 +2143,7 @@ public abstract class AbstractCDKManagerPluginTest {
         Assert.assertNotNull(mcss);
         Assert.assertEquals(2, mcss.getAtomCount());
         Assert.assertEquals(1, mcss.getBondCount());
-        Assert.assertEquals("CC", cdk.calculateSMILES(mcssCDKMol));
+        Assert.assertEquals("[CH2]C", cdk.calculateSMILES(mcssCDKMol));
     }
 
     @Test public void testBug1813() throws IOException {
