@@ -685,7 +685,7 @@ public abstract class AbstractCDKManagerPluginTest {
         AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( bIndole );
         CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance( bIndole.getBuilder() );
         adder.addImplicitHydrogens( bIndole );
-        final String indoleSmiles = SmilesGenerator.unique().create( bIndole );
+        final String indoleSmiles = SmilesGenerator.absolute().create( bIndole );
         ICDKMolecule cdkm = cdk.asCDKMolecule(new MockMolecule(indoleSmiles));
         assertEquals(indoleSmiles,
             cdkm.toSMILES(
