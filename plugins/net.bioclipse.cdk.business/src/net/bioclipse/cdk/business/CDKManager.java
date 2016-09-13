@@ -1073,6 +1073,7 @@ public class CDKManager implements IBioclipseManager {
           IAtomContainer molecule;
           try {
               molecule = parser.parseSmiles( smilesDescription.trim() );
+              molecule.removeProperty("cdk:Title"); // workaround for CDK 1.5.13. See CDK commit 9133fa60c1431f74cd420f2f95937e9428649ddc
           } catch (InvalidSmilesException e) {
               String message = "SMILES string is invalid. Error message said: ";
               throw new BioclipseException( message + e.getMessage(), e );
