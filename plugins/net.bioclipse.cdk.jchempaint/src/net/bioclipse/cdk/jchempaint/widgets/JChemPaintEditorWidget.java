@@ -950,35 +950,64 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 	            public void handleEvent(Event event) {
 	                int hSelection = hBar.getSelection();
 	                Rectangle diagram = getDiagramBounds();
+	                
+	                Rectangle client = getClientArea();
+	                Point2d orig = new Point2d(getRenderer().getDrawCenter());
+	                orig.x = orig.x - client.width/2;
+	                orig.y = orig.y - client.height/2;
+	                
 	                int destX = -hSelection - diagram.x;
-	                setIsScrolling(true);
+//	                int destX = (int) (-hSelection - orig.x);
 
-	                scroll(-hSelection, diagram.y, diagram.x, diagram.y, diagram.width, diagram.height, false);
-	                getRenderer().shiftDrawCenter( destX,0);
-
-	                setIsScrolling(false);
-	                update();
-	                JChemPaintEditorWidget.this.redraw();
+//	                scroll(-hSelection, diagram.y, diagram.x, diagram.y, diagram.width, diagram.height, false);
+	                
+	                
+	                if (hSelection >= (diagram.width - client.width)) {
+	                	
+	                } else {
+	                	setIsScrolling(true);
+//	                scroll(-destX, 0, 0, 0, diagram.width, diagram.height, false);
+	                	getRenderer().shiftDrawCenter( destX,0);
+	                	setIsScrolling(false);
+	                	update();
+	                	JChemPaintEditorWidget.this.redraw();
+	                	
+	                }
+//	                getRenderer().shiftDrawCenter( -hSelection+client.width/2,orig.y+client.height/2);
+	                
+//	                getRenderer().setDrawCenter(-hSelection+client.width/2,orig.y+client.height/2);
+//	                getRenderer().setDrawCenter(-hSelection+client.width/2,diagram.y+client.height/2);
+	                
 	            }
 	        });
 	
 	        final ScrollBar vBar = getVerticalBar();
 	        vBar.setEnabled(true);
-	        vBar.addListener(SWT.Selection, new Listener() {
-	            public void handleEvent(Event event) {
-	            	int vSelection = vBar.getSelection();
-	            	Rectangle rect = getDiagramBounds();
-	                int destY = -vSelection - rect.y;
-	                setIsScrolling(true);
-
-	                scroll(rect.x, -vSelection, rect.x, rect.y, rect.width, rect.height, false);
-	                getRenderer().shiftDrawCenter( 0, destY);
-
-	                setIsScrolling(false);
-	                update();
-	                JChemPaintEditorWidget.this.redraw();
-	            }
-	        });
+//	        vBar.addListener(SWT.Selection, new Listener() {
+//	            public void handleEvent(Event event) {
+//	            	int vSelection = vBar.getSelection();
+//	            	Rectangle diagram = getDiagramBounds();
+//	            	Rectangle client = getClientArea();
+//	                Point2d orig = new Point2d(getRenderer().getDrawCenter());
+//	                orig.x = orig.x - client.width/2;
+//	                orig.y = orig.y - client.height/2;
+//	                
+//	                int destY = -vSelection - diagram.y;
+////	                int destY = (int) (-vSelection - orig.y);
+//	                setIsScrolling(true);
+//
+////	                scroll(diagram.x, -vSelection, diagram.x, diagram.y, diagram.width, diagram.height, false);
+//	                scroll(0, -destY, 0, 0, diagram.width, diagram.height, false);
+//	                
+//	                getRenderer().shiftDrawCenter( 0, destY);
+////	                getRenderer().shiftDrawCenter( orig.x+client.width/2, -vSelection*client.height/2);
+//	                getRenderer().setDrawCenter(orig.x+client.width/2, -vSelection*client.height/2);
+//	                
+//	                setIsScrolling(false);
+//	                update();
+//	                JChemPaintEditorWidget.this.redraw();
+//	            }
+//	        });
 	    }
 
 	private void resizeControl() {
@@ -995,30 +1024,45 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         vBar.setThumb (Math.min (diagram.height, client.height));
         int hPage = diagram.width - client.width;
         int vPage = diagram.height - client.height;
+        
+        hBar.setSelection(-diagram.x);
+        vBar.setSelection(-diagram.y);
 
         int hSelection = hBar.getSelection ();
         int vSelection = vBar.getSelection ();
 
+        
         Integer xVal,yVal;
         xVal=yVal=null;
+        
+        Point2d orgi = new Point2d(getRenderer().getDrawCenter());
+        orgi.x = orgi.x - client.width/2;
+        orgi.y = orgi.y - client.height/2;
+        
+        
+//        hBar.setSelection((int) -orgi.x);
+//        vBar.setSelection((int) -orgi.y);
 
         if (hSelection >= hPage) {
           if (hPage <= 0)
             hSelection = 0;
+          orgi.x = -hSelection;
           xVal = -hSelection+client.width/2-diagram.width/2;
         }
 
         if (vSelection >= vPage) {
           if (vPage <= 0)
             vSelection = 0;
+          orgi.y = -vSelection;
           yVal = -vSelection + client.height/2-diagram.height/2;
         }
 
         int dx = xVal!=null?xVal-diagram.x:0;
         int dy = yVal!=null?yVal-diagram.y:0;
 
-        if(dx!=0 || dy!=0)
-            getRenderer().shiftDrawCenter( dx, dy);
+//        if(dx!=0 || dy!=0)
+//            getRenderer().shiftDrawCenter( dx, dy);
+        getRenderer().setDrawCenter(orgi.x+client.width/2, orgi.y+client.height/2);
 
         JChemPaintEditorWidget.this.redraw();
     }
