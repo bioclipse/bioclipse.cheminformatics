@@ -12,7 +12,7 @@ import org.openscience.cdk.renderer.elements.MarkedElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
 
 public class BoundsVisitor implements IRenderingVisitor {
-		Rectangle2D bounds = null;
+		protected Rectangle2D bounds = null;
         AffineTransform transform = null;
 
         public void setTransform( java.awt.geom.AffineTransform transform ) {
@@ -51,7 +51,7 @@ public class BoundsVisitor implements IRenderingVisitor {
 			return bounds;
 		}
 
-        static Rectangle2D bounds( AffineTransform transform, ElementGroup group ) {
+        public static Rectangle2D bounds( AffineTransform transform, ElementGroup group ) {
         	BoundsVisitor visitor = new BoundsVisitor();
             // visitor.setTransform( transform );
         	group.visitChildren(visitor);

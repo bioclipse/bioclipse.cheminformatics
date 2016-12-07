@@ -3,9 +3,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: AtomHighlighter
 Bundle-SymbolicName: net.bioclipse.cdk.renderer.blur
 Bundle-Version: 1.0.1.qualifier
-Export-Package: net.bioclipse.cdk.renderer.blur
-Require-Bundle: net.bioclipse.cdk.jchempaint.view
+Export-Package: net.bioclipse.cdk.renderer.blur,
+ net.bioclipse.cdk.renderer.blur.impl
 Import-Package: javax.vecmath,
+ net.bioclipse.cdk.jchempaint.rendering,
+ net.bioclipse.cdk.jchempaint.view,
  org.eclipse.swt.graphics,
  org.eclipse.swt.widgets,
  org.openscience.cdk.interfaces;version="1.5.13",
