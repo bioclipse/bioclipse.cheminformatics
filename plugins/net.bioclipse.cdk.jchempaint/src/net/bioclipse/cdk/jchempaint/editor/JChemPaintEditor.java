@@ -15,8 +15,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -116,6 +118,12 @@ import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.selection.MultiSelection;
 import org.openscience.cdk.renderer.selection.SingleSelection;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 
 public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
 								IResourceChangeListener,
@@ -140,6 +148,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
     private ListenerList propertyChangedListenerList = new ListenerList();
 
     private SubStructureGenerator subStructureGenerator;
+
+	private ServiceRegistration<EventHandler> register;
 
     public JChemPaintEditorWidget getWidget() {
         return widget;
@@ -267,7 +277,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
     @Override
     public void init( IEditorSite site, IEditorInput input )
                                        throws PartInitException {
-
+    	registerEventListener();
         setSite( site );
         setInput( input );
         if(input==null) return;
@@ -291,6 +301,27 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
         }
     }
 
+    
+    private void registerEventListener() {
+    	BundleContext context = FrameworkUtil.getBundle(JChemPaintEditor.class).getBundleContext();
+    	String[] topics = {"net/bioclipse/jcp/*"};
+    	Dictionary< String, Object> dict = new Hashtable<>();
+    	dict.put(EventConstants.EVENT_TOPIC, topics);
+    	EventHandler eventHandler = new EventHandler() {
+			
+			@Override
+			public void handleEvent(Event event) {
+				getWidget().getDisplay().asyncExec(new Runnable() {
+					
+					@Override
+					public void run() {
+						getWidget().redraw();
+					}
+				});
+			}
+		};
+    	register = context.registerService(EventHandler.class, eventHandler	, dict);
+    }
     @Override
     public boolean isDirty() {
 
@@ -691,7 +722,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
     }
 
     private void disposeControl( DisposeEvent e ) {
-
+    	register.unregister();
         ResourcesPlugin.getWorkspace().removeResourceChangeListener( this );
         // TODO remove regiistration?
         // getSite().registerContextMenu(
