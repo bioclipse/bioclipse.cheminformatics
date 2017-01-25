@@ -93,6 +93,7 @@ import org.openscience.cdk.controller.undoredo.IUndoListener;
 import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.controller.undoredo.UndoRedoHandler;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.graph.Cycles;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -667,7 +668,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 source = molecule;
                 IAtomContainer atomContainer = molecule.getAtomContainer();
                 if( atomContainer.getAtomCount() > 0
-                        && has2DCoordinatesNew( atomContainer )<2) {
+                        && !GeometryTools.has2DCoordinates( atomContainer )) {
 
                     molecule = generate2Dfrom3D( molecule );
                     if(molecule!=null) // FIXME do what else dose empty chem model
