@@ -3,9 +3,9 @@ Bundle-SymbolicName: net.bioclipse.cdk.jchempaint.view;singleton:=true
 Bundle-Version: 2.6.2.qualifier
 Bundle-Name: JChemPaintView
 Bundle-ManifestVersion: 2
-Export-Package: net.bioclipse.cdk.jchempaint.rendering,
- net.bioclipse.cdk.jchempaint.view
-Import-Package: net.bioclipse.ioformats,
+Export-Package: net.bioclipse.cdk.jchempaint.view
+Import-Package: net.bioclipse.cdk.jchempaint.rendering,
+ net.bioclipse.ioformats,
  org.apache.log4j,
  org.openscience.cdk;version="1.5.13",
  org.openscience.cdk.event,
@@ -36,4 +36,4 @@ Require-Bundle: javax.vecmath,
  net.bioclipse.ui.business,
  org.eclipse.core.resources,
  net.bioclipse.chart;bundle-version="2.6.2"
-Service-Component: OSGI-INF/awtdrawvisitorfactory.xml
+

@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Rendering
+Bundle-SymbolicName: net.bioclipse.cdk.jchempaint.rendering
+Bundle-Version: 2.6.2.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: net.bioclipse.cdk.jchempaint.rendering
+Import-Package: org.openscience.cdk.renderer,
+ org.openscience.cdk.renderer.elements;version="1.5.13",
+ org.openscience.cdk.renderer.visitor;version="1.5.13"
+Service-Component: OSGI-INF/awtdrawvisitorfactory.xml
+Bundle-ActivationPolicy: lazy
