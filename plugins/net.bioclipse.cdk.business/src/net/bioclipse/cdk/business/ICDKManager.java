@@ -42,8 +42,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.content.IContentType;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.interfaces.IChemModel;
-import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.io.formats.IChemFormat;
 
 @PublishedClass(
@@ -82,7 +82,7 @@ public interface ICDKManager extends IBioclipseManager {
         methodSummary="Converts a CDK IMoleculeSet object into a " +
         		"List<ICDKMolecule>."
     )
-    public List<ICDKMolecule> asList(IMoleculeSet set);
+    public List<ICDKMolecule> asList( IAtomContainerSet set );
 
     @Recorded
     @PublishedMethod(
@@ -90,7 +90,7 @@ public interface ICDKManager extends IBioclipseManager {
         methodSummary="Converts a Bioclipse List<ICDKMolecule> list into a " +
         		"CDK IMoleculeSet."
     )
-    public IMoleculeSet asSet(List<ICDKMolecule> list);
+    public IAtomContainerSet asSet( List<ICDKMolecule> list );
 
     /**
      * Create a CDKMolecule from SMILES
@@ -1017,6 +1017,13 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
+         params = "String number",
+         methodSummary = "Determines if the given CAS registry number is valid." )
+    @TestMethods("testIsValidCAS")
+    boolean isValidCAS( String number );
+
+    @Recorded
+    @PublishedMethod(
          params = "ICDKMolecule molecule, String SMARTS",
          methodSummary = "Query a molecule for a SMARTS string and return a " +
              "list of IAtomContainers with the matches." )
@@ -1027,7 +1034,7 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
-         params = "IMolecule molecule: atom container to fragmentate",
+         params = "IMolecule molecule",
          methodSummary = "Splits up an atom container into a List of " +
          		"IAtomContainer's with fully connected molecules")
     @TestMethods("testSMARTSonFile")
@@ -1044,8 +1051,7 @@ public interface ICDKManager extends IBioclipseManager {
 
     @Recorded
     @PublishedMethod(
-         params = "IMolecule molecule: molecule to calculate the total formal" +
-         		      " charge for.",
+         params = "IMolecule molecule",
          methodSummary = "Calculates the total formal charge.")
     @TestMethods("testSMARTSonFile")
     public int totalFormalCharge(IMolecule molecule)
@@ -1236,4 +1242,14 @@ public interface ICDKManager extends IBioclipseManager {
          methodSummary="Generates a list of tautomers."
     )
     public List<ICDKMolecule> getTautomers(IMolecule molecule) throws BioclipseException;
+    
+    
+    @Recorded
+    @PublishedMethod(
+        params="String sdfFilename",
+        methodSummary="Create a SMILES file from an SDF file. Any existing " +
+        		          ".smi file with the same name will be overwritten."
+    )
+    public void convertSDFtoSMILESFile(String sdfFilename);
+    public void convertSDFtoSMILESFile(IFile sdffile);
 }

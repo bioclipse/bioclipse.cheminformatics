@@ -11,7 +11,6 @@
  ******************************************************************************/
 package net.bioclipse.cdk.ui.sdfeditor.business;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +28,7 @@ import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculeUtils;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IFileMoleculesEditorModel;
+import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.core.util.TimeCalculator;
@@ -45,7 +45,6 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
@@ -59,7 +58,6 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IChemSequence;
-import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.MDLV2000Reader;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
@@ -123,6 +121,17 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
         return input.file();
     }
 
+    public String getRecord(int index) throws BioclipseException {
+    	try {
+			return input.getRecord(index);
+		} catch (Exception exception) {
+			throw new BioclipseException(
+				"Error while getting a SDF record: " + exception.getMessage(),
+				exception
+			);
+		}
+    }
+    
     public boolean isDirty() {
         return dirty || edited.size()!=0;
     }
@@ -149,8 +158,8 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
                     StringReader reader = new StringReader(input.getRecord( index ));
                     chemReader.setReader( reader );
                     IChemObject chemObj = processContent();
-                    assert( chemObj instanceof IMolecule);
-                    IMolecule cdkMolecule = (IMolecule)chemObj;
+                    assert (chemObj instanceof IAtomContainer);
+                    IAtomContainer cdkMolecule = (IAtomContainer) chemObj;
                     sanatizeMDLV2000MolFileInput(cdkMolecule);
                     if(input.isBondOrder4){
                         boolean deduceBondOrder = false;
@@ -256,7 +265,8 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
         if (co instanceof IChemFile) {
             for(IChemSequence chemSeq:((IChemFile) co).chemSequences()) {
                 for(IChemModel chemModel:chemSeq.chemModels()) {
-                  for(IAtomContainer ac:chemModel.getMoleculeSet().molecules()) {
+                    for ( IAtomContainer ac : chemModel.getMoleculeSet()
+                                    .atomContainers() ) {
                       co = ac;
                       break;
                     }
@@ -433,7 +443,7 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
         return input.isBondOrder4;
     }
 
-    private IMolecule deduceBondOrder(IMolecule ac) {
+    private IAtomContainer deduceBondOrder( IAtomContainer ac ) {
         DeduceBondSystemTool tool = new DeduceBondSystemTool();
         try {
             logger.debug("Deduceing bond orders");

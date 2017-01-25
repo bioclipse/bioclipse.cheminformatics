@@ -93,6 +93,9 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.services.IServiceScopes;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.controller.IControllerModel;
@@ -117,7 +120,8 @@ import org.openscience.cdk.renderer.selection.SingleSelection;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
-                                                        IResourceChangeListener{
+								IResourceChangeListener,
+								ITabbedPropertySheetPageContributor{
 
     private Logger logger = Logger.getLogger(JChemPaintEditor.class);
 
@@ -567,6 +571,13 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
     public void setMoleculeProperty(Object key,Object value) {
         widget.setProperty(key, value);
     }
+
+    @Override
+    public String getContributorId() {
+
+        return "net.bioclipse.cdk.jchempaint.editor";
+    }
+
     @SuppressWarnings("unchecked")
     public Object getAdapter( Class adapter ) {
 
@@ -591,6 +602,9 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
         }
         if( adapter.isAssignableFrom(ChemModelRenderer.class)){
         	return getWidget().getRenderer();
+        }
+        if ( adapter.isAssignableFrom( IPropertySheetPage.class ) ) {
+            return new TabbedPropertySheetPage(this);
         }
         return super.getAdapter( adapter );
     }

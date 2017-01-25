@@ -722,7 +722,12 @@ public abstract class AbstractCDKManagerPluginTest {
 
     }
 
-
+    @Test
+    public void testIsValidCAS() throws Exception {
+    	Assert.assertTrue(cdk.isValidCAS("50-00-0"));
+    	Assert.assertFalse(cdk.isValidCAS("50--0"));
+    	Assert.assertFalse(cdk.isValidCAS("no"));
+    }
 
     @Test
     public void testLoadConformers() throws BioclipseException, IOException, URISyntaxException {
@@ -1324,10 +1329,10 @@ public abstract class AbstractCDKManagerPluginTest {
         assertEquals(seq.getChemModelCount(), 1);
         org.openscience.cdk.interfaces.IChemModel model = seq.getChemModel(0);
         assertNotNull(model);
-        assertEquals(model.getMoleculeSet().getMoleculeCount(), 1);
+        assertEquals( model.getMoleculeSet().getAtomContainerCount(), 1 );
 
         // test the molecule
-        org.openscience.cdk.interfaces.IMolecule mol = model.getMoleculeSet().getMolecule(0);
+        IAtomContainer mol = model.getMoleculeSet().getAtomContainer( 0 );
         assertNotNull(mol);
         assertEquals(38, mol.getAtomCount());
         assertEquals(48, mol.getBondCount());

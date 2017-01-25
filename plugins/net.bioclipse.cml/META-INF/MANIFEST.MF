@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Chemical Markup Language
 Bundle-SymbolicName: net.bioclipse.cml;singleton:=true
-Bundle-Version: 2.6.1.qualifier
+Bundle-Version: 2.6.2.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.filebuffers,
  org.eclipse.ui.views,
@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.core.runtime,
  net.bioclipse.ui,
  org.eclipse.swt,
  org.eclipse.ui,
- org.xmlpull.xpp3;bundle-version="1.1.4"
+ org.xmlpull.xpp3;bundle-version="1.1.4",
+ org.eclipse.wst.xml.core;bundle-version="[1.1.900,1.2.0)"
 Bundle-ClassPath: .
 Bundle-Activator: net.bioclipse.cml.managers.Activator
 Bundle-ActivationPolicy: lazy

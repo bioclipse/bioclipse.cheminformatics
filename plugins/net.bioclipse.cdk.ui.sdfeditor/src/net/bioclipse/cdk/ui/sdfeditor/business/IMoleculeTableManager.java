@@ -77,6 +77,10 @@ public interface IMoleculeTableManager extends IBioclipseManager {
     public String saveSDF(IMoleculesEditorModel model, String file)
                                                       throws BioclipseException;
 
+    @PublishedMethod(
+        params="SDFIndexEditorModel model, Collection<String> propertyKeys",
+        methodSummary="Extracts the given SD file properties from the raw content"
+    )
     @Recorded
     public void parseProperties( SDFIndexEditorModel model,
                                  Collection<String> propertyKeys);

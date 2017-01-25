@@ -41,11 +41,11 @@ import org.openscience.cdk.controller.edit.CompositEdit;
 import org.openscience.cdk.controller.edit.RemoveAtom;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IBond.Order;
-import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
@@ -407,8 +407,8 @@ public class JChemPaintManager implements IBioclipseManager {
             // Removes empty atomcontainers
             // This is a dirty fix until we can work on a single atom container instead of a ChemModel
             List<IAtomContainer> toRemove = new ArrayList<IAtomContainer>();
-            IMoleculeSet mSet = relay.getIChemModel().getMoleculeSet();
-            for(IAtomContainer ac:mSet.molecules()) {
+            IAtomContainerSet mSet = relay.getIChemModel().getMoleculeSet();
+            for ( IAtomContainer ac : mSet.atomContainers() ) {
             	if(ac.getAtomCount()==0)
             		toRemove.add(ac);
             }

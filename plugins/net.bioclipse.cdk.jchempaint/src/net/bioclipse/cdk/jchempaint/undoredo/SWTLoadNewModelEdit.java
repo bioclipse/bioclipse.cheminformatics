@@ -8,8 +8,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.openscience.cdk.controller.undoredo.LoadNewModelEdit;
+import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.interfaces.IChemModel;
-import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.interfaces.IReactionSet;
 
 
@@ -28,8 +28,9 @@ public class SWTLoadNewModelEdit extends LoadNewModelEdit implements IUndoableOp
 
     private IUndoContext context;
 
-    public SWTLoadNewModelEdit(IChemModel chemModel, IMoleculeSet oldsom,
-            IReactionSet oldsor, IMoleculeSet newsom, IReactionSet newsor,
+    public SWTLoadNewModelEdit(IChemModel chemModel, IAtomContainerSet oldsom,
+                    IReactionSet oldsor, IAtomContainerSet newsom,
+                    IReactionSet newsor,
             String type,IUndoContext context) {
 
         super( chemModel, oldsom, oldsor, newsom, newsor, type );

@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 
 public class AddEditSmartsDialog extends TitleAreaDialog{
@@ -153,7 +154,7 @@ public class AddEditSmartsDialog extends TitleAreaDialog{
         }
         
         try {
-            new SMARTSQueryTool(txtSmarts.getText());
+            new SMARTSQueryTool(txtSmarts.getText(),SilentChemObjectBuilder.getInstance());
         } catch (Exception e) {
             setErrorMessage( e.getMessage() );
         }

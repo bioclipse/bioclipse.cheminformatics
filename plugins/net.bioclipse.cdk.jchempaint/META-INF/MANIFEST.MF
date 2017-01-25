@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Bioclipse JChemPaint
 Bundle-SymbolicName: net.bioclipse.cdk.jchempaint;singleton:=true
-Bundle-Version: 2.6.1.qualifier
+Bundle-Version: 2.6.2.qualifier
 Bundle-Activator: net.bioclipse.cdk.jchempaint.Activator
 Require-Bundle: org.openscience.cdk.interfaces,
  org.openscience.cdk.core,
@@ -40,7 +40,8 @@ Require-Bundle: org.openscience.cdk.interfaces,
  net.bioclipse.ioformats,
  org.openscience.cdk.cip,
  org.openscience.cdk.annotation,
- org.openscience.cdk.silent
+ org.openscience.cdk.silent,
+ org.eclipse.ui.views.properties.tabbed
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.log4j,
  org.eclipse.core.filesystem,
@@ -48,7 +49,8 @@ Import-Package: org.apache.log4j,
  org.eclipse.jface.text,
  org.eclipse.ui.editors.text,
  org.eclipse.ui.internal.editors.text,
- org.eclipse.ui.texteditor
+ org.eclipse.ui.texteditor,
+ org.slf4j
 Export-Package: net.bioclipse.cdk.jchempaint,
  net.bioclipse.cdk.jchempaint.business,
  net.bioclipse.cdk.jchempaint.editor,

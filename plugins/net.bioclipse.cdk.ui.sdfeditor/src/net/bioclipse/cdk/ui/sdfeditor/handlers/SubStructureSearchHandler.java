@@ -25,7 +25,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
-import org.openscience.cdk.nonotify.NNAtomContainer;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 
 
 /**
@@ -46,7 +46,8 @@ public class SubStructureSearchHandler extends AbstractHandler implements IHandl
 
     private IAtomContainer getACFromSelection(ISelection selection) {
 
-        IAtomContainer ac = new NNAtomContainer();
+        IAtomContainer ac = SilentChemObjectBuilder.getInstance()
+                        .newInstance( IAtomContainer.class );
         if(selection instanceof IStructuredSelection) {
             List<?> sel = ((IStructuredSelection)selection).toList();
 

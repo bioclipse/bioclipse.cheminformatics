@@ -34,6 +34,7 @@ import net.bioclipse.cdk.jchempaint.editor.SWTMouseEventRelay;
 import net.bioclipse.cdk.jchempaint.preferences.GenerateLabelPrefChangedLisener;
 import net.bioclipse.cdk.jchempaint.preferences.PreferenceConstants;
 import net.bioclipse.cdk.jchempaint.undoredo.SWTUndoRedoFactory;
+import net.bioclipse.cdk.jchempaint.view.ChoiceGenerator;
 import net.bioclipse.cdk.jchempaint.view.JChemPaintWidget;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
@@ -119,7 +120,7 @@ import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 public class JChemPaintEditorWidget extends JChemPaintWidget
-    implements ISelectionProvider, IViewEventRelay, IUndoListener {
+    implements ISelectionProvider, IViewEventRelay, IUndoListener{
 
     Logger logger = Logger.getLogger( JChemPaintEditorWidget.class );
 
@@ -514,7 +515,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
             renderer.paint( model, visitor);// ,bounds,false);
         }
     	} catch (Exception e) {
-    		logger.error(e.getMessage());
+            logger.error( e.getMessage(), e );
     	}
     }
 
@@ -585,6 +586,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         	new ArrayList<IGenerator<IAtomContainer>>();
         generatorList.add(new BasicSceneGenerator());
         generatorList.add(new ExternalHighlightGenerator());
+        generatorList.addAll( ChoiceGenerator.getGeneratorsFromExtension() );// Fix for ds generators showing up in jcp view
         generatorList.addAll( super.createGenerators() );
         generatorList.add( phantomGenerator = new PhantomBondGenerator());
         generatorList.add(new SelectAtomGenerator());

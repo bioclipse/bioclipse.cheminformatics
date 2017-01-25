@@ -2,7 +2,7 @@
 <feature
       id="net.bioclipse.chemoinformatics_feature"
       label="Bioclipse Chemoinformatics"
-      version="2.6.1.qualifier"
+      version="2.6.2.qualifier"
       provider-name="The Bioclipse Team"
       plugin="net.bioclipse.chemoinformatics">
 
@@ -33,14 +33,13 @@ The Eclipse Public License accompanies this distribution, and is available at ht
       <import plugin="org.openscience.cdk.libiomd"/>
       <import plugin="org.openscience.cdk.valencycheck"/>
       <import plugin="org.openscience.cdk.builder3d"/>
-      <import plugin="org.openscience.cdk.nonotify"/>
       <import plugin="org.openscience.cdk.sdg"/>
       <import plugin="org.openscience.cdk.smiles"/>
       <import plugin="org.openscience.cdk.smarts"/>
       <import plugin="org.openscience.cdk.pdb"/>
       <import plugin="org.openscience.cdk.pcore"/>
       <import plugin="org.openscience.cdk.ioformats"/>
-      <import plugin="org.openscience.cdk.isomorphism" version="1.4.0" match="greaterOrEqual"/>
+      <import plugin="org.openscience.cdk.isomorphism" version="1.4.0" match="compatible"/>
       <import plugin="javax.vecmath" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
@@ -51,7 +50,7 @@ The Eclipse Public License accompanies this distribution, and is available at ht
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="net.bioclipse.ui"/>
-      <import plugin="org.springframework.bundle.spring.aop"/>
+      <import plugin="org.springframework.bundle.spring.aop" version="2.5.1"/>
       <import plugin="org.springframework.osgi.aopalliance.osgi"/>
       <import plugin="org.openscience.cdk.formula"/>
       <import plugin="org.openscience.cdk.fingerprint"/>
@@ -91,6 +90,9 @@ The Eclipse Public License accompanies this distribution, and is available at ht
       <import plugin="net.bioclipse.browser.business"/>
       <import plugin="jcl.over.slf4j"/>
       <import feature="org.eclipse.rcp" version="3.7.1" match="greaterOrEqual"/>
+      <import plugin="net.bioclipse.chart"/>
+      <import plugin="net.bioclipse.chart.ui"/>
+      <import plugin="com.google.guava"/>
    </requires>
 
    <plugin
@@ -235,6 +237,27 @@ The Eclipse Public License accompanies this distribution, and is available at ht
 
    <plugin
          id="net.bioclipse.cdk.ui.periodictable"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.bioclipse.jmol.tutorial"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.bioclipse.cdk.renderer.blur"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openscience.cdk.isomorphism"
          download-size="0"
          install-size="0"
          version="0.0.0"

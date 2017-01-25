@@ -17,9 +17,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+
+import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+import net.bioclipse.core.domain.IMolecule.Property;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -27,7 +32,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.io.SDFWriter;
-import org.openscience.cdk.io.iterator.IteratingMDLReader;
+import org.openscience.cdk.io.iterator.IteratingSDFReader;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -51,11 +56,14 @@ public class PropertiesImportFileHandler {
     private boolean topRowContainsPropName, propLinkedBy;
     private String dataFileLink, sdFileLink, newSDFilePath;
     // The row separator for the data in the data file, i.e. a tab.
-    private final static String DELIMITER = "\t";
+    private String DELIMITER = "\t";
     // The number of rows read into topValues at initiation 
     private final static int ROWS_IN_TOPVALUES = 5;
     private boolean hasFoundLastRowInFile = false;
     private DataFileFormart dataFileFormart;
+    private boolean hasBothRowAndColHeaders = false;
+    // This array contains the delimiters that this class can handle.
+    private String[] delimiters = {"\t", ",|,\\s+", ";|;\\s+", "\\s+"};
     
     /**
      * A constructor to use if non, or only one, of the files are known. 
@@ -120,8 +128,8 @@ public class PropertiesImportFileHandler {
      * @throws FileNotFoundException If the sd-file isn't found
      */
     private void extractSDFProerties() throws FileNotFoundException {     
-        IteratingMDLReader sdfItr = 
-                new IteratingMDLReader(getSDFileContents(),
+        IteratingSDFReader sdfItr = 
+                new IteratingSDFReader(getSDFileContents(),
                                         SilentChemObjectBuilder.getInstance());
         Map<Object, Object> propertiesMap = sdfItr.next().getProperties();
         Set<Object> propSet = propertiesMap.keySet();
@@ -190,12 +198,19 @@ public class PropertiesImportFileHandler {
     public void setDataFile(IFile dataFile) throws FileNotFoundException {
         this.dataFile = dataFile;
         hasFoundLastRowInFile = false;
-        if (dataFile.getFileExtension().toLowerCase().matches( "csv" )) {
-            dataFileFormart = DataFileFormart.CSV;
-            readFromCSV( 0, ROWS_IN_TOPVALUES );
-        } else {
-            dataFileFormart = DataFileFormart.TXT;
-            readFromTXT( 0, ROWS_IN_TOPVALUES );
+        Scanner fileScanner = new Scanner(getDataFileContents());
+        int colsOnFirstRow  = decideColumnSeparator( fileScanner.nextLine() );
+        int colsOnSecondRow  = decideColumnSeparator( fileScanner.nextLine() );
+        hasBothRowAndColHeaders = (colsOnSecondRow-colsOnFirstRow == 1);
+        switch (dataFileFormart) {
+            case TXT:
+                readFromTXT( 0, ROWS_IN_TOPVALUES );
+                break;
+            case CSV:
+                readFromCSV( 0, ROWS_IN_TOPVALUES );
+                break;
+            case NO_FILE_SELECTED:
+                throw new FileNotFoundException("There is no file selected.");
         }
     }
     
@@ -352,7 +367,11 @@ public class PropertiesImportFileHandler {
                 element = lineScanner.next();
                 if (topRowContainsPropName) {
                     if (row == 0) {
-                        propertiesID.add( element );
+                        if (column == 0 && hasBothRowAndColHeaders) {
+                            propertiesID.add( "" );
+                            propertiesID.add( element );
+                        } else
+                            propertiesID.add( element );
                     } else {   
                         /* If we are reading the first row with data then we 
                          * create a new ArrayList for each column*/
@@ -368,8 +387,12 @@ public class PropertiesImportFileHandler {
                     if (row == 0) {
                         columns = new ArrayList<String>();
                         topValues.add( columns );
-                    }
-                    topValues.get( column ).add( element );
+                        if (column == 0 && hasBothRowAndColHeaders)
+                            topValues.get( column ).add( "" );
+                        else
+                            topValues.get( column ).add( element );
+                    } else
+                        topValues.get( column ).add( element );
                 }
                 column++;
             }
@@ -407,6 +430,7 @@ public class PropertiesImportFileHandler {
                     return;
                 }
         
+        boolean noTopLeftElement = hasBothRowAndColHeaders;
         if (endRow == -1) {
             while (true) {
                 try {
@@ -414,16 +438,28 @@ public class PropertiesImportFileHandler {
                     for (int i = 0; i < nextRow.length; i++) {
                         if (topRowContainsPropName) {
                             if (rowNumber == 0)
-                               propertiesID.add( nextRow[i] );
+                                if (noTopLeftElement) {
+                                    propertiesID.add( "" );
+                                    i--;
+                                    noTopLeftElement = false;
+                                } else
+                                    propertiesID.add( nextRow[i] );
                             else {
                                 if (rowNumber == 1)
                                     topValues.add( new ArrayList<String>() );
                                 topValues.get( i ).add( nextRow[i] );
                             }
                         } else {
-                            if (rowNumber == 0)
+                            if (rowNumber == 0) {
                                 topValues.add( new ArrayList<String>() );
-                            topValues.get( i ).add( nextRow[i] );
+                                if (noTopLeftElement) {
+                                    topValues.get( i ).add( "" );
+                                    i--;
+                                    noTopLeftElement = false;
+                                } else
+                                    topValues.get( i+1 ).add( nextRow[i] );
+                            } else
+                                topValues.get( i ).add( nextRow[i] );
                         }
                     }
                     rowNumber++;
@@ -545,8 +581,8 @@ public class PropertiesImportFileHandler {
         /* TODO This goes thru the hole sd-file and counts the mols, 
          * is it some better way to do this? */
         int molsInSdf = 0;
-        IteratingMDLReader sdfMolCounter = 
-                new IteratingMDLReader(getSDFileContents(), 
+        IteratingSDFReader sdfMolCounter = new IteratingSDFReader(
+            getSDFileContents(),
                                         SilentChemObjectBuilder.getInstance());
         while (sdfMolCounter.hasNext()) {
             molsInSdf++;
@@ -555,9 +591,8 @@ public class PropertiesImportFileHandler {
         monitor.beginTask( "Mearging", molsInSdf );
         int work = 0;
         
-        IteratingMDLReader sdfItr = 
-                new IteratingMDLReader(getSDFileContents(), 
-                                       SilentChemObjectBuilder.getInstance());
+        IteratingSDFReader sdfItr = new IteratingSDFReader(
+            getSDFileContents(), SilentChemObjectBuilder.getInstance());
         Scanner fileScanner;
         ArrayList<String> values, names;
         names = propertiesName;
@@ -576,7 +611,7 @@ public class PropertiesImportFileHandler {
         FileOutputStream out = new FileOutputStream(newFile);
         SDFWriter writer = new SDFWriter( out );
         IChemObject mol;
-        
+
         if (propLinkedBy) {
             /* This option only add the properties to the molecules where 
              * the linked properties has the same value.*/
@@ -716,6 +751,81 @@ public class PropertiesImportFileHandler {
         monitor.done();
     }
     
+    protected void addPropertiesToMolTable(boolean[] includedProerties, 
+                                             ArrayList<String> propertiesName,
+                                             boolean propNameInDataFile, 
+                                             IProgressMonitor monitor,
+                                             IMoleculesEditorModel model,
+                                             List<ICDKMolecule> selMols) 
+                                                     throws FileNotFoundException {
+        
+        ArrayList<String> values;
+        int index = 0, work = 0;
+        int numberOfMolecules = model.getNumberOfMolecules();
+        Scanner fileScanner;
+        
+        switch (dataFileFormart) {
+            case CSV:
+                String filePath = dataFile.getFullPath().toString();
+                CSVReader csvReader = 
+                        new CSVReader( new FileReader(filePath) );
+                String[] nextRow;
+                for (index = 0;index<numberOfMolecules;index++) {
+                    try {                      
+                        nextRow = csvReader.readNext();
+                        if (index == 0 && propNameInDataFile)
+                            nextRow = csvReader.readNext();
+
+                        values = new ArrayList<String>();
+                        for (String value:nextRow)
+                            values.add( value );
+                        
+                        addPropToMolTable( model, propertiesName, values, 
+                                           includedProerties, index, selMols );
+
+                    } catch ( IOException e ) {
+                        /* It seams that this is the only way to know that we 
+                         * reached the end of the file */
+                        try {
+                            csvReader.close();
+                        } catch ( IOException e1 ) {
+                            logger.error( e1.getMessage() );
+                        }
+                        break;
+                    }
+                    monitor.worked( work++ );
+                }
+                break;
+
+            case TXT:
+                fileScanner = new Scanner( getDataFileContents() );
+                /* We uses the names provided from the wizard, so if the 
+                 * file contains names we just throw them away... */
+                if ( propNameInDataFile && fileScanner.hasNextLine() )
+                    fileScanner.nextLine();
+                while ( fileScanner.hasNextLine() && index < numberOfMolecules) {
+                    values = readNextLine( fileScanner.nextLine() );
+                    addPropToMolTable( model, propertiesName, values, 
+                                       includedProerties, index, selMols );
+                    index++;
+                }
+                fileScanner.close();
+                break;
+
+            case NO_FILE_SELECTED:
+                /* It shouldn't end up here, 'cos the file has to be 
+                 * selected before it starts to merge */
+                throw new FileNotFoundException("Can't find the data-file");
+
+            default:
+                logger.debug( "Support for "+dataFileFormart+" " +
+                        "needs to be implemented for unlinked properties");
+                break;
+        }
+
+        
+    }
+    
     /**
      * This method do the work with adding the properties to a molecule.
      * 
@@ -743,6 +853,47 @@ public class PropertiesImportFileHandler {
         
     }
 
+    private void addPropToMolTable(IMoleculesEditorModel model, 
+                                   ArrayList<String> propNames,
+                                   ArrayList<String> propValues, 
+                                   boolean[] includedProp, int molIndex,
+                                   List<ICDKMolecule> selMols) {
+        
+        Iterator<String> namesItr = propNames.iterator();
+        Iterator<String> valueItr = propValues.iterator();         
+        String name = "";
+        int propIndex = 0;
+        ICDKMolecule mol;
+        
+        if (propLinkedBy) {
+            int index = propNames.indexOf( sdFileLink );    
+            for (int i=0;i<model.getNumberOfMolecules();i++) {
+                mol = model.getMoleculeAt( i );
+                Object molProp = mol.getProperty( sdFileLink, 
+                                            Property.USE_CACHED_OR_CALCULATED );
+                if (propValues.get( index ).equals( molProp.toString() )) {
+                    molIndex = i;
+                    break;
+                }
+            }
+        }
+        
+        mol = model.getMoleculeAt( molIndex );
+        if (selMols.isEmpty() || selMols.contains( mol )) {
+            while ( namesItr.hasNext() ) {
+                name = namesItr.next();
+
+                if (!(includedProp.length == 0) && includedProp[propIndex] ) {
+                    Object value = valueItr.next();
+                    mol.setProperty( name, value );
+                    model.setPropertyFor( molIndex, name, value );
+                } else
+                    valueItr.next();
+                propIndex++;
+            }                       
+        }
+    }                          
+    
     /**
      * This method sets the path to where the new sd-file will be saved. If it 
      * contains a file name that file name is removed.
@@ -861,5 +1012,51 @@ public class PropertiesImportFileHandler {
      */
     public void addChoosenPropID(int index, String propName) {
         choosenPropID.add( index, propName );
+    }
+    
+    /**
+     * This method tries to decide what separator that was used in the source.
+     * 
+     * @param testStr A <code>String</code> for testing, e.g. the top row in the
+     *         source.  
+     * @return The number of columns.
+     */
+    private int decideColumnSeparator(String testStr) {
+        
+        int matrixCols = 0;
+
+        for (int i=0;i<delimiters.length;i++) {
+            matrixCols = testDelimiter( testStr, delimiters[i] );
+            if (matrixCols > 1)
+                break;
+        }
+        if (matrixCols <= 1) {
+            // Probably only one column, let's use tab as delimiter
+            DELIMITER = "\t";
+            matrixCols = 1;
+        }
+
+        if (DELIMITER.contains( "," ))
+            dataFileFormart = DataFileFormart.CSV;
+        else
+            dataFileFormart = DataFileFormart.TXT;
+ 
+        return matrixCols;
+    }
+    
+    private int testDelimiter(String testStr, String delimiter) {
+        int matrixCols = 0;
+        DELIMITER = delimiter;
+        Scanner testScanner = new Scanner( testStr ).useDelimiter( DELIMITER ); 
+
+        //Determine number of columns
+        while( testScanner.hasNext() )
+        {
+            testScanner.next();
+            matrixCols++;
+        }
+        testScanner.close();
+        
+        return matrixCols;
     }
 }

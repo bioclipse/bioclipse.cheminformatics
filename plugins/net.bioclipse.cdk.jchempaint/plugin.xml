@@ -74,6 +74,16 @@
                contentTypeId="net.bioclipse.contenttypes.pubchem.xml.compound">
          </contentTypeBinding>
       </editor>
+      <editor
+            class="net.bioclipse.cdk.jchempaint.editor.JChemPaintEditor"
+            default="true"
+            icon="icons/chem.png"
+            id="net.bioclipse.cdk.ui.editors.jchempaint.pubchem"
+            name="PubChemCompoundsXMLMolfileEditor">
+         <contentTypeBinding
+               contentTypeId="net.bioclipse.contenttypes.pubchem.xml.compounds">
+         </contentTypeBinding>
+      </editor>
    </extension>
  <extension
        id="net.bioclipse.cdk.jchempaint.commands"
@@ -1261,6 +1271,60 @@
               id="net.bioclipse.cdk.jchempaint.wizards.NewMoleculeWizard">
         </newWizardShortcut>
      </perspectiveExtension>
+  </extension>
+  <extension
+        point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+     <propertyContributor
+           contributorId="net.bioclipse.cdk.jchempaint.editor">
+        <propertyCategory
+              category="molecule"></propertyCategory>
+     </propertyContributor>
+  </extension>
+  <extension
+        point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+     <propertyTabs
+           contributorId="net.bioclipse.cdk.jchempaint.editor">
+        <propertyTab
+              category="molecule"
+              id="molecule.general"
+              label="General">
+        </propertyTab>
+        <propertyTab
+              afterTab="molecle.general"
+              category="molecule"
+              id="molecule.inchi"
+              label="InChI">
+        </propertyTab>
+     </propertyTabs>
+  </extension>
+  <extension
+        point="org.eclipse.ui.views.properties.tabbed.propertySections">
+     <propertySections
+           contributorId="net.bioclipse.cdk.jchempaint.editor">
+        <propertySection
+              class="net.bioclipse.cdk.jchempaint.editor.MoleculePropertySection"
+              id="molecule.inchilSection"
+              tab="molecule.inchi">
+           <input
+                 type="net.bioclipse.cdk.domain.ICDKMolecule">
+           </input>
+        </propertySection>
+        <propertySection
+              class="org.eclipse.ui.views.properties.tabbed.AdvancedPropertySection"
+              enablesFor="1"
+              id="molecule.generalSection"
+              tab="molecule.general">
+           <input
+                 type="net.bioclipse.cdk.domain.CDKChemObject">
+           </input>
+           <input
+                 type="net.bioclipse.cdk.domain.ICDKMolecule">
+           </input>
+           <input
+                 type="net.bioclipse.cdk.ui.sdfeditor.editor.MoleculeTableViewer$MolTableElement">
+           </input>
+        </propertySection>
+     </propertySections>
   </extension>
   <!--extension
          point="net.bioclipse.cdk.jchempaint.generator">

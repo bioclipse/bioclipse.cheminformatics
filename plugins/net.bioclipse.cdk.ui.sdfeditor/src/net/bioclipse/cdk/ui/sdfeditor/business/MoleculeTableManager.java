@@ -57,9 +57,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubMonitor;
-import org.openscience.cdk.Molecule;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.IChemObjectWriter;
 import org.openscience.cdk.io.SDFWriter;
 
@@ -346,14 +344,7 @@ public class MoleculeTableManager implements IBioclipseManager {
                 ICDKMolecule molecule = model.getMoleculeAt( i );
                 // copy properties
                 IAtomContainer ac = molecule.getAtomContainer();
-                IMolecule mol = null;
-                if(ac instanceof IMolecule)
-                    mol = (IMolecule) ac;
-                else {
-                    mol = new Molecule( ac );
-                    //Properties are lost in this CDK operation, so copy them
-                    mol.setProperties( ac.getProperties() );
-                }
+                IAtomContainer mol = ac;
                 if(availableProperties!=null) {
                     Set<Object> acProps = new HashSet<Object>(ac.getProperties()
                                                               .keySet());
@@ -555,14 +546,7 @@ public class MoleculeTableManager implements IBioclipseManager {
             ICDKMolecule molecule = model.getMoleculeAt( i );
             // copy properties
             IAtomContainer ac = molecule.getAtomContainer();
-            IMolecule mol = null;
-            if(ac instanceof IMolecule)
-                mol = (IMolecule) ac;
-            else {
-                mol = new Molecule( ac );
-                //Properties are lost in this CDK operation, so copy them
-                mol.setProperties( ac.getProperties() );
-            }
+            IAtomContainer mol = ac;
             loopProgress.worked( 5 );
             loopProgress.setTaskName( 
                 "Done " + i + "/" + numberOfMolecules 

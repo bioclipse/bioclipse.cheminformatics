@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.cheatsheets.cheatSheetContent">
+      <category
+            id="net.bioclipse.jmol.cheatsheet.category"
+            name="Jmol Script Tutorials - Level 1"/>
+      <cheatsheet
+            category="net.bioclipse.jmol.cheatsheet.category"
+            composite="true"
+            contentFile="cheatsheets/jmolScripting.xml"
+            id="net.bioclipse.jmol.tutorial.level1"
+            name="Jmol Script - Level 1"/>
+   </extension>
+
+</plugin>

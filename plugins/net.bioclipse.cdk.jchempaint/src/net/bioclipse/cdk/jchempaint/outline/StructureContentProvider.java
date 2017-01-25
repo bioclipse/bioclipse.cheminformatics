@@ -21,10 +21,10 @@ import org.eclipse.jface.viewers.Viewer;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObject;
-import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.interfaces.IBond.Order;
 import org.openscience.cdk.tools.periodictable.PeriodicTable;
 
@@ -145,7 +145,7 @@ public class StructureContentProvider implements ITreeContentProvider {
         if (inputElement instanceof IChemModel) {
             IChemModel model = (IChemModel) inputElement;
 
-            IMoleculeSet ms=model.getMoleculeSet();
+            IAtomContainerSet ms = model.getMoleculeSet();
             if (ms==null || ms.getAtomContainerCount()<=0)
             {
                 logger.debug("No AtomContainers in ChemModel.");

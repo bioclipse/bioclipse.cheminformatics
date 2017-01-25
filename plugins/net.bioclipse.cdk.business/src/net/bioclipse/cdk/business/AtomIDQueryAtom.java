@@ -12,14 +12,14 @@ package net.bioclipse.cdk.business;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.isomorphism.matchers.IQueryAtom;
-import org.openscience.cdk.nonotify.NNAtom;
+import org.openscience.cdk.silent.Atom;
 
 /**
  * {@link IQueryAtom} that matches atoms solely on the IAtom.getID().
  *
  * @author egonw
  */
-public class AtomIDQueryAtom extends NNAtom implements IQueryAtom {
+public class AtomIDQueryAtom extends Atom implements IQueryAtom {
 
     private String identifierToMatch;
 

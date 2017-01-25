@@ -10,7 +10,17 @@ package net.bioclipse.cdk.ui.wizards;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+
+import net.bioclipse.cdk.domain.CDKMolecule;
+import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cdk.ui.sdfeditor.business.SDFIndexEditorModel;
+import net.bioclipse.cdk.ui.sdfeditor.editor.MolTableSelection;
+import net.bioclipse.cdk.ui.sdfeditor.editor.MultiPageMoleculesEditorPart;
+import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -43,6 +53,9 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.internal.UIPlugin;
 
 /**
@@ -57,7 +70,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
     
     // An array to exclude data columns
     private boolean[] isIncluded;
-    private boolean dataFileIncludeName =  true;
+    private boolean dataFileIncludeName =  true, toMolEditor = false;
     private ArrayList<String> excludedProperties;
     
     private Composite mainComposite, dataComposite, settingsComposite;
@@ -84,7 +97,10 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
     
     private PropertiesImportFileHandler fileHandler = 
             new PropertiesImportFileHandler();
-
+    private IMoleculesEditorModel model;
+    private List<ICDKMolecule> selectedMols;
+    private String editorFileName = "A SD-file";
+    
     /**
      * A constructor to use if there's one or several files selected.
      * 
@@ -154,7 +170,10 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         toFileLabel.setText("SDF-file:");
         toFileLabel.setLayoutData( labelGridData );
         toFileTxt = new Text(fileComposite, SWT.BORDER);
-        toFileTxt.setText("");
+        if (toMolEditor)
+            toFileTxt.setText( "The file in the editor..." );
+        else
+            toFileTxt.setText("");
         toFileTxt.setLayoutData( txtGridData );
         toFileTxt.addModifyListener(new ModifyListener() {
             @Override
@@ -178,6 +197,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                             .getFile(path);
                     fileHandler.setSDFile( file );
                     sdfPropertyList = fileHandler.getPropertiesFromSDFile();
+                    toMolEditor = false;
                 } catch ( FileNotFoundException e1 ) {
                     logger.error( e1 );
                 }
@@ -302,38 +322,73 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
      * @param selection The selection
      */
     protected void init(ISelection selection) {
-        if (!(selection instanceof IStructuredSelection) || selection.isEmpty())
+        if (!(selection instanceof IStructuredSelection) )
             return;
+        if (selection.isEmpty()) {
+            IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+            
+            if (editor instanceof MultiPageMoleculesEditorPart) {
+                IMoleculesEditorModel model2 = ((MultiPageMoleculesEditorPart) editor).getMoleculesPage().getModel();
+                int numberOfMolecules = model2.getNumberOfMolecules();
+                int [] rows = new int[numberOfMolecules];
+                for (int i=0;i<numberOfMolecules;i++) {
+                    rows[i] = i;
+                }
+                
+                List<String> properties = new ArrayList<String>();
+                Collection<Object> prop = model2.getAvailableProperties();
+                for (Object obj:prop)
+                    properties.add( obj.toString() );
+                
+                selection = new MolTableSelection( rows, model2, properties );
+                
+            } else
+                return;
+        }
+        
+        if (selection instanceof MolTableSelection) {
+            toMolEditor = true;
+            IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+            editorFileName = editor.getEditorInput().getName();
+            model = (IMoleculesEditorModel) ((MolTableSelection) selection).
+                    getAdapter( IMoleculesEditorModel.class );
+            if ( model.getNumberOfMolecules() == ((MolTableSelection) selection).size()
+                    || ((MolTableSelection) selection).size() == 0)
+                selectedMols =  new ArrayList<ICDKMolecule>();
+            else
+                selectedMols =  ((MolTableSelection) selection).toList();
 
-        Iterator<?> itr = ((IStructuredSelection) selection).iterator();
-        Object item;
-        IFile file;
-        while (itr.hasNext()) {
-            item = itr.next();
-            if (item instanceof IFile) {
-                file = (IFile) item;
-                if (file.getFileExtension().toLowerCase().equals( "sdf" ) ||
-                        file.getFileExtension().toLowerCase().equals( "sd" ) ) {
-                    try {
-                        fileHandler.setSDFile( file );
-                        fileHandler.setPathToNewSDFile( file.getLocation()
-                                                        .toOSString() );
-                    } catch ( FileNotFoundException e ) {
-                        logger.error( e );
-                    }
+        } else  {
+            Iterator<?> itr = ((IStructuredSelection) selection).iterator();
+            Object item;
+            IFile file;
+            while (itr.hasNext()) {
+                item = itr.next();
+                if (item instanceof IFile) {
+                    file = (IFile) item;
+                    if (file.getFileExtension().toLowerCase().equals( "sdf" ) ||
+                            file.getFileExtension().toLowerCase().equals( "sd" ) ) {
+                        try {
+                            fileHandler.setSDFile( file );
+                            fileHandler.setPathToNewSDFile( file.getLocation()
+                                                            .toOSString() );
+                        } catch ( FileNotFoundException e ) {
+                            logger.error( e );
+                        }
 
-                } else { 
-                    /* TODO Here I just assumes that if it's not an sdf-file 
-                     * then its the txt-file with properties, that is probably 
-                     * not good...*/
-                    try {
-                        fileHandler.setDataFile( file );
-                        fileHandler.setPathToNewSDFile( file.getLocation()
-                                                        .toOSString() );
-                    } catch ( FileNotFoundException e ) {
-                        logger.error( e );
-                    }
-                } 
+                    } else { 
+                        /* TODO Here I just assumes that if it's not an sdf-file 
+                         * then its the txt-file with properties, that is probably 
+                         * not good...*/
+                        try {
+                            fileHandler.setDataFile( file );
+                            fileHandler.setPathToNewSDFile( file.getLocation()
+                                                            .toOSString() );
+                        } catch ( FileNotFoundException e ) {
+                            logger.error( e );
+                        }
+                    } 
+                }
             }
         }
     }
@@ -485,6 +540,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                     @Override
                     public void keyReleased( KeyEvent e ) {
                         Object source = e.getSource();
+
                         for (int i = 0; i < columns; i++)
                             if (source.equals( headerCombo[i] ) )
                                 headers.set( i, headerCombo[i].getText() );
@@ -497,7 +553,7 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
                     
                 } );
                 
-                if (sdfPropertyList != null && sdfPropertyList.size() > 0) {
+                if (sdfPropertyList != null && sdfPropertyList.size() > 0) {                                     
                     headerCombo[i].add( "" );
                     for (int j = 0; j < sdfPropertyList.size(); j++)
                         headerCombo[i].add( sdfPropertyList.get( j ) );
@@ -671,7 +727,10 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
         if (fileHandler.sdFileExists())
             toFileTxt.setText( fileHandler.getSDFilePath() );
         else {
-            toFileTxt.setText( "" ); 
+            if (toMolEditor)
+                toFileTxt.setText( editorFileName );
+            else
+                toFileTxt.setText("");
         }
 
         sdfCombo.removeAll();
@@ -720,17 +779,30 @@ public class SDFPropertiesImportWizardPage extends WizardPage {
     }
     
     /**
-     * This method initialize the the process of adding the properties from the 
-     * txt-file to the sd-file.
+     * This method initialise the the process of adding the properties from the 
+     * txt-file to the sd-file or the file in the molTableEditor.
      */
     protected void meargeFiles(IProgressMonitor monitor) {
-        try {
-            fileHandler.meargeFiles( isIncluded, names, dataFileIncludeName, monitor );
-            ResourcesPlugin.getWorkspace().getRoot().refreshLocal( IResource.DEPTH_INFINITE, null );
-        } catch ( FileNotFoundException e ) {
-            logger.error( e );
-        } catch ( CoreException e ) {
-          logger.error( "Could not update the navigator: "+e.getMessage() );
+
+        if (toMolEditor) {
+            try {
+                
+                fileHandler.addPropertiesToMolTable( isIncluded, names, 
+                                                     dataFileIncludeName, 
+                                                     monitor, model, selectedMols );
+            } catch ( FileNotFoundException e ) {
+                logger.error( e );
+            }
+        } else {
+            try {
+                fileHandler.meargeFiles( isIncluded, names, dataFileIncludeName, monitor );
+                ResourcesPlugin.getWorkspace().getRoot().refreshLocal( IResource.DEPTH_INFINITE, null );
+            } catch ( FileNotFoundException e ) {
+                logger.error( e );
+            } catch ( CoreException e ) {
+                logger.error( "Could not update the navigator: "+e.getMessage() );
+            }
+
         }
     }
     
