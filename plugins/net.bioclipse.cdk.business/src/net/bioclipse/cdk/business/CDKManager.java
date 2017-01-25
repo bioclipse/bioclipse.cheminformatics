@@ -2043,17 +2043,22 @@ public class CDKManager implements IBioclipseManager {
             StructureDiagramGenerator sdg = new StructureDiagramGenerator();
 
             for ( IAtomContainer mol : mols.atomContainers() ) {
-                sdg.setMolecule( cdkmol.getAtomContainer()
-                     .getBuilder().newInstance( IAtomContainer.class, mol)
-                );
+            	IAtomContainer molCopy = cdkmol.getAtomContainer().getBuilder().newInstance(IAtomContainer.class, mol);
+            	// cdkmol.getAtomContainer().getBuilder().newInstance( IAtomContainer.class, mol)
+                sdg.setMolecule(mol );
                 sdg.generateCoordinates();
                 IAtomContainer molWithCoords = sdg.getMolecule();
+                
                 // copy the coordinates
-                for (int i=0; i<molWithCoords.getAtomCount(); i++) {
-                    mol.getAtom(i).setPoint2d(molWithCoords.getAtom(i).getPoint2d());
-                }
+//                for (int i=0; i<molWithCoords.getAtomCount(); i++) {
+//                    mol.getAtom(i).setPoint2d(molWithCoords.getAtom(i).getPoint2d());
+//                }
+                molWithCoords.setProperties(molCopy.getProperties());
+                cdkmol = this.newMolecule(molWithCoords);
+                
+//                mol.setProperties(molCopy.getProperties());
             }
-
+            
             newMolecules.add(cdkmol);
           }
           if(monitor.isCanceled())
