@@ -30,8 +30,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.LineAttributes;
 import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.TextLayout;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.elements.ArrowElement;
 import org.openscience.cdk.renderer.elements.AtomSymbolElement;
@@ -39,6 +42,7 @@ import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.GeneralPath;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.LineElement;
+import org.openscience.cdk.renderer.elements.MarkedElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
 import org.openscience.cdk.renderer.elements.PathElement;
 import org.openscience.cdk.renderer.elements.RectangleElement;
@@ -58,7 +62,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.osgi.framework.launch.Framework;
 
 public class SWTRenderer implements IDrawVisitor{
 
@@ -119,6 +122,46 @@ public class SWTRenderer implements IDrawVisitor{
     @Deprecated
     private int transformY(double y) {
         return (int) transform( 1, y )[1];
+    }
+
+    private int[] transformPoint(double xCoord, double yCoord) {
+        double[] src = new double[] {xCoord,yCoord};
+        double[] dest = new double[2];
+        this.transform.transform( src,0,dest,0,1 );
+        return new int[] { (int) dest[0], (int) dest[1] };
+    }
+
+    private Rectangle getTextBounds( String text, double xCoord, double yCoord ) {
+
+        Point stringExtent = gc.stringExtent( text );
+        int widthPad = 3;
+        int heightPad = 1;
+
+        int width = stringExtent.x + widthPad;
+        int height = stringExtent.y + heightPad;
+        int[] point = transformPoint( xCoord, yCoord );
+        return new Rectangle( (int) (point[0] - width / 2), (int) (point[1] - height / 2), width, height );
+    }
+
+    private Point getTextBasePoint( String text, double xCoord, double yCoord ) {
+
+        Point stringExtent = gc.stringExtent( text );
+        int ascent = gc.getFontMetrics().getAscent();
+        int[] point = transformPoint( xCoord, yCoord );
+
+        int baseX = (int) (point[0] - (stringExtent.x / 2));
+
+        int baseY = (int) (point[1] + (ascent - stringExtent.y / 2));
+
+        return new Point( baseX, baseY );
+    }
+
+    private Rectangle getTextBounds(String text) {
+
+        TextLayout layout = new TextLayout( gc.getDevice() );
+        layout.setFont( gc.getFont() );
+        layout.setText( text );
+        return layout.getBounds();
     }
 
     private Point transformXY(double x, double y) {
@@ -342,50 +385,125 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void visit( TextGroupElement element ) {
-    	Point p = transformXY(element.xCoord,element.yCoord);
-        int x = p.x;
-        int y = p.y;
-        String text = element.text;
-
         gc.setFont(getFont());
+        
+        Point point = getTextBasePoint( element.text, element.xCoord, element.yCoord );
+        Rectangle textBounds = getTextBounds( element.text, element.xCoord, element.yCoord );
 
-        Point textSize = gc.textExtent( text );
-        x = x - textSize.x/2;
-        y = y - textSize.y/2;
+        setForeground( getBackgroundColor() );
+        gc.fillRectangle( textBounds );
         setForeground( element.color );
-        setBackground(  getBackgroundColor() );
         gc.setAdvanced( true );
-        gc.drawText( text, x, y, false );
+        gc.drawString( element.text, point.x, point.y, true );
+
+        int xCoord = (int) (textBounds.x + textBounds.width / 2);
+        int yCoord = (int) (textBounds.y + textBounds.height / 2);
+        int xCoord1 = (int) (textBounds.x);
+        int yCoord1 = (int) (textBounds.y);
+        int xCoord2 = (int) (point.x + textBounds.width);
+        int yCoord2 = (int) (textBounds.y + textBounds.height);
+
+        int oWidth = xCoord2 - xCoord1;
+        int oHeight = yCoord2 - yCoord1;
+        for ( TextGroupElement.Child child : element.children ) {
+            int childx;
+            int childy;
+
+            switch ( child.position ) {
+                case NE:
+                    childx = xCoord2;
+                    childy = yCoord1;
+                    break;
+                case N:
+                    childx = xCoord1;
+                    childy = yCoord1;
+                    break;
+                case NW:
+                    childx = xCoord1 - oWidth;
+                    childy = yCoord1;
+                    break;
+                case W:
+                    childx = xCoord1 - oWidth;
+                    childy = point.y;
+                    break;
+                case SW:
+                    childx = xCoord1 - oWidth;
+                    childy = point.y;
+                    break;
+                case S:
+                    childx = xCoord1;
+                    childy = yCoord2 + oHeight;
+                    break;
+                case SE:
+                    childx = xCoord2;
+                    childy = yCoord2 + oHeight;
+                    break;
+                case E:
+                    childx = xCoord2;
+                    childy = point.y;
+                    break;
+                default:
+                    childx = xCoord;
+                    childy = yCoord;
+                    break;
+            }
+            gc.drawString( child.text, childx, childy );
+            if ( child.subscript != null ) {
+                Rectangle childBounds = getTextBounds( child.text, childx, childy );
+                int scx = (int) (childx + childBounds.width * 0.75);
+                int scy = childy + (childBounds.height / 3);
+                gc.setFont( fontManager.getSmallFont() );
+                gc.drawString( child.subscript, scx, scy );
+            }
+        }
+
     }
 
     public void visit(AtomSymbolElement element) {
+        gc.setFont(getFont());
+        
     	Point p = transformXY(element.xCoord,element.yCoord);
-        int x = p.x;
-        int y = p.y;
-
+    	
+    	Rectangle bounds = getTextBounds( element.text );
+    	int w = bounds.width;
+    	int h = bounds.height;
+    	int xOffset = bounds.x;
+        int yOffset = bounds.y + bounds.height;
+    	
+        double x = p.x- w/2;
+        double y = p.y - (h/2);
+        double padding = h/4;
+        
         String text = element.text;
 
-        gc.setFont(getFont());
 
-        Point textSize = gc.textExtent( text );
-        x = x - textSize.x/2;
-        y = y - textSize.y/2;
+        //Background
+        setForeground( getBackgroundColor() );
+        gc.fillRoundRectangle( (int)(x-(padding/2)), 
+                               (int) (y - (padding / 2)),
+                               (int)(w+padding),(int)(h+padding),
+                               (int)padding,(int)padding);
+        
         setForeground( element.color );
         setBackground(  getBackgroundColor() );
         gc.setAdvanced( true );
-        gc.drawText( text, x, y, false );
+        
+        gc.drawText( text, (int) (x - xOffset), (int) (y + h - yOffset), true );
 
         Point secondTextSize = gc.textExtent( "H" );
         gc.setFont( getSmallFont() );
         Point cp = new Point(0,0);
+        int xCoord = (int) (x+w/2);
+        int yCoord = (int) (y+h/2);
+        int offset = 10;
         if(element.formalCharge!=0) {
             String fc = Integer.toString( element.formalCharge);
             fc = (element.formalCharge==1?"+":fc);
             fc = (element.formalCharge>1?"+"+fc:fc);
             fc = (element.formalCharge==-1?"-":fc);
             cp = gc.textExtent( fc );
-            int fcX = x+textSize.x;
-            int fcY = y-cp.y/2;
+            int fcX = (int) (x+w/2);
+            int fcY = (int) (y-h/4);
             gc.drawText( fc, fcX, fcY, true );
         }
 
@@ -398,17 +516,17 @@ public class SWTRenderer implements IDrawVisitor{
             }
             switch(element.alignment) {
                 case -1: x = x -secondTextSize.x - hc.x;break;
-                case 1:  x = x + textSize.x+cp.x;break;
-                case -2: y = y + textSize.y;break;
+                case 1:  x = x + w+cp.x;break;
+                case -2: y = y + h;break;
                 case 2:  y = y+cp.y/2 - Math.max( secondTextSize.y,secondTextSize.y/2 - hc.y);break;
             }
             if(element.hydrogenCount >1) {
                 gc.drawText( Integer.toString( element.hydrogenCount),
-                             x + secondTextSize.x, y + secondTextSize.y/2
+                             (int)(x + secondTextSize.x), (int)(y + secondTextSize.y/2)
                              ,true);
             }
             gc.setFont(getFont());
-            gc.drawText( "H", x, y ,false);
+            gc.drawText( "H", (int)x, (int)y ,false);
 
         }
     }
@@ -449,6 +567,12 @@ public class SWTRenderer implements IDrawVisitor{
 
     public void setTransform(AffineTransform transform) {
         this.transform = transform;
+    }
+    
+    public void visit( MarkedElement element ) {
+
+        // ignore data in element just pass through to contained element
+        element.element().accept( this );
     }
 
     public void visitDefault(IRenderingElement element) {
@@ -491,9 +615,17 @@ public class SWTRenderer implements IDrawVisitor{
     }
 
     public void visit(GeneralPath element) {
+
+        java.awt.Color oldColorFg = getForgroundColor();
+        java.awt.Color oldColorBg = getBackgroundColor();
+        LineAttributes oldStyle = gc.getLineAttributes();
+
         setForeground( element.color );
-        int oldStyle = gc.getLineStyle();
-        gc.setLineStyle( SWT.LINE_DOT );
+        setBackground( element.color );
+        LineAttributes att = new LineAttributes( scaleX( element.stroke ), SWT.CAP_ROUND, SWT.JOIN_ROUND );
+        gc.setLineAttributes( att );
+
+        // gc.setLineStyle( SWT.LINE_DOT );
         Path path = new Path(gc.getDevice());
 
         for(org.openscience.cdk.renderer.elements.path.PathElement e:element.elements) {
@@ -507,9 +639,15 @@ public class SWTRenderer implements IDrawVisitor{
                 case Close: path.close();
             }
         }
-        gc.drawPath( path );
+        if ( element.fill ) {
+            gc.fillPath( path );
+        } else {
+            gc.drawPath( path );
+        }
         path.dispose();
-        gc.setLineStyle( oldStyle );
+        gc.setLineAttributes( oldStyle );
+        setForeground( oldColorFg );
+        setBackground( oldColorBg );
     }
 
     public void visit(IRenderingElement element)  {

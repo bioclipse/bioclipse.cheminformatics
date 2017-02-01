@@ -2,18 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDK UI
 Bundle-SymbolicName: net.bioclipse.cdk.ui;singleton:=true
-Bundle-Version: 2.6.2.qualifier
+Bundle-Version: 2.7.0.qualifier
 Bundle-Activator: net.bioclipse.cdk.ui.Activator
 Bundle-Vendor: The Bioclipse Team
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.openscience.cdk.interfaces,
- org.openscience.cdk.core,
- org.openscience.cdk.standard,
- org.openscience.cdk.render,
- org.openscience.cdk.data,
- org.openscience.cdk.sdg,
- org.openscience.cdk.smiles,
  net.bioclipse.ui,
  org.eclipse.ui.editors,
  org.eclipse.core.resources,
@@ -27,11 +20,17 @@ Require-Bundle: org.eclipse.ui,
  javax.vecmath,
  org.eclipse.core.expressions,
  net.bioclipse.chemoinformatics,
- net.bioclipse.ui.business,
- org.openscience.cdk.extra,
- org.openscience.cdk.silent
+ net.bioclipse.ui.business
 Bundle-ActivationPolicy: lazy
-Import-Package: org.apache.log4j
+Import-Package: org.apache.log4j,
+ org.openscience.cdk.exception;version="1.5.13",
+ org.openscience.cdk.graph;version="1.5.13",
+ org.openscience.cdk.interfaces;version="1.5.13",
+ org.openscience.cdk.io.formats;version="1.5.13",
+ org.openscience.cdk.silent;version="1.5.13",
+ org.openscience.cdk.smiles;version="1.5.13",
+ org.openscience.cdk.tools;version="1.5.13",
+ org.openscience.cdk.tools.manipulator;version="1.5.13"
 Export-Package: net.bioclipse.cdk.ui.filters,
  net.bioclipse.cdk.ui.handlers,
  net.bioclipse.cdk.ui.model,

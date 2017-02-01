@@ -41,7 +41,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
-import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.geometry.GeometryUtil;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.AtomContainerRenderer;
@@ -137,7 +137,7 @@ public class MoleculesEditorLabelProvider implements ITableLabelProvider{
         if(mol == null) return false;
 
         // If no 2D coordinates
-        if ( !GeometryTools.has2DCoordinates( mol.getAtomContainer() ) ) {
+        if ( !GeometryUtil.has2DCoordinates( mol.getAtomContainer() ) ) {
             // Test if 3D coordinates
             IAtomContainer generatedAC = null;
             try {

@@ -2,18 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jmol-CDK Integration
 Bundle-SymbolicName: net.bioclipse.jmol.cdk;singleton:=true
-Bundle-Version: 2.6.2.qualifier
+Bundle-Version: 2.7.0.qualifier
 Bundle-Activator: net.bioclipse.jmol.cdk.Activator
 Bundle-Vendor: The Bioclipse Team
-Require-Bundle: org.openscience.cdk.data,
- org.openscience.cdk.interfaces,
- org.openscience.cdk.ioformats,
- org.openscience.cdk.pcore,
- org.openscience.cdk.core,
- org.openscience.cdk.standard,
- org.openscience.cdk.io,
- org.openscience.cdk.libiocml,
- org.eclipse.ui,
+Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  net.bioclipse.ui,
  org.eclipse.ui.editors,
@@ -27,9 +19,18 @@ Require-Bundle: org.openscience.cdk.data,
  net.bioclipse.cdk.business,
  javax.vecmath,
  net.bioclipse.jmol,
- net.bioclipse.ui.business,
- org.openscience.cdk.silent
+ net.bioclipse.ui.business
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
-Import-Package: org.apache.log4j
+Import-Package: org.apache.log4j,
+ org.openscience.cdk;version="1.5.13",
+ org.openscience.cdk.config;version="1.5.13",
+ org.openscience.cdk.exception;version="1.5.13",
+ org.openscience.cdk.geometry;version="1.5.13",
+ org.openscience.cdk.interfaces;version="1.5.13",
+ org.openscience.cdk.io;version="1.5.13",
+ org.openscience.cdk.pharmacophore;version="1.5.13",
+ org.openscience.cdk.protein.data;version="1.5.13",
+ org.openscience.cdk.silent;version="1.5.13",
+ org.openscience.cdk.tools.manipulator;version="1.5.13"
 Export-Package: net.bioclipse.jmol.cdk.views

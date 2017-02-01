@@ -14,6 +14,7 @@ import java.io.IOException;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.config.AtomTypeFactory;
 import org.openscience.cdk.config.IsotopeFactory;
+import org.openscience.cdk.config.Isotopes;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.periodictable.PeriodicTable;
@@ -29,16 +30,12 @@ public class CDKInitializer implements Runnable {
 	public void run() {
 		// set up IsotopeFactories
 		try {
-			IsotopeFactory.getInstance(
-				SilentChemObjectBuilder.getInstance()
-			);
+            Isotopes.getInstance();
 		} catch (IOException e) {
 			// do not care about the exception right now
 		}
 		try {
-			IsotopeFactory.getInstance(
-				DefaultChemObjectBuilder.getInstance()
-			);
+            Isotopes.getInstance();
 		} catch (IOException e) {
 			// do not care about the exception right now
 		}

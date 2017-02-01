@@ -10,14 +10,32 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.preferences;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.bioclipse.cdk.jchempaint.Activator;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager;
 import net.bioclipse.core.business.BioclipseException;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.ColorFieldEditor;
+import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IntegerFieldEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.renderer.RendererModel;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
+import org.openscience.cdk.renderer.generators.HighlightAtomGenerator;
+import org.openscience.cdk.renderer.generators.HighlightBondGenerator;
+import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.IGeneratorParameter;
+import org.openscience.cdk.renderer.generators.RadicalGenerator;
+import org.openscience.cdk.renderer.generators.RingGenerator;
+import org.openscience.cdk.renderer.generators.standard.StandardGenerator;
 
 /**
  * Preference page for the CDK cheminformatics functionality.
@@ -46,6 +64,60 @@ public class JChemPaintPreferencePage
 		setDescription("JChemPaint Preferences");
 	}
 	
+    public static List<IGenerator<IAtomContainer>> getGenerators() {
+        List<IGenerator<IAtomContainer>> generatorList = new ArrayList<IGenerator<IAtomContainer>>();
+        // generatorList.add( new AtomContainerBoundsGenerator() );
+        generatorList.add( new BasicSceneGenerator() );
+        generatorList.add( new RingGenerator() );
+        // generatorList.add( new ExtendedAtomGenerator());
+        generatorList.add( new StandardGenerator( java.awt.Font.decode( null ) ) );
+        // generatorList.add( new BasicAtomGenerator());
+        generatorList.add( new RadicalGenerator() );
+        generatorList.add( new HighlightAtomGenerator() );
+        generatorList.add( new HighlightBondGenerator() );
+        return generatorList;
+    }
+
+    private void generateFieldEditors() {
+
+        for ( IGeneratorParameter<?> param : new RendererModel().getRenderingParameters() ) {
+            generateFieldEditor( param );
+        }
+        for ( IGenerator<IAtomContainer> prp : getGenerators() ) {
+            String generatorName = prp.getClass().getSimpleName();
+            addField( new LabelFieldEditor( "------" + generatorName + "------", getFieldEditorParent() ) );
+            for ( IGeneratorParameter<?> param : prp.getParameters() ) {
+                generateFieldEditor( param );
+            }
+            addField( new LabelFieldEditor( "", getFieldEditorParent() ) );
+        }
+    }
+
+    protected void generateFieldEditor( IGeneratorParameter<?> param ) {
+
+        Class<?> clazz = param.getDefault().getClass();
+        // org/openscience/cdk/renderer/generators/standard/StandardGenerator$BondSeparation.class
+        String name = param.getClass().getName();
+        String[] names = name.substring( name.lastIndexOf( '.' ) + 1 ).split( "\\$", 2 );
+        if ( clazz.isAssignableFrom( Integer.class ) ) {
+            FieldEditor editor = new IntegerFieldEditor( name, names[1], getFieldEditorParent() );
+            addField( editor );
+        } else if ( clazz.isAssignableFrom( Double.class ) ) {
+            FieldEditor editor = new DoubleFieldEditor( name, names[1], getFieldEditorParent() );
+            addField( editor );
+        } else if ( clazz.isAssignableFrom( Boolean.class ) ) {
+            FieldEditor editor = new BooleanFieldEditor( name, names[1], getFieldEditorParent() );
+            addField( editor );
+        } else if ( clazz.isAssignableFrom( Color.class ) ) {
+            FieldEditor editor = new ColorFieldEditor( name, names[1], getFieldEditorParent() );
+            addField( editor );
+        } else {
+            FieldEditor editor = new StringFieldEditor( name, names[1], getFieldEditorParent() );
+            editor.setEnabled( false, getFieldEditorParent() );
+            addField( editor );
+        }
+    }
+
 	/**
 	 * Creates the field editors. Field editors are abstractions of
 	 * the common GUI blocks needed to manipulate various types
@@ -54,6 +126,10 @@ public class JChemPaintPreferencePage
 	 */
 	public void createFieldEditors() {
 	    
+        generateFieldEditors();
+        if ( true )
+            return;
+
 	    showAromaticityField = new BooleanFieldEditor(
 	        PreferenceConstants.SHOW_AROMATICITY_BOOL,
 	        "Show &Aromaticity",

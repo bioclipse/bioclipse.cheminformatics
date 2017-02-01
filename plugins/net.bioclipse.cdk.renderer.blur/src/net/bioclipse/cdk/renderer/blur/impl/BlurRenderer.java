@@ -15,12 +15,12 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Transform;
 import org.eclipse.swt.widgets.Display;
 import org.openscience.cdk.renderer.RendererModel;
-import org.openscience.cdk.renderer.elements.ElementGroup;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.IRenderingVisitor;
+import org.openscience.cdk.renderer.elements.MarkedElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
 
-public class BlurRenderer implements Renderer{
+public class BlurRenderer implements Renderer<GC> {
 	
 	@Override
 	public boolean accepts(IRenderingElement element) {
@@ -39,7 +39,7 @@ public class BlurRenderer implements Renderer{
 
         int stencilSize = source.getStencilSize();
 
-        Rectangle2D preBounds = bounds( transform, source.getNode() );
+        Rectangle2D preBounds = BoundsVisitor.bounds( transform, source.getNode() );
         Rectangle2D bounds = transform.createTransformedShape( preBounds )
                         .getBounds2D();
         double margin = stencilSize * 2;
@@ -48,6 +48,7 @@ public class BlurRenderer implements Renderer{
                          bounds.getHeight() + margin * 2 );
         AffineTransform af = new AffineTransform( transform );
         af.translate( -bounds.getX(), -bounds.getY() );
+
 		Image image = new Image(Display.getDefault(),(int)bounds.getWidth(),(int)bounds.getHeight());
 	    GC gc = new GC(image);
 	    Transform tr = new Transform( gc.getDevice() );
@@ -71,48 +72,4 @@ public class BlurRenderer implements Renderer{
         // bounds.getWidth(),(int) bounds.getHeight());
 	}
 	
-    static Rectangle2D bounds( AffineTransform transform, ElementGroup group ) {
-		BoundsVisitor visitor = new BoundsVisitor();
-        // visitor.setTransform( transform );
-		group.visitChildren(visitor);
-		return visitor.getBounds();
-	}
-	
-	static class BoundsVisitor implements IRenderingVisitor {
-		Rectangle2D bounds = null;
-        AffineTransform transform = null;
-
-        public void setTransform( java.awt.geom.AffineTransform transform ) {
-
-            this.transform = transform;
-        };
-
-        @Override
-        public void visit( IRenderingElement element ) {
-
-            if ( element instanceof OvalElement )
-                visit( (OvalElement) element );
-            else if ( element instanceof ElementGroup )
-                visit( (ElementGroup) element );
-        }
-		public void visit(ElementGroup element) {
-            element.visitChildren( this );
-		}
-		public void visit(OvalElement element) {
-
-            double r = element.radius;
-            Shape oval = new Ellipse2D.Double( element.xCoord - r,
-                element.yCoord - r, r * 2, r * 2 );
-            if ( transform != null ) {
-                oval = transform.createTransformedShape( oval );
-            }
-			if(bounds!=null) 
-				bounds.add(oval.getBounds2D());
-			else bounds = oval.getBounds2D();
-		}
-		
-		public Rectangle2D getBounds() {
-			return bounds;
-		}
-	}
 }

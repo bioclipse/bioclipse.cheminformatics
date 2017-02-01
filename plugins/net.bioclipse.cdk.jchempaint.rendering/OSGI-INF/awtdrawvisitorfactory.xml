@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="false" name="AWTDrawVisitorFactory">
+   <implementation class="net.bioclipse.cdk.jchempaint.rendering.AWTDrawVisitorFactory"/>
+  
+   <service>
+      <provide interface="net.bioclipse.cdk.jchempaint.rendering.AWTDrawVisitorFactory"/>
+   </service> 
+   <reference bind="addRenderer" cardinality="0..n" interface="net.bioclipse.cdk.jchempaint.rendering.Renderer" name="Renderer" policy="dynamic" target="(renderer.type=AWT)" unbind="removeRenderer"/>emoveRenderer"/>
+  
+</scr:component>

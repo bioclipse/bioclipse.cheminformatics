@@ -2,26 +2,31 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDK Extras
 Bundle-SymbolicName: net.bioclipse.cdk.debug;singleton:=true
-Bundle-Version: 2.6.2.qualifier
+Bundle-Version: 2.7.0.qualifier
 Bundle-Activator: net.bioclipse.cdkdebug.Activator
 Import-Package: org.apache.log4j,
- org.eclipse.core.resources
+ org.eclipse.core.resources,
+ org.openscience.cdk;version="1.5.13",
+ org.openscience.cdk.aromaticity;version="1.5.13",
+ org.openscience.cdk.atomtype;version="1.5.13",
+ org.openscience.cdk.atomtype.mapper;version="1.5.13",
+ org.openscience.cdk.config;version="1.5.13",
+ org.openscience.cdk.exception;version="1.5.13",
+ org.openscience.cdk.graph;version="1.5.13",
+ org.openscience.cdk.interfaces;version="1.5.13",
+ org.openscience.cdk.io;version="1.5.13",
+ org.openscience.cdk.io.formats;version="1.5.13",
+ org.openscience.cdk.io.setting;version="1.5.13",
+ org.openscience.cdk.silent;version="1.5.13",
+ org.openscience.cdk.tools.diff;version="1.5.13",
+ org.openscience.cdk.tools.manipulator;version="1.5.13"
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  net.bioclipse.core,
  net.bioclipse.scripting,
  net.bioclipse.ui,
- org.openscience.cdk.interfaces,
- org.openscience.cdk.diff,
- org.openscience.cdk.core,
- org.openscience.cdk.standard,
- org.openscience.cdk.atomtype,
- org.openscience.cdk.ioformats,
- org.openscience.cdk.io,
- org.openscience.cdk.libiocml,
  net.bioclipse.cdk.business,
- net.bioclipse.scripting.ui,
- org.openscience.cdk.silent
+ net.bioclipse.scripting.ui
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.cdkdebug,
  net.bioclipse.cdkdebug.business

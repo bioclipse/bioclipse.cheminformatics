@@ -1,11 +1,8 @@
 package net.bioclipse.cdk.jchempaint.editor;
 
-import net.bioclipse.cdk.business.ICDKManager;
-import net.bioclipse.cdk.business.IJavaCDKManager;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculePropertySource;
 import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.IMolecule.Property;
 import net.bioclipse.inchi.InChI;
 import net.bioclipse.inchi.business.Activator;
@@ -35,7 +32,6 @@ import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.openscience.cdk.interfaces.IAtomContainer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -111,30 +107,6 @@ public class MoleculePropertySection extends AbstractPropertySection {
 
                 final ICDKMolecule item = molecule;
 
-                boolean allOK = true;
-                try {
-                    IAtomContainer container = item.getAtomContainer().clone();
-                    String result = CDKMoleculePropertySource.ensureFullAtomTyping( container );
-                    if ( result == null || result.length() > 0 )
-                        allOK = false;
-                } catch ( CloneNotSupportedException e1 ) {
-                    allOK = false;
-                }
-                if ( !allOK ) {
-                    String msg = "Incorrect Structure.";
-                    item.setProperty( CDKMolecule.INCHI_OBJECT, msg );
-                    refresh();
-                }
-
-                ICDKManager cdk = getService( IJavaCDKManager.class );
-                final ICDKMolecule inchiClone;
-                try {
-                    inchiClone  = cdk.clone( item );
-                }
-                catch ( BioclipseException ex ) {
-                    throw new RuntimeException( ex );
-                }
-
                 if ( item.getProperty( CDKMolecule.INCHI_OBJECT,
                                        Property.USE_CACHED ) == null ) {
                     Job j = new Job( "Calculating inchi for properties view" ) {
@@ -145,7 +117,7 @@ public class MoleculePropertySection extends AbstractPropertySection {
                             IInChIManager inchi = Activator.getDefault()
                                             .getJavaInChIManager();
                             try {
-                            	InChI inc = inchi.generate( inchiClone ) ;
+                            	InChI inc = inchi.generate( item ) ;
                                 item.setProperty( CDKMolecule.INCHI_OBJECT,
                                                   inc);
                             } catch ( Exception e ) {

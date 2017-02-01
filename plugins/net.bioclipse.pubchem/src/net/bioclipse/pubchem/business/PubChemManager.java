@@ -1,5 +1,4 @@
-/*******************************************************************************
- * Copyright (c) 2006-2009  Egon Willighagen <egonw@users.sf.net>
+/* Copyright (c) 2006-2016  Egon Willighagen <egonw@users.sf.net>
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contact: http://www.bioclipse.net/
- ******************************************************************************/
+ */
 package net.bioclipse.pubchem.business;
 
 import java.io.ByteArrayInputStream;
@@ -44,9 +43,9 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 public class PubChemManager implements IBioclipseManager {
 
-    private final static String EUTILS_URL_BASE = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils";
-    private final static String PUBCHEM_URL_BASE = "http://pubchem.ncbi.nlm.nih.gov/";
-    private final static String PUBCHEMRDF_URL_BASE = "http://rdf.ncbi.nlm.nih.gov/pubchem/compound/";
+    private final static String EUTILS_URL_BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils";
+    private final static String PUBCHEM_URL_BASE = "https://pubchem.ncbi.nlm.nih.gov/";
+    private final static String PUBCHEMRDF_URL_BASE = "https://rdf.ncbi.nlm.nih.gov/pubchem/compound/";
 
     private final static String TOOL = "bioclipse.net";
     

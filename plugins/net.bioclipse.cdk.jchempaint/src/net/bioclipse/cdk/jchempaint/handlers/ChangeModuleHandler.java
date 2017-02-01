@@ -37,8 +37,6 @@ import org.eclipse.ui.menus.UIElement;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.controller.IControllerModule;
-import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.renderer.elements.WedgeLineElement.Direction;
 
 
 /**

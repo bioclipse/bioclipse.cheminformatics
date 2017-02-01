@@ -74,7 +74,7 @@ public class SmartsMatchingHelper {
 
         prop=prop.substring( 0,prop.length()-1 );
 
-        cdkmol.getAtomContainer().getProperties().put( 
+        cdkmol.getAtomContainer().setProperty(
                           SmartsMatchingConstants.SMARTS_MATCH_PROPERTY, prop );
         
         logger.debug("Serialized ac prop: " + prop);

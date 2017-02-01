@@ -56,6 +56,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.part.ViewPart;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.config.IsotopeFactory;
+import org.openscience.cdk.config.XMLIsotopeFactory;
 import org.openscience.cdk.interfaces.IElement;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.periodictable.PeriodicTable;
@@ -215,7 +216,7 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
                if(s!=null) {
                    try {
                        IsotopeFactory isf;
-                       isf = IsotopeFactory.getInstance(SilentChemObjectBuilder.getInstance());
+                        isf = XMLIsotopeFactory.getInstance( SilentChemObjectBuilder.getInstance() );
                        IElement element = isf.getElement( s );
                        element.setProperty( CDKConstants.TITLE, PeriodicTable.getName( s ));
                        selection = new CDKChemObject<IElement>(element);
@@ -265,7 +266,7 @@ public class PeriodicTableView extends ViewPart implements ISelectionProvider{
         }
         double group,period;
 
-        if(gTmp != null && pTmp != null && !(symbol.equals( "La" ) || symbol.equals( "Ac" ))) {
+        if ( (gTmp != null && gTmp > 0) && pTmp != null && !(symbol.equals( "La" ) || symbol.equals( "Ac" )) ) {
             group = gTmp;
             period = pTmp;
         }

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OPSIN plugin
 Bundle-SymbolicName: net.bioclipse.opsin; singleton:=true
-Bundle-Version: 2.6.2.qualifier
+Bundle-Version: 2.7.0.qualifier
 Bundle-Activator: net.bioclipse.opsin.Activator
 Export-Package: net.bioclipse.opsin,
  net.bioclipse.opsin.business,

@@ -73,10 +73,10 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.ChemFile;
+import org.openscience.cdk.silent.ChemFile;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.NoSuchAtomException;
-import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.geometry.GeometryUtil;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
@@ -92,7 +92,9 @@ import org.openscience.cdk.io.formats.PubChemCompoundXMLFormat;
 import org.openscience.cdk.io.formats.SDFFormat;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.templates.MoleculeFactory;
+import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.diff.AtomContainerDiff;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
 
 public abstract class AbstractCDKManagerPluginTest {
@@ -619,14 +621,20 @@ public abstract class AbstractCDKManagerPluginTest {
     }
 
     @Test
-    public void testFingerPrintMatch() throws BioclipseException {
-        SmilesGenerator generator = new SmilesGenerator();
-        String indoleSmiles  = generator
-                               .createSMILES( MoleculeFactory
-                                              .makeIndole() );
-        String pyrroleSmiles = generator
-                               .createSMILES( MoleculeFactory
-                                              .makePyrrole() );
+    public void testFingerPrintMatch() throws BioclipseException, CDKException {
+
+        SmilesGenerator generator = SmilesGenerator.unique();
+        IAtomContainer bIndole = MoleculeFactory.makeIndole();
+        AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( bIndole );
+        CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance( bIndole.getBuilder() );
+        adder.addImplicitHydrogens( bIndole );
+        
+        String indoleSmiles = generator.create( bIndole );
+
+        IAtomContainer bPyrrole = MoleculeFactory.makePyrrole();
+        AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( bPyrrole );
+        adder.addImplicitHydrogens( bPyrrole );
+        String pyrroleSmiles = generator.create( bPyrrole );
         ICDKMolecule indole  = cdk.fromSMILES( indoleSmiles );
         ICDKMolecule pyrrole = cdk.fromSMILES( pyrroleSmiles );
 
@@ -634,14 +642,19 @@ public abstract class AbstractCDKManagerPluginTest {
     }
 
     @Test
-    public void testSubStructureMatch() throws BioclipseException {
+    public void testSubStructureMatch() throws BioclipseException, CDKException {
         SmilesGenerator generator = new SmilesGenerator();
-        String indoleSmiles  = generator
-                               .createSMILES( MoleculeFactory
-                                              .makeIndole() );
-        String pyrroleSmiles = generator
-                               .createSMILES( MoleculeFactory.
-                                              makePyrrole() );
+
+        IAtomContainer bIndole = MoleculeFactory.makeIndole();
+        AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( bIndole );
+        CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance( bIndole.getBuilder() );
+        adder.addImplicitHydrogens( bIndole );
+        String indoleSmiles = generator.create( bIndole );
+
+        IAtomContainer bPyrrole = MoleculeFactory.makeIndole();
+        AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( bPyrrole );
+        adder.addImplicitHydrogens( bPyrrole );
+        String pyrroleSmiles = generator.create( bPyrrole );
         ICDKMolecule indole  = cdk.fromSMILES( indoleSmiles  );
         ICDKMolecule pyrrole = cdk.fromSMILES( pyrroleSmiles );
 
@@ -665,10 +678,14 @@ public abstract class AbstractCDKManagerPluginTest {
     }
 
     @Test
-    public void testCDKMoleculeFromIMolecule() throws BioclipseException {
-        final String indoleSmiles  = new SmilesGenerator(true).createSMILES(
-        	MoleculeFactory.makeIndole()
-        );
+    public void testCDKMoleculeFromIMolecule() throws BioclipseException,
+                                              CDKException {
+
+        IAtomContainer bIndole = MoleculeFactory.makeIndole();
+        AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( bIndole );
+        CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance( bIndole.getBuilder() );
+        adder.addImplicitHydrogens( bIndole );
+        final String indoleSmiles = SmilesGenerator.absolute().create( bIndole );
         ICDKMolecule cdkm = cdk.asCDKMolecule(new MockMolecule(indoleSmiles));
         assertEquals(indoleSmiles,
             cdkm.toSMILES(
@@ -1319,7 +1336,7 @@ public abstract class AbstractCDKManagerPluginTest {
         String filename = "testFiles/cs2a.cml";
         InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
         CMLReader reader = new CMLReader(ins);
-        IChemFile chemFile = (IChemFile)reader.read(new org.openscience.cdk.ChemFile());
+        IChemFile chemFile = (IChemFile) reader.read( new ChemFile() );
 
         // test the resulting ChemFile content
         assertNotNull(chemFile);
@@ -1336,8 +1353,8 @@ public abstract class AbstractCDKManagerPluginTest {
         assertNotNull(mol);
         assertEquals(38, mol.getAtomCount());
         assertEquals(48, mol.getBondCount());
-        assertTrue(GeometryTools.has3DCoordinates(mol));
-        assertTrue(!GeometryTools.has2DCoordinates(mol));
+        assertTrue(GeometryUtil.has3DCoordinates(mol));
+        assertTrue(!GeometryUtil.has2DCoordinates(mol));
     }
 
 
@@ -1363,7 +1380,7 @@ public abstract class AbstractCDKManagerPluginTest {
             throw new BioclipseException("Could not create reader in CDK.");
         }
 
-        IChemFile chemFile = new org.openscience.cdk.ChemFile();
+        IChemFile chemFile = new ChemFile();
 
         // Do some customizations...
         CDKManagerHelper.customizeReading(reader);
@@ -1605,12 +1622,12 @@ public abstract class AbstractCDKManagerPluginTest {
         Assert.assertFalse( cdk.has2d( mol ));
 
         //Prop for Atom 0
-        mol.getAtomContainer().getAtom( 0 ).getProperties().put( "wee", "how" );
+        mol.getAtomContainer().getAtom( 0 ).setProperty( "wee", "how" );
         Assert.assertEquals( "how", mol.getAtomContainer().getAtom( 0 )
                              .getProperties().get( "wee" ) );
 
         //Prop for AtomContainer
-        mol.getAtomContainer().getProperties().put( "wee", "how" );
+        mol.getAtomContainer().setProperty( "wee", "how" );
         Assert.assertEquals( "how", mol.getAtomContainer()
                              .getProperties().get( "wee" ) );
 
@@ -2126,7 +2143,7 @@ public abstract class AbstractCDKManagerPluginTest {
         Assert.assertNotNull(mcss);
         Assert.assertEquals(2, mcss.getAtomCount());
         Assert.assertEquals(1, mcss.getBondCount());
-        Assert.assertEquals("CC", cdk.calculateSMILES(mcssCDKMol));
+        Assert.assertEquals("[CH2]C", cdk.calculateSMILES(mcssCDKMol));
     }
 
     @Test public void testBug1813() throws IOException {

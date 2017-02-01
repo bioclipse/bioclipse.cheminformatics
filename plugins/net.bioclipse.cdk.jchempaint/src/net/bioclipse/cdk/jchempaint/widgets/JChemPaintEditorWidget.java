@@ -13,12 +13,13 @@
 package net.bioclipse.cdk.jchempaint.widgets;
 
 import static net.bioclipse.cdk.jchempaint.outline.StructureContentProvider.createCDKChemObject;
-import static org.openscience.cdk.geometry.GeometryTools.has2DCoordinatesNew;
+import static org.openscience.cdk.geometry.GeometryUtil.has2DCoordinatesNew;
 
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.Activator;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintGlobalPropertiesManager;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintManager;
+import net.bioclipse.cdk.jchempaint.business.IJavaJChemPaintGlobalPropertiesManager;
 import net.bioclipse.cdk.jchempaint.editor.SWTMouseEventRelay;
 import net.bioclipse.cdk.jchempaint.preferences.GenerateLabelPrefChangedLisener;
 import net.bioclipse.cdk.jchempaint.preferences.PreferenceConstants;
@@ -77,7 +79,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
+import org.openscience.cdk.aromaticity.Aromaticity;
+import org.openscience.cdk.aromaticity.ElectronDonation;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.ControllerModel;
@@ -90,6 +93,8 @@ import org.openscience.cdk.controller.undoredo.IUndoListener;
 import org.openscience.cdk.controller.undoredo.IUndoRedoable;
 import org.openscience.cdk.controller.undoredo.UndoRedoHandler;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.graph.Cycles;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
@@ -117,10 +122,12 @@ import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 public class JChemPaintEditorWidget extends JChemPaintWidget
-    implements ISelectionProvider, IViewEventRelay, IUndoListener{
+ implements ISelectionProvider, IViewEventRelay,
+                IUndoListener {
 
     Logger logger = Logger.getLogger( JChemPaintEditorWidget.class );
 
@@ -166,6 +173,12 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         setupScrollbars();
 
         RendererModel rModel = getRenderer().getRenderer2DModel();
+        IJChemPaintGlobalPropertiesManager jcpPropManager = getService( IJavaJChemPaintGlobalPropertiesManager.class );
+        try {
+            jcpPropManager.applyProperties( rModel );
+        } catch ( BioclipseException e1 ) {
+            logger.error( "Failed to apply properties", e1 );
+        }
         // Commented becaus of bug 1100 selectioncolor not good on windows
         //java.awt.Color color = createFromSWT( SWT.COLOR_LIST_SELECTION );
         java.awt.Color color = Color.BLUE;//new java.awt.Color(0xc2deff);
@@ -313,6 +326,11 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         Activator.getDefault().getPreferenceStore().addPropertyChangeListener( prefListener );
         addUndoRedoListener();
         doGestureListener();
+    }
+
+    private <T, S extends T> T getService( Class<S> class1 ) {
+
+        return (T) Activator.getDefault().getJCPPropManager();
     }
 
     private double rotation,currentRotation;
@@ -650,7 +668,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 source = molecule;
                 IAtomContainer atomContainer = molecule.getAtomContainer();
                 if( atomContainer.getAtomCount() > 0
-                        && has2DCoordinatesNew( atomContainer )<2) {
+                        && !GeometryTools.has2DCoordinates( atomContainer )) {
 
                     molecule = generate2Dfrom3D( molecule );
                     if(molecule!=null) // FIXME do what else dose empty chem model
@@ -809,16 +827,9 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 bond.setFlag(CDKConstants.ISAROMATIC, false);
             // determine new information
             try {
-                IAtomType[] types = matcher.findMatchingAtomType(container);
-                for (int i=0; i<container.getAtomCount(); i++) {
-                    IAtom atom = container.getAtom(i);
-                    if (types[i] != null) {
-                        atom.setAtomTypeName(types[i].getAtomTypeName());
-                        atom.setHybridization(types[i].getHybridization());
-                        hAdder.addImplicitHydrogens(container, atom);
-                    }
-                }
-                CDKHueckelAromaticityDetector.detectAromaticity(container);
+                Aromaticity arom = new Aromaticity(ElectronDonation.cdk(),Cycles.cdkAromaticSet());
+                AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( container );
+                arom.apply( container );
             } catch ( CDKException e ) {
                 e.printStackTrace();
             }
@@ -940,35 +951,64 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 	            public void handleEvent(Event event) {
 	                int hSelection = hBar.getSelection();
 	                Rectangle diagram = getDiagramBounds();
+	                
+	                Rectangle client = getClientArea();
+	                Point2d orig = new Point2d(getRenderer().getDrawCenter());
+	                orig.x = orig.x - client.width/2;
+	                orig.y = orig.y - client.height/2;
+	                
 	                int destX = -hSelection - diagram.x;
-	                setIsScrolling(true);
+//	                int destX = (int) (-hSelection - orig.x);
 
-	                scroll(-hSelection, diagram.y, diagram.x, diagram.y, diagram.width, diagram.height, false);
-	                getRenderer().shiftDrawCenter( destX,0);
-
-	                setIsScrolling(false);
-	                update();
-	                JChemPaintEditorWidget.this.redraw();
+//	                scroll(-hSelection, diagram.y, diagram.x, diagram.y, diagram.width, diagram.height, false);
+	                
+	                
+	                if (hSelection >= (diagram.width - client.width)) {
+	                	
+	                } else {
+	                	setIsScrolling(true);
+//	                scroll(-destX, 0, 0, 0, diagram.width, diagram.height, false);
+	                	getRenderer().shiftDrawCenter( destX,0);
+	                	setIsScrolling(false);
+	                	update();
+	                	JChemPaintEditorWidget.this.redraw();
+	                	
+	                }
+//	                getRenderer().shiftDrawCenter( -hSelection+client.width/2,orig.y+client.height/2);
+	                
+//	                getRenderer().setDrawCenter(-hSelection+client.width/2,orig.y+client.height/2);
+//	                getRenderer().setDrawCenter(-hSelection+client.width/2,diagram.y+client.height/2);
+	                
 	            }
 	        });
 	
 	        final ScrollBar vBar = getVerticalBar();
 	        vBar.setEnabled(true);
-	        vBar.addListener(SWT.Selection, new Listener() {
-	            public void handleEvent(Event event) {
-	            	int vSelection = vBar.getSelection();
-	            	Rectangle rect = getDiagramBounds();
-	                int destY = -vSelection - rect.y;
-	                setIsScrolling(true);
-
-	                scroll(rect.x, -vSelection, rect.x, rect.y, rect.width, rect.height, false);
-	                getRenderer().shiftDrawCenter( 0, destY);
-
-	                setIsScrolling(false);
-	                update();
-	                JChemPaintEditorWidget.this.redraw();
-	            }
-	        });
+//	        vBar.addListener(SWT.Selection, new Listener() {
+//	            public void handleEvent(Event event) {
+//	            	int vSelection = vBar.getSelection();
+//	            	Rectangle diagram = getDiagramBounds();
+//	            	Rectangle client = getClientArea();
+//	                Point2d orig = new Point2d(getRenderer().getDrawCenter());
+//	                orig.x = orig.x - client.width/2;
+//	                orig.y = orig.y - client.height/2;
+//	                
+//	                int destY = -vSelection - diagram.y;
+////	                int destY = (int) (-vSelection - orig.y);
+//	                setIsScrolling(true);
+//
+////	                scroll(diagram.x, -vSelection, diagram.x, diagram.y, diagram.width, diagram.height, false);
+//	                scroll(0, -destY, 0, 0, diagram.width, diagram.height, false);
+//	                
+//	                getRenderer().shiftDrawCenter( 0, destY);
+////	                getRenderer().shiftDrawCenter( orig.x+client.width/2, -vSelection*client.height/2);
+//	                getRenderer().setDrawCenter(orig.x+client.width/2, -vSelection*client.height/2);
+//	                
+//	                setIsScrolling(false);
+//	                update();
+//	                JChemPaintEditorWidget.this.redraw();
+//	            }
+//	        });
 	    }
 
 	private void resizeControl() {
@@ -985,30 +1025,45 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
         vBar.setThumb (Math.min (diagram.height, client.height));
         int hPage = diagram.width - client.width;
         int vPage = diagram.height - client.height;
+        
+        hBar.setSelection(-diagram.x);
+        vBar.setSelection(-diagram.y);
 
         int hSelection = hBar.getSelection ();
         int vSelection = vBar.getSelection ();
 
+        
         Integer xVal,yVal;
         xVal=yVal=null;
+        
+        Point2d orgi = new Point2d(getRenderer().getDrawCenter());
+        orgi.x = orgi.x - client.width/2;
+        orgi.y = orgi.y - client.height/2;
+        
+        
+//        hBar.setSelection((int) -orgi.x);
+//        vBar.setSelection((int) -orgi.y);
 
         if (hSelection >= hPage) {
           if (hPage <= 0)
             hSelection = 0;
+          orgi.x = -hSelection;
           xVal = -hSelection+client.width/2-diagram.width/2;
         }
 
         if (vSelection >= vPage) {
           if (vPage <= 0)
             vSelection = 0;
+          orgi.y = -vSelection;
           yVal = -vSelection + client.height/2-diagram.height/2;
         }
 
         int dx = xVal!=null?xVal-diagram.x:0;
         int dy = yVal!=null?yVal-diagram.y:0;
 
-        if(dx!=0 || dy!=0)
-            getRenderer().shiftDrawCenter( dx, dy);
+//        if(dx!=0 || dy!=0)
+//            getRenderer().shiftDrawCenter( dx, dy);
+        getRenderer().setDrawCenter(orgi.x+client.width/2, orgi.y+client.height/2);
 
         JChemPaintEditorWidget.this.redraw();
     }

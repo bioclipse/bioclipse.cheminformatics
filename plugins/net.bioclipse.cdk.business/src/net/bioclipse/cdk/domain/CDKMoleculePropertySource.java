@@ -43,7 +43,7 @@ import org.eclipse.ui.views.properties.PropertySheetPage;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.geometry.GeometryUtil;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
@@ -137,31 +137,6 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         }
     }
 
-    public static String ensureFullAtomTyping( IAtomContainer hydrogenlessClone ) {
-		// Do atom typing, and if atom typing did not work for all atoms,
-        // throw a BioclipseException.
-        // First, reset atom types
-        for (IAtom atom : hydrogenlessClone.atoms())
-        	atom.setAtomTypeName(null);
-        CDKAtomTypeMatcher matcher =
-        	CDKAtomTypeMatcher.getInstance(hydrogenlessClone.getBuilder());
-        IAtomType[] types;
-		try {
-			types = matcher.findMatchingAtomType(hydrogenlessClone);
-		} catch (CDKException exception) {
-			return "Cannot calculate SMILES: " + exception.getMessage();
-		}
-        int i = 0;
-        for (IAtomType type : types) {
-        	i++;
-        	if (type == null || "X".equals(type.getAtomTypeName()))
-        		return "Cannot calculate SMILES; Missing " +
-        			"atom type for atom " + i + ": " +
-        			hydrogenlessClone.getAtom(i-1);
-        }
-        return "";
-	}
-
     private void createPropertiesJobs( final ICDKMolecule item ) {
 
         final ICDKManager cdk = Activator.getDefault().getJavaCDKManager();
@@ -176,48 +151,13 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
             smilesJobToBeCancelled.cancel();
         }
 
-        // check if we want to calculate new InChI / SMILES
-        boolean allOK = true;
-    	try {
-            IAtomContainer container = item.getAtomContainer().clone();
-			String result = ensureFullAtomTyping(container);
-			if (result == null || result.length() > 0)
-				allOK = false;
-		} catch (CloneNotSupportedException e1) {
-			allOK = false;
-		}
-		if (!allOK) {
-            Job j = new Job("Calculating inchi for properties view") {
-                @Override
-                protected IStatus run( IProgressMonitor monitor ) {
-                	String msg = "Incorrect Structure.";
-                    // item.setProperty( CDKMolecule.INCHI_OBJECT, msg );
-                	item.setProperty( PROPERTY_SMILES, msg );
-                    return Status.OK_STATUS;
-                }
-            };
-            j.addJobChangeListener( new PropertyViewNotifier());
-            j.schedule();
-            return;
-		}
-        
-        // final ICDKMolecule inchiClone;
-        final ICDKMolecule smilesClone;
-        try {
-            // inchiClone = cdk.clone( item );
-            smilesClone = cdk.clone( item );
-        }
-        catch ( BioclipseException e ) {
-            throw new RuntimeException(e);
-        }
-
         if (item.getProperty( PROPERTY_SMILES, Property.USE_CACHED ) == null ) {
 
             Job j = new Job("Calculating smiles for properties view") {
                 @Override
                 protected IStatus run( IProgressMonitor monitor ) {
                     try {
-                        String s = cdk.calculateSMILES( smilesClone );
+                        String s = cdk.calculateSMILES( item );
                         item.setProperty( PROPERTY_SMILES, s );
                     }
                     catch ( Exception e ) {
@@ -240,12 +180,12 @@ public class CDKMoleculePropertySource extends BioObjectPropertySource {
         HashMap<String, Object> valueMap = new HashMap<String, Object>();
         valueMap.put(
             PROPERTY_HAS2D,
-            GeometryTools.has2DCoordinates(item.getAtomContainer()) ?
+            GeometryUtil.has2DCoordinates(item.getAtomContainer()) ?
                 "yes" : "no"
         );
         valueMap.put(
             PROPERTY_HAS3D,
-            GeometryTools.has3DCoordinates(item.getAtomContainer()) ?
+            GeometryUtil.has3DCoordinates(item.getAtomContainer()) ?
                 "yes" : "no"
         );
         ICDKManager cdk = Activator.getDefault().getJavaCDKManager();

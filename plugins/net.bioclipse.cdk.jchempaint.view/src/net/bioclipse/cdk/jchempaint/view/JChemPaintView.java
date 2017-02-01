@@ -68,16 +68,15 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.PluginTransfer;
 import org.eclipse.ui.part.PluginTransferData;
 import org.eclipse.ui.part.ViewPart;
-import org.openscience.cdk.AtomContainer;
-import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.geometry.GeometryUtil;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 
 /**
@@ -305,7 +304,7 @@ public class JChemPaintView extends ViewPart
             return;
         }
 
-        if( GeometryTools.has2DCoordinatesNew( atomContainer )<2) {
+        if( GeometryUtil.has2DCoordinatesNew( atomContainer )<2) {
             BioclipseUIJob<IMolecule> uiJob = new BioclipseUIJob<IMolecule>() {
                 @Override
                 public void runInUI() {
@@ -387,7 +386,7 @@ public class JChemPaintView extends ViewPart
                 AtomIndexSelection isel = (AtomIndexSelection) atomSelection;
                 int[] selindices = isel.getSelection();
                 //                        System.out.println("\n** Should highlight these JCP atoms:\n");
-                IAtomContainer selectedMols=new AtomContainer();
+                IAtomContainer selectedMols = SilentChemObjectBuilder.getInstance().newInstance( IAtomContainer.class );
                 for (int i=0; i<selindices.length;i++){
                     selectedMols.addAtom( ac.getAtom( selindices[i] ));
                     //                            System.out.println(i);

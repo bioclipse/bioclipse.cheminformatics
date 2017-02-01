@@ -13,6 +13,9 @@
 	   <dependency name="com.google.guava" componentType="osgi.bundle" />
 	   <dependency name="org.junit" componentType="osgi.bundle"/>
 	   <dependency name="signatures" componentType="osgi.bundle"/>
+	   <dependency name="org.openscience.cdk_bundle" componentType="osgi.bundle"/>
+	   <dependency name="beam-exec" componentType="osgi.bundle"/>
+	   <dependency name="org.3pq.jgrapht" componentType="osgi.bundle"/>
 	  <!-- <dependency name="org.slf4j.api" componentType="osgi.bundle"/> -->
 	</dependencies>
 	<generators>

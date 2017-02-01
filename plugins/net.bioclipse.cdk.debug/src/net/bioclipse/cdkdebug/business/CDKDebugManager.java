@@ -28,12 +28,14 @@ import net.bioclipse.scripting.ui.views.JsConsoleView;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
 import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
+import org.openscience.cdk.aromaticity.Aromaticity;
+import org.openscience.cdk.aromaticity.ElectronDonation;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.atomtype.mapper.AtomTypeMapper;
 import org.openscience.cdk.config.AtomTypeFactory;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.NoSuchAtomTypeException;
+import org.openscience.cdk.graph.Cycles;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
@@ -58,7 +60,7 @@ public class CDKDebugManager implements IBioclipseManager {
     
     static {
     	try {
-    	URL owlURL = Platform.getBundle("org.openscience.cdk.io").getResource("/org/openscience/cdk/dict/data/sybyl-atom-types.owl");
+    	URL owlURL = Platform.getBundle("org.openscience.cdk_bundle").getResource("/org/openscience/cdk/dict/data/sybyl-atom-types.owl");
         InputStream iStream = owlURL.openStream();
 //            = org.openscience.cdk.atomtype.Activator.class.getResourceAsStream(
 //                "/org/openscience/cdk/dict/data/sybyl-atom-types.owl");
@@ -129,7 +131,8 @@ public class CDKDebugManager implements IBioclipseManager {
             a++;
         }
         try {
-            CDKHueckelAromaticityDetector.detectAromaticity(ac);
+            Aromaticity arom = new Aromaticity(ElectronDonation.cdk(),Cycles.cdkAromaticSet());
+            arom.apply( ac );
 //            System.out.println("Arom: " 
 //                + CDKHueckelAromaticityDetector.detectAromaticity(ac) );
 		    } 

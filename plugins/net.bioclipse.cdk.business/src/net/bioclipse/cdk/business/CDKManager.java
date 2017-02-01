@@ -92,16 +92,18 @@ import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.ChemModel;
 import org.openscience.cdk.ConformerContainer;
-import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
+import org.openscience.cdk.aromaticity.Aromaticity;
+import org.openscience.cdk.aromaticity.ElectronDonation;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.config.Elements;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.exception.NoSuchAtomTypeException;
 import org.openscience.cdk.fingerprint.FingerprinterTool;
-import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.geometry.GeometryUtil;
 import org.openscience.cdk.geometry.alignment.KabschAlignment;
 import org.openscience.cdk.graph.ConnectivityChecker;
+import org.openscience.cdk.graph.Cycles;
 import org.openscience.cdk.index.CASNumber;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -389,31 +391,27 @@ public class CDKManager implements IBioclipseManager {
                                    CDKMolecule molecule) {
         if (format == MDLV2000Format.getInstance()) {
             sanatizeMDLV2000MolFileInput(molecule);
+        } else {
+            try {
+                CDKHydrogenAdder.getInstance( molecule.getAtomContainer().getBuilder() )
+                                .addImplicitHydrogens( molecule.getAtomContainer() );
+            } catch ( CDKException e ) {
+                logger.warn( e.getMessage(), e );
+            }
         }
     }
 
     private void sanatizeMDLV2000MolFileInput(CDKMolecule molecule) {
         IAtomContainer container = molecule.getAtomContainer();
         if (container != null && container.getAtomCount() > 0) {
-            CDKHydrogenAdder hAdder =
-                CDKHydrogenAdder.getInstance(container.getBuilder());
-            CDKAtomTypeMatcher matcher =
-                CDKAtomTypeMatcher.getInstance(container.getBuilder());
             try {
                 // perceive atom types
-                IAtomType[] types = matcher.findMatchingAtomType(container);
-                for (int i=0; i<container.getAtomCount(); i++) {
-                    if (types[i] != null) {
-                        IAtom atom = container.getAtom(i);
-                        // set properties needed for H adding and aromaticity
-                        atom.setAtomTypeName(types[i].getAtomTypeName());
-                        atom.setHybridization(types[i].getHybridization());
-                        atom.setValency(types[i].getValency());
-                        hAdder.addImplicitHydrogens(container, atom);
-                    }
-                }
                 // perceive aromaticity
-                CDKHueckelAromaticityDetector.detectAromaticity(container);
+                Aromaticity arom = new Aromaticity(ElectronDonation.cdk(),
+                                                   Cycles.cdkAromaticSet());
+                AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(container); // required for model
+                CDKHydrogenAdder.getInstance( container.getBuilder() ).addImplicitHydrogens( container );
+                arom.apply(container);
                 // add missing double bonds
                 AtomTypeAwareSaturationChecker ataSatChecker = new AtomTypeAwareSaturationChecker();
                 ataSatChecker.decideBondOrder( container );
@@ -615,12 +613,8 @@ public class CDKManager implements IBioclipseManager {
             IAtomContainer cdkMol = mol.getAtomContainer();
 
             // Create the SMILES
-            SmilesGenerator generator = new SmilesGenerator( true );
-
-            // Operate on a clone with removed hydrogens
-            cdkMol = AtomContainerManipulator.removeHydrogens( cdkMol );
-
-            result = generator.createSMILES( cdkMol );
+            SmilesGenerator generator = SmilesGenerator.absolute();
+            result = generator.create( cdkMol );
         }catch (Exception e) {
             logger.warn( "Failed to generate SMILES",e);
             return;
@@ -1071,39 +1065,32 @@ public class CDKManager implements IBioclipseManager {
           String fullPath = file.getLocation().toOSString();
           ImageIO.write( (RenderedImage) image, "PNG", new File(fullPath) );
       }
-      
-      private AtomTypeAwareSaturationChecker ataSatChecker = new AtomTypeAwareSaturationChecker();
-//      private FixBondOrdersTool fbot = new FixBondOrdersTool();
-      
+
       /**
        * Create molecule from SMILES.
        *
        * @throws BioclipseException
        */
       public ICDKMolecule fromSMILES(String smilesDescription)
-                          throws BioclipseException {
-
-          SmilesParser parser
-              = new SmilesParser( SilentChemObjectBuilder.getInstance() );
-		parser.setPreservingAromaticity( true );
-        IAtomContainer molecule;
+              throws BioclipseException {
+          SmilesParser parser = new SmilesParser( SilentChemObjectBuilder.getInstance() );
+          IAtomContainer molecule;
           try {
-            molecule = parser.parseSmiles( smilesDescription.trim() );
-          }
-          catch (InvalidSmilesException e) {
-            String message = "SMILES string is invalid. Error message said: ";
-            throw new BioclipseException( message + e.getMessage(), e );
+              molecule = parser.parseSmiles( smilesDescription.trim() );
+              molecule.removeProperty("cdk:Title"); // workaround for CDK 1.5.13. See CDK commit 9133fa60c1431f74cd420f2f95937e9428649ddc
+          } catch (InvalidSmilesException e) {
+              String message = "SMILES string is invalid. Error message said: ";
+              throw new BioclipseException( message + e.getMessage(), e );
           }
           try {
+              Aromaticity arom = new Aromaticity(ElectronDonation.cdk(),Cycles.cdkAromaticSet());
               AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( molecule );
-              CDKHueckelAromaticityDetector.detectAromaticity(molecule);
-              ataSatChecker.decideBondOrder( molecule );
+              arom.apply( molecule);
           } catch (CDKException exception) {
-        	  logger.warn("Could not figure out the double bond positions: " + exception.getMessage());
+              logger.warn("Could not figure out the double bond positions: " + exception.getMessage());
           } catch (NullPointerException npe) {
-        	  throw new IllegalStateException("Could not create molecule from: "+smilesDescription,npe);
+              throw new IllegalStateException("Could not create molecule from: " + smilesDescription, npe);
           } 
-          
           return new CDKMolecule(molecule);
       }
 
@@ -2060,17 +2047,22 @@ public class CDKManager implements IBioclipseManager {
             StructureDiagramGenerator sdg = new StructureDiagramGenerator();
 
             for ( IAtomContainer mol : mols.atomContainers() ) {
-                sdg.setMolecule( cdkmol.getAtomContainer()
-                     .getBuilder().newInstance( IAtomContainer.class, mol)
-                );
+            	IAtomContainer molCopy = cdkmol.getAtomContainer().getBuilder().newInstance(IAtomContainer.class, mol);
+            	// cdkmol.getAtomContainer().getBuilder().newInstance( IAtomContainer.class, mol)
+                sdg.setMolecule(mol );
                 sdg.generateCoordinates();
                 IAtomContainer molWithCoords = sdg.getMolecule();
+                
                 // copy the coordinates
-                for (int i=0; i<molWithCoords.getAtomCount(); i++) {
-                    mol.getAtom(i).setPoint2d(molWithCoords.getAtom(i).getPoint2d());
-                }
+//                for (int i=0; i<molWithCoords.getAtomCount(); i++) {
+//                    mol.getAtom(i).setPoint2d(molWithCoords.getAtom(i).getPoint2d());
+//                }
+                molWithCoords.setProperties(molCopy.getProperties());
+                cdkmol = this.newMolecule(molWithCoords);
+                
+//                mol.setProperties(molCopy.getProperties());
             }
-
+            
             newMolecules.add(cdkmol);
           }
           if(monitor.isCanceled())
@@ -2345,7 +2337,7 @@ public class CDKManager implements IBioclipseManager {
 
             ModelBuilder3D mb3d;
             try {
-                mb3d = ModelBuilder3D.getInstance();
+                mb3d = ModelBuilder3D.getInstance( SilentChemObjectBuilder.getInstance() );
             } catch ( CDKException e ) {
                 throw new BioclipseException(e.getMessage());
             }
@@ -2454,11 +2446,11 @@ public class CDKManager implements IBioclipseManager {
       }
 
       public boolean has2d(IMolecule mol) throws BioclipseException {
-          return GeometryTools.has2DCoordinates(asCDKMolecule(mol).getAtomContainer());
+          return GeometryUtil.has2DCoordinates(asCDKMolecule(mol).getAtomContainer());
       }
 
       public boolean has3d(IMolecule mol) throws BioclipseException {
-          return GeometryTools.has3DCoordinates(asCDKMolecule(mol).getAtomContainer());
+          return GeometryUtil.has3DCoordinates(asCDKMolecule(mol).getAtomContainer());
       }
 
       public void saveCML(ICDKMolecule cml,  String filename)
@@ -2878,8 +2870,9 @@ public class CDKManager implements IBioclipseManager {
             todealwith = asCDKMolecule( mol ).getAtomContainer();
         }
         try{
+            Aromaticity arom = new Aromaticity(ElectronDonation.cdk(),Cycles.cdkAromaticSet());
             AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(todealwith);
-            CDKHueckelAromaticityDetector.detectAromaticity(todealwith);
+            arom.apply( todealwith);
         }catch(CDKException ex){
             throw new BioclipseException("Problems perceiving aromaticity: "+ex.getMessage());
         }

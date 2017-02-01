@@ -45,6 +45,7 @@ public class SWTUndoRedoFactory implements IUndoRedoFactory {
                 chemModel, undoRedoContainer, type, relay, this.context);
     }
 
+    @Override
     public IUndoRedoable getAdjustBondOrdersEdit(
             Map<IBond, Order[]> changedBonds,
             Map<IBond, IBond.Stereo[]> changedBondsStereo, String type, IChemModelRelay relay) {

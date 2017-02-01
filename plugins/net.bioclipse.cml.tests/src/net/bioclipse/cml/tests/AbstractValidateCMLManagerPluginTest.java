@@ -12,19 +12,18 @@
  ******************************************************************************/
 package net.bioclipse.cml.tests;
 
-import net.bioclipse.cdk.business.ICDKManager;
-import net.bioclipse.cdk.domain.ICDKMolecule;
-import net.bioclipse.cml.managers.IValidateCMLManager;
-import net.bioclipse.core.ResourcePathTransformer;
-import nu.xom.Elements;
-import nu.xom.Nodes;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.xmlcml.cml.base.CMLElement;
 import org.xmlcml.cml.element.CMLList;
+import org.xmlcml.cml.element.CMLMoleculeList;
+
+import net.bioclipse.cdk.business.ICDKManager;
+import net.bioclipse.cdk.domain.ICDKMolecule;
+import net.bioclipse.cml.managers.IValidateCMLManager;
+import net.bioclipse.core.ResourcePathTransformer;
 
 public class AbstractValidateCMLManagerPluginTest {
 
@@ -51,7 +50,7 @@ public class AbstractValidateCMLManagerPluginTest {
         cdk.saveMolecule(mol, "/Virtual/testparse.cml",
                 (IChemFormat)CMLFormat.getInstance(), true);
         Object o = cml.parseFile( ResourcePathTransformer.getInstance().transform("/Virtual/testparse.cml"));
-        Assert.assertTrue(o instanceof CMLList );
+        Assert.assertTrue(o instanceof CMLMoleculeList );
     }
 
     @Test public void testParseFile_String() throws Exception{
@@ -59,6 +58,6 @@ public class AbstractValidateCMLManagerPluginTest {
         cdk.saveMolecule(mol, "/Virtual/testparse.cml",
                 (IChemFormat)CMLFormat.getInstance(), true);
         Object o = cml.parseFile( "/Virtual/testparse.cml");
-        Assert.assertTrue(o instanceof CMLList );
+        Assert.assertTrue(CMLMoleculeList.class.isAssignableFrom(o.getClass()));
     }
 }

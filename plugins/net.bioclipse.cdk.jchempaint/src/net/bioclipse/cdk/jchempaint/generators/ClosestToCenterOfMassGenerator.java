@@ -24,7 +24,7 @@ import javax.vecmath.Vector3d;
 import net.bioclipse.cdk.jchempaint.Activator;
 import net.bioclipse.cdk.jchempaint.business.IJChemPaintManager;
 
-import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.geometry.GeometryUtil;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.RendererModel;
@@ -57,7 +57,7 @@ public class ClosestToCenterOfMassGenerator implements IGenerator<IAtomContainer
      */
     public IRenderingElement generate( IAtomContainer ac, RendererModel model ) {
         IJChemPaintManager jcp = Activator.getDefault().getJavaManager();
-        Point2d p2=GeometryTools.get2DCentreOfMass( ac);
+        Point2d p2=GeometryUtil.get2DCentreOfMass( ac);
         if(p2== null) return new ElementGroup();
         IAtom atom = jcp.getClosestAtom(p2);
         if(atom==null || atom.getPoint2d()==null) return new ElementGroup();

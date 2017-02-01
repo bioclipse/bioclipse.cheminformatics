@@ -18,7 +18,7 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.ui.views.IMoleculesEditorModel;
 import net.bioclipse.core.domain.IMolecule.Property;
 
-import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.geometry.GeometryUtil;
 
 public class PropertyOrder implements Callable<Object> {
 
@@ -58,7 +58,7 @@ public class PropertyOrder implements Callable<Object> {
 
     private ICDKMolecule calculateCoordinates(ICDKMolecule mol) {
      // If no 2D coordinates
-        if ( GeometryTools.has2DCoordinatesNew( mol.getAtomContainer() )<2 ) {
+        if ( GeometryUtil.has2DCoordinatesNew( mol.getAtomContainer() )<2 ) {
             // Test if 3D coordinates
             try {
 

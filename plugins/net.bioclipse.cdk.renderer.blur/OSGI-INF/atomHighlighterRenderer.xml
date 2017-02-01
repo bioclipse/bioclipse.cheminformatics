@@ -4,4 +4,5 @@
    <service>
       <provide interface="net.bioclipse.cdk.jchempaint.rendering.Renderer"/>
    </service>
+   <property name="renderer.type" type="String" value="SWT"/>
 </scr:component>

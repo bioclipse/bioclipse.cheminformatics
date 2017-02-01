@@ -10,22 +10,28 @@
  ******************************************************************************/
 package net.bioclipse.cdk.jchempaint.preferences;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.bioclipse.cdk.jchempaint.Activator;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.generators.AtomNumberGenerator.WillDrawAtomNumbers;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowEndCarbons;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHydrogens;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondDistance;
-import org.openscience.cdk.renderer.generators.BasicBondGenerator.BondLength;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.BondLength;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.WedgeWidth;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Margin;
 import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator.ShowImplicitHydrogens;
 import org.openscience.cdk.renderer.generators.HighlightAtomGenerator.HighlightAtomDistance;
 import org.openscience.cdk.renderer.generators.HighlightBondGenerator.HighlightBondDistance;
+import org.openscience.cdk.renderer.generators.IGenerator;
+import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 import org.openscience.cdk.renderer.generators.RingGenerator.ShowAromaticity;
 
 /**
@@ -41,59 +47,46 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 
+
 		// inherit the defaults from the JChemPaintManager
 		RendererModel model = new RendererModel();
+        List<IGeneratorParameter<?>> params = new ArrayList<>();
+        params.addAll( model.getRenderingParameters() );
+        for ( IGenerator<IAtomContainer> p : JChemPaintPreferencePage.getGenerators() ) {
+            params.addAll( p.getParameters() );
+        }
 
-		store.setDefault(
-		        PreferenceConstants.SHOW_AROMATICITY_BOOL,
-		        model.getDefault(ShowAromaticity.class)
-		);
-        store.setDefault(
-                PreferenceConstants.SHOW_END_CARBONS_BOOL,
-                model.getDefault(ShowEndCarbons.class)
-        );
-        store.setDefault(
-                PreferenceConstants.SHOW_EXPLICIT_HYDROGENS_BOOL,
-                model.getDefault(ShowExplicitHydrogens.class)
-        );
-        store.setDefault(
-                PreferenceConstants.SHOW_IMPLICIT_HYDROGENS_BOOL,
-                model.getDefault(ShowImplicitHydrogens.class)
-        );
-        store.setDefault(
-                PreferenceConstants.SHOW_NUMBERS_BOOL,
-                Boolean.FALSE
-        );
+        for ( IGeneratorParameter<?> param : params ) {
+            initializeParam( param, store );
+        }
 
-        store.setDefault(
-                PreferenceConstants.ATOM_RADIUS_DOUBLE,
-                model.getDefault(AtomRadius.class)
-        );
-        store.setDefault(
-                PreferenceConstants.BOND_LENGTH_DOUBLE,
-                model.getDefault(BondLength.class)
-        );
-        store.setDefault(
-                PreferenceConstants.BOND_DISTANCE_DOUBLE,
-                model.getDefault(BondDistance.class)
-        );
-        store.setDefault(
-                PreferenceConstants.HIGHLIGHT_ATOM_DISTANCE_DOUBLE,
-                model.getDefault(HighlightAtomDistance.class)
-        );
-        store.setDefault(
-                PreferenceConstants.HIGHLIGHT_BOND_DISTANCE_DOUBLE,
-                model.getDefault(HighlightBondDistance.class)
-        );
-        store.setDefault(
-                PreferenceConstants.MARGIN_DOUBLE,
-                30d//model.getDefault(Margin.class)
-        );
-        store.setDefault(
-                PreferenceConstants.WEDGE_WIDTH_DOUBLE,
-                model.getDefault(WedgeWidth.class) * 2.0
-        );
+
             
 	}
 
+    private <T> void initializeParam( IGeneratorParameter<T> param, IPreferenceStore store ) {
+
+        Class<?> clazz = param.getClass();
+        String name = clazz.getName();
+        Object value = param.getDefault();
+        if ( value instanceof Double && ((Double) value).isNaN() ) {
+            System.out.println( "NANNANNANNANAN" );
+        }
+        if ( value instanceof Integer ) {
+            store.setDefault( name, ((Integer) value).intValue() );
+        } else if ( value instanceof Double ) {
+            store.setDefault( name, ((Double) value).doubleValue() );
+        } else if ( value instanceof Boolean ) {
+            store.setDefault( name, ((Boolean) value).booleanValue() );
+        } else if (value instanceof java.awt.Color) {
+            store.setDefault( name, colorToHex( (java.awt.Color) value ) );
+        } else {
+            store.setDefault( name, value.toString() );
+        }
+    }
+
+    private String colorToHex( java.awt.Color color ) {
+        return String.format("%d,%d,%d",color.getRed(), color.getGreen(), color.getBlue() );
+        //return String.format( "#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue() );
+    }
 }

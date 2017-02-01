@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CML Tests
 Bundle-SymbolicName: net.bioclipse.cml.tests
-Bundle-Version: 2.6.2.qualifier
+Bundle-Version: 2.7.0.qualifier
 Bundle-Activator: net.bioclipse.cml.tests.Activator
 Bundle-Vendor: The Bioclipse Team
 Require-Bundle: org.eclipse.ui,
@@ -12,18 +12,15 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.core.tests;bundle-version="0.1.0",
  net.bioclipse.cdk.debug,
  net.bioclipse.cdk.business,
- org.openscience.cdk.io,
- org.openscience.cdk.interfaces,
- org.openscience.cdk.core,
- org.openscience.cdk.diff,
- org.openscience.cdk.extra,
- org.openscience.cdk.ioformats,
  net.bioclipse.ui,
  net.bioclipse.cml
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.cml.tests
 Import-Package: nu.xom;version="1.1.0",
- org.xmlcml.cml.base,
- org.xmlcml.cml.element, org.junit,
+ org.junit,
  org.junit.runner,
- org.junit.runners
+ org.junit.runners,
+ org.openscience.cdk.io;version="1.5.13",
+ org.openscience.cdk.io.formats;version="1.5.13",
+ org.xmlcml.cml.base,
+ org.xmlcml.cml.element

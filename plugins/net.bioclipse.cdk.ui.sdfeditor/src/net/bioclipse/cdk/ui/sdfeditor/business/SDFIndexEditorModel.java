@@ -45,12 +45,12 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
+import org.openscience.cdk.aromaticity.Aromaticity;
+import org.openscience.cdk.aromaticity.ElectronDonation;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.graph.Cycles;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IBond.Order;
 import org.openscience.cdk.interfaces.IChemFile;
@@ -63,6 +63,7 @@ import org.openscience.cdk.io.MDLV2000Reader;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.smiles.DeduceBondSystemTool;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 
 /**
@@ -205,19 +206,10 @@ public class SDFIndexEditorModel implements IFileMoleculesEditorModel,
             CDKAtomTypeMatcher matcher =
                 CDKAtomTypeMatcher.getInstance(container.getBuilder());
             try {
-                // perceive atom types
-                IAtomType[] types = matcher.findMatchingAtomType(container);
-                for (int i=0; i<container.getAtomCount(); i++) {
-                    if (types[i] != null) {
-                        IAtom atom = container.getAtom(i);
-                        // set properties needed for H adding and aromaticity
-                        atom.setAtomTypeName(types[i].getAtomTypeName());
-                        atom.setHybridization(types[i].getHybridization());
-                        hAdder.addImplicitHydrogens(container, atom);
-                    }
-                }
                 // perceive aromaticity
-                CDKHueckelAromaticityDetector.detectAromaticity(container);
+                AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( container );
+                Aromaticity arom = new Aromaticity(ElectronDonation.cdk(),Cycles.cdkAromaticSet());
+                arom.apply( container );
             } catch ( CDKException e ) {
                 e.printStackTrace();
             }

@@ -35,7 +35,7 @@ import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.fingerprint.Fingerprinter;
 import org.openscience.cdk.fingerprint.IBitFingerprint;
-import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.geometry.GeometryUtil;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
@@ -104,19 +104,11 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
      */
     public String toSMILES() throws BioclipseException {
         if (getAtomContainer() == null) return "";
-        IAtomContainer container = getAtomContainer();
-
-        //Operate on a clone with removed hydrogens
-        IAtomContainer hydrogenlessClone =
-            container.getBuilder().newInstance(
-            	IAtomContainer.class,
-                AtomContainerManipulator.removeHydrogens(container)
-            );
-
-        String result = ensureFullAtomTyping(hydrogenlessClone);
-        if (result.length() > 0) return result;
-
-        return new SmilesGenerator(true).createSMILES(hydrogenlessClone);
+        try {
+            return SmilesGenerator.absolute().create( getAtomContainer() );
+        } catch ( CDKException e ) {
+            throw new BioclipseException( e.getMessage(), e );
+        }
     }
 
 	private String ensureFullAtomTyping(IAtomContainer hydrogenlessClone) {
@@ -129,7 +121,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         	CDKAtomTypeMatcher.getInstance(hydrogenlessClone.getBuilder());
         IAtomType[] types;
 		try {
-			types = matcher.findMatchingAtomType(hydrogenlessClone);
+            types = matcher.findMatchingAtomTypes( hydrogenlessClone );
 		} catch (CDKException exception) {
 			return "Cannot calculate SMILES: " + exception.getMessage();
 		}
@@ -249,7 +241,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
     public boolean has3dCoords() throws BioclipseException {
         if (getAtomContainer()==null) 
             throw new BioclipseException("Atomcontainer is null!");
-        return GeometryTools.has3DCoordinates(getAtomContainer());
+        return GeometryUtil.has3DCoordinates(getAtomContainer());
     }
     
     @Override
@@ -296,8 +288,8 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
         if(val instanceof InChI) return ((InChI)val).getValue();
         if(urgency==Property.USE_CACHED) return "";
 
-        String result = ensureFullAtomTyping(atomContainer);
-        if (result.length() > 0) return result;
+//        String result = ensureFullAtomTyping(atomContainer);
+//        if (result.length() > 0) return result;
 
         IInChIManager inchi = net.bioclipse.inchi.business.Activator.
             getDefault().getJavaInChIManager();
@@ -345,7 +337,7 @@ public class CDKMolecule extends BioObject implements ICDKMolecule {
 
     public void setProperty(String propertyKey, Object value) {
         if(value == null)
-            atomContainer.getProperties().remove( propertyKey );
+            atomContainer.removeProperty( propertyKey );
         else
             atomContainer.setProperty( propertyKey, value );
     }

@@ -17,21 +17,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
-import org.openscience.cdk.interfaces.IChemFile;
-import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.io.FormatFactory;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.PDBReader;
 import org.openscience.cdk.io.ReaderFactory;
-import org.openscience.cdk.io.cml.CMLCoreModule;
-import org.openscience.cdk.io.cml.CMLStack;
-import org.openscience.cdk.io.cml.MDMoleculeConvention;
+// import org.openscience.cdk.io.cml.CMLStack;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormatMatcher;
 import org.openscience.cdk.io.formats.IResourceFormat;
@@ -69,7 +63,7 @@ public class CDKManagerHelper {
      */
     public static void registerAllFormats(FormatFactory fac) {
         try {
-        	URL file = Platform.getBundle("org.openscience.cdk.ioformats").getResource("io-formats.set");
+            URL file = Platform.getBundle( "org.openscience.cdk_bundle" ).getResource( "io-formats.set" );
             InputStream iStream =  file.openStream();//org.openscience.cdk.ioformats.Activator.class.getResourceAsStream("/io-formats.set");
             BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
             int formatCount = 0;
@@ -78,7 +72,7 @@ public class CDKManagerHelper {
                 String formatName = reader.readLine();
                 formatCount++;
                 try {
-                    Class formatClass = Platform.getBundle("org.openscience.cdk.io").loadClass(formatName);//org.openscience.cdk.io.Activator.class.getClassLoader().loadClass(formatName);
+                    Class formatClass = Platform.getBundle( "org.openscience.cdk_bundle" ).loadClass( formatName );// org.openscience.cdk.io.Activator.class.getClassLoader().loadClass(formatName);
                     Method getinstanceMethod = formatClass.getMethod("getInstance", new Class[0]);
                     Object format = getinstanceMethod.invoke( null,
                                                               new Object[0]);
@@ -116,58 +110,58 @@ public class CDKManagerHelper {
             reader.addChemObjectIOListener(listener);
         }
 
-        if (reader instanceof CMLReader) {
-            ((CMLReader)reader).registerConvention(
-                "md:mdMolecule",
-                new MDMoleculeConvention((IChemFile)null)
-            );
-            logger.debug("****** CmlReader, registered MDMoleculeConvention");
-            
-            ((CMLReader)reader).registerConvention(
-                "bioclipse:atomType",
-                new CMLCoreModule((IChemFile)null) {
-                    
-                    List<String> atomTypes = new ArrayList<String>();
-
-                    @Override
-                    protected void newAtomData() {
-                        super.newAtomData();
-                        atomTypes = new ArrayList<String>();
-                    };
-                    
-                    @Override
-                    protected void storeAtomData() {
-                        super.storeAtomData();
-
-                        boolean hasAtomType = false;
-                        if (atomTypes.size() == atomCounter) {
-                            hasAtomType = true;
-                        } else {
-                            logger.debug("No atom types: " + elid.size(),
-                                         " != " + atomCounter);
-                        }
-                        if (hasAtomType) {
-                            for (int i = 0; i < atomCounter; i++) {
-                                currentAtom = currentMolecule.getAtom(i);
-                                currentAtom.setAtomTypeName(atomTypes.get(i));
-                            }
-                        }                        
-                    }
-                    
-                    @Override
-                    public void endElement(CMLStack xpath, String uri,
-                                            String name, String raw) {
-                        if (xpath.endsWith("atom", "atomType")) {
-                            while ((atomTypes.size()+1) < atomCounter)
-                                atomTypes.add(null);
-                            atomTypes.add(currentChars);
-                        } else {
-                            super.endElement( xpath, uri, name, raw );
-                        }
-                    }
-                }
-            );
-        }
+        // if (reader instanceof CMLReader) {
+        // ((CMLReader)reader).registerConvention(
+        // "md:mdMolecule",
+        // new MDMoleculeConvention((IChemFile)null)
+        // );
+        // logger.debug("****** CmlReader, registered MDMoleculeConvention");
+        //
+        // ((CMLReader)reader).registerConvention(
+        // "bioclipse:atomType",
+        // new CMLCoreModule((IChemFile)null) {
+        //
+        // List<String> atomTypes = new ArrayList<String>();
+        //
+        // @Override
+        // protected void newAtomData() {
+        // super.newAtomData();
+        // atomTypes = new ArrayList<String>();
+        // };
+        //
+        // @Override
+        // protected void storeAtomData() {
+        // super.storeAtomData();
+        //
+        // boolean hasAtomType = false;
+        // if (atomTypes.size() == atomCounter) {
+        // hasAtomType = true;
+        // } else {
+        // logger.debug("No atom types: " + elid.size(),
+        // " != " + atomCounter);
+        // }
+        // if (hasAtomType) {
+        // for (int i = 0; i < atomCounter; i++) {
+        // currentAtom = currentMolecule.getAtom(i);
+        // currentAtom.setAtomTypeName(atomTypes.get(i));
+        // }
+        // }
+        // }
+        //
+        // @Override
+        // public void endElement(CMLStack xpath, String uri,
+        // String name, String raw) {
+        // if (xpath.endsWith("atom", "atomType")) {
+        // while ((atomTypes.size()+1) < atomCounter)
+        // atomTypes.add(null);
+        // atomTypes.add(currentChars);
+        // } else {
+        // super.endElement( xpath, uri, name, raw );
+        // }
+        // }
+        // }
+        // );
+        // }
 
     }
 

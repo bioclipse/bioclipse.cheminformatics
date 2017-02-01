@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: InChI Manager Test Plug-in
 Bundle-SymbolicName: net.bioclipse.inchi.business.test
-Bundle-Version: 2.6.2.qualifier
+Bundle-Version: 2.7.0.qualifier
 Bundle-Activator: net.bioclipse.inchi.business.test.Activator
 Bundle-Vendor: The Bioclipse Team
 Require-Bundle: org.eclipse.ui,
@@ -13,18 +13,16 @@ Require-Bundle: org.eclipse.ui,
  net.bioclipse.inchi;bundle-version="2.0.0",
  net.bioclipse.cdk.business,
  net.bioclipse.ui,
- org.openscience.cdk.interfaces;bundle-version="1.4.14",
- org.openscience.cdk.inchi;bundle-version="1.4.14",
- org.openscience.cdk.core,
- org.openscience.cdk.smiles;bundle-version="1.4.14",
- org.openscience.cdk.valencycheck;bundle-version="1.4.14",
- org.openscience.cdk.silent;bundle-version="1.4.14",
- org.openscience.cdk.standard;bundle-version="1.4.14",
- org.openscience.cdk.annotation;bundle-version="1.4.14",
  net.sf.jni-inchi;bundle-version="0.8.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.inchi.business.test
 Import-Package: org.junit,
  org.junit.runner,
  org.junit.runners,
- org.openscience.cdk.exception
+ org.openscience.cdk;version="1.5.13",
+ org.openscience.cdk.exception,
+ org.openscience.cdk.inchi;version="1.5.13",
+ org.openscience.cdk.interfaces;version="1.5.13",
+ org.openscience.cdk.silent;version="1.5.13",
+ org.openscience.cdk.smiles;version="1.5.13",
+ org.openscience.cdk.tools;version="1.5.13"

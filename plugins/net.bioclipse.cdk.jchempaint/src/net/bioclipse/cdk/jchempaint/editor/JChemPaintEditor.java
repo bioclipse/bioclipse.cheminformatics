@@ -15,8 +15,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +58,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -80,7 +81,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartConstants;
 import org.eclipse.ui.IWorkbenchPartReference;
@@ -99,7 +99,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.openscience.cdk.controller.ControllerHub;
 import org.openscience.cdk.controller.IChemModelRelay;
 import org.openscience.cdk.controller.IControllerModel;
-import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.geometry.GeometryUtil;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
@@ -118,6 +118,12 @@ import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.selection.MultiSelection;
 import org.openscience.cdk.renderer.selection.SingleSelection;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 
 public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
 								IResourceChangeListener,
@@ -142,6 +148,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
     private ListenerList propertyChangedListenerList = new ListenerList();
 
     private SubStructureGenerator subStructureGenerator;
+
+	private ServiceRegistration<EventHandler> register;
 
     public JChemPaintEditorWidget getWidget() {
         return widget;
@@ -173,8 +181,8 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
             if (chemFormat == MDLV2000Format.getInstance()) {
                 // check for loss of information
                 IAtomContainer container = model.getAtomContainer();
-                if (GeometryTools.has3DCoordinates(container) &&
-                    GeometryTools.has2DCoordinates(container)) {
+                if (GeometryUtil.has3DCoordinates(container) &&
+                    GeometryUtil.has2DCoordinates(container)) {
             		boolean agreedWithInfoLoss = MessageDialog.openConfirm(
             				this.getSite().getShell(),
             				"WARNING",
@@ -269,7 +277,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
     @Override
     public void init( IEditorSite site, IEditorInput input )
                                        throws PartInitException {
-
+    	registerEventListener();
         setSite( site );
         setInput( input );
         if(input==null) return;
@@ -293,6 +301,27 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
         }
     }
 
+    
+    private void registerEventListener() {
+    	BundleContext context = FrameworkUtil.getBundle(JChemPaintEditor.class).getBundleContext();
+    	String[] topics = {"net/bioclipse/jcp/*"};
+    	Dictionary< String, Object> dict = new Hashtable<>();
+    	dict.put(EventConstants.EVENT_TOPIC, topics);
+    	EventHandler eventHandler = new EventHandler() {
+			
+			@Override
+			public void handleEvent(Event event) {
+				getWidget().getDisplay().asyncExec(new Runnable() {
+					
+					@Override
+					public void run() {
+						getWidget().redraw();
+					}
+				});
+			}
+		};
+    	register = context.registerService(EventHandler.class, eventHandler	, dict);
+    }
     @Override
     public boolean isDirty() {
 
@@ -331,7 +360,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
                     @Override
                     public void runInUI() {
                         ICDKMolecule model = getReturnValue();
-                        int x2d = GeometryTools.has2DCoordinatesNew(
+                        int x2d = GeometryUtil.has2DCoordinatesNew(
                                                      model.getAtomContainer() );
                         x2d = 2;
                         if(x2d <2 ) {
@@ -693,7 +722,7 @@ public class JChemPaintEditor extends EditorPart implements ISelectionListener ,
     }
 
     private void disposeControl( DisposeEvent e ) {
-
+    	register.unregister();
         ResourcesPlugin.getWorkspace().removeResourceChangeListener( this );
         // TODO remove regiistration?
         // getSite().registerContextMenu(
