@@ -2,7 +2,7 @@
  * Copyright (c) 2008-2009  Ola Spjuth
  *               2008-2010  Jonathan Alvarsson
  *               2008-2009  Stefan Kuhn
- *               2008-2009  Egon Willighagen <egonw@users.sf.net>
+ *               2008-2017  Egon Willighagen <egonw@users.sf.net>
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -48,7 +48,7 @@ import org.openscience.cdk.io.formats.IChemFormat;
 
 @PublishedClass(
     value="Provides CDK-derived functionality.",
-    doi={"10.1021/ci025584y","10.2174/138161206777585274"}
+    doi={"10.1021/ci025584y","10.2174/138161206777585274", "10.1186/s13321-017-0220-4"}
 )
 @TestClasses(
     "net.bioclipse.cdk.business.test.APITest," +
