@@ -75,4 +75,28 @@ public class OpsinManager implements IBioclipseManager {
         	result.getMessage()
         );
     }
+
+    public String parseIUPACNameAsSMILES(String iupacName, IProgressMonitor monitor)
+    throws BioclipseException {
+        if (monitor == null) monitor = new NullProgressMonitor();
+
+        monitor.beginTask("Processing IUPAC name", 1);
+        NameToStructure nameToStructure;
+        try {
+            nameToStructure = NameToStructure.getInstance();
+        } catch (NameToStructureException e) {
+            throw new BioclipseException(
+                "Error while loading OPSIN: " + e.getMessage(),
+                e
+            );
+        }
+        OpsinResult result = nameToStructure.parseChemicalName(iupacName);
+        if (result.getStatus() == OPSIN_RESULT_STATUS.SUCCESS) {
+            return result.getExtendedSmiles();
+        }
+        throw new BioclipseException(
+            "Could not parse the IUPAC name (" + iupacName + "), because: " +
+            result.getMessage()
+        );
+    }
 }

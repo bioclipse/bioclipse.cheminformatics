@@ -43,4 +43,11 @@ public interface IOpsinManager extends IBioclipseManager {
 	public String parseIUPACNameAsCML(String iupacName) 
 	              throws BioclipseException;
 
+    @PublishedMethod(
+        params="String iupacName",
+        methodSummary="Converts an IUPAC name into a SMILES string"
+    )
+    public String parseIUPACNameAsSMILES(String iupacName) 
+                  throws BioclipseException;
+
 }
