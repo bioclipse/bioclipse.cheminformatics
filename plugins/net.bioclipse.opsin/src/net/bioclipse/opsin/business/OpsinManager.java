@@ -10,16 +10,13 @@
  ******************************************************************************/
 package net.bioclipse.opsin.business;
 
-import java.io.IOException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 
 import net.bioclipse.cdk.business.CDKManager;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.managers.business.IBioclipseManager;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-
 import uk.ac.cam.ch.wwmm.opsin.NameToStructure;
 import uk.ac.cam.ch.wwmm.opsin.NameToStructureException;
 import uk.ac.cam.ch.wwmm.opsin.OpsinResult;
@@ -42,14 +39,7 @@ public class OpsinManager implements IBioclipseManager {
     	if (monitor == null) monitor = new NullProgressMonitor();
 
     	monitor.beginTask("Processing IUPAC name", 1);
-        try {
-        	return cdk.fromCml(parseIUPACNameAsCML(iupacName, monitor));
-        } catch (IOException exception) {
-        	throw new BioclipseException(
-       			"Error while converting CML into a CDKMolecule: " + exception.getMessage(),
-       			exception
-        	);
-        }
+        return cdk.fromSMILES(parseIUPACNameAsSMILES(iupacName, monitor));
     }
 
     public String parseIUPACNameAsCML(String iupacName, IProgressMonitor monitor)
