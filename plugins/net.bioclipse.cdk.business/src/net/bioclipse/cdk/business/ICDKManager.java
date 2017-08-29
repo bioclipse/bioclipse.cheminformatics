@@ -718,6 +718,15 @@ public interface ICDKManager extends IBioclipseManager {
                   throws BioclipseException;
 
 
+    @PublishedMethod ( 
+        params = "IMolecule molecule",
+        methodSummary = "Calculate and return the molecular weight for the " +
+                        "molecule with only major isotopes." )
+    @Recorded
+    public double calculateMajorIsotopeMass( IMolecule molecule )
+                  throws BioclipseException;
+
+
     @TestMethods( "testNumberOfEntriesInSDFIFileUIJob" )
     public int numberOfEntriesInSDF( IFile file, 
                                      BioclipseUIJob<Integer> uiJob );

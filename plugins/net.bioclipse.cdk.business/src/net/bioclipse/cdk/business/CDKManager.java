@@ -2011,6 +2011,25 @@ public class CDKManager implements IBioclipseManager {
         return mass;
     }
 
+    public double calculateMajorIsotopeMass(IMolecule molecule) throws BioclipseException {
+        ICDKMolecule cdkmol = null;
+
+        if (molecule instanceof ICDKMolecule) {
+            cdkmol = (ICDKMolecule) molecule;
+        } else {
+            cdkmol = asCDKMolecule(molecule);
+        }
+
+        IMolecularFormula mf = molecularFormulaObject( cdkmol );
+        // use six digits in the precision
+        double mass = MolecularFormulaManipulator.getMajorIsotopeMass(mf);
+        System.out.println("1. "+ (mass*1000000.0));
+        System.out.println("2. "+Math.round(mass*1000000.0));
+        System.out.println("3. "+ (Math.round(mass*1000000.0)/1000000.0));
+        mass = (Math.round(mass*1000000.0))/1000000.0;
+        return mass;
+    }
+
       public void generate2dCoordinates(IMolecule molecule,
                                         IReturner<IMolecule> returner,
                                         IProgressMonitor monitor)
