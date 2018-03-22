@@ -812,8 +812,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 	private void updateAtomTypesAndHCounts( IChemModel model ) {
         CDKHydrogenAdder hAdder =
             CDKHydrogenAdder.getInstance(model.getBuilder());
-        CDKAtomTypeMatcher matcher =
-            CDKAtomTypeMatcher.getInstance(model.getBuilder());
         for (IAtomContainer container :
              ChemModelManipulator.getAllAtomContainers(model)) {
             // erase old information
@@ -830,6 +828,7 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 Aromaticity arom = new Aromaticity(ElectronDonation.cdk(),Cycles.cdkAromaticSet());
                 AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( container );
                 arom.apply( container );
+                hAdder.addImplicitHydrogens(container);
             } catch ( CDKException e ) {
                 e.printStackTrace();
             }
