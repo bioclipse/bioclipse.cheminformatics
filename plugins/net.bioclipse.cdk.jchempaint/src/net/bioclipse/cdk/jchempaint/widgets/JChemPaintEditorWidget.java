@@ -121,6 +121,8 @@ import org.openscience.cdk.renderer.selection.AbstractSelection;
 import org.openscience.cdk.renderer.selection.IChemObjectSelection;
 import org.openscience.cdk.renderer.visitor.IDrawVisitor;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
+import org.openscience.cdk.stereo.Projection;
+import org.openscience.cdk.stereo.StereoElementFactory;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
@@ -812,8 +814,6 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
 	private void updateAtomTypesAndHCounts( IChemModel model ) {
         CDKHydrogenAdder hAdder =
             CDKHydrogenAdder.getInstance(model.getBuilder());
-        CDKAtomTypeMatcher matcher =
-            CDKAtomTypeMatcher.getInstance(model.getBuilder());
         for (IAtomContainer container :
              ChemModelManipulator.getAllAtomContainers(model)) {
             // erase old information
@@ -830,9 +830,15 @@ public class JChemPaintEditorWidget extends JChemPaintWidget
                 Aromaticity arom = new Aromaticity(ElectronDonation.cdk(),Cycles.cdkAromaticSet());
                 AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms( container );
                 arom.apply( container );
+                hAdder.addImplicitHydrogens(container);
             } catch ( CDKException e ) {
                 e.printStackTrace();
             }
+            // update stereo information
+            container.setStereoElements(StereoElementFactory.using2DCoordinates(container)
+                    .interpretProjections(Projection.Haworth, Projection.Chair)
+                    .createAll());
+            System.out.println("added stereos: " + container.stereoElements().iterator().hasNext());
         }
     }
 
