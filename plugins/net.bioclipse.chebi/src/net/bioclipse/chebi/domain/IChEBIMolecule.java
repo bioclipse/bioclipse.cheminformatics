@@ -28,6 +28,10 @@ public interface IChEBIMolecule extends IMolecule {
 
 	public List<Name> getNames() throws IOException, ParseException;
 
+	public String getInchi() throws IOException, ParseException;
+
+	public String getInchiKey() throws IOException, ParseException;
+
 	public String getDefinition() throws IOException, ParseException;
 
 	public List<Comment> getComments() throws IOException, ParseException;
