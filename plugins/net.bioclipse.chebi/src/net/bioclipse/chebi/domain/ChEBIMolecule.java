@@ -42,6 +42,14 @@ public class ChEBIMolecule extends BioObject implements IChEBIMolecule {
 	public ChEBIMolecule(String identifier) throws IOException, ParseException, ChebiException {
 		this.entity = new ChebiEntity(identifier);
 	}
+
+	public String getInchiKey() throws IOException, ParseException {
+		return this.entity.getInchiKey();
+	}
+
+	public String getInchi() throws IOException, ParseException {
+		return this.entity.getInchi();
+	}
 	
 	@Override
 	public List<IMolecule> getConformers() {
